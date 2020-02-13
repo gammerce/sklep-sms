@@ -2,34 +2,22 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
-use App\Http\Validation\Rules\RequiredRule;
-use App\Http\Validation\Rules\ServerExistsRule;
-use App\Http\Validation\Validator;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
+use App\System\ServerAuth;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceCollection
 {
-    public function get(Request $request, Database $db)
+    public function get(Request $request, Database $db, ServerAuth $serverAuth)
     {
         $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
-
-        $validator = new Validator(
-            array_merge($request->query->all(), [
-                'server_id' => as_int($request->query->get("server_id")),
-            ]),
-            [
-                'server_id' => [new RequiredRule(), new ServerExistsRule()],
-                'nick' => [],
-                'ip' => [],
-                'steam_id' => [],
-            ]
-        );
-
-        $validated = $validator->validateOrFail();
+        $nick = $request->query->get("nick");
+        $ip = $request->query->get("ip");
+        $steamId = $request->query->get("steam_id");
+        $serverId = $serverAuth->check() ? $serverAuth->server() : $request->query->get("server_id");
 
         $statement = $db->statement(
             <<<EOF
@@ -48,13 +36,13 @@ ORDER BY us.id DESC
 EOF
         );
         $statement->execute([
-            $validated['server_id'],
+            $serverId,
             ExtraFlagType::TYPE_NICK,
-            $validated['nick'],
+            $nick,
             ExtraFlagType::TYPE_IP,
-            $validated['ip'],
+            $ip,
             ExtraFlagType::TYPE_SID,
-            $validated['steam_id'],
+            $steamId,
         ]);
 
         $data = collect($statement)

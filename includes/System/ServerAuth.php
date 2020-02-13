@@ -18,7 +18,7 @@ class ServerAuth
 
     public function setServer(Server $server = null)
     {
-        $this->$server = $server;
+        $this->server = $server;
     }
 
     public function check()

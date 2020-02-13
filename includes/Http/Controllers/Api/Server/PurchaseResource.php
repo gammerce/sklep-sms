@@ -6,6 +6,7 @@ use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\System\Heart;
+use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
@@ -19,12 +20,23 @@ class PurchaseResource
         TranslationManager $translationManager,
         Settings $settings,
         PurchaseService $purchaseService,
-        ServerResponseFactory $responseFactory
+        ServerResponseFactory $responseFactory,
+        ServerAuth $serverAuth
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
         $lang = $translationManager->user();
+        $server = $serverAuth->server();
 
-        if (!$this->isCorrectlySigned($request, $settings->getSecret())) {
+        if ($server) {
+            if (!$this->isCorrectlySigned($request, $server->getToken())) {
+                return $responseFactory->create(
+                    $acceptHeader,
+                    "invalid_sign",
+                    "Invalid body sign",
+                    false
+                );
+            }
+        } elseif (!$this->isCorrectlySigned($request, $settings->getSecret())) {
             return $responseFactory->create(
                 $acceptHeader,
                 "invalid_sign",
@@ -44,8 +56,15 @@ class PurchaseResource
             );
         }
 
+        $body = $request->request->all();
+
+        if ($server) {
+            $body["server_id"] = $server->getId();
+            $body["payment_platform_id"] = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
+        }
+
         try {
-            $response = $purchaseService->purchase($serviceModule, $request->request->all());
+            $response = $purchaseService->purchase($serviceModule, $body);
         } catch (ValidationException $e) {
             return $responseFactory->create(
                 $acceptHeader,
