@@ -29,23 +29,25 @@ class AuthorizeServer implements MiddlewareContract
         /** @var ServerAuth $serverAuth */
         $serverAuth = $app->make(ServerAuth::class);
 
-        // TODO Remove authorization by key
         $key = $request->query->get("key");
         $token = $request->query->get("token");
         $steamId = $request->headers->get("Authorization");
 
-        $server = $serverRepository->findByToken($token);
+        if ($token) {
+            $server = $serverRepository->findByToken($token);
 
-        if (!$server && $key !== md5($settings->getSecret())) {
+            if (!$server) {
+                return new Response("Server unauthorized", 400);
+            }
+
+            $serverAuth->setServer($server);
+        }
+        // TODO Remove authorization by key
+        elseif ($key !== md5($settings->getSecret())) {
             return new Response("Server unauthorized", 400);
         }
 
         $user = $userRepository->findBySteamId($steamId);
-
-        if ($server) {
-            $serverAuth->setServer($server);
-        }
-
         if ($user) {
             $auth->setUser($user);
         }
