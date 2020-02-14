@@ -167,7 +167,7 @@ class RoutesManager
                             'uses' => ServerConfigController::class . '@get',
                         ]);
 
-                        $r->get('/api/server/player_flags', [
+                        $r->get('/api/server/players_flags', [
                             'uses' => PlayerFlagCollection::class . '@get',
                         ]);
 

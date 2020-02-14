@@ -46,7 +46,7 @@ class PlayerFlagCollectionTest extends HttpTestCase
 
         // when
         $response = $this->get(
-            '/api/server/player_flags',
+            '/api/server/players_flags',
             [
                 'token' => $this->server->getToken(),
             ],
@@ -92,7 +92,7 @@ class PlayerFlagCollectionTest extends HttpTestCase
 
         // when
         $response = $this->get(
-            '/api/server/player_flags',
+            '/api/server/players_flags',
             [
                 'token' => $this->server->getToken(),
             ],
