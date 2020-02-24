@@ -136,7 +136,7 @@ class RoutesManager
         ]);
 
         $r->get('/api/cron', [
-            'middlewares' => [LoadSettings::class, ValidateLicense::class],
+            'middlewares' => [LoadSettings::class],
             'uses' => CronController::class . '@get',
         ]);
 
@@ -155,7 +155,7 @@ class RoutesManager
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [
-                            'middlewares' => [BlockOnInvalidLicense::class],
+                            'middlewares' => [ValidateLicense::class, BlockOnInvalidLicense::class],
                             'uses' => ServerPurchaseResource::class . '@post',
                         ]);
 
@@ -182,7 +182,6 @@ class RoutesManager
                     LoadSettings::class,
                     SetLanguage::class,
                     ManageAuthentication::class,
-                    ValidateLicense::class,
                 ],
             ],
             function (RouteCollector $r) {
@@ -199,7 +198,11 @@ class RoutesManager
 
                 $r->addGroup(
                     [
-                        "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
+                        "middlewares" => [
+                            ValidateLicense::class,
+                            BlockOnInvalidLicense::class,
+                            UpdateUserActivity::class,
+                        ],
                     ],
                     function (RouteCollector $r) {
                         $r->addRoute(['GET', 'POST'], '/[page/{pageId}]', [

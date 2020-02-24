@@ -5,7 +5,6 @@ use App\Http\Responses\HtmlResponse;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Heart;
-use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\UnescapedSimpleText;
