@@ -213,6 +213,7 @@ return [
     'privilege_view_user_services' => 'Players\' services preview',
     'privilege_view_users' => 'Users preview',
     'provision' => 'Provision',
+    'regenerate_token' => 'Regenerate token',
     'script_updated' => 'Shop script is updated to the latest version.',
     'see_payment' => 'See payment',
     'separated' => '( separated with semicolon \';\' )',
