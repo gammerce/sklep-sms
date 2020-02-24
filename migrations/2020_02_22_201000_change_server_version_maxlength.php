@@ -6,6 +6,6 @@ class ChangeServerVersionMaxLength extends Migration
 {
     public function up()
     {
-        $this->db->query("ALTER TABLE `ss_servers` ADD `version` VARCHAR (32)");
+        $this->db->query("ALTER TABLE `ss_servers` MODIFY `version` VARCHAR (32)");
     }
 }
