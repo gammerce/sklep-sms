@@ -142,10 +142,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [
-                    LoadSettings::class,
-                    SetLanguage::class,
-                ],
+                "middlewares" => [LoadSettings::class, SetLanguage::class],
             ],
             function (RouteCollector $r) {
                 $r->get('/api/server/services/{serviceId}/long_description', [
