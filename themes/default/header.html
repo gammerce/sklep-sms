@@ -9,7 +9,7 @@
 <script type="text/javascript" src="{{ $url->versioned('build/js/shop.js') }}"></script>
 <script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
 <script type="text/javascript">
-    var f = "{$license->getFooter()}";
+    var f = "{$footer}";
     var language = "{{ $lang->getCurrentLanguage() }}";
     var baseUrl = "{{ $url->to('/') }}";
     var currentPage = "{{ $currentPageId }}";

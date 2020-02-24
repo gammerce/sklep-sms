@@ -48,7 +48,7 @@ class ShopRenderer
     {
         $header = $this->template->render("header", [
             'currentPageId' => $this->currentPage->getPid(),
-            'license' => $this->license,
+            'footer' => $this->license->getFooter(),
             'pageTitle' => $pageTitle,
             'scripts' => $this->heart->getScripts(),
             'styles' => $this->heart->getStyles(),

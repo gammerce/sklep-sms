@@ -158,6 +158,7 @@ class RoutesManager
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [
+                            'middlewares' => [BlockOnInvalidLicense::class],
                             'uses' => ServerPurchaseResource::class . '@post',
                         ]);
 

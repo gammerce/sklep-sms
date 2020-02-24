@@ -20,8 +20,7 @@ class ServiceLongDescriptionController
         Heart $heart,
         CurrentPage $currentPage,
         TranslationManager $translationManager,
-        UrlGenerator $url,
-        License $license
+        UrlGenerator $url
     ) {
         $lang = $translationManager->user();
 
@@ -53,7 +52,7 @@ class ServiceLongDescriptionController
         $heart->addStyle($url->versioned("build/css/static/extra_stuff/long_desc.css"));
         $header = $template->render("header", [
             'currentPageId' => $currentPage->getPid(),
-            'license' => $license,
+            'footer' => "",
             'pageTitle' => $heart->pageTitle,
             'scripts' => $heart->getScripts(),
             'styles' => $heart->getStyles(),
