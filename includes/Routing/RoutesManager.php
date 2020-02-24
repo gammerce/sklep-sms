@@ -145,8 +145,6 @@ class RoutesManager
                 "middlewares" => [
                     LoadSettings::class,
                     SetLanguage::class,
-                    ValidateLicense::class,
-                    BlockOnInvalidLicense::class,
                 ],
             ],
             function (RouteCollector $r) {
@@ -198,7 +196,6 @@ class RoutesManager
                  * @deprecated
                  */
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
 
