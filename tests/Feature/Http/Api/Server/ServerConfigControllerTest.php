@@ -62,7 +62,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.9.0-rc.1242',
+                'version' => '3.9.1-rc.1242',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
