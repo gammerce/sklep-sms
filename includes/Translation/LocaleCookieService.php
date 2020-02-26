@@ -11,9 +11,8 @@ class LocaleCookieService
 
     public function setLocale(Response $response, $language)
     {
-        $time = time() + 86400 * 30;
         $response->headers->setCookie(
-            new Cookie(LocaleCookieService::COOKIE_KEY, $language, $time)
+            new Cookie(LocaleCookieService::COOKIE_KEY, $language, 0, "/", null, false, false)
         );
     }
 
