@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -9,9 +9,9 @@ interface MiddlewareContract
 {
     /**
      * @param Request $request
-     * @param Application $app
      * @param $args
+     * @param Closure $next
      * @return Response|null
      */
-    public function handle(Request $request, Application $app, $args);
+    public function handle(Request $request, $args, Closure $next);
 }

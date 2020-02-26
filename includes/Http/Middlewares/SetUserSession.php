@@ -1,19 +1,17 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 class SetUserSession implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
+    public function handle(Request $request, $args, Closure $next)
     {
-        /** @var Session $session */
-        $session = $app->make(Session::class);
+        $session = $request->getSession();
         $session->setName("user");
         $session->start();
 
-        return null;
+        return $next($request);
     }
 }
