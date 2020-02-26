@@ -45,7 +45,7 @@ class SettingsController
                 'sender_email_name' => $request->request->get('sender_email_name'),
                 'shop_name' => $request->request->get('shop_name'),
                 'shop_url' => is_demo()
-                    ? $settings['shop_url']
+                    ? $settings->getShopUrl()
                     : $request->request->get('shop_url'),
                 'signature' => $request->request->get('signature'),
                 'sms_platform' => $request->request->get('sms_platform'),

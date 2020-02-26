@@ -7,7 +7,6 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,7 +15,6 @@ class PasswordResetController
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Settings $settings,
         UserRepository $userRepository,
         DatabaseLogger $logger
     ) {
@@ -24,30 +22,29 @@ class PasswordResetController
 
         $validator = new Validator(
             [
-                'uid' => as_int($request->request->get('uid')),
-                'sign' => $request->request->get('sign'),
+                'code' => $request->request->get('code'),
                 'pass' => $request->request->get('pass'),
                 'pass_repeat' => $request->request->get('pass_repeat'),
             ],
             [
-                'uid' => [],
-                'sign' => [new RequiredRule()],
+                'code' => [new RequiredRule()],
                 'pass' => [new RequiredRule(), new PasswordRule()],
             ]
         );
 
         $validated = $validator->validateOrFail();
 
-        $uid = $validated['uid'];
-        $sign = $validated['sign'];
+        $resetKey = $validated['code'];
         $pass = $validated['pass'];
 
-        if ($sign !== md5($uid . $settings->getSecret())) {
+        $user = $userRepository->findByResetKey($resetKey);
+
+        if (!$user) {
             return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 
-        $userRepository->updatePassword($uid, $pass);
-        $logger->log('reset_pass', $uid);
+        $userRepository->updatePassword($user->getUid(), $pass);
+        $logger->log('reset_pass', $user->getUid());
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }

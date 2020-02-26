@@ -47,8 +47,8 @@ class UrlGenerator
 
     public function getShopUrl()
     {
-        if ($this->settings['shop_url']) {
-            return $this->settings['shop_url'];
+        if ($this->settings->getShopUrl()) {
+            return $this->settings->getShopUrl();
         }
 
         /** @var Request $request */

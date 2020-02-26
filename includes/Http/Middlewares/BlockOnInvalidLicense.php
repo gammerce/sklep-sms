@@ -4,16 +4,19 @@ namespace App\Http\Middlewares;
 use App\Requesting\Response as CustomResponse;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
-use App\System\Application;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use Closure;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class BlockOnInvalidLicense implements MiddlewareContract
 {
+    /** @var License */
+    private $license;
+
     /** @var Template */
     private $template;
 
@@ -24,22 +27,21 @@ class BlockOnInvalidLicense implements MiddlewareContract
     private $url;
 
     public function __construct(
+        License $license,
         Template $template,
         TranslationManager $translationManager,
         UrlGenerator $url
     ) {
+        $this->license = $license;
         $this->template = $template;
         $this->lang = $translationManager->user();
         $this->url = $url;
     }
 
-    public function handle(Request $request, Application $app, $args = null)
+    public function handle(Request $request, $args, Closure $next)
     {
-        /** @var License $license */
-        $license = $app->make(License::class);
-
-        if (!$license->isValid()) {
-            $e = $license->getLoadingException();
+        if (!$this->license->isValid()) {
+            $e = $this->license->getLoadingException();
             $message = $this->getMessageFromInvalidResponse($e->response);
 
             if (starts_with($request->getPathInfo(), "/api")) {
@@ -49,7 +51,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
             return $this->renderErrorPage($message);
         }
 
-        return null;
+        return $next($request);
     }
 
     private function getMessageFromInvalidResponse(CustomResponse $response = null)

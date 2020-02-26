@@ -16,26 +16,43 @@ class LocaleService
     /** @var Requester */
     private $requester;
 
+    /** @var LocaleCookieService */
+    private $localeCookieService;
+
     public function __construct(
         TranslationManager $translationManager,
+        LocaleCookieService $localeCookieService,
         Settings $settings,
         Requester $requester
     ) {
         $this->translationManager = $translationManager;
         $this->settings = $settings;
         $this->requester = $requester;
+        $this->localeCookieService = $localeCookieService;
     }
 
     public function getLocale(Request $request)
     {
-        if ($request->query->has('language')) {
-            return $request->query->get('language');
+        $queryLocale = $request->query->get('language');
+        if ($queryLocale) {
+            return $queryLocale;
         }
 
-        if ($request->cookies->has('language')) {
-            return $request->cookies->get('language');
+        $cookieLocale = $this->localeCookieService->getLocale($request);
+        if ($cookieLocale) {
+            return $cookieLocale;
         }
 
+        $locale = $this->getLocaleFromIp($request);
+        if ($locale) {
+            return $locale;
+        }
+
+        return $this->settings->getLanguage();
+    }
+
+    private function getLocaleFromIp(Request $request)
+    {
         $ip = get_ip($request);
         $response = $this->requester->get("https://ipinfo.io/{$ip}/json", [], [], 2);
 
@@ -52,7 +69,7 @@ class LocaleService
             }
         }
 
-        return $this->settings['language'];
+        return null;
     }
 
     private function mapCountry($country)

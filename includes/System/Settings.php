@@ -26,10 +26,10 @@ class Settings implements ArrayAccess
         $this->path = $path;
 
         $this->data = [
-            'date_format' => 'Y-m-d H:i',
-            'shop_url' => '',
-            'theme' => 'default',
-            'timezone' => 'Europe/Warsaw',
+            "date_format" => "Y-m-d H:i",
+            "shop_url" => "",
+            "theme" => "default",
+            "timezone" => "Europe/Warsaw",
         ];
         $this->fileSystem = $fileSystem;
     }
@@ -63,19 +63,19 @@ class Settings implements ArrayAccess
     {
         $result = $this->db->query("SELECT * FROM `ss_settings`");
         foreach ($result as $row) {
-            $this->data[$row['key']] = $this->prepareValue($row['key'], $row['value']);
+            $this->data[$row["key"]] = $this->prepareValue($row["key"], $row["value"]);
         }
 
-        if (strlen($this->data['shop_url'])) {
-            $this->data['shop_url'] = $this->formatShopUrl($this->data['shop_url']);
+        if (strlen($this->data["shop_url"])) {
+            $this->data["shop_url"] = $this->formatShopUrl($this->data["shop_url"]);
         }
 
         // Fallback to default theme if selected does not exist
-        if (!$this->fileSystem->exists($this->path->to("themes/{$this->data['theme']}"))) {
-            $this->data['theme'] = "default";
+        if (!$this->fileSystem->exists($this->path->to("themes/{$this->data["theme"]}"))) {
+            $this->data["theme"] = "default";
         }
 
-        date_default_timezone_set($this->data['timezone']);
+        date_default_timezone_set($this->data["timezone"]);
     }
 
     /**
@@ -157,7 +157,23 @@ class Settings implements ArrayAccess
      */
     public function getTimeZone()
     {
-        return $this->data['timezone'];
+        return $this->data["timezone"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->data["language"];
+    }
+
+    /**
+     * @return string
+     */
+    public function getShopUrl()
+    {
+        return $this->data["shop_url"];
     }
 
     private function formatShopUrl($url)
@@ -171,6 +187,6 @@ class Settings implements ArrayAccess
 
     private function prepareValue($key, $value)
     {
-        return strlen($value) ? $value : array_get($this->data, $key, '');
+        return strlen($value) ? $value : array_get($this->data, $key, "");
     }
 }

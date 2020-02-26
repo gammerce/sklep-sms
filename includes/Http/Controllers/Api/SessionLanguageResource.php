@@ -1,20 +1,19 @@
 <?php
 namespace App\Http\Controllers\Api;
 
+use App\Translation\LocaleCookieService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SessionLanguageResource
 {
-    public function put(Request $request)
+    public function put(Request $request, LocaleCookieService $localeCookieService)
     {
-        setcookie(
-            "language",
-            escape_filename($request->request->get('language')),
-            time() + 86400 * 30,
-            "/"
-        ); // 86400 = 1 day
+        $language = $request->request->get('language');
 
-        return new Response();
+        $response = new Response();
+        $localeCookieService->setLocale($response, $language);
+
+        return $response;
     }
 }

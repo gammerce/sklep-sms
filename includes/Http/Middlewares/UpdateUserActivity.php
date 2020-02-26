@@ -2,27 +2,33 @@
 namespace App\Http\Middlewares;
 
 use App\Repositories\UserRepository;
-use App\System\Application;
 use App\System\Auth;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
 class UpdateUserActivity implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
+    /** @var Auth */
+    private $auth;
+
+    /** @var UserRepository */
+    private $userRepository;
+
+    public function __construct(Auth $auth, UserRepository $userRepository)
     {
-        /** @var Auth $auth */
-        $auth = $app->make(Auth::class);
+        $this->auth = $auth;
+        $this->userRepository = $userRepository;
+    }
 
-        /** @var UserRepository $userRepository */
-        $userRepository = $app->make(UserRepository::class);
-
-        $user = $auth->user();
+    public function handle(Request $request, $args, Closure $next)
+    {
+        $user = $this->auth->user();
         $user->setLastIp(get_ip($request));
 
         if ($user->exists()) {
-            $userRepository->touch($user);
+            $this->userRepository->touch($user);
         }
 
-        return null;
+        return $next($request);
     }
 }

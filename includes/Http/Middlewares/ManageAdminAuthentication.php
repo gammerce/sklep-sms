@@ -4,19 +4,30 @@ namespace App\Http\Middlewares;
 use App\System\Application;
 use App\System\Auth;
 use App\View\CurrentPage;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
 class ManageAdminAuthentication implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
+    /** @var Application */
+    private $app;
+
+    /** @var Auth */
+    private $auth;
+
+    public function __construct(Application $app, Auth $auth)
     {
-        /** @var Auth $auth */
-        $auth = $app->make(Auth::class);
+        $this->app = $app;
+        $this->auth = $auth;
+    }
+
+    public function handle(Request $request, $args, Closure $next)
+    {
         $session = $request->getSession();
 
         // Logowanie się do panelu admina
         if ($request->request->has('username') && $request->request->has('password')) {
-            $auth->loginAdminUsingCredentials(
+            $this->auth->loginAdminUsingCredentials(
                 $request->request->get('username'),
                 $request->request->get('password')
             );
@@ -24,26 +35,26 @@ class ManageAdminAuthentication implements MiddlewareContract
             $request->request->has('action') &&
             $request->request->get('action') == "logout"
         ) {
-            $auth->logoutAdmin();
+            $this->auth->logoutAdmin();
         }
 
         // Pozyskujemy dane gracza, jeżeli jeszcze ich nie ma
-        if (!$auth->check() && $session->has("uid")) {
-            $auth->loginUserUsingId($session->get("uid"));
+        if (!$this->auth->check() && $session->has("uid")) {
+            $this->auth->loginUserUsingId($session->get("uid"));
         }
 
         // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
-        if (!$auth->check() || !get_privileges("acp")) {
+        if (!$this->auth->check() || !get_privileges("acp")) {
             /** @var CurrentPage $currentPage */
-            $currentPage = $app->make(CurrentPage::class);
+            $currentPage = $this->app->make(CurrentPage::class);
             $currentPage->setPid("login");
 
             // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-            if ($auth->check()) {
+            if ($this->auth->check()) {
                 $session->set("info", "no_privileges");
             }
         }
 
-        return null;
+        return $next($request);
     }
 }

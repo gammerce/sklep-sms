@@ -1,42 +1,37 @@
 <?php
 namespace App\View\Pages;
 
-use App\System\Settings;
+use App\Repositories\UserRepository;
 use App\View\Interfaces\IBeLoggedCannot;
 
 class PageResetPassword extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = 'reset_password';
 
-    /** @var Settings */
-    private $settings;
+    /** @var UserRepository */
+    private $userRepository;
 
-    public function __construct(Settings $settings)
+    public function __construct(UserRepository $userRepository)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('reset_password');
-        $this->settings = $settings;
+        $this->userRepository = $userRepository;
     }
 
     protected function content(array $query, array $body)
     {
-        if (!strlen($query['code'])) {
+        $resetKey = array_get($query, 'code');
+
+        if (!strlen($resetKey)) {
             return $this->lang->t('no_reset_key');
         }
 
-        $statement = $this->db->statement(
-            "SELECT `uid` FROM `ss_users` WHERE `reset_password_key` = ?"
-        );
-        $statement->execute([$query['code']]);
-
-        if (!$statement->rowCount()) {
+        $user = $this->userRepository->findByResetKey($resetKey);
+        if (!$user) {
             return $this->lang->t('wrong_reset_key');
         }
 
-        $row = $statement->fetch();
-        $sign = md5($row['uid'] . $this->settings->getSecret());
-
-        return $this->template->render("reset_password", compact('row', 'sign'));
+        return $this->template->render("reset_password", ['code' => $resetKey]);
     }
 }

@@ -79,12 +79,12 @@ class Translator
      */
     public function setLanguage($language)
     {
-        $language = strtolower($language);
+        $language = escape_filename(strtolower($language));
 
         if (
             !strlen($language) ||
             !isset($this->langList[$language]) ||
-            $this->getCurrentLanguage() == $language ||
+            $this->getCurrentLanguage() === $language ||
             !$this->fileSystem->isDirectory($this->path->to("translations/" . $language))
         ) {
             return;

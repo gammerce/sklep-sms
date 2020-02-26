@@ -5,40 +5,46 @@ use App\Exceptions\LicenseException;
 use App\System\Application;
 use App\System\Auth;
 use App\System\License;
+use Closure;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\Request;
 
 class ValidateLicense implements MiddlewareContract
 {
+    /** @var Application */
+    private $app;
+
     /** @var Auth */
     private $auth;
 
-    public function __construct(Auth $auth)
+    /** @var License */
+    private $license;
+
+    public function __construct(Application $app, Auth $auth, License $license)
     {
+        $this->app = $app;
         $this->auth = $auth;
+        $this->license = $license;
     }
 
-    public function handle(Request $request, Application $app, $args = null)
+    public function handle(Request $request, $args, Closure $next)
     {
-        /** @var License $license */
-        $license = $app->make(License::class);
-
         try {
-            $license->validate();
+            $this->license->validate();
         } catch (LicenseException $e) {
             $this->limitPrivileges();
-            return null;
+            return $next($request);
         }
 
         // Let's pass some additional info to sentry logger
         // so that it would be easier for us to debug any potential exceptions
-        if ($app->bound(Raven_Client::class)) {
-            $app->make(Raven_Client::class)->tags_context([
-                'license_id' => $license->getExternalId(),
+        if ($this->app->bound(Raven_Client::class)) {
+            $this->app->make(Raven_Client::class)->tags_context([
+                'license_id' => $this->license->getExternalId(),
             ]);
         }
 
-        return null;
+        return $next($request);
     }
 
     private function limitPrivileges()

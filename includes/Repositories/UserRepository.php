@@ -173,6 +173,25 @@ class UserRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
+    /**
+     * @param string $resetKey
+     * @return User|null
+     */
+    public function findByResetKey($resetKey)
+    {
+        if (!strlen($resetKey)) {
+            return null;
+        }
+
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_users` WHERE `reset_password_key` = ?"
+        );
+        $statement->execute([$resetKey]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
     public function createResetPasswordKey($uid)
     {
         $key = get_random_string(32);
