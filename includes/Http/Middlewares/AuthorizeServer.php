@@ -61,9 +61,11 @@ class AuthorizeServer implements MiddlewareContract
             return new Response("Server unauthorized", 400);
         }
 
-        $user = $this->userRepository->findBySteamId($steamId);
-        if ($user) {
-            $this->auth->setUser($user);
+        if ($steamId) {
+            $user = $this->userRepository->findBySteamId($steamId);
+            if ($user) {
+                $this->auth->setUser($user);
+            }
         }
 
         return $next($request);
