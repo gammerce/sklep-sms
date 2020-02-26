@@ -1,18 +1,23 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
 use App\System\Settings;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
 class LoadSettings implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
-    {
-        /** @var Settings $settings */
-        $settings = $app->make(Settings::class);
-        $settings->load();
+    /** @var Settings */
+    private $settings;
 
-        return null;
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+    }
+
+    public function handle(Request $request, $args, Closure $next)
+    {
+        $this->settings->load();
+        return $next($request);
     }
 }

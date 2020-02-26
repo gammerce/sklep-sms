@@ -24,9 +24,6 @@ class Application extends Container
     /** @var string */
     private $basePath;
 
-    /** @var bool */
-    private $isAdminSession = false;
-
     public function __construct($basePath)
     {
         $this->basePath = $basePath;
@@ -91,16 +88,6 @@ class Application extends Container
     public function terminate()
     {
         //
-    }
-
-    public function setAdminSession($value = true)
-    {
-        $this->isAdminSession = $value;
-    }
-
-    public function isAdminSession()
-    {
-        return $this->isAdminSession;
     }
 
     private function getProviders()

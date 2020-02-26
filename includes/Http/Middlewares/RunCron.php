@@ -1,23 +1,31 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
 use App\System\CronExecutor;
 use App\System\Settings;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
 class RunCron implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
-    {
-        $settings = $app->make(Settings::class);
+    /** @var Settings */
+    private $settings;
 
-        if ($settings['cron_each_visit']) {
-            /** @var CronExecutor $cronExecutor */
-            $cronExecutor = $app->make(CronExecutor::class);
-            $cronExecutor->run();
+    /** @var CronExecutor */
+    private $cronExecutor;
+
+    public function __construct(Settings $settings, CronExecutor $cronExecutor)
+    {
+        $this->settings = $settings;
+        $this->cronExecutor = $cronExecutor;
+    }
+
+    public function handle(Request $request, $args, Closure $next)
+    {
+        if ($this->settings['cron_each_visit']) {
+            $this->cronExecutor->run();
         }
 
-        return null;
+        return $next($request);
     }
 }

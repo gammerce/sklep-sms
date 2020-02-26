@@ -4,10 +4,10 @@ namespace App\Translation;
 class TranslationManager
 {
     /** @var Translator */
-    protected $user;
+    private $user;
 
     /** @var Translator */
-    protected $shop;
+    private $shop;
 
     public function user()
     {

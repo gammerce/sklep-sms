@@ -1,31 +1,54 @@
 <?php
-
 namespace App\Http\Middlewares;
 
-use App\System\Application;
 use App\System\Settings;
+use App\Translation\LocaleCookieService;
 use App\Translation\LocaleService;
 use App\Translation\TranslationManager;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SetLanguage implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
+    /** @var Settings */
+    private $settings;
+
+    /** @var LocaleService */
+    private $localeService;
+
+    /** @var TranslationManager */
+    private $translationManager;
+
+    /** @var LocaleCookieService */
+    private $localeCookieService;
+
+    public function __construct(
+        TranslationManager $translationManager,
+        Settings $settings,
+        LocaleService $localeService,
+        LocaleCookieService $localeCookieService
+    ) {
+        $this->settings = $settings;
+        $this->localeService = $localeService;
+        $this->translationManager = $translationManager;
+        $this->localeCookieService = $localeCookieService;
+    }
+
+    public function handle(Request $request, $args, Closure $next)
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $app->make(TranslationManager::class);
+        $locale = $this->localeService->getLocale($request);
 
-        /** @var Settings $settings */
-        $settings = $app->make(Settings::class);
+        $this->translationManager->user()->setLanguage($locale);
+        $this->translationManager->shop()->setLanguage($this->settings->getLanguage());
 
-        /** @var LocaleService $localeService */
-        $localeService = $app->make(LocaleService::class);
+        /** @var Response $response */
+        $response = $next($request);
 
-        $locale = $localeService->getLocale($request);
+        if (!$this->localeCookieService->getLocale($request)) {
+            $this->localeCookieService->setLocale($response, $locale);
+        }
 
-        $translationManager->user()->setLanguage($locale);
-        $translationManager->shop()->setLanguage($settings['language']);
-
-        return null;
+        return $response;
     }
 }

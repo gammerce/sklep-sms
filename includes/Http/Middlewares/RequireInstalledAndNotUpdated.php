@@ -2,25 +2,30 @@
 namespace App\Http\Middlewares;
 
 use App\Install\ShopState;
-use App\System\Application;
+use Closure;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class RequireInstalledAndNotUpdated implements MiddlewareContract
 {
-    public function handle(Request $request, Application $app, $args = null)
-    {
-        /** @var ShopState $shopState */
-        $shopState = $app->make(ShopState::class);
+    /** @var ShopState */
+    private $shopState;
 
-        if (!$shopState->isInstalled()) {
+    public function __construct(ShopState $shopState)
+    {
+        $this->shopState = $shopState;
+    }
+
+    public function handle(Request $request, $args, Closure $next)
+    {
+        if (!$this->shopState->isInstalled()) {
             return new Response('Shop needs to be installed first');
         }
 
-        if ($shopState->isUpToDate()) {
+        if ($this->shopState->isUpToDate()) {
             return new Response('Shop does not need updating');
         }
 
-        return null;
+        return $next($request);
     }
 }
