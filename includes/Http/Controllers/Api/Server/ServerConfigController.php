@@ -13,12 +13,15 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
 use App\System\Heart;
+use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+
+// TODO Remove authorization by ip:port
 
 class ServerConfigController
 {
@@ -28,7 +31,8 @@ class ServerConfigController
         ServerRepository $serverRepository,
         ServerDataService $serverDataService,
         Heart $heart,
-        Settings $settings
+        Settings $settings,
+        ServerAuth $serverAuth
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
         $ip = $request->query->get("ip");
@@ -37,7 +41,7 @@ class ServerConfigController
         $withPlayerFlags = $request->query->get("player_flags") === "1";
         $platform = $request->headers->get('User-Agent');
 
-        $server = $serverRepository->findByIpPort($ip, $port);
+        $server = $serverAuth->server() ?: $serverRepository->findByIpPort($ip, $port);
         if (!$server) {
             throw new EntityNotFoundException();
         }

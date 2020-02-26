@@ -67,6 +67,7 @@ class DOMElement implements I_ToHtml
 
     /**
      * @param I_ToHtml|string $element
+     * @return $this
      */
     public function addContent($element)
     {
@@ -75,6 +76,8 @@ class DOMElement implements I_ToHtml
         } elseif ($element !== null) {
             $this->contents[] = new SimpleText($element);
         }
+
+        return $this;
     }
 
     /**
@@ -109,16 +112,19 @@ class DOMElement implements I_ToHtml
     }
 
     /**
-     * @param string       $key
+     * @param string $key
      * @param string|array $value
+     * @return $this
      */
     public function setParam($key, $value)
     {
         $this->params[$key] = $value;
+        return $this;
     }
 
     /**
      * @param string $value
+     * @return $this
      */
     public function addClass($value)
     {
@@ -127,15 +133,19 @@ class DOMElement implements I_ToHtml
         } else {
             $this->params['class'] .= " $value";
         }
+
+        return $this;
     }
 
     /**
      * @param string $key
      * @param string $value
+     * @return $this
      */
     public function setStyle($key, $value)
     {
         $this->params['style'][$key] = (string) $value;
+        return $this;
     }
 
     /**
@@ -146,10 +156,14 @@ class DOMElement implements I_ToHtml
         return $this->name;
     }
 
-    /** @param string $name */
+    /**
+     * @param string $name
+     * @return $this
+     */
     public function setName($name)
     {
         $this->name = (string) $name;
+        return $this;
     }
 
     public function __toString()

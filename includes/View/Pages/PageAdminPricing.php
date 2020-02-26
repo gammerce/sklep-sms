@@ -99,14 +99,19 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        $button = new Input();
-        $button->setParam('id', 'price_button_add');
-        $button->setParam('type', 'button');
-        $button->addClass('button');
-        $button->setParam('value', $this->lang->t('add_price'));
+        $button = $this->createAddButton();
         $wrapper->addButton($button);
 
         return $wrapper->toHtml();
+    }
+
+    private function createAddButton()
+    {
+        return (new Input())
+            ->setParam('id', 'price_button_add')
+            ->setParam('type', 'button')
+            ->addClass('button')
+            ->setParam('value', $this->lang->t('add_price'));
     }
 
     public function getActionBox($boxId, array $query)

@@ -15,6 +15,7 @@ use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\Http\Controllers\Api\Admin\ServerResource;
+use App\Http\Controllers\Api\Admin\ServerTokenController;
 use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
 use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
 use App\Http\Controllers\Api\Admin\ServiceCodeResource;
@@ -43,6 +44,7 @@ use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseValidationResource;
 use App\Http\Controllers\Api\RegisterController;
+use App\Http\Controllers\Api\Server\PlayerFlagCollection;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
 use App\Http\Controllers\Api\Server\ServerConfigController;
 use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
@@ -134,9 +136,44 @@ class RoutesManager
         ]);
 
         $r->get('/api/cron', [
-            'middlewares' => [LoadSettings::class, ValidateLicense::class],
+            'middlewares' => [LoadSettings::class],
             'uses' => CronController::class . '@get',
         ]);
+
+        $r->addGroup(
+            [
+                "middlewares" => [LoadSettings::class, SetLanguage::class],
+            ],
+            function (RouteCollector $r) {
+                $r->get('/api/server/services/{serviceId}/long_description', [
+                    'uses' => ServiceLongDescriptionController::class . '@get',
+                ]);
+
+                $r->addGroup(
+                    [
+                        "middlewares" => [AuthorizeServer::class],
+                    ],
+                    function (RouteCollector $r) {
+                        $r->post('/api/server/purchase', [
+                            'middlewares' => [ValidateLicense::class, BlockOnInvalidLicense::class],
+                            'uses' => ServerPurchaseResource::class . '@post',
+                        ]);
+
+                        $r->get('/api/server/config', [
+                            'uses' => ServerConfigController::class . '@get',
+                        ]);
+
+                        $r->get('/api/server/players_flags', [
+                            'uses' => PlayerFlagCollection::class . '@get',
+                        ]);
+
+                        $r->get('/api/server/user_services', [
+                            'uses' => ServerUserServiceCollection::class . '@get',
+                        ]);
+                    }
+                );
+            }
+        );
 
         $r->addGroup(
             [
@@ -145,7 +182,6 @@ class RoutesManager
                     LoadSettings::class,
                     SetLanguage::class,
                     ManageAuthentication::class,
-                    ValidateLicense::class,
                 ],
             ],
             function (RouteCollector $r) {
@@ -157,37 +193,16 @@ class RoutesManager
                  * @deprecated
                  */
                 $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
                     'uses' => TransferController::class . '@oldAction',
                 ]);
 
-                $r->get('/api/server/services/{serviceId}/long_description', [
-                    'middlewares' => [BlockOnInvalidLicense::class],
-                    'uses' => ServiceLongDescriptionController::class . '@get',
-                ]);
-
                 $r->addGroup(
                     [
-                        "middlewares" => [BlockOnInvalidLicense::class, AuthorizeServer::class],
-                    ],
-                    function (RouteCollector $r) {
-                        $r->post('/api/server/purchase', [
-                            'uses' => ServerPurchaseResource::class . '@post',
-                        ]);
-
-                        $r->get('/api/server/config', [
-                            'uses' => ServerConfigController::class . '@get',
-                        ]);
-
-                        $r->get('/api/server/user_services', [
-                            'uses' => ServerUserServiceCollection::class . '@get',
-                        ]);
-                    }
-                );
-
-                $r->addGroup(
-                    [
-                        "middlewares" => [BlockOnInvalidLicense::class, UpdateUserActivity::class],
+                        "middlewares" => [
+                            ValidateLicense::class,
+                            BlockOnInvalidLicense::class,
+                            UpdateUserActivity::class,
+                        ],
                     ],
                     function (RouteCollector $r) {
                         $r->addRoute(['GET', 'POST'], '/[page/{pageId}]', [
@@ -473,6 +488,11 @@ class RoutesManager
                     'uses' => ServerResource::class . '@delete',
                 ]);
 
+                $r->post('/api/admin/servers/{serverId}/token', [
+                    'middlewares' => [[RequireAuthorization::class, "manage_servers"]],
+                    'uses' => ServerTokenController::class . '@post',
+                ]);
+
                 $r->post('/api/admin/services', [
                     'middlewares' => [[RequireAuthorization::class, "manage_services"]],
                     'uses' => ServiceCollection::class . '@post',
@@ -597,7 +617,7 @@ class RoutesManager
 
     private function shouldRedirectToSetup(array $routeInfo)
     {
-        return $this->shopState->requiresAction() &&
-            array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL;
+        return array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL &&
+            $this->shopState->requiresAction();
     }
 }

@@ -5,7 +5,6 @@ use App\Http\Responses\HtmlResponse;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Heart;
-use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\UnescapedSimpleText;
@@ -20,8 +19,7 @@ class ServiceLongDescriptionController
         Heart $heart,
         CurrentPage $currentPage,
         TranslationManager $translationManager,
-        UrlGenerator $url,
-        License $license
+        UrlGenerator $url
     ) {
         $lang = $translationManager->user();
 
@@ -53,7 +51,7 @@ class ServiceLongDescriptionController
         $heart->addStyle($url->versioned("build/css/static/extra_stuff/long_desc.css"));
         $header = $template->render("header", [
             'currentPageId' => $currentPage->getPid(),
-            'license' => $license,
+            'footer' => "",
             'pageTitle' => $heart->pageTitle,
             'scripts' => $heart->getScripts(),
             'styles' => $heart->getStyles(),

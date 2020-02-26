@@ -27,7 +27,7 @@ class User
     /** @var string */
     private $surname;
 
-    /** @var string */
+    /** @var string|null */
     private $steamId;
 
     /** @var array */
@@ -344,7 +344,7 @@ class User
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public function getSteamId()
     {
@@ -352,7 +352,7 @@ class User
     }
 
     /**
-     * @param string $steamId
+     * @param string|null $steamId
      */
     public function setSteamId($steamId)
     {

@@ -250,7 +250,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(402, $response->getStatusCode());
         $json = json_decode($response->getContent(), true);
         $this->assertEquals($json, [
             "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",

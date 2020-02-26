@@ -50,7 +50,7 @@ class PlayerFlagRepository
             return in_array($key, PlayerFlag::FLAGS, true);
         });
 
-        if ($filteredFlags) {
+        if ($filteredFlags->isPopulated()) {
             $keys =
                 ", " .
                 $filteredFlags
@@ -65,8 +65,7 @@ class PlayerFlagRepository
 
         $this->db
             ->statement(
-                "INSERT INTO `ss_players_flags` " .
-                    "SET `server` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
+                "INSERT INTO `ss_players_flags` SET `server` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
             )
             ->execute(array_merge([$serverId, $type, $authData, $password], $values));
 

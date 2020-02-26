@@ -62,7 +62,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 'key' => md5($this->settings->get("random_key")),
                 'ip' => $this->server->getIp(),
                 'port' => $this->server->getPort(),
-                'version' => '3.9.0',
+                'version' => '3.9.1-rc.1242',
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
@@ -209,6 +209,25 @@ class ServerConfigControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /** @test */
+    public function returns_400_if_invalid_token()
+    {
+        // when
+        $response = $this->get(
+            '/api/server/config',
+            [
+                'token' => "asd",
+                'version' => '3.9.0',
+            ],
+            [
+                'User-Agent' => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(400, $response->getStatusCode());
     }
 
     /** @test */

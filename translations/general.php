@@ -8,6 +8,7 @@ return [
     '1s1k' => '1shot 1kill',
     'cashbill' => 'CashBill',
     'cssetti' => 'CSSetti',
+    'getpay' => 'GetPay',
     'gosetti' => 'GOSetti',
     'homepay' => 'HomePay',
     'hostplay' => 'HostPlay',

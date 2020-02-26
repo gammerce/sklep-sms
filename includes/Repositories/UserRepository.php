@@ -32,16 +32,16 @@ class UserRepository
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
             )
             ->execute([
-                $username,
+                (string) $username,
                 hash_password($password, $salt),
                 $salt,
-                $email,
-                $forename,
-                $surname,
-                $ip,
+                (string) $email,
+                (string) $forename,
+                (string) $surname,
+                (string) $ip,
                 $groups,
-                $wallet,
-                $steamId,
+                (int) $wallet,
+                $steamId ?: null,
             ]);
 
         return $this->get($this->db->lastId());
@@ -56,13 +56,13 @@ class UserRepository
                     "WHERE `uid` = ?"
             )
             ->execute([
-                $user->getUsername(),
-                $user->getForename(),
-                $user->getSurname(),
-                $user->getEmail(),
+                (string) $user->getUsername(),
+                (string) $user->getForename(),
+                (string) $user->getSurname(),
+                (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
-                $user->getWallet(),
-                $user->getSteamId(),
+                (int) $user->getWallet(),
+                $user->getSteamId() ?: null,
                 $user->getUid(),
             ]);
     }
@@ -72,14 +72,12 @@ class UserRepository
      */
     public function allWithSteamId()
     {
-        $result = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` != ''");
-
-        $users = [];
-        foreach ($result as $row) {
-            $users[] = $this->mapToModel($row);
-        }
-
-        return $users;
+        $statement = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` IS NOT NULL");
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     /**

@@ -6,6 +6,7 @@ use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
+use App\Http\Validation\Rules\UniqueSteamIdRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UserGroupsRule;
@@ -31,25 +32,27 @@ class UserResource
         $editedUser = $heart->getUser($userId);
 
         $validator = new Validator($request->request->all(), [
+            "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
+            "forename" => [],
+            "groups" => [new UserGroupsRule()],
+            "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getUid())],
+            "surname" => [],
             "username" => [
                 new RequiredRule(),
                 new UsernameRule(),
                 new UniqueUsernameRule($editedUser->getUid()),
             ],
-            "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
-            "steam_id" => [new SteamIdRule()],
-            "wallet" => [new NumberRule()],
-            "groups" => [new UserGroupsRule()],
+            "wallet" => [new RequiredRule(), new NumberRule()],
         ]);
 
         $validated = $validator->validateOrFail();
 
-        $editedUser->setUsername($validated['username']);
-        $editedUser->setForename($validated['forename']);
-        $editedUser->setSurname($validated['surname']);
         $editedUser->setEmail($validated['email']);
-        $editedUser->setSteamId($validated['steam_id']);
+        $editedUser->setForename($validated['forename']);
         $editedUser->setGroups($validated['groups']);
+        $editedUser->setSteamId($validated['steam_id']);
+        $editedUser->setSurname($validated['surname']);
+        $editedUser->setUsername($validated['username']);
         $editedUser->setWallet(ceil($validated['wallet'] * 100));
 
         $userRepository->update($editedUser);

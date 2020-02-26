@@ -8,6 +8,7 @@ use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\Other\OtherServiceModule;
 use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;

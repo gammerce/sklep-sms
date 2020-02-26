@@ -131,20 +131,18 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    protected function createChargeButton()
+    private function createChargeButton()
     {
-        $button = new Link();
-        $button->addClass('dropdown-item charge_wallet');
-        $button->addContent($this->lang->t('charge'));
-        return $button;
+        return (new Link())
+            ->addClass('dropdown-item charge_wallet')
+            ->addContent($this->lang->t('charge'));
     }
 
-    protected function createPasswordButton()
+    private function createPasswordButton()
     {
-        $button = new Link();
-        $button->addClass('dropdown-item change_password');
-        $button->addContent($this->lang->t('change_password'));
-        return $button;
+        return (new Link())
+            ->addClass('dropdown-item change_password')
+            ->addContent($this->lang->t('change_password'));
     }
 
     public function getActionBox($boxId, array $query)

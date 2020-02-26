@@ -9,6 +9,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
@@ -46,11 +47,16 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             $bodyRow = new BodyRow();
 
             $bodyRow->setDbId($server->getId());
-            $bodyRow->addCell(new Cell($server->getName()));
+
+            $nameCell = (new Cell($server->getName()))->setParam('headers', 'name');
+            $bodyRow->addCell($nameCell);
+
             $bodyRow->addCell(new Cell($server->getIp() . ':' . $server->getPort()));
             $bodyRow->addCell(new Cell($server->getType() ?: 'n/a'));
             $bodyRow->addCell(new Cell($server->getVersion() ?: 'n/a'));
             $bodyRow->addCell(new Cell($server->getLastActiveAt() ?: 'n/a'));
+
+            $bodyRow->addAction($this->createRegenerateTokenButton());
 
             if (get_privileges("manage_servers")) {
                 $bodyRow->setDeleteAction(true);
@@ -63,15 +69,27 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTable($table);
 
         if (get_privileges("manage_servers")) {
-            $button = new Input();
-            $button->setParam('id', 'server_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_server'));
-            $wrapper->addButton($button);
+            $addButton = $this->createAddButton();
+            $wrapper->addButton($addButton);
         }
 
         return $wrapper->toHtml();
+    }
+
+    private function createRegenerateTokenButton()
+    {
+        return (new Link())
+            ->addClass('dropdown-item regenerate-token')
+            ->addContent($this->lang->t('regenerate_token'));
+    }
+
+    private function createAddButton()
+    {
+        return (new Input())
+            ->setParam('id', 'server_button_add')
+            ->setParam('type', 'button')
+            ->addClass('button')
+            ->setParam('value', $this->lang->t('add_server'));
     }
 
     public function getActionBox($boxId, array $query)

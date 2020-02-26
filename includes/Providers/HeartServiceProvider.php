@@ -9,6 +9,7 @@ use App\System\Application;
 use App\System\Heart;
 use App\Verification\PaymentModules\Cashbill;
 use App\Verification\PaymentModules\Cssetti;
+use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
@@ -85,6 +86,7 @@ class HeartServiceProvider
         $heart->registerPaymentModule(OneShotOneKill::MODULE_ID, OneShotOneKill::class);
         $heart->registerPaymentModule(Cashbill::MODULE_ID, Cashbill::class);
         $heart->registerPaymentModule(Cssetti::MODULE_ID, Cssetti::class);
+        $heart->registerPaymentModule(GetPay::MODULE_ID, GetPay::class);
         $heart->registerPaymentModule(Gosetti::MODULE_ID, Gosetti::class);
         $heart->registerPaymentModule(Homepay::MODULE_ID, Homepay::class);
         $heart->registerPaymentModule(Hostplay::MODULE_ID, Hostplay::class);

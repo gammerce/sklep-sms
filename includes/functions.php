@@ -179,6 +179,10 @@ function get_ip(Request $request = null)
  */
 function convert_date($timestamp, $format = "")
 {
+    if (!$timestamp) {
+        return null;
+    }
+
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
 
