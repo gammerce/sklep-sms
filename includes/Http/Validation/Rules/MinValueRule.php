@@ -17,7 +17,7 @@ class MinValueRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (as_int($value) < $this->value) {
-            return [$this->lang->t('min_value')];
+            return [$this->lang->t('min_value', $this->value)];
         }
 
         return [];
