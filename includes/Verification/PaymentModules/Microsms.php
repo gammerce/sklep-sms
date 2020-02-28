@@ -164,18 +164,20 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             $transferFinalize->setStatus(true);
         }
 
+        $isTest = strtolower(array_get($body, 'test')) === "true";
+
         $transferFinalize->setOrderId(array_get($body, 'orderID'));
         $transferFinalize->setAmount(array_get($body, 'amountPay'));
         $transferFinalize->setDataFilename(array_get($body, 'control'));
-        $transferFinalize->setTestMode(array_get($body, 'test', false));
-        $transferFinalize->setOutput('OK');
+        $transferFinalize->setTestMode($isTest);
+        $transferFinalize->setOutput("OK");
 
         return $transferFinalize;
     }
 
     private function isPaymentValid(array $body)
     {
-        if (array_get($body, 'status') != true) {
+        if (strtolower(array_get($body, 'status')) !== "true") {
             return false;
         }
 
