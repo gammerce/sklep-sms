@@ -3,7 +3,7 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
-use App\Payment\ServiceCodePaymentService;
+use App\Payment\ServiceCode\ServiceCodePaymentService;
 use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;

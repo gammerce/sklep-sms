@@ -1,10 +1,14 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\General;
 
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
+use App\Payment\ServiceCode\ServiceCodePaymentService;
+use App\Payment\Sms\SmsPaymentService;
+use App\Payment\Transfer\TransferPaymentService;
+use App\Payment\Wallet\WalletPaymentService;
 use App\Services\SmsPriceService;
 use App\System\Heart;
 use App\System\Settings;

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;

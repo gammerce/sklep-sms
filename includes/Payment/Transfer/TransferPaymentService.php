@@ -1,9 +1,10 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\Transfer;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
+use App\Payment\General\PurchaseSerializer;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Database;

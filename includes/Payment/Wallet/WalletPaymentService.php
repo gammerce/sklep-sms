@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\Wallet;
 
 use App\Models\User;
 use App\Support\Database;

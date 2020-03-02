@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\General;
 
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;

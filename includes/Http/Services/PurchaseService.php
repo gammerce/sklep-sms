@@ -3,7 +3,7 @@ namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
 use App\Models\Purchase;
-use App\Payment\PaymentService;
+use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\ServiceModules\ServiceModule;

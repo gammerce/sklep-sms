@@ -2,8 +2,8 @@
 namespace App\View\Pages;
 
 use App\Payment\General\PurchaseRendererFactory;
+use App\Payment\General\PurchaseSerializer;
 use App\Payment\Interfaces\IPurchaseRenderer;
-use App\Payment\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Settings;
 

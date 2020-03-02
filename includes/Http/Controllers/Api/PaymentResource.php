@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Payment\PaymentService;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\PaymentService;
+use App\Payment\General\PurchaseSerializer;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;

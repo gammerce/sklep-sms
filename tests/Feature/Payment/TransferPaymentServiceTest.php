@@ -3,7 +3,7 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
-use App\Payment\TransferPaymentService;
+use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\Heart;

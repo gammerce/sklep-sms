@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\ServiceCode;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;

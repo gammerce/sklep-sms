@@ -1,10 +1,9 @@
 <?php
-namespace App\Payment;
+namespace App\Payment\General;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
-use App\Support\Database;
 use App\Support\Mailer;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -12,9 +11,6 @@ use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    /** @var Database */
-    private $db;
-
     /** @var Heart */
     private $heart;
 
@@ -34,7 +30,6 @@ class BoughtServiceService
     private $logger;
 
     public function __construct(
-        Database $db,
         TranslationManager $translationManager,
         Heart $heart,
         Mailer $mailer,
@@ -42,7 +37,6 @@ class BoughtServiceService
         PurchaseInformation $purchaseInformation,
         DatabaseLogger $logger
     ) {
-        $this->db = $db;
         $this->heart = $heart;
         $this->mailer = $mailer;
         $this->lang = $translationManager->user();

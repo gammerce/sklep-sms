@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
-use App\Payment\TransferPaymentService;
+use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;

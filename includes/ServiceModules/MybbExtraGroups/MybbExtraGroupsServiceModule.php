@@ -20,10 +20,9 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
-use App\Payment\AdminPaymentService;
-use App\Payment\BoughtServiceService;
-use App\Payment\PurchasePriceService;
-use App\Payment\PurchaseValidationService;
+use App\Payment\Admin\AdminPaymentService;
+use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PurchasePriceService;
 use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -103,9 +102,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PriceRepository */
     private $priceRepository;
 
-    /** @var PurchaseValidationService */
-    private $purchaseValidationService;
-
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
@@ -126,7 +122,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->purchaseValidationService = $this->app->make(PurchaseValidationService::class);
         $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
