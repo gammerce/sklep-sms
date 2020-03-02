@@ -46,13 +46,13 @@ class PurchaseValidationResource
 
         if ($settings->getSmsPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
+                Purchase::PAYMENT_PLATFORM_SMS => $settings->getSmsPlatformId(),
             ]);
         }
 
         if ($settings->getTransferPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_TRANSFER_PLATFORM => $settings->getTransferPlatformId(),
+                Purchase::PAYMENT_PLATFORM_TRANSFER => $settings->getTransferPlatformId(),
             ]);
         }
 

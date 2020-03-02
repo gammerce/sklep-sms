@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment\Transfer;
+namespace App\Payment\DirectBilling;
 
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPurchaseRenderer;
@@ -25,15 +25,13 @@ class PurchaseRenderer implements IPurchaseRenderer
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
-
-        return $this->template->render("payment_method_transfer", compact('price'));
+        return $this->template->render("payment_method_direct_billing", compact("price"));
     }
 
     public function isAvailable(Purchase $purchase)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER) &&
+        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING) &&
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) > 1 &&
-            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
+            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
     }
 }

@@ -38,7 +38,7 @@ class PurchaseRenderer implements IPurchaseRenderer
     public function render(Purchase $purchase)
     {
         $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 
         if (!($smsPaymentModule instanceof SupportSms)) {
@@ -46,12 +46,12 @@ class PurchaseRenderer implements IPurchaseRenderer
         }
 
         $smsNumber = $this->smsPriceService->getNumber(
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
             $smsPaymentModule
         );
         $paymentMethods[] = $this->template->render('payment_method_sms', [
             'priceGross' => $this->priceTextService->getPriceGrossText(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
             ),
             'smsCode' => $smsPaymentModule->getSmsCode(),
             'smsNumber' => $smsNumber ? $smsNumber->getNumber() : null,
@@ -61,15 +61,15 @@ class PurchaseRenderer implements IPurchaseRenderer
     public function isAvailable(Purchase $purchase)
     {
         $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 
-        return $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) &&
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) !== null &&
+        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS) &&
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) !== null &&
             $smsPaymentModule instanceof SupportSms &&
-            !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED) &&
+            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_SMS) &&
             $this->smsPriceService->isPriceAvailable(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
                 $smsPaymentModule
             );
     }

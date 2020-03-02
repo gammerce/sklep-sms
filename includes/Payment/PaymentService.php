@@ -90,11 +90,11 @@ class PaymentService
         $paymentModule = null;
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_SMS) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformId(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+                $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
             );
         } elseif ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_TRANSFER) {
             $paymentModule = $this->heart->getPaymentModuleByPlatformId(
-                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM)
+                $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
             );
         }
 
@@ -123,7 +123,7 @@ class PaymentService
 
         if (
             $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_SMS &&
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) === null
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) === null
         ) {
             return [
                 'status' => "no_sms_price",
@@ -137,7 +137,7 @@ class PaymentService
                 Purchase::METHOD_TRANSFER,
                 Purchase::METHOD_WALLET,
             ]) &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) === null
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null
         ) {
             return [
                 'status' => "no_transfer_price",
@@ -148,7 +148,7 @@ class PaymentService
 
         if (
             $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_TRANSFER &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) <= 100
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) <= 100
         ) {
             return [
                 'status' => "too_little_for_transfer",
@@ -198,7 +198,7 @@ class PaymentService
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $this->smsPriceService->getNumber(
-                    $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
+                    $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
                     $paymentModule
                 ),
                 $purchase->user
@@ -217,7 +217,7 @@ class PaymentService
 
         if ($purchase->getPayment(Purchase::PAYMENT_METHOD) === Purchase::METHOD_WALLET) {
             $paymentId = $this->walletPaymentService->payWithWallet(
-                $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
                 $purchase->user
             );
 

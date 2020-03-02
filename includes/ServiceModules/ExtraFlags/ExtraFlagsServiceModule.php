@@ -385,7 +385,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($server && $server->getSmsPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
+                Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId(),
             ]);
         }
 

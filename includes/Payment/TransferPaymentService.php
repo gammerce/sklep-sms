@@ -115,7 +115,7 @@ class TransferPaymentService
 
         $this->paymentTransferRepository->create(
             $transferFinalize->getOrderId(),
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE),
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
             $transferFinalize->getTransferService(),
             $purchase->user->getLastIp(),
             $purchase->user->getPlatform(),

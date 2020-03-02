@@ -74,7 +74,7 @@ class PurchaseService
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_SMS_CODE => $smsCode,
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatformId,
         ]);
 
         if ($price) {

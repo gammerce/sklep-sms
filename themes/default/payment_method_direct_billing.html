@@ -1,14 +1,14 @@
 <div class="payment-type-wrapper">
-    <div class="payment-type wallet header">
-        {$lang->t('payment_wallet')}
+    <div class="payment-type direct-billing header">
+        {$lang->t('payment_direct_billing')}
     </div>
-    <div class="payment-type wallet">
+    <div class="payment-type transfer">
         <strong>{$lang->t('price')}</strong>: {{ $price }}<br />
         <br />
         <input
             type="button"
-            id="pay_wallet"
-            value="{$lang->t('pay_wallet')}"
+            id="pay_transfer"
+            value="{$lang->t('pay_direct_billing')}"
             class="button purchase-button"
         />
     </div>

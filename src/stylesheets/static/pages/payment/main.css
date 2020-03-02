@@ -1,9 +1,9 @@
-.payment_type_wrapper {
+.payment-type-wrapper {
     display: inline-block;
     vertical-align: top;
 }
 
-.payment_type {
+.payment-type {
     padding: 12px;
     display: block;
     margin-right: 20px;
@@ -12,7 +12,7 @@
     box-shadow: 0 0 5px #b2b2b2;
 }
 
-.payment_type.header {
+.payment-type.header {
     box-shadow: 0 0 5px #fff;
     color: #fff;
     text-shadow: 1px 1px 1px #000;
@@ -20,36 +20,36 @@
     text-transform: uppercase;
 }
 
-.payment_type.sms {
+.payment-type.sms {
     background: rgba(255, 0, 0, 0.4);
 }
 
-.payment_type.sms.header {
+.payment-type.sms.header {
     background: rgba(255, 0, 0, 0.6);
 }
 
-.payment_type.transfer {
+.payment-type.transfer {
     background: rgba(0, 255, 0, 0.4);
 }
 
-.payment_type.transfer.header {
+.payment-type.transfer.header {
     background: rgba(0, 255, 0, 0.6);
 }
 
-.payment_type.wallet {
+.payment-type.wallet {
     background: rgba(0, 0, 255, 0.4);
 }
 
-.payment_type.wallet.header {
+.payment-type.wallet.header {
     background: rgba(0, 0, 255, 0.6);
 }
 
-.payment_type.service_code {
+.payment-type.service-code {
     background: rgba(113, 0, 255, 0.4);
     margin-right: 0;
 }
 
-.payment_type.service_code.header {
+.payment-type.service-code.header {
     background: rgba(113, 0, 255, 0.6);
     margin-right: 0;
 }

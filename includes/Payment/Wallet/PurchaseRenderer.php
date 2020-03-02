@@ -22,17 +22,17 @@ class PurchaseRenderer implements IPurchaseRenderer
 
     public function render(Purchase $purchase)
     {
-        $transferPrice = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE)
+        $price = $this->priceTextService->getPriceText(
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment_method_wallet", compact('transferPrice'));
+        return $this->template->render("payment_method_wallet", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)
     {
         return is_logged() &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_WALLET_DISABLED);
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
+            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }
 }

@@ -140,7 +140,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [

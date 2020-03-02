@@ -1,15 +1,15 @@
-<div class="payment_type_wrapper">
-    <div class="payment_type transfer header">
+<div class="payment-type-wrapper">
+    <div class="payment-type transfer header">
         {$lang->t('payment_transfer')}
     </div>
-    <div class="payment_type transfer">
-        <strong>{$lang->t('price')}</strong>: {{ $transferPrice }}<br />
+    <div class="payment-type transfer">
+        <strong>{$lang->t('price')}</strong>: {{ $price }}<br />
         <br />
         <input
             type="button"
             id="pay_transfer"
             value="{$lang->t('pay_transfer')}"
-            class="button purchase_button"
+            class="button purchase-button"
         />
     </div>
 </div>

@@ -57,7 +57,7 @@ class PaymentServiceTest extends TestCase
         $purchase->setPrice($price);
         $purchase->setService($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);
@@ -103,7 +103,7 @@ class PaymentServiceTest extends TestCase
         $purchase->setPrice($price);
         $purchase->setService($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "QWERTY",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);
@@ -143,7 +143,7 @@ class PaymentServiceTest extends TestCase
         $purchase->setPrice($price);
         $purchase->setService($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);

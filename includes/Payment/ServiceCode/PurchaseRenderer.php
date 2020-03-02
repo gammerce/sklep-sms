@@ -30,7 +30,7 @@ class PurchaseRenderer implements IPurchaseRenderer
     {
         $serviceModule = $this->heart->getServiceModule($purchase->getService());
 
-        return !$purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE_DISABLED) &&
+        return !$purchase->getPayment(Purchase::PAYMENT_DISABLED_SERVICE_CODE) &&
             $serviceModule instanceof IServiceServiceCode;
     }
 }

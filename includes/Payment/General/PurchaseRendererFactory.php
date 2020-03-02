@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\General;
 
+use App\Payment\DirectBilling\PurchaseRenderer as DirectBillingPurchaseRenderer;
 use App\Payment\Interfaces\IPurchaseRenderer;
 use App\Payment\ServiceCode\PurchaseRenderer as ServiceCodePurchaseRenderer;
 use App\Payment\Sms\PurchaseRenderer as SmsPurchaseRenderer;
@@ -14,6 +15,7 @@ class PurchaseRendererFactory
     private $app;
 
     private $renderersClasses = [
+        DirectBillingPurchaseRenderer::class,
         ServiceCodePurchaseRenderer::class,
         SmsPurchaseRenderer::class,
         TransferPurchaseRenderer::class,

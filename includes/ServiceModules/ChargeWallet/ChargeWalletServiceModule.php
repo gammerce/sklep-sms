@@ -157,18 +157,18 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase->setService($this->service->getId());
         $purchase->setPayment([
-            Purchase::PAYMENT_WALLET_DISABLED => true,
+            Purchase::PAYMENT_DISABLED_WALLET => true,
         ]);
 
         if ($method == Purchase::METHOD_SMS) {
             $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
+                $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
             );
 
             if ($smsPaymentModule instanceof SupportSms) {
                 $purchase->setPayment([
-                    Purchase::PAYMENT_SMS_PRICE => $smsPrice,
-                    Purchase::PAYMENT_TRANSFER_DISABLED => true,
+                    Purchase::PAYMENT_PRICE_SMS => $smsPrice,
+                    Purchase::PAYMENT_DISABLED_TRANSFER => true,
                 ]);
                 $purchase->setOrder([
                     Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
@@ -179,8 +179,8 @@ class ChargeWalletServiceModule extends ServiceModule implements
             }
         } elseif ($method == Purchase::METHOD_TRANSFER) {
             $purchase->setPayment([
-                Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice * 100,
-                Purchase::PAYMENT_SMS_DISABLED => true,
+                Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
+                Purchase::PAYMENT_DISABLED_SMS => true,
             ]);
             $purchase->setOrder([
                 Purchase::ORDER_QUANTITY => $transferPrice * 100,
