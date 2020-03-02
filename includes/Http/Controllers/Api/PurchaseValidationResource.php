@@ -56,6 +56,12 @@ class PurchaseValidationResource
             ]);
         }
 
+        if ($settings->getDirectBillingPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $settings->getDirectBillingPlatformId(),
+            ]);
+        }
+
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
 

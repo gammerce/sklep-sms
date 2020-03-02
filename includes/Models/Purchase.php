@@ -4,9 +4,11 @@ namespace App\Models;
 class Purchase
 {
     const METHOD_ADMIN = "admin";
+    // TODO Use that const
+    const METHOD_DIRECT_BILLING = "direct_billing";
+    const METHOD_SERVICE_CODE = "service_code";
     const METHOD_SMS = "sms";
     const METHOD_TRANSFER = "transfer";
-    const METHOD_SERVICE_CODE = "service_code";
     const METHOD_WALLET = "wallet";
 
     const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";

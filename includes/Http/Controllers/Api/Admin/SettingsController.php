@@ -29,6 +29,8 @@ class SettingsController
     ) {
         $lang = $translationManager->user();
 
+        // TODO Add direct_billing_platform
+
         $validator = new Validator(
             [
                 'contact' => $request->request->get('contact'),

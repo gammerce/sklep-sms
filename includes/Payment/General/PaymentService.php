@@ -64,6 +64,8 @@ class PaymentService
         $this->smsPriceService = $smsPriceService;
     }
 
+    // TODO Add direct billing option
+
     public function makePayment(Purchase $purchase)
     {
         $serviceModule = $this->heart->getServiceModule($purchase->getService());
@@ -102,7 +104,6 @@ class PaymentService
             );
         }
 
-        // Metoda płatności
         if (
             $purchase->getPayment(Purchase::PAYMENT_METHOD) == Purchase::METHOD_WALLET &&
             !$purchase->user->exists()

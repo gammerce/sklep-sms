@@ -97,6 +97,16 @@ class Settings implements ArrayAccess
     }
 
     /**
+     * @return string|null
+     */
+    public function getDirectBillingPlatformId()
+    {
+        return isset($this->data["direct_billing_platform"])
+            ? (int) $this->data["direct_billing_platform"]
+            : null;
+    }
+
+    /**
      * @return string
      */
     public function getCurrency()
