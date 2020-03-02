@@ -7,6 +7,7 @@ use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\LanguageRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\SupportDirectBillingRule;
 use App\Http\Validation\Rules\SupportSmsRule;
 use App\Http\Validation\Rules\SupportTransferRule;
 use App\Http\Validation\Rules\ThemeRule;
@@ -29,8 +30,6 @@ class SettingsController
     ) {
         $lang = $translationManager->user();
 
-        // TODO Add direct_billing_platform
-
         $validator = new Validator(
             [
                 'contact' => $request->request->get('contact'),
@@ -38,6 +37,7 @@ class SettingsController
                 'currency' => $request->request->get('currency'),
                 'date_format' => $request->request->get('date_format'),
                 'delete_logs' => $request->request->get('delete_logs'),
+                'direct_billing_platform' => $request->request->get('direct_billing_platform'),
                 'gadugadu' => $request->request->get('gadugadu'),
                 'google_analytics' => trim($request->request->get('google_analytics')),
                 'language' => escape_filename($request->request->get('language')),
@@ -62,6 +62,7 @@ class SettingsController
                 'currency' => [],
                 'date_format' => [],
                 'delete_logs' => [new NumberRule()],
+                'direct_billing_platform' => [new SupportDirectBillingRule()],
                 'gadugadu' => [],
                 'google_analytics' => [],
                 'language' => [new RequiredRule(), new LanguageRule()],
@@ -88,6 +89,7 @@ class SettingsController
             'currency' => $validated['currency'],
             'date_format' => $validated['date_format'],
             'delete_logs' => $validated['delete_logs'],
+            'direct_billing_platform' => $validated['direct_billing_platform'],
             'gadugadu' => $validated['gadugadu'],
             'google_analytics' => $validated['google_analytics'],
             'language' => $validated['language'],

@@ -83,7 +83,7 @@ class Settings implements ArrayAccess
      */
     public function getSmsPlatformId()
     {
-        return isset($this->data["sms_platform"]) ? (int) $this->data["sms_platform"] : null;
+        return as_int(array_get($this->data, "sms_platform"));
     }
 
     /**
@@ -91,9 +91,7 @@ class Settings implements ArrayAccess
      */
     public function getTransferPlatformId()
     {
-        return isset($this->data["transfer_platform"])
-            ? (int) $this->data["transfer_platform"]
-            : null;
+        return as_int(array_get($this->data, "transfer_platform"));
     }
 
     /**
@@ -101,9 +99,7 @@ class Settings implements ArrayAccess
      */
     public function getDirectBillingPlatformId()
     {
-        return isset($this->data["direct_billing_platform"])
-            ? (int) $this->data["direct_billing_platform"]
-            : null;
+        return as_int(array_get($this->data, "direct_billing_platform"));
     }
 
     /**
@@ -111,7 +107,7 @@ class Settings implements ArrayAccess
      */
     public function getCurrency()
     {
-        return $this->data["currency"];
+        return array_get($this->data, "currency");
     }
 
     /**
@@ -119,7 +115,7 @@ class Settings implements ArrayAccess
      */
     public function getContact()
     {
-        return $this->data["contact"];
+        return array_get($this->data, "contact");
     }
 
     /**
@@ -127,7 +123,7 @@ class Settings implements ArrayAccess
      */
     public function getVat()
     {
-        return (float) $this->data["vat"];
+        return as_float(array_get($this->data, "vat"));
     }
 
     /**
@@ -135,7 +131,7 @@ class Settings implements ArrayAccess
      */
     public function getLicenseToken()
     {
-        return $this->data["license_password"];
+        return array_get($this->data, "license_password");
     }
 
     /**
@@ -143,7 +139,7 @@ class Settings implements ArrayAccess
      */
     public function getDateFormat()
     {
-        return $this->data["date_format"];
+        return array_get($this->data, "date_format");
     }
 
     /**
@@ -151,7 +147,7 @@ class Settings implements ArrayAccess
      */
     public function getTheme()
     {
-        return $this->data["theme"];
+        return array_get($this->data, "theme");
     }
 
     /**
@@ -159,7 +155,7 @@ class Settings implements ArrayAccess
      */
     public function getSecret()
     {
-        return $this->data["random_key"];
+        return array_get($this->data, "random_key");
     }
 
     /**
@@ -167,7 +163,7 @@ class Settings implements ArrayAccess
      */
     public function getTimeZone()
     {
-        return $this->data["timezone"];
+        return array_get($this->data, "timezone");
     }
 
     /**
@@ -175,7 +171,7 @@ class Settings implements ArrayAccess
      */
     public function getLanguage()
     {
-        return $this->data["language"];
+        return array_get($this->data, "language");
     }
 
     /**
@@ -183,7 +179,7 @@ class Settings implements ArrayAccess
      */
     public function getShopUrl()
     {
-        return $this->data["shop_url"];
+        return array_get($this->data, "shop_url");
     }
 
     private function formatShopUrl($url)

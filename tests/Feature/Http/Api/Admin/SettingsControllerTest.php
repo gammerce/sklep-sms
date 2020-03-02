@@ -10,8 +10,10 @@ class SettingsControllerTest extends HttpTestCase
     public function updates_settings()
     {
         // given
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        /** @var Settings $settings */
+        $settings = $this->app->make(Settings::class);
+
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->put("/api/admin/settings", [
@@ -26,12 +28,12 @@ class SettingsControllerTest extends HttpTestCase
             'language' => 'polish',
         ]);
 
+        // TODO Test updating more fields
+
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
         $settings->load();
         $this->assertSame("https://example.com", $settings->getShopUrl());
         $this->assertSame("abc123", $settings->getLicenseToken());
