@@ -1,9 +1,9 @@
 <?php
 namespace App\View\Pages;
 
-use App\Payment\General\PurchaseRendererFactory;
+use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseSerializer;
-use App\Payment\Interfaces\IPurchaseRenderer;
+use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Settings;
 
@@ -17,12 +17,12 @@ class PagePayment extends Page
     /** @var Settings */
     private $settings;
 
-    /** @var PurchaseRendererFactory */
-    private $purchaseRendererFactory;
+    /** @var PaymentMethodFactory */
+    private $paymentMethodFactory;
 
     public function __construct(
         PurchaseSerializer $purchaseSerializer,
-        PurchaseRendererFactory $purchaseRendererFactory,
+        PaymentMethodFactory $paymentMethodFactory,
         Settings $settings
     ) {
         parent::__construct();
@@ -30,7 +30,7 @@ class PagePayment extends Page
         $this->purchaseSerializer = $purchaseSerializer;
         $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
         $this->settings = $settings;
-        $this->purchaseRendererFactory = $purchaseRendererFactory;
+        $this->paymentMethodFactory = $paymentMethodFactory;
     }
 
     protected function content(array $query, array $body)
@@ -48,20 +48,20 @@ class PagePayment extends Page
             return $this->lang->t('error_occurred');
         }
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getService());
+        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t('bad_module');
         }
 
         $orderDetails = $serviceModule->orderDetails($purchase);
 
-        $renderers = $this->purchaseRendererFactory->all();
+        $renderers = $this->paymentMethodFactory->createAll();
 
         $paymentMethods = collect($renderers)
-            ->filter(function (IPurchaseRenderer $renderer) use ($purchase) {
+            ->filter(function (IPaymentMethod $renderer) use ($purchase) {
                 return $renderer->isAvailable($purchase);
             })
-            ->map(function (IPurchaseRenderer $renderer) use ($purchase) {
+            ->map(function (IPaymentMethod $renderer) use ($purchase) {
                 return $renderer->render($purchase);
             })
             ->join();

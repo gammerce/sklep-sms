@@ -56,7 +56,7 @@ class ServiceCodePaymentService
         );
         $statement->execute([
             $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
-            $purchase->getService(),
+            $purchase->getServiceId(),
             $purchase->getPrice()->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->user->getUid(),

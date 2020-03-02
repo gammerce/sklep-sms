@@ -126,12 +126,12 @@ class TransferPaymentService
             $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
         );
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getService());
+        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!$serviceModule) {
             $this->logger->log(
                 'transfer_bad_module',
                 $transferFinalize->getOrderId(),
-                $purchase->getService()
+                $purchase->getServiceId()
             );
 
             return false;
@@ -141,7 +141,7 @@ class TransferPaymentService
             $this->logger->log(
                 'transfer_no_purchase',
                 $transferFinalize->getOrderId(),
-                $purchase->getService()
+                $purchase->getServiceId()
             );
 
             return false;

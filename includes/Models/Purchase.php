@@ -34,7 +34,7 @@ class Purchase
      *
      * @var string|null
      */
-    private $service = null;
+    private $serviceId = null;
 
     /**
      * Order details like auth_data, password etc.
@@ -71,9 +71,9 @@ class Purchase
         $this->user = $user;
     }
 
-    public function setService($service)
+    public function setServiceId($serviceId)
     {
-        $this->service = (string) $service;
+        $this->serviceId = (string) $serviceId;
     }
 
     public function setOrder(array $order)
@@ -107,9 +107,9 @@ class Purchase
         }
     }
 
-    public function getService()
+    public function getServiceId()
     {
-        return $this->service;
+        return $this->serviceId;
     }
 
     /**

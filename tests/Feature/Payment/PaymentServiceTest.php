@@ -55,7 +55,7 @@ class PaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",
@@ -101,7 +101,7 @@ class PaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "QWERTY",
@@ -141,7 +141,7 @@ class PaymentServiceTest extends TestCase
             'auth_data' => 'STEAM_1:0:22309350',
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",

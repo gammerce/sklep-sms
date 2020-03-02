@@ -18,6 +18,7 @@ return [
     'contact_info' => 'You can contact us on the following ways.',
     'create_account' => 'Create account',
     'different_values' => 'Given values are different.',
+    'direct_billing_unavailable' => 'Payment by direct billing is unavailable.',
     'email_occupied' => 'Given e-mail is already taken.',
     'email_repeat' => 'Repeat e-mail',
     'email_sent' =>
@@ -133,7 +134,7 @@ You can now profit from many add-ons.',
     'transfer_prepared' =>
         'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'transfer_transfer' => 'Transfer',
-    'transfer_unavailable' => 'Payment by transfer unavailable.',
+    'transfer_unavailable' => 'Payment by transfer is unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',
     'type_code' => 'Enter the code',
     'type_setinfo' => 'Type in the console: setinfo _ss "{1}"',

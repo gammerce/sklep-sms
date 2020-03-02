@@ -155,7 +155,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $smsPrice = $validated['sms_price'];
         $transferPrice = $validated['transfer_price'];
 
-        $purchase->setService($this->service->getId());
+        $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_DISABLED_WALLET => true,
         ]);

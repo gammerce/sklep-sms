@@ -38,7 +38,7 @@ class PurchaseValidationResource
         }
 
         $purchase = new Purchase($user);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
 
         if ($user->getEmail()) {
             $purchase->setEmail($user->getEmail());

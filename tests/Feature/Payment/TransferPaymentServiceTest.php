@@ -48,7 +48,7 @@ class TransferPaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
         $purchase->setDesc("Description");
 
         // when

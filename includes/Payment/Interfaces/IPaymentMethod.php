@@ -2,8 +2,9 @@
 namespace App\Payment\Interfaces;
 
 use App\Models\Purchase;
+use App\ServiceModules\ServiceModule;
 
-interface IPurchaseRenderer
+interface IPaymentMethod
 {
     /**
      * @param Purchase $purchase
@@ -16,4 +17,11 @@ interface IPurchaseRenderer
      * @return bool
      */
     public function isAvailable(Purchase $purchase);
+
+    /**
+     * @param Purchase $purchase
+     * @param ServiceModule $serviceModule
+     * @return array
+     */
+    public function pay(Purchase $purchase, ServiceModule $serviceModule);
 }

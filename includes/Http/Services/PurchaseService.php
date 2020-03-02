@@ -60,7 +60,7 @@ class PurchaseService
         $user->setLastIp($ip);
 
         $purchase = new Purchase($user);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
 
         $purchase->setEmail($email);
         $purchase->setOrder([

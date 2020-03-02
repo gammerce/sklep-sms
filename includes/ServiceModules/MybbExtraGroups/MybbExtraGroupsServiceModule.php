@@ -601,7 +601,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
         $purchase = new Purchase($this->heart->getUser($validated['uid']));
-        $purchase->setService($this->service->getId());
+        $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,

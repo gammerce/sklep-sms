@@ -131,6 +131,7 @@ class Settings implements ArrayAccess
      */
     public function getLicenseToken()
     {
+        // TODO Change it to license_token
         return array_get($this->data, "license_password");
     }
 

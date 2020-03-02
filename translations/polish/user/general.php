@@ -18,6 +18,7 @@ return [
     'contact_info' => 'Możesz się z nami skontaktować na jeden z poniższych sposobów.',
     'create_account' => 'Załóż Konto',
     'different_values' => 'Podane wartości różnią się.',
+    'direct_billing_unavailable' => 'Nie można wykonać płatności przy pomocy direct billing.',
     'email_occupied' => 'Podany e-mail jest już zajęty.',
     'email_repeat' => 'Powtórz adres e-mail',
     'email_sent' =>
