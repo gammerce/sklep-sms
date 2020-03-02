@@ -140,6 +140,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
                 'transfer_price' => as_float(array_get($body, 'transfer_price')),
             ],
             [
+                // TODO Make it available using direct billing
                 'method' => [new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])],
                 'sms_price' =>
                     $method === Purchase::METHOD_SMS

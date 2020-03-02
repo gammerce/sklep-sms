@@ -5,7 +5,6 @@ use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
 use App\Requesting\Requester;
-use App\Support\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -26,12 +25,11 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     private $fileLogger;
 
     public function __construct(
-        Database $database,
         Requester $requester,
         PaymentPlatform $paymentPlatform,
         FileLogger $fileLogger
     ) {
-        parent::__construct($database, $requester, $paymentPlatform);
+        parent::__construct($requester, $paymentPlatform);
         $this->fileLogger = $fileLogger;
     }
 

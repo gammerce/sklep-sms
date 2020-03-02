@@ -8,7 +8,6 @@ use App\Models\SmsNumber;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Support\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -48,13 +47,12 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     private $fileLogger;
 
     public function __construct(
-        Database $database,
         Requester $requester,
         UrlGenerator $urlGenerator,
         PaymentPlatform $paymentPlatform,
         FileLogger $fileLogger
     ) {
-        parent::__construct($database, $requester, $paymentPlatform);
+        parent::__construct($requester, $paymentPlatform);
 
         $this->url = $urlGenerator;
 

@@ -6,7 +6,6 @@ use App\Models\Purchase;
 use App\Models\TransferFinalize;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Support\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
@@ -29,12 +28,11 @@ class Transferuj extends PaymentModule implements SupportTransfer
     private $key;
 
     public function __construct(
-        Database $database,
         Requester $requester,
         UrlGenerator $urlGenerator,
         PaymentPlatform $paymentPlatform
     ) {
-        parent::__construct($database, $requester, $paymentPlatform);
+        parent::__construct($requester, $paymentPlatform);
 
         $this->url = $urlGenerator;
         $this->key = $this->getData('key');
