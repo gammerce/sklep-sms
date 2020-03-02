@@ -71,7 +71,7 @@ class PageAdminSettings extends PageAdmin
 
         return $this->template->render("admin/settings", [
             "cronSelect" => $cronSelect,
-            "directBillingPlatforms" => $directBillingPlatforms,
+            "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
             "smsPlatforms" => implode("", $smsPlatforms),
             "themesList" => implode("", $themesList),
