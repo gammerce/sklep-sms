@@ -1166,6 +1166,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
+    // TODO Allow direct billing
     public function serviceTakeOver(array $body)
     {
         $user = $this->auth->user();

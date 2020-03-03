@@ -2,22 +2,16 @@
 namespace App\ServiceModules\ChargeWallet;
 
 use App\Exceptions\UnauthorizedException;
-use App\Http\Validation\Rules\InArrayRule;
-use App\Http\Validation\Rules\MinValueRule;
-use App\Http\Validation\Rules\NumberRule;
-use App\Http\Validation\Rules\RequiredRule;
-use App\Http\Validation\Rules\SmsPriceExistsRule;
-use App\Http\Validation\Validator;
+use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
-use App\Repositories\SmsPriceRepository;
+use App\Payment\General\ChargeWalletFactory;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
-use App\Services\SmsPriceService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -25,6 +19,7 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
 use App\View\Interfaces\IBeLoggedMust;
+use InvalidArgumentException;
 
 class ChargeWalletServiceModule extends ServiceModule implements
     IServicePurchase,
@@ -48,14 +43,11 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
-
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
     /** @var PriceTextService */
     private $priceTextService;
+
+    /** @var ChargeWalletFactory */
+    private $chargeWalletFactory;
 
     public function __construct(Service $service = null)
     {
@@ -68,9 +60,8 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $this->heart = $this->app->make(Heart::class);
         $this->settings = $this->app->make(Settings::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->smsPriceRepository = $this->app->make(SmsPriceRepository::class);
-        $this->smsPriceService = $this->app->make(SmsPriceService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
+        $this->chargeWalletFactory = $this->app->make(ChargeWalletFactory::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -117,6 +108,8 @@ class ChargeWalletServiceModule extends ServiceModule implements
             $transferBody = $this->template->render("services/charge_wallet/transfer_body");
         }
 
+        // TODO Allow displaying direct billing
+
         return $this->template->render(
             "services/charge_wallet/purchase_form",
             compact('optionSms', 'optionTransfer', 'smsBody', 'transferBody') + [
@@ -133,60 +126,24 @@ class ChargeWalletServiceModule extends ServiceModule implements
             throw new UnauthorizedException();
         }
 
-        $validator = new Validator(
-            [
-                'method' => $method,
-                'sms_price' => as_int(array_get($body, 'sms_price')),
-                'transfer_price' => as_float(array_get($body, 'transfer_price')),
-            ],
-            [
-                // TODO Make it available using direct billing
-                'method' => [new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER])],
-                'sms_price' =>
-                    $method === Purchase::METHOD_SMS
-                        ? [new RequiredRule(), new SmsPriceExistsRule()]
-                        : [],
-                'transfer_price' =>
-                    $method === Purchase::METHOD_TRANSFER
-                        ? [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)]
-                        : [],
-            ]
-        );
-        $validated = $validator->validateOrFail();
-        $smsPrice = $validated['sms_price'];
-        $transferPrice = $validated['transfer_price'];
+        try {
+            $paymentMethod = $this->chargeWalletFactory->create($method);
+        } catch (InvalidArgumentException $e) {
+            throw new ValidationException([
+                "method" => "Invalid value",
+            ]);
+        }
 
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
+            Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
+            Purchase::PAYMENT_DISABLED_SERVICE_CODE => true,
+            Purchase::PAYMENT_DISABLED_SMS => true,
+            Purchase::PAYMENT_DISABLED_TRANSFER => true,
             Purchase::PAYMENT_DISABLED_WALLET => true,
         ]);
 
-        if ($method == Purchase::METHOD_SMS) {
-            $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-                $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
-            );
-
-            if ($smsPaymentModule instanceof SupportSms) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_PRICE_SMS => $smsPrice,
-                    Purchase::PAYMENT_DISABLED_TRANSFER => true,
-                ]);
-                $purchase->setOrder([
-                    Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
-                        $smsPrice,
-                        $smsPaymentModule
-                    ),
-                ]);
-            }
-        } elseif ($method == Purchase::METHOD_TRANSFER) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
-                Purchase::PAYMENT_DISABLED_SMS => true,
-            ]);
-            $purchase->setOrder([
-                Purchase::ORDER_QUANTITY => $transferPrice * 100,
-            ]);
-        }
+        $paymentMethod->setup($purchase, $body);
     }
 
     public function orderDetails(Purchase $purchase)
@@ -222,33 +179,16 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $quantity = $transaction->getQuantity() . ' ' . $this->settings->getCurrency();
+        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
 
         if ($action === "web") {
-            if ($transaction->getPaymentMethod() === Purchase::METHOD_SMS) {
-                $desc = $this->lang->t('wallet_was_charged', $quantity);
-                return $this->template->renderNoComments(
-                    "services/charge_wallet/web_purchase_info_sms",
-                    [
-                        'desc' => $desc,
-                        'smsNumber' => $transaction->getSmsNumber(),
-                        'smsText' => $transaction->getSmsText(),
-                        'smsCode' => $transaction->getSmsCode(),
-                        'cost' => $this->priceTextService->getPriceText(
-                            $transaction->getCost() ?: 0
-                        ),
-                    ]
-                );
+            try {
+                $paymentMethod = $this->chargeWalletFactory->create($transaction->getPaymentMethod());
+            } catch (InvalidArgumentException $e) {
+                return '';
             }
 
-            if ($transaction->getPaymentMethod() === Purchase::METHOD_TRANSFER) {
-                return $this->template->renderNoComments(
-                    "services/charge_wallet/web_purchase_info_transfer",
-                    compact('quantity')
-                );
-            }
-
-            return '';
+            return $paymentMethod->getTransactionView($transaction);
         }
 
         if ($action === "payment_log") {
