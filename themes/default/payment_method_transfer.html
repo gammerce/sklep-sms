@@ -1,15 +1,17 @@
 <div class="payment-type-wrapper">
-    <div class="payment-type transfer header">
-        {$lang->t('payment_transfer')}
-    </div>
-    <div class="payment-type transfer">
-        <strong>{$lang->t('price')}</strong>: {{ $price }}<br />
-        <br />
-        <input
-            type="button"
-            id="pay_transfer"
-            value="{$lang->t('pay_transfer')}"
-            class="button purchase-button"
-        />
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                {$lang->t('payment_transfer')}
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content"><strong>{$lang->t('price')}</strong>: {{ $price }}<br /></div>
+        </div>
+        <footer class="card-footer">
+            <a id="pay_transfer" class="card-footer-item">
+                {$lang->t('pay_transfer')}
+            </a>
+        </footer>
     </div>
 </div>

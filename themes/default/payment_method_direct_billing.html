@@ -1,15 +1,17 @@
 <div class="payment-type-wrapper">
-    <div class="payment-type direct-billing header">
-        {$lang->t('payment_direct_billing')}
-    </div>
-    <div class="payment-type direct-billing">
-        <strong>{$lang->t('price')}</strong>: {{ $price }}<br />
-        <br />
-        <input
-            type="button"
-            id="pay_direct_billing"
-            value="{$lang->t('pay_direct_billing')}"
-            class="button purchase-button"
-        />
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                {$lang->t('payment_direct_billing')}
+            </p>
+        </header>
+        <div class="card-content">
+            <div class="content"><strong>{$lang->t('price')}</strong>: {{ $price }}<br /></div>
+        </div>
+        <footer class="card-footer">
+            <a id="pay_direct_billing" class="card-footer-item">
+                {$lang->t('pay_direct_billing')}
+            </a>
+        </footer>
     </div>
 </div>

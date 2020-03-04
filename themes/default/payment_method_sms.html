@@ -1,67 +1,69 @@
 <div class="payment-type-wrapper">
-    <div class="payment-type sms header">
-        {$lang->t('payment_sms')}
-    </div>
+    <div class="card">
+        <header class="card-header">
+            <p class="card-header-title">
+                {$lang->t('payment_sms')}
+            </p>
+        </header>
+        <div class="card-content">
+            <div>
+                <strong>{$lang->t('price')}</strong>:
+                <span class="is-family-monospace">
+                    {{ $priceGross }}
+                </span>
+            </div>
 
-    <div class="payment-type sms">
-        <div>
-            <strong>{$lang->t('price')}</strong>:
-            <span class="is-family-monospace">
-                {{ $priceGross }}
-            </span>
-        </div>
-        <br />
-
-        <div id="sms_details">
-            <table>
-                <tr>
-                    <td
-                        colspan="3"
-                        style="font-weight: bold; padding-bottom: 5px; font-size: 18px;"
-                    >
-                        {$lang->t('sms_send_sms')}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="has-text-right">{$lang->t('sms_text')}</td>
-                    <td style="width: 20px;"></td>
-                    <td class="has-text-left is-family-monospace">{{ $smsCode }}</td>
-                </tr>
-                <tr>
-                    <td class="has-text-right">{$lang->t('sms_number')}</td>
-                    <td></td>
-                    <td class="has-text-left is-family-monospace">
-                        {{ $smsNumber }}
-                    </td>
-                </tr>
-                <tr>
-                    <td class="has-text-right">
-                        <label for="sms_code">{$lang->t('sms_return_code')}</label>
-                    </td>
-                    <td></td>
-                    <td class="has-text-left">
-                        <div class="field">
-                            <div class="control">
-                                <input
-                                    type="text"
-                                    id="sms_code"
-                                    name="sms_code"
-                                    class="input is-small is-family-monospace"
-                                    maxlength="16"
-                                />
+            <div id="sms_details">
+                <br />
+                <table>
+                    <tr>
+                        <td
+                            colspan="3"
+                            style="font-weight: bold; padding-bottom: 5px; font-size: 18px;"
+                        >
+                            {$lang->t('sms_send_sms')}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-right">{$lang->t('sms_text')}</td>
+                        <td style="width: 20px;"></td>
+                        <td class="has-text-left is-family-monospace">{{ $smsCode }}</td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-right">{$lang->t('sms_number')}</td>
+                        <td></td>
+                        <td class="has-text-left is-family-monospace">
+                            {{ $smsNumber }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="has-text-right">
+                            <label for="sms_code">{$lang->t('sms_return_code')}</label>
+                        </td>
+                        <td></td>
+                        <td class="has-text-left">
+                            <div class="field">
+                                <div class="control">
+                                    <input
+                                        type="text"
+                                        id="sms_code"
+                                        name="sms_code"
+                                        class="input is-small is-family-monospace"
+                                        maxlength="16"
+                                    />
+                                </div>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+                        </td>
+                    </tr>
+                </table>
 
-            <br class="clear" />
+                <br class="clear" />
+            </div>
         </div>
-        <input
-            type="button"
-            id="pay_sms"
-            value="{$lang->t('pay_sms')}"
-            class="button purchase-button"
-        />
+        <footer class="card-footer">
+            <a id="pay_sms" class="card-footer-item">
+                {$lang->t('pay_sms')}
+            </a>
+        </footer>
     </div>
 </div>

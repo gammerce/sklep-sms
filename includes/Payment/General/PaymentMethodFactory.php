@@ -17,11 +17,11 @@ class PaymentMethodFactory
     private $app;
 
     private $paymentMethodsClasses = [
-        Purchase::METHOD_DIRECT_BILLING => DirectBillingPaymentMethod::class,
-        Purchase::METHOD_SERVICE_CODE => ServiceCodePaymentMethod::class,
         Purchase::METHOD_SMS => SmsPaymentMethod::class,
+        Purchase::METHOD_DIRECT_BILLING => DirectBillingPaymentMethod::class,
         Purchase::METHOD_TRANSFER => TransferPaymentMethod::class,
         Purchase::METHOD_WALLET => WalletPaymentMethod::class,
+        Purchase::METHOD_SERVICE_CODE => ServiceCodePaymentMethod::class,
     ];
 
     public function __construct(Application $app)
