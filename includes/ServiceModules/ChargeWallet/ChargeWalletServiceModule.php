@@ -13,11 +13,8 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
 use App\System\Auth;
-use App\System\Heart;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Verification\Abstracts\SupportSms;
 use App\View\Interfaces\IBeLoggedMust;
 use InvalidArgumentException;
 
@@ -31,14 +28,8 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var Auth */
     private $auth;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var Translator */
     private $lang;
-
-    /** @var Settings */
-    private $settings;
 
     /** @var BoughtServiceService */
     private $boughtServiceService;
@@ -57,8 +48,6 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
         $this->auth = $this->app->make(Auth::class);
-        $this->heart = $this->app->make(Heart::class);
-        $this->settings = $this->app->make(Settings::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->chargeWalletFactory = $this->app->make(ChargeWalletFactory::class);
@@ -66,56 +55,23 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        $optionSms = '';
-        $optionTransfer = '';
-        $smsBody = '';
-        $transferBody = '';
+        $paymentMethodOptions = [];
+        $paymentMethodBodies = [];
 
-        if ($this->settings->getSmsPlatformId()) {
-            $paymentModule = $this->heart->getPaymentModuleByPlatformId(
-                $this->settings->getSmsPlatformId()
-            );
+        foreach ($this->chargeWalletFactory->createAll() as $paymentMethod) {
+            $result = $paymentMethod->getOptionView();
 
-            if ($paymentModule instanceof SupportSms) {
-                $optionSms = $this->template->render("services/charge_wallet/option_sms");
-
-                $smsList = [];
-                foreach ($paymentModule::getSmsNumbers() as $smsNumber) {
-                    $provision = number_format($smsNumber->getProvision() / 100.0, 2);
-                    $smsList[] = create_dom_element(
-                        "option",
-                        $this->lang->t(
-                            'charge_sms_option',
-                            $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
-                            $this->settings->getCurrency(),
-                            $provision,
-                            $this->settings->getCurrency()
-                        ),
-                        [
-                            'value' => $smsNumber->getPrice(),
-                        ]
-                    );
-                }
-
-                $smsBody = $this->template->render("services/charge_wallet/sms_body", [
-                    'smsList' => implode("", $smsList),
-                ]);
+            if ($result) {
+                $paymentMethodOptions[] = $result[0];
+                $paymentMethodBodies[] = $result[1];
             }
         }
 
-        if ($this->settings->getTransferPlatformId()) {
-            $optionTransfer = $this->template->render("services/charge_wallet/option_transfer");
-            $transferBody = $this->template->render("services/charge_wallet/transfer_body");
-        }
-
-        // TODO Allow displaying direct billing
-
-        return $this->template->render(
-            "services/charge_wallet/purchase_form",
-            compact('optionSms', 'optionTransfer', 'smsBody', 'transferBody') + [
-                'serviceId' => $this->service->getId(),
-            ]
-        );
+        return $this->template->render("services/charge_wallet/purchase_form", [
+            'paymentMethodBodies' => implode("", $paymentMethodBodies),
+            'paymentMethodOptions' => implode("<br />", $paymentMethodOptions),
+            'serviceId' => $this->service->getId(),
+        ]);
     }
 
     public function purchaseFormValidate(Purchase $purchase, array $body)

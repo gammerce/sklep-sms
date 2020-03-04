@@ -4,7 +4,6 @@ namespace App\Models;
 class Purchase
 {
     const METHOD_ADMIN = "admin";
-    // TODO Use that const
     const METHOD_DIRECT_BILLING = "direct_billing";
     const METHOD_SERVICE_CODE = "service_code";
     const METHOD_SMS = "sms";

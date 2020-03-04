@@ -65,7 +65,8 @@ class SmsPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
             $smsPaymentModule
         );
-        $paymentMethods[] = $this->template->render('payment_method_sms', [
+
+        return $this->template->render('payment_method_sms', [
             'priceGross' => $this->priceTextService->getPriceGrossText(
                 $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
             ),

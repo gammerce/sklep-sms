@@ -18,4 +18,9 @@ interface IChargeWallet
      * @return string
      */
     public function getTransactionView(Transaction $transaction);
+
+    /**
+     * @return array|null
+     */
+    public function getOptionView();
 }

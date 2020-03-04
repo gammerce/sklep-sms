@@ -54,7 +54,7 @@ return [
     'password_repeat' => 'Powtórz Hasło',
     'password_reset' =>
         'W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.',
-    'pay_direct_billing' => 'Płacę Direct Billing',
+    'pay_direct_billing' => 'Płacę z Direct Billing',
     'pay_sms' => 'Płacę SMSem',
     'pay_transfer' => 'Płacę Przelewem',
     'pay_wallet' => 'Płacę z Portfela',

@@ -5,7 +5,6 @@ use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
-use App\Http\Validation\Rules\InArrayRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
@@ -1114,9 +1113,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             [
                 'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
                 'password' => [new ExtraFlagPasswordRule()],
-                'payment_method' => [
-                    new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER]),
-                ],
                 'payment_id' => [new RequiredRule()],
                 'server_id' => [new RequiredRule()],
                 'type' => [new RequiredRule(), new ExtraFlagTypeRule()],

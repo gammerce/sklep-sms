@@ -1,22 +1,23 @@
-//Kliknięcie na płacenie portfelem
 $(document).delegate("#pay_wallet", "click", function() {
-    $("#sms_details").slideUp();
     purchase_service("wallet");
 });
 
-// Kliknięcie na płacenie przelewem
 $(document).delegate("#pay_transfer", "click", function() {
-    $("#sms_details").slideUp();
     purchase_service("transfer");
 });
 
-// Kliknięcie na płacenie smsem
-$(document).delegate("#pay_sms", "click", function() {
-    if ($("#sms_details").css("display") === "none") $("#sms_details").slideDown("slow");
-    else purchase_service("sms");
+$(document).delegate("#pay_direct_billing", "click", function() {
+    purchase_service("direct_billing");
 });
 
-// Kliknięcie na płacenie kodem
+$(document).delegate("#pay_sms", "click", function() {
+    if ($("#sms_details").css("display") === "none") {
+        $("#sms_details").slideDown("slow");
+    } else {
+        purchase_service("sms");
+    }
+});
+
 $(document).delegate("#pay_service_code", "click", function() {
     $("#sms_details").slideUp();
     purchase_service("service_code");
@@ -51,7 +52,6 @@ function redirectToTransferWithGet(jsonObj) {
     var url = jsonObj.data.url;
     delete jsonObj.data.url;
     var urlWithPath = url + "?" + $.param(jsonObj.data);
-
     window.location.href = urlWithPath;
 }
 

@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment\Sms;
+namespace App\Payment\Transfer;
 
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
@@ -10,6 +10,9 @@ use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class TransferChargeWallet implements IChargeWallet
 {
@@ -19,10 +22,22 @@ class TransferChargeWallet implements IChargeWallet
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(Template $template, PriceTextService $priceTextService)
-    {
+    /** @var Settings */
+    private $settings;
+
+    /** @var Translator */
+    private $lang;
+
+    public function __construct(
+        Template $template,
+        PriceTextService $priceTextService,
+        Settings $settings,
+        TranslationManager $translationManager
+    ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
+        $this->settings = $settings;
+        $this->lang = $translationManager->user();
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -54,5 +69,22 @@ class TransferChargeWallet implements IChargeWallet
             "services/charge_wallet/web_purchase_info_transfer",
             compact('quantity')
         );
+    }
+
+    public function getOptionView()
+    {
+        if (!$this->settings->getTransferPlatformId()) {
+            return null;
+        }
+
+        $option = $this->template->render("services/charge_wallet/option", [
+            'value' => Purchase::METHOD_TRANSFER,
+            'text' => $this->lang->t('transfer_transfer'),
+        ]);
+        $body = $this->template->render("services/charge_wallet/transfer_body", [
+            'type' => Purchase::METHOD_TRANSFER,
+        ]);
+
+        return [$option, $body];
     }
 }

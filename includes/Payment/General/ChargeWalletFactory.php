@@ -3,9 +3,9 @@ namespace App\Payment\General;
 
 use App\Models\Purchase;
 use App\Payment\Interfaces\IChargeWallet;
-use App\Payment\Sms\DirectBillingChargeWallet;
+use App\Payment\DirectBilling\DirectBillingChargeWallet;
 use App\Payment\Sms\SmsChargeWallet;
-use App\Payment\Sms\TransferChargeWallet;
+use App\Payment\Transfer\TransferChargeWallet;
 use App\System\Application;
 use InvalidArgumentException;
 
@@ -23,6 +23,18 @@ class ChargeWalletFactory
     public function __construct(Application $app)
     {
         $this->app = $app;
+    }
+
+    /**
+     * @return IChargeWallet[]
+     */
+    public function createAll()
+    {
+        return collect($this->paymentMethodsClasses)
+            ->map(function ($class) {
+                return $this->app->make($class);
+            })
+            ->all();
     }
 
     /**

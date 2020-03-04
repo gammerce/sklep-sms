@@ -30,7 +30,7 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
         $statement->execute([$type, $authData, $serverId]);
         $existingPassword = $statement->fetchColumn();
 
-        // TODO: Usunąć md5 w przyszłości
+        // TODO: Remove md5
         if (
             $existingPassword &&
             $existingPassword !== $value &&

@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment\Sms;
+namespace App\Payment\DirectBilling;
 
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
+use App\System\Settings;
 
 class DirectBillingChargeWallet implements IChargeWallet
 {
@@ -18,24 +19,31 @@ class DirectBillingChargeWallet implements IChargeWallet
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(Template $template, PriceTextService $priceTextService)
-    {
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(
+        Template $template,
+        PriceTextService $priceTextService,
+        Settings $settings
+    ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
+        $this->settings = $settings;
     }
 
     public function setup(Purchase $purchase, array $body)
     {
         $validator = new Validator(
             [
-                'transfer_price' => as_float(array_get($body, 'transfer_price')),
+                'direct_billing_price' => as_float(array_get($body, 'direct_billing_price')),
             ],
             [
-                'transfer_price' => [new RequiredRule(), new NumberRule()],
+                'direct_billing_price' => [new RequiredRule(), new NumberRule()],
             ]
         );
         $validated = $validator->validateOrFail();
-        $transferPrice = $validated["transfer_price"];
+        $transferPrice = $validated["direct_billing_price"];
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
@@ -53,5 +61,22 @@ class DirectBillingChargeWallet implements IChargeWallet
             "services/charge_wallet/web_purchase_info_transfer",
             compact('quantity')
         );
+    }
+
+    public function getOptionView()
+    {
+        if (!$this->settings->getDirectBillingPlatformId()) {
+            return null;
+        }
+
+        $option = $this->template->render("services/charge_wallet/option", [
+            'value' => Purchase::METHOD_DIRECT_BILLING,
+            'text' => "Direct Billing",
+        ]);
+        $body = $this->template->render("services/charge_wallet/direct_billing_body", [
+            "type" => Purchase::METHOD_DIRECT_BILLING,
+        ]);
+
+        return [$option, $body];
     }
 }

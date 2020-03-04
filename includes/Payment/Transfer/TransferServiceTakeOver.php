@@ -1,5 +1,5 @@
 <?php
-namespace App\Payment\Sms;
+namespace App\Payment\Transfer;
 
 use App\Payment\Interfaces\IServiceTakeOver;
 use App\Repositories\TransactionRepository;

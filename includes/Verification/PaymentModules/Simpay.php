@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\SmsNumber;
 use App\Verification\Abstracts\PaymentModule;
+use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
@@ -12,7 +13,7 @@ use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
-class Simpay extends PaymentModule implements SupportSms
+class Simpay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
 

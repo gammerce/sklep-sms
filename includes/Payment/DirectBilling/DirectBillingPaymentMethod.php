@@ -75,5 +75,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         }
 
         // TODO Implement
+        return [
+            'status' => "not_implemented",
+            'text' => "Not implemented",
+            'positive' => false,
+        ];
     }
 }

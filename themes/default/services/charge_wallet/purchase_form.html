@@ -7,16 +7,14 @@
             <tr>
                 <td><span>{$lang->t('choose_charge_method')}</span></td>
                 <td>
-                    <span>
-                        {$optionSms} {$optionTransfer}
-                    </span>
+                    {$paymentMethodOptions}
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="line"></td>
             </tr>
         </thead>
-        {$smsBody} {$transferBody}
+        {$paymentMethodBodies}
         <tfoot>
             <tr>
                 <td colspan="2" class="line"></td>

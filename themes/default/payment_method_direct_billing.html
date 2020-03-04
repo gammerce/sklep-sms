@@ -2,12 +2,12 @@
     <div class="payment-type direct-billing header">
         {$lang->t('payment_direct_billing')}
     </div>
-    <div class="payment-type transfer">
+    <div class="payment-type direct-billing">
         <strong>{$lang->t('price')}</strong>: {{ $price }}<br />
         <br />
         <input
             type="button"
-            id="pay_transfer"
+            id="pay_direct_billing"
             value="{$lang->t('pay_direct_billing')}"
             class="button purchase-button"
         />

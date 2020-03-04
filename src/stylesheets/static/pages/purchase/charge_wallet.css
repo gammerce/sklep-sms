@@ -1,14 +1,9 @@
-#charge_sms,
-#charge_transfer {
+#charge_table .charge-body {
     display: none;
 }
 
 #charge_table tfoot tr td {
     text-align: center;
-}
-
-[name="transfer_price"] {
-    display: inline-block;
 }
 
 #form_purchase tfoot {

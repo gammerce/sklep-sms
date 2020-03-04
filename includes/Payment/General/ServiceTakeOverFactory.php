@@ -4,7 +4,7 @@ namespace App\Payment\General;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IServiceTakeOver;
 use App\Payment\Sms\SmsServiceTakeOver;
-use App\Payment\Sms\TransferServiceTakeOver;
+use App\Payment\Transfer\TransferServiceTakeOver;
 use App\System\Application;
 use InvalidArgumentException;
 
