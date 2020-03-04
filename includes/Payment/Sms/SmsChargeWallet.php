@@ -32,8 +32,13 @@ class SmsChargeWallet implements IChargeWallet
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, SmsPriceService $smsPriceService, PriceTextService $priceTextService, Template $template, TranslationManager $translationManager)
-    {
+    public function __construct(
+        Heart $heart,
+        SmsPriceService $smsPriceService,
+        PriceTextService $priceTextService,
+        Template $template,
+        TranslationManager $translationManager
+    ) {
         $this->heart = $heart;
         $this->smsPriceService = $smsPriceService;
         $this->priceTextService = $priceTextService;
@@ -79,17 +84,12 @@ class SmsChargeWallet implements IChargeWallet
         $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
         $desc = $this->lang->t('wallet_was_charged', $quantity);
 
-        return $this->template->renderNoComments(
-            "services/charge_wallet/web_purchase_info_sms",
-            [
-                'desc' => $desc,
-                'smsNumber' => $transaction->getSmsNumber(),
-                'smsText' => $transaction->getSmsText(),
-                'smsCode' => $transaction->getSmsCode(),
-                'cost' => $this->priceTextService->getPriceText(
-                    $transaction->getCost() ?: 0
-                ),
-            ]
-        );
+        return $this->template->renderNoComments("services/charge_wallet/web_purchase_info_sms", [
+            'desc' => $desc,
+            'smsNumber' => $transaction->getSmsNumber(),
+            'smsText' => $transaction->getSmsText(),
+            'smsCode' => $transaction->getSmsCode(),
+            'cost' => $this->priceTextService->getPriceText($transaction->getCost() ?: 0),
+        ]);
     }
 }

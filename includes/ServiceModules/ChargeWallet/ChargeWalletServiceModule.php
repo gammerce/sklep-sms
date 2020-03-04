@@ -183,7 +183,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             try {
-                $paymentMethod = $this->chargeWalletFactory->create($transaction->getPaymentMethod());
+                $paymentMethod = $this->chargeWalletFactory->create(
+                    $transaction->getPaymentMethod()
+                );
             } catch (InvalidArgumentException $e) {
                 return '';
             }
