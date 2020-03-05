@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServerRepository;
 use App\Verification\PaymentModules\Microsms;
-use App\Verification\PaymentModules\Simpay;
+use App\Verification\PaymentModules\SimPay;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerResourceTest extends HttpTestCase
@@ -25,7 +25,7 @@ class ServerResourceTest extends HttpTestCase
         $server = $this->factory->server();
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Simpay::MODULE_ID,
+            'module' => SimPay::MODULE_ID,
         ]);
 
         // when

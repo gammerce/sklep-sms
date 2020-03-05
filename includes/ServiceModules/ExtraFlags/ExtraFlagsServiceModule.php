@@ -1081,10 +1081,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOverFormGet()
     {
-        // Generujemy typy usługi
         $types = $this->getTypeOptions($this->service->getTypes());
         $servers = $this->getServerOptions();
 
+        // TODO Provide payment options
         return $this->template->render(
             "services/extra_flags/service_take_over",
             compact('servers', 'types') + ['moduleId' => $this->getModuleId()]

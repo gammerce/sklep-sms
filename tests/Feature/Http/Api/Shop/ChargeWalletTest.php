@@ -6,7 +6,7 @@ use App\Repositories\SettingsRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\Verification\PaymentModules\Pukawka;
-use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -31,9 +31,9 @@ class ChargeWalletTest extends HttpTestCase
     /** @test */
     public function charges_using_transfer()
     {
-        $this->makeVerifySmsSuccessful(Transferuj::class);
+        $this->makeVerifySmsSuccessful(TPay::class);
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Transferuj::MODULE_ID,
+            'module' => TPay::MODULE_ID,
         ]);
         $this->settingsRepository->update([
             'transfer_platform' => $paymentPlatform->getId(),

@@ -24,6 +24,8 @@ return [
     'email_sent' =>
         'If given credentials are correct, than e-mail with password reset link has been sent to your mailbox.',
     'expire' => 'Expires',
+    'external_payment_prepared' =>
+        'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'forgot_password' => 'I don\'t remeber password',
     'forgotten_password' => 'Password recovery',
     'go_to_payment' => 'Proceed to payment',
@@ -130,8 +132,6 @@ You can now profit from many add-ons.',
         'Transfer payment: {1} was accepted, but there was no file with purchase data.',
     'transfer_no_purchase' =>
         'Transfer payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
-    'transfer_prepared' =>
-        'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'transfer_transfer' => 'Transfer',
     'transfer_unavailable' => 'Payment by transfer is unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',

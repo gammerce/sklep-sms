@@ -3,8 +3,8 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\System\Settings;
 use App\Verification\PaymentModules\Microsms;
-use App\Verification\PaymentModules\Simpay;
-use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\SimPay;
+use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class SettingsControllerTest extends HttpTestCase
@@ -19,13 +19,13 @@ class SettingsControllerTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $directBillingPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => Simpay::MODULE_ID,
+            'module' => SimPay::MODULE_ID,
         ]);
         $smsPaymentPlatform = $this->factory->paymentPlatform([
             'module' => Microsms::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => Transferuj::MODULE_ID,
+            'module' => TPay::MODULE_ID,
         ]);
 
         // when

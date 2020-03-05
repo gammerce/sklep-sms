@@ -23,7 +23,7 @@ $(document).delegate("#pay_service_code", "click", function() {
     purchase_service("service_code");
 });
 
-function redirectToTransferWithPost(jsonObj) {
+function redirectToExternalWithPost(jsonObj) {
     var form = $("<form>", {
         action: jsonObj.data.url,
         method: "POST",
@@ -48,7 +48,7 @@ function redirectToTransferWithPost(jsonObj) {
     form.submit();
 }
 
-function redirectToTransferWithGet(jsonObj) {
+function redirectToExternalWithGet(jsonObj) {
     var url = jsonObj.data.url;
     delete jsonObj.data.url;
     var urlWithPath = url + "?" + $.param(jsonObj.data);
@@ -96,14 +96,14 @@ function purchase_service(method) {
                 refresh_blocks("wallet", function() {
                     $("#wallet").effect("highlight", "slow");
                 });
-            } else if (jsonObj.return_id === "transfer") {
+            } else if (jsonObj.return_id === "external") {
                 var method = jsonObj.data.method;
                 delete jsonObj.data.method;
 
                 if (method === "GET") {
-                    redirectToTransferWithGet(jsonObj);
+                    redirectToExternalWithGet(jsonObj);
                 } else if (method === "POST") {
-                    redirectToTransferWithPost(jsonObj);
+                    redirectToExternalWithPost(jsonObj);
                 } else {
                     console.error("Invalid method specified by PaymentModule");
                     sthWentWrong();

@@ -3,12 +3,14 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
+use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -20,6 +22,9 @@ class TransferPaymentServiceTest extends TestCase
         /** @var TransferPaymentService $transferPaymentService */
         $transferPaymentService = $this->app->make(TransferPaymentService::class);
 
+        /** @var TransferPaymentMethod $transferPaymentMethod */
+        $transferPaymentMethod = $this->app->make(TransferPaymentMethod::class);
+
         /** @var PaymentTransferRepository $paymentTransferRepository */
         $paymentTransferRepository = $this->app->make(PaymentTransferRepository::class);
 
@@ -27,10 +32,10 @@ class TransferPaymentServiceTest extends TestCase
         $heart = $this->app->make(Heart::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            "module" => Transferuj::MODULE_ID,
+            "module" => TPay::MODULE_ID,
         ]);
 
-        /** @var SupportTransfer $paymentModule */
+        /** @var SupportTransfer|IServicePurchase $paymentModule */
         $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
         $serviceId = "vip";
@@ -52,7 +57,7 @@ class TransferPaymentServiceTest extends TestCase
         $purchase->setDesc("Description");
 
         // when
-        $payResult = $transferPaymentService->payWithTransfer($paymentModule, $purchase);
+        $payResult = $transferPaymentMethod->pay($purchase, $paymentModule);
         $transferFinalize = $paymentModule->finalizeTransfer(
             [],
             [

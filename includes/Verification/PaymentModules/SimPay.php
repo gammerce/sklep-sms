@@ -1,7 +1,12 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\PaymentPlatform;
+use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
+use App\Support\Result;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -13,17 +18,33 @@ use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
-class Simpay extends PaymentModule implements SupportSms, SupportDirectBilling
+// TODO Create endpoint handling ipn
+
+class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
+
+    /** @var UrlGenerator */
+    private $url;
+
+    public function __construct(
+        Requester $requester,
+        UrlGenerator $url,
+        PaymentPlatform $paymentPlatform
+    ) {
+        parent::__construct($requester, $paymentPlatform);
+        $this->url = $url;
+    }
 
     public static function getDataFields()
     {
         return [
-            new DataField("key"),
-            new DataField("secret"),
-            new DataField("service_id"),
+            new DataField("key", "SMS Key"),
+            new DataField("secret", "SMS Secret"),
+            new DataField("service_id", "SMS Service ID"),
             new DataField("sms_text"),
+            new DataField("direct_billing_service_id", "Direct Billing Service ID"),
+            new DataField("direct_billing_api_key", "Direct Billing API Key"),
         ];
     }
 
@@ -91,6 +112,40 @@ class Simpay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new UnknownErrorException();
     }
 
+    public function prepareDirectBilling(Purchase $purchase, $dataFilename)
+    {
+        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $serviceId = $this->getDirectBillingServiceId();
+        $control = $dataFilename;
+        $apiKey = $this->getDirectBillingApiKey();
+
+        $response = $this->requester->post("https://simpay.pl/db/api", [
+            'serviceId' => $serviceId,
+            'control' => $control,
+            'complete' => $this->url->to("page/payment_success"),
+            'failure' => $this->url->to("page/payment_error"),
+            'amount_gross' => $amount,
+            'sign' => hash('sha256', $serviceId . $amount . $control . $apiKey),
+        ]);
+
+        $result = $response->json();
+        $status = array_get($result, "status");
+        $message = array_get($result, "message");
+
+        // TODO Remove it
+        log_info("Response", $result);
+
+        if ($status === "success") {
+            return new Result("ok", "Redirecting", [
+                "data" => [
+                    "url" => $result["link"],
+                ],
+            ]);
+        }
+
+        return new Result("error", "$status: $message", false);
+    }
+
     public function getSmsCode()
     {
         return $this->getData('sms_text');
@@ -109,5 +164,15 @@ class Simpay extends PaymentModule implements SupportSms, SupportDirectBilling
     private function getServiceId()
     {
         return $this->getData('service_id');
+    }
+
+    private function getDirectBillingServiceId()
+    {
+        return $this->getData('direct_billing_service_id');
+    }
+
+    private function getDirectBillingApiKey()
+    {
+        return $this->getData('direct_billing_api_key');
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Payment\Transfer;
 
 use App\Models\Purchase;
+use App\Payment\General\ExternalPaymentService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
@@ -33,11 +34,15 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var Settings */
     private $settings;
 
+    /** @var ExternalPaymentService */
+    private $externalPaymentService;
+
     public function __construct(
         Heart $heart,
         Template $template,
         PriceTextService $priceTextService,
         TransferPaymentService $transferPaymentService,
+        ExternalPaymentService $externalPaymentService,
         TranslationManager $translationManager,
         Settings $settings
     ) {
@@ -47,6 +52,7 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->transferPaymentService = $transferPaymentService;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
+        $this->externalPaymentService = $externalPaymentService;
     }
 
     public function render(Purchase $purchase)
@@ -55,7 +61,7 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment_method_transfer", compact('price'));
+        return $this->template->render("payment/payment_method_transfer", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)
@@ -97,9 +103,12 @@ class TransferPaymentMethod implements IPaymentMethod
         }
 
         $service = $this->heart->getService($purchase->getServiceId());
-
         $purchase->setDesc($this->lang->t('payment_for_service', $service->getName()));
 
-        return $this->transferPaymentService->payWithTransfer($paymentModule, $purchase);
+        $fileName = $this->externalPaymentService->storePurchase($purchase);
+
+        return new Result("external", $this->lang->t('external_payment_prepared'), true, [
+            'data' => $paymentModule->prepareTransfer($purchase, $fileName),
+        ]);
     }
 }

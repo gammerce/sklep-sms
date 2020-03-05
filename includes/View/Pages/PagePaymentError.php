@@ -5,10 +5,10 @@
  */
 namespace App\View\Pages;
 
-class PageTransferujBad extends PageSimple
+class PagePaymentError extends PageSimple
 {
-    const PAGE_ID = 'transferuj_bad';
-    protected $templateName = 'transferuj_bad';
+    const PAGE_ID = 'payment_error';
+    protected $templateName = 'payment/payment_error';
 
     public function __construct()
     {

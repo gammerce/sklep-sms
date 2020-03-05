@@ -4,81 +4,35 @@ namespace App\Payment\Transfer;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\TransferFinalize;
-use App\Payment\General\PurchaseSerializer;
+use App\Payment\General\ExternalPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Support\Database;
-use App\Support\FileSystemContract;
-use App\Support\Path;
-use App\Support\Result;
 use App\System\Heart;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
-use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var Path */
-    private $path;
-
     /** @var Heart */
     private $heart;
-
-    /** @var Translator */
-    private $lang;
 
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
 
-    /** @var FileSystemContract */
-    private $fileSystem;
-
     /** @var DatabaseLogger */
     private $logger;
 
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
+    /** @var ExternalPaymentService */
+    private $externalPaymentService;
 
     public function __construct(
-        Database $db,
-        Path $path,
         Heart $heart,
         PaymentTransferRepository $paymentTransferRepository,
-        TranslationManager $translationManager,
-        FileSystemContract $fileSystem,
-        PurchaseSerializer $purchaseSerializer,
+        ExternalPaymentService $externalPaymentService,
         DatabaseLogger $logger
     ) {
-        $this->db = $db;
-        $this->path = $path;
         $this->heart = $heart;
         $this->paymentTransferRepository = $paymentTransferRepository;
-        $this->lang = $translationManager->user();
-        $this->fileSystem = $fileSystem;
         $this->logger = $logger;
-        $this->purchaseSerializer = $purchaseSerializer;
-    }
-
-    /**
-     * Prepares data for transfer payment
-     *
-     * @param SupportTransfer $paymentModule
-     * @param Purchase        $purchase
-     * @return Result
-     */
-    public function payWithTransfer(SupportTransfer $paymentModule, Purchase $purchase)
-    {
-        $serialized = $this->purchaseSerializer->serialize($purchase);
-        $dataFilename = time() . "-" . md5($serialized);
-        $path = $this->path->to('data/transfers/' . $dataFilename);
-        $this->fileSystem->put($path, $serialized);
-
-        return new Result("transfer", $this->lang->t('transfer_prepared'), true, [
-            'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
-        ]);
+        $this->externalPaymentService = $externalPaymentService;
     }
 
     /**
@@ -94,21 +48,14 @@ class TransferPaymentService
             return false;
         }
 
-        if (
-            !$transferFinalize->getDataFilename() ||
-            !$this->fileSystem->exists(
-                $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
-            )
-        ) {
+        $purchase = $this->externalPaymentService->restorePurchase(
+            $transferFinalize->getDataFilename()
+        );
+
+        if (!$purchase) {
             $this->logger->log('transfer_no_data_file', $transferFinalize->getOrderId());
             return false;
         }
-
-        $purchase = $this->purchaseSerializer->deserialize(
-            $this->fileSystem->get(
-                $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
-            )
-        );
 
         $this->paymentTransferRepository->create(
             $transferFinalize->getOrderId(),
@@ -118,9 +65,7 @@ class TransferPaymentService
             $purchase->user->getPlatform(),
             $transferFinalize->isTestMode()
         );
-        $this->fileSystem->delete(
-            $this->path->to('data/transfers/' . $transferFinalize->getDataFilename())
-        );
+        $this->externalPaymentService->deletePurchase($transferFinalize->getDataFilename());
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!$serviceModule) {

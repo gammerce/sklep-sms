@@ -2,7 +2,10 @@
 namespace App\Payment\DirectBilling;
 
 use App\Models\Purchase;
+use App\Payment\General\ExternalPaymentService;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
@@ -26,16 +29,21 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /** @var Translator */
     private $lang;
 
+    /** @var ExternalPaymentService */
+    private $externalPaymentService;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
         Heart $heart,
+        ExternalPaymentService $externalPaymentService,
         TranslationManager $translationManager
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->heart = $heart;
         $this->lang = $translationManager->user();
+        $this->externalPaymentService = $externalPaymentService;
     }
 
     public function render(Purchase $purchase)
@@ -43,7 +51,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
-        return $this->template->render("payment_method_direct_billing", compact("price"));
+        return $this->template->render("payment/payment_method_direct_billing", compact("price"));
     }
 
     public function isAvailable(Purchase $purchase)
@@ -75,7 +83,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
-        // TODO Implement
-        return new Result("not_implemented", "Not implemented", false);
+        $fileName = $this->externalPaymentService->storePurchase($purchase);
+
+        return new Result("external", $this->lang->t('external_payment_prepared'), true, [
+            'data' => $paymentModule->prepareDirectBilling($purchase, $fileName),
+        ]);
     }
 }

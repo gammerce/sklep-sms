@@ -17,8 +17,8 @@ use App\Verification\PaymentModules\Microsms;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\PaymentModules\Profitsms;
 use App\Verification\PaymentModules\Pukawka;
-use App\Verification\PaymentModules\Simpay;
-use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\SimPay;
+use App\Verification\PaymentModules\TPay;
 use App\Verification\PaymentModules\Zabijaka;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
@@ -56,14 +56,15 @@ use App\View\Pages\PageForgottenPassword;
 use App\View\Pages\PageMain;
 use App\View\Pages\PagePayment;
 use App\View\Pages\PagePaymentLog;
+use App\View\Pages\PagePaymentSuccess;
 use App\View\Pages\PageProfile;
 use App\View\Pages\PagePurchase;
 use App\View\Pages\PageRegister;
 use App\View\Pages\PageRegulations;
 use App\View\Pages\PageResetPassword;
 use App\View\Pages\PageTakeOverService;
-use App\View\Pages\PageTransferujBad;
-use App\View\Pages\PageTransferujOk;
+use App\View\Pages\PagePaymentError;
+use App\View\Pages\PageTPaySuccess;
 use App\View\Pages\PageUserOwnServices;
 
 class HeartServiceProvider
@@ -93,8 +94,8 @@ class HeartServiceProvider
         $heart->registerPaymentModule(Microsms::MODULE_ID, Microsms::class);
         $heart->registerPaymentModule(Profitsms::MODULE_ID, Profitsms::class);
         $heart->registerPaymentModule(Pukawka::MODULE_ID, Pukawka::class);
-        $heart->registerPaymentModule(Simpay::MODULE_ID, Simpay::class);
-        $heart->registerPaymentModule(Transferuj::MODULE_ID, Transferuj::class);
+        $heart->registerPaymentModule(SimPay::MODULE_ID, SimPay::class);
+        $heart->registerPaymentModule(TPay::MODULE_ID, TPay::class);
         $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
     }
 
@@ -116,8 +117,9 @@ class HeartServiceProvider
         $heart->registerUserPage(PageRegulations::PAGE_ID, PageRegulations::class);
         $heart->registerUserPage(PageResetPassword::PAGE_ID, PageResetPassword::class);
         $heart->registerUserPage(PageTakeOverService::PAGE_ID, PageTakeOverService::class);
-        $heart->registerUserPage(PageTransferujBad::PAGE_ID, PageTransferujBad::class);
-        $heart->registerUserPage(PageTransferujOk::PAGE_ID, PageTransferujOk::class);
+        $heart->registerUserPage(PagePaymentError::PAGE_ID, PagePaymentError::class);
+        $heart->registerUserPage(PagePaymentSuccess::PAGE_ID, PagePaymentSuccess::class);
+        $heart->registerUserPage(PageTPaySuccess::PAGE_ID, PageTPaySuccess::class);
         $heart->registerUserPage(PageUserOwnServices::PAGE_ID, PageUserOwnServices::class);
     }
 

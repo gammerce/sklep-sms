@@ -24,6 +24,8 @@ return [
     'email_sent' =>
         'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został właśnie wysłany na Twoją skrzynkę pocztową.',
     'expire' => 'Wygasa',
+    'external_payment_prepared' =>
+        'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
     'go_to_payment' => 'Przejdź do płatności',
@@ -134,8 +136,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
         'Płatność przelewem: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu',
     'transfer_no_purchase' =>
         'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
-    'transfer_prepared' =>
-        'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'transfer_transfer' => 'Przelew',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
     'transfer_unverified' =>

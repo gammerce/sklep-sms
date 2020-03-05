@@ -14,7 +14,7 @@ use App\Verification\DataField;
  * Created by MilyGosc.
  * @see https://forum.sklep-sms.pl/showthread.php?tid=88
  */
-class Transferuj extends PaymentModule implements SupportTransfer
+class TPay extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "transferuj";
 
@@ -64,8 +64,8 @@ class Transferuj extends PaymentModule implements SupportTransfer
             'imie' => $purchase->user->getForename(),
             'nazwisko' => $purchase->user->getSurname(),
             'email' => $purchase->getEmail(),
-            'pow_url' => $this->url->to("page/transferuj_ok"),
-            'pow_url_blad' => $this->url->to("page/transferuj_bad"),
+            'pow_url' => $this->url->to("page/tpay_success"),
+            'pow_url_blad' => $this->url->to("page/payment_error"),
             'wyn_url' => $this->url->to("transfer/{$this->paymentPlatform->getId()}"),
         ];
     }

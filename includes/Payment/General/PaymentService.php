@@ -2,6 +2,7 @@
 namespace App\Payment\General;
 
 use App\Models\Purchase;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -37,7 +38,7 @@ class PaymentService
     {
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
 
-        if (!$serviceModule) {
+        if (!($serviceModule instanceof IServicePurchase)) {
             return new Result("wrong_module", $this->lang->t('bad_module'), false);
         }
 
