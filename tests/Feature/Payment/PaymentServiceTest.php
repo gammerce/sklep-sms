@@ -66,15 +66,15 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
         $this->assertSame(0, $boughtService->getUid());
         $this->assertSame(Purchase::METHOD_SMS, $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
-        $this->assertSame('', $boughtService->getAuthData());
+        $this->assertSame("", $boughtService->getAuthData());
     }
 
     /** @test */
@@ -112,8 +112,8 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
     }
@@ -152,8 +152,8 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertEquals(-1, $boughtService->getAmount());
         $this->assertSame('STEAM_1:0:22309350', $boughtService->getAuthData());

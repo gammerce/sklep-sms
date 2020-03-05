@@ -7,8 +7,6 @@ use App\Models\User;
 use App\Repositories\SmsCodeRepository;
 use App\Services\SmsPriceService;
 use App\Support\Database;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\SmsPaymentException;
@@ -16,9 +14,6 @@ use App\Verification\Results\SmsSuccessResult;
 
 class SmsPaymentService
 {
-    /** @var Translator */
-    private $lang;
-
     /** @var Database */
     private $db;
 
@@ -32,13 +27,11 @@ class SmsPaymentService
     private $smsCodeRepository;
 
     public function __construct(
-        TranslationManager $translationManager,
         Database $db,
         SmsPriceService $smsPriceService,
         SmsCodeRepository $smsCodeRepository,
         DatabaseLogger $logger
     ) {
-        $this->lang = $translationManager->user();
         $this->db = $db;
         $this->logger = $logger;
         $this->smsPriceService = $smsPriceService;
@@ -50,7 +43,7 @@ class SmsPaymentService
      * @param string     $code
      * @param SmsNumber  $smsNumber
      * @param User       $user
-     * @return array
+     * @return int
      */
     public function payWithSms(SupportSms $paymentModule, $code, SmsNumber $smsNumber, User $user)
     {
@@ -66,10 +59,7 @@ class SmsPaymentService
                 $this->addSmsCodeToBeReused($code, $e->smsPrice, $smsNumber->getPrice(), $user);
             }
 
-            return [
-                "status" => $e->getErrorCode(),
-                "text" => $this->getSmsExceptionMessage($e),
-            ];
+            throw $e;
         } catch (SmsPaymentException $e) {
             $this->logger->log(
                 'bad_sms_code_used',
@@ -82,10 +72,7 @@ class SmsPaymentService
                 $e->getErrorCode()
             );
 
-            return [
-                "status" => $e->getErrorCode(),
-                "text" => $this->getSmsExceptionMessage($e),
-            ];
+            throw $e;
         }
 
         return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
@@ -114,13 +101,7 @@ class SmsPaymentService
                 $result->free ? 1 : 0,
             ]);
 
-        $paymentId = $this->db->lastId();
-
-        return [
-            'status' => 'ok',
-            'text' => $this->lang->t('sms_info_ok'),
-            'payment_id' => $paymentId,
-        ];
+        return $this->db->lastId();
     }
 
     /**
@@ -161,12 +142,5 @@ class SmsPaymentService
             $user->getLastIp(),
             $expectedSmsPrice
         );
-    }
-
-    private function getSmsExceptionMessage(SmsPaymentException $e)
-    {
-        return $e->getMessage() ?:
-            $this->lang->t('sms_info_' . $e->getErrorCode()) ?:
-            $e->getErrorCode();
     }
 }

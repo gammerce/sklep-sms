@@ -107,7 +107,6 @@ You can now profit from many add-ons.',
     'sms_info_insufficient_data' =>
         'Not all the necessary data were given in payment configuration.',
     'sms_info_no_connection' => 'No connection to the verification script.',
-    'sms_info_ok' => 'Given return code is correct.',
     'sms_info_server_error' =>
         'Something bad happened on the API side. Report the error to the shop owner.',
     'sms_info_unknown_error' => 'An unknown error occurred. Report it to the shop owner.',

@@ -5,8 +5,9 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServiceServiceCode;
-use App\ServiceModules\ServiceModule;
+use App\Support\Result;
 use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -51,7 +52,7 @@ class ServiceCodePaymentMethod implements IPaymentMethod
             $serviceModule instanceof IServiceServiceCode;
     }
 
-    public function pay(Purchase $purchase, ServiceModule $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $validator = new Validator(
             [
@@ -65,8 +66,8 @@ class ServiceCodePaymentMethod implements IPaymentMethod
 
         $paymentId = $this->serviceCodePaymentService->payWithServiceCode($purchase);
 
-        if (is_array($paymentId)) {
-            return $paymentId;
+        if (!$paymentId) {
+            return new Result("wrong_service_code", $this->lang->t('bad_service_code'), false);
         }
 
         $purchase->setPayment([
@@ -74,11 +75,8 @@ class ServiceCodePaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return [
-            'status' => "purchased",
-            'text' => $this->lang->t('purchase_success'),
-            'positive' => true,
-            'data' => ['bsid' => $boughtServiceId],
-        ];
+        return new Result("purchased", $this->lang->t('purchase_success'), true, [
+            'bsid' => $boughtServiceId,
+        ]);
     }
 }

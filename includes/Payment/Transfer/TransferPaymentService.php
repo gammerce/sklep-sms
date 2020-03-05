@@ -10,6 +10,7 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Database;
 use App\Support\FileSystemContract;
 use App\Support\Path;
+use App\Support\Result;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -66,7 +67,7 @@ class TransferPaymentService
      *
      * @param SupportTransfer $paymentModule
      * @param Purchase        $purchase
-     * @return array
+     * @return Result
      */
     public function payWithTransfer(SupportTransfer $paymentModule, Purchase $purchase)
     {
@@ -75,14 +76,9 @@ class TransferPaymentService
         $path = $this->path->to('data/transfers/' . $dataFilename);
         $this->fileSystem->put($path, $serialized);
 
-        return [
-            'status' => "transfer",
-            'text' => $this->lang->t('transfer_prepared'),
-            'positive' => true,
-            'data' => [
-                'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
-            ],
-        ];
+        return new Result("transfer", $this->lang->t('transfer_prepared'), true, [
+            'data' => $paymentModule->prepareTransfer($purchase, $dataFilename),
+        ]);
     }
 
     /**

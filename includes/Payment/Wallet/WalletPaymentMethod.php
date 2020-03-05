@@ -3,8 +3,9 @@ namespace App\Payment\Wallet;
 
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\ServiceModules\ServiceModule;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
+use App\Support\Result;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -51,24 +52,21 @@ class WalletPaymentMethod implements IPaymentMethod
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }
 
-    public function pay(Purchase $purchase, ServiceModule $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         if (!$purchase->user->exists()) {
-            return [
-                'status' => "wallet_not_logged",
-                'text' => $this->lang->t('no_login_no_wallet'),
-                'positive' => false,
-            ];
+            return new Result("wallet_not_logged", $this->lang->t('no_login_no_wallet'), false);
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
-            return [
-                'status' => "no_transfer_price",
-                'text' => $this->lang->t('payment_method_unavailable'),
-                'positive' => false,
-            ];
+            return new Result(
+                "no_transfer_price",
+                $this->lang->t('payment_method_unavailable'),
+                false
+            );
         }
 
+        // TODO Handle it
         $paymentId = $this->walletPaymentService->payWithWallet(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
             $purchase->user
@@ -83,11 +81,8 @@ class WalletPaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return [
-            'status' => "purchased",
-            'text' => $this->lang->t('purchase_success'),
-            'positive' => true,
-            'data' => ['bsid' => $boughtServiceId],
-        ];
+        return new Result("purchased", $this->lang->t('purchase_success'), true, [
+            'bsid' => $boughtServiceId,
+        ]);
     }
 }

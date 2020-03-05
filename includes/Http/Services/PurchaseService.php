@@ -7,6 +7,7 @@ use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\ServiceModules\ServiceModule;
+use App\Support\Result;
 use App\System\Auth;
 use UnexpectedValueException;
 
@@ -34,7 +35,7 @@ class PurchaseService
     /**
      * @param ServiceModule $serviceModule
      * @param array         $body
-     * @return array
+     * @return Result
      * @throws ValidationException
      */
     public function purchase(ServiceModule $serviceModule, array $body)

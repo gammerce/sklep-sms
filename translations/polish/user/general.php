@@ -111,7 +111,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'sms_info_insufficient_data' =>
         'Nieprawidłowo skonfigurowana metoda płatności. Skontaktuj się z właścicielem sklepu.',
     'sms_info_no_connection' => 'Nie można się połączyć ze skryptem weryfikacyjnym.',
-    'sms_info_ok' => 'Wprowadzono prawidłowy kod zwrotny.',
     'sms_info_server_error' =>
         'Wystąpił krytyczny błąd po stronie API. Skontaktuj się z właścicielem sklepu.',
     'sms_info_unknown_error' => 'Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.',

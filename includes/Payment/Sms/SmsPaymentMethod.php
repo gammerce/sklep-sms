@@ -6,14 +6,16 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\ServiceModules\ServiceModule;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Services\SmsPriceService;
+use App\Support\Result;
 use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\Exceptions\SmsPaymentException;
 
 class SmsPaymentMethod implements IPaymentMethod
 {
@@ -91,26 +93,18 @@ class SmsPaymentMethod implements IPaymentMethod
             );
     }
 
-    public function pay(Purchase $purchase, ServiceModule $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->heart->getPaymentModuleByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 
         if (!($paymentModule instanceof SupportSms)) {
-            return [
-                'status' => "sms_unavailable",
-                'text' => $this->lang->t('sms_unavailable'),
-                'positive' => false,
-            ];
+            return new Result("sms_unavailable", $this->lang->t('sms_unavailable'), false);
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) === null) {
-            return [
-                'status' => "no_sms_price",
-                'text' => $this->lang->t('payment_method_unavailable'),
-                'positive' => false,
-            ];
+            return new Result("no_sms_price", $this->lang->t('payment_method_unavailable'), false);
         }
 
         $validator = new Validator(
@@ -123,37 +117,35 @@ class SmsPaymentMethod implements IPaymentMethod
         );
         $validator->validateOrFail();
 
-        // Let's check sms code
-        $result = $this->smsPaymentService->payWithSms(
-            $paymentModule,
-            $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
-            $this->smsPriceService->getNumber(
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
-                $paymentModule
-            ),
-            $purchase->user
-        );
-
-        if ($result['status'] !== 'ok') {
-            return [
-                'status' => $result['status'],
-                'text' => $result['text'],
-                'positive' => false,
-            ];
+        try {
+            // Let's check sms code
+            $paymentId = $this->smsPaymentService->payWithSms(
+                $paymentModule,
+                $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
+                $this->smsPriceService->getNumber(
+                    $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
+                    $paymentModule
+                ),
+                $purchase->user
+            );
+        } catch (SmsPaymentException $e) {
+            return new Result($e->getErrorCode(), $this->getSmsExceptionMessage($e), false);
         }
-
-        $paymentId = $result['payment_id'];
 
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return [
-            'status' => "purchased",
-            'text' => $this->lang->t('purchase_success'),
-            'positive' => true,
-            'data' => ['bsid' => $boughtServiceId],
-        ];
+        return new Result("purchased", $this->lang->t('purchase_success'), true, [
+            'bsid' => $boughtServiceId,
+        ]);
+    }
+
+    private function getSmsExceptionMessage(SmsPaymentException $e)
+    {
+        return $e->getMessage() ?:
+            $this->lang->t('sms_info_' . $e->getErrorCode()) ?:
+            $e->getErrorCode();
     }
 }

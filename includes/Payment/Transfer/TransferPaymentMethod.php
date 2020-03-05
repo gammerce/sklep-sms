@@ -3,8 +3,9 @@ namespace App\Payment\Transfer;
 
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\ServiceModules\ServiceModule;
+use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
+use App\Support\Result;
 use App\Support\Template;
 use App\System\Heart;
 use App\System\Settings;
@@ -65,38 +66,37 @@ class TransferPaymentMethod implements IPaymentMethod
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
     }
 
-    public function pay(Purchase $purchase, ServiceModule $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->heart->getPaymentModuleByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
         );
 
-        // TODO Do not return arrays
-
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
-            return [
-                'status' => "no_transfer_price",
-                'text' => $this->lang->t('payment_method_unavailable'),
-                'positive' => false,
-            ];
+            return new Result(
+                "no_transfer_price",
+                $this->lang->t('payment_method_unavailable'),
+                false
+            );
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) <= 100) {
-            return [
-                'status' => "too_little_for_transfer",
-                'text' => $this->lang->t('transfer_above_amount', $this->settings->getCurrency()),
-                'positive' => false,
-            ];
+            return new Result(
+                "too_little_for_transfer",
+                $this->lang->t('transfer_above_amount', $this->settings->getCurrency()),
+                false
+            );
         }
 
         if (!($paymentModule instanceof SupportTransfer)) {
-            return [
-                'status' => "transfer_unavailable",
-                'text' => $this->lang->t('transfer_unavailable'),
-                'positive' => false,
-            ];
+            return new Result(
+                "transfer_unavailable",
+                $this->lang->t('transfer_unavailable'),
+                false
+            );
         }
 
+        // TODO Handle it
         $purchase->setDesc(
             $this->lang->t('payment_for_service', $serviceModule->service->getName())
         );

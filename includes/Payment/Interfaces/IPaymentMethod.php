@@ -2,7 +2,8 @@
 namespace App\Payment\Interfaces;
 
 use App\Models\Purchase;
-use App\ServiceModules\ServiceModule;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\Support\Result;
 
 interface IPaymentMethod
 {
@@ -20,8 +21,8 @@ interface IPaymentMethod
 
     /**
      * @param Purchase $purchase
-     * @param ServiceModule $serviceModule
-     * @return array
+     * @param IServicePurchase $serviceModule
+     * @return Result
      */
-    public function pay(Purchase $purchase, ServiceModule $serviceModule);
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule);
 }

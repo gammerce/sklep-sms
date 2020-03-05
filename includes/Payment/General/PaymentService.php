@@ -2,6 +2,7 @@
 namespace App\Payment\General;
 
 use App\Models\Purchase;
+use App\Support\Result;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -28,16 +29,16 @@ class PaymentService
         $this->paymentMethodFactory = $paymentMethodFactory;
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return Result
+     */
     public function makePayment(Purchase $purchase)
     {
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
 
         if (!$serviceModule) {
-            return [
-                'status' => "wrong_module",
-                'text' => $this->lang->t('bad_module'),
-                'positive' => false,
-            ];
+            return new Result("wrong_module", $this->lang->t('bad_module'), false);
         }
 
         try {
@@ -45,11 +46,7 @@ class PaymentService
                 $purchase->getPayment(Purchase::PAYMENT_METHOD)
             );
         } catch (InvalidArgumentException $e) {
-            return [
-                'status' => "wrong_method",
-                'text' => $this->lang->t('wrong_payment_method'),
-                'positive' => false,
-            ];
+            return new Result("wrong_method", $this->lang->t('wrong_payment_method'), false);
         }
 
         return $paymentMethod->pay($purchase, $serviceModule);
