@@ -7,6 +7,8 @@ use App\Models\SmsNumber;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Support\Result;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -19,6 +21,7 @@ use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
 // TODO Create endpoint handling ipn
+// TODO Display information about price and charge amount
 
 class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
@@ -27,20 +30,25 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     /** @var UrlGenerator */
     private $url;
 
+    /** @var Translator */
+    private $lang;
+
     public function __construct(
         Requester $requester,
         UrlGenerator $url,
+        TranslationManager $translationManager,
         PaymentPlatform $paymentPlatform
     ) {
         parent::__construct($requester, $paymentPlatform);
         $this->url = $url;
+        $this->lang = $translationManager->user();
     }
 
     public static function getDataFields()
     {
         return [
-            new DataField("key", "SMS Key"),
-            new DataField("secret", "SMS Secret"),
+            new DataField("key"),
+            new DataField("secret"),
             new DataField("service_id", "SMS Service ID"),
             new DataField("sms_text"),
             new DataField("direct_billing_service_id", "Direct Billing Service ID"),
@@ -136,14 +144,14 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         log_info("Response", $result);
 
         if ($status === "success") {
-            return new Result("ok", "Redirecting", [
+            return new Result("external", $this->lang->t("external_payment_prepared"), [
                 "data" => [
                     "url" => $result["link"],
                 ],
             ]);
         }
 
-        return new Result("error", "$status: $message", false);
+        return new Result("error", "SimPay response. $status: $message", false);
     }
 
     public function getSmsCode()

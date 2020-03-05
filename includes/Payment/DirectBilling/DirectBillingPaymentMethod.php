@@ -4,8 +4,6 @@ namespace App\Payment\DirectBilling;
 use App\Models\Purchase;
 use App\Payment\General\ExternalPaymentService;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
@@ -85,8 +83,6 @@ class DirectBillingPaymentMethod implements IPaymentMethod
 
         $fileName = $this->externalPaymentService->storePurchase($purchase);
 
-        return new Result("external", $this->lang->t('external_payment_prepared'), true, [
-            'data' => $paymentModule->prepareDirectBilling($purchase, $fileName),
-        ]);
+        return $paymentModule->prepareDirectBilling($purchase, $fileName);
     }
 }
