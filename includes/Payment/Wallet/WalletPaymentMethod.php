@@ -72,11 +72,7 @@ class WalletPaymentMethod implements IPaymentMethod
                 $purchase->user
             );
         } catch (NotEnoughFundsException $e) {
-            return new Result(
-                "no_money",
-                $this->lang->t('not_enough_money'),
-                false
-            );
+            return new Result("no_money", $this->lang->t('not_enough_money'), false);
         }
 
         $purchase->setPayment([
