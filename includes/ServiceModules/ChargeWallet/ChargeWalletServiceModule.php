@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
+use App\Payment\Wallet\WalletPaymentService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
@@ -40,6 +41,9 @@ class ChargeWalletServiceModule extends ServiceModule implements
     /** @var ChargeWalletFactory */
     private $chargeWalletFactory;
 
+    /** @var WalletPaymentService */
+    private $walletPaymentService;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -51,6 +55,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->chargeWalletFactory = $this->app->make(ChargeWalletFactory::class);
+        $this->walletPaymentService = $this->app->make(WalletPaymentService::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -114,7 +119,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
-        $this->chargeWallet(
+        $this->walletPaymentService->chargeWallet(
             $purchase->user->getUid(),
             $purchase->getOrder(Purchase::ORDER_QUANTITY)
         );
@@ -157,16 +162,5 @@ class ChargeWalletServiceModule extends ServiceModule implements
         }
 
         return '';
-    }
-
-    /**
-     * @param int $uid
-     * @param int $quantity
-     */
-    private function chargeWallet($uid, $quantity)
-    {
-        $this->db
-            ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
-            ->execute([$quantity, $uid]);
     }
 }

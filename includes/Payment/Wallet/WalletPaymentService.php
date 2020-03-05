@@ -3,36 +3,26 @@ namespace App\Payment\Wallet;
 
 use App\Models\User;
 use App\Support\Database;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 class WalletPaymentService
 {
-    /** @var Translator */
-    private $lang;
-
     /** @var Database */
     private $db;
 
-    public function __construct(TranslationManager $translationManager, Database $db)
+    public function __construct(Database $db)
     {
-        $this->lang = $translationManager->user();
         $this->db = $db;
     }
 
     /**
      * @param int  $cost
      * @param User $user
-     * @return array|int|string
+     * @return int
      */
     public function payWithWallet($cost, $user)
     {
         if ($cost > $user->getWallet()) {
-            return [
-                'status' => "no_money",
-                'text' => $this->lang->t('not_enough_money'),
-                'positive' => false,
-            ];
+            throw new NotEnoughFundsException();
         }
 
         $this->chargeWallet($user->getUid(), -$cost);
@@ -46,12 +36,12 @@ class WalletPaymentService
 
     /**
      * @param int $uid
-     * @param int $amount
+     * @param int $quantity
      */
-    private function chargeWallet($uid, $amount)
+    public function chargeWallet($uid, $quantity)
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
-            ->execute([$amount, $uid]);
+            ->execute([$quantity, $uid]);
     }
 }

@@ -96,9 +96,10 @@ class TransferPaymentMethod implements IPaymentMethod
             );
         }
 
-        // TODO Handle it
+        $service = $this->heart->getService($purchase->getServiceId());
+
         $purchase->setDesc(
-            $this->lang->t('payment_for_service', $serviceModule->service->getName())
+            $this->lang->t('payment_for_service', $service->getName())
         );
 
         return $this->transferPaymentService->payWithTransfer($paymentModule, $purchase);
