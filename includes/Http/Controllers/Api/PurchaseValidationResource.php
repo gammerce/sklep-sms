@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\PurchaseSerializer;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
@@ -38,7 +38,7 @@ class PurchaseValidationResource
         }
 
         $purchase = new Purchase($user);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
 
         if ($user->getEmail()) {
             $purchase->setEmail($user->getEmail());
@@ -46,13 +46,19 @@ class PurchaseValidationResource
 
         if ($settings->getSmsPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PLATFORM => $settings->getSmsPlatformId(),
+                Purchase::PAYMENT_PLATFORM_SMS => $settings->getSmsPlatformId(),
             ]);
         }
 
         if ($settings->getTransferPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_TRANSFER_PLATFORM => $settings->getTransferPlatformId(),
+                Purchase::PAYMENT_PLATFORM_TRANSFER => $settings->getTransferPlatformId(),
+            ]);
+        }
+
+        if ($settings->getDirectBillingPlatformId()) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $settings->getDirectBillingPlatformId(),
             ]);
         }
 

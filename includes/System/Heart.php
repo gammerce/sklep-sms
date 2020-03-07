@@ -9,7 +9,7 @@ use App\Models\Server;
 use App\Models\ServerService;
 use App\Models\Service;
 use App\Models\User;
-use App\Payment\PaymentModuleFactory;
+use App\Payment\General\PaymentModuleFactory;
 use App\Repositories\GroupRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;

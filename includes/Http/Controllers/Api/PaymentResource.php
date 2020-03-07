@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Payment\PaymentService;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\PaymentService;
+use App\Payment\General\PurchaseSerializer;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,13 +35,13 @@ class PaymentResource
             Purchase::PAYMENT_SERVICE_CODE => trim($request->request->get('service_code')),
         ]);
 
-        $returnPayment = $paymentService->makePayment($purchase);
+        $paymentResult = $paymentService->makePayment($purchase);
 
         return new ApiResponse(
-            array_get($returnPayment, 'status'),
-            array_get($returnPayment, 'text'),
-            array_get($returnPayment, 'positive'),
-            array_get($returnPayment, 'data')
+            $paymentResult->getStatus(),
+            $paymentResult->getText(),
+            $paymentResult->isPositive(),
+            $paymentResult->getData()
         );
     }
 

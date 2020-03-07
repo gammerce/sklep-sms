@@ -2,7 +2,7 @@
 namespace App\Verification\Abstracts;
 
 use App\Models\Purchase;
-use App\Models\TransferFinalize;
+use App\Models\FinalizedPayment;
 
 interface SupportTransfer
 {
@@ -24,7 +24,7 @@ interface SupportTransfer
      * @param array $query
      * @param array $body
      *
-     * @return TransferFinalize
+     * @return FinalizedPayment
      */
     public function finalizeTransfer(array $query, array $body);
 }

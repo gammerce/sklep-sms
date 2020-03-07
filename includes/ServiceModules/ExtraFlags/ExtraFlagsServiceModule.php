@@ -1,12 +1,10 @@
 <?php
 namespace App\ServiceModules\ExtraFlags;
 
-use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
-use App\Http\Validation\Rules\InArrayRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
@@ -22,14 +20,15 @@ use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
+use App\Models\Server;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
-use App\Payment\AdminPaymentService;
-use App\Payment\BoughtServiceService;
-use App\Payment\PurchasePriceService;
+use App\Payment\Admin\AdminPaymentService;
+use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PurchasePriceService;
+use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\PriceRepository;
-use App\Repositories\TransactionRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
@@ -67,6 +66,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
+use InvalidArgumentException;
 use UnexpectedValueException;
 
 class ExtraFlagsServiceModule extends ServiceModule implements
@@ -127,14 +127,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
 
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
     /** @var PlayerFlagService */
     private $playerFlagService;
 
     /** @var PriceTextService */
     private $priceTextService;
+
+    /** @var ServiceTakeOverFactory */
+    private $serviceTakeOverFactory;
 
     public function __construct(Service $service = null)
     {
@@ -154,9 +154,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
-        $this->transactionRepository = $this->app->make(TransactionRepository::class);
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
+        $this->serviceTakeOverFactory = $this->app->make(ServiceTakeOverFactory::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -177,17 +177,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $webSelYes = $this->showOnWeb() ? "selected" : "";
         $webSelNo = $this->showOnWeb() ? "" : "selected";
 
-        // Nick, IP, SID
-        $types = "";
-        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            $types .= create_dom_element("option", $this->getTypeName($optionId), [
-                'value' => $optionId,
-                'selected' =>
-                    $this->service !== null && $this->service->getTypes() & $optionId
-                        ? "selected"
-                        : "",
-            ]);
-        }
+        $types = $this->getTypeOptions(
+            ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID,
+            $this->service ? $this->service->getTypes() : 0
+        );
 
         // Pobieramy flagi, jeżeli service nie jest puste
         // czyli kiedy edytujemy, a nie dodajemy usługę
@@ -316,7 +309,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        $heart = $this->heart;
         $user = $this->auth->user();
 
         // Generujemy typy usługi
@@ -331,18 +323,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
         }
 
-        // Pobieranie serwerów na których można zakupić daną usługę
-        $servers = "";
-        foreach ($heart->getServers() as $id => $server) {
-            // Usługi nie mozna kupic na tym serwerze
-            if (!$heart->serverServiceLinked($id, $this->service->getId())) {
-                continue;
-            }
-
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-            ]);
-        }
+        $servers = $this->getServerOptions();
 
         return $this->template->render(
             "services/extra_flags/purchase_form",
@@ -385,7 +366,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($server && $server->getSmsPlatformId()) {
             $purchase->setPayment([
-                Purchase::PAYMENT_SMS_PLATFORM => $server->getSmsPlatformId(),
+                Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId(),
             ]);
         }
 
@@ -624,26 +605,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminAddFormGet()
     {
-        // Pobieramy listę typów usługi, (1<<2) ostatni typ
-        $types = "";
-        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            if ($this->service->getTypes() & $optionId) {
-                $types .= create_dom_element("option", $this->getTypeName($optionId), [
-                    'value' => $optionId,
-                ]);
-            }
-        }
-
-        $servers = "";
-        foreach ($this->heart->getServers() as $id => $server) {
-            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
-                continue;
-            }
-
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-            ]);
-        }
+        $types = $this->getTypeOptions($this->service->getTypes());
+        $servers = $this->getServerOptions();
 
         return $this->template->renderNoComments(
             "services/extra_flags/user_service_admin_add",
@@ -679,7 +642,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $purchasingUser = $this->heart->getUser($validated['uid']);
         $purchase = new Purchase($purchasingUser);
-        $purchase->setService($this->service->getId());
+        $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
@@ -703,36 +666,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        // Pobranie usług
-        $services = "";
-        foreach ($this->heart->getServices() as $id => $service) {
-            $serviceModule = $this->heart->getEmptyServiceModule($service->getModule());
-            if ($serviceModule === null) {
-                continue;
-            }
+        $services = collect($this->heart->getServices())
+            ->filter(function (Service $service) {
+                $serviceModule = $this->heart->getEmptyServiceModule($service->getModule());
 
-            // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
-            // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
-            if ($this->getModuleId() != $serviceModule->getModuleId()) {
-                continue;
-            }
-
-            $services .= create_dom_element("option", $service->getName(), [
-                'value' => $service->getId(),
-                'selected' => $userService->getServiceId() === $service->getId() ? "selected" : "",
-            ]);
-        }
-
-        // Dodajemy typ uslugi, (1<<2) ostatni typ
-        $types = "";
-        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            if ($this->service->getTypes() & $optionId) {
-                $types .= create_dom_element("option", $this->getTypeName($optionId), [
-                    'value' => $optionId,
-                    'selected' => $optionId === $userService->getType() ? "selected" : "",
+                // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
+                // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
+                return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
+            })
+            ->map(function (Service $service) use ($userService) {
+                return create_dom_element("option", $service->getName(), [
+                    'value' => $service->getId(),
+                    'selected' =>
+                        $userService->getServiceId() === $service->getId() ? "selected" : "",
                 ]);
-            }
-        }
+            })
+            ->join();
+
+        $types = $this->getTypeOptions($this->service->getTypes(), $userService->getType());
 
         $styles = [
             "nick" => "",
@@ -767,18 +718,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $disabled['sid'] = "";
         }
 
-        // Pobranie serwerów
-        $servers = "";
-        foreach ($this->heart->getServers() as $id => $server) {
-            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
-                continue;
-            }
-
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-                'selected' => $userService->getServerId() === $server->getId() ? "selected" : "",
-            ]);
-        }
+        $servers = $this->getServerOptions($userService->getServerId());
 
         // Pobranie hasła
         if (strlen($userService->getPassword())) {
@@ -1141,25 +1081,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOverFormGet()
     {
-        // Generujemy typy usługi
-        $types = "";
-        for ($i = 0; $i < 3; $i++) {
-            $value = 1 << $i;
-            if ($this->service->getTypes() & $value) {
-                $types .= create_dom_element("option", $this->getTypeName($value), [
-                    'value' => $value,
-                ]);
-            }
-        }
+        $types = $this->getTypeOptions($this->service->getTypes());
+        $servers = $this->getServerOptions();
 
-        $servers = "";
-        // Pobieranie listy serwerów
-        foreach ($this->heart->getServers() as $id => $server) {
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-            ]);
-        }
-
+        // TODO Provide payment options
         return $this->template->render(
             "services/extra_flags/service_take_over",
             compact('servers', 'types') + ['moduleId' => $this->getModuleId()]
@@ -1168,7 +1093,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOver(array $body)
     {
-        $user = $this->auth->user();
+        $paymentMethodId = array_get($body, "payment_method");
+
+        try {
+            $paymentMethod = $this->serviceTakeOverFactory->create($paymentMethodId);
+        } catch (InvalidArgumentException $e) {
+            throw new ValidationException([
+                "payment_method" => "Invalid value",
+            ]);
+        }
+
         $validator = new Validator(
             array_merge($body, [
                 'auth_data' => trim(array_get($body, 'auth_data')),
@@ -1179,9 +1113,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             [
                 'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
                 'password' => [new ExtraFlagPasswordRule()],
-                'payment_method' => [
-                    new InArrayRule([Purchase::METHOD_SMS, Purchase::METHOD_TRANSFER]),
-                ],
                 'payment_id' => [new RequiredRule()],
                 'server_id' => [new RequiredRule()],
                 'type' => [new RequiredRule(), new ExtraFlagTypeRule()],
@@ -1189,44 +1120,23 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
 
         $validated = $validator->validateOrFail();
-        $paymentMethod = $validated['payment_method'];
         $paymentId = $validated['payment_id'];
         $serverId = $validated['server_id'];
         $authData = $validated['auth_data'];
         $type = $validated['type'];
         $password = $validated['password'];
 
-        if ($paymentMethod == Purchase::METHOD_TRANSFER) {
-            $statement = $this->db->statement(
-                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
-                    "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
-            );
-            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
-
-            if (!$statement->rowCount()) {
-                return [
-                    'status' => "no_service",
-                    'text' => $this->lang->t('no_user_service'),
-                    'positive' => false,
-                ];
-            }
-        } elseif ($paymentMethod == Purchase::METHOD_SMS) {
-            $statement = $this->db->statement(
-                "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
-                    "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
-            );
-            $statement->execute([$paymentId, $this->service->getId(), $serverId, $authData]);
-
-            if (!$statement->rowCount()) {
-                return [
-                    'status' => "no_service",
-                    'text' => $this->lang->t('no_user_service'),
-                    'positive' => false,
-                ];
-            }
+        if (!$paymentMethod->isValid($paymentId, $this->service->getId(), $authData, $serverId)) {
+            return [
+                'status' => "no_service",
+                'text' => $this->lang->t('no_user_service'),
+                'positive' => false,
+            ];
         }
 
-        // TODO: Usunac md5
+        $user = $this->auth->user();
+
+        // TODO: Remove md5
         $statement = $this->db->statement(
             "SELECT `id` FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
@@ -1259,36 +1169,45 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ];
     }
 
-    // ----------------------------------------------------------------------------------
-    // ### Inne
+    /**
+     * Get available servers for given service
+     *
+     * @param int|null $selectedServerId
+     * @return string
+     */
+    private function getServerOptions($selectedServerId = null)
+    {
+        return collect($this->heart->getServers())
+            ->filter(function (Server $server) {
+                return $this->heart->serverServiceLinked($server->getId(), $this->service->getId());
+            })
+            ->map(function (Server $server) use ($selectedServerId) {
+                return create_dom_element("option", $server->getName(), [
+                    'value' => $server->getId(),
+                    'selected' => $selectedServerId === $server->getId() ? "selected" : "",
+                ]);
+            })
+            ->join();
+    }
 
     /**
-     * Metoda zwraca listę serwerów na których można zakupić daną usługę
-     *
-     * @param int $serverId
-     *
-     * @return string            Lista serwerów w postaci <option value="id_serwera">Nazwa</option>
+     * @param int $availableTypes
+     * @param int $selectedTypes
+     * @return string
      */
-    private function serversForService($serverId)
+    private function getTypeOptions($availableTypes, $selectedTypes = 0)
     {
-        if (!get_privileges("manage_user_services")) {
-            throw new UnauthorizedException();
-        }
-
-        $servers = "";
-        // Pobieranie serwerów na których można zakupić daną usługę
-        foreach ($this->heart->getServers() as $id => $server) {
-            if (!$this->heart->serverServiceLinked($id, $this->service->getId())) {
-                continue;
-            }
-
-            $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-                'selected' => $serverId == $server->getId() ? "selected" : "",
-            ]);
-        }
-
-        return $servers;
+        return collect([1 << 0, 1 << 1, 1 << 2])
+            ->filter(function ($optionId) use ($availableTypes) {
+                return $availableTypes & $optionId;
+            })
+            ->map(function ($optionId) use ($selectedTypes) {
+                return create_dom_element("option", $this->getTypeName($optionId), [
+                    'value' => $optionId,
+                    'selected' => $optionId & $selectedTypes ? "selected" : "",
+                ]);
+            })
+            ->join();
     }
 
     /**
@@ -1316,7 +1235,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             case "prices_for_server":
                 return $this->pricesForServer((int) $body['server_id']);
             case "servers_for_service":
-                return $this->serversForService((int) $body['server_id']);
+                return $this->getServerOptions(as_int($body['server_id']));
             default:
                 return '';
         }

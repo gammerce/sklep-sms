@@ -21,7 +21,10 @@ $(document).delegate("#form_service_take_over [name=payment_method]", "change", 
     var module;
     if (!(module = service_module_act_can("extra_flags", $(this)))) return;
 
+    // TODO Allow other payment methods
+
     module.find("[data-name='payment_id']").hide();
-    if ($(this).val() == "sms" || $(this).val() == "transfer")
+    if ($(this).val() == "sms" || $(this).val() == "transfer") {
         module.find("[data-name='payment_id']").show();
+    }
 });

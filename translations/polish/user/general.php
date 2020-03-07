@@ -18,11 +18,14 @@ return [
     'contact_info' => 'Możesz się z nami skontaktować na jeden z poniższych sposobów.',
     'create_account' => 'Załóż Konto',
     'different_values' => 'Podane wartości różnią się.',
+    'direct_billing_unavailable' => 'Nie można wykonać płatności przy pomocy direct billing.',
     'email_occupied' => 'Podany e-mail jest już zajęty.',
     'email_repeat' => 'Powtórz adres e-mail',
     'email_sent' =>
         'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został właśnie wysłany na Twoją skrzynkę pocztową.',
     'expire' => 'Wygasa',
+    'external_payment_prepared' =>
+        'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
     'go_to_payment' => 'Przejdź do płatności',
@@ -53,13 +56,15 @@ return [
     'password_repeat' => 'Powtórz Hasło',
     'password_reset' =>
         'W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.',
+    'pay_direct_billing' => 'Płacę z Direct Billing',
     'pay_sms' => 'Płacę SMSem',
     'pay_transfer' => 'Płacę Przelewem',
     'pay_wallet' => 'Płacę z Portfela',
+    'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
     'payment_method_unavailable' =>
-        'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inny sposób płatności.',
+        'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
     'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',
@@ -71,7 +76,7 @@ return [
     'profile_edit' => 'Profil został zaktualizowany.',
     'purchase' => 'Zakup usługi',
     'purchase_code' => 'Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}',
-    'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz sposób płatności.',
+    'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz metodę płatności.',
     'purchase_success' => 'Usługa została prawidłowo zakupiona.',
     'register' => 'Rejestracja',
     'register_success' =>
@@ -108,7 +113,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'sms_info_insufficient_data' =>
         'Nieprawidłowo skonfigurowana metoda płatności. Skontaktuj się z właścicielem sklepu.',
     'sms_info_no_connection' => 'Nie można się połączyć ze skryptem weryfikacyjnym.',
-    'sms_info_ok' => 'Wprowadzono prawidłowy kod zwrotny.',
     'sms_info_server_error' =>
         'Wystąpił krytyczny błąd po stronie API. Skontaktuj się z właścicielem sklepu.',
     'sms_info_unknown_error' => 'Wystąpił nieznany błąd. Zgłoś go właścicielowi sklepu.',
@@ -132,8 +136,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
         'Płatność przelewem: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu',
     'transfer_no_purchase' =>
         'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
-    'transfer_prepared' =>
-        'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
     'transfer_transfer' => 'Przelew',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
     'transfer_unverified' =>
@@ -143,7 +145,7 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'user_own_services' => 'Moje obecne usługi',
     'wallet_charged' => 'Portfel został doładowany.',
     'wallet_was_charged' => 'Doładowano portfel kwotą {1}',
-    'way_of_payment' => 'Sposób płatności',
+    'way_of_payment' => 'Methoda płatności',
     'welcome_message' => 'Witaj w sklepie internetowym!',
     'wrong_anti_answer' => 'Błędna odpowiedź na pytanie antyspamowe.',
     'wrong_id' => 'Błędne ID',

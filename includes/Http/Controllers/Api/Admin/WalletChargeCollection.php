@@ -9,7 +9,7 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
-use App\Payment\AdminPaymentService;
+use App\Payment\Admin\AdminPaymentService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;

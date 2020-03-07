@@ -3,12 +3,15 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
-use App\Payment\TransferPaymentService;
+use App\Payment\Transfer\TransferPaymentMethod;
+use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\ServiceModules\ServiceModule;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Verification\PaymentModules\Transferuj;
+use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -20,6 +23,9 @@ class TransferPaymentServiceTest extends TestCase
         /** @var TransferPaymentService $transferPaymentService */
         $transferPaymentService = $this->app->make(TransferPaymentService::class);
 
+        /** @var TransferPaymentMethod $transferPaymentMethod */
+        $transferPaymentMethod = $this->app->make(TransferPaymentMethod::class);
+
         /** @var PaymentTransferRepository $paymentTransferRepository */
         $paymentTransferRepository = $this->app->make(PaymentTransferRepository::class);
 
@@ -27,13 +33,14 @@ class TransferPaymentServiceTest extends TestCase
         $heart = $this->app->make(Heart::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            "module" => Transferuj::MODULE_ID,
+            "module" => TPay::MODULE_ID,
         ]);
 
         /** @var SupportTransfer $paymentModule */
         $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
         $serviceId = "vip";
+        /** @var IServicePurchase|ServiceModule $serviceModule */
         $serviceModule = $heart->getServiceModule($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
@@ -47,28 +54,31 @@ class TransferPaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => $server->getId(),
             'type' => ExtraFlagType::TYPE_SID,
         ]);
+        $purchase->setPayment([
+            Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
+        ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
         $purchase->setDesc("Description");
 
         // when
-        $payResult = $transferPaymentService->payWithTransfer($paymentModule, $purchase);
-        $transferFinalize = $paymentModule->finalizeTransfer(
+        $payResult = $transferPaymentMethod->pay($purchase, $serviceModule);
+        $finalizedPayment = $paymentModule->finalizeTransfer(
             [],
             [
                 'tr_id' => "abc",
-                'tr_amount' => $payResult["data"]["data"]["kwota"],
-                'tr_crc' => $payResult["data"]["data"]["crc"],
+                'tr_amount' => $payResult->getDatum("data")["kwota"],
+                'tr_crc' => $payResult->getDatum("data")["crc"],
                 'id' => "tpay",
                 'md5sum' => "xyz",
             ]
         );
-        $transferFinalize->setStatus(true); // Mark as if checking md5sum was correct
-        $result = $transferPaymentService->transferFinalize($transferFinalize);
+        $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
+        $result = $transferPaymentService->finalizePurchase($finalizedPayment);
 
         // then
         $this->assertTrue($result);
-        $paymentTransfer = $paymentTransferRepository->get($transferFinalize->getOrderId());
+        $paymentTransfer = $paymentTransferRepository->get($finalizedPayment->getOrderId());
         $this->assertNotNull($paymentTransfer);
         $this->assertEquals(190, $paymentTransfer->getIncome());
     }

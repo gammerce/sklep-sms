@@ -3,7 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\Purchase;
 use App\Models\SmsNumber;
-use App\Models\TransferFinalize;
+use App\Models\FinalizedPayment;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -81,7 +81,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
 
         return [
             'url' => 'https://pay.cashbill.pl/form/pay.php',
@@ -108,23 +108,23 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $transferFinalize = new TransferFinalize();
+        $finalizedPayment = new FinalizedPayment();
 
         if (
             $this->checkSign($body, $this->getKey(), $body['sign']) &&
             strtoupper($body['status']) == 'OK' &&
             $body['service'] == $this->getService()
         ) {
-            $transferFinalize->setStatus(true);
+            $finalizedPayment->setStatus(true);
         }
 
-        $transferFinalize->setOrderId($body['orderid']);
-        $transferFinalize->setAmount($body['amount']);
-        $transferFinalize->setDataFilename($body['userdata']);
-        $transferFinalize->setTransferService($body['service']);
-        $transferFinalize->setOutput('OK');
+        $finalizedPayment->setOrderId($body['orderid']);
+        $finalizedPayment->setAmount($body['amount']);
+        $finalizedPayment->setDataFilename($body['userdata']);
+        $finalizedPayment->setExternalServiceId($body['service']);
+        $finalizedPayment->setOutput('OK');
 
-        return $transferFinalize;
+        return $finalizedPayment;
     }
 
     /**

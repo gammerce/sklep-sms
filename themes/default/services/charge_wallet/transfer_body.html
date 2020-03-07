@@ -1,4 +1,4 @@
-<tbody id="charge_transfer">
+<tbody class="charge-body" data-type="{{ $type }}">
     <tr>
         <td>
             <label for="transfer_price" class="charging">{$lang->t('type_amount')}</label>
@@ -8,6 +8,8 @@
                 <div class="control">
                     <input
                         type="number"
+                        step="0.01"
+                        min="1.01"
                         id="transfer_price"
                         name="transfer_price"
                         class="input is-small"

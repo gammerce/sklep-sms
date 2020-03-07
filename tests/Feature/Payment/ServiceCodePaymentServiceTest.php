@@ -3,7 +3,7 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
-use App\Payment\ServiceCodePaymentService;
+use App\Payment\ServiceCode\ServiceCodePaymentService;
 use App\Repositories\PaymentCodeRepository;
 use App\Repositories\ServiceCodeRepository;
 use App\System\Heart;
@@ -42,7 +42,7 @@ class ServiceCodePaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => 'blah',
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
 
         // when
         $paymentCodeId = $service->payWithServiceCode($purchase);

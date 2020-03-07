@@ -1,9 +1,11 @@
 <?php
 namespace App\View\Pages;
 
+use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\Option;
@@ -33,86 +35,53 @@ class PageAdminSettings extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
-        $langShop = $translationManager->shop();
-
         $smsPlatforms = [];
         $transferPlatforms = [];
+        $directBillingPlatforms = [];
+
         foreach ($this->paymentPlatformRepository->all() as $paymentPlatform) {
             $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
 
             if ($paymentModule instanceof SupportSms) {
-                $smsPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
-                    'value' => $paymentPlatform->getId(),
-                    'selected' =>
-                        $paymentPlatform->getId() === $this->settings->getSmsPlatformId()
-                            ? "selected"
-                            : "",
-                ]);
+                $smsPlatforms[] = $this->createPaymentPlatformOption(
+                    $paymentPlatform,
+                    $this->settings->getSmsPlatformId()
+                );
             }
 
             if ($paymentModule instanceof SupportTransfer) {
-                $transferPlatforms[] = create_dom_element("option", $paymentPlatform->getName(), [
-                    'value' => $paymentPlatform->getId(),
-                    'selected' =>
-                        $paymentPlatform->getId() === $this->settings->getTransferPlatformId()
-                            ? "selected"
-                            : "",
-                ]);
+                $transferPlatforms[] = $this->createPaymentPlatformOption(
+                    $paymentPlatform,
+                    $this->settings->getTransferPlatformId()
+                );
+            }
+
+            if ($paymentModule instanceof SupportDirectBilling) {
+                $directBillingPlatforms[] = $this->createPaymentPlatformOption(
+                    $paymentPlatform,
+                    $this->settings->getDirectBillingPlatformId()
+                );
             }
         }
 
         $cronSelect = $this->createCronSelect();
         $userEditServiceSelect = $this->createUserEditServiceSelect();
+        $themesList = to_array($this->createThemesList());
+        $languagesList = to_array($this->createLanguagesList());
 
-        // Available themes
-        $dirList = $this->fileSystem->scanDirectory($this->path->to('themes'));
-        $themesList = [];
-        foreach ($dirList as $dirName) {
-            if (
-                $dirName[0] != '.' &&
-                $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
-            ) {
-                $themesList[] = create_dom_element("option", $dirName, [
-                    'value' => $dirName,
-                    'selected' => $dirName == $this->settings->getTheme() ? "selected" : "",
-                ]);
-            }
-        }
-
-        // Available languages
-        $dirList = $this->fileSystem->scanDirectory($this->path->to('translations'));
-        $languagesList = [];
-        foreach ($dirList as $dirName) {
-            if (
-                $dirName[0] != '.' &&
-                $this->fileSystem->isDirectory($this->path->to("translations/{$dirName}"))
-            ) {
-                $languagesList[] = create_dom_element(
-                    "option",
-                    $this->lang->t('language_' . $dirName),
-                    [
-                        'value' => $dirName,
-                        'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
-                    ]
-                );
-            }
-        }
-
-        return $this->template->render(
-            "admin/settings",
-            compact("userEditServiceSelect", "cronSelect") + [
-                "title" => $this->title,
-                "smsPlatforms" => implode("", $smsPlatforms),
-                "transferPlatforms" => implode("", $transferPlatforms),
-                "themesList" => implode("", $themesList),
-                "languagesList" => implode("", $languagesList),
-            ]
-        );
+        return $this->template->render("admin/settings", [
+            "cronSelect" => $cronSelect,
+            "directBillingPlatforms" => implode("", $directBillingPlatforms),
+            "languagesList" => implode("", $languagesList),
+            "smsPlatforms" => implode("", $smsPlatforms),
+            "themesList" => implode("", $themesList),
+            "title" => $this->title,
+            "transferPlatforms" => implode("", $transferPlatforms),
+            "userEditServiceSelect" => $userEditServiceSelect,
+        ]);
     }
 
-    protected function createUserEditServiceSelect()
+    private function createUserEditServiceSelect()
     {
         $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
@@ -135,7 +104,7 @@ class PageAdminSettings extends PageAdmin
         return $userEditServiceSelect;
     }
 
-    protected function createCronSelect()
+    private function createCronSelect()
     {
         $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
@@ -156,5 +125,51 @@ class PageAdminSettings extends PageAdmin
         $cronSelect->addContent($noOption);
 
         return $cronSelect;
+    }
+
+    private function createPaymentPlatformOption(PaymentPlatform $paymentPlatform, $currentId)
+    {
+        return create_dom_element("option", $paymentPlatform->getName(), [
+            'value' => $paymentPlatform->getId(),
+            'selected' => $paymentPlatform->getId() === $currentId ? "selected" : "",
+        ]);
+    }
+
+    private function createThemesList()
+    {
+        $dirList = $this->fileSystem->scanDirectory($this->path->to('themes'));
+
+        foreach ($dirList as $dirName) {
+            if (
+                $dirName[0] != '.' &&
+                $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
+            ) {
+                yield create_dom_element("option", $dirName, [
+                    'value' => $dirName,
+                    'selected' => $dirName == $this->settings->getTheme() ? "selected" : "",
+                ]);
+            }
+        }
+    }
+
+    private function createLanguagesList()
+    {
+        /** @var TranslationManager $translationManager */
+        $translationManager = $this->app->make(TranslationManager::class);
+        $langShop = $translationManager->shop();
+
+        $dirList = $this->fileSystem->scanDirectory($this->path->to('translations'));
+
+        foreach ($dirList as $dirName) {
+            if (
+                $dirName[0] != '.' &&
+                $this->fileSystem->isDirectory($this->path->to("translations/{$dirName}"))
+            ) {
+                yield create_dom_element("option", $this->lang->t('language_' . $dirName), [
+                    'value' => $dirName,
+                    'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                ]);
+            }
+        }
     }
 }

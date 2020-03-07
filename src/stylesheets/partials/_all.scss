@@ -50,4 +50,14 @@ $table-cell-border: 1px solid $grey-light;
 $table-color: $black;
 $table-row-hover-background-color: lighten($grey-lighter, 5%);
 
+// Link
+$link-hover: darken($link, 10%);
+$link-hover-border: $grey-light;
+
+$link-focus: darken($link, 10%);
+$link-focus-border: $blue;
+
+$link-active: darken($link, 10%);
+$link-active-border: $grey-dark;
+
 @import "~bulma";

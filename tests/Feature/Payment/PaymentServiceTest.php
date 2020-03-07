@@ -3,7 +3,7 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
-use App\Payment\PaymentService;
+use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
@@ -55,9 +55,9 @@ class PaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);
@@ -66,15 +66,15 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
         $this->assertSame(0, $boughtService->getUid());
         $this->assertSame(Purchase::METHOD_SMS, $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
-        $this->assertSame('', $boughtService->getAuthData());
+        $this->assertSame("", $boughtService->getAuthData());
     }
 
     /** @test */
@@ -101,9 +101,9 @@ class PaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "QWERTY",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);
@@ -112,8 +112,8 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
     }
@@ -141,9 +141,9 @@ class PaymentServiceTest extends TestCase
             'auth_data' => 'STEAM_1:0:22309350',
         ]);
         $purchase->setPrice($price);
-        $purchase->setService($serviceId);
+        $purchase->setServiceId($serviceId);
         $purchase->setPayment([
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatform->getId(),
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             Purchase::PAYMENT_SMS_CODE => "abcd1234",
             Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
         ]);
@@ -152,8 +152,8 @@ class PaymentServiceTest extends TestCase
         $payResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult["status"]);
-        $boughtService = $this->boughtServiceRepository->get($payResult["data"]["bsid"]);
+        $this->assertSame("purchased", $payResult->getStatus());
+        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertEquals(-1, $boughtService->getAmount());
         $this->assertSame('STEAM_1:0:22309350', $boughtService->getAuthData());
