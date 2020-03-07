@@ -8,6 +8,7 @@ use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
+use App\ServiceModules\ServiceModule;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
@@ -35,10 +36,11 @@ class TransferPaymentServiceTest extends TestCase
             "module" => TPay::MODULE_ID,
         ]);
 
-        /** @var SupportTransfer|IServicePurchase $paymentModule */
+        /** @var SupportTransfer $paymentModule */
         $paymentModule = $heart->getPaymentModule($paymentPlatform);
 
         $serviceId = "vip";
+        /** @var IServicePurchase|ServiceModule $serviceModule */
         $serviceModule = $heart->getServiceModule($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
@@ -52,12 +54,15 @@ class TransferPaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => $server->getId(),
             'type' => ExtraFlagType::TYPE_SID,
         ]);
+        $purchase->setPayment([
+            Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
+        ]);
         $purchase->setPrice($price);
         $purchase->setServiceId($serviceModule->service->getId());
         $purchase->setDesc("Description");
 
         // when
-        $payResult = $transferPaymentMethod->pay($purchase, $paymentModule);
+        $payResult = $transferPaymentMethod->pay($purchase, $serviceModule);
         $transferFinalize = $paymentModule->finalizeTransfer(
             [],
             [
