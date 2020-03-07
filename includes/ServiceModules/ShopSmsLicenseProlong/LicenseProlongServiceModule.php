@@ -11,8 +11,8 @@ use App\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
-use App\Payment\AdminPaymentService;
-use App\Payment\BoughtServiceService;
+use App\Payment\Admin\AdminPaymentService;
+use App\Payment\General\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -116,8 +116,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
             'identifier' => $identifier,
         ]);
         $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => $transferPrice,
-            Purchase::PAYMENT_SMS_DISABLED => true,
+            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
+            Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
     }
 
@@ -237,7 +237,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
         $purchase = new Purchase($admin);
-        $purchase->setService($this->service->getId());
+        $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             'method' => 'admin',
             'payment_id' => $paymentId,

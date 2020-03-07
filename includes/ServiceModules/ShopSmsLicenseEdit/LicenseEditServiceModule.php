@@ -5,7 +5,7 @@ use App\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
-use App\Payment\BoughtServiceService;
+use App\Payment\General\BoughtServiceService;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;

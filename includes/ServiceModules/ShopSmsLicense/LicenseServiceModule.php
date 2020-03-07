@@ -12,8 +12,8 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
-use App\Payment\BoughtServiceService;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PurchaseSerializer;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -277,12 +277,12 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
         $purchase->setEmail($validated['email']);
         $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => $this->getCost(
+            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost(
                 $costDaily,
                 $validated['amount'],
                 true
             ),
-            Purchase::PAYMENT_SMS_DISABLED => true,
+            Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
     }
 
@@ -507,7 +507,7 @@ class LicenseServiceModule extends ServiceModule implements
         $costData = $this->getCostUserEdit($validated, $userService);
 
         $purchase = new Purchase($this->auth->user());
-        $purchase->setService('ss_license_edit');
+        $purchase->setServiceId('ss_license_edit');
         $purchase->setOrder([
             'user_service_id' => $validated['id'],
             'cost_daily' => $costData['cost_daily'],
@@ -519,8 +519,8 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ]);
         $purchase->setPayment([
-            Purchase::PAYMENT_TRANSFER_PRICE => $costData['surcharge'] * $costData['bargain'],
-            Purchase::PAYMENT_SMS_DISABLED => true,
+            Purchase::PAYMENT_PRICE_TRANSFER => $costData['surcharge'] * $costData['bargain'],
+            Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
         $purchase->setEmail($validated['email']);
 
