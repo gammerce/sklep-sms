@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class TransferFinalize
+class FinalizedPayment
 {
     /**
      * Status płatności, czy wszystkie dane są prawidłowe
@@ -37,7 +37,7 @@ class TransferFinalize
      *
      * @var string
      */
-    private $transferService = '';
+    private $externalServiceId = '';
 
     /**
      * Co ma zostać wyświetlone na stronie
@@ -47,14 +47,14 @@ class TransferFinalize
     private $output = '';
 
     /**
-     * Czy to płatność testowa
+     * Is it test payment
      *
-     * @var boolean
+     * @var bool
      */
     private $testMode = false;
 
     /**
-     * @return boolean
+     * @return bool
      */
     public function getStatus()
     {
@@ -62,7 +62,7 @@ class TransferFinalize
     }
 
     /**
-     * @param boolean $status
+     * @param bool $status
      */
     public function setStatus($status)
     {
@@ -120,17 +120,17 @@ class TransferFinalize
     /**
      * @return string
      */
-    public function getTransferService()
+    public function getExternalServiceId()
     {
-        return $this->transferService;
+        return $this->externalServiceId;
     }
 
     /**
-     * @param string $transferService
+     * @param string $externalServiceId
      */
-    public function setTransferService($transferService)
+    public function setExternalServiceId($externalServiceId)
     {
-        $this->transferService = (string) $transferService;
+        $this->externalServiceId = (string) $externalServiceId;
     }
 
     /**

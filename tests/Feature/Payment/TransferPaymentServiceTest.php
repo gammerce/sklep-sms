@@ -63,7 +63,7 @@ class TransferPaymentServiceTest extends TestCase
 
         // when
         $payResult = $transferPaymentMethod->pay($purchase, $serviceModule);
-        $transferFinalize = $paymentModule->finalizeTransfer(
+        $finalizedPayment = $paymentModule->finalizeTransfer(
             [],
             [
                 'tr_id' => "abc",
@@ -73,12 +73,12 @@ class TransferPaymentServiceTest extends TestCase
                 'md5sum' => "xyz",
             ]
         );
-        $transferFinalize->setStatus(true); // Mark as if checking md5sum was correct
-        $result = $transferPaymentService->transferFinalize($transferFinalize);
+        $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
+        $result = $transferPaymentService->finalizePurchase($finalizedPayment);
 
         // then
         $this->assertTrue($result);
-        $paymentTransfer = $paymentTransferRepository->get($transferFinalize->getOrderId());
+        $paymentTransfer = $paymentTransferRepository->get($finalizedPayment->getOrderId());
         $this->assertNotNull($paymentTransfer);
         $this->assertEquals(190, $paymentTransfer->getIncome());
     }

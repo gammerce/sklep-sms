@@ -57,7 +57,7 @@ class ChargeWalletTest extends HttpTestCase
         $this->assertSame(200, $paymentResponse->getStatusCode());
         $json = $this->decodeJsonResponse($paymentResponse);
 
-        $response = $this->post("/transfer/{$paymentPlatform->getId()}", [
+        $response = $this->post("/api/ipn/transfer/{$paymentPlatform->getId()}", [
             "tr_id" => 1,
             "tr_amount" => 1,
             "tr_crc" => $json["data"]["crc"],

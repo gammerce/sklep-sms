@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\Abstracts;
 
+use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 
 interface SupportDirectBilling
@@ -11,4 +12,11 @@ interface SupportDirectBilling
      * @return array
      */
     public function prepareDirectBilling(Purchase $purchase, $dataFilename);
+
+    /**
+     * @param array $query
+     * @param array $body
+     * @return FinalizedPayment
+     */
+    public function finalizeDirectBilling(array $query, array $body);
 }

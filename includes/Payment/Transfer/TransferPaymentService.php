@@ -3,7 +3,7 @@ namespace App\Payment\Transfer;
 
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
-use App\Models\TransferFinalize;
+use App\Models\FinalizedPayment;
 use App\Payment\General\ExternalPaymentService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -36,12 +36,12 @@ class TransferPaymentService
     }
 
     /**
-     * @param TransferFinalize $transferFinalize
+     * @param FinalizedPayment $finalizedPayment
      * @return bool
      */
-    public function transferFinalize(TransferFinalize $transferFinalize)
+    public function finalizePurchase(FinalizedPayment $finalizedPayment)
     {
-        $paymentTransfer = $this->paymentTransferRepository->get($transferFinalize->getOrderId());
+        $paymentTransfer = $this->paymentTransferRepository->get($finalizedPayment->getOrderId());
 
         // Avoid multiple authorization of the same order
         if ($paymentTransfer) {
@@ -49,29 +49,29 @@ class TransferPaymentService
         }
 
         $purchase = $this->externalPaymentService->restorePurchase(
-            $transferFinalize->getDataFilename()
+            $finalizedPayment->getDataFilename()
         );
 
         if (!$purchase) {
-            $this->logger->log('transfer_no_data_file', $transferFinalize->getOrderId());
+            $this->logger->log('transfer_no_data_file', $finalizedPayment->getOrderId());
             return false;
         }
 
         $this->paymentTransferRepository->create(
-            $transferFinalize->getOrderId(),
+            $finalizedPayment->getOrderId(),
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
-            $transferFinalize->getTransferService(),
+            $finalizedPayment->getExternalServiceId(),
             $purchase->user->getLastIp(),
             $purchase->user->getPlatform(),
-            $transferFinalize->isTestMode()
+            $finalizedPayment->isTestMode()
         );
-        $this->externalPaymentService->deletePurchase($transferFinalize->getDataFilename());
+        $this->externalPaymentService->deletePurchase($finalizedPayment->getDataFilename());
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!$serviceModule) {
             $this->logger->log(
                 'transfer_bad_module',
-                $transferFinalize->getOrderId(),
+                $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
 
@@ -81,7 +81,7 @@ class TransferPaymentService
         if (!($serviceModule instanceof IServicePurchase)) {
             $this->logger->log(
                 'transfer_no_purchase',
-                $transferFinalize->getOrderId(),
+                $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
 
@@ -90,16 +90,16 @@ class TransferPaymentService
 
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
-            Purchase::PAYMENT_PAYMENT_ID => $transferFinalize->getOrderId(),
+            Purchase::PAYMENT_PAYMENT_ID => $finalizedPayment->getOrderId(),
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
         $this->logger->log(
             'payment_transfer_accepted',
             $boughtServiceId,
-            $transferFinalize->getOrderId(),
-            $transferFinalize->getAmount(),
-            $transferFinalize->getTransferService(),
+            $finalizedPayment->getOrderId(),
+            $finalizedPayment->getAmount(),
+            $finalizedPayment->getExternalServiceId(),
             $purchase->user->getUsername(),
             $purchase->user->getUid(),
             $purchase->user->getLastIp()

@@ -3,7 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
-use App\Models\TransferFinalize;
+use App\Models\FinalizedPayment;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
@@ -64,28 +64,28 @@ class TPay extends PaymentModule implements SupportTransfer
             'imie' => $purchase->user->getForename(),
             'nazwisko' => $purchase->user->getSurname(),
             'email' => $purchase->getEmail(),
-            'pow_url' => $this->url->to("page/tpay_success"),
-            'pow_url_blad' => $this->url->to("page/payment_error"),
-            'wyn_url' => $this->url->to("transfer/{$this->paymentPlatform->getId()}"),
+            'pow_url' => $this->url->to("/page/tpay_success"),
+            'pow_url_blad' => $this->url->to("/page/payment_error"),
+            'wyn_url' => $this->url->to("/transfer/{$this->paymentPlatform->getId()}"),
         ];
     }
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $transferFinalize = new TransferFinalize();
+        $finalizedPayment = new FinalizedPayment();
 
         if ($this->isPaymentValid($body)) {
-            $transferFinalize->setStatus(true);
+            $finalizedPayment->setStatus(true);
         }
 
-        $transferFinalize->setOrderId(array_get($body, 'tr_id'));
-        $transferFinalize->setAmount(array_get($body, 'tr_amount'));
-        $transferFinalize->setDataFilename(array_get($body, 'tr_crc'));
-        $transferFinalize->setTransferService(array_get($body, 'id'));
-        $transferFinalize->setTestMode(array_get($body, 'test_mode', false));
-        $transferFinalize->setOutput('TRUE');
+        $finalizedPayment->setOrderId(array_get($body, 'tr_id'));
+        $finalizedPayment->setAmount(array_get($body, 'tr_amount'));
+        $finalizedPayment->setDataFilename(array_get($body, 'tr_crc'));
+        $finalizedPayment->setExternalServiceId(array_get($body, 'id'));
+        $finalizedPayment->setTestMode(array_get($body, 'test_mode', false));
+        $finalizedPayment->setOutput('TRUE');
 
-        return $transferFinalize;
+        return $finalizedPayment;
     }
 
     private function isPaymentValid($response)

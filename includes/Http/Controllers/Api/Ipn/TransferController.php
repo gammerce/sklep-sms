@@ -7,44 +7,41 @@ use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class TransferController
 {
     public function action(
-        $transferPlatform,
+        $paymentPlatform,
         Request $request,
         Heart $heart,
         TransferPaymentService $transferPaymentService,
         DatabaseLogger $logger
     ) {
-        $paymentModule = $heart->getPaymentModuleByPlatformId($transferPlatform);
+        $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new PlainResponse(
-                "Payment platform does not support transfer payments [${transferPlatform}]."
+                "Payment platform does not support transfer payments [${paymentPlatform}]."
             );
         }
 
-        $transferFinalize = $paymentModule->finalizeTransfer(
+        $finalizedPayment = $paymentModule->finalizeTransfer(
             $request->query->all(),
             $request->request->all()
         );
 
-        if ($transferFinalize->getStatus() === false) {
+        if (!$finalizedPayment->getStatus()) {
             $logger->log(
                 'payment_not_accepted',
-                $transferFinalize->getOrderId(),
-                $transferFinalize->getAmount(),
-                $transferFinalize->getTransferService()
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getAmount(),
+                $finalizedPayment->getExternalServiceId()
             );
         } else {
-            $transferPaymentService->transferFinalize($transferFinalize);
+            $transferPaymentService->finalizePurchase($finalizedPayment);
         }
 
-        return new Response($transferFinalize->getOutput(), 200, [
-            'Content-type' => 'text/plain; charset="UTF-8"',
-        ]);
+        return new PlainResponse($finalizedPayment->getOutput());
     }
 
     /**

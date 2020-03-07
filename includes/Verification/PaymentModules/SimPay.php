@@ -20,7 +20,6 @@ use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
-// TODO Create endpoint handling ipn
 // TODO Display information about price and charge amount
 
 class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
@@ -51,8 +50,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             new DataField("secret"),
             new DataField("service_id", "SMS Service ID"),
             new DataField("sms_text"),
-            new DataField("direct_billing_service_id", "Direct Billing Service ID"),
-            new DataField("direct_billing_api_key", "Direct Billing API Key"),
+            //            new DataField("direct_billing_service_id", "Direct Billing Service ID"),
+            //            new DataField("direct_billing_api_key", "Direct Billing API Key"),
         ];
     }
 
@@ -130,8 +129,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $response = $this->requester->post("https://simpay.pl/db/api", [
             'serviceId' => $serviceId,
             'control' => $control,
-            'complete' => $this->url->to("page/payment_success"),
-            'failure' => $this->url->to("page/payment_error"),
+            'complete' => $this->url->to("/page/payment_success"),
+            'failure' => $this->url->to("/page/payment_error"),
             'amount_gross' => $amount,
             'sign' => hash('sha256', $serviceId . $amount . $control . $apiKey),
         ]);
@@ -139,9 +138,6 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $result = $response->json();
         $status = array_get($result, "status");
         $message = array_get($result, "message");
-
-        // TODO Remove it
-        log_info("Response", $result);
 
         if ($status === "success") {
             return new Result("external", $this->lang->t("external_payment_prepared"), [
@@ -182,5 +178,10 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     private function getDirectBillingApiKey()
     {
         return $this->getData('direct_billing_api_key');
+    }
+
+    public function finalizeDirectBilling(array $query, array $body)
+    {
+        // TODO: Implement finalizeDirectBilling() method.
     }
 }
