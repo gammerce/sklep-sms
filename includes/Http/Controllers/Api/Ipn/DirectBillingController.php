@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Ipn;
 
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
