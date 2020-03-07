@@ -4,23 +4,26 @@ namespace App\Models;
 class Purchase
 {
     const METHOD_ADMIN = "admin";
+    const METHOD_DIRECT_BILLING = "direct_billing";
+    const METHOD_SERVICE_CODE = "service_code";
     const METHOD_SMS = "sms";
     const METHOD_TRANSFER = "transfer";
-    const METHOD_SERVICE_CODE = "service_code";
     const METHOD_WALLET = "wallet";
 
-    const PAYMENT_SMS_PRICE = "sms_price";
-    const PAYMENT_TRANSFER_PRICE = "transfer_price";
-    const PAYMENT_SMS_DISABLED = "no_sms";
-    const PAYMENT_TRANSFER_DISABLED = "no_transfer";
-    const PAYMENT_WALLET_DISABLED = "no_wallet";
-    const PAYMENT_SERVICE_CODE_DISABLED = "no_code";
+    const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
+    const PAYMENT_DISABLED_SERVICE_CODE = "no_code";
+    const PAYMENT_DISABLED_SMS = "no_sms";
+    const PAYMENT_DISABLED_TRANSFER = "no_transfer";
+    const PAYMENT_DISABLED_WALLET = "no_wallet";
     const PAYMENT_METHOD = "method";
     const PAYMENT_PAYMENT_ID = "payment_id";
+    const PAYMENT_PLATFORM_DIRECT_BILLING = "direct_billing_platform";
+    const PAYMENT_PLATFORM_SMS = "sms_platform";
+    const PAYMENT_PLATFORM_TRANSFER = "transfer_platform";
+    const PAYMENT_PRICE_SMS = "sms_price";
+    const PAYMENT_PRICE_TRANSFER = "transfer_price";
     const PAYMENT_SERVICE_CODE = "service_code";
     const PAYMENT_SMS_CODE = "sms_code";
-    const PAYMENT_SMS_PLATFORM = "sms_platform";
-    const PAYMENT_TRANSFER_PLATFORM = "transfer_platform";
 
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
@@ -30,7 +33,7 @@ class Purchase
      *
      * @var string|null
      */
-    private $service = null;
+    private $serviceId = null;
 
     /**
      * Order details like auth_data, password etc.
@@ -67,9 +70,9 @@ class Purchase
         $this->user = $user;
     }
 
-    public function setService($service)
+    public function setServiceId($serviceId)
     {
-        $this->service = (string) $service;
+        $this->serviceId = (string) $serviceId;
     }
 
     public function setOrder(array $order)
@@ -83,8 +86,8 @@ class Purchase
     {
         $this->price = $price;
         $this->setPayment([
-            Purchase::PAYMENT_SMS_PRICE => $price->getSmsPrice(),
-            Purchase::PAYMENT_TRANSFER_PRICE => $price->getTransferPrice(),
+            Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
+            Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
         ]);
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),
@@ -103,9 +106,9 @@ class Purchase
         }
     }
 
-    public function getService()
+    public function getServiceId()
     {
-        return $this->service;
+        return $this->serviceId;
     }
 
     /**

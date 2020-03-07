@@ -33,6 +33,7 @@ use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResour
 use App\Http\Controllers\Api\Admin\WalletChargeCollection;
 use App\Http\Controllers\Api\BrickResource;
 use App\Http\Controllers\Api\CronController;
+use App\Http\Controllers\Api\Ipn\DirectBillingController;
 use App\Http\Controllers\Api\IncomeController;
 use App\Http\Controllers\Api\InstallController;
 use App\Http\Controllers\Api\LogInController;
@@ -55,7 +56,7 @@ use App\Http\Controllers\Api\ServiceTakeOverController;
 use App\Http\Controllers\Api\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\SessionLanguageResource;
 use App\Http\Controllers\Api\TemplateResource;
-use App\Http\Controllers\Api\TransferController;
+use App\Http\Controllers\Api\Ipn\TransferController;
 use App\Http\Controllers\Api\UpdateController;
 use App\Http\Controllers\Api\UserProfileResource;
 use App\Http\Controllers\Api\UserServiceBrickController;
@@ -184,8 +185,19 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/transfer/{transferPlatform}', [
+                /**
+                 * @deprecated
+                 */
+                $r->addRoute(['GET', 'POST'], '/transfer/{paymentPlatform}', [
                     'uses' => TransferController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/api/ipn/transfer/{paymentPlatform}', [
+                    'uses' => TransferController::class . '@action',
+                ]);
+
+                $r->addRoute(['GET', 'POST'], '/api/ipn/direct-billing/{paymentPlatform}', [
+                    'uses' => DirectBillingController::class . '@action',
                 ]);
 
                 /**

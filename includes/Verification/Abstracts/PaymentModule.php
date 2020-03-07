@@ -3,15 +3,11 @@ namespace App\Verification\Abstracts;
 
 use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
-use App\Support\Database;
 use App\Verification\DataField;
 
 abstract class PaymentModule
 {
     const MODULE_ID = '';
-
-    /** @var Database */
-    private $db;
 
     /** @var Requester */
     protected $requester;
@@ -19,12 +15,8 @@ abstract class PaymentModule
     /** @var PaymentPlatform */
     protected $paymentPlatform;
 
-    public function __construct(
-        Database $database,
-        Requester $requester,
-        PaymentPlatform $paymentPlatform
-    ) {
-        $this->db = $database;
+    public function __construct(Requester $requester, PaymentPlatform $paymentPlatform)
+    {
         $this->requester = $requester;
         $this->paymentPlatform = $paymentPlatform;
     }
@@ -33,11 +25,9 @@ abstract class PaymentModule
      * @param mixed $key
      * @return mixed
      */
-    public function getData($key = null)
+    public function getData($key)
     {
-        $data = $this->paymentPlatform->getData();
-
-        return $key ? array_get($data, $key) : $data;
+        return array_get($this->paymentPlatform->getData(), $key);
     }
 
     /**

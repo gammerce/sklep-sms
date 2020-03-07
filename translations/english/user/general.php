@@ -18,11 +18,14 @@ return [
     'contact_info' => 'You can contact us on the following ways.',
     'create_account' => 'Create account',
     'different_values' => 'Given values are different.',
+    'direct_billing_unavailable' => 'Payment by direct billing is unavailable.',
     'email_occupied' => 'Given e-mail is already taken.',
     'email_repeat' => 'Repeat e-mail',
     'email_sent' =>
         'If given credentials are correct, than e-mail with password reset link has been sent to your mailbox.',
     'expire' => 'Expires',
+    'external_payment_prepared' =>
+        'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'forgot_password' => 'I don\'t remeber password',
     'forgotten_password' => 'Password recovery',
     'go_to_payment' => 'Proceed to payment',
@@ -106,7 +109,6 @@ You can now profit from many add-ons.',
     'sms_info_insufficient_data' =>
         'Not all the necessary data were given in payment configuration.',
     'sms_info_no_connection' => 'No connection to the verification script.',
-    'sms_info_ok' => 'Given return code is correct.',
     'sms_info_server_error' =>
         'Something bad happened on the API side. Report the error to the shop owner.',
     'sms_info_unknown_error' => 'An unknown error occurred. Report it to the shop owner.',
@@ -130,10 +132,8 @@ You can now profit from many add-ons.',
         'Transfer payment: {1} was accepted, but there was no file with purchase data.',
     'transfer_no_purchase' =>
         'Transfer payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
-    'transfer_prepared' =>
-        'Payment preparation successful.<br />In a minute you will be send to transaction service.',
     'transfer_transfer' => 'Transfer',
-    'transfer_unavailable' => 'Payment by transfer unavailable.',
+    'transfer_unavailable' => 'Payment by transfer is unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',
     'type_code' => 'Enter the code',
     'type_setinfo' => 'Type in the console: setinfo _ss "{1}"',

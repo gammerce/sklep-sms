@@ -10,7 +10,7 @@ use App\Http\Validation\Rules\ServerLinkedToServiceRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
-use App\Payment\BoughtServiceService;
+use App\Payment\General\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\ServiceModules\Interfaces\IServiceCreate;

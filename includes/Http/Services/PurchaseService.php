@@ -3,10 +3,11 @@ namespace App\Http\Services;
 
 use App\Exceptions\ValidationException;
 use App\Models\Purchase;
-use App\Payment\PaymentService;
+use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseOutside;
 use App\ServiceModules\ServiceModule;
+use App\Support\Result;
 use App\System\Auth;
 use UnexpectedValueException;
 
@@ -34,7 +35,7 @@ class PurchaseService
     /**
      * @param ServiceModule $serviceModule
      * @param array         $body
-     * @return array
+     * @return Result
      * @throws ValidationException
      */
     public function purchase(ServiceModule $serviceModule, array $body)
@@ -60,7 +61,7 @@ class PurchaseService
         $user->setLastIp($ip);
 
         $purchase = new Purchase($user);
-        $purchase->setService($serviceModule->service->getId());
+        $purchase->setServiceId($serviceModule->service->getId());
 
         $purchase->setEmail($email);
         $purchase->setOrder([
@@ -74,7 +75,7 @@ class PurchaseService
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_SMS_CODE => $smsCode,
-            Purchase::PAYMENT_SMS_PLATFORM => $paymentPlatformId,
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatformId,
         ]);
 
         if ($price) {

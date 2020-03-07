@@ -96,7 +96,7 @@ return [
     'sid' => 'SteamID',
     'sign_in' => 'Zaloguj się',
     'sms_return_code' => 'Kod zwrotny',
-    'sth_went_wrong' => 'Coś poszło nie tak :/',
+    'sth_went_wrong' => 'Coś poszło nie tak',
     'surname' => 'Nazwisko',
     'token' => 'Token',
     'type' => 'Typ',

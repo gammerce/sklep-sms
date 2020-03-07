@@ -5,10 +5,9 @@ use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
-use App\Models\TransferFinalize;
+use App\Models\FinalizedPayment;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Support\Database;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -48,13 +47,12 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     private $fileLogger;
 
     public function __construct(
-        Database $database,
         Requester $requester,
         UrlGenerator $urlGenerator,
         PaymentPlatform $paymentPlatform,
         FileLogger $fileLogger
     ) {
-        parent::__construct($database, $requester, $paymentPlatform);
+        parent::__construct($requester, $paymentPlatform);
 
         $this->url = $urlGenerator;
 
@@ -140,7 +138,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     public function prepareTransfer(Purchase $purchase, $dataFilename)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) / 100, 2);
+        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
@@ -150,32 +148,34 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
             'signature' => $signature,
             'amount' => $cost,
             'control' => $dataFilename,
-            'return_urlc' => $this->url->to("transfer/{$this->paymentPlatform->getId()}"),
-            'return_url' => $this->url->to('page/transferuj_ok'),
+            'return_urlc' => $this->url->to("/transfer/{$this->paymentPlatform->getId()}"),
+            'return_url' => $this->url->to("/page/payment_success"),
             'description' => $purchase->getDesc(),
         ];
     }
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $transferFinalize = new TransferFinalize();
+        $finalizedPayment = new FinalizedPayment();
 
         if ($this->isPaymentValid($body)) {
-            $transferFinalize->setStatus(true);
+            $finalizedPayment->setStatus(true);
         }
 
-        $transferFinalize->setOrderId(array_get($body, 'orderID'));
-        $transferFinalize->setAmount(array_get($body, 'amountPay'));
-        $transferFinalize->setDataFilename(array_get($body, 'control'));
-        $transferFinalize->setTestMode(array_get($body, 'test', false));
-        $transferFinalize->setOutput('OK');
+        $isTest = strtolower(array_get($body, 'test')) === "true";
 
-        return $transferFinalize;
+        $finalizedPayment->setOrderId(array_get($body, 'orderID'));
+        $finalizedPayment->setAmount(array_get($body, 'amountPay'));
+        $finalizedPayment->setDataFilename(array_get($body, 'control'));
+        $finalizedPayment->setTestMode($isTest);
+        $finalizedPayment->setOutput("OK");
+
+        return $finalizedPayment;
     }
 
     private function isPaymentValid(array $body)
     {
-        if (array_get($body, 'status') != true) {
+        if (strtolower(array_get($body, 'status')) !== "true") {
             return false;
         }
 

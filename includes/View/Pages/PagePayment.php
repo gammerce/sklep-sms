@@ -1,16 +1,11 @@
 <?php
 namespace App\View\Pages;
 
-use App\Models\Purchase;
-use App\Payment\PurchaseSerializer;
+use App\Payment\General\PaymentMethodFactory;
+use App\Payment\General\PurchaseSerializer;
+use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\ServiceModules\Interfaces\IServiceServiceCode;
-use App\ServiceModules\ServiceModule;
-use App\Services\PriceTextService;
-use App\Services\SmsPriceService;
 use App\System\Settings;
-use App\Verification\Abstracts\PaymentModule;
-use App\Verification\Abstracts\SupportSms;
 
 class PagePayment extends Page
 {
@@ -19,136 +14,63 @@ class PagePayment extends Page
     /** @var PurchaseSerializer */
     private $purchaseSerializer;
 
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
     /** @var Settings */
     private $settings;
 
+    /** @var PaymentMethodFactory */
+    private $paymentMethodFactory;
+
     public function __construct(
         PurchaseSerializer $purchaseSerializer,
-        PriceTextService $priceTextService,
-        SmsPriceService $smsPriceService,
+        PaymentMethodFactory $paymentMethodFactory,
         Settings $settings
     ) {
         parent::__construct();
 
         $this->purchaseSerializer = $purchaseSerializer;
-        $this->priceTextService = $priceTextService;
         $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
-        $this->smsPriceService = $smsPriceService;
         $this->settings = $settings;
+        $this->paymentMethodFactory = $paymentMethodFactory;
     }
 
     protected function content(array $query, array $body)
     {
+        $sign = array_get($body, 'sign');
+        $data = array_get($body, 'data');
+
         // Check form sign
-        if (
-            !isset($body['sign']) ||
-            $body['sign'] != md5($body['data'] . $this->settings->getSecret())
-        ) {
+        if ($sign !== md5($data . $this->settings->getSecret())) {
             return $this->lang->t('wrong_sign');
         }
 
-        $purchase = $this->purchaseSerializer->deserializeAndDecode($body['data']);
+        $purchase = $this->purchaseSerializer->deserializeAndDecode($data);
         if (!$purchase) {
             return $this->lang->t('error_occurred');
         }
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getService());
+        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t('bad_module');
         }
 
-        $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM)
-        );
-
-        $transferPrice = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE)
-        );
-
         $orderDetails = $serviceModule->orderDetails($purchase);
 
-        $paymentMethods = '';
+        $renderers = $this->paymentMethodFactory->createAll();
 
-        if (
-            $this->isSmsAvailable($purchase, $smsPaymentModule) &&
-            $smsPaymentModule instanceof SupportSms
-        ) {
-            $smsNumber = $this->smsPriceService->getNumber(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
-                $smsPaymentModule
-            );
-            $paymentMethods .= $this->template->render('payment_method_sms', [
-                'priceGross' => $this->priceTextService->getPriceGrossText(
-                    $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE)
-                ),
-                'smsCode' => $smsPaymentModule->getSmsCode(),
-                'smsNumber' => $smsNumber ? $smsNumber->getNumber() : null,
-            ]);
-        }
+        $paymentMethods = collect($renderers)
+            ->filter(function (IPaymentMethod $renderer) use ($purchase) {
+                return $renderer->isAvailable($purchase);
+            })
+            ->map(function (IPaymentMethod $renderer) use ($purchase) {
+                return $renderer->render($purchase);
+            })
+            ->join();
 
-        if ($this->isTransferAvailable($purchase)) {
-            $paymentMethods .= $this->template->render(
-                "payment_method_transfer",
-                compact('transferPrice')
-            );
-        }
-
-        if ($this->isWalletAvailable($purchase)) {
-            $paymentMethods .= $this->template->render(
-                "payment_method_wallet",
-                compact('transferPrice')
-            );
-        }
-
-        if ($this->isServiceCodeAvailable($purchase, $serviceModule)) {
-            $paymentMethods .= $this->template->render("payment_method_code");
-        }
-
-        $purchaseData = $body['data'];
-        $purchaseSign = $body['sign'];
-
-        return $this->template->render(
-            "payment_form",
-            compact('orderDetails', 'paymentMethods', 'purchaseData', 'purchaseSign')
-        );
-    }
-
-    private function isSmsAvailable(Purchase $purchase, PaymentModule $paymentModule = null)
-    {
-        return $purchase->getPayment(Purchase::PAYMENT_SMS_PLATFORM) &&
-            $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE) !== null &&
-            $paymentModule instanceof SupportSms &&
-            !$purchase->getPayment(Purchase::PAYMENT_SMS_DISABLED) &&
-            $this->smsPriceService->isPriceAvailable(
-                $purchase->getPayment(Purchase::PAYMENT_SMS_PRICE),
-                $paymentModule
-            );
-    }
-
-    private function isTransferAvailable(Purchase $purchase)
-    {
-        return $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PLATFORM) &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) !== null &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) > 1 &&
-            !$purchase->getPayment(Purchase::PAYMENT_TRANSFER_DISABLED);
-    }
-
-    private function isWalletAvailable(Purchase $purchase)
-    {
-        return is_logged() &&
-            $purchase->getPayment(Purchase::PAYMENT_TRANSFER_PRICE) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_WALLET_DISABLED);
-    }
-
-    private function isServiceCodeAvailable(Purchase $purchase, ServiceModule $serviceModule)
-    {
-        return !$purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE_DISABLED) &&
-            $serviceModule instanceof IServiceServiceCode;
+        return $this->template->render("payment/payment_form", [
+            'orderDetails' => $orderDetails,
+            'paymentMethods' => $paymentMethods,
+            'purchaseData' => $data,
+            'purchaseSign' => $sign,
+        ]);
     }
 }

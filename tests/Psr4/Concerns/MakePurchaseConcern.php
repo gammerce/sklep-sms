@@ -67,10 +67,10 @@ trait MakePurchaseConcern
         $serviceModule = $heart->getServiceModule('vip');
         $result = $purchaseService->purchase($serviceModule, $attributes);
 
-        if ($result['status'] !== 'purchased') {
+        if ($result->getStatus() !== 'purchased') {
             throw new UnexpectedValueException();
         }
 
-        return $boughtServiceRepository->get($result["data"]["bsid"]);
+        return $boughtServiceRepository->get($result->getDatum("bsid"));
     }
 }

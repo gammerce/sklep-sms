@@ -3,7 +3,7 @@ namespace App\View\Pages;
 
 use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
-use App\Payment\PurchaseInformation;
+use App\Payment\General\PurchaseInformation;
 use App\System\Settings;
 use App\Verification\PaymentModules\Cashbill;
 

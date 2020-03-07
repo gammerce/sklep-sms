@@ -65,7 +65,7 @@ class PurchaseResource
         }
 
         try {
-            $response = $purchaseService->purchase($serviceModule, $body);
+            $purchaseResult = $purchaseService->purchase($serviceModule, $body);
         } catch (ValidationException $e) {
             return $responseFactory->create(
                 $acceptHeader,
@@ -80,10 +80,10 @@ class PurchaseResource
 
         return $responseFactory->create(
             $acceptHeader,
-            array_get($response, 'status'),
-            array_get($response, 'text'),
-            array_get($response, 'positive'),
-            (array) array_get($response, 'data', [])
+            $purchaseResult->getStatus(),
+            $purchaseResult->getText(),
+            $purchaseResult->isPositive(),
+            $purchaseResult->getData()
         );
     }
 

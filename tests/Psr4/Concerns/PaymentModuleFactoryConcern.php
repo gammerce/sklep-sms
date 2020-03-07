@@ -2,7 +2,7 @@
 namespace Tests\Psr4\Concerns;
 
 use App\Models\PaymentPlatform;
-use App\Payment\PaymentModuleFactory;
+use App\Payment\General\PaymentModuleFactory;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Mockery\MockInterface;

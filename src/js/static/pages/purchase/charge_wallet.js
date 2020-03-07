@@ -10,12 +10,9 @@ $(document).ready(function($) {
 // Zmiana sposobu doładowania
 $(document).delegate("#form_purchase [name=method]", "change", function() {
     var form = $(this).closest("form");
+    var type = $(this).val();
 
     form.find("#charge_table tbody").hide();
-    if ($(this).val() == "sms") {
-        form.find("#charge_sms").show();
-    } else if ($(this).val() == "transfer") {
-        form.find("#charge_transfer").show();
-    }
+    form.find("#charge_table [data-type=" + type + "]").show();
     form.find("#charge_table tfoot").show();
 });

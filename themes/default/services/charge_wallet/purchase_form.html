@@ -7,16 +7,14 @@
             <tr>
                 <td><span>{$lang->t('choose_charge_method')}</span></td>
                 <td>
-                    <span>
-                        {$optionSms} {$optionTransfer}
-                    </span>
+                    {$paymentMethodOptions}
                 </td>
             </tr>
             <tr>
                 <td colspan="2" class="line"></td>
             </tr>
         </thead>
-        {$smsBody} {$transferBody}
+        {$paymentMethodBodies}
         <tfoot>
             <tr>
                 <td colspan="2" class="line"></td>
@@ -27,7 +25,7 @@
                         id="go_to_payment"
                         type="button"
                         value="{$lang->t('go_to_payment')}"
-                        class="button is-success purchase_button"
+                        class="button is-success purchase-button"
                     />
                 </td>
             </tr>

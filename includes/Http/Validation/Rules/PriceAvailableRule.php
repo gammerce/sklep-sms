@@ -2,17 +2,14 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
+use App\Models\Price;
 use App\Models\Service;
-use App\Payment\PurchaseValidationService;
 use App\Repositories\PriceRepository;
 
 class PriceAvailableRule extends BaseRule
 {
     /** @var PriceRepository */
     private $priceRepository;
-
-    /** @var PurchaseValidationService */
-    private $purchaseValidationService;
 
     /** @var Service */
     private $service;
@@ -22,7 +19,6 @@ class PriceAvailableRule extends BaseRule
         parent::__construct();
         $this->service = $service;
         $this->priceRepository = app()->make(PriceRepository::class);
-        $this->purchaseValidationService = app()->make(PurchaseValidationService::class);
     }
 
     public function validate($attribute, $value, array $data)
@@ -31,13 +27,15 @@ class PriceAvailableRule extends BaseRule
         $serviceId = $this->service->getId();
         $serverId = array_get($data, 'server_id');
 
-        if (
-            !$price ||
-            !$this->purchaseValidationService->isPriceAvailable($price, $serviceId, $serverId)
-        ) {
+        if (!$this->isPriceAvailable($serviceId, $serverId, $price)) {
             return [$this->lang->t('service_not_affordable')];
         }
 
         return [];
+    }
+
+    private function isPriceAvailable($serviceId, $serverId, Price $price = null)
+    {
+        return $price && $price->concernService($serviceId) && $price->concernServer($serverId);
     }
 }

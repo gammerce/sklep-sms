@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\PlainResponse;
-use App\Payment\PurchaseInformation;
+use App\Payment\General\PurchaseInformation;
 
 class PurchaseResource
 {

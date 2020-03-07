@@ -96,7 +96,7 @@ return [
     'sid' => 'SteamID',
     'sign_in' => 'Sign in',
     'sms_return_code' => 'Return code',
-    'sth_went_wrong' => 'Something went wrong :/',
+    'sth_went_wrong' => 'Something went wrong',
     'surname' => 'Surname',
     'token' => 'Token',
     'type' => 'Type',
