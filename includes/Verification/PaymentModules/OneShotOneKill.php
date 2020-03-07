@@ -80,16 +80,16 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             throw new ServerErrorException();
         }
 
-        $responseNumber = $this->getSmsNumberByPrice((int) ($content['amount'] * 100));
-
-        if ($responseNumber === null) {
-            $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
-            throw new ServerErrorException();
-        }
-
         switch ($content['status']) {
             case 'ok':
-                if ($responseNumber == $number) {
+                $responseNumber = $this->getSmsNumberByPrice((int) ($content['amount'] * 100));
+
+                if ($responseNumber === null) {
+                    $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
+                    throw new ServerErrorException();
+                }
+
+                if ($responseNumber === $number) {
                     return new SmsSuccessResult();
                 }
 
@@ -125,6 +125,10 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         return $this->getData('api');
     }
 
+    /**
+     * @param int $price
+     * @return string|null
+     */
     private function getSmsNumberByPrice($price)
     {
         foreach (OneShotOneKill::getSmsNumbers() as $smsNumber) {
