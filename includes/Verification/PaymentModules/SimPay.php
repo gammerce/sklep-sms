@@ -22,6 +22,7 @@ use App\Verification\Results\SmsSuccessResult;
 
 // TODO Display information about price and charge amount
 
+// https://docs.simpay.pl/#wstep
 class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";

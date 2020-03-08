@@ -68,19 +68,9 @@ class TransferPaymentService
         $this->externalPaymentService->deletePurchase($finalizedPayment->getDataFilename());
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
-        if (!$serviceModule) {
-            $this->logger->log(
-                'transfer_bad_module',
-                $finalizedPayment->getOrderId(),
-                $purchase->getServiceId()
-            );
-
-            return false;
-        }
-
         if (!($serviceModule instanceof IServicePurchase)) {
             $this->logger->log(
-                'transfer_no_purchase',
+                'external_no_purchase',
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
@@ -94,15 +84,13 @@ class TransferPaymentService
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        $this->logger->log(
-            'payment_transfer_accepted',
+        $this->logger->logWithUser(
+            $purchase->user,
+            'external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getAmount(),
-            $finalizedPayment->getExternalServiceId(),
-            $purchase->user->getUsername(),
-            $purchase->user->getUid(),
-            $purchase->user->getLastIp()
+            $finalizedPayment->getExternalServiceId()
         );
 
         return true;
