@@ -1,6 +1,8 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
+use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
@@ -22,10 +24,15 @@ use App\Verification\Results\SmsSuccessResult;
 
 // TODO Display information about price and charge amount
 
-// https://docs.simpay.pl/#wstep
+/**
+ * @link https://docs.simpay.pl/
+ */
 class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
+
+    /** @var FileLogger */
+    private $fileLogger;
 
     /** @var UrlGenerator */
     private $url;
@@ -33,14 +40,19 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     /** @var Translator */
     private $lang;
 
+    /** @var string[] */
+    private $allowedIps;
+
     public function __construct(
         Requester $requester,
         UrlGenerator $url,
+        FileLogger $fileLogger,
         TranslationManager $translationManager,
         PaymentPlatform $paymentPlatform
     ) {
         parent::__construct($requester, $paymentPlatform);
         $this->url = $url;
+        $this->fileLogger = $fileLogger;
         $this->lang = $translationManager->user();
     }
 
@@ -151,6 +163,28 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         return new Result("error", "SimPay response. $status: $message", false);
     }
 
+    public function finalizeDirectBilling(array $query, array $body)
+    {
+        $this->tryToFetchIps();
+
+        $id = array_get($body, "id");
+        $valueGross = array_get($body, "valuenet_gross") * 100;
+        $valuePartner = array_get($body, "valuepartner") * 100;
+        $control = array_get($body, "control");
+
+        $finalizedPayment = new FinalizedPayment();
+        $finalizedPayment->setStatus($this->isPaymentValid($body));
+        $finalizedPayment->setOrderId($id);
+        $finalizedPayment->setAmount($valueGross);
+        $finalizedPayment->setIncome($valuePartner);
+        $finalizedPayment->setDataFilename($control);
+        $finalizedPayment->setExternalServiceId($id);
+        $finalizedPayment->setTestMode(false);
+        $finalizedPayment->setOutput("OK");
+
+        return $finalizedPayment;
+    }
+
     public function getSmsCode()
     {
         return $this->getData('sms_text');
@@ -181,8 +215,58 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         return $this->getData('direct_billing_api_key');
     }
 
-    public function finalizeDirectBilling(array $query, array $body)
+    private function tryToFetchIps()
     {
-        // TODO: Implement finalizeDirectBilling() method.
+        if ($this->allowedIps === null) {
+            $this->fetchIps();
+        }
+    }
+
+    private function fetchIps()
+    {
+        $response = $this->requester->get("https://simpay.pl/api/get_ip");
+
+        if (!$response) {
+            $this->fileLogger->error("Could not get simpay ips.");
+            return;
+        }
+
+        $data = $response->json();
+        $this->allowedIps = $data["respond"]["ips"];
+    }
+
+    /**
+     * @param array $body
+     * @return bool
+     */
+    private function isPaymentValid(array $body)
+    {
+        $status = array_get($body, "status");
+        $sign = array_get($body, "sign");
+
+        return in_array(get_ip(), $this->allowedIps, true) &&
+            $status === "ORDER_PAYED" &&
+            $this->isSignValid($sign, $body);
+    }
+
+    /**
+     * @param string $sign
+     * @param array $body
+     * @return bool
+     */
+    private function isSignValid($sign, array $body)
+    {
+        $id = array_get($body, "id");
+        $status = array_get($body, "status");
+        $valueNet = array_get($body, "valuenet");
+        $valuePartner = array_get($body, "valuepartner");
+        $control = array_get($body, "control");
+
+        $calculatedSign = hash(
+            'sha256',
+            $id . $status . $valueNet . $valuePartner . $control . $this->getDirectBillingApiKey()
+        );
+
+        return $sign === $calculatedSign;
     }
 }

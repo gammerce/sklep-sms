@@ -69,7 +69,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             'comment' => '',
         ]);
 
-        if ($response === false) {
+        if (!$response) {
             throw new NoConnectionException();
         }
 

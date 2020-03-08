@@ -44,7 +44,7 @@ class Profitsms extends PaymentModule implements SupportSms
             'smsNr' => $number,
         ]);
 
-        if ($response === false) {
+        if (!$response) {
             throw new NoConnectionException();
         }
 

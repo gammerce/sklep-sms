@@ -56,7 +56,7 @@ class ExternalPaymentService
     }
 
     /**
-     * @param $fileName
+     * @param string $fileName
      */
     public function deletePurchase($fileName)
     {

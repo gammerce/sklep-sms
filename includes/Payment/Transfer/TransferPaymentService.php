@@ -57,9 +57,19 @@ class TransferPaymentService
             return false;
         }
 
+        if (!$finalizedPayment->getStatus()) {
+            $this->logger->log(
+                'payment_not_accepted',
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getAmount() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
+            return false;
+        }
+
         $this->paymentTransferRepository->create(
             $finalizedPayment->getOrderId(),
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
+            $finalizedPayment->getIncome(),
             $finalizedPayment->getExternalServiceId(),
             $purchase->user->getLastIp(),
             $purchase->user->getPlatform(),
@@ -79,7 +89,6 @@ class TransferPaymentService
         }
 
         $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
             Purchase::PAYMENT_PAYMENT_ID => $finalizedPayment->getOrderId(),
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
@@ -89,7 +98,7 @@ class TransferPaymentService
             'external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getAmount(),
+            $finalizedPayment->getAmount() / 100,
             $finalizedPayment->getExternalServiceId()
         );
 

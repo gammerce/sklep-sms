@@ -108,18 +108,13 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
+        $amount = $body['amount'] * 100;
+
         $finalizedPayment = new FinalizedPayment();
-
-        if (
-            $this->checkSign($body, $this->getKey(), $body['sign']) &&
-            strtoupper($body['status']) == 'OK' &&
-            $body['service'] == $this->getService()
-        ) {
-            $finalizedPayment->setStatus(true);
-        }
-
+        $finalizedPayment->setStatus($this->isPaymentValid($body));
         $finalizedPayment->setOrderId($body['orderid']);
-        $finalizedPayment->setAmount($body['amount']);
+        $finalizedPayment->setAmount($amount);
+        $finalizedPayment->setIncome($amount);
         $finalizedPayment->setDataFilename($body['userdata']);
         $finalizedPayment->setExternalServiceId($body['service']);
         $finalizedPayment->setOutput('OK');
@@ -128,23 +123,34 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     }
 
     /**
+     * @param array $body
+     * @return bool
+     */
+    private function isPaymentValid(array $body)
+    {
+        return $this->checkSign($body, $this->getKey(), $body['sign']) &&
+            strtoupper($body['status']) == "OK" &&
+            $body['service'] == $this->getService();
+    }
+
+    /**
      * Funkcja sprawdzajaca poprawnosc sygnatury
      * przy płatnościach za pomocą przelewu
      *
-     * @param $data - dane
+     * @param $body - dane
      * @param $key - klucz do hashowania
      * @param $sign - hash danych
      *
      * @return bool
      */
-    public function checkSign($data, $key, $sign)
+    public function checkSign(array $body, $key, $sign)
     {
         $calculatedSign = md5(
-            $data['service'] .
-                $data['orderid'] .
-                $data['amount'] .
-                $data['userdata'] .
-                $data['status'] .
+            $body['service'] .
+                $body['orderid'] .
+                $body['amount'] .
+                $body['userdata'] .
+                $body['status'] .
                 $key
         );
         return $calculatedSign == $sign;

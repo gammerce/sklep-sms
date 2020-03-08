@@ -24,7 +24,6 @@ class DirectBillingService
         Heart $heart,
         DatabaseLogger $logger
     ) {
-
         $this->externalPaymentService = $externalPaymentService;
         $this->logger = $logger;
         $this->heart = $heart;
@@ -32,8 +31,6 @@ class DirectBillingService
 
     public function finalizePurchase(FinalizedPayment $finalizedPayment)
     {
-        // TODO Avoid multiple
-
         $purchase = $this->externalPaymentService->restorePurchase(
             $finalizedPayment->getDataFilename()
         );
@@ -43,7 +40,27 @@ class DirectBillingService
             return false;
         }
 
+        if (
+            $finalizedPayment->getAmount() !==
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+        ) {
+            // TODO Log invalid amount
+            $finalizedPayment->setStatus(false);
+        }
+
+        if (!$finalizedPayment->getStatus()) {
+            $this->logger->log(
+                'payment_not_accepted',
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getAmount() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
+            return false;
+        }
+
+        // TODO Avoid multiple
         // TODO Store info about direct billing payment
+
         $this->externalPaymentService->deletePurchase($finalizedPayment->getDataFilename());
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
@@ -67,7 +84,7 @@ class DirectBillingService
             'external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getAmount(),
+            $finalizedPayment->getAmount() / 100,
             $finalizedPayment->getExternalServiceId()
         );
 
