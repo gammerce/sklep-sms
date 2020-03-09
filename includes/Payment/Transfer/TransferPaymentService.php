@@ -53,7 +53,7 @@ class TransferPaymentService
         );
 
         if (!$purchase) {
-            $this->logger->log('transfer_no_data_file', $finalizedPayment->getOrderId());
+            $this->logger->log('payment_no_data_file', $finalizedPayment->getOrderId());
             return false;
         }
 

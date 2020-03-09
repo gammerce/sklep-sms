@@ -63,8 +63,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             new DataField("secret"),
             new DataField("service_id", "SMS Service ID"),
             new DataField("sms_text"),
-            //            new DataField("direct_billing_service_id", "Direct Billing Service ID"),
-            //            new DataField("direct_billing_api_key", "Direct Billing API Key"),
+            new DataField("direct_billing_service_id", "Direct Billing Service ID"),
+            new DataField("direct_billing_api_key", "Direct Billing API Key"),
         ];
     }
 

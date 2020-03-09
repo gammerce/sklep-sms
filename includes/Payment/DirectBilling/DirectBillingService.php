@@ -36,7 +36,7 @@ class DirectBillingService
         );
 
         if (!$purchase) {
-            $this->logger->log('transfer_no_data_file', $finalizedPayment->getOrderId());
+            $this->logger->log('payment_no_data_file', $finalizedPayment->getOrderId());
             return false;
         }
 
@@ -44,7 +44,13 @@ class DirectBillingService
             $finalizedPayment->getAmount() !==
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         ) {
-            // TODO Log invalid amount
+            $this->logger->log(
+                'payment_invalid_amount',
+                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getAmount(),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            );
             $finalizedPayment->setStatus(false);
         }
 

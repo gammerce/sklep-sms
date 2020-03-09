@@ -63,9 +63,12 @@ return [
     'pay_transfer' => 'Pay by transfer',
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
+    'payment_invalid_amount' => 'Paid amount differs from purchase amount. Method: {1} ID: {2} Paid amount: {3} Expected amount: {4}',
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
+    'payment_no_data_file' =>
+        'Payment: {1} was accepted, but there was no file with purchase data.',
     'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',
@@ -128,8 +131,6 @@ You can now profit from many add-ons.',
     'transfer_cost' => 'Transfer cost',
     'transfer_error' => 'Unfortunately, transfer payment failed.',
     'transfer_finalized' => 'Transaction finalized',
-    'transfer_no_data_file' =>
-        'Transfer payment: {1} was accepted, but there was no file with purchase data.',
     'transfer_transfer' => 'Transfer',
     'transfer_unavailable' => 'Payment by transfer is unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',

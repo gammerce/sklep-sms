@@ -67,8 +67,11 @@ return [
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
+    'payment_invalid_amount' => 'Zapłacona kwota różni się od kwoty zakupu. Metoda: {1} ID: {2} Zapłacona kwota: {3} Oczekiwana kwota: {4}',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
+    'payment_no_data_file' =>
+        'Płatność: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
     'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',
@@ -132,8 +135,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'transfer_cost' => 'Koszt Przelewu',
     'transfer_error' => 'Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.',
     'transfer_finalized' => 'Transakcja sfinalizowana',
-    'transfer_no_data_file' =>
-        'Płatność przelewem: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu',
     'transfer_transfer' => 'Przelew',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
     'transfer_unverified' =>
