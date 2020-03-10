@@ -12,19 +12,14 @@ class Price
     /** @var int|null */
     private $server;
 
-    /**
-     * Price in grosze
-     *
-     * @var int
-     */
+    /** @var int */
     private $smsPrice;
 
-    /**
-     * Price in grosze
-     *
-     * @var int
-     */
+    /** @var int */
     private $transferPrice;
+
+    /** @var int */
+    private $directBillingPrice;
 
     /** @var int|null */
     private $quantity;
@@ -72,6 +67,12 @@ class Price
     public function hasTransferPrice()
     {
         return $this->transferPrice !== null;
+    }
+
+    public function getDirectBillingPrice()
+    {
+        // TODO Change it to direct billing
+        return $this->transferPrice;
     }
 
     public function getQuantity()

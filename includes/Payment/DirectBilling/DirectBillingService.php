@@ -64,8 +64,7 @@ class DirectBillingService
             return false;
         }
 
-        // TODO Avoid multiple
-        // TODO Store info about direct billing payment
+        // TODO Avoid multiple & Store info about direct billing payment
 
         $this->externalPaymentService->deletePurchase($finalizedPayment->getDataFilename());
 

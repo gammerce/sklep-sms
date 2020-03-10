@@ -89,8 +89,7 @@ class Purchase
         $this->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
             Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
-            // TODO Add direct billing price
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getTransferPrice(),
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
         ]);
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),
