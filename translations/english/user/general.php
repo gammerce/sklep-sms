@@ -63,7 +63,8 @@ return [
     'pay_transfer' => 'Pay by transfer',
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
-    'payment_invalid_amount' => 'Paid amount differs from purchase amount. Method: {1} ID: {2} Paid amount: {3} Expected amount: {4}',
+    'payment_invalid_amount' =>
+        'Paid amount differs from purchase amount. Method: {1} ID: {2} Paid amount: {3} Expected amount: {4}',
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',

@@ -28,7 +28,7 @@ class Hostplay extends PaymentModule implements SupportSms
             new SmsNumber("7255", 135),
             new SmsNumber("7355", 202),
             new SmsNumber("7455", 270),
-            new SmsNumber("7555",338),
+            new SmsNumber("7555", 338),
             new SmsNumber("76660", 405),
             new SmsNumber("7955", 608),
             new SmsNumber("91055", 676),
