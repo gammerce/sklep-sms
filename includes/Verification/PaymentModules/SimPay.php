@@ -22,8 +22,6 @@ use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
-// TODO Display information about price and charge amount
-
 /**
  * @link https://docs.simpay.pl/
  */
