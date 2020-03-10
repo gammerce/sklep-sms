@@ -81,11 +81,11 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $method = array_get($body, 'method');
-
         if (!$this->auth->check()) {
             throw new UnauthorizedException();
         }
+
+        $method = array_get($body, 'method');
 
         try {
             $paymentMethod = $this->chargeWalletFactory->create($method);
@@ -97,6 +97,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
+            Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
             Purchase::PAYMENT_DISABLED_SERVICE_CODE => true,
             Purchase::PAYMENT_DISABLED_SMS => true,
@@ -109,11 +110,14 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $quantity = number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2);
+        $paymentMethod = $this->chargeWalletFactory->create($purchase->getPayment(Purchase::PAYMENT_METHOD));
 
         return $this->template->renderNoComments(
             "services/charge_wallet/order_details",
-            compact('quantity')
+            [
+                'price' => $this->priceTextService->getPriceText($paymentMethod->getPrice($purchase)),
+                'quantity' => $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY)),
+            ]
         );
     }
 

@@ -113,7 +113,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
         $finalizedPayment->setOrderId($body['orderid']);
-        $finalizedPayment->setAmount($amount);
+        $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
         $finalizedPayment->setDataFilename($body['userdata']);
         $finalizedPayment->setExternalServiceId($body['service']);

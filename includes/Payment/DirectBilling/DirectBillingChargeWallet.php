@@ -43,14 +43,15 @@ class DirectBillingChargeWallet implements IChargeWallet
             ]
         );
         $validated = $validator->validateOrFail();
-        $transferPrice = $validated["direct_billing_price"];
+        $price = $validated["direct_billing_price"];
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price * 100,
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => false,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $transferPrice * 100,
+            // TODO Calculate quantity
+            Purchase::ORDER_QUANTITY => $price * 100,
         ]);
     }
 
@@ -78,5 +79,10 @@ class DirectBillingChargeWallet implements IChargeWallet
         ]);
 
         return [$option, $body];
+    }
+
+    public function getPrice(Purchase $purchase)
+    {
+        return $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
     }
 }

@@ -162,7 +162,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
         $finalizedPayment->setOrderId(array_get($body, 'orderID'));
-        $finalizedPayment->setAmount($amount);
+        $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
         $finalizedPayment->setDataFilename(array_get($body, 'control'));
         $finalizedPayment->setTestMode($isTest);

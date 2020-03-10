@@ -47,7 +47,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     public function render(Purchase $purchase)
     {
         $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
         return $this->template->render("payment/payment_method_direct_billing", compact("price"));
     }
@@ -55,7 +55,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     public function isAvailable(Purchase $purchase)
     {
         return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING) &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
     }
 
@@ -65,7 +65,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
+        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) === null) {
             return new Result(
                 "no_transfer_price",
                 $this->lang->t('payment_method_unavailable'),

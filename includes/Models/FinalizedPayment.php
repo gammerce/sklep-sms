@@ -22,7 +22,7 @@ class FinalizedPayment
      *
      * @var int
      */
-    private $amount = 0;
+    private $cost = 0;
 
     /**
      * How much money is received
@@ -94,17 +94,17 @@ class FinalizedPayment
     /**
      * @return int
      */
-    public function getAmount()
+    public function getCost()
     {
-        return $this->amount;
+        return $this->cost;
     }
 
     /**
-     * @param int $amount
+     * @param int $cost
      */
-    public function setAmount($amount)
+    public function setCost($cost)
     {
-        $this->amount = (int) $amount;
+        $this->cost = (int) $cost;
     }
 
     /**

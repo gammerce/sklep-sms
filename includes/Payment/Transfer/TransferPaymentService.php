@@ -61,7 +61,7 @@ class TransferPaymentService
             $this->logger->log(
                 'payment_not_accepted',
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getAmount() / 100,
+                $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()
             );
             return false;
@@ -98,7 +98,7 @@ class TransferPaymentService
             'external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getAmount() / 100,
+            $finalizedPayment->getCost() / 100,
             $finalizedPayment->getExternalServiceId()
         );
 

@@ -41,15 +41,15 @@ class DirectBillingService
         }
 
         if (
-            $finalizedPayment->getAmount() !==
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            $finalizedPayment->getCost() !==
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         ) {
             $this->logger->log(
                 'payment_invalid_amount',
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getAmount(),
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+                $finalizedPayment->getCost(),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
             );
             $finalizedPayment->setStatus(false);
         }
@@ -58,7 +58,7 @@ class DirectBillingService
             $this->logger->log(
                 'payment_not_accepted',
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getAmount() / 100,
+                $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()
             );
             return false;
@@ -90,7 +90,7 @@ class DirectBillingService
             'external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getAmount() / 100,
+            $finalizedPayment->getCost() / 100,
             $finalizedPayment->getExternalServiceId()
         );
 

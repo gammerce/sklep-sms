@@ -134,7 +134,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
     public function prepareDirectBilling(Purchase $purchase, $dataFilename)
     {
-        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
         $serviceId = $this->getDirectBillingServiceId();
         $control = $dataFilename;
         $apiKey = $this->getDirectBillingApiKey();
@@ -175,7 +175,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
         $finalizedPayment->setOrderId($id);
-        $finalizedPayment->setAmount($valueGross);
+        $finalizedPayment->setCost($valueGross);
         $finalizedPayment->setIncome($valuePartner);
         $finalizedPayment->setDataFilename($control);
         $finalizedPayment->setExternalServiceId($id);
