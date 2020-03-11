@@ -1,19 +1,40 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require("fs");
 
-var environment = process.env.NODE_ENV || "development";
-var isProduction = environment === "production";
+const environment = process.env.NODE_ENV || "development";
+const isProduction = environment === "production";
+
+const getFiles = (dirPath) =>
+    fs.readdirSync(dirPath)
+        .map(file => {
+            if (fs.statSync(`${dirPath}/${file}`).isDirectory()) {
+                return getFiles(dirPath + "/" + file);
+            }
+
+            return [`${dirPath}/${file}`];
+        })
+        .flat()
+        .filter(path => path.match(/\.(ts|js)$/));
+
+
+const entryPaths = [
+    './src/js/admin.js',
+    './src/js/install.js',
+    './src/js/update.js',
+    './src/js/shop.js',
+    ...getFiles("./src/js/static"),
+];
+
+const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
 
 module.exports = {
     mode: environment,
-    entry: {
-        admin: './src/js/admin.js',
-        install: './src/js/install.js',
-        update: './src/js/update.js',
-        shop: './src/js/shop.js'
-    },
+    entry: entries,
     output: {
-        filename: 'js/[name].js',
+        filename: (chunkData) => {
+            return chunkData.chunk.entryModule.id.replace(/^\.\/src/, "");
+        },
         publicPath: "../",
         pathinfo: false,
         path: __dirname + "/build"
@@ -21,6 +42,11 @@ module.exports = {
     devtool: isProduction ? undefined : 'source-map',
     module: {
         rules: [
+            {
+                test: /\.(ts|js)$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.(png|jpg|svg|gif)$/,
                 loader: 'file-loader',
@@ -69,7 +95,7 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
-            {from: './src/js/static/', to: './js/static/'},
+            // {from: './src/js/static/', to: './js/static/'},
             {from: './src/stylesheets/static/', to: './css/static/'}
         ]),
         new ExtractTextPlugin({

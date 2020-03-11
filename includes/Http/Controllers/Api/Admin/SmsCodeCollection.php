@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -23,6 +24,7 @@ class SmsCodeCollection
 
         $validator = new Validator($request->request->all(), [
             'code' => [new RequiredRule(), new MaxLengthRule(16)],
+            'expires' => [new DateTimeRule()],
             'sms_price' => [new RequiredRule(), new NumberRule()],
         ]);
 
@@ -30,8 +32,9 @@ class SmsCodeCollection
 
         $code = $validated['code'];
         $smsPrice = $validated['sms_price'];
+        $expires = $validated["expires"];
 
-        $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true);
+        $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true, $expires);
         $logger->logWithActor('log_sms_code_added', $code, $smsPrice);
 
         return new SuccessApiResponse($lang->t('sms_code_add'));

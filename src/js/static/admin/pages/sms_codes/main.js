@@ -1,14 +1,17 @@
-// Kliknięcie dodania kodu SMS
 $(document).delegate("#sms_code_button_add", "click", function() {
     show_action_box(currentPage, "sms_code_add");
 });
 
-// Kliknięcie przycisku generuj kod
 $(document).delegate("#form_sms_code_add [name=random_code]", "click", function() {
     $(this)
         .closest("form")
         .find("[name=code]")
         .val(get_random_string());
+});
+
+$(document).delegate("#form_sms_code_add [name=forever]", "change", function() {
+    const form = $(this).closest("form");
+    form.find("[name=expire]").prop("disabled", $(this).prop("checked"));
 });
 
 // Delete sms code
@@ -51,10 +54,18 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 $(document).delegate("#form_sms_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
+
+    var formData = $(this).serializeArray();
+    console.log(formData);
+
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/sms_codes"),
-        data: $(this).serialize(),
+        data: {
+            code: formData.code,
+            sms_price: formData.sms_price,
+            expires: formData.forever ? null : formData.expires,
+        },
         complete: function() {
             loader.hide();
         },

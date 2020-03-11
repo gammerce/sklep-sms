@@ -2,7 +2,7 @@ $(document).delegate("#form_profile_update", "submit", function(e) {
     e.preventDefault();
 
     loader.show();
-    var that = this;
+    const that = this;
 
     $.ajax({
         type: "PUT",

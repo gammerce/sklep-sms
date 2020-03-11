@@ -42,11 +42,11 @@ class SmsCodeRepository
         return null;
     }
 
-    public function create($code, $smsPrice, $free)
+    public function create($code, $smsPrice, $free, $expires = null)
     {
         $this->db
-            ->statement("INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?")
-            ->execute([$code, $smsPrice, $free ? 1 : 0]);
+            ->statement("INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?")
+            ->execute([$code, $smsPrice, $free ? 1 : 0, $expires]);
 
         return $this->get($this->db->lastId());
     }
