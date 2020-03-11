@@ -4,6 +4,11 @@ namespace App\Repositories;
 use App\Models\SmsCode;
 use App\Support\Database;
 
+// TODO Fix displaying date
+// TODO Store last minute of a day
+// TODO Delete old sms codes
+// TODO Do not accept too old sms codes
+
 class SmsCodeRepository
 {
     /** @var Database */
@@ -45,7 +50,9 @@ class SmsCodeRepository
     public function create($code, $smsPrice, $free, $expires = null)
     {
         $this->db
-            ->statement("INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?")
+            ->statement(
+                "INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?"
+            )
             ->execute([$code, $smsPrice, $free ? 1 : 0, $expires]);
 
         return $this->get($this->db->lastId());
@@ -61,6 +68,12 @@ class SmsCodeRepository
 
     public function mapToModel(array $data)
     {
-        return new SmsCode($data['id'], $data['code'], $data['sms_price'], $data['free']);
+        return new SmsCode(
+            (int) $data['id'],
+            $data['code'],
+            (int) $data['sms_price'],
+            (bool) $data['free'],
+            convert_date($data['expires_at'])
+        );
     }
 }

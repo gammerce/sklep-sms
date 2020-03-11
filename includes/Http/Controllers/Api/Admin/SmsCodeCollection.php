@@ -23,20 +23,20 @@ class SmsCodeCollection
         $lang = $translationManager->user();
 
         $validator = new Validator($request->request->all(), [
-            'code' => [new RequiredRule(), new MaxLengthRule(16)],
-            'expires' => [new DateTimeRule()],
-            'sms_price' => [new RequiredRule(), new NumberRule()],
+            "code" => [new RequiredRule(), new MaxLengthRule(16)],
+            "expires_at" => [new DateTimeRule()],
+            "sms_price" => [new RequiredRule(), new NumberRule()],
         ]);
 
         $validated = $validator->validateOrFail();
 
-        $code = $validated['code'];
-        $smsPrice = $validated['sms_price'];
-        $expires = $validated["expires"];
+        $code = $validated["code"];
+        $smsPrice = $validated["sms_price"];
+        $expiresAt = $validated["expires_at"] ?: null;
 
-        $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true, $expires);
-        $logger->logWithActor('log_sms_code_added', $code, $smsPrice);
+        $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true, $expiresAt);
+        $logger->logWithActor("log_sms_code_added", $code, $smsPrice);
 
-        return new SuccessApiResponse($lang->t('sms_code_add'));
+        return new SuccessApiResponse($lang->t("sms_code_add"));
     }
 }

@@ -15,12 +15,16 @@ class SmsCode
     /** @var bool */
     private $free;
 
-    public function __construct($id, $code, $smsPrice, $free)
+    /** @var int|null */
+    private $expiresAt;
+
+    public function __construct($id, $code, $smsPrice, $free, $expiresAt)
     {
-        $this->id = (int) $id;
-        $this->code = (string) $code;
-        $this->smsPrice = (int) $smsPrice;
-        $this->free = (bool) $free;
+        $this->id = $id;
+        $this->code = $code;
+        $this->smsPrice = $smsPrice;
+        $this->free = $free;
+        $this->expiresAt = $expiresAt;
     }
 
     /**
@@ -53,5 +57,13 @@ class SmsCode
     public function isFree()
     {
         return $this->free;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getExpiresAt()
+    {
+        return $this->expiresAt;
     }
 }

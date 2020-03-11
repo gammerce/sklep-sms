@@ -11,7 +11,7 @@ $(document).delegate("#form_sms_code_add [name=random_code]", "click", function(
 
 $(document).delegate("#form_sms_code_add [name=forever]", "change", function() {
     const form = $(this).closest("form");
-    form.find("[name=expire]").prop("disabled", $(this).prop("checked"));
+    form.find("[name=expires_at]").prop("disabled", $(this).prop("checked"));
 });
 
 // Delete sms code
@@ -55,8 +55,12 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
 
-    var formData = $(this).serializeArray();
-    console.log(formData);
+    // TODO Add corejs
+    const formData = Object.fromEntries(
+        $(this)
+            .serializeArray()
+            .map(item => [item.name, item.value])
+    );
 
     $.ajax({
         type: "POST",
@@ -64,7 +68,7 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
         data: {
             code: formData.code,
             sms_price: formData.sms_price,
-            expires: formData.forever ? null : formData.expires,
+            expires_at: formData.forever ? null : formData.expires_at,
         },
         complete: function() {
             loader.hide();

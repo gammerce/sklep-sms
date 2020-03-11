@@ -19,10 +19,6 @@ const getFiles = (dirPath) =>
 
 
 const entryPaths = [
-    './src/js/admin.js',
-    './src/js/install.js',
-    './src/js/update.js',
-    './src/js/shop.js',
     ...getFiles("./src/js/static"),
 ];
 
@@ -30,7 +26,13 @@ const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
 
 module.exports = {
     mode: environment,
-    entry: entries,
+    entry: {
+        admin: './src/js/admin.js',
+        install: './src/js/install.js',
+        update: './src/js/update.js',
+        shop: './src/js/shop.js',
+        ...entries
+    },
     output: {
         filename: (chunkData) => {
             return chunkData.chunk.entryModule.id.replace(/^\.\/src/, "");

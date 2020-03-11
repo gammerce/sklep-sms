@@ -210,7 +210,7 @@ function convert_expire($timestamp)
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
     $lang = $translationManager->user();
-    if ($timestamp === -1) {
+    if ($timestamp === -1 || $timestamp === null) {
         return $lang->t("never");
     }
 
