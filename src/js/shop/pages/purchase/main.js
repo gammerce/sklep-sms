@@ -75,34 +75,22 @@ $(document).delegate("#form_purchase [name=price_id]", "change", function() {
         return;
     }
 
-    var transferPrice = $(this)
-        .find("option:selected")
-        .data("transfer-price");
-    var smsPrice = $(this)
-        .find("option:selected")
-        .data("sms-price");
+    var option = $(this).find("option:selected");
+    var directBillingPrice = option.data("direct-billing-price");
+    var transferPrice = option.data("transfer-price");
+    var smsPrice = option.data("sms-price");
 
-    if (transferPrice) {
-        form.find("#cost_transfer").text(transferPrice);
-        form.find("#cost_transfer")
-            .parent()
-            .show();
-    } else {
-        form.find("#cost_transfer").text("");
-        form.find("#cost_transfer")
-            .parent()
-            .hide();
-    }
-
-    if (smsPrice) {
-        form.find("#cost_sms").text(smsPrice);
-        form.find("#cost_sms")
-            .parent()
-            .show();
-    } else {
-        form.find("#cost_sms").text("");
-        form.find("#cost_sms")
-            .parent()
-            .hide();
-    }
+    toggleCost(form.find("#cost_direct_billing"), directBillingPrice);
+    toggleCost(form.find("#cost_sms"), smsPrice);
+    toggleCost(form.find("#cost_transfer"), transferPrice);
 });
+
+function toggleCost(node, price) {
+    if (price) {
+        node.text(price);
+        node.parent().show();
+    } else {
+        node.text("");
+        node.parent().hide();
+    }
+}

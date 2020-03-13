@@ -1220,13 +1220,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $server = $this->heart->getServer($serverId);
 
-        $quantities = array_map(function (array $price) {
-            return $this->purchasePriceRenderer->render($price, $this->service);
-        }, $this->purchasePriceService->getServicePrices($this->service, $server));
+        $quantities = collect(
+            $this->purchasePriceService->getServicePrices($this->service, $server)
+        )
+            ->map(function (array $price) {
+                return $this->purchasePriceRenderer->render($price, $this->service);
+            })
+            ->join();
 
-        return $this->template->render("services/extra_flags/prices_for_server", [
-            'quantities' => implode("", $quantities),
-        ]);
+        return $this->template->render(
+            "services/extra_flags/prices_for_server",
+            compact("quantities")
+        );
     }
 
     public function actionExecute($action, array $body)
