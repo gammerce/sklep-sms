@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\SmsCode;
 use App\Support\Database;
+use DateTime;
 
 // TODO Fix displaying date
 // TODO Store last minute of a day
@@ -47,13 +48,20 @@ class SmsCodeRepository
         return null;
     }
 
-    public function create($code, $smsPrice, $free, $expires = null)
+    /**
+     * @param string $code
+     * @param int $smsPrice
+     * @param bool $free
+     * @param DateTime|null $expires
+     * @return SmsCode
+     */
+    public function create($code, $smsPrice, $free, DateTime $expires = null)
     {
         $this->db
             ->statement(
                 "INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?"
             )
-            ->execute([$code, $smsPrice, $free ? 1 : 0, $expires]);
+            ->execute([$code, $smsPrice, $free ? 1 : 0, get_date_for_database($expires)]);
 
         return $this->get($this->db->lastId());
     }
@@ -73,7 +81,7 @@ class SmsCodeRepository
             $data['code'],
             (int) $data['sms_price'],
             (bool) $data['free'],
-            convert_date($data['expires_at'])
+            as_datetime($data['expires_at'])
         );
     }
 }

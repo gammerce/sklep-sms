@@ -179,26 +179,14 @@ function get_ip(Request $request = null)
  */
 function convert_date($timestamp, $format = "")
 {
-    if (!$timestamp) {
-        return null;
-    }
-
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-
     if (!strlen($format)) {
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
         $format = $settings->getDateFormat();
     }
 
-    if (my_is_integer($timestamp)) {
-        $date = new DateTime("@$timestamp");
-    } else {
-        $date = new DateTime($timestamp);
-    }
-
-    $date->setTimezone(new DateTimeZone($settings->getTimeZone()));
-
-    return $date->format($format);
+    $date = as_datetime($timestamp);
+    return $date ? $date->format($format) : null;
 }
 
 /**
@@ -215,6 +203,15 @@ function convert_expire($timestamp)
     }
 
     return convert_date($timestamp);
+}
+
+/**
+ * @param DateTime|null $date
+ * @return string|null
+ */
+function get_date_for_database($date)
+{
+    return $date ? $date->format("Y-m-d H:i:s") : null;
 }
 
 /**
@@ -503,6 +500,52 @@ function as_float($value)
     }
 
     return (float) $value;
+}
+
+/**
+ * @param string|int|DateTime|null $value
+ * @return DateTime|null
+ */
+function as_datetime($value)
+{
+    if (!$value) {
+        return null;
+    }
+
+    /** @var Settings $settings */
+    $settings = app()->make(Settings::class);
+
+    if ($value instanceof DateTime) {
+        $date = clone $value;
+    } elseif (ctype_digit($value)) {
+        $date = new DateTime("@$value");
+    } else {
+        $date = new DateTime($value);
+    }
+
+    $date->setTimezone(new DateTimeZone($settings->getTimeZone()));
+
+    return $date;
+}
+
+/**
+ * @param string|int|DateTime|null $value
+ * @return string
+ */
+function as_date_string($value)
+{
+    $date = as_datetime($value);
+    return $date ? $date->format("Y-m-d") : "";
+}
+
+/**
+ * @param string|int|DateTime|null $value
+ * @return string
+ */
+function as_datetime_string($value)
+{
+    $date = as_datetime($value);
+    return $date ? $date->format("Y-m-d H:i:s") : "";
 }
 
 // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
