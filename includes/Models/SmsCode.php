@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use DateTime;
+
 class SmsCode
 {
     /** @var int */
@@ -15,12 +17,16 @@ class SmsCode
     /** @var bool */
     private $free;
 
-    public function __construct($id, $code, $smsPrice, $free)
+    /** @var DateTime|null */
+    private $expiresAt;
+
+    public function __construct($id, $code, $smsPrice, $free, DateTime $expiresAt = null)
     {
-        $this->id = (int) $id;
-        $this->code = (string) $code;
-        $this->smsPrice = (int) $smsPrice;
-        $this->free = (bool) $free;
+        $this->id = $id;
+        $this->code = $code;
+        $this->smsPrice = $smsPrice;
+        $this->free = $free;
+        $this->expiresAt = $expiresAt;
     }
 
     /**
@@ -53,5 +59,13 @@ class SmsCode
     public function isFree()
     {
         return $this->free;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getExpiresAt()
+    {
+        return $this->expiresAt;
     }
 }

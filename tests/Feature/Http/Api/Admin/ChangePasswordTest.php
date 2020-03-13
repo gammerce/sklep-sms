@@ -14,10 +14,9 @@ class ChangePasswordTest extends HttpTestCase
         $userRepository = $this->app->make(UserRepository::class);
 
         $newPassword = "foobar";
-        $admin = $this->factory->admin();
         $user = $this->factory->user();
 
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->put("/api/admin/users/{$user->getUid()}/password", [

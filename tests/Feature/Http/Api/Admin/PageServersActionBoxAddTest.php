@@ -9,8 +9,7 @@ class PageServersActionBoxAddTest extends HttpTestCase
     public function get_add_box()
     {
         // give
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/server_add");
@@ -26,8 +25,7 @@ class PageServersActionBoxAddTest extends HttpTestCase
     public function requires_permission_to_get()
     {
         // give
-        $admin = $this->factory->user();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->user());
 
         // when
         $response = $this->get("/api/admin/pages/servers/action_boxes/server_add");

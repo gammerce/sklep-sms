@@ -10,8 +10,7 @@ class PageServicesActionBoxEditTest extends HttpTestCase
     {
         // give
         $service = $this->factory->service();
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get("/api/admin/pages/services/action_boxes/service_edit", [
