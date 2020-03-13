@@ -94,10 +94,22 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: {
+            chunks: 'all',
+            maxInitialRequests: 2,
+            cacheGroups: {
+                defaultVendors: {
+                    filename: 'vendors.js'
+                }
+            }
+        },
+    },
     plugins: [
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
-            // {from: './src/js/static/', to: './js/static/'},
             {from: './src/stylesheets/static/', to: './css/static/'}
         ]),
         new ExtractTextPlugin({

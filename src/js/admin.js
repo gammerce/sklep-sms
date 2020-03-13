@@ -1,3 +1,4 @@
+import "core-js";
 require("../stylesheets/admin.scss");
 require("./partials/global.js");
 require("./partials/stocks.js");
