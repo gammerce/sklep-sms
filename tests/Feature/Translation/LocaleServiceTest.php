@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature;
+namespace Tests\Feature\Translation;
 
 use App\Translation\LocaleService;
 use Symfony\Component\HttpFoundation\Request;

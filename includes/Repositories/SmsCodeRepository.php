@@ -5,10 +5,7 @@ use App\Models\SmsCode;
 use App\Support\Database;
 use DateTime;
 
-// TODO Fix displaying date
-// TODO Store last minute of a day
 // TODO Delete old sms codes
-// TODO Do not accept too old sms codes
 
 class SmsCodeRepository
 {
@@ -37,7 +34,7 @@ class SmsCodeRepository
     public function findByCodeAndPrice($code, $smsPrice)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ?"
+            "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ? AND (`expires_at` IS NULL OR `expires_at` > NOW())"
         );
         $statement->execute([$code, $smsPrice]);
 

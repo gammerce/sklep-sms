@@ -40,13 +40,18 @@ class SmsCodeCollection
             $expiresAt->setTime(23, 59, 59);
         }
 
-        $smsCode = $smsCodeRepository->create($lang->strtoupper($code), $smsPrice, true, $expiresAt);
+        $smsCode = $smsCodeRepository->create(
+            $lang->strtoupper($code),
+            $smsPrice,
+            true,
+            $expiresAt
+        );
         $logger->logWithActor("log_sms_code_added", $code, $smsPrice);
 
         return new SuccessApiResponse($lang->t("sms_code_add"), [
             "data" => [
                 "id" => $smsCode->getId(),
-            ]
+            ],
         ]);
     }
 }
