@@ -35,9 +35,8 @@ class PagePurchase extends Page
             return $this->lang->t('site_not_exists');
         }
 
-        // Dodajemy wszystkie skrypty
         if (strlen($this::PAGE_ID)) {
-            $path = "build/js/static/pages/" . $this::PAGE_ID . "/";
+            $path = "build/js/shop/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.js";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
                 $this->heart->addScript($this->url->versioned($pathFile));
@@ -49,7 +48,6 @@ class PagePurchase extends Page
             }
         }
 
-        // Dodajemy wszystkie css
         if (strlen($this::PAGE_ID)) {
             $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
@@ -66,11 +64,6 @@ class PagePurchase extends Page
         $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
         if ($this->fileSystem->exists($this->path->to($path))) {
             $this->heart->addStyle($this->url->versioned($path));
-        }
-
-        $path = "build/js/static/services/{$serviceModule->getModuleId()}.js";
-        if ($this->fileSystem->exists($this->path->to($path))) {
-            $this->heart->addScript($this->url->versioned($path));
         }
 
         $this->heart->pageTitle .= " - " . $serviceModule->service->getName();

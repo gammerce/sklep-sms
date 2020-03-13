@@ -19,7 +19,8 @@ const getFiles = (dirPath) =>
 
 
 const entryPaths = [
-    ...getFiles("./src/js/static"),
+    // ...getFiles("./src/js/admin/pages"),
+    ...getFiles("./src/js/shop/pages"),
 ];
 
 const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
@@ -27,10 +28,10 @@ const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
 module.exports = {
     mode: environment,
     entry: {
-        admin: './src/js/admin.js',
-        install: './src/js/install.js',
-        update: './src/js/update.js',
-        shop: './src/js/shop.js',
+        // admin: './src/js/admin/admin.js',
+        install: './src/js/setup/install.js',
+        update: './src/js/setup/update.js',
+        shop: './src/js/shop/shop.js',
         ...entries
     },
     output: {
@@ -99,12 +100,12 @@ module.exports = {
         removeEmptyChunks: false,
         splitChunks: {
             chunks: 'all',
-            maxInitialRequests: 2,
-            cacheGroups: {
-                defaultVendors: {
-                    filename: 'vendors.js'
-                }
-            }
+            // maxInitialRequests: 2,
+            // cacheGroups: {
+            //     defaultVendors: {
+            //         filename: 'vendors.js'
+            //     }
+            // }
         },
     },
     plugins: [
