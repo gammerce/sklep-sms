@@ -19,24 +19,23 @@ const getFiles = (dirPath) =>
 
 
 const entryPaths = [
-    ...getFiles("./src/js/static"),
+    ...getFiles("./src/js/admin/pages"),
+    ...getFiles("./src/js/shop/pages"),
 ];
 
-const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
+const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(js|ts)$/, ""), path]));
 
 module.exports = {
     mode: environment,
     entry: {
-        admin: './src/js/admin.js',
-        install: './src/js/install.js',
-        update: './src/js/update.js',
-        shop: './src/js/shop.js',
+        admin: './src/js/admin/admin.js',
+        install: './src/js/setup/install.js',
+        update: './src/js/setup/update.js',
+        shop: './src/js/shop/shop.js',
         ...entries
     },
     output: {
-        filename: (chunkData) => {
-            return chunkData.chunk.entryModule.resource.replace(/^.*\/src/, "");
-        },
+        filename: "js/[name].js",
         publicPath: "../",
         pathinfo: false,
         path: __dirname + "/build"
@@ -94,11 +93,25 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: {
+            chunks: 'all',
+            maxInitialRequests: 2,
+            // cacheGroups: {
+            //     defaultVendors: {
+            //         filename: 'vendors.js'
+            //     }
+            // }
+        },
+    },
     plugins: [
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
-            // {from: './src/js/static/', to: './js/static/'},
-            {from: './src/stylesheets/static/', to: './css/static/'}
+            {from: './src/stylesheets/shop/pages/', to: './css/shop/pages/'},
+            {from: './src/stylesheets/general/services/', to: './css/general/services/'},
+            {from: './src/stylesheets/shop/long_desc.css', to: './css/shop/long_desc.css'},
         ]),
         new ExtractTextPlugin({
             filename: 'css/[name].css'
