@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\SmsCode;
 use App\Support\Database;
+use DateTime;
 
 class SmsCodeRepository
 {
@@ -31,7 +32,7 @@ class SmsCodeRepository
     public function findByCodeAndPrice($code, $smsPrice)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ?"
+            "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ? AND (`expires_at` IS NULL OR `expires_at` > NOW())"
         );
         $statement->execute([$code, $smsPrice]);
 
@@ -42,11 +43,20 @@ class SmsCodeRepository
         return null;
     }
 
-    public function create($code, $smsPrice, $free)
+    /**
+     * @param string $code
+     * @param int $smsPrice
+     * @param bool $free
+     * @param DateTime|null $expires
+     * @return SmsCode
+     */
+    public function create($code, $smsPrice, $free, DateTime $expires = null)
     {
         $this->db
-            ->statement("INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?")
-            ->execute([$code, $smsPrice, $free ? 1 : 0]);
+            ->statement(
+                "INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?"
+            )
+            ->execute([$code, $smsPrice, $free ? 1 : 0, get_date_for_database($expires)]);
 
         return $this->get($this->db->lastId());
     }
@@ -61,6 +71,12 @@ class SmsCodeRepository
 
     public function mapToModel(array $data)
     {
-        return new SmsCode($data['id'], $data['code'], $data['sms_price'], $data['free']);
+        return new SmsCode(
+            (int) $data['id'],
+            $data['code'],
+            (int) $data['sms_price'],
+            (bool) $data['free'],
+            as_datetime($data['expires_at'])
+        );
     }
 }

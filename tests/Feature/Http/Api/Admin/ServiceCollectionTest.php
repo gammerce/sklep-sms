@@ -14,8 +14,7 @@ class ServiceCollectionTest extends HttpTestCase
         // given
         /** @var ServiceRepository $repository */
         $repository = $this->app->make(ServiceRepository::class);
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->post("/api/admin/services", [
@@ -41,8 +40,7 @@ class ServiceCollectionTest extends HttpTestCase
     public function cannot_use_the_same_id_twice()
     {
         // given
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         $id = 'example';
         $this->factory->service(compact('id'));

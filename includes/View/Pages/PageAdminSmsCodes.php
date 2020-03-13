@@ -49,6 +49,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('sms_code')));
         $table->addHeadCell(new HeadCell($this->lang->t('sms_price')));
+        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -69,6 +70,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(
                 new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
             );
+            $bodyRow->addCell(new Cell(as_date_string($smsCode->getExpiresAt())));
 
             if (get_privileges('manage_sms_codes')) {
                 $bodyRow->setDeleteAction(true);

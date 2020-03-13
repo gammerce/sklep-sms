@@ -9,8 +9,7 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
     public function get_add_box()
     {
         // give
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get(

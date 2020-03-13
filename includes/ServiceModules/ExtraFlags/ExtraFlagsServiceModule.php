@@ -483,7 +483,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $password = strlen($password) ? $password : '';
 
         // Usunięcie przestarzałych usług gracza
-        $this->expiredUserServiceService->deleteExpiredUserServices();
+        $this->expiredUserServiceService->deleteExpired();
 
         // Usunięcie przestarzałych flag graczy
         // Tak jakby co

@@ -159,6 +159,14 @@ hr,
     td:nth-child(2) {
         color: #ccc;
     }
+
+    table {
+        td:first-child {
+            label {
+                text-transform: uppercase;
+            }
+        }
+    }
 }
 
 /* Opisy usług */
