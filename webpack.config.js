@@ -23,7 +23,7 @@ const entryPaths = [
     ...getFiles("./src/js/shop/pages"),
 ];
 
-const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
+const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(js|ts)$/, ""), path]));
 
 module.exports = {
     mode: environment,
@@ -35,9 +35,10 @@ module.exports = {
         ...entries
     },
     output: {
-        filename: (chunkData) => {
-            return chunkData.chunk.entryModule.resource.replace(/^.*\/src/, "");
-        },
+        filename: "js/[name].js",
+        // filename: (chunkData) => {
+        //     return chunkData.chunk.entryModule.resource.replace(/^.*\/src/, "");
+        // },
         publicPath: "../",
         pathinfo: false,
         path: __dirname + "/build"
@@ -100,7 +101,7 @@ module.exports = {
         removeEmptyChunks: false,
         splitChunks: {
             chunks: 'all',
-            // maxInitialRequests: 2,
+            maxInitialRequests: 2,
             // cacheGroups: {
             //     defaultVendors: {
             //         filename: 'vendors.js'
@@ -111,7 +112,9 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
-            {from: './src/stylesheets/static/', to: './css/static/'}
+            {from: './src/stylesheets/shop/pages/', to: './css/shop/pages/'},
+            {from: './src/stylesheets/general/services/', to: './css/general/services/'},
+            {from: './src/stylesheets/shop/long_desc.css', to: './css/shop/long_desc.css'},
         ]),
         new ExtractTextPlugin({
             filename: 'css/[name].css'

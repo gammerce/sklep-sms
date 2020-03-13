@@ -49,7 +49,7 @@ class PagePurchase extends Page
         }
 
         if (strlen($this::PAGE_ID)) {
-            $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
+            $path = "build/css/shop/pages/" . $this::PAGE_ID . "/";
             $pathFile = $path . "main.css";
             if ($this->fileSystem->exists($this->path->to($pathFile))) {
                 $this->heart->addStyle($this->url->versioned($pathFile));
@@ -61,7 +61,7 @@ class PagePurchase extends Page
             }
         }
 
-        $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
+        $path = "build/css/general/services/{$serviceModule->getModuleId()}.css";
         if ($this->fileSystem->exists($this->path->to($path))) {
             $this->heart->addStyle($this->url->versioned($path));
         }

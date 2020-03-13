@@ -22,18 +22,9 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
             }
         }
 
-        $path = "build/css/static/admin/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
-            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
-                if (ends_at($file, ".css")) {
-                    $this->heart->addStyle($this->url->versioned($path . $file));
-                }
-            }
-        }
-
         if (in_array($this::PAGE_ID, ["service_codes", "services", "user_service"])) {
             foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
-                $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
+                $path = "build/css/general/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->addStyle($this->url->versioned($path));
                 }

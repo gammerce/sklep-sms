@@ -1,4 +1,4 @@
-import "../../stylesheets/admin.scss";
+import "../../stylesheets/admin/admin.scss";
 
 import "core-js";
 import { changeUrl } from "../general/global";

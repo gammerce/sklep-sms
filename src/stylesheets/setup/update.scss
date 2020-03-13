@@ -1,7 +1,7 @@
-@import "partials/all";
-@import "partials/loader";
-@import "partials/infobox";
-@import "partials/setup";
+@import "../general/all";
+@import "../general/loader";
+@import "../general/infobox";
+@import "./partials/setup";
 
 #form_update {
     margin: 2rem 1rem;

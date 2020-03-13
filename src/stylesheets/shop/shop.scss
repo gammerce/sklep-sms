@@ -1,14 +1,14 @@
-@import "partials/all";
-@import "partials/global";
-@import "partials/loader";
-@import "partials/infobox";
+@import "../general/all";
+@import "../general/global";
+@import "../general/loader";
+@import "../general/infobox";
 
-@import "partials/shop/pages/payment";
-@import "partials/shop/pages/payment_log";
-@import "partials/shop/pages/user_own_services";
+@import "./partials/payment";
+@import "./partials/payment_log";
+@import "./partials/user_own_services";
 
 body {
-    background: url("../images/background.jpg") no-repeat fixed;
+    background: url("../../images/background.jpg") no-repeat fixed;
     background-size: cover;
     height: initial;
     min-height: 100%;
@@ -48,7 +48,7 @@ body {
 
 .wallet_status {
     padding-left: 55px;
-    background-image: url("../images/wallet.png") !important;
+    background-image: url("../../images/wallet.png") !important;
     background-color: #ae0a0e;
     background-position: 10px center !important;
     text-align: right;
@@ -59,7 +59,7 @@ body {
 .logged_info {
     padding-left: 45px;
     margin-right: 5px;
-    background-image: url("../images/user.png"),
+    background-image: url("../../images/user.png"),
         linear-gradient(
             45deg,
             rgba(131, 131, 131, 1) 0%,

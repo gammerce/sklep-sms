@@ -1,4 +1,4 @@
-import "../../stylesheets/update.scss";
+import "../../stylesheets/setup/update.scss";
 
 import "core-js";
 import { json_parse } from "../general/stocks";

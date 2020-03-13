@@ -1,4 +1,4 @@
-import "../../stylesheets/shop.scss";
+import "../../stylesheets/shop/shop.scss";
 
 import "core-js";
 import { refresh_blocks } from "./utils/utils";

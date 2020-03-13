@@ -1,10 +1,10 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
-@import "partials/all";
-@import "partials/global";
-@import "partials/loader";
-@import "partials/infobox";
-@import "partials/admin/pages/login";
-@import "partials/admin/pages/server";
+@import "../general/all";
+@import "../general/global";
+@import "../general/loader";
+@import "../general/infobox";
+@import "./partials/login";
+@import "./partials/server";
 
 h3 {
     color: $grey-lighter;

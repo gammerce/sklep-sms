@@ -79,7 +79,7 @@ abstract class Page
             }
         }
 
-        $path = "build/css/static/pages/" . $this::PAGE_ID . "/";
+        $path = "build/css/shop/pages/" . $this::PAGE_ID . "/";
         if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
@@ -97,7 +97,7 @@ abstract class Page
             ])
         ) {
             foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
-                $path = "build/css/static/services/{$serviceModule->getModuleId()}.css";
+                $path = "build/css/general/services/{$serviceModule->getModuleId()}.css";
                 if ($this->fileSystem->exists($this->path->to($path))) {
                     $this->heart->addStyle($this->url->versioned($path));
                 }
