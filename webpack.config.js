@@ -35,7 +35,7 @@ module.exports = {
     },
     output: {
         filename: (chunkData) => {
-            return chunkData.chunk.entryModule.id.replace(/^\.\/src/, "");
+            return chunkData.chunk.entryModule.resource.replace(/^.*\/src/, "");
         },
         publicPath: "../",
         pathinfo: false,
