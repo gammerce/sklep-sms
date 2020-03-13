@@ -110,15 +110,16 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $paymentMethod = $this->chargeWalletFactory->create($purchase->getPayment(Purchase::PAYMENT_METHOD));
-
-        return $this->template->renderNoComments(
-            "services/charge_wallet/order_details",
-            [
-                'price' => $this->priceTextService->getPriceText($paymentMethod->getPrice($purchase)),
-                'quantity' => $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY)),
-            ]
+        $paymentMethod = $this->chargeWalletFactory->create(
+            $purchase->getPayment(Purchase::PAYMENT_METHOD)
         );
+
+        return $this->template->renderNoComments("services/charge_wallet/order_details", [
+            'price' => $this->priceTextService->getPriceText($paymentMethod->getPrice($purchase)),
+            'quantity' => $this->priceTextService->getPriceText(
+                $purchase->getOrder(Purchase::ORDER_QUANTITY)
+            ),
+        ]);
     }
 
     public function purchase(Purchase $purchase)

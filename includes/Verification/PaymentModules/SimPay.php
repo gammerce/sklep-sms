@@ -91,6 +91,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
     public function verifySms($returnCode, $number)
     {
+        // TODO Check verifying sms code
         $response = $this->requester->post('https://simpay.pl/api/1/status', [
             'params' => [
                 'auth' => [
@@ -132,27 +133,30 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
     public function prepareDirectBilling(Purchase $purchase, $dataFilename)
     {
-        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) / 100;
         $serviceId = $this->getDirectBillingServiceId();
         $control = $dataFilename;
         $apiKey = $this->getDirectBillingApiKey();
 
-        $response = $this->requester->post("https://simpay.pl/db/api", [
-            'serviceId' => $serviceId,
+        $body = [
+            'serviceId' => intval($serviceId),
             'control' => $control,
             'complete' => $this->url->to("/page/payment_success"),
             'failure' => $this->url->to("/page/payment_error"),
             'amount_gross' => $amount,
             'sign' => hash('sha256', $serviceId . $amount . $control . $apiKey),
-        ]);
+        ];
+
+        $response = $this->requester->post("https://simpay.pl/db/api", $body);
 
         $result = $response->json();
         $status = array_get($result, "status");
         $message = array_get($result, "message");
 
         if ($status === "success") {
-            return new Result("external", $this->lang->t("external_payment_prepared"), [
+            return new Result("external", $this->lang->t("external_payment_prepared"), true, [
                 "data" => [
+                    "method" => "GET",
                     "url" => $result["link"],
                 ],
             ]);
