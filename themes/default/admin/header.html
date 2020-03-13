@@ -8,11 +8,8 @@
     src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
 ></script>
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="{{ $url->versioned('build/js/vendors.js') }}"></script>
 <script type="text/javascript" src="{{ $url->versioned('build/js/admin.js') }}"></script>
-<script
-    type="text/javascript"
-    src="{{ $url->versioned('build/js/vendors~admin~install~shop~update.js') }}"
-></script>
 <script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
 <script type="text/javascript">
     var language = "{{ $lang->getCurrentLanguage() }}";

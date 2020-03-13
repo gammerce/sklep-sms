@@ -97,13 +97,13 @@ module.exports = {
         removeAvailableModules: false,
         removeEmptyChunks: false,
         splitChunks: {
-            chunks: 'all',
-            maxInitialRequests: 2,
-            // cacheGroups: {
-            //     defaultVendors: {
-            //         filename: 'vendors.js'
-            //     }
-            // }
+            cacheGroups: {
+                vendors: {
+                    name: 'vendors',
+                    chunks: 'initial',
+                    minChunks: 2
+                }
+            }
         },
     },
     plugins: [

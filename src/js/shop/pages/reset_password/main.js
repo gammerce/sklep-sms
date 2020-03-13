@@ -1,8 +1,8 @@
 import { getAndSetTemplate } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 // Wysłanie formularza o reset hasła
 $(document).delegate("#form_reset_password", "submit", function(e) {

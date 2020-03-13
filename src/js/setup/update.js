@@ -3,8 +3,8 @@ import "../../stylesheets/setup/update.scss";
 import "core-js";
 import { json_parse } from "../general/stocks";
 import { loader } from "../general/loader";
-import { buildUrl, removeFormWarnings } from "../general/global";
 import { infobox, sthWentWrong } from "../general/infobox";
+import { buildUrl, removeFormWarnings } from "../general/global";
 
 function markAsUpdate() {
     $("body").addClass("updated");

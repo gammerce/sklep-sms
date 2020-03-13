@@ -1,6 +1,6 @@
 import { loader } from "./loader";
 import { handleErrorResponse } from "./infobox";
-import { get_value } from "./stocks";
+import { get_value, trimSlashes } from "./stocks";
 
 export const restRequest = function(method, path, data, onSuccessFunction) {
     onSuccessFunction =
@@ -20,6 +20,19 @@ export const restRequest = function(method, path, data, onSuccessFunction) {
         },
         error: handleErrorResponse,
     });
+};
+
+export const buildUrl = function(path, query) {
+    var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
+    var queryString = $.param(query || {});
+
+    var output = prefix + trimSlashes(path);
+
+    if (queryString) {
+        output += "?" + queryString;
+    }
+
+    return output;
 };
 
 export const changeUrl = function(data) {
@@ -52,25 +65,14 @@ export const changeUrl = function(data) {
     window.location.href = url + "?" + strparams.join("&");
 };
 
-export const trimSlashes = function(text) {
-    return text.replace(/^\/|\/$/g, "");
+export const hideAndDisable = function(node) {
+    node.hide();
+    node.find("input").prop("disabled", true);
 };
 
-export const buildUrl = function(path, query) {
-    var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    var queryString = $.param(query || {});
-
-    var output = prefix + trimSlashes(path);
-
-    if (queryString) {
-        output += "?" + queryString;
-    }
-
-    return output;
-};
-
-export const removeFormWarnings = function() {
-    $(".form_warning").remove();
+export const showAndEnable = function(node) {
+    node.show();
+    node.find("input").prop("disabled", false);
 };
 
 export const showWarnings = function(form, warnings) {
@@ -82,12 +84,14 @@ export const showWarnings = function(form, warnings) {
     });
 };
 
-export const hideAndDisable = function(node) {
-    node.hide();
-    node.find("input").prop("disabled", true);
+export const removeFormWarnings = function() {
+    $(".form_warning").remove();
 };
 
-export const showAndEnable = function(node) {
-    node.show();
-    node.find("input").prop("disabled", false);
+export const element_with_data_module = function(a) {
+    if (typeof a.attr("data-module") !== "undefined") return a;
+
+    if (typeof a.prop("tagName") === "undefined") return null;
+
+    return element_with_data_module(a.parent());
 };

@@ -1,8 +1,8 @@
 import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 function showNotification(message) {
     var tableContainer = $(".table-structure .table-container");

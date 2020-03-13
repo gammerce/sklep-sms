@@ -1,8 +1,8 @@
 import { loader } from "../../../general/loader";
-import { buildUrl } from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { refresh_blocks } from "../../utils/utils";
+import { buildUrl } from "../../../general/global";
 
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");
