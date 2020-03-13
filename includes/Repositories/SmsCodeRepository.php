@@ -5,8 +5,6 @@ use App\Models\SmsCode;
 use App\Support\Database;
 use DateTime;
 
-// TODO Delete old sms codes
-
 class SmsCodeRepository
 {
     /** @var Database */
