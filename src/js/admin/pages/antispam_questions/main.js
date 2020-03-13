@@ -1,8 +1,8 @@
 import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#antispam_question_button_add", "click", function() {
     show_action_box(currentPage, "antispam_question_add");

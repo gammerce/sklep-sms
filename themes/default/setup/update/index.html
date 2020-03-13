@@ -7,11 +7,8 @@
             type="text/javascript"
             src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
         ></script>
+        <script type="text/javascript" src="{{ $url->versioned('build/js/vendors.js') }}"></script>
         <script type="text/javascript" src="{{ $url->versioned('build/js/update.js') }}"></script>
-        <script
-            type="text/javascript"
-            src="{{ $url->versioned('build/js/vendors~admin~install~shop~update.js') }}"
-        ></script>
         <script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
 
         <link href="{{ $url->versioned('build/css/update.css') }}" rel="stylesheet" />

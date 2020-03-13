@@ -1,9 +1,9 @@
 import { clearAndHideActionBox, getAndSetTemplate, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { refresh_blocks } from "../../../shop/utils/utils";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 // This is used later when action is done
 var rowId = 0;

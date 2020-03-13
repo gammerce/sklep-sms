@@ -1,7 +1,7 @@
 import { loader } from "../../general/loader";
-import { buildUrl } from "../../general/global";
 import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
+import { buildUrl } from "../../general/global";
 
 export const getAndSetTemplate = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =

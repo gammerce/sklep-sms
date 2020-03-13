@@ -1,3 +1,5 @@
+import { element_with_data_module } from "./global";
+
 export const get_value = function(obj, default_value) {
     return typeof obj !== "undefined" ? obj : default_value;
 };
@@ -35,10 +37,6 @@ export const service_module_act_can = function(name, a) {
     return element !== null && element.data("module") == name ? element : false;
 };
 
-const element_with_data_module = function(a) {
-    if (typeof a.attr("data-module") !== "undefined") return a;
-
-    if (typeof a.prop("tagName") === "undefined") return null;
-
-    return element_with_data_module(a.parent());
+export const trimSlashes = function(text) {
+    return text.replace(/^\/|\/$/g, "");
 };

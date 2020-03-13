@@ -1,6 +1,12 @@
 import { clearAndHideActionBox, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import {
+    buildUrl,
+    changeUrl,
+    removeFormWarnings,
+    restRequest,
+    showWarnings,
+} from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { refresh_blocks } from "../../../shop/utils/utils";
