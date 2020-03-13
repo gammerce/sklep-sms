@@ -40,6 +40,10 @@ class DirectBillingService
             return false;
         }
 
+        // Set charge amount to income value, since it was not set during the purchase process.
+        // We don't know up front the income value.
+        $purchase->setPayment([Purchase::ORDER_QUANTITY => $finalizedPayment->getIncome()]);
+
         if (
             $finalizedPayment->getCost() !==
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)

@@ -17,33 +17,33 @@ class Requester
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function post($url, array $body = [], array $headers = [])
+    public function post($url, $body = [], array $headers = [])
     {
         return $this->curl('POST', $url, [], $body, $headers);
     }
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function patch($url, array $body = [], array $headers = [])
+    public function patch($url, $body = [], array $headers = [])
     {
         return $this->curl('PATCH', $url, [], $body, $headers);
     }
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function put($url, array $body = [], array $headers = [])
+    public function put($url, $body = [], array $headers = [])
     {
         return $this->curl('PUT', $url, [], $body, $headers);
     }
@@ -64,7 +64,7 @@ class Requester
      * @param string $method
      * @param string $url
      * @param array $query
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @param int $timeout
      * @return Response|bool
@@ -73,7 +73,7 @@ class Requester
         $method,
         $url,
         array $query = [],
-        array $body = [],
+        $body = [],
         array $headers = [],
         $timeout = 10
     ) {
