@@ -36,9 +36,6 @@ module.exports = {
     },
     output: {
         filename: "js/[name].js",
-        // filename: (chunkData) => {
-        //     return chunkData.chunk.entryModule.resource.replace(/^.*\/src/, "");
-        // },
         publicPath: "../",
         pathinfo: false,
         path: __dirname + "/build"
