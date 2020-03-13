@@ -1,8 +1,8 @@
 import { getAndSetTemplate } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#register", "submit", function(e) {
     e.preventDefault();

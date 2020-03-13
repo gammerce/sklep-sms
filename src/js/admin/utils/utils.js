@@ -1,8 +1,8 @@
-import { action_box } from "../../general/window";
 import { loader } from "../../general/loader";
 import { buildUrl, restRequest } from "../../general/global";
 import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
+import { action_box } from "../../general/action_box";
 
 export const getAndSetTemplate = function(element, template, data, onSuccessFunction) {
     onSuccessFunction =

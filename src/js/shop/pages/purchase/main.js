@@ -1,9 +1,9 @@
 import { go_to_payment } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { window_info } from "../../../general/window";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 // Send purchase form
 $(document).delegate("#form_purchase", "submit", function(e) {

@@ -1,7 +1,7 @@
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#form_profile_update", "submit", function(e) {
     e.preventDefault();
