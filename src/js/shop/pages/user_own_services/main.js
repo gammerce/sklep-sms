@@ -1,8 +1,8 @@
-import {go_to_payment, refresh_blocks} from "../../utils/utils";
-import {json_parse} from "../../../general/stocks";
-import {buildUrl, removeFormWarnings, restRequest, showWarnings} from "../../../general/global";
-import {loader} from "../../../general/loader";
-import {handleErrorResponse, infobox, sthWentWrong} from "../../../general/infobox";
+import { go_to_payment, refresh_blocks } from "../../utils/utils";
+import { json_parse } from "../../../general/stocks";
+import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import { loader } from "../../../general/loader";
+import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 // Click on edit service
 $(document).delegate("#user_own_services .edit_row", "click", function() {

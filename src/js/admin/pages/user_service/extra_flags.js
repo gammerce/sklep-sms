@@ -1,3 +1,7 @@
+import { hideAndDisable, restRequest, showAndEnable } from "../../../general/global";
+import { service_module_act_can } from "../../../general/stocks";
+import { get_type_name } from "../../../general/extra_flags";
+
 // --------------------------------------------------------------------------------------------
 // Dodanie usługi graczowi
 //

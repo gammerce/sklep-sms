@@ -1,5 +1,5 @@
-import {get_type_name} from "../../../general/extra_flags";
-import {hideAndDisable, restRequest, showAndEnable} from "../../../general/global";
+import { get_type_name } from "../../../general/extra_flags";
+import { hideAndDisable, restRequest, showAndEnable } from "../../../general/global";
 
 $(document).ready(function($) {
     // So as no option is selected when somebody returned to the previous page

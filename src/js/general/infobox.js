@@ -1,4 +1,4 @@
-import {get_value} from "./stocks";
+import { get_value } from "./stocks";
 
 export const infobox = {
     element: $(""),

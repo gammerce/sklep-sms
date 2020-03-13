@@ -1,7 +1,7 @@
 import "../../stylesheets/admin.scss";
 
 import "core-js";
-import {changeUrl} from "../general/global";
+import { changeUrl } from "../general/global";
 
 jQuery.fn.scrollTo = function(elem, speed) {
     $(this).animate(

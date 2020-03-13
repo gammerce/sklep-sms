@@ -1,3 +1,9 @@
+import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
+import { loader } from "../../../general/loader";
+import { buildUrl } from "../../../general/global";
+import { json_parse } from "../../../general/stocks";
+import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+
 $(document).delegate("#group_button_add", "click", function() {
     show_action_box(currentPage, "group_add");
 });

@@ -23,14 +23,6 @@ export const get_random_string = function(length) {
     return final_rand;
 };
 
-export const element_with_data_module = function(a) {
-    if (typeof a.attr("data-module") !== "undefined") return a;
-
-    if (typeof a.prop("tagName") === "undefined") return null;
-
-    return element_with_data_module(a.parent());
-};
-
 /**
  * Sprawdza, czy działa na elemencie stworzonym przez moduł extra_flags
  * Jeżeli tak, to zwraca obiekt najwyżej w drzewie, który został utworzony przez dany moduł
@@ -41,4 +33,12 @@ export const element_with_data_module = function(a) {
 export const service_module_act_can = function(name, a) {
     var element = element_with_data_module(a);
     return element !== null && element.data("module") == name ? element : false;
+};
+
+const element_with_data_module = function(a) {
+    if (typeof a.attr("data-module") !== "undefined") return a;
+
+    if (typeof a.prop("tagName") === "undefined") return null;
+
+    return element_with_data_module(a.parent());
 };

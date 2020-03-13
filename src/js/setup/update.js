@@ -1,10 +1,10 @@
 import "../../stylesheets/update.scss";
 
 import "core-js";
-import {json_parse} from "../general/stocks";
-import {loader} from "../general/loader";
-import {buildUrl, removeFormWarnings} from "../general/global";
-import {infobox, sthWentWrong} from "../general/infobox";
+import { json_parse } from "../general/stocks";
+import { loader } from "../general/loader";
+import { buildUrl, removeFormWarnings } from "../general/global";
+import { infobox, sthWentWrong } from "../general/infobox";
 
 function markAsUpdate() {
     $("body").addClass("updated");

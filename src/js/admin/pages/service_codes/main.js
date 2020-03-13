@@ -1,5 +1,8 @@
-import {get_random_string, json_parse} from "../../../general/stocks";
-import {clearAndHideActionBox, refresh_blocks, show_action_box} from "../../utils/utils";
+import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
+import { loader } from "../../../general/loader";
+import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import { get_random_string, json_parse } from "../../../general/stocks";
+import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#service_code_button_add", "click", function() {
     show_action_box(currentPage, "code_add");

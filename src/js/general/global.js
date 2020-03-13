@@ -1,6 +1,6 @@
-import {loader} from "./loader";
-import {handleErrorResponse} from "./infobox";
-import {get_value} from "./stocks";
+import { loader } from "./loader";
+import { handleErrorResponse } from "./infobox";
+import { get_value } from "./stocks";
 
 export const restRequest = function(method, path, data, onSuccessFunction) {
     onSuccessFunction =

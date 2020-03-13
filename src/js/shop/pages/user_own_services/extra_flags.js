@@ -1,6 +1,6 @@
-import {service_module_act_can} from "../../../general/stocks";
-import {get_type_name} from "../../../general/extra_flags";
-import {hideAndDisable, showAndEnable} from "../../../general/global";
+import { service_module_act_can } from "../../../general/stocks";
+import { get_type_name } from "../../../general/extra_flags";
+import { hideAndDisable, showAndEnable } from "../../../general/global";
 
 $(document).delegate("#user_own_services .row [name=type]", "change", function() {
     var module = service_module_act_can("extra_flags", $(this));

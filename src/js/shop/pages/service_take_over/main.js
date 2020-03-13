@@ -1,7 +1,7 @@
-import {json_parse} from "../../../general/stocks";
-import {loader} from "../../../general/loader";
-import {buildUrl, removeFormWarnings, restRequest, showWarnings} from "../../../general/global";
-import {handleErrorResponse, infobox, sthWentWrong} from "../../../general/infobox";
+import { json_parse } from "../../../general/stocks";
+import { loader } from "../../../general/loader";
+import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#form_service_take_over [name=service_id]", "change", function() {
     if ($(this).val() == "") {

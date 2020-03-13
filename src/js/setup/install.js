@@ -1,10 +1,10 @@
 import "../../stylesheets/install.scss";
 
 import "core-js";
-import {json_parse} from "../general/stocks";
-import {infobox, sthWentWrong} from "../general/infobox";
-import {loader} from "../general/loader";
-import {buildUrl, removeFormWarnings} from "../general/global";
+import { json_parse } from "../general/stocks";
+import { infobox, sthWentWrong } from "../general/infobox";
+import { loader } from "../general/loader";
+import { buildUrl, removeFormWarnings } from "../general/global";
 
 jQuery(document).ready(function($) {
     $("#form_install").submit(function(e) {

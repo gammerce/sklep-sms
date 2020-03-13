@@ -19,7 +19,7 @@ const getFiles = (dirPath) =>
 
 
 const entryPaths = [
-    // ...getFiles("./src/js/admin/pages"),
+    ...getFiles("./src/js/admin/pages"),
     ...getFiles("./src/js/shop/pages"),
 ];
 
@@ -28,7 +28,7 @@ const entries = Object.fromEntries(entryPaths.map(path => [path, path]));
 module.exports = {
     mode: environment,
     entry: {
-        // admin: './src/js/admin/admin.js',
+        admin: './src/js/admin/admin.js',
         install: './src/js/setup/install.js',
         update: './src/js/setup/update.js',
         shop: './src/js/shop/shop.js',

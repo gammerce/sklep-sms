@@ -1,11 +1,11 @@
 import "../../stylesheets/shop.scss";
 
 import "core-js";
-import {refresh_blocks} from "./utils/utils";
-import {loader} from "../general/loader";
-import {buildUrl, restRequest} from "../general/global";
-import {json_parse} from "../general/stocks";
-import {handleErrorResponse, infobox, sthWentWrong} from "../general/infobox";
+import { refresh_blocks } from "./utils/utils";
+import { loader } from "../general/loader";
+import { buildUrl, restRequest } from "../general/global";
+import { json_parse } from "../general/stocks";
+import { handleErrorResponse, infobox, sthWentWrong } from "../general/infobox";
 
 $(document).ready(function() {
     if (typeof f !== "undefined") $(".content_td").append(atob(f));

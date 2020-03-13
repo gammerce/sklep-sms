@@ -1,3 +1,10 @@
+import { clearAndHideActionBox, show_action_box } from "../../utils/utils";
+import { loader } from "../../../general/loader";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
+import { get_random_string, json_parse } from "../../../general/stocks";
+import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
+import { refresh_blocks } from "../../../shop/utils/utils";
+
 $(document).delegate("#sms_code_button_add", "click", function() {
     show_action_box(currentPage, "sms_code_add");
 });
@@ -55,7 +62,6 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
 
-    // TODO Add corejs
     const formData = Object.fromEntries(
         $(this)
             .serializeArray()
