@@ -26,19 +26,20 @@ class PriceResource
 
         $updated = $priceRepository->update(
             $priceId,
-            $validated['service_id'],
-            $validated['server_id'],
-            $validated['sms_price'],
-            $validated['transfer_price'],
-            $validated['quantity']
+            $validated["service_id"],
+            $validated["server_id"],
+            $validated["sms_price"],
+            $validated["transfer_price"],
+            $validated["direct_billing_price"],
+            $validated["quantity"]
         );
 
         if ($updated) {
-            $logger->logWithActor('log_price_edited', $priceId);
-            return new SuccessApiResponse($lang->t('price_edit'));
+            $logger->logWithActor("log_price_edited", $priceId);
+            return new SuccessApiResponse($lang->t("price_edit"));
         }
 
-        return new ApiResponse("not_edited", $lang->t('price_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t("price_no_edit"), 0);
     }
 
     public function delete(
@@ -52,10 +53,10 @@ class PriceResource
         $deleted = $priceRepository->delete($priceId);
 
         if ($deleted) {
-            $logger->logWithActor('log_price_deleted', $priceId);
-            return new SuccessApiResponse($lang->t('delete_price'));
+            $logger->logWithActor("log_price_deleted", $priceId);
+            return new SuccessApiResponse($lang->t("delete_price"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_price'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_price"), 0);
     }
 }

@@ -29,6 +29,7 @@ class PurchasePriceService
 
     public function getServicePrices(Service $service, Server $server = null)
     {
+        // TODO Add direct billing
         $output = [];
 
         if ($server && $server->getSmsPlatformId()) {

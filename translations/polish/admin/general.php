@@ -68,6 +68,7 @@ return [
     'delete_user' => 'Użytkownik został prawidłowo usunięty.',
     'description_on_server' => 'Opis na serwerze </br> HTML: niedozwolony',
     'description_on_www' => 'Opis na stronie WWW </br> HTML: dozwolony',
+    'direct_billing_price' => 'Koszt Direct Billing',
     'dont_delete' => '( 0 - nie usuwaj )',
     'edit_antispam_question' => 'Edytuj pytanie anty-spamowe',
     'edit_group' => 'Edytuj grupę',

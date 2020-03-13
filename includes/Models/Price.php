@@ -12,25 +12,33 @@ class Price
     /** @var int|null */
     private $server;
 
-    /** @var int */
+    /** @var int|null */
     private $smsPrice;
 
-    /** @var int */
+    /** @var int|null */
     private $transferPrice;
 
-    /** @var int */
+    /** @var int|null */
     private $directBillingPrice;
 
     /** @var int|null */
     private $quantity;
 
-    public function __construct($id, $serviceId, $serverId, $smsPrice, $transferPrice, $quantity)
-    {
+    public function __construct(
+        $id,
+        $serviceId,
+        $serverId,
+        $smsPrice,
+        $transferPrice,
+        $directBillingPrice,
+        $quantity
+    ) {
         $this->id = $id;
         $this->service = $serviceId;
         $this->server = $serverId;
         $this->smsPrice = $smsPrice;
         $this->transferPrice = $transferPrice;
+        $this->directBillingPrice = $directBillingPrice;
         $this->quantity = $quantity;
     }
 
@@ -71,8 +79,12 @@ class Price
 
     public function getDirectBillingPrice()
     {
-        // TODO Change it to direct billing
-        return $this->transferPrice;
+        return $this->directBillingPrice;
+    }
+
+    public function hasDirectBillingPrice()
+    {
+        return $this->directBillingPrice !== null;
     }
 
     public function getQuantity()

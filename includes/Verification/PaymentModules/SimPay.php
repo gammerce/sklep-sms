@@ -92,17 +92,20 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     public function verifySms($returnCode, $number)
     {
         // TODO Check verifying sms code
-        $response = $this->requester->post('https://simpay.pl/api/1/status', json_encode([
-            'params' => [
-                'auth' => [
-                    'key' => $this->getKey(),
-                    'secret' => $this->getSecret(),
+        $response = $this->requester->post(
+            'https://simpay.pl/api/1/status',
+            json_encode([
+                'params' => [
+                    'auth' => [
+                        'key' => $this->getKey(),
+                        'secret' => $this->getSecret(),
+                    ],
+                    'service_id' => $this->getServiceId(),
+                    'number' => $number,
+                    'code' => $returnCode,
                 ],
-                'service_id' => $this->getServiceId(),
-                'number' => $number,
-                'code' => $returnCode,
-            ],
-        ]));
+            ])
+        );
 
         if (!$response) {
             throw new NoConnectionException();
