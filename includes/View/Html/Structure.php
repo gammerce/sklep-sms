@@ -80,10 +80,12 @@ class Structure extends DOMElement
 
     /**
      * @param DOMElement $headCell
+     * @return $this
      */
     public function addHeadCell($headCell)
     {
         $this->headCells[] = $headCell;
+        return $this;
     }
 
     /**
@@ -104,6 +106,19 @@ class Structure extends DOMElement
     }
 
     /**
+     * @param BodyRow[] $bodyRows
+     * @return $this
+     */
+    public function addBodyRows(array $bodyRows)
+    {
+        foreach ($bodyRows as $bodyRow) {
+            $this->addBodyRow($bodyRow);
+        }
+
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getDbRowsCount()
@@ -113,6 +128,7 @@ class Structure extends DOMElement
 
     /**
      * @param int $count
+     * @return $this
      */
     public function setDbRowsCount($count)
     {
@@ -148,5 +164,7 @@ class Structure extends DOMElement
             $row->addContent($cell);
             $this->foot->addContent($row);
         }
+
+        return $this;
     }
 }

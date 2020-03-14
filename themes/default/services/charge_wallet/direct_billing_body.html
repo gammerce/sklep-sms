@@ -1,7 +1,9 @@
 <tbody class="charge-body" data-type="{{ $type }}">
     <tr>
         <td>
-            <label for="direct_billing_price" class="charging">{$lang->t('type_amount')}</label>
+            <label for="direct_billing_price">
+                {$lang->t('type_charge_price')}
+            </label>
         </td>
         <td style="vertical-align: middle">
             <div class="field has-addons">
@@ -10,6 +12,7 @@
                         type="number"
                         step="0.01"
                         min="0.01"
+                        max="300"
                         id="direct_billing_price"
                         name="direct_billing_price"
                         class="input is-small"

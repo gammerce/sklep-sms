@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\Api\Ipn;
 
 use App\Http\Responses\PlainResponse;
-use App\Loggers\DatabaseLogger;
 use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
@@ -14,14 +13,13 @@ class TransferController
         $paymentPlatform,
         Request $request,
         Heart $heart,
-        TransferPaymentService $transferPaymentService,
-        DatabaseLogger $logger
+        TransferPaymentService $transferPaymentService
     ) {
         $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new PlainResponse(
-                "Payment platform does not support transfer payments [${paymentPlatform}]."
+                "Payment platform does not support transfer payment [${paymentPlatform}]."
             );
         }
 
@@ -30,16 +28,7 @@ class TransferController
             $request->request->all()
         );
 
-        if (!$finalizedPayment->getStatus()) {
-            $logger->log(
-                'payment_not_accepted',
-                $finalizedPayment->getOrderId(),
-                $finalizedPayment->getAmount(),
-                $finalizedPayment->getExternalServiceId()
-            );
-        } else {
-            $transferPaymentService->finalizePurchase($finalizedPayment);
-        }
+        $transferPaymentService->finalizePurchase($finalizedPayment);
 
         return new PlainResponse($finalizedPayment->getOutput());
     }
@@ -50,15 +39,13 @@ class TransferController
     public function oldAction(
         Request $request,
         Heart $heart,
-        TransferPaymentService $transferPaymentService,
-        DatabaseLogger $logger
+        TransferPaymentService $transferPaymentService
     ) {
         return $this->action(
             $request->query->get('service'),
             $request,
             $heart,
-            $transferPaymentService,
-            $logger
+            $transferPaymentService
         );
     }
 }

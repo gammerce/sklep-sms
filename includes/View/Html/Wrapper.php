@@ -77,26 +77,32 @@ class Wrapper extends Div
 
     /**
      * @param string $title
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
      * @param DOMElement $element
+     * @return $this
      */
     public function addButton($element)
     {
         $this->buttons[] = $element;
+        return $this;
     }
 
     /**
      * @param bool $value
+     * @return $this
      */
     public function setSearch($value = true)
     {
         $this->search = $value;
+        return $this;
     }
 
     /**
@@ -109,10 +115,12 @@ class Wrapper extends Div
 
     /**
      * @param Structure $table
+     * @return $this
      */
     public function setTable($table)
     {
         $this->table = $table;
+        return $this;
     }
 
     /**

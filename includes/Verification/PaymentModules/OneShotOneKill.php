@@ -69,7 +69,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             'comment' => '',
         ]);
 
-        if ($response === false) {
+        if (!$response) {
             throw new NoConnectionException();
         }
 
@@ -80,7 +80,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
         switch ($content['status']) {
             case 'ok':
-                $responseNumber = $this->getSmsNumberByPrice((int) ($content['amount'] * 100));
+                $responseNumber = $this->getSmsNumberByProvision(intval($content['amount'] * 100));
 
                 if ($responseNumber === null) {
                     $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
@@ -127,10 +127,10 @@ class OneShotOneKill extends PaymentModule implements SupportSms
      * @param int $price
      * @return string|null
      */
-    private function getSmsNumberByPrice($price)
+    private function getSmsNumberByProvision($price)
     {
         foreach (OneShotOneKill::getSmsNumbers() as $smsNumber) {
-            if ($smsNumber->getPrice() === $price) {
+            if ($smsNumber->getProvision() === $price) {
                 return $smsNumber->getNumber();
             }
         }

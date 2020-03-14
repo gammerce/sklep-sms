@@ -2,7 +2,7 @@
 namespace App\Payment\DirectBilling;
 
 use App\Models\Purchase;
-use App\Payment\General\ExternalPaymentService;
+use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
@@ -27,45 +27,54 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /** @var Translator */
     private $lang;
 
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
+    /** @var PurchaseDataService */
+    private $purchaseDataService;
 
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
         Heart $heart,
-        ExternalPaymentService $externalPaymentService,
+        PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->heart = $heart;
         $this->lang = $translationManager->user();
-        $this->externalPaymentService = $externalPaymentService;
+        $this->purchaseDataService = $purchaseDataService;
     }
 
     public function render(Purchase $purchase)
     {
         $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
         return $this->template->render("payment/payment_method_direct_billing", compact("price"));
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return bool
+     */
     public function isAvailable(Purchase $purchase)
     {
         return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING) &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
     }
 
+    /**
+     * @param Purchase $purchase
+     * @param IServicePurchase $serviceModule
+     * @return Result
+     */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->heart->getPaymentModuleByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
+        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) === null) {
             return new Result(
                 "no_transfer_price",
                 $this->lang->t('payment_method_unavailable'),
@@ -81,7 +90,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
-        $fileName = $this->externalPaymentService->storePurchase($purchase);
+        $fileName = $this->purchaseDataService->storePurchase($purchase);
 
         return $paymentModule->prepareDirectBilling($purchase, $fileName);
     }

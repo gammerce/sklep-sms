@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
+use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -15,8 +16,8 @@ use App\View\Pages\Interfaces\IPageAdminActionBox;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
-    const PAGE_ID = 'payment_platforms';
-    protected $privilege = 'manage_settings';
+    const PAGE_ID = "payment_platforms";
+    protected $privilege = "manage_settings";
 
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
@@ -32,53 +33,48 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
-        $this->heart->pageTitle = $this->title = $this->lang->t('payment_platforms');
+        $this->heart->pageTitle = $this->title = $this->lang->t("payment_platforms");
     }
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $button = new Input();
-        $button->setParam('id', 'payment_platform_button_add');
-        $button->setParam('type', 'button');
-        $button->addClass('button');
-        $button->setParam('value', $this->lang->t('add_payment_platform'));
-        $wrapper->addButton($button);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('name')));
-        $table->addHeadCell(new HeadCell($this->lang->t('module')));
+        $addButton = new Input();
+        $addButton->setParam("id", "payment_platform_button_add");
+        $addButton->setParam("type", "button");
+        $addButton->addClass("button");
+        $addButton->setParam("value", $this->lang->t("add_payment_platform"));
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->paymentPlatformRepository->mapToModel($row);
+            })
+            ->map(function (PaymentPlatform $paymentPlatform) {
+                return (new BodyRow())
+                    ->setDbId($paymentPlatform->getId())
+                    ->addCell(new Cell($paymentPlatform->getName(), "name"))
+                    ->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())))
+                    ->setEditAction(true)
+                    ->setDeleteAction(true);
+            })
+            ->all();
 
-        foreach ($statement as $row) {
-            $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("name")))
+            ->addHeadCell(new HeadCell($this->lang->t("module")))
+            ->addBodyRows($bodyRows)
+            ->setDbRowsCount($rowsCount);
 
-            $nameCell = new Cell($paymentPlatform->getName());
-            $nameCell->setParam('headers', 'name');
-
-            $bodyRow->setDbId($paymentPlatform->getId());
-            $bodyRow->addCell($nameCell);
-            $bodyRow->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())));
-
-            $bodyRow->setEditAction(true);
-            $bodyRow->setDeleteAction(true);
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper;
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->addButton($addButton);
     }
 
     public function getActionBox($boxId, array $query)
@@ -90,8 +86,8 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $output = $this->getActionBoxContent($boxId, $query);
 
         return [
-            'status' => 'ok',
-            'template' => $output,
+            "status" => "ok",
+            "template" => $output,
         ];
     }
 
@@ -103,12 +99,12 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             }, $this->heart->getPaymentModuleIds());
 
             return $this->template->render("admin/action_boxes/payment_platform_add", [
-                'paymentModules' => implode("", $paymentModules),
+                "paymentModules" => implode("", $paymentModules),
             ]);
         }
 
         if ($boxId === "edit") {
-            $paymentPlatformId = array_get($query, 'id');
+            $paymentPlatformId = array_get($query, "id");
             $paymentPlatform = $this->paymentPlatformRepository->getOrFail($paymentPlatformId);
             $dataFields = $this->dataFieldService->renderDataFields(
                 $paymentPlatform->getModuleId(),
@@ -117,10 +113,10 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
             return $this->template->render(
                 "admin/action_boxes/payment_platform_edit",
-                compact('paymentPlatform', 'dataFields')
+                compact("paymentPlatform", "dataFields")
             );
         }
 
-        return '';
+        return "";
     }
 }

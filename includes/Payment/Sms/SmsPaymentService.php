@@ -98,7 +98,7 @@ class SmsPaymentService
                 $smsNumber->getNumber(),
                 $user->getLastIp(),
                 $user->getPlatform(),
-                $result->free ? 1 : 0,
+                $result->isFree() ? 1 : 0,
             ]);
 
         return $this->db->lastId();

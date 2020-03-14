@@ -1,13 +1,11 @@
 <?php
 namespace Tests\Feature\Http\View\Admin;
 
-use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserServicesTest extends HttpTestCase
 {
-    use AuthConcern;
     use MakePurchaseConcern;
 
     protected function setUp()

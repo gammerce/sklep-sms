@@ -37,13 +37,14 @@ class PurchasePriceRenderer
     public function render(array $price, Service $service)
     {
         $priceId = $price['id'];
+        $directBillingPrice = $this->priceTextService->getPriceText($price['direct_billing_price']);
         $smsPrice = $this->priceTextService->getPriceGrossText($price['sms_price']);
         $transferPrice = $this->priceTextService->getPriceText($price['transfer_price']);
         $quantity = $this->priceTextService->getQuantityText($price['quantity'], $service);
 
         return $this->template->renderNoComments(
             "purchase/purchase_price",
-            compact('priceId', 'quantity', 'smsPrice', 'transferPrice')
+            compact('directBillingPrice', 'priceId', 'quantity', 'smsPrice', 'transferPrice')
         );
     }
 }

@@ -2,7 +2,7 @@
 namespace App\Payment\Transfer;
 
 use App\Models\Purchase;
-use App\Payment\General\ExternalPaymentService;
+use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
@@ -34,15 +34,15 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var Settings */
     private $settings;
 
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
+    /** @var PurchaseDataService */
+    private $purchaseDataService;
 
     public function __construct(
         Heart $heart,
         Template $template,
         PriceTextService $priceTextService,
         TransferPaymentService $transferPaymentService,
-        ExternalPaymentService $externalPaymentService,
+        PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager,
         Settings $settings
     ) {
@@ -52,7 +52,7 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->transferPaymentService = $transferPaymentService;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
-        $this->externalPaymentService = $externalPaymentService;
+        $this->purchaseDataService = $purchaseDataService;
     }
 
     public function render(Purchase $purchase)
@@ -105,7 +105,7 @@ class TransferPaymentMethod implements IPaymentMethod
         $service = $this->heart->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t('payment_for_service', $service->getName()));
 
-        $fileName = $this->externalPaymentService->storePurchase($purchase);
+        $fileName = $this->purchaseDataService->storePurchase($purchase);
 
         return new Result("external", $this->lang->t('external_payment_prepared'), true, [
             'data' => $paymentModule->prepareTransfer($purchase, $fileName),

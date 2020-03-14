@@ -38,26 +38,31 @@ class BodyRow extends Row
 
     /**
      * @param DOMElement $cell
+     * @return $this
      */
     public function addCell($cell)
     {
-        $this->addContent($cell);
+        return $this->addContent($cell);
     }
 
     /**
      * @param boolean $editAction
+     * @return $this
      */
     public function setEditAction($editAction = true)
     {
         $this->editAction = (bool) $editAction;
+        return $this;
     }
 
     /**
      * @param boolean $deleteAction
+     * @return $this
      */
     public function setDeleteAction($deleteAction = true)
     {
         $this->deleteAction = (bool) $deleteAction;
+        return $this;
     }
 
     /**
@@ -70,15 +75,16 @@ class BodyRow extends Row
 
     /**
      * @param string $dbId
+     * @return $this
      */
     public function setDbId($dbId)
     {
         $this->dbId = (string) $dbId;
 
-        // Dodajemy kolumne z id
         $cell = new Cell($this->dbId);
         $cell->setParam('headers', 'id');
-        $this->addCell($cell);
+
+        return $this->addCell($cell);
     }
 
     /** @return string */

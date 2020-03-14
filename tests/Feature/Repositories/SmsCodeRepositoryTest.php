@@ -13,7 +13,6 @@ class SmsCodeRepositoryTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
         $this->smsCodeRepository = $this->app->make(SmsCodeRepository::class);
     }
 

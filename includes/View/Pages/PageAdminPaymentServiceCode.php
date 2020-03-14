@@ -1,12 +1,14 @@
 <?php
 namespace App\View\Pages;
 
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
-use App\View\Html\Div;
+use App\View\Html\DateCell;
 use App\View\Html\HeadCell;
+use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 
@@ -27,16 +29,6 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('code')));
-        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $queryParticle = new QueryParticle();
 
         if (isset($query['payid'])) {
@@ -56,34 +48,41 @@ class PageAdminPaymentServiceCode extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->transactionRepository->mapToModel($row);
+            })
+            ->map(function (Transaction $transaction) use ($query) {
+                $bodyRow = new BodyRow();
 
-        foreach ($statement as $row) {
-            $transaction = $this->transactionRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                if ($query['payid'] == $transaction->getPaymentId()) {
+                    $bodyRow->addClass('highlighted');
+                }
 
-            if ($query['payid'] == $transaction->getPaymentId()) {
-                $bodyRow->addClass('highlighted');
-            }
+                $bodyRow->setDbId($transaction->getPaymentId());
+                $bodyRow->addCell(new Cell($transaction->getServiceCode()));
+                $bodyRow->addCell(new Cell($transaction->getIp()));
+                $bodyRow->addCell(new PlatformCell($transaction->getPlatform()));
+                $bodyRow->addCell(new DateCell($transaction->getTimestamp()));
 
-            $bodyRow->setDbId($transaction->getPaymentId());
-            $bodyRow->addCell(new Cell($transaction->getServiceCode()));
-            $bodyRow->addCell(new Cell($transaction->getIp()));
+                return $bodyRow;
+            })
+            ->all();
 
-            $cell = new Cell();
-            $div = new Div(get_platform($transaction->getPlatform()));
-            $div->addClass('one_line');
-            $cell->addContent($div);
-            $bodyRow->addCell($cell);
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('code')))
+            ->addHeadCell(new HeadCell($this->lang->t('ip')))
+            ->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"))
+            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addBodyRows($bodyRows)
+            ->setDbRowsCount($rowsCount);
 
-            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper;
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->toHtml();
     }
 }

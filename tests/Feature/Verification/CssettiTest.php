@@ -54,7 +54,7 @@ class CssettiTest extends TestCase
 
         // then
         $this->assertInstanceOf(SmsSuccessResult::class, $result);
-        $this->assertFalse($result->free);
+        $this->assertFalse($result->isFree());
     }
 
     /**

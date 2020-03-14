@@ -1,6 +1,7 @@
 <?php
 namespace App\Loggers;
 
+use App\Models\User;
 use App\Repositories\LogRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -42,6 +43,13 @@ class DatabaseLogger
             $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
         }
 
+        $this->logRepository->create($message);
+    }
+
+    public function logWithUser(User $user, $key, ...$args)
+    {
+        $message = $this->langShop->t($key, ...$args);
+        $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
         $this->logRepository->create($message);
     }
 }

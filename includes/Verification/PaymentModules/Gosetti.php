@@ -1,7 +1,10 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
+use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
+use App\Requesting\Requester;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -18,11 +21,23 @@ class Gosetti extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "gosetti";
 
-    /** @var  string */
+    /** @var FileLogger */
+    private $fileLogger;
+
+    /** @var string */
     private $smsCode;
 
     /** @var array */
     private $numbers = [];
+
+    public function __construct(
+        Requester $requester,
+        FileLogger $fileLogger,
+        PaymentPlatform $paymentPlatform
+    ) {
+        parent::__construct($requester, $paymentPlatform);
+        $this->fileLogger = $fileLogger;
+    }
 
     public static function getDataFields()
     {
@@ -55,7 +70,7 @@ class Gosetti extends PaymentModule implements SupportSms
             'Code' => $returnCode,
         ]);
 
-        if ($response === false) {
+        if (!$response) {
             throw new NoConnectionException();
         }
 
@@ -117,7 +132,13 @@ class Gosetti extends PaymentModule implements SupportSms
     private function fetchSmsData()
     {
         $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
-        $data = $response ? $response->json() : null;
+
+        if (!$response) {
+            $this->fileLogger->error("Could not get gosetti sms data.");
+            return;
+        }
+
+        $data = $response->json();
 
         // GOSetti provides SMS code in the response
         $this->smsCode = $data['Code'];

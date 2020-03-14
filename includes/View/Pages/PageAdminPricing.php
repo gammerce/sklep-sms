@@ -15,8 +15,8 @@ use App\View\Pages\Interfaces\IPageAdminActionBox;
 
 class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 {
-    const PAGE_ID = 'pricing';
-    protected $privilege = 'manage_settings';
+    const PAGE_ID = "pricing";
+    protected $privilege = "manage_settings";
 
     /** @var PriceRepository */
     private $priceRepository;
@@ -34,7 +34,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('pricing');
+        $this->heart->pageTitle = $this->title = $this->lang->t("pricing");
         $this->priceRepository = $priceRepository;
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
@@ -46,12 +46,13 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->title);
 
         $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(new HeadCell($this->lang->t('quantity')));
-        $table->addHeadCell(new HeadCell($this->lang->t('sms_price')));
-        $table->addHeadCell(new HeadCell($this->lang->t('transfer_price')));
+        $table->addHeadCell(new HeadCell($this->lang->t("id"), "id"));
+        $table->addHeadCell(new HeadCell($this->lang->t("service")));
+        $table->addHeadCell(new HeadCell($this->lang->t("server")));
+        $table->addHeadCell(new HeadCell($this->lang->t("quantity")));
+        $table->addHeadCell(new HeadCell($this->lang->t("sms_price")));
+        $table->addHeadCell(new HeadCell($this->lang->t("transfer_price")));
+        $table->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")));
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -61,14 +62,14 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
 
         foreach ($statement as $row) {
             $price = $this->priceRepository->mapToModel($row);
             $bodyRow = new BodyRow();
 
             if ($price->isForEveryServer()) {
-                $serverName = $this->lang->t('all_servers');
+                $serverName = $this->lang->t("all_servers");
             } else {
                 $server = $this->heart->getServer($price->getServerId());
                 $serverName = $server ? $server->getName() : "n/a";
@@ -83,6 +84,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             $transferPrice = $price->hasTransferPrice()
                 ? $this->priceTextService->getPriceText($price->getTransferPrice())
                 : "n/a";
+            $directBillingPrice = $price->hasDirectBillingPrice()
+                ? $this->priceTextService->getPriceText($price->getDirectBillingPrice())
+                : "n/a";
 
             $bodyRow->setDbId($price->getId());
             $bodyRow->addCell(new Cell($serviceName));
@@ -90,6 +94,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($quantity));
             $bodyRow->addCell(new Cell($smsPrice));
             $bodyRow->addCell(new Cell($transferPrice));
+            $bodyRow->addCell(new Cell($directBillingPrice));
 
             $bodyRow->setDeleteAction(true);
             $bodyRow->setEditAction(true);
@@ -108,10 +113,10 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     private function createAddButton()
     {
         return (new Input())
-            ->setParam('id', 'price_button_add')
-            ->setParam('type', 'button')
-            ->addClass('button')
-            ->setParam('value', $this->lang->t('add_price'));
+            ->setParam("id", "price_button_add")
+            ->setParam("type", "button")
+            ->addClass("button")
+            ->setParam("value", $this->lang->t("add_price"));
     }
 
     public function getActionBox($boxId, array $query)
@@ -121,7 +126,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "price_edit") {
-            $price = $this->priceRepository->getOrFail($query['id']);
+            $price = $this->priceRepository->getOrFail($query["id"]);
             $allServers = $price->isForEveryServer() ? "selected" : "";
         }
 
@@ -131,8 +136,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                 "option",
                 $service->getName() . " ( " . $service->getId() . " )",
                 [
-                    'value' => $service->getId(),
-                    'selected' =>
+                    "value" => $service->getId(),
+                    "selected" =>
                         isset($price) && $price->getServiceId() === $service->getId()
                             ? "selected"
                             : "",
@@ -143,8 +148,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $servers = "";
         foreach ($this->heart->getServers() as $serverId => $server) {
             $servers .= create_dom_element("option", $server->getName(), [
-                'value' => $server->getId(),
-                'selected' =>
+                "value" => $server->getId(),
+                "selected" =>
                     isset($price) && $price->getServerId() === $server->getId() ? "selected" : "",
             ]);
         }
@@ -155,8 +160,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                 "option",
                 $this->priceTextService->getPriceGrossText($smsPrice),
                 [
-                    'value' => $smsPrice,
-                    'selected' =>
+                    "value" => $smsPrice,
+                    "selected" =>
                         isset($price) && $price->getSmsPrice() === $smsPrice ? "selected" : "",
                 ]
             );
@@ -166,34 +171,38 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             case "price_add":
                 $output = $this->template->render(
                     "admin/action_boxes/price_add",
-                    compact('services', 'servers', 'smsPrices')
+                    compact("services", "servers", "smsPrices")
                 );
                 break;
 
             case "price_edit":
+                $directBillingPrice = $price->hasDirectBillingPrice()
+                    ? $price->getDirectBillingPrice() / 100
+                    : null;
                 $transferPrice = $price->hasTransferPrice()
                     ? $price->getTransferPrice() / 100
                     : null;
                 $output = $this->template->render(
                     "admin/action_boxes/price_edit",
                     compact(
-                        'services',
-                        'servers',
-                        'smsPrices',
-                        'price',
-                        'transferPrice',
-                        'allServers'
+                        "directBillingPrice",
+                        "services",
+                        "servers",
+                        "smsPrices",
+                        "price",
+                        "transferPrice",
+                        "allServers"
                     )
                 );
                 break;
 
             default:
-                $output = '';
+                $output = "";
         }
 
         return [
-            'status' => 'ok',
-            'template' => $output,
+            "status" => "ok",
+            "template" => $output,
         ];
     }
 }

@@ -4,43 +4,49 @@ namespace App\Models;
 class FinalizedPayment
 {
     /**
-     * Status płatności, czy wszystkie dane są prawidłowe
+     * Payment status, is it valid
      *
      * @var bool
      */
     private $status = false;
 
     /**
-     * ID płatności
+     * Payment ID
      *
      * @var string
      */
     private $orderId = '';
 
     /**
-     * Kwota płatności
+     * Payment value gross
      *
-     * @var double
+     * @var int
      */
-    private $amount = 0.0;
+    private $cost = 0;
 
     /**
-     * Nazwa pliku z danymi zakupu
-     * ( parametr $dataFilename z metody prepareTransfer )
+     * How much money is received
+     *
+     * @var int
+     */
+    private $income = 0;
+
+    /**
+     * Filename of transaction
      *
      * @var string
      */
     private $dataFilename = '';
 
     /**
-     * Id usługi w danym serwisie
+     * Service ID from the external system
      *
      * @var string
      */
     private $externalServiceId = '';
 
     /**
-     * Co ma zostać wyświetlone na stronie
+     * What should be displayed as a response
      *
      * @var string
      */
@@ -86,19 +92,19 @@ class FinalizedPayment
     }
 
     /**
-     * @return float
+     * @return int
      */
-    public function getAmount()
+    public function getCost()
     {
-        return $this->amount;
+        return $this->cost;
     }
 
     /**
-     * @param float $amount
+     * @param int $cost
      */
-    public function setAmount($amount)
+    public function setCost($cost)
     {
-        $this->amount = (float) $amount;
+        $this->cost = (int) $cost;
     }
 
     /**
@@ -163,5 +169,21 @@ class FinalizedPayment
     public function isTestMode()
     {
         return $this->testMode;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIncome()
+    {
+        return $this->income;
+    }
+
+    /**
+     * @param int $income
+     */
+    public function setIncome($income)
+    {
+        $this->income = (int) $income;
     }
 }
