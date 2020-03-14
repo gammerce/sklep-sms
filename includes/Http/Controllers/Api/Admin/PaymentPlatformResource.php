@@ -51,7 +51,8 @@ class PaymentPlatformResource
 
         if (
             $settings->getSmsPlatformId() === $paymentPlatform->getId() ||
-            $settings->getTransferPlatformId() === $paymentPlatform->getId()
+            $settings->getTransferPlatformId() === $paymentPlatform->getId() ||
+            $settings->getDirectBillingPlatformId() === $paymentPlatform->getId()
         ) {
             return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
         }
