@@ -70,7 +70,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(
                 new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
             );
-            $bodyRow->addCell(new Cell(as_date_string($smsCode->getExpiresAt())));
+            $bodyRow->addCell(
+                new Cell(as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never"))
+            );
 
             if (get_privileges('manage_sms_codes')) {
                 $bodyRow->setDeleteAction(true);
