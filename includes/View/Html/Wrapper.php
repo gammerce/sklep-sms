@@ -87,18 +87,22 @@ class Wrapper extends Div
 
     /**
      * @param DOMElement $element
+     * @return $this
      */
     public function addButton($element)
     {
         $this->buttons[] = $element;
+        return $this;
     }
 
     /**
      * @param bool $value
+     * @return $this
      */
     public function setSearch($value = true)
     {
         $this->search = $value;
+        return $this;
     }
 
     /**

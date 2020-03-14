@@ -7,8 +7,6 @@ use App\System\Heart;
 use App\Verification\Abstracts\SupportDirectBilling;
 use Symfony\Component\HttpFoundation\Request;
 
-// TODO Add admin page with direct billing payments
-
 class DirectBillingController
 {
     public function action(
