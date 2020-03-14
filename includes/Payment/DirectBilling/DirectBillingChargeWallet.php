@@ -96,4 +96,12 @@ class DirectBillingChargeWallet implements IChargeWallet
     {
         return $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
     }
+
+    public function getQuantity(Purchase $purchase)
+    {
+        $price = $this->getPrice($purchase);
+        $minQuantity = $this->priceTextService->getPriceText($price * 0.5);
+        $maxQuantity = $this->priceTextService->getPriceText($price * 0.7);
+        return "W zależności od operatora, od $minQuantity do $maxQuantity";
+    }
 }
