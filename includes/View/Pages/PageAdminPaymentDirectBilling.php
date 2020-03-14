@@ -65,7 +65,6 @@ class PageAdminPaymentDirectBilling extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
-
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

@@ -47,18 +47,22 @@ class BodyRow extends Row
 
     /**
      * @param boolean $editAction
+     * @return $this
      */
     public function setEditAction($editAction = true)
     {
         $this->editAction = (bool) $editAction;
+        return $this;
     }
 
     /**
      * @param boolean $deleteAction
+     * @return $this
      */
     public function setDeleteAction($deleteAction = true)
     {
         $this->deleteAction = (bool) $deleteAction;
+        return $this;
     }
 
     /**

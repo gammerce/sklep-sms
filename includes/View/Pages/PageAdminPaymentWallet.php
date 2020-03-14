@@ -1,13 +1,13 @@
 <?php
 namespace App\View\Pages;
 
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
 use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateCell;
-use App\View\Html\Div;
 use App\View\Html\HeadCell;
 use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
@@ -36,13 +36,6 @@ class PageAdminPaymentWallet extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('cost')));
-        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $queryParticle = new QueryParticle();
         $queryParticle->add("t.payment = 'wallet'");
 
@@ -63,27 +56,38 @@ class PageAdminPaymentWallet extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->transactionRepository->mapToModel($row);
+            })
+            ->map(function (Transaction $transaction) use ($query) {
+                $cost = $this->priceTextService->getPriceText($transaction->getCost());
 
-        foreach ($statement as $row) {
-            $transaction = $this->transactionRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                $bodyRow = (new BodyRow())
+                    ->setDbId($transaction->getPaymentId())
+                    ->addCell(new Cell($cost))
+                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell(new PlatformCell($transaction->getPlatform()))
+                    ->addCell(new DateCell($transaction->getTimestamp()));
 
-            if ($query['payid'] == $transaction->getPaymentId()) {
-                $bodyRow->addClass('highlighted');
-            }
+                if ($query['payid'] == $transaction->getPaymentId()) {
+                    $bodyRow->addClass('highlighted');
+                }
 
-            $cost = $this->priceTextService->getPriceText($transaction->getCost());
+                return $bodyRow;
+            })
+            ->all();
 
-            $bodyRow->setDbId($transaction->getPaymentId());
-            $bodyRow->addCell(new Cell($cost));
-            $bodyRow->addCell(new Cell($transaction->getIp()));
-            $bodyRow->addCell(new PlatformCell($transaction->getPlatform()));
-            $bodyRow->addCell(new DateCell($transaction->getTimestamp()));
-
-            $table->addBodyRow($bodyRow);
-        }
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('cost')))
+            ->addHeadCell(new HeadCell($this->lang->t('ip')))
+            ->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"))
+            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addBodyRows($bodyRows)
+            ->setDbRowsCount($rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->title)

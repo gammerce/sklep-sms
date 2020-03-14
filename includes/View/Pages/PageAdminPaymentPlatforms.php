@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
+use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -37,48 +38,43 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $button = new Input();
-        $button->setParam('id', 'payment_platform_button_add');
-        $button->setParam('type', 'button');
-        $button->addClass('button');
-        $button->setParam('value', $this->lang->t('add_payment_platform'));
-        $wrapper->addButton($button);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('name')));
-        $table->addHeadCell(new HeadCell($this->lang->t('module')));
+        $addButton = new Input();
+        $addButton->setParam('id', 'payment_platform_button_add');
+        $addButton->setParam('type', 'button');
+        $addButton->addClass('button');
+        $addButton->setParam('value', $this->lang->t('add_payment_platform'));
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->paymentPlatformRepository->mapToModel($row);
+            })
+            ->map(function (PaymentPlatform $paymentPlatform) {
+                return (new BodyRow())
+                    ->setDbId($paymentPlatform->getId())
+                    ->addCell(new Cell($paymentPlatform->getName(), "name"))
+                    ->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())))
+                    ->setEditAction(true)
+                    ->setDeleteAction(true);
+            })
+            ->all();
 
-        foreach ($statement as $row) {
-            $paymentPlatform = $this->paymentPlatformRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('name')))
+            ->addHeadCell(new HeadCell($this->lang->t('module')))
+            ->addBodyRows($bodyRows)
+            ->setDbRowsCount($rowsCount);
 
-            $nameCell = new Cell($paymentPlatform->getName());
-            $nameCell->setParam('headers', 'name');
-
-            $bodyRow->setDbId($paymentPlatform->getId());
-            $bodyRow->addCell($nameCell);
-            $bodyRow->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())));
-
-            $bodyRow->setEditAction(true);
-            $bodyRow->setDeleteAction(true);
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper;
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->addButton($addButton);
     }
 
     public function getActionBox($boxId, array $query)
