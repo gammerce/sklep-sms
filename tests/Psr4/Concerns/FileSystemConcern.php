@@ -29,8 +29,11 @@ trait FileSystemConcern
         $oldShop = $this->app->makeWith(OldShop::class, compact('fileSystem'));
         $this->app->instance(OldShop::class, $oldShop);
 
-        $oldShop = $this->app->makeWith(PurchaseDataService::class, compact('fileSystem'));
-        $this->app->instance(PurchaseDataService::class, $oldShop);
+        $purchaseDataService = $this->app->makeWith(
+            PurchaseDataService::class,
+            compact('fileSystem')
+        );
+        $this->app->instance(PurchaseDataService::class, $purchaseDataService);
 
         return $fileSystem;
     }

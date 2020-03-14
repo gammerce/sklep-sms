@@ -108,7 +108,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $amount = $body['amount'] * 100;
+        $amount = intval($body['amount'] * 100);
 
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));

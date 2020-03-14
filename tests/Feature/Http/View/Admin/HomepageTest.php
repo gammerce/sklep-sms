@@ -3,13 +3,11 @@ namespace Tests\Feature\Http\View\Admin;
 
 use App\Exceptions\LicenseRequestException;
 use App\System\License;
-use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class HomepageTest extends HttpTestCase
 {
-    use AuthConcern;
     use MakePurchaseConcern;
 
     protected function setUp()

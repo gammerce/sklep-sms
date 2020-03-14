@@ -61,7 +61,7 @@ class DirectBillingChargeWallet implements IChargeWallet
         }
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price * 100,
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => intval($price * 100),
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => false,
         ]);
     }

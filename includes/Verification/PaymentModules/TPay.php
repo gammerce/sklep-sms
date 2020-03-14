@@ -72,7 +72,7 @@ class TPay extends PaymentModule implements SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $amount = array_get($body, 'tr_amount') * 100;
+        $amount = intval(array_get($body, 'tr_amount') * 100);
 
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));

@@ -54,11 +54,11 @@ class TransferChargeWallet implements IChargeWallet
         $transferPrice = $validated["transfer_price"];
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
+            Purchase::PAYMENT_PRICE_TRANSFER => intval($transferPrice * 100),
             Purchase::PAYMENT_DISABLED_TRANSFER => false,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $transferPrice * 100,
+            Purchase::ORDER_QUANTITY => intval($transferPrice * 100),
         ]);
     }
 

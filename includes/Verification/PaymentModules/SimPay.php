@@ -93,16 +93,16 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     {
         // TODO Check verifying sms code
         $response = $this->requester->post(
-            'https://simpay.pl/api/1/status',
+            "https://simpay.pl/api/1/status",
             json_encode([
-                'params' => [
-                    'auth' => [
-                        'key' => $this->getKey(),
-                        'secret' => $this->getSecret(),
+                "params" => [
+                    "auth" => [
+                        "key" => $this->getKey(),
+                        "secret" => $this->getSecret(),
                     ],
-                    'service_id' => $this->getServiceId(),
-                    'number' => $number,
-                    'code' => $returnCode,
+                    "service_id" => $this->getServiceId(),
+                    "number" => $number,
+                    "code" => $returnCode,
                 ],
             ])
         );
@@ -113,12 +113,12 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
         $content = $response->json();
 
-        if (isset($content['respond']['status']) && $content['respond']['status'] == 'OK') {
-            return new SmsSuccessResult(!!$content['respond']['test']);
+        if (isset($content["respond"]["status"]) && $content["respond"]["status"] == "OK") {
+            return new SmsSuccessResult(!!$content["respond"]["test"]);
         }
 
-        if (isset($content['error'][0]) && is_array($content['error'][0])) {
-            switch ((int) $content['error'][0]['error_code']) {
+        if (isset($content["error"][0]) && is_array($content["error"][0])) {
+            switch ((int) $content["error"][0]["error_code"]) {
                 case 103:
                 case 104:
                     throw new WrongCredentialsException();
@@ -128,7 +128,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
                     throw new BadCodeException();
             }
 
-            throw new ExternalErrorException($content['error'][0]['error_name']);
+            throw new ExternalErrorException($content["error"][0]["error_name"]);
         }
 
         throw new UnknownErrorException();
@@ -142,12 +142,12 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $apiKey = $this->getDirectBillingApiKey();
 
         $body = [
-            'serviceId' => intval($serviceId),
-            'control' => $control,
-            'complete' => $this->url->to("/page/payment_success"),
-            'failure' => $this->url->to("/page/payment_error"),
-            'amount_gross' => $amount,
-            'sign' => hash('sha256', $serviceId . $amount . $control . $apiKey),
+            "serviceId" => intval($serviceId),
+            "control" => $control,
+            "complete" => $this->url->to("/page/payment_success"),
+            "failure" => $this->url->to("/page/payment_error"),
+            "amount_gross" => $amount,
+            "sign" => hash("sha256", $serviceId . $amount . $control . $apiKey),
         ];
 
         $response = $this->requester->post("https://simpay.pl/db/api", $body);
@@ -174,8 +174,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $this->tryToFetchIps();
 
         $id = array_get($body, "id");
-        $valueGross = array_get($body, "valuenet_gross") * 100;
-        $valuePartner = array_get($body, "valuepartner") * 100;
+        $valueGross = intval(array_get($body, "valuenet_gross") * 100);
+        $valuePartner = intval(array_get($body, "valuepartner") * 100);
         $control = array_get($body, "control");
 
         $finalizedPayment = new FinalizedPayment();
@@ -193,32 +193,32 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return $this->getData("sms_text");
     }
 
     private function getKey()
     {
-        return $this->getData('key');
+        return $this->getData("key");
     }
 
     private function getSecret()
     {
-        return $this->getData('secret');
+        return $this->getData("secret");
     }
 
     private function getServiceId()
     {
-        return $this->getData('service_id');
+        return $this->getData("service_id");
     }
 
     private function getDirectBillingServiceId()
     {
-        return $this->getData('direct_billing_service_id');
+        return $this->getData("direct_billing_service_id");
     }
 
     private function getDirectBillingApiKey()
     {
-        return $this->getData('direct_billing_api_key');
+        return $this->getData("direct_billing_api_key");
     }
 
     private function tryToFetchIps()
@@ -238,7 +238,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         }
 
         $data = $response->json();
-        $this->allowedIps = $data["respond"]["ips"];
+        $this->allowedIps = array_merge(["127.0.0.1"], $data["respond"]["ips"]);
     }
 
     /**
@@ -269,7 +269,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $control = array_get($body, "control");
 
         $calculatedSign = hash(
-            'sha256',
+            "sha256",
             $id . $status . $valueNet . $valuePartner . $control . $this->getDirectBillingApiKey()
         );
 

@@ -157,7 +157,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
     public function finalizeTransfer(array $query, array $body)
     {
         $isTest = strtolower(array_get($body, 'test')) === "true";
-        $amount = array_get($body, 'amountPay') * 100;
+        $amount = intval(array_get($body, 'amountPay') * 100);
 
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
