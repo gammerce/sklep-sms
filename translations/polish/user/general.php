@@ -24,8 +24,12 @@ return [
     'email_sent' =>
         'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został właśnie wysłany na Twoją skrzynkę pocztową.',
     'expire' => 'Wygasa',
+    'external_payment_accepted' =>
+        'Zaakceptowano płatność. ID zakupu {1} ID transakcji: {2} Kwota: {3} Usługa: {4} {5}({6})({7})',
     'external_payment_prepared' =>
         'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
+    'external_no_purchase' =>
+        'Płatność: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
     'go_to_payment' => 'Przejdź do płatności',
@@ -63,13 +67,16 @@ return [
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
+    'payment_invalid_amount' =>
+        'Zapłacona kwota różni się od kwoty zakupu. Metoda: {1} ID: {2} Zapłacona kwota: {3} Oczekiwana kwota: {4}',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
-    'payment_not_accepted' => 'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
+    'purchase_no_data_file' =>
+        'Płatność: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
+    'external_payment_not_accepted' =>
+        'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',
-    'payment_transfer_accepted' =>
-        'Zaakceptowano płatność przelewem. ID zakupu {1} ID transakcji: {2} Kwota: {3} Usługa: {4} {5}({6})({7})',
     'payment_wallet' => 'Płatność portfel',
     'price' => 'Cena',
     'profile' => 'Profil',
@@ -127,15 +134,9 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'take_over_service' => 'Przejmij usługę',
     'title_payment' => 'Płatność',
     'transfer_above_amount' => 'Przelewem można płacić tylko za zakupy powyżej 1.00 {1}',
-    'transfer_bad_module' =>
-        'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie został znaleziony i nie doszło do zakupu.',
     'transfer_cost' => 'Koszt Przelewu',
     'transfer_error' => 'Niestety, ale płatność za pomocą przelewu zakończyła się niepowodzeniem.',
     'transfer_finalized' => 'Transakcja sfinalizowana',
-    'transfer_no_data_file' =>
-        'Płatność przelewem: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu',
-    'transfer_no_purchase' =>
-        'Płatność przelewem: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
     'transfer_transfer' => 'Przelew',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
     'transfer_unverified' =>

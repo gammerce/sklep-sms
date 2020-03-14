@@ -1,13 +1,10 @@
 <?php
 namespace Tests\Feature\Http\View\Admin;
 
-use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class SmsCodesTest extends HttpTestCase
 {
-    use AuthConcern;
-
     /** @test */
     public function it_loads()
     {

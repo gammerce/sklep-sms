@@ -37,7 +37,7 @@ class ExpiredUserServiceService
         $this->userServiceRepository = $userServiceRepository;
     }
 
-    public function deleteExpiredUserServices()
+    public function deleteExpired()
     {
         // Usunięcie przestarzałych usług użytkownika
         // Pierwsze pobieramy te, które usuniemy

@@ -9,8 +9,7 @@ class PageSmsCodesActionBoxAddTest extends HttpTestCase
     public function get_add_box()
     {
         // give
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get("/api/admin/pages/sms_codes/action_boxes/sms_code_add");

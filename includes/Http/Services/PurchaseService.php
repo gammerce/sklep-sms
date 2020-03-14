@@ -62,7 +62,6 @@ class PurchaseService
 
         $purchase = new Purchase($user);
         $purchase->setServiceId($serviceModule->service->getId());
-
         $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,

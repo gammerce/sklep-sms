@@ -20,6 +20,7 @@ class Purchase
     const PAYMENT_PLATFORM_DIRECT_BILLING = "direct_billing_platform";
     const PAYMENT_PLATFORM_SMS = "sms_platform";
     const PAYMENT_PLATFORM_TRANSFER = "transfer_platform";
+    const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
     const PAYMENT_SERVICE_CODE = "service_code";
@@ -88,6 +89,7 @@ class Purchase
         $this->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
             Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
         ]);
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),

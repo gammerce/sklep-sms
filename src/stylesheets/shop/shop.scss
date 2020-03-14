@@ -1,0 +1,325 @@
+@import "../general/all";
+@import "../general/global";
+@import "../general/loader";
+@import "../general/infobox";
+
+@import "./partials/payment";
+@import "./partials/payment_log";
+@import "./partials/user_own_services";
+
+body {
+    background: url("../../images/background.jpg") no-repeat fixed;
+    background-size: cover;
+    height: initial;
+    min-height: 100%;
+}
+
+#content table {
+    font-size: 16px;
+    border-spacing: 15px;
+}
+
+/* Table obejmujaca cala strone */
+.contentwrapper {
+    width: 100%;
+    margin: 0 auto;
+    border-collapse: collapse;
+}
+
+/* Nagłówek */
+.header_wrapper_td table {
+    width: 100%;
+    padding-top: 20px;
+}
+
+.header_wrapper_td table tr td {
+    vertical-align: bottom;
+}
+
+.wallet_status,
+.logged_info {
+    float: left;
+    margin-top: -1px;
+    padding: 15px 10px;
+    color: #fff;
+    box-shadow: 1px 1px 1px black;
+    background-repeat: no-repeat !important;
+}
+
+.wallet_status {
+    padding-left: 55px;
+    background-image: url("../../images/wallet.png") !important;
+    background-color: #ae0a0e;
+    background-position: 10px center !important;
+    text-align: right;
+    font-weight: bold;
+}
+
+/* Informacje o koncie po zalogowaniu */
+.logged_info {
+    padding-left: 45px;
+    margin-right: 5px;
+    background-image: url("../../images/user.png"),
+        linear-gradient(
+            45deg,
+            rgba(131, 131, 131, 1) 0%,
+            rgba(140, 140, 140, 1) 12%,
+            rgba(149, 149, 149, 1) 25%,
+            rgba(109, 109, 109, 1) 76%,
+            rgba(98, 98, 98, 1) 91%,
+            rgba(92, 92, 92, 1) 100%
+        );
+    background-position: 0 center;
+}
+
+/* Środkowe okno zawierające główną treść strony (środek strony) */
+.content_title {
+    float: left;
+    padding: 10px;
+    font-family: Georgia, serif;
+    color: #fff;
+    text-shadow: 2px 2px 1px #000;
+    font-size: 20px;
+    border-radius: 15px 15px 0 0;
+    box-shadow: 0 -1px 1px rgba(0, 0, 0, 0.7);
+    margin: 0 0 -1.5px -2px;
+    background: linear-gradient(45deg, rgba(0, 0, 0, 0.65) 0%, rgba(0, 0, 0, 0.1) 100%);
+}
+
+.content_td {
+    position: relative;
+    width: 55%;
+    min-width: 700px;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
+}
+
+.custom_content {
+    padding: 1em;
+    text-align: left;
+    color: #ccc;
+    font-size: 15px;
+}
+
+/* Przyciski z usługami (lewa część strony) */
+.services_buttons_td {
+    vertical-align: top;
+    width: 200px;
+}
+
+.services_buttons {
+    margin: 0;
+    white-space: nowrap;
+    text-align: right;
+}
+
+.services_buttons ul {
+    text-align: right;
+}
+
+.services_buttons li a {
+    background-color: #3d0001;
+    box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
+}
+
+.services_buttons li:nth-child(2n) a {
+    background: #990000;
+}
+
+.services_buttons li a:hover {
+    color: #d62226;
+}
+
+/* Przyciski funkcji konta (prawa część strony) */
+.user_buttons_td {
+    vertical-align: bottom;
+    width: 200px;
+}
+
+.user_buttons {
+    margin: 0;
+    white-space: nowrap;
+    text-align: left;
+}
+
+.user_buttons ul {
+    text-align: left;
+}
+
+.user_buttons li a,
+#loginarea_roll_button,
+#register_redirect_button,
+#logout {
+    background-color: #2e555a;
+    box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
+}
+
+.user_buttons li:nth-child(2n) a {
+    background-color: #3f3c41;
+}
+
+.user_buttons li a:hover,
+#loginarea_roll_button:hover,
+#logout:hover {
+    color: #6d9782;
+}
+
+/* Wspólne klasy dla przycisków po lewej i po prawej stronie */
+.services_buttons ul,
+.user_buttons ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.services_buttons li a,
+.user_buttons li a,
+#loginarea_roll_button,
+#register_redirect_button,
+#logout {
+    font-size: 20px;
+    color: white;
+    line-height: 45px;
+    font-family: ‘Courier New’, Courier, monospace;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.services_buttons li a:hover {
+    background: #fff;
+}
+
+.user_buttons li a:hover,
+#loginarea_roll_button:hover,
+#register_redirect_button:hover,
+#logout:hover {
+    background: #f8ffe2;
+}
+
+/* Pole logowania */
+.loginarea {
+    overflow: hidden;
+}
+
+.loginarea table {
+    position: relative;
+    border-collapse: collapse;
+    margin-left: -220px;
+}
+
+.loginarea table tr .td1 {
+    vertical-align: middle;
+    width: 220px;
+    background: rgba(255, 255, 255, 0.5);
+    padding: 0 20px;
+}
+
+/* Cegiełka z miejscem do wpisywania tekstu przy logowaniu */
+#form_login {
+    margin: 0;
+    padding: 12px 0;
+    color: black;
+    font-size: 14px;
+    font-family: Gill Sans MT, sans-serif;
+    font-weight: bolder;
+}
+
+#form_login input {
+    width: 100%;
+}
+
+#form_login .submit_wrapper {
+    padding-top: 5px;
+}
+
+/* Przycisk do wysuwania formy logowania */
+#loginarea_roll_button,
+#register_redirect_button {
+    padding: 5px 15px;
+    text-align: center;
+    line-height: inherit;
+    font-size: 17px;
+}
+
+#loginarea_roll_button,
+#logout {
+    vertical-align: middle;
+    background-color: #5b9931;
+}
+
+#register_redirect_button {
+    display: inline-block;
+    /*background: linear-gradient(to right, rgba(134,146,146,1) 0%,rgba(114,118,140,1) 21%,rgba(97,101,121,1) 49%,rgba(116,124,140,1) 80%,rgba(134,146,146,1) 100%);*/
+    background: rgba(50, 50, 50, 1);
+    margin-bottom: 16px;
+}
+
+#register_redirect_button:hover {
+    color: #003366;
+}
+
+.pagination {
+    padding: 6px;
+    background-color: rgba(0, 0, 0, 0.7);
+    box-shadow: 0 0 10px #000;
+    text-align: center;
+}
+
+.pagination .current {
+    color: #f7d358;
+}
+
+#language_choice {
+    padding-right: 12px;
+    padding-top: 6px;
+    text-align: right;
+
+    img {
+        max-height: 25px;
+        max-width: 40px;
+        filter: grayscale(100%);
+        -webkit-filter: grayscale(100%);
+
+        &.current {
+            max-height: 28px;
+            max-width: 45px;
+            filter: grayscale(0%) !important;
+            -webkit-filter: grayscale(0%) !important;
+        }
+
+        &:hover {
+            filter: grayscale(0%);
+            -webkit-filter: grayscale(0%);
+            cursor: pointer;
+        }
+    }
+}
+
+dl.form {
+    dt {
+        font-size: 18px;
+        font-weight: bold;
+        color: #aaa;
+        text-shadow: 1px 1px 1px #000;
+    }
+
+    dd {
+        padding: 1rem 1rem 2rem;
+    }
+}
+
+.error-content {
+    padding-top: 4rem;
+    text-align: center;
+
+    .title {
+        color: $white-bis;
+    }
+
+    .subtitle {
+        color: $white-ter;
+    }
+}

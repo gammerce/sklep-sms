@@ -1,17 +1,19 @@
 <?php
 namespace App\View\Pages;
 
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
-use App\View\Html\Div;
+use App\View\Html\DateCell;
 use App\View\Html\HeadCell;
+use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 
 class PageAdminPaymentAdmin extends PageAdmin
 {
-    const PAGE_ID = 'payment_admin';
+    const PAGE_ID = "payment_admin";
 
     /** @var TransactionRepository */
     private $transactionRepository;
@@ -20,22 +22,12 @@ class PageAdminPaymentAdmin extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('payments_admin');
+        $this->heart->pageTitle = $this->title = $this->lang->t("payments_admin");
         $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('admin_id')));
-        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -44,38 +36,44 @@ class PageAdminPaymentAdmin extends PageAdmin
                 "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->transactionRepository->mapToModel($row);
+            })
+            ->map(function (Transaction $transaction) use ($query) {
+                $adminName = $transaction->getAdminId()
+                    ? "{$transaction->getAdminName()} ({$transaction->getAdminId()})"
+                    : $this->lang->t("none");
 
-        foreach ($statement as $row) {
-            $transaction = $this->transactionRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                $bodyRow = (new BodyRow())
+                    ->setDbId($transaction->getId())
+                    ->addCell(new Cell($adminName))
+                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell(new PlatformCell($transaction->getPlatform()))
+                    ->addCell(new DateCell($transaction->getTimestamp()));
 
-            if ($query['payid'] == $transaction->getPaymentId()) {
-                $bodyRow->addClass('highlighted');
-            }
+                if ($query["payid"] == $transaction->getPaymentId()) {
+                    $bodyRow->addClass("highlighted");
+                }
 
-            $adminName = $transaction->getAdminId()
-                ? "{$transaction->getAdminName()} ({$transaction->getAdminId()})"
-                : $this->lang->t('none');
+                return $bodyRow;
+            })
+            ->all();
 
-            $bodyRow->setDbId($transaction->getId());
-            $bodyRow->addCell(new Cell($adminName));
-            $bodyRow->addCell(new Cell($transaction->getIp()));
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("admin_id")))
+            ->addHeadCell(new HeadCell($this->lang->t("ip")))
+            ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
+            ->addHeadCell(new HeadCell($this->lang->t("date")))
+            ->addBodyRows($bodyRows)
+            ->setDbRowsCount($rowsCount);
 
-            $cell = new Cell();
-            $div = new Div(get_platform($transaction->getPlatform()));
-            $div->addClass('one_line');
-            $cell->addContent($div);
-            $bodyRow->addCell($cell);
-
-            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->toHtml();
     }
 }

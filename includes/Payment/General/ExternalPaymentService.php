@@ -1,65 +1,101 @@
 <?php
 namespace App\Payment\General;
 
+use App\Loggers\DatabaseLogger;
+use App\Models\FinalizedPayment;
 use App\Models\Purchase;
-use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\ServiceModules\Interfaces\IServicePurchase;
+use App\System\Heart;
 
 class ExternalPaymentService
 {
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
+    /** @var Heart */
+    private $heart;
 
-    /** @var Path */
-    private $path;
+    /** @var PurchaseDataService */
+    private $purchaseDataService;
 
-    /** @var FileSystemContract */
-    private $fileSystem;
+    /** @var DatabaseLogger */
+    private $logger;
 
     public function __construct(
-        PurchaseSerializer $purchaseSerializer,
-        Path $path,
-        FileSystemContract $fileSystem
+        DatabaseLogger $logger,
+        Heart $heart,
+        PurchaseDataService $purchaseDataService
     ) {
-        $this->purchaseSerializer = $purchaseSerializer;
-        $this->path = $path;
-        $this->fileSystem = $fileSystem;
+        $this->heart = $heart;
+        $this->purchaseDataService = $purchaseDataService;
+        $this->logger = $logger;
+    }
+
+    /**
+     * @param FinalizedPayment $finalizedPayment
+     * @return bool
+     */
+    public function validate(FinalizedPayment $finalizedPayment)
+    {
+        if (!$finalizedPayment->getStatus()) {
+            $this->logger->log(
+                'external_payment_not_accepted',
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param FinalizedPayment $finalizedPayment
+     * @return Purchase|null
+     */
+    public function restorePurchase(FinalizedPayment $finalizedPayment)
+    {
+        $purchase = $this->purchaseDataService->restorePurchase(
+            $finalizedPayment->getDataFilename()
+        );
+
+        if ($purchase) {
+            return $purchase;
+        }
+
+        $this->logger->log('purchase_no_data_file', $finalizedPayment->getOrderId());
+        return null;
     }
 
     /**
      * @param Purchase $purchase
-     * @return string
+     * @param FinalizedPayment $finalizedPayment
+     * @return bool
      */
-    public function storePurchase(Purchase $purchase)
+    public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment)
     {
-        $serialized = $this->purchaseSerializer->serialize($purchase);
-        $dataFilename = time() . "-" . md5($serialized);
-        $path = $this->path->to('data/transfers/' . $dataFilename);
-        $this->fileSystem->put($path, $serialized);
+        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
 
-        return $dataFilename;
-    }
+        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
+        if (!($serviceModule instanceof IServicePurchase)) {
+            $this->logger->log(
+                'external_no_purchase',
+                $finalizedPayment->getOrderId(),
+                $purchase->getServiceId()
+            );
 
-    /**
-     * @param string $fileName
-     * @return Purchase|null
-     */
-    public function restorePurchase($fileName)
-    {
-        if (!$fileName || !$this->fileSystem->exists($this->path->to("data/transfers/$fileName"))) {
-            return null;
+            return false;
         }
 
-        return $this->purchaseSerializer->deserialize(
-            $this->fileSystem->get($this->path->to("data/transfers/$fileName"))
-        );
-    }
+        $boughtServiceId = $serviceModule->purchase($purchase);
 
-    /**
-     * @param $fileName
-     */
-    public function deletePurchase($fileName)
-    {
-        $this->fileSystem->delete($this->path->to("data/transfers/$fileName"));
+        $this->logger->logWithUser(
+            $purchase->user,
+            'external_payment_accepted',
+            $boughtServiceId,
+            $finalizedPayment->getOrderId(),
+            $finalizedPayment->getCost() / 100,
+            $finalizedPayment->getExternalServiceId()
+        );
+
+        return true;
     }
 }

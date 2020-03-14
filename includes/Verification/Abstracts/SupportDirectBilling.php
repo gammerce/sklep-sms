@@ -3,13 +3,14 @@ namespace App\Verification\Abstracts;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Support\Result;
 
 interface SupportDirectBilling
 {
     /**
      * @param Purchase $purchase
      * @param string $dataFilename
-     * @return array
+     * @return Result
      */
     public function prepareDirectBilling(Purchase $purchase, $dataFilename);
 

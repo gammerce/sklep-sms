@@ -48,7 +48,7 @@ class ServiceLongDescriptionController
             $heart->pageTitle .= $serviceModule->service->getName();
         }
 
-        $heart->addStyle($url->versioned("build/css/static/extra_stuff/long_desc.css"));
+        $heart->addStyle($url->versioned("build/css/shop/long_desc.css"));
         $header = $template->render("header", [
             'currentPageId' => $currentPage->getPid(),
             'footer' => "",

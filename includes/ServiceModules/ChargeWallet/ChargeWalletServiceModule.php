@@ -81,11 +81,11 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $method = array_get($body, 'method');
-
         if (!$this->auth->check()) {
             throw new UnauthorizedException();
         }
+
+        $method = array_get($body, 'method');
 
         try {
             $paymentMethod = $this->chargeWalletFactory->create($method);
@@ -97,6 +97,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
+            Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
             Purchase::PAYMENT_DISABLED_SERVICE_CODE => true,
             Purchase::PAYMENT_DISABLED_SMS => true,
@@ -109,12 +110,20 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $quantity = number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2);
-
-        return $this->template->renderNoComments(
-            "services/charge_wallet/order_details",
-            compact('quantity')
+        $paymentMethod = $this->chargeWalletFactory->create(
+            $purchase->getPayment(Purchase::PAYMENT_METHOD)
         );
+
+        $price = $paymentMethod->getPrice($purchase);
+
+        $minQuantity = $this->priceTextService->getPriceText($price * 0.5);
+        $maxQuantity = $this->priceTextService->getPriceText($price * 0.7);
+        $quantity = "W zależności od operatora, od $minQuantity do $maxQuantity";
+
+        return $this->template->renderNoComments("services/charge_wallet/order_details", [
+            'price' => $this->priceTextService->getPriceText($price),
+            'quantity' => $quantity,
+        ]);
     }
 
     public function purchase(Purchase $purchase)
@@ -132,7 +141,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
-            number_format($purchase->getOrder(Purchase::ORDER_QUANTITY) / 100, 2),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY) / 100,
             $purchase->user->getUsername(),
             $purchase->getEmail()
         );

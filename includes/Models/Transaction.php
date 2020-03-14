@@ -19,6 +19,9 @@ class Transaction
     private $paymentId;
 
     /** @var string */
+    private $externalPaymentId;
+
+    /** @var string */
     private $serviceId;
 
     /** @var int */
@@ -78,6 +81,7 @@ class Transaction
         $userName,
         $paymentMethod,
         $paymentId,
+        $externalPaymentId,
         $serviceId,
         $serverId,
         $quantity,
@@ -102,6 +106,7 @@ class Transaction
         $this->userName = $userName;
         $this->paymentMethod = $paymentMethod;
         $this->paymentId = $paymentId;
+        $this->externalPaymentId = $externalPaymentId;
         $this->serviceId = $serviceId;
         $this->serverId = $serverId;
         $this->quantity = $quantity;
@@ -160,6 +165,14 @@ class Transaction
     public function getPaymentId()
     {
         return $this->paymentId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getExternalPaymentId()
+    {
+        return $this->externalPaymentId;
     }
 
     /**

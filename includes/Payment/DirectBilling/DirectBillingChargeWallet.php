@@ -9,7 +9,9 @@ use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
+use App\System\Heart;
 use App\System\Settings;
+use App\Verification\Abstracts\SupportDirectBilling;
 
 class DirectBillingChargeWallet implements IChargeWallet
 {
@@ -22,14 +24,19 @@ class DirectBillingChargeWallet implements IChargeWallet
     /** @var Settings */
     private $settings;
 
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
-        Settings $settings
+        Settings $settings,
+        Heart $heart
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->settings = $settings;
+        $this->heart = $heart;
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -43,14 +50,19 @@ class DirectBillingChargeWallet implements IChargeWallet
             ]
         );
         $validated = $validator->validateOrFail();
-        $transferPrice = $validated["direct_billing_price"];
+        $price = $validated["direct_billing_price"];
+
+        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
+        );
+
+        if (!($paymentModule instanceof SupportDirectBilling)) {
+            throw new \UnexpectedValueException("Payment module doesn't support direct billing");
+        }
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice * 100,
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => intval($price * 100),
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => false,
-        ]);
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $transferPrice * 100,
         ]);
     }
 
@@ -78,5 +90,10 @@ class DirectBillingChargeWallet implements IChargeWallet
         ]);
 
         return [$option, $body];
+    }
+
+    public function getPrice(Purchase $purchase)
+    {
+        return $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
     }
 }

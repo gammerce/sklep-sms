@@ -87,19 +87,19 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'name' => $this->faker->word,
-                'ip' => $this->faker->ipv4,
-                'port' => $this->faker->numberBetween(1000, 20000),
-                'sms_platform_id' => null,
+                "name" => $this->faker->word,
+                "ip" => $this->faker->ipv4,
+                "port" => $this->faker->numberBetween(1000, 20000),
+                "sms_platform_id" => null,
             ],
             $attributes
         );
 
         return $this->serverRepository->create(
-            $attributes['name'],
-            $attributes['ip'],
-            $attributes['port'],
-            $attributes['sms_platform_id']
+            $attributes["name"],
+            $attributes["ip"],
+            $attributes["port"],
+            $attributes["sms_platform_id"]
         );
     }
 
@@ -107,27 +107,27 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'id' => strtolower($this->faker->word),
-                'name' => $this->faker->word,
-                'short_description' => $this->faker->word,
-                'description' => $this->faker->sentence,
-                'tag' => $this->faker->word,
-                'module' => ExtraFlagsServiceModule::MODULE_ID,
-                'groups' => [],
-                'order' => 1,
+                "id" => strtolower($this->faker->word),
+                "name" => $this->faker->word,
+                "short_description" => $this->faker->word,
+                "description" => $this->faker->sentence,
+                "tag" => $this->faker->word,
+                "module" => ExtraFlagsServiceModule::MODULE_ID,
+                "groups" => [],
+                "order" => 1,
             ],
             $attributes
         );
 
         return $this->serviceRepository->create(
-            $attributes['id'],
-            $attributes['name'],
-            $attributes['short_description'],
-            $attributes['description'],
-            $attributes['tag'],
-            $attributes['module'],
-            $attributes['groups'],
-            $attributes['order']
+            $attributes["id"],
+            $attributes["name"],
+            $attributes["short_description"],
+            $attributes["description"],
+            $attributes["tag"],
+            $attributes["module"],
+            $attributes["groups"],
+            $attributes["order"]
         );
     }
 
@@ -135,14 +135,14 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'vip',
+                "service_id" => "vip",
             ],
             $attributes
         );
 
         return $this->serverServiceRepository->create(
-            $attributes['server_id'],
-            $attributes['service_id']
+            $attributes["server_id"],
+            $attributes["service_id"]
         );
     }
 
@@ -150,21 +150,23 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'vip',
-                'server_id' => null,
-                'sms_price' => 100,
-                'transfer_price' => null,
-                'quantity' => $this->faker->numberBetween(1, 100),
+                "direct_billing_price" => 15,
+                "service_id" => "vip",
+                "server_id" => null,
+                "sms_price" => 100,
+                "transfer_price" => null,
+                "quantity" => $this->faker->numberBetween(1, 100),
             ],
             $attributes
         );
 
         return $this->priceRepository->create(
-            $attributes['service_id'],
-            $attributes['server_id'],
-            $attributes['sms_price'],
-            $attributes['transfer_price'],
-            $attributes['quantity']
+            $attributes["service_id"],
+            $attributes["server_id"],
+            $attributes["sms_price"],
+            $attributes["transfer_price"],
+            $attributes["direct_billing_price"],
+            $attributes["quantity"]
         );
     }
 
@@ -177,29 +179,29 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'username' => $this->faker->userName,
-                'password' => $this->faker->password,
-                'email' => $this->faker->email,
-                'forename' => $this->faker->firstName,
-                'surname' => $this->faker->lastName,
-                'steam_id' => '',
-                'ip' => $this->faker->ipv4,
-                'groups' => '1',
-                'wallet' => 0,
+                "username" => $this->faker->userName,
+                "password" => $this->faker->password,
+                "email" => $this->faker->email,
+                "forename" => $this->faker->firstName,
+                "surname" => $this->faker->lastName,
+                "steam_id" => "",
+                "ip" => $this->faker->ipv4,
+                "groups" => "1",
+                "wallet" => 0,
             ],
             $attributes
         );
 
         return $this->userRepository->create(
-            $attributes['username'],
-            $attributes['password'],
-            $attributes['email'],
-            $attributes['forename'],
-            $attributes['surname'],
-            $attributes['steam_id'],
-            $attributes['ip'],
-            $attributes['groups'],
-            $attributes['wallet']
+            $attributes["username"],
+            $attributes["password"],
+            $attributes["email"],
+            $attributes["forename"],
+            $attributes["surname"],
+            $attributes["steam_id"],
+            $attributes["ip"],
+            $attributes["groups"],
+            $attributes["wallet"]
         );
     }
 
@@ -207,9 +209,9 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'name' => $this->faker->word,
-                'module' => Cssetti::MODULE_ID,
-                'data' => [
+                "name" => $this->faker->word,
+                "module" => Cssetti::MODULE_ID,
+                "data" => [
                     "account_id" => "5b2f-30ea-b814-3585710",
                 ],
             ],
@@ -217,9 +219,9 @@ class Factory
         );
 
         return $this->paymentPlatformRepository->create(
-            $attributes['name'],
-            $attributes['module'],
-            $attributes['data']
+            $attributes["name"],
+            $attributes["module"],
+            $attributes["data"]
         );
     }
 
@@ -227,20 +229,20 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'code' => $this->faker->word,
-                'service_id' => 'vip',
-                'server_id' => null,
-                'uid' => null,
+                "code" => $this->faker->word,
+                "service_id" => "vip",
+                "server_id" => null,
+                "uid" => null,
             ],
             $attributes
         );
 
         return $this->serviceCodeRepository->create(
-            $attributes['code'],
-            $attributes['service_id'],
-            $attributes['price_id'],
-            $attributes['server_id'],
-            $attributes['uid']
+            $attributes["code"],
+            $attributes["service_id"],
+            $attributes["price_id"],
+            $attributes["server_id"],
+            $attributes["uid"]
         );
     }
 
@@ -248,29 +250,29 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'text' => $this->faker->sentence,
+                "text" => $this->faker->sentence,
             ],
             $attributes
         );
 
-        $this->logRepository->create($attributes['text']);
+        $this->logRepository->create($attributes["text"]);
     }
 
     public function smsCode(array $attributes = [])
     {
         $attributes = array_merge(
             [
-                'code' => $this->faker->word,
-                'sms_price' => 100,
-                'free' => false,
+                "code" => $this->faker->word,
+                "sms_price" => 100,
+                "free" => false,
             ],
             $attributes
         );
 
         $this->smsCodeRepository->create(
-            $attributes['code'],
-            $attributes['sms_price'],
-            $attributes['free']
+            $attributes["code"],
+            $attributes["sms_price"],
+            $attributes["free"]
         );
     }
 
@@ -278,25 +280,25 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'service_id' => 'vip',
-                'uid' => null,
-                'seconds' => 35 * 24 * 60 * 60,
-                'server_id' => null,
-                'type' => ExtraFlagType::TYPE_NICK,
-                'auth_data' => 'my_nickname',
-                'password' => 'pokll12',
+                "service_id" => "vip",
+                "uid" => null,
+                "seconds" => 35 * 24 * 60 * 60,
+                "server_id" => null,
+                "type" => ExtraFlagType::TYPE_NICK,
+                "auth_data" => "my_nickname",
+                "password" => "pokll12",
             ],
             $attributes
         );
 
         return $this->extraFlagUserServiceRepository->create(
-            $attributes['service_id'],
-            $attributes['uid'],
-            $attributes['seconds'],
-            $attributes['server_id'],
-            $attributes['type'],
-            $attributes['auth_data'],
-            $attributes['password']
+            $attributes["service_id"],
+            $attributes["uid"],
+            $attributes["seconds"],
+            $attributes["server_id"],
+            $attributes["type"],
+            $attributes["auth_data"],
+            $attributes["password"]
         );
     }
 
@@ -304,11 +306,11 @@ class Factory
     {
         $attributes = array_merge(
             [
-                'name' => $this->faker->word,
+                "name" => $this->faker->word,
             ],
             $attributes
         );
 
-        return $this->groupRepository->create($attributes['name'], $attributes);
+        return $this->groupRepository->create($attributes["name"], $attributes);
     }
 }

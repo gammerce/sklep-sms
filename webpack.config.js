@@ -1,19 +1,41 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const fs = require("fs");
 
-var environment = process.env.NODE_ENV || "development";
-var isProduction = environment === "production";
+const environment = process.env.NODE_ENV || "development";
+const isProduction = environment === "production";
+
+const getFiles = (dirPath) =>
+    fs.readdirSync(dirPath)
+        .map(file => {
+            if (fs.statSync(`${dirPath}/${file}`).isDirectory()) {
+                return getFiles(dirPath + "/" + file);
+            }
+
+            return [`${dirPath}/${file}`];
+        })
+        .flat()
+        .filter(path => path.match(/\.(ts|js)$/));
+
+
+const entryPaths = [
+    ...getFiles("./src/js/admin/pages"),
+    ...getFiles("./src/js/shop/pages"),
+];
+
+const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(js|ts)$/, ""), path]));
 
 module.exports = {
     mode: environment,
     entry: {
-        admin: './src/js/admin.js',
-        install: './src/js/install.js',
-        update: './src/js/update.js',
-        shop: './src/js/shop.js'
+        admin: './src/js/admin/admin.js',
+        install: './src/js/setup/install.js',
+        update: './src/js/setup/update.js',
+        shop: './src/js/shop/shop.js',
+        ...entries
     },
     output: {
-        filename: 'js/[name].js',
+        filename: "js/[name].js",
         publicPath: "../",
         pathinfo: false,
         path: __dirname + "/build"
@@ -21,6 +43,11 @@ module.exports = {
     devtool: isProduction ? undefined : 'source-map',
     module: {
         rules: [
+            {
+                test: /\.(ts|js)$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.(png|jpg|svg|gif)$/,
                 loader: 'file-loader',
@@ -66,11 +93,25 @@ module.exports = {
             }
         ]
     },
+    optimization: {
+        removeAvailableModules: false,
+        removeEmptyChunks: false,
+        splitChunks: {
+            cacheGroups: {
+                vendors: {
+                    name: 'vendors',
+                    chunks: 'initial',
+                    minChunks: 2
+                }
+            }
+        },
+    },
     plugins: [
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
-            {from: './src/js/static/', to: './js/static/'},
-            {from: './src/stylesheets/static/', to: './css/static/'}
+            {from: './src/stylesheets/shop/pages/', to: './css/shop/pages/'},
+            {from: './src/stylesheets/general/services/', to: './css/general/services/'},
+            {from: './src/stylesheets/shop/long_desc.css', to: './css/shop/long_desc.css'},
         ]),
         new ExtractTextPlugin({
             filename: 'css/[name].css'

@@ -24,8 +24,12 @@ return [
     'email_sent' =>
         'If given credentials are correct, than e-mail with password reset link has been sent to your mailbox.',
     'expire' => 'Expires',
+    'external_payment_accepted' =>
+        'Payment\'s been accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})',
     'external_payment_prepared' =>
         'Payment preparation successful.<br />In a minute you will be send to transaction service.',
+    'external_no_purchase' =>
+        'Payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
     'forgot_password' => 'I don\'t remeber password',
     'forgotten_password' => 'Password recovery',
     'go_to_payment' => 'Proceed to payment',
@@ -59,14 +63,17 @@ return [
     'pay_transfer' => 'Pay by transfer',
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
+    'payment_invalid_amount' =>
+        'Paid amount differs from purchase amount. Method: {1} ID: {2} Paid amount: {3} Expected amount: {4}',
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
-    'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
+    'purchase_no_data_file' =>
+        'Payment: {1} was accepted, but there was no file with purchase data.',
+    'external_payment_not_accepted' =>
+        'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',
-    'payment_transfer_accepted' =>
-        'Payment transfer accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})',
     'payment_wallet' => 'Wallet payment',
     'price' => 'Price',
     'profile' => 'Profile',
@@ -123,15 +130,9 @@ You can now profit from many add-ons.',
     'take_over_service' => 'Take over service',
     'title_payment' => 'Payment',
     'transfer_above_amount' => 'You can pay by transfer only for purchase above 1.00 {1}',
-    'transfer_bad_module' =>
-        'Transfer payment: {1} was accepted, but service module {2} wasn\'t found and purchase failed.',
     'transfer_cost' => 'Transfer cost',
     'transfer_error' => 'Unfortunately, transfer payment failed.',
     'transfer_finalized' => 'Transaction finalized',
-    'transfer_no_data_file' =>
-        'Transfer payment: {1} was accepted, but there was no file with purchase data.',
-    'transfer_no_purchase' =>
-        'Transfer payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
     'transfer_transfer' => 'Transfer',
     'transfer_unavailable' => 'Payment by transfer is unavailable.',
     'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',

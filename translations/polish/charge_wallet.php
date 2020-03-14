@@ -2,8 +2,10 @@
 
 return [
     'charge_amount' => 'Kwota doładowania',
-    'charge_sms_option' => '{1} {2} - otrzymujesz {3} {4}',
+    'charge_price' => 'Cena doładowania',
+    'charge_sms_option' => '{1} - otrzymujesz {2}',
     'choose_charge_method' => 'Wybierz sposób doładowania',
     'choose_sms_value' => 'Wybierz wartość SMSa',
     'type_amount' => 'Podaj kwotę',
+    'type_charge_price' => 'Podaj koszt doładowania',
 ];

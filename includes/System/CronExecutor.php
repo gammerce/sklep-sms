@@ -1,6 +1,7 @@
 <?php
 namespace App\System;
 
+use App\Services\ExpiredSmsCodeService;
 use App\Services\ExpiredUserServiceService;
 use App\Support\Database;
 use App\Support\FileSystemContract;
@@ -23,23 +24,29 @@ class CronExecutor
     /** @var ExpiredUserServiceService */
     private $expiredUserServiceService;
 
+    /** @var ExpiredSmsCodeService */
+    private $expiredSmsCodeService;
+
     public function __construct(
         Database $db,
         Settings $settings,
         Path $path,
         FileSystemContract $fileSystem,
-        ExpiredUserServiceService $expiredServiceService
+        ExpiredUserServiceService $expiredServiceService,
+        ExpiredSmsCodeService $expiredSmsCodeService
     ) {
         $this->db = $db;
         $this->settings = $settings;
         $this->path = $path;
         $this->fileSystem = $fileSystem;
         $this->expiredUserServiceService = $expiredServiceService;
+        $this->expiredSmsCodeService = $expiredSmsCodeService;
     }
 
     public function run()
     {
-        $this->expiredUserServiceService->deleteExpiredUserServices();
+        $this->expiredUserServiceService->deleteExpired();
+        $this->expiredSmsCodeService->deleteExpired();
 
         // Remove old logs
         if (intval($this->settings['delete_logs']) != 0) {

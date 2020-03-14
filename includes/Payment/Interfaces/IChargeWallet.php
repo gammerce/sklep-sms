@@ -23,4 +23,10 @@ interface IChargeWallet
      * @return array|null
      */
     public function getOptionView();
+
+    /**
+     * @param Purchase $purchase
+     * @return int
+     */
+    public function getPrice(Purchase $purchase);
 }

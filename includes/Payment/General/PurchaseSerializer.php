@@ -2,16 +2,17 @@
 namespace App\Payment\General;
 
 use App\Models\Purchase;
-use App\System\Heart;
+use App\Models\User;
+use App\Repositories\UserRepository;
 
 class PurchaseSerializer
 {
-    /** @var Heart */
-    private $heart;
+    /** @var UserRepository */
+    private $userRepository;
 
-    public function __construct(Heart $heart)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->heart = $heart;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -38,16 +39,7 @@ class PurchaseSerializer
      */
     public function deserialize($content)
     {
-        $purchase = unserialize($content);
-
-        if (!($purchase instanceof Purchase)) {
-            return null;
-        }
-
-        // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->heart->getUser($purchase->user->getUid());
-
-        return $purchase;
+        return $this->enhancePurchase(unserialize($content));
     }
 
     /**
@@ -56,15 +48,21 @@ class PurchaseSerializer
      */
     public function deserializeAndDecode($content)
     {
-        $purchase = unserialize(base64_decode($content));
+        return $this->enhancePurchase(unserialize(base64_decode($content)));
+    }
 
-        if (!($purchase instanceof Purchase)) {
-            return null;
+    /**
+     * @param Purchase $purchase
+     * @return Purchase|null
+     */
+    private function enhancePurchase(Purchase $purchase)
+    {
+        if ($purchase instanceof Purchase) {
+            // Fix: Refresh user to avoid bugs linked with user wallet
+            $purchase->user = $this->userRepository->get($purchase->user->getUid()) ?: new User();
+            return $purchase;
         }
 
-        // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->heart->getUser($purchase->user->getUid());
-
-        return $purchase;
+        return null;
     }
 }

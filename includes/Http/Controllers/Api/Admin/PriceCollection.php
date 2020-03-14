@@ -30,6 +30,7 @@ class PriceCollection
                 $validated['server_id'],
                 $validated['sms_price'],
                 $validated['transfer_price'],
+                $validated['direct_billing_price'],
                 $validated['quantity']
             );
         } catch (PDOException $e) {

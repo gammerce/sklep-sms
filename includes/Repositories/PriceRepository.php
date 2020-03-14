@@ -40,14 +40,27 @@ class PriceRepository
         throw new EntityNotFoundException();
     }
 
-    public function create($service, $server, $smsPrice, $transferPrice, $quantity)
-    {
+    public function create(
+        $service,
+        $server,
+        $smsPrice,
+        $transferPrice,
+        $directBillingPrice,
+        $quantity
+    ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `quantity`) " .
-                    "VALUES ( ?, ?, ?, ?, ? )"
+                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`) " .
+                    "VALUES ( ?, ?, ?, ?, ?, ? )"
             )
-            ->execute([$service, $server, $smsPrice, $transferPrice, $quantity]);
+            ->execute([
+                $service,
+                $server,
+                $smsPrice,
+                $transferPrice,
+                $directBillingPrice,
+                $quantity,
+            ]);
 
         return $this->get($this->db->lastId());
     }
@@ -74,14 +87,29 @@ class PriceRepository
         return $prices;
     }
 
-    public function update($id, $service, $server, $smsPrice, $transferPrice, $quantity)
-    {
+    public function update(
+        $id,
+        $service,
+        $server,
+        $smsPrice,
+        $transferPrice,
+        $directBillingPrice,
+        $quantity
+    ) {
         $statement = $this->db->statement(
             "UPDATE `ss_prices` " .
-                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `quantity` = ? " .
+                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ? " .
                 "WHERE `id` = ?"
         );
-        $statement->execute([$service, $server, $smsPrice, $transferPrice, $quantity, $id]);
+        $statement->execute([
+            $service,
+            $server,
+            $smsPrice,
+            $transferPrice,
+            $directBillingPrice,
+            $quantity,
+            $id,
+        ]);
 
         return !!$statement->rowCount();
     }
@@ -102,6 +130,7 @@ class PriceRepository
             as_int($data['server']),
             as_int($data['sms_price']),
             as_int($data['transfer_price']),
+            as_int($data['direct_billing_price']),
             as_int($data['quantity'])
         );
     }

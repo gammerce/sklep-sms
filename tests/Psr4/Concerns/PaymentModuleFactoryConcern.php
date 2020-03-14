@@ -3,6 +3,7 @@ namespace Tests\Psr4\Concerns;
 
 use App\Models\PaymentPlatform;
 use App\Payment\General\PaymentModuleFactory;
+use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Results\SmsSuccessResult;
 use Mockery;
 use Mockery\MockInterface;
@@ -27,6 +28,19 @@ trait PaymentModuleFactoryConcern
                 $paymentModule = $this->app->makeWith($className, compact('paymentPlatform'));
                 $paymentModuleMock = Mockery::mock($paymentModule)->makePartial();
                 $paymentModuleMock->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
+                return $paymentModuleMock;
+            });
+    }
+
+    public function makeVerifySmsUnsuccessful($paymentModuleClass)
+    {
+        $this->paymentModuleFactoryMock
+            ->shouldReceive('create')
+            ->withArgs([$paymentModuleClass, Mockery::any()])
+            ->andReturnUsing(function ($className, PaymentPlatform $paymentPlatform) {
+                $paymentModule = $this->app->makeWith($className, compact('paymentPlatform'));
+                $paymentModuleMock = Mockery::mock($paymentModule)->makePartial();
+                $paymentModuleMock->shouldReceive('verifySms')->andThrow(new BadCodeException());
                 return $paymentModuleMock;
             });
     }

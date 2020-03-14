@@ -72,41 +72,33 @@ class TPay extends PaymentModule implements SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
+        $amount = intval(array_get($body, 'tr_amount') * 100);
+
         $finalizedPayment = new FinalizedPayment();
-
-        if ($this->isPaymentValid($body)) {
-            $finalizedPayment->setStatus(true);
-        }
-
+        $finalizedPayment->setStatus($this->isPaymentValid($body));
         $finalizedPayment->setOrderId(array_get($body, 'tr_id'));
-        $finalizedPayment->setAmount(array_get($body, 'tr_amount'));
+        $finalizedPayment->setCost($amount);
+        $finalizedPayment->setIncome($amount);
         $finalizedPayment->setDataFilename(array_get($body, 'tr_crc'));
         $finalizedPayment->setExternalServiceId(array_get($body, 'id'));
         $finalizedPayment->setTestMode(array_get($body, 'test_mode', false));
-        $finalizedPayment->setOutput('TRUE');
+        $finalizedPayment->setOutput("TRUE");
 
         return $finalizedPayment;
     }
 
-    private function isPaymentValid($response)
+    private function isPaymentValid(array $body)
     {
-        if (empty($response)) {
-            return false;
-        }
-
         $isMd5Valid = $this->isMd5Valid(
-            array_get($response, 'md5sum'),
-            number_format(array_get($response, 'tr_amount'), 2, '.', ''),
-            array_get($response, 'tr_crc'),
-            array_get($response, 'tr_id')
+            array_get($body, 'md5sum'),
+            number_format(array_get($body, 'tr_amount'), 2, '.', ''),
+            array_get($body, 'tr_crc'),
+            array_get($body, 'tr_id')
         );
 
-        if (!$isMd5Valid) {
-            return false;
-        }
-
-        return array_get($response, 'tr_status') == 'TRUE' &&
-            array_get($response, 'tr_error') == 'none';
+        return $isMd5Valid &&
+            array_get($body, 'tr_status') === "TRUE" &&
+            array_get($body, 'tr_error') === "none";
     }
 
     private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)

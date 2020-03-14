@@ -117,15 +117,12 @@ class SmsChargeWallet implements IChargeWallet
 
         $smsList = collect($paymentModule::getSmsNumbers())
             ->map(function (SmsNumber $smsNumber) {
-                $provision = number_format($smsNumber->getProvision() / 100.0, 2);
                 return create_dom_element(
                     "option",
                     $this->lang->t(
                         'charge_sms_option',
                         $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
-                        $this->settings->getCurrency(),
-                        $provision,
-                        $this->settings->getCurrency()
+                        $this->priceTextService->getPriceText($smsNumber->getProvision())
                     ),
                     [
                         'value' => $smsNumber->getPrice(),
@@ -140,5 +137,10 @@ class SmsChargeWallet implements IChargeWallet
         ]);
 
         return [$option, $body];
+    }
+
+    public function getPrice(Purchase $purchase)
+    {
+        return $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) * $this->settings->getVat();
     }
 }

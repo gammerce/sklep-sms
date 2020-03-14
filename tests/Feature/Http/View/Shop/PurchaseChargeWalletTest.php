@@ -1,13 +1,10 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
-use Tests\Psr4\Concerns\AuthConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseChargeWalletTest extends HttpTestCase
 {
-    use AuthConcern;
-
     /** @test */
     public function it_loads()
     {
@@ -26,8 +23,6 @@ class PurchaseChargeWalletTest extends HttpTestCase
     /** @test */
     public function requires_being_logged()
     {
-        // given
-
         // when
         $response = $this->get('/page/purchase', ['service' => 'charge_wallet']);
 

@@ -33,6 +33,7 @@ use App\View\Pages\PageAdminIncome;
 use App\View\Pages\PageAdminLogs;
 use App\View\Pages\PageAdminMain;
 use App\View\Pages\PageAdminPaymentAdmin;
+use App\View\Pages\PageAdminPaymentDirectBilling;
 use App\View\Pages\PageAdminPaymentPlatforms;
 use App\View\Pages\PageAdminPaymentServiceCode;
 use App\View\Pages\PageAdminPaymentSms;
@@ -143,6 +144,10 @@ class HeartServiceProvider
         $heart->registerAdminPage(
             PageAdminPaymentTransfer::PAGE_ID,
             PageAdminPaymentTransfer::class
+        );
+        $heart->registerAdminPage(
+            PageAdminPaymentDirectBilling::PAGE_ID,
+            PageAdminPaymentDirectBilling::class
         );
         $heart->registerAdminPage(PageAdminPaymentWallet::PAGE_ID, PageAdminPaymentWallet::class);
         $heart->registerAdminPage(PageAdminPlayersFlags::PAGE_ID, PageAdminPlayersFlags::class);

@@ -9,8 +9,7 @@ class PagePricingActionBoxAddTest extends HttpTestCase
     public function get_add_box()
     {
         // give
-        $admin = $this->factory->admin();
-        $this->actingAs($admin);
+        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get("/api/admin/pages/pricing/action_boxes/price_add");

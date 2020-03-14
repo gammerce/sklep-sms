@@ -17,33 +17,33 @@ class Requester
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function post($url, array $body = [], array $headers = [])
+    public function post($url, $body = [], array $headers = [])
     {
         return $this->curl('POST', $url, [], $body, $headers);
     }
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function patch($url, array $body = [], array $headers = [])
+    public function patch($url, $body = [], array $headers = [])
     {
         return $this->curl('PATCH', $url, [], $body, $headers);
     }
 
     /**
      * @param string $url
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @return Response|bool
      */
-    public function put($url, array $body = [], array $headers = [])
+    public function put($url, $body = [], array $headers = [])
     {
         return $this->curl('PUT', $url, [], $body, $headers);
     }
@@ -64,7 +64,7 @@ class Requester
      * @param string $method
      * @param string $url
      * @param array $query
-     * @param array $body
+     * @param mixed $body
      * @param array $headers
      * @param int $timeout
      * @return Response|bool
@@ -73,7 +73,7 @@ class Requester
         $method,
         $url,
         array $query = [],
-        array $body = [],
+        $body = [],
         array $headers = [],
         $timeout = 10
     ) {
@@ -90,12 +90,11 @@ class Requester
             CURLOPT_USERAGENT => 'gammerce/sklep-sms',
         ]);
 
-        $headers['Content-Type'] = 'application/json';
         $formattedHeaders = $this->formatHeaders($headers);
         curl_setopt($curl, CURLOPT_HTTPHEADER, $formattedHeaders);
 
         if (!empty($body)) {
-            curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($body));
+            curl_setopt($curl, CURLOPT_POSTFIELDS, $body);
         }
 
         $response = curl_exec($curl);

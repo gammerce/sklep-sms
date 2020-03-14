@@ -7,7 +7,9 @@ use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\Pukawka;
+use DateTime;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\TestCase;
 
@@ -27,6 +29,7 @@ class PaymentServiceTest extends TestCase
 
         $this->mockPaymentModuleFactory();
         $this->makeVerifySmsSuccessful(Pukawka::class);
+        $this->makeVerifySmsUnsuccessful(Cssetti::class);
 
         $this->paymentService = $this->app->make(PaymentService::class);
         $this->boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
@@ -85,7 +88,7 @@ class PaymentServiceTest extends TestCase
         $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            "module" => Pukawka::MODULE_ID,
+            "module" => Cssetti::MODULE_ID,
         ]);
         $smsCode = $smsCodeRepository->create("QWERTY", 200, false);
         $serviceId = "vip";
@@ -116,6 +119,50 @@ class PaymentServiceTest extends TestCase
         $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
+    }
+
+    /** @test */
+    public function cannot_pay_with_expired_sms_code()
+    {
+        // given
+        /** @var SmsCodeRepository $smsCodeRepository */
+        $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
+
+        $paymentPlatform = $this->factory->paymentPlatform([
+            "module" => Cssetti::MODULE_ID,
+        ]);
+        $smsCode = $smsCodeRepository->create(
+            "QWERTY",
+            200,
+            false,
+            new DateTime("2020-02-02 10:00:00")
+        );
+        $serviceId = "vip";
+        $server = $this->factory->server();
+        $price = $this->factory->price([
+            'service_id' => $serviceId,
+            'sms_price' => 200,
+        ]);
+
+        $purchase = new Purchase(new User());
+        $purchase->setOrder([
+            Purchase::ORDER_SERVER => $server->getId(),
+            'type' => ExtraFlagType::TYPE_SID,
+        ]);
+        $purchase->setPrice($price);
+        $purchase->setServiceId($serviceId);
+        $purchase->setPayment([
+            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+            Purchase::PAYMENT_SMS_CODE => "QWERTY",
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+        ]);
+
+        // when
+        $payResult = $this->paymentService->makePayment($purchase);
+
+        // then
+        $this->assertSame("bad_code", $payResult->getStatus());
+        $this->assertNotNull($smsCodeRepository->get($smsCode->getId()));
     }
 
     /** @test */

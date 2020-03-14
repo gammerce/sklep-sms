@@ -312,9 +312,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         $user = $this->auth->user();
 
-        $quantities = array_map(function (array $price) {
-            return $this->purchasePriceRenderer->render($price, $this->service);
-        }, $this->purchasePriceService->getServicePrices($this->service));
+        $quantities = collect($this->purchasePriceService->getServicePrices($this->service))
+            ->map(function (array $price) {
+                return $this->purchasePriceRenderer->render($price, $this->service);
+            })
+            ->join();
 
         return $this->template->render(
             "services/mybb_extra_groups/purchase_form",

@@ -15,23 +15,6 @@ class Hostplay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "hostplay";
 
-    private $ratesNumber = [
-        '0.34' => '7055',
-        '0.67' => '7155',
-        '1.35' => '7255',
-        '2.02' => '7355',
-        '2.7' => '7455',
-        '3.38' => '7555',
-        '4.05' => '76660',
-        '6.08' => '7955',
-        '6.76' => '91055',
-        '7.43' => '91155',
-        '9.47' => '91455',
-        '12.85' => '91955',
-        '13.53' => '92055',
-        '16.91' => '92555',
-    ];
-
     public static function getDataFields()
     {
         return [new DataField("user_id")];
@@ -40,20 +23,20 @@ class Hostplay extends PaymentModule implements SupportSms
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber("7055"),
-            new SmsNumber("7155"),
-            new SmsNumber("7255"),
-            new SmsNumber("7355"),
-            new SmsNumber("7455"),
-            new SmsNumber("7555"),
-            new SmsNumber("76660"),
-            new SmsNumber("7955"),
-            new SmsNumber("91055"),
-            new SmsNumber("91155"),
-            new SmsNumber("91455"),
-            new SmsNumber("91955"),
-            new SmsNumber("92055"),
-            new SmsNumber("92555"),
+            new SmsNumber("7055", 34),
+            new SmsNumber("7155", 67),
+            new SmsNumber("7255", 135),
+            new SmsNumber("7355", 202),
+            new SmsNumber("7455", 270),
+            new SmsNumber("7555", 338),
+            new SmsNumber("76660", 405),
+            new SmsNumber("7955", 608),
+            new SmsNumber("91055", 676),
+            new SmsNumber("91155", 743),
+            new SmsNumber("91455", 947),
+            new SmsNumber("91955", 1285),
+            new SmsNumber("92055", 1353),
+            new SmsNumber("92555", 1691),
         ];
     }
 
@@ -71,7 +54,7 @@ class Hostplay extends PaymentModule implements SupportSms
         }
 
         $content = $response->json();
-        $responseNumber = $this->ratesNumber[number_format(floatval($content['kwota']), 2)];
+        $responseNumber = $this->getSmsNumberByProvision(intval($content['kwota'] * 100));
 
         if (strtoupper($content['status']) === 'OK') {
             if ($responseNumber == $number) {
@@ -110,5 +93,20 @@ class Hostplay extends PaymentModule implements SupportSms
     private function getUserId()
     {
         return $this->getData('user_id');
+    }
+
+    /**
+     * @param int $price
+     * @return string|null
+     */
+    private function getSmsNumberByProvision($price)
+    {
+        foreach (Hostplay::getSmsNumbers() as $smsNumber) {
+            if ($smsNumber->getProvision() === $price) {
+                return $smsNumber->getNumber();
+            }
+        }
+
+        return null;
     }
 }

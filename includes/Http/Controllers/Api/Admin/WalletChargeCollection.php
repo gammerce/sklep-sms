@@ -49,7 +49,7 @@ class WalletChargeCollection
         }
 
         $editedUser = $heart->getUser($userId);
-        $quantity = $validated['quantity'] * 100;
+        $quantity = intval($validated['quantity'] * 100);
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
         $quantity = max($quantity, -$editedUser->getWallet());

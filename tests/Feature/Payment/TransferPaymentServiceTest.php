@@ -55,6 +55,7 @@ class TransferPaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setPayment([
+            Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
             Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
         ]);
         $purchase->setPrice($price);
