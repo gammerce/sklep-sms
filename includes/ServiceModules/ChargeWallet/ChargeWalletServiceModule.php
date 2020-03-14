@@ -119,7 +119,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
 
         return $this->template->renderNoComments("services/charge_wallet/order_details", [
             'price' => $this->priceTextService->getPriceText($price),
-            'quantity' => $quantity,
+            'quantity' => $this->priceTextService->getPriceText($quantity),
         ]);
     }
 
