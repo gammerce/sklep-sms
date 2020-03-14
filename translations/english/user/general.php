@@ -68,9 +68,10 @@ return [
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
-    'payment_no_data_file' =>
+    'purchase_no_data_file' =>
         'Payment: {1} was accepted, but there was no file with purchase data.',
-    'payment_not_accepted' => 'Transaction authorization failure: {1} Amount: {2} Service: {3}',
+    'external_payment_not_accepted' =>
+        'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',
     'payment_wallet' => 'Wallet payment',

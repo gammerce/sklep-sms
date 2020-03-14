@@ -2,10 +2,12 @@
 namespace App\Http\Controllers\Api\Ipn;
 
 use App\Http\Responses\PlainResponse;
-use App\Payment\DirectBilling\DirectBillingService;
+use App\Payment\DirectBilling\DirectBillingPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportDirectBilling;
 use Symfony\Component\HttpFoundation\Request;
+
+// TODO Add admin page with direct billing payments
 
 class DirectBillingController
 {
@@ -13,7 +15,7 @@ class DirectBillingController
         $paymentPlatform,
         Request $request,
         Heart $heart,
-        DirectBillingService $directBillingService
+        DirectBillingPaymentService $directBillingPaymentService
     ) {
         $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
 
@@ -27,7 +29,7 @@ class DirectBillingController
             $request->query->all(),
             $request->request->all()
         );
-        $directBillingService->finalizePurchase($finalizedPayment);
+        $directBillingPaymentService->finalizePurchase($finalizedPayment);
 
         return new PlainResponse($finalizedPayment->getOutput());
     }

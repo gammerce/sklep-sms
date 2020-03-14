@@ -5,6 +5,8 @@ use App\Models\Transaction;
 
 class TransactionRepository
 {
+    // TODO Direct billing
+
     private $transactionsQuery = <<<EOF
 (SELECT bs.id AS `id`,
 bs.uid AS `uid`,
