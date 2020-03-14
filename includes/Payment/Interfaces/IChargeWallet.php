@@ -29,4 +29,10 @@ interface IChargeWallet
      * @return int
      */
     public function getPrice(Purchase $purchase);
+
+    /**
+     * @param Purchase $purchase
+     * @return int
+     */
+    public function getQuantity(Purchase $purchase);
 }

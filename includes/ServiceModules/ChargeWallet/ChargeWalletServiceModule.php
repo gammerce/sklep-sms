@@ -115,10 +115,7 @@ class ChargeWalletServiceModule extends ServiceModule implements
         );
 
         $price = $paymentMethod->getPrice($purchase);
-
-        $minQuantity = $this->priceTextService->getPriceText($price * 0.5);
-        $maxQuantity = $this->priceTextService->getPriceText($price * 0.7);
-        $quantity = "W zależności od operatora, od $minQuantity do $maxQuantity";
+        $quantity = $paymentMethod->getQuantity($purchase);
 
         return $this->template->renderNoComments("services/charge_wallet/order_details", [
             'price' => $this->priceTextService->getPriceText($price),
