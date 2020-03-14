@@ -34,6 +34,7 @@ return [
     'email_was_sent' => 'Wysłano e-maila na adres: {1} o treści: {2}',
     'error_occurred' => 'Wystąpił błąd.',
     'expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
+    'external_id' => 'Zewnętrzne ID',
     'february' => 'Luty',
     'field_length_max_warn' => 'Pole może się składać z co najwyżej {1} znaków.',
     'field_length_min_warn' => 'Pole musi się składać z co najmniej {1} znaków.',

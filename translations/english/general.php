@@ -34,6 +34,7 @@ return [
     'email_was_sent' => 'An e-mail was sent to address: {1} saying: {2}',
     'error_occurred' => 'Error occurred.',
     'expired_service_delete' => 'AUTOMAT: Player\'s expired service removed. {1}',
+    'external_id' => 'External ID',
     'february' => 'February',
     'field_length_max_warn' => 'Field must consist of max. {1} chars.',
     'field_length_min_warn' => 'Field must consist of min. {1} chars.',

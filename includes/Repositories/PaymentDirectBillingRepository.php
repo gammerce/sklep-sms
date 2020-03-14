@@ -30,6 +30,22 @@ class PaymentDirectBillingRepository
         return null;
     }
 
+    public function findByExternalId($externalId)
+    {
+        if ($externalId) {
+            $statement = $this->db->statement(
+                "SELECT * FROM `ss_payment_direct_billing` WHERE `external_id` = ?"
+            );
+            $statement->execute([$externalId]);
+
+            if ($data = $statement->fetch()) {
+                return $this->mapToModel($data);
+            }
+        }
+
+        return null;
+    }
+
     public function create($externalId, $income, $cost, $ip, $platform, $free)
     {
         $this->db

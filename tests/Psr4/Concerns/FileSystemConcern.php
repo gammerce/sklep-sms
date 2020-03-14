@@ -4,6 +4,7 @@ namespace Tests\Psr4\Concerns;
 use App\Install\EnvCreator;
 use App\Install\OldShop;
 use App\Install\SetupManager;
+use App\Payment\General\PurchaseDataService;
 use App\Services\ServiceDescriptionService;
 use Tests\Psr4\MemoryFileSystem;
 
@@ -27,6 +28,9 @@ trait FileSystemConcern
 
         $oldShop = $this->app->makeWith(OldShop::class, compact('fileSystem'));
         $this->app->instance(OldShop::class, $oldShop);
+
+        $oldShop = $this->app->makeWith(PurchaseDataService::class, compact('fileSystem'));
+        $this->app->instance(PurchaseDataService::class, $oldShop);
 
         return $fileSystem;
     }

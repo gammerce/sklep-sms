@@ -155,12 +155,13 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $result = $response->json();
         $status = array_get($result, "status");
         $message = array_get($result, "message");
+        $link = array_get($result, "link");
 
         if ($status === "success") {
             return new Result("external", $this->lang->t("external_payment_prepared"), true, [
                 "data" => [
                     "method" => "GET",
-                    "url" => $result["link"],
+                    "url" => $link,
                 ],
             ]);
         }
