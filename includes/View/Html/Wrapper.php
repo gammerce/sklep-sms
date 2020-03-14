@@ -77,10 +77,12 @@ class Wrapper extends Div
 
     /**
      * @param string $title
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -109,10 +111,12 @@ class Wrapper extends Div
 
     /**
      * @param Structure $table
+     * @return $this
      */
     public function setTable($table)
     {
         $this->table = $table;
+        return $this;
     }
 
     /**

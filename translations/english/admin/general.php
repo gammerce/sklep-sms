@@ -180,6 +180,7 @@ return [
     'payment_platforms' => 'Payment platforms',
     'payments' => 'Payments',
     'payments_admin' => 'Admin payments',
+    'payments_direct_billing' => 'Direct Billing payments',
     'payments_service_code' => 'Code payments',
     'payments_sms' => 'SMS payments',
     'payments_transfer' => 'Transfer payments',

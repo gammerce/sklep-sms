@@ -183,6 +183,7 @@ return [
     'payment_platforms' => 'Platformy płatności',
     'payments' => 'Płatności',
     'payments_admin' => 'Płatności admina',
+    'payments_direct_billing' => 'Płatności Direct Billing',
     'payments_service_code' => 'Płatności kodem',
     'payments_sms' => 'Płatności SMS',
     'payments_transfer' => 'Płatności internetowe',

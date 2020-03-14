@@ -6,8 +6,10 @@ use App\Services\PriceTextService;
 use App\Support\QueryParticle;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DateCell;
 use App\View\Html\Div;
 use App\View\Html\HeadCell;
+use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 
@@ -36,9 +38,6 @@ class PageAdminPaymentSms extends PageAdmin
     {
         $payId = array_get($query, 'payid');
         $search = array_get($query, 'search');
-
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
 
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
@@ -105,20 +104,15 @@ class PageAdminPaymentSms extends PageAdmin
             $bodyRow->addCell(new Cell($cost));
             $bodyRow->addCell(new Cell($free));
             $bodyRow->addCell(new Cell($transaction->getIp()));
-
-            $cell = new Cell();
-            $div = new Div(get_platform($transaction->getPlatform()));
-            $div->addClass('one_line');
-            $cell->addContent($div);
-            $bodyRow->addCell($cell);
-
-            $bodyRow->addCell(new Cell(convert_date($transaction->getTimestamp())));
+            $bodyRow->addCell(new PlatformCell($transaction->getPlatform()));
+            $bodyRow->addCell(new DateCell($transaction->getTimestamp()));
 
             $table->addBodyRow($bodyRow);
         }
 
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->toHtml();
     }
 }

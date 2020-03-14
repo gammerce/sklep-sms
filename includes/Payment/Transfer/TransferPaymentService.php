@@ -2,6 +2,7 @@
 namespace App\Payment\Transfer;
 
 use App\Models\FinalizedPayment;
+use App\Models\Purchase;
 use App\Payment\General\ExternalPaymentService;
 use App\Repositories\PaymentTransferRepository;
 
@@ -38,7 +39,7 @@ class TransferPaymentService
             return false;
         }
 
-        $this->paymentTransferRepository->create(
+        $paymentTransfer = $this->paymentTransferRepository->create(
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getIncome(),
             $finalizedPayment->getExternalServiceId(),
@@ -46,6 +47,10 @@ class TransferPaymentService
             $purchase->user->getPlatform(),
             $finalizedPayment->isTestMode()
         );
+
+        $purchase->setPayment([
+            Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId(),
+        ]);
 
         return $this->externalPaymentService->finalizePurchase($purchase, $finalizedPayment);
     }

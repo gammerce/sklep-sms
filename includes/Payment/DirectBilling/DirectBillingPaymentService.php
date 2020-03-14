@@ -64,7 +64,7 @@ class DirectBillingPaymentService
             return false;
         }
 
-        $this->paymentDirectBillingRepository->create(
+        $paymentDirectBilling = $this->paymentDirectBillingRepository->create(
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getIncome(),
             $finalizedPayment->getCost(),
@@ -72,6 +72,10 @@ class DirectBillingPaymentService
             $purchase->user->getPlatform(),
             $finalizedPayment->isTestMode()
         );
+
+        $purchase->setPayment([
+            Purchase::PAYMENT_PAYMENT_ID => $paymentDirectBilling->getId(),
+        ]);
 
         return $this->externalPaymentService->finalizePurchase($purchase, $finalizedPayment);
     }

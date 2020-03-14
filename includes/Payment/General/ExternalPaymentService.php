@@ -85,9 +85,6 @@ class ExternalPaymentService
             return false;
         }
 
-        $purchase->setPayment([
-            Purchase::PAYMENT_PAYMENT_ID => $finalizedPayment->getOrderId(),
-        ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
         $this->logger->logWithUser(
