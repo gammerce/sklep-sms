@@ -1,4 +1,4 @@
-import { clearAndHideActionBox, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import {
     buildUrl,
@@ -9,7 +9,6 @@ import {
 } from "../../../general/global";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
-import { refresh_blocks } from "../../../shop/utils/utils";
 
 // Kliknięcie dodania usługi użytkownika
 $(document).delegate("#user_service_button_add", "click", function() {

@@ -1,8 +1,7 @@
-import { clearAndHideActionBox, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { get_random_string, json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
-import { refresh_blocks } from "../../../shop/utils/utils";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#sms_code_button_add", "click", function() {
