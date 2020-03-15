@@ -141,11 +141,13 @@ class SmsChargeWallet implements IChargeWallet
 
     public function getPrice(Purchase $purchase)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) * $this->settings->getVat();
+        return $this->priceTextService->getPriceGrossText(
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
+        );
     }
 
     public function getQuantity(Purchase $purchase)
     {
-        return $purchase->getOrder(Purchase::ORDER_QUANTITY);
+        return $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY));
     }
 }

@@ -117,10 +117,10 @@ class ChargeWalletServiceModule extends ServiceModule implements
         $price = $paymentMethod->getPrice($purchase);
         $quantity = $paymentMethod->getQuantity($purchase);
 
-        return $this->template->renderNoComments("services/charge_wallet/order_details", [
-            'price' => $this->priceTextService->getPriceText($price),
-            'quantity' => $this->priceTextService->getPriceText($quantity),
-        ]);
+        return $this->template->renderNoComments(
+            "services/charge_wallet/order_details",
+            compact("price", "quantity")
+        );
     }
 
     public function purchase(Purchase $purchase)
