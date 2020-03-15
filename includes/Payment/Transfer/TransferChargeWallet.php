@@ -90,11 +90,13 @@ class TransferChargeWallet implements IChargeWallet
 
     public function getPrice(Purchase $purchase)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        return $this->priceTextService->getPriceText(
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+        );
     }
 
     public function getQuantity(Purchase $purchase)
     {
-        return $purchase->getOrder(Purchase::ORDER_QUANTITY);
+        return $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY));
     }
 }

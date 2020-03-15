@@ -26,13 +26,13 @@ interface IChargeWallet
 
     /**
      * @param Purchase $purchase
-     * @return int
+     * @return string
      */
     public function getPrice(Purchase $purchase);
 
     /**
      * @param Purchase $purchase
-     * @return int
+     * @return string
      */
     public function getQuantity(Purchase $purchase);
 }
