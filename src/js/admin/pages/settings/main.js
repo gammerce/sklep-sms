@@ -1,8 +1,8 @@
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
-import { refresh_blocks } from "../../../shop/utils/utils";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
+import { refresh_blocks } from "../../utils/utils";
 
 $(document).delegate("#form_settings_edit", "submit", function(e) {
     e.preventDefault();

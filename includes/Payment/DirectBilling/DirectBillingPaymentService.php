@@ -7,8 +7,6 @@ use App\Models\Purchase;
 use App\Payment\General\ExternalPaymentService;
 use App\Repositories\PaymentDirectBillingRepository;
 
-// TODO Add tests
-
 class DirectBillingPaymentService
 {
     /** @var DatabaseLogger */
