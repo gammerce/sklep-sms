@@ -36,7 +36,7 @@ class ExternalPaymentService
     {
         if (!$finalizedPayment->getStatus()) {
             $this->logger->log(
-                'external_payment_not_accepted',
+                'log_external_payment_not_accepted',
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()
@@ -61,7 +61,7 @@ class ExternalPaymentService
             return $purchase;
         }
 
-        $this->logger->log('purchase_no_data_file', $finalizedPayment->getOrderId());
+        $this->logger->log('log_purchase_no_data_file', $finalizedPayment->getOrderId());
         return null;
     }
 
@@ -77,7 +77,7 @@ class ExternalPaymentService
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchase)) {
             $this->logger->log(
-                'external_no_purchase',
+                'log_external_no_purchase',
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
@@ -89,7 +89,7 @@ class ExternalPaymentService
 
         $this->logger->logWithUser(
             $purchase->user,
-            'external_payment_accepted',
+            'log_external_payment_accepted',
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getCost() / 100,

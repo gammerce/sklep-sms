@@ -24,25 +24,31 @@ return [
     'email_sent' =>
         'If given credentials are correct, than e-mail with password reset link has been sent to your mailbox.',
     'expire' => 'Expires',
-    'external_payment_accepted' =>
-        'Payment\'s been accepted. Purchase ID: {1} Transaction ID: {2} Amount: {3} Service: {4} {5}({6})({7})',
     'external_payment_prepared' =>
         'Payment preparation successful.<br />In a minute you will be send to transaction service.',
-    'external_no_purchase' =>
-        'Payment: {1} was accepted, but service module {2} doesn\'t implement IServicePurchase interface.',
     'forgot_password' => 'I don\'t remeber password',
     'forgotten_password' => 'Password recovery',
     'go_to_payment' => 'Proceed to payment',
     'got_code' => 'I\'ve got code!',
     'keyreset_error' => 'An error occurred while sending e-mail with password reset link.',
+    'log_external_payment_accepted' =>
+        'Payment\'s been accepted. Purchase ID: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
+    'log_external_payment_not_accepted' =>
+        'Transaction authorization failure: [{1}] Amount: [{2}] Service: [{3}]',
+    'log_external_no_purchase' =>
+        'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
+    'log_new_account' => 'Create new account. ID: {1} User name: {2}, IP: {3}',
     'log_password_changed' => 'User has changed their password.',
+    'log_payment_invalid_amount' =>
+        'Paid amount differs from purchase amount. Method: [{1}] ID: [{2}] Paid amount: [{3}] Expected amount: [{4}]',
+    'log_purchase_no_data_file' =>
+        'Payment: [{1}] was accepted, but there was no file with purchase data.',
     'login_success' => 'Logging in successful.',
     'login_vert' => 'L<br />O<br />G<br /><br />I<br />N',
     'logout_success' => 'Logging out successful.',
     'must_be_logged_in' => 'You cannot browse this page. You\'re not loggedd in.',
     'must_be_logged_out' => 'You cannot browse this page. You\'re logged in.',
     'my_services' => 'My services',
-    'new_account' => 'Create new account. ID: {1} User name: {2}, IP: {3}',
     'nick_occupied' => 'Given nickname is already taken.',
     'no_login_no_wallet' => 'You can\'t pay by wallet when not logged in.',
     'no_login_password' =>
@@ -63,15 +69,9 @@ return [
     'pay_transfer' => 'Pay by transfer',
     'pay_wallet' => 'Pay by wallet',
     'payment_for_service' => 'Payment for service: {1}',
-    'payment_invalid_amount' =>
-        'Paid amount differs from purchase amount. Method: {1} ID: {2} Paid amount: {3} Expected amount: {4}',
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
-    'purchase_no_data_file' =>
-        'Payment: {1} was accepted, but there was no file with purchase data.',
-    'external_payment_not_accepted' =>
-        'Transaction authorization failure: {1} Amount: {2} Service: {3}',
     'payment_sms' => 'SMS payment',
     'payment_transfer' => 'Transfer payment',
     'payment_wallet' => 'Wallet payment',
