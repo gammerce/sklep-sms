@@ -24,25 +24,31 @@ return [
     'email_sent' =>
         'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został właśnie wysłany na Twoją skrzynkę pocztową.',
     'expire' => 'Wygasa',
-    'external_payment_accepted' =>
-        'Zaakceptowano płatność. ID zakupu {1} ID transakcji: {2} Kwota: {3} Usługa: {4} {5}({6})({7})',
     'external_payment_prepared' =>
         'Przygotowanie płatności przebiegło pomyślnie.<br />Za chwilę nastąpi przekierowanie do serwisu transakcyjnego.',
-    'external_no_purchase' =>
-        'Płatność: {1} została zaakceptowana, jednakże moduł usługi {2} nie implementuje interfejsu IServicePurchase.',
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
     'go_to_payment' => 'Przejdź do płatności',
     'got_code' => 'Mam kod!',
     'keyreset_error' => 'Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.',
+    'log_external_payment_accepted' =>
+        'Zaakceptowano płatność. ID zakupu [{1}] ID transakcji: [{2}] Kwota: [{3}] Usługa: [{4}]',
+    'log_external_payment_not_accepted' =>
+        'Nieudana autoryzacja transakcji: [{1}] Kwota: [{2}] Usługa: [{3}]',
+    'log_external_no_purchase' =>
+        'Płatność: [{1}] została zaakceptowana, jednakże moduł usługi [{2}] nie implementuje interfejsu IServicePurchase.',
+    'log_new_account' => 'Założono nowe konto. ID: {1} Nazwa Użytkownika: {2}, IP: {3}',
     'log_password_changed' => 'Użytkownik zmienił swoje hasło.',
+    'log_payment_invalid_amount' =>
+        'Zapłacona kwota różni się od kwoty zakupu. Metoda: [{1}] ID: [{2}] Zapłacona kwota: [{3}] Oczekiwana kwota: [{4}]',
+    'log_purchase_no_data_file' =>
+        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
     'login_success' => 'Logowanie przebiegło bez większych trudności.',
     'login_vert' => 'Z<br />A<br />L<br />O<br />G<br />U<br />J',
     'logout_success' => 'Wylogowywanie przebiegło bez większych trudności.',
     'must_be_logged_in' => 'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
     'must_be_logged_out' => 'Nie możesz przeglądać tej strony. Jesteś zalogowany/a.',
     'my_services' => 'Moje usługi',
-    'new_account' => 'Założono nowe konto. ID: {1} Nazwa Użytkownika: {2}, IP: {3}',
     'nick_occupied' => 'Podana nazwa użytkownika jest już zajęta.',
     'no_login_no_wallet' => 'Nie można zapłacić portfelem, gdy nie jesteś zalogowany.',
     'no_login_password' =>
@@ -67,14 +73,8 @@ return [
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
-    'payment_invalid_amount' =>
-        'Zapłacona kwota różni się od kwoty zakupu. Metoda: {1} ID: {2} Zapłacona kwota: {3} Oczekiwana kwota: {4}',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
-    'purchase_no_data_file' =>
-        'Płatność: {1} została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
-    'external_payment_not_accepted' =>
-        'Nieudana autoryzacja transakcji: {1} Kwota: {2} Usługa: {3}',
     'payment_sms' => 'Płatność SMS',
     'payment_transfer' => 'Płatność przelew',
     'payment_wallet' => 'Płatność portfel',

@@ -49,7 +49,7 @@ class DirectBillingPaymentService
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         ) {
             $this->logger->log(
-                'payment_invalid_amount',
+                'log_payment_invalid_amount',
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
