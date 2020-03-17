@@ -68,6 +68,7 @@ use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
 use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\BlockOnInvalidLicense;
+use App\Http\Middlewares\JsonBody;
 use App\Http\Middlewares\LoadSettings;
 use App\Http\Middlewares\ManageAdminAuthentication;
 use App\Http\Middlewares\ManageAuthentication;
@@ -590,7 +591,7 @@ class RoutesManager
     private function handleFoundRoute($routeInfo, Request $request)
     {
         /** @var string[] $middlewares */
-        $middlewares = array_get($routeInfo[1], 'middlewares', []);
+        $middlewares = array_merge([JsonBody::class], array_get($routeInfo[1], 'middlewares', []));
         $controllerMethod = $routeInfo[1]['uses'];
 
         return (new Pipeline($this->app))
