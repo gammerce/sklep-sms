@@ -66,7 +66,7 @@ class TPay extends PaymentModule implements SupportTransfer
             'email' => $purchase->getEmail(),
             'pow_url' => $this->url->to("/page/tpay_success"),
             'pow_url_blad' => $this->url->to("/page/payment_error"),
-            'wyn_url' => $this->url->to("/transfer/{$this->paymentPlatform->getId()}"),
+            'wyn_url' => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
         ];
     }
 
