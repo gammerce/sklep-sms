@@ -1,7 +1,7 @@
-import {loader} from "../../../general/loader";
-import {handleErrorResponse, infobox} from "../../../general/infobox";
-import {json_parse} from "../../../general/stocks";
-import {restRequest} from "../../../general/global";
+import { loader } from "../../../general/loader";
+import { handleErrorResponse, infobox } from "../../../general/infobox";
+import { json_parse } from "../../../general/stocks";
+import { buildUrl, restRequest } from "../../../general/global";
 
 // Zaznaczamy jakas gre
 $(document).delegate(".shopsms_user_edit .engine", "click", function() {
@@ -27,6 +27,19 @@ $(document).delegate(".shopsms_user_edit .engine", "click", function() {
     } else {
         $(this).removeClass("active");
     }
+});
+
+$(document).delegate(".regenerate_token", "click", function() {
+    const identifier = $(this).data("identifier");
+    regenerate_token(identifier, this);
+});
+
+// Kliknięcie przeładowania
+$(document).delegate(".shopsms_user_edit #cost_reload", "click", function() {
+    $(this)
+        .closest("#cost")
+        .html("...");
+    ss_user_edit_set_cost($(this).parents("form"));
 });
 
 function engine_toggle(element) {
@@ -113,11 +126,3 @@ function ss_user_edit_set_cost(form) {
         }
     );
 }
-
-// Kliknięcie przeładowania
-$(document).delegate(".shopsms_user_edit #cost_reload", "click", function() {
-    $(this)
-        .closest("#cost")
-        .html("...");
-    ss_user_edit_set_cost($(this).parents("form"));
-});

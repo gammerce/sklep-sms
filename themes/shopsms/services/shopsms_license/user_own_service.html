@@ -8,16 +8,18 @@
         >
             <button class="button is-small prolong_license" type="button">
                 {$lang->t('prolong_license')}
-            </button> </a
-        ><br />
+            </button>
+        </a>
+        <br />
 
         <button
             class="button is-small regenerate_token"
             type="button"
-            onClick="regenerate_token('{{ $identifier }}', this)"
+            data-identifier="{{ $identifier }}"
         >
-            {$lang->t('regenerate_token')}</button
-        ><br />
+            {$lang->t('regenerate_token')}
+        </button>
+        <br />
 
         {$buttonEdit}
     </div>

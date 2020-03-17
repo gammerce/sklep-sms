@@ -1,4 +1,4 @@
-import {restRequest} from "../../../general/global";
+import { restRequest } from "../../../general/global";
 
 function ss_prolong_set_cost() {
     if (

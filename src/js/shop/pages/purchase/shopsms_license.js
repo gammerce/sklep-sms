@@ -1,4 +1,4 @@
-import {restRequest} from "../../../general/global";
+import { restRequest } from "../../../general/global";
 
 $(document).ready(function($) {
     // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
