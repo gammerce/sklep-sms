@@ -34,17 +34,17 @@ class ExternalPaymentService
      */
     public function validate(FinalizedPayment $finalizedPayment)
     {
-        if (!$finalizedPayment->getStatus()) {
-            $this->logger->log(
-                'log_external_payment_not_accepted',
-                $finalizedPayment->getOrderId(),
-                $finalizedPayment->getCost() / 100,
-                $finalizedPayment->getExternalServiceId()
-            );
-            return false;
+        if ($finalizedPayment->getStatus()) {
+            return true;
         }
 
-        return true;
+        $this->logger->log(
+            'log_external_payment_not_accepted',
+            $finalizedPayment->getOrderId(),
+            $finalizedPayment->getCost() / 100,
+            $finalizedPayment->getExternalServiceId()
+        );
+        return false;
     }
 
     /**

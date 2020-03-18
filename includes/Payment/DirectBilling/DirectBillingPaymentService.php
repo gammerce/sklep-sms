@@ -42,7 +42,10 @@ class DirectBillingPaymentService
 
         // Set charge amount to income value, since it was not set during the purchase process.
         // We don't know up front the income value.
-        $purchase->setOrder([Purchase::ORDER_QUANTITY => $finalizedPayment->getIncome()]);
+        // TODO Move it to charge wallet module
+        if (!$purchase->getOrder(Purchase::ORDER_QUANTITY)) {
+            $purchase->setOrder([Purchase::ORDER_QUANTITY => $finalizedPayment->getIncome()]);
+        }
 
         if (
             $finalizedPayment->getCost() !==

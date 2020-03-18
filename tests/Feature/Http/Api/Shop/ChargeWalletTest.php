@@ -44,7 +44,7 @@ class ChargeWalletTest extends HttpTestCase
         $user = $this->factory->user();
         $this->actingAs($user);
 
-        $validationResponse = $this->post("/api/purchase/validation", [
+        $validationResponse = $this->post("/api/purchase", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
             "method" => Purchase::METHOD_TRANSFER,
             "transfer_price" => 2.5,
@@ -109,7 +109,7 @@ class ChargeWalletTest extends HttpTestCase
         $user = $this->factory->user();
         $this->actingAs($user);
 
-        $validationResponse = $this->post("/api/purchase/validation", [
+        $validationResponse = $this->post("/api/purchase", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
             "method" => Purchase::METHOD_DIRECT_BILLING,
             "direct_billing_price" => 2.5,
@@ -161,7 +161,7 @@ class ChargeWalletTest extends HttpTestCase
         $user = $this->factory->user();
         $this->actingAs($user);
 
-        $validationResponse = $this->post("/api/purchase/validation", [
+        $validationResponse = $this->post("/api/purchase", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
             "method" => Purchase::METHOD_SMS,
             "sms_price" => 500,

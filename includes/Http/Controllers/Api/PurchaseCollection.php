@@ -12,7 +12,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
-class PurchaseValidationResource
+class PurchaseCollection
 {
     public function post(
         Request $request,
