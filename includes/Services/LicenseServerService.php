@@ -61,12 +61,13 @@ class LicenseServerService
     {
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
-            [
+            json_encode([
                 'platform_amxmodx' => $hasAmxModX,
                 'platform_sourcemod' => $hasSourceMod,
-            ],
+            ]),
             [
                 'Authorization' => $this->licenseSecret,
+                'Content-Type' => 'application/json',
             ]
         );
 
@@ -87,11 +88,12 @@ class LicenseServerService
     {
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
-            [
+            json_encode([
                 'lifetime' => $lifetime,
-            ],
+            ]),
             [
                 'Authorization' => $this->licenseSecret,
+                'Content-Type' => 'application/json',
             ]
         );
 
