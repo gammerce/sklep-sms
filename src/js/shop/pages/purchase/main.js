@@ -16,7 +16,7 @@ $(document).delegate("#go_to_payment", "click", function() {
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/purchase"),
+        url: buildUrl("/api/purchases"),
         data: $("#form_purchase").serialize(),
         complete: function() {
             loader.hide();

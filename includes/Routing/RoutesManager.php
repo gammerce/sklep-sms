@@ -616,7 +616,7 @@ class RoutesManager
 
     private function shouldRedirectToSetup(array $routeInfo)
     {
-        return array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL &&
+        return array_get(array_get($routeInfo, 1), "type") !== RoutesManager::TYPE_INSTALL &&
             $this->shopState->requiresAction();
     }
 }

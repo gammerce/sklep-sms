@@ -38,7 +38,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
             'sms_price' => 500,
         ]);
 
-        $validationResponse = $this->post('/api/purchase', [
+        $validationResponse = $this->post('/api/purchases', [
             'service_id' => 'vippro',
             'method' => Purchase::METHOD_SMS,
             'sms_price' => 500,

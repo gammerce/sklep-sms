@@ -10,7 +10,7 @@ class PurchaseCollectionTest extends HttpTestCase
     public function fails_when_no_data_passed()
     {
         // when
-        $response = $this->post('/api/purchase', [
+        $response = $this->post('/api/purchases', [
             'service_id' => 'vippro',
             'type' => ExtraFlagType::TYPE_IP,
         ]);
