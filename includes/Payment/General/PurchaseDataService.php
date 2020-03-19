@@ -33,11 +33,22 @@ class PurchaseDataService
     public function storePurchase(Purchase $purchase)
     {
         $serialized = $this->purchaseSerializer->serialize($purchase);
-        $dataFilename = time() . "-" . md5($serialized);
-        $path = $this->path->to('data/transfers/' . $dataFilename);
+        $fileName = time() . "-" . md5($serialized);
+        $path = $this->path->to('data/transfers/' . $fileName);
         $this->fileSystem->put($path, $serialized);
 
-        return $dataFilename;
+        return $fileName;
+    }
+
+    /**
+     * @param string $fileName
+     * @param Purchase $purchase
+     */
+    public function updatePurchase($fileName, Purchase $purchase)
+    {
+        $serialized = $this->purchaseSerializer->serialize($purchase);
+        $path = $this->path->to('data/transfers/' . $fileName);
+        $this->fileSystem->put($path, $serialized);
     }
 
     /**

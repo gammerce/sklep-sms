@@ -75,10 +75,9 @@ class TransferPaymentServiceTest extends TestCase
             ]
         );
         $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
-        $result = $transferPaymentService->finalizePurchase($finalizedPayment);
+        $transferPaymentService->finalizePurchase($purchase, $finalizedPayment);
 
         // then
-        $this->assertTrue($result);
         $paymentTransfer = $paymentTransferRepository->get($finalizedPayment->getOrderId());
         $this->assertNotNull($paymentTransfer);
         $this->assertEquals(190, $paymentTransfer->getIncome());
