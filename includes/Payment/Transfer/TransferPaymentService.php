@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Transfer;
 
+use App\Loggers\DatabaseLogger;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\General\ExternalPaymentService;
@@ -14,12 +15,17 @@ class TransferPaymentService
     /** @var ExternalPaymentService */
     private $externalPaymentService;
 
+    /** @var DatabaseLogger */
+    private $logger;
+
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
-        ExternalPaymentService $externalPaymentService
+        ExternalPaymentService $externalPaymentService,
+        DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->externalPaymentService = $externalPaymentService;
+        $this->logger = $logger;
     }
 
     /**
@@ -28,14 +34,27 @@ class TransferPaymentService
      */
     public function finalizePurchase(FinalizedPayment $finalizedPayment)
     {
-        // Avoid multiple authorization of the same order
-        if ($this->paymentTransferRepository->get($finalizedPayment->getOrderId())) {
+        $purchase = $this->externalPaymentService->restorePurchase($finalizedPayment);
+
+        if (!$purchase) {
             return false;
         }
 
-        $purchase = $this->externalPaymentService->restorePurchase($finalizedPayment);
+        if (
+            $finalizedPayment->getCost() !==
+            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+        ) {
+            $this->logger->log(
+                'log_payment_invalid_amount',
+                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost(),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            );
+            $finalizedPayment->setStatus(false);
+        }
 
-        if (!$purchase || !$this->externalPaymentService->validate($finalizedPayment)) {
+        if (!$this->externalPaymentService->validate($finalizedPayment)) {
             return false;
         }
 

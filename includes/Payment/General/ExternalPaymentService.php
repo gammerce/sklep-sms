@@ -34,17 +34,16 @@ class ExternalPaymentService
      */
     public function validate(FinalizedPayment $finalizedPayment)
     {
-        if ($finalizedPayment->getStatus()) {
-            return true;
+        if (!$finalizedPayment->getStatus()) {
+            $this->logger->log(
+                'log_external_payment_not_accepted',
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
         }
 
-        $this->logger->log(
-            'log_external_payment_not_accepted',
-            $finalizedPayment->getOrderId(),
-            $finalizedPayment->getCost() / 100,
-            $finalizedPayment->getExternalServiceId()
-        );
-        return false;
+        return $finalizedPayment->getStatus();
     }
 
     /**
@@ -53,16 +52,17 @@ class ExternalPaymentService
      */
     public function restorePurchase(FinalizedPayment $finalizedPayment)
     {
-        $purchase = $this->purchaseDataService->restorePurchase(
-            $finalizedPayment->getDataFilename()
-        );
+        $fileName = $finalizedPayment->getDataFilename();
+        $purchase = $this->purchaseDataService->restorePurchase($fileName);
 
-        if ($purchase) {
-            return $purchase;
+        if (!$purchase || $purchase->isAttempted()) {
+            $this->logger->log('log_purchase_no_data_file', $finalizedPayment->getOrderId());
+            return null;
         }
 
-        $this->logger->log('log_purchase_no_data_file', $finalizedPayment->getOrderId());
-        return null;
+        $purchase->markAsAttempted();
+        $this->purchaseDataService->updatePurchase($fileName, $purchase);
+        return $purchase;
     }
 
     /**
@@ -72,8 +72,6 @@ class ExternalPaymentService
      */
     public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment)
     {
-        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
-
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchase)) {
             $this->logger->log(
@@ -95,6 +93,8 @@ class ExternalPaymentService
             $finalizedPayment->getCost() / 100,
             $finalizedPayment->getExternalServiceId()
         );
+
+        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
 
         return true;
     }
