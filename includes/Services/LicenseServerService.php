@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Requesting\Requester;
+use App\Requesting\Response;
 use Exception;
 
 class LicenseServerService
@@ -33,19 +34,18 @@ class LicenseServerService
     {
         $response = $this->requester->post(
             $this->buildUrl('/v1/licenses'),
-            [
+            json_encode([
                 'lifetime' => $lifetime,
                 'platform_amxmodx' => $hasAmxModX,
                 'platform_sourcemod' => $hasSourceMod,
-            ],
+            ]),
             [
                 'Authorization' => $this->licenseSecret,
+                'Content-Type' => 'application/json',
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
 
         return $response->json();
     }
@@ -71,9 +71,7 @@ class LicenseServerService
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
 
         return $response->json();
     }
@@ -97,9 +95,7 @@ class LicenseServerService
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
 
         return $response->json();
     }
@@ -113,15 +109,14 @@ class LicenseServerService
     {
         $response = $this->requester->post(
             $this->buildUrl("/v1/licenses/${licenseId}/token"),
-            [],
+            json_encode([]),
             [
                 'Authorization' => $this->licenseSecret,
+                'Content-Type' => 'application/json',
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
 
         return $response->json();
     }
@@ -140,9 +135,7 @@ class LicenseServerService
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
     }
 
     /**
@@ -160,9 +153,7 @@ class LicenseServerService
             ]
         );
 
-        if (!$response || $response->isBadResponse()) {
-            throw new Exception('Problem with connecting to the license server');
-        }
+        $this->guardAgainstInvalidResponse($response);
 
         return $response->json();
     }
@@ -170,5 +161,18 @@ class LicenseServerService
     private function buildUrl($string)
     {
         return $this->url . $string;
+    }
+
+    private function guardAgainstInvalidResponse(Response $response = null)
+    {
+        if (!$response) {
+            throw new Exception("Problem with connecting to the license server");
+        }
+
+        if ($response->isBadResponse()) {
+            throw new Exception(
+                "Invalid response code [{$response->getStatusCode()}] from license server"
+            );
+        }
     }
 }
