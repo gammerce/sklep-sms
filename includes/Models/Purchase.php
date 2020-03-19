@@ -66,51 +66,26 @@ class Purchase
      */
     private $desc = null;
 
+    /**
+     * Attempt to finalize purchase has been made
+     *
+     * @var bool
+     */
+    private $isAttempted = false;
+
     public function __construct(User $user)
     {
         $this->user = $user;
     }
 
-    public function setServiceId($serviceId)
-    {
-        $this->serviceId = (string) $serviceId;
-    }
-
-    public function setOrder(array $order)
-    {
-        foreach ($order as $key => $value) {
-            $this->order[$key] = $value;
-        }
-    }
-
-    public function setPrice(Price $price)
-    {
-        $this->price = $price;
-        $this->setPayment([
-            Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
-            Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
-        ]);
-        $this->setOrder([
-            Purchase::ORDER_QUANTITY => $price->getQuantity(),
-        ]);
-    }
-
-    public function setEmail($email)
-    {
-        $this->email = (string) $email;
-    }
-
-    public function setPayment(array $payment)
-    {
-        foreach ($payment as $key => $value) {
-            $this->payment[$key] = $value;
-        }
-    }
-
     public function getServiceId()
     {
         return $this->serviceId;
+    }
+
+    public function setServiceId($serviceId)
+    {
+        $this->serviceId = (string) $serviceId;
     }
 
     /**
@@ -122,6 +97,13 @@ class Purchase
         return array_get($this->order, $key);
     }
 
+    public function setOrder(array $order)
+    {
+        foreach ($order as $key => $value) {
+            $this->order[$key] = $value;
+        }
+    }
+
     /**
      * @param string $key
      * @return mixed
@@ -129,6 +111,13 @@ class Purchase
     public function getPayment($key)
     {
         return array_get($this->payment, $key);
+    }
+
+    public function setPayment(array $payment)
+    {
+        foreach ($payment as $key => $value) {
+            $this->payment[$key] = $value;
+        }
     }
 
     /**
@@ -147,12 +136,30 @@ class Purchase
         return $this->price;
     }
 
+    public function setPrice(Price $price)
+    {
+        $this->price = $price;
+        $this->setPayment([
+            Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
+            Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
+        ]);
+        $this->setOrder([
+            Purchase::ORDER_QUANTITY => $price->getQuantity(),
+        ]);
+    }
+
     /**
      * @return string
      */
     public function getEmail()
     {
         return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = (string) $email;
     }
 
     /**
@@ -169,5 +176,18 @@ class Purchase
     public function setDesc($desc)
     {
         $this->desc = $desc;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAttempted()
+    {
+        return $this->isAttempted;
+    }
+
+    public function markAsAttempted()
+    {
+        $this->isAttempted = true;
     }
 }

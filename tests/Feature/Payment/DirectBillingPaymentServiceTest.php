@@ -102,10 +102,9 @@ class DirectBillingPaymentServiceTest extends TestCase
             ]
         );
         $finalizedPayment->setStatus(true);
-        $result = $directBillingPaymentService->finalizePurchase($finalizedPayment);
+        $directBillingPaymentService->finalizePurchase($purchase, $finalizedPayment);
 
         // then
-        $this->assertTrue($result);
         $payment = $paymentDirectBillingRepository->findByExternalId(
             $finalizedPayment->getOrderId()
         );

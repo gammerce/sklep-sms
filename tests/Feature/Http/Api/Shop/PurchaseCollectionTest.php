@@ -4,13 +4,13 @@ namespace Tests\Feature\Http\Api\Shop;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PurchaseValidationTest extends HttpTestCase
+class PurchaseCollectionTest extends HttpTestCase
 {
     /** @test */
     public function fails_when_no_data_passed()
     {
         // when
-        $response = $this->post('/api/purchase/validation', [
+        $response = $this->post('/api/purchases', [
             'service_id' => 'vippro',
             'type' => ExtraFlagType::TYPE_IP,
         ]);

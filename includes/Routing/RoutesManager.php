@@ -43,7 +43,7 @@ use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\PasswordResource;
 use App\Http\Controllers\Api\PaymentResource;
 use App\Http\Controllers\Api\PurchaseResource;
-use App\Http\Controllers\Api\PurchaseValidationResource;
+use App\Http\Controllers\Api\PurchaseCollection;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PlayerFlagCollection;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
@@ -263,8 +263,12 @@ class RoutesManager
                             'uses' => TemplateResource::class . '@get',
                         ]);
 
-                        $r->post('/api/purchase/validation', [
-                            'uses' => PurchaseValidationResource::class . '@post',
+                        $r->post('/api/purchases', [
+                            'uses' => PurchaseCollection::class . '@post',
+                        ]);
+
+                        $r->get('/api/purchases/{purchaseId}', [
+                            'uses' => PurchaseResource::class . '@get',
                         ]);
 
                         $r->post('/api/payment', [
@@ -273,10 +277,6 @@ class RoutesManager
 
                         $r->get('/api/bricks/{bricks}', [
                             'uses' => BrickResource::class . '@get',
-                        ]);
-
-                        $r->get('/api/purchases/{purchaseId}', [
-                            'uses' => PurchaseResource::class . '@get',
                         ]);
 
                         $r->get('/api/services/{serviceId}/long_description', [
@@ -616,7 +616,7 @@ class RoutesManager
 
     private function shouldRedirectToSetup(array $routeInfo)
     {
-        return array_get($routeInfo[1], "type") !== RoutesManager::TYPE_INSTALL &&
+        return array_get(array_get($routeInfo, 1), "type") !== RoutesManager::TYPE_INSTALL &&
             $this->shopState->requiresAction();
     }
 }
