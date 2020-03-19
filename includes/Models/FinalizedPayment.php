@@ -62,7 +62,7 @@ class FinalizedPayment
     /**
      * @return bool
      */
-    public function getStatus()
+    public function isSuccessful()
     {
         return $this->status;
     }

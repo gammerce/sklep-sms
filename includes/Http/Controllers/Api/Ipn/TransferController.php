@@ -1,7 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api\Ipn;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
+use App\Loggers\DatabaseLogger;
+use App\Models\Purchase;
+use App\Payment\Exceptions\InvalidPaidAmountException;
+use App\Payment\Exceptions\LackOfValidPurchaseDataException;
+use App\Payment\Exceptions\PaymentRejectedException;
+use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
@@ -13,7 +20,9 @@ class TransferController
         $paymentPlatform,
         Request $request,
         Heart $heart,
-        TransferPaymentService $transferPaymentService
+        ExternalPaymentService $externalPaymentService,
+        TransferPaymentService $transferPaymentService,
+        DatabaseLogger $logger
     ) {
         $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
 
@@ -28,9 +37,39 @@ class TransferController
             $request->request->all()
         );
 
-        $transferPaymentService->finalizePurchase($finalizedPayment);
+        try {
+            $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
+        } catch (LackOfValidPurchaseDataException $e) {
+            $logger->log('log_purchase_no_data_file', $finalizedPayment->getOrderId());
+            return new PlainResponse($finalizedPayment->getOutput());
+        }
 
-        return new PlainResponse($finalizedPayment->getOutput());
+        try {
+            $transferPaymentService->finalizePurchase($purchase, $finalizedPayment);
+        } catch (InvalidPaidAmountException $e) {
+            $logger->log(
+                'log_payment_invalid_amount',
+                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost(),
+                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            );
+        } catch (PaymentRejectedException $e) {
+            $logger->log(
+                'log_external_payment_not_accepted',
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
+        } catch (InvalidServiceModuleException $e) {
+            $logger->log(
+                'log_external_no_purchase',
+                $finalizedPayment->getOrderId(),
+                $purchase->getServiceId()
+            );
+        } finally {
+            return new PlainResponse($finalizedPayment->getOutput());
+        }
     }
 
     /**
@@ -39,13 +78,17 @@ class TransferController
     public function oldAction(
         Request $request,
         Heart $heart,
-        TransferPaymentService $transferPaymentService
+        ExternalPaymentService $externalPaymentService,
+        TransferPaymentService $transferPaymentService,
+        DatabaseLogger $databaseLogger
     ) {
         return $this->action(
             $request->query->get('service'),
             $request,
             $heart,
-            $transferPaymentService
+            $externalPaymentService,
+            $transferPaymentService,
+            $databaseLogger
         );
     }
 }
