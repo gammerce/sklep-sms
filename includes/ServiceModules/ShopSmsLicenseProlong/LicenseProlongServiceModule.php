@@ -109,7 +109,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $amount = $validated['amount'];
         $identifier = $validated['identifier'];
-        $transferPrice = $this->getCost($identifier, $amount) * $amount;
+        $transferPrice = intval($this->getCost($identifier, $amount) * $amount);
 
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $amount,
@@ -293,7 +293,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             return null;
         }
 
-        return ceil($costDaily * $this->getBargain($amount));
+        return (int) ceil($costDaily * $this->getBargain($amount));
     }
 
     private function getBargain($daysAmount)

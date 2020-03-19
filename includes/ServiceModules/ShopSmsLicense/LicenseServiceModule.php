@@ -519,7 +519,7 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ]);
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $costData['surcharge'] * $costData['bargain'],
+            Purchase::PAYMENT_PRICE_TRANSFER => intval($costData['surcharge'] * $costData['bargain']),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
         $purchase->setEmail($validated['email']);
@@ -666,9 +666,15 @@ class LicenseServiceModule extends ServiceModule implements
         return 'no_action';
     }
 
+    /**
+     * @param int $costDaily
+     * @param int $daysAmount
+     * @param bool $bargain
+     * @return int
+     */
     private function getCost($costDaily, $daysAmount, $bargain = true)
     {
-        return ceil($costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1));
+        return (int) ceil($costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1));
     }
 
     /**
@@ -691,7 +697,7 @@ class LicenseServiceModule extends ServiceModule implements
         // Dodajemy koszt za kolejne silniki
         $cost += max(0, $costEngines - $this::COST_ENGINE_PER_DAY); // -5, bo pierwsza gra jest darmowa
 
-        return ceil($cost);
+        return (int) ceil($cost);
     }
 
     /**
