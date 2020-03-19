@@ -53,15 +53,15 @@ class DirectBillingPaymentService
      */
     public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment)
     {
+        if (!$finalizedPayment->isSuccessful()) {
+            throw new PaymentRejectedException();
+        }
+
         if (
             $finalizedPayment->getCost() !==
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         ) {
             throw new InvalidPaidAmountException();
-        }
-
-        if (!$finalizedPayment->isSuccessful()) {
-            throw new PaymentRejectedException();
         }
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
