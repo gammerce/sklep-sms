@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\AssocResponse;
+use App\Http\Responses\JsonResponse;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
@@ -17,7 +18,6 @@ use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 use Symfony\Component\HttpFoundation\AcceptHeader;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

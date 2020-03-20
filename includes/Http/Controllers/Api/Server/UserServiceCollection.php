@@ -2,11 +2,11 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
+use App\Http\Responses\JsonResponse;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\System\ServerAuth;
 use Symfony\Component\HttpFoundation\AcceptHeader;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceCollection
