@@ -67,14 +67,15 @@ class PurchaseResource
         try {
             $purchaseResult = $purchaseService->purchase($serviceModule, $body);
         } catch (ValidationException $e) {
+            $warnings = $this->formatWarnings($e->warnings);
+            $firstWarning = $this->getFirstWarning($e->warnings) ?: $lang->t('form_wrong_filled');
+
             return $responseFactory->create(
                 $acceptHeader,
                 "warnings",
-                $lang->t('form_wrong_filled'),
+                $firstWarning,
                 false,
-                [
-                    'warnings' => $this->formatWarnings($e->warnings),
-                ]
+                compact('warnings')
             );
         }
 
@@ -107,5 +108,16 @@ class PurchaseResource
                 return "<strong>{$key}</strong><br />{$text}<br />";
             })
             ->join();
+    }
+
+    private function getFirstWarning(array $warnings)
+    {
+        foreach ($warnings as $field => $warning) {
+            foreach ($warning as $text) {
+                return "{$field}: $text";
+            }
+        }
+
+        return null;
     }
 }
