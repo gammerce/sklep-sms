@@ -517,7 +517,7 @@ function as_datetime($value)
 
     if ($value instanceof DateTime) {
         $date = clone $value;
-    } elseif (ctype_digit($value)) {
+    } elseif (my_is_integer($value)) {
         $date = new DateTime("@$value");
     } else {
         $date = new DateTime($value);

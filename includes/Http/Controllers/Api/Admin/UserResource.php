@@ -31,19 +31,24 @@ class UserResource
         $lang = $translationManager->user();
         $editedUser = $heart->getUser($userId);
 
-        $validator = new Validator($request->request->all(), [
-            "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
-            "forename" => [],
-            "groups" => [new UserGroupsRule()],
-            "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getUid())],
-            "surname" => [],
-            "username" => [
-                new RequiredRule(),
-                new UsernameRule(),
-                new UniqueUsernameRule($editedUser->getUid()),
-            ],
-            "wallet" => [new RequiredRule(), new NumberRule()],
-        ]);
+        $validator = new Validator(
+            array_merge($request->request->all(), [
+                "groups" => $request->request->get("groups") ?: [],
+            ]),
+            [
+                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
+                "forename" => [],
+                "groups" => [new UserGroupsRule()],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getUid())],
+                "surname" => [],
+                "username" => [
+                    new RequiredRule(),
+                    new UsernameRule(),
+                    new UniqueUsernameRule($editedUser->getUid()),
+                ],
+                "wallet" => [new RequiredRule(), new NumberRule()],
+            ]
+        );
 
         $validated = $validator->validateOrFail();
 
