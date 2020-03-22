@@ -42,10 +42,12 @@ return [
     'log_password_changed' => 'Użytkownik zmienił swoje hasło.',
     'log_payment_invalid_amount' =>
         'Zapłacona kwota różni się od kwoty zakupu. Metoda: [{1}] ID: [{2}] Zapłacona kwota: [{3}] Oczekiwana kwota: [{4}]',
+    'log_purchase_code' => 'Wykorzystano kod [{1}] do zakupu usługi. ID płatności: [{2}]',
     'log_purchase_no_data_file' =>
         'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
     'log_reset_key_email' =>
         'Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: [{1}][{2}] E-mail: [{3}] Dane formularza. Nazwa użytkownika: [{4}] E-mail: [{5}]',
+    'log_reset_pass' => 'Zresetowano hasło. ID Użytkownika: {1}.',
     'login_success' => 'Logowanie przebiegło bez większych trudności.',
     'login_vert' => 'Z<br />A<br />L<br />O<br />G<br />U<br />J',
     'logout_success' => 'Wylogowywanie przebiegło bez większych trudności.',
@@ -85,7 +87,6 @@ return [
     'profile' => 'Profil',
     'profile_edit' => 'Profil został zaktualizowany.',
     'purchase' => 'Zakup usługi',
-    'purchase_code' => 'Wykorzystano kod {1} do zakupu usługi przez {2}({3}). ID płatności: {4}',
     'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz metodę płatności.',
     'purchase_success' => 'Usługa została prawidłowo zakupiona.',
     'register' => 'Rejestracja',
@@ -97,7 +98,6 @@ return [
     'required_data' => 'Wymagane dane',
     'reset_link_sent' => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
 Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.',
-    'reset_pass' => 'Zresetowano hasło. ID Użytkownika: {1}.',
     'reset_password' => 'Zresetuj hasło',
     'restore_password_info' => 'W celu odzyskania hasła, podaj swój adres <strong>adres e-mail</strong> lub <strong>nazwę użytkownika</strong>.<br />
 W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania hasła.',

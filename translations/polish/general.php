@@ -10,8 +10,6 @@ return [
     'august' => 'Sierpień',
     'bad_module' => 'Moduł usługi został źle zaprogramowany.',
     'bought_date' => 'Data zakupu',
-    'bought_service_info' =>
-        'Zakupiono usługę {1}. Dane: {2} Ilość: {3} Serwer: {4} ID transakcji: {5}. Email: {6} {7}({8})({9})',
     'cancel' => 'Anuluj',
     'choose_option' => 'Wybierz opcję',
     'choose_quantity' => 'Wybierz ilość',
@@ -31,9 +29,7 @@ return [
     'edit' => 'Edytuj',
     'edited_user_service' => 'Prawidłowo wyedytowano usługę.',
     'email' => 'Adres e-mail',
-    'email_was_sent' => 'Wysłano e-maila na adres: {1} o treści: {2}',
     'error_occurred' => 'Wystąpił błąd.',
-    'expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
     'external_id' => 'Zewnętrzne ID',
     'february' => 'Luty',
     'field_length_max_warn' => 'Pole może się składać z co najwyżej {1} znaków.',
@@ -51,6 +47,12 @@ return [
     'january' => 'Styczeń',
     'july' => 'Lipiec',
     'june' => 'Czerwiec',
+    'log_bought_service_info' =>
+        'Zakupiono usługę [{1}]. Dane: [{2}] Ilość: [{3}] Serwer: [{4}] ID transakcji: [{5}]. Email: [{6}] {7}({8})({9})',
+    'log_email_was_sent' => 'Wysłano e-maila na adres: [{1}] o treści: {2}',
+    'log_expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
+    'log_payment_remove_code_from_db' =>
+        'Usunięto kod z tabeli kodów do wykorzystania. Kod: [{1}] Kwota SMS: [{2}]',
     'logged' => 'Jesteś zalogowany/a',
     'logout' => 'Wyloguj',
     'main_page' => 'Strona główna',
@@ -80,8 +82,6 @@ return [
     'password' => 'Hasło',
     'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
     'payment_id' => 'ID płatności',
-    'payment_remove_code_from_db' =>
-        'Usunięto kod z tabeli kodów do wykorzystania. Kod: {1} Kwota SMS: {2}',
     'previous' => 'Wcześniej',
     'quantity' => 'Ilość',
     'question' => 'Pytanie',
