@@ -113,6 +113,36 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     }
 
     /**
+     * @param callable $callback
+     * @return bool
+     */
+    public function every(callable $callback)
+    {
+        foreach ($this->items as $key => $value) {
+            if (!call_user_func($callback, $value, $key)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param callable $callback
+     * @return bool
+     */
+    public function some(callable $callback)
+    {
+        foreach ($this->items as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * @param mixed $key
      * @return bool
      */

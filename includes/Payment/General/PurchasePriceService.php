@@ -30,11 +30,10 @@ class PurchasePriceService
 
     public function getServicePrices(Service $service, Server $server = null)
     {
-        $availableSmsPrices = $this->getAvailableSmsPrices($server);
         $prices = $this->priceRepository->findByServiceServer($service, $server);
 
         return collect($prices)
-            ->map(function (Price $price) use ($availableSmsPrices) {
+            ->map(function (Price $price) use ($server) {
                 $item = [
                     'id' => $price->getId(),
                     'quantity' => $price->getQuantity(),
@@ -43,18 +42,15 @@ class PurchasePriceService
                     'transfer_price' => null,
                 ];
 
-                if ($price->hasDirectBillingPrice()) {
+                if ($this->isAvailableUsingDirectBilling($price, $server)) {
                     $item['direct_billing_price'] = $price->getDirectBillingPrice();
                 }
 
-                if ($price->hasTransferPrice()) {
+                if ($this->isAvailableUsingTransfer($price, $server)) {
                     $item['transfer_price'] = $price->getTransferPrice();
                 }
 
-                if (
-                    $price->hasSmsPrice() &&
-                    in_array($price->getSmsPrice(), $availableSmsPrices, true)
-                ) {
+                if ($this->isAvailableUsingSms($price, $server)) {
                     $item['sms_price'] = $price->getSmsPrice();
                 }
 
@@ -68,27 +64,43 @@ class PurchasePriceService
             ->all();
     }
 
-    /**
-     * @param Server $server
-     * @return int[]
-     */
-    private function getAvailableSmsPrices(Server $server = null)
+    private function isAvailableUsingSms(Price $price, Server $server = null)
     {
-        $smsPlatformId =
-            $server && $server->getSmsPlatformId()
-                ? $server->getSmsPlatformId()
-                : $this->settings->getSmsPlatformId();
+        if (!$price->hasSmsPrice()) {
+            return false;
+        }
+
+        if ($server && $server->getSmsPlatformId()) {
+            $smsPlatformId = $server->getSmsPlatformId();
+        } else {
+            $smsPlatformId = $this->settings->getSmsPlatformId();
+        }
 
         $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
 
         if ($smsModule instanceof SupportSms) {
-            return collect($smsModule::getSmsNumbers())
-                ->map(function (SmsNumber $smsNumber) {
-                    return $smsNumber->getPrice();
-                })
-                ->all();
+            return collect($smsModule::getSmsNumbers())->some(function (SmsNumber $smsNumber) use (
+                $price
+            ) {
+                return $smsNumber->getPrice() === $price->getSmsPrice();
+            });
         }
 
-        return [];
+        return false;
+    }
+
+    private function isAvailableUsingTransfer(Price $price, Server $server = null)
+    {
+        if (!$price->hasTransferPrice()) {
+            return false;
+        }
+
+        return ($server && $server->getTransferPlatformId()) ||
+            $this->settings->getTransferPlatformId();
+    }
+
+    private function isAvailableUsingDirectBilling(Price $price, Server $server = null)
+    {
+        return $price->hasDirectBillingPrice();
     }
 }
