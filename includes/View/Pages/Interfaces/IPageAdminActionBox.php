@@ -4,12 +4,12 @@ namespace App\View\Pages\Interfaces;
 interface IPageAdminActionBox
 {
     /**
-     * Zwraca html action boxa
+     * Returns HTML content of action box
      *
-     * @param       $boxId
+     * @param string $boxId
      * @param array $query
      *
-     * @return string|null mixed
+     * @return string|null
      */
     public function getActionBox($boxId, array $query);
 }

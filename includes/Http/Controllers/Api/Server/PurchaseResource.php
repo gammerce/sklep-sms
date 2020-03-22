@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
-use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\System\Heart;
 use App\System\ServerAuth;
 use App\System\Settings;
@@ -47,7 +47,7 @@ class PurchaseResource
 
         $serviceModule = $heart->getServiceModule($request->request->get('service_id'));
 
-        if (!($serviceModule instanceof IServicePurchaseOutside)) {
+        if (!($serviceModule instanceof IServicePurchaseExternal)) {
             return $responseFactory->create(
                 $acceptHeader,
                 "bad_module",
@@ -67,14 +67,15 @@ class PurchaseResource
         try {
             $purchaseResult = $purchaseService->purchase($serviceModule, $body);
         } catch (ValidationException $e) {
+            $warnings = $this->formatWarnings($e->warnings);
+            $firstWarning = $this->getFirstWarning($e->warnings) ?: $lang->t('form_wrong_filled');
+
             return $responseFactory->create(
                 $acceptHeader,
                 "warnings",
-                $lang->t('form_wrong_filled'),
+                $firstWarning,
                 false,
-                [
-                    'warnings' => $this->formatWarnings($e->warnings),
-                ]
+                compact('warnings')
             );
         }
 
@@ -107,5 +108,16 @@ class PurchaseResource
                 return "<strong>{$key}</strong><br />{$text}<br />";
             })
             ->join();
+    }
+
+    private function getFirstWarning(array $warnings)
+    {
+        foreach ($warnings as $field => $warning) {
+            foreach ($warning as $text) {
+                return "{$field}: $text";
+            }
+        }
+
+        return null;
     }
 }

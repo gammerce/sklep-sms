@@ -9,6 +9,13 @@
         </tr>
 
         <tr>
+            <td>{$lang->t('token')}</td>
+            <td>
+                <input class="input is-small" value="{{ $server->getToken() }}" disabled />
+            </td>
+        </tr>
+
+        <tr>
             <td colspan="2" class="line"></td>
         </tr>
 
@@ -86,6 +93,24 @@
                             <select id="sms_platform" name="sms_platform">
                                 <option value="">{$lang->t('default')}</option>
                                 {$smsPlatforms}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="transfer_platform">{$lang->t('transfer_payment_platform')}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="transfer_platform" name="transfer_platform">
+                                <option value="">{$lang->t('default')}</option>
+                                {$transferPlatforms}
                             </select>
                         </div>
                     </div>

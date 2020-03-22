@@ -38,10 +38,8 @@ use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeListRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeRule;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\ServiceModules\Interfaces\IServiceCreate;
-use App\ServiceModules\Interfaces\IServicePurchase;
-use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceServiceCode;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
@@ -72,11 +70,9 @@ use UnexpectedValueException;
 class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
-    IServiceAvailableOnServers,
+    IServicePurchaseExternal,
     IServiceUserServiceAdminDisplay,
-    IServicePurchase,
     IServicePurchaseWeb,
-    IServicePurchaseOutside,
     IServiceUserServiceAdminAdd,
     IServiceUserServiceAdminEdit,
     IServiceActionExecute,
@@ -364,10 +360,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
         $price = $purchase->getPrice();
 
-        if ($server && $server->getSmsPlatformId()) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId(),
-            ]);
+        if ($server) {
+            if ($server->getSmsPlatformId()) {
+                $purchase->setPayment([
+                    Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId(),
+                ]);
+            }
+
+            if ($server->getTransferPlatformId()) {
+                $purchase->setPayment([
+                    Purchase::PAYMENT_PLATFORM_TRANSFER => $server->getTransferPlatformId(),
+                ]);
+            }
         }
 
         return new Validator(
@@ -992,10 +996,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Sprawdzenie czy nie ma już takiej usługi
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
         );
         $statement->execute([
@@ -1051,10 +1054,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         // Ustaw jednakowe hasła, żeby potem nie było problemów z różnymi hasłami
         if ($shouldPasswordBeUpdated) {
-            $table = $this::USER_SERVICE_TABLE;
             $this->db
                 ->statement(
-                    "UPDATE `$table` " .
+                    "UPDATE `{$this->getUserServiceTable()}` " .
                         "SET `password` = ? " .
                         "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
                 )

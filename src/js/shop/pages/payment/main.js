@@ -1,4 +1,4 @@
-import { refresh_blocks } from "../../utils/utils";
+import { refreshBlocks } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -99,7 +99,7 @@ function purchase_service(method) {
                 });
 
                 // Refresh wallet
-                refresh_blocks("wallet", function() {
+                refreshBlocks("wallet", function() {
                     $("#wallet").effect("highlight", "slow");
                 });
             } else if (jsonObj.return_id === "external") {

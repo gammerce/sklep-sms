@@ -1,4 +1,4 @@
-import { go_to_payment, refresh_blocks } from "../../utils/utils";
+import { go_to_payment, refreshBlocks } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 import { loader } from "../../../general/loader";
@@ -58,7 +58,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings(that, jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                refresh_blocks("content");
+                refreshBlocks("content");
             } else if (jsonObj.return_id === "payment") {
                 go_to_payment(jsonObj.data, jsonObj.sign);
             }

@@ -2,7 +2,6 @@
 namespace App\Http\Responses;
 
 use Symfony\Component\HttpFoundation\AcceptHeader;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ServerResponseFactory
 {

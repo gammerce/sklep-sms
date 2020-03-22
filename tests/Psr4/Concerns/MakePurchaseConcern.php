@@ -2,6 +2,7 @@
 namespace Tests\Psr4\Concerns;
 
 use App\Http\Services\PurchaseService;
+use App\Models\BoughtService;
 use App\Models\PaymentPlatform;
 use App\Models\Price;
 use App\Models\Purchase;
@@ -16,6 +17,10 @@ trait MakePurchaseConcern
 {
     use PaymentModuleFactoryConcern;
 
+    /**
+     * @param array $attributes
+     * @return BoughtService
+     */
     protected function createRandomPurchase(array $attributes = [])
     {
         $this->mockPaymentModuleFactory();

@@ -87,6 +87,41 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     }
 
     /**
+     * @param callable|null $callback
+     * @param mixed $default
+     * @return mixed
+     */
+    public function first(callable $callback = null, $default = null)
+    {
+        if ($callback === null) {
+            if (empty($this->items)) {
+                return $default;
+            }
+
+            foreach ($this->items as $item) {
+                return $item;
+            }
+        }
+
+        foreach ($this->items as $key => $value) {
+            if (call_user_func($callback, $value, $key)) {
+                return $value;
+            }
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param mixed $key
+     * @return bool
+     */
+    public function includes($key)
+    {
+        return in_array($key, $this->items, true);
+    }
+
+    /**
      * @param mixed $item
      * @return Collection
      */

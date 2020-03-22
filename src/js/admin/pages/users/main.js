@@ -1,7 +1,7 @@
 import {
     clearAndHideActionBox,
     getAndSetTemplate,
-    refresh_blocks,
+    refreshBlocks,
     show_action_box,
 } from "../../utils/utils";
 import { loader } from "../../../general/loader";
@@ -66,7 +66,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -202,7 +202,7 @@ $(document).delegate("#form_user_edit", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

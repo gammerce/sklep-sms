@@ -161,7 +161,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
     }
 
     /** @test */
-    public function fails_with_invalid_data_passes()
+    public function fails_with_invalid_data_passed()
     {
         // given
         /** @var Settings $settings */
@@ -199,7 +199,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(
-            "<return_value>warnings</return_value><text>Nie wszystkie pola formularza zostały prawidłowo wypełnione.</text><positive>0</positive><warnings><strong>auth_data</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
+            "<return_value>warnings</return_value><text>auth_data: Pole musi się składać z co najmniej 2 znaków.</text><positive>0</positive><warnings><strong>auth_data</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
             $response->getContent()
         );
     }

@@ -1,7 +1,7 @@
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
-import { refresh_blocks } from "../../utils/utils";
+import { refreshBlocks } from "../../utils/utils";
 import { buildUrl } from "../../../general/global";
 
 $(document).delegate(".table-structure .delete_row", "click", function() {
@@ -31,7 +31,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

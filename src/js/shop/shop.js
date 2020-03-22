@@ -1,7 +1,7 @@
 import "../../stylesheets/shop/shop.scss";
 
 import "core-js";
-import { refresh_blocks } from "./utils/utils";
+import { refreshBlocks } from "./utils/utils";
 import { loader } from "../general/loader";
 import { buildUrl, restRequest } from "../general/global";
 import { json_parse } from "../general/stocks";
@@ -41,7 +41,7 @@ $(document).delegate("#form_login", "submit", function(e) {
 
             if (jsonObj.return_id === "logged_in") {
                 $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
-                refresh_blocks(
+                refreshBlocks(
                     "logged_info,wallet,user_buttons,services_buttons" +
                         ($("#form_login_reload_content").val() == "0" ? "" : ",content")
                 );
@@ -78,7 +78,7 @@ $(document).delegate("#logout", "click", function(e) {
             }
 
             if (jsonObj.return_id === "logged_out") {
-                refresh_blocks("logged_info,wallet,user_buttons,services_buttons,content");
+                refreshBlocks("logged_info,wallet,user_buttons,services_buttons,content");
             }
             if (jsonObj.return_id === "already_logged_out") {
                 location.reload();

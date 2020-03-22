@@ -3,10 +3,11 @@ namespace App\Http\Services;
 
 use App\Http\Validation\Rules\DefaultSmsPlatformRule;
 use App\Http\Validation\Rules\RequiredRule;
-use App\Http\Validation\Rules\SmsPlatformExistsRule;
+use App\Http\Validation\Rules\SupportSmsRule;
+use App\Http\Validation\Rules\SupportTransferRule;
 use App\Http\Validation\Validator;
 use App\Models\Service;
-use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
 use App\System\Heart;
 
@@ -31,12 +32,14 @@ class ServerService
                 'ip' => trim(array_get($body, 'ip')),
                 'port' => trim(array_get($body, 'port')),
                 'sms_platform' => as_int(array_get($body, 'sms_platform')),
+                'transfer_platform' => as_int(array_get($body, 'transfer_platform')),
             ]),
             [
                 'name' => [new RequiredRule()],
                 'ip' => [new RequiredRule()],
                 'port' => [new RequiredRule()],
-                'sms_platform' => [new SmsPlatformExistsRule(), new DefaultSmsPlatformRule()],
+                'sms_platform' => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
+                'transfer_platform' => [new SupportTransferRule()],
             ]
         );
     }
@@ -45,9 +48,8 @@ class ServerService
     {
         $serversServices = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                // This service can be bought on that server
                 return $this->heart->getServiceModule($service->getId()) instanceof
-                    IServiceAvailableOnServers;
+                    IServicePurchaseExternal;
             })
             ->map(function (Service $service) use ($serverId, $body) {
                 return [

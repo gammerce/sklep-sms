@@ -142,7 +142,7 @@ EOF
                     ->join();
 
                 return [
-                    'type' => $data['type'],
+                    'type' => (int) $data['type'],
                     'auth_data' => $data['auth_data'],
                     'password' => $data['password'],
                     'flags' => $flags,

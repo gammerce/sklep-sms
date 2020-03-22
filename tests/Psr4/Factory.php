@@ -13,6 +13,7 @@ use App\Repositories\SmsCodeRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
@@ -91,6 +92,7 @@ class Factory
                 "ip" => $this->faker->ipv4,
                 "port" => $this->faker->numberBetween(1000, 20000),
                 "sms_platform_id" => null,
+                "transfer_platform_id" => null,
             ],
             $attributes
         );
@@ -99,7 +101,8 @@ class Factory
             $attributes["name"],
             $attributes["ip"],
             $attributes["port"],
-            $attributes["sms_platform_id"]
+            $attributes["sms_platform_id"],
+            $attributes["transfer_platform_id"]
         );
     }
 
@@ -276,6 +279,10 @@ class Factory
         );
     }
 
+    /**
+     * @param array $attributes
+     * @return ExtraFlagUserService
+     */
     public function extraFlagUserService(array $attributes = [])
     {
         $attributes = array_merge(

@@ -27,7 +27,6 @@ use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
-use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
@@ -56,7 +55,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceUserServiceAdminDisplay,
-    IServicePurchase,
     IServicePurchaseWeb,
     IServiceUserServiceAdminAdd,
     IServiceUserOwnServices
@@ -483,10 +481,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $mybbUser->removeShopGroup();
 
         // Dodajemy uzytkownikowi grupy na podstawie USER_SERVICE_TABLE
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
             "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS m ON us.id = m.us_id " .
+                "INNER JOIN `{$this->getUserServiceTable()}` AS m ON us.id = m.us_id " .
                 "INNER JOIN `ss_services` AS s ON us.service = s.id " .
                 "WHERE m.mybb_uid = ?"
         );
@@ -531,9 +528,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         // Dodajemy usługę gracza do listy usług
         // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
-        $table = $this::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "SELECT `us_id` FROM `$table` WHERE `service` = ? AND `mybb_uid` = ?"
+            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service` = ? AND `mybb_uid` = ?"
         );
         $statement->execute([$this->service->getId(), $mybbUid]);
 
@@ -556,7 +552,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
             $this->db
                 ->statement(
-                    "INSERT INTO `$table` (`us_id`, `service`, `mybb_uid`) VALUES (?, ?, ?)"
+                    "INSERT INTO `{$this->getUserServiceTable()}` (`us_id`, `service`, `mybb_uid`) VALUES (?, ?, ?)"
                 )
                 ->execute([$userServiceId, $this->service->getId(), $mybbUid]);
         }

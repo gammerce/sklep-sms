@@ -26,7 +26,8 @@ class ServerCollection
             $validated['name'],
             $validated['ip'],
             $validated['port'],
-            $validated['sms_platform']
+            $validated['sms_platform'],
+            $validated['transfer_platform']
         );
         $serverId = $server->getId();
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
@@ -35,6 +36,7 @@ class ServerCollection
         return new SuccessApiResponse($lang->t('server_added'), [
             "data" => [
                 "id" => $server->getId(),
+                "token" => $server->getToken(),
             ],
         ]);
     }

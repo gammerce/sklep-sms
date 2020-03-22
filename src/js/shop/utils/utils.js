@@ -37,7 +37,7 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
     });
 };
 
-export const refresh_blocks = function(bricks, onSuccessFunction) {
+export const refreshBlocks = function(bricks, onSuccessFunction) {
     loader.show();
 
     onSuccessFunction =
