@@ -52,22 +52,24 @@ class PageAdminIncome extends PageAdmin
         $thead = $this->renderTHead();
         $buttons = $this->renderButtons($queryYear, $queryMonth);
 
-        $tbody = [];
+        $tbody = collect($labels)
+            ->filter(function ($label) {
+                return $label <= date("Y-m-d");
+            })
+            ->map(function ($label) use ($incomeFromPeriod) {
+                return $this->renderTRow($label, array_get($incomeFromPeriod, $label, []));
+            });
 
-        foreach ($labels as $date) {
-            if ($date <= date("Y-m-d")) {
-                $tbody[] = $this->renderTRow($date, array_get($incomeFromPeriod, $date, []));
-            }
-        }
-
-        if (count($tbody)) {
-            $tbody[] = $this->renderSummary($incomeFromPeriod);
+        if ($tbody->isPopulated()) {
+            $tbody->push($this->renderSummary($incomeFromPeriod));
         } else {
-            $tbody = [$this->template->render("admin/no_records")];
+            $tbody->push($this->template->render("admin/no_records"));
         }
 
+        $height = max(count($this->getServersIds()) * 20, 200);
         $aboveTable = $this->template->render("admin/income_chart", [
             "id" => "income_chart",
+            "height" => "{$height}px",
             "labels" => json_encode($labels),
             "dataset" => json_encode($this->getDataset($labels, $incomeFromPeriod)),
         ]);
@@ -76,7 +78,7 @@ class PageAdminIncome extends PageAdmin
             "aboveTable" => $aboveTable,
             "buttons" => $buttons,
             "thead" => $thead,
-            "tbody" => implode("", $tbody),
+            "tbody" => $tbody->join(),
             "pagination" => '',
             "tfootClass" => '',
             'title' => $this->title,
@@ -210,14 +212,17 @@ class PageAdminIncome extends PageAdmin
         return $this->template->render("admin/income_trow2", compact('tableRow', 'totalIncome'));
     }
 
+    /**
+     * @return array
+     */
     private function getServersIds()
     {
-        $serversIds = array_map(function (Server $server) {
-            return $server->getId();
-        }, $this->heart->getServers());
-        $serversIds[] = 0;
-
-        return $serversIds;
+        return collect($this->heart->getServers())
+            ->map(function (Server $server) {
+                return $server->getId();
+            })
+            ->push(0)
+            ->all();
     }
 
     private function getLabels($year, $month)
