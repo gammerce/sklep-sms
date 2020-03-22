@@ -519,7 +519,9 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ]);
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => intval($costData['surcharge'] * $costData['bargain']),
+            Purchase::PAYMENT_PRICE_TRANSFER => intval(
+                $costData['surcharge'] * $costData['bargain']
+            ),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
         $purchase->setEmail($validated['email']);
@@ -674,7 +676,9 @@ class LicenseServiceModule extends ServiceModule implements
      */
     private function getCost($costDaily, $daysAmount, $bargain = true)
     {
-        return (int) ceil($costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1));
+        return (int) ceil(
+            $costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1)
+        );
     }
 
     /**
