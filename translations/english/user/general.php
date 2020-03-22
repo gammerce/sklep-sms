@@ -1,15 +1,11 @@
 <?php
 
 return [
-    'add_code_to_reuse' => 'Code was added to the list of codes to be used. Code: {1} SMS price: {2}." .
-	"An attempt to use it by {3}({4})({5}), expected SMS Price: {6}.',
     'admin' => 'Admin',
     'answer' => 'Answer',
     'antispam_question' => 'Antispam question',
     'bad_pass_nick' => 'Unfortunately, passowrd or/and nickname are incorrect.',
     'bad_service_code' => 'Code is wrong or doesn\'t match purchase details.',
-    'bad_sms_code_used' =>
-        'SMS transaction of user: {1}({2})({3}) failed. Used return code: {4} Content: {5} Number: {6} Error code: {7}',
     'change_password' => 'Change password',
     'charge_wallet' => 'Wallet Charge',
     'choose_payment' => 'Choose payment',
@@ -31,18 +27,25 @@ return [
     'go_to_payment' => 'Proceed to payment',
     'got_code' => 'I\'ve got code!',
     'keyreset_error' => 'An error occurred while sending e-mail with password reset link.',
+    'log_accepted_sms_code' => 'SMS code was accepted [{1}] SMS text: [{2}] Number: [{3}]',
+    'log_add_code_to_reuse' =>
+        'Code was added to the list of codes to be used. Code: [{1}] SMS price: [{2}] Expected SMS Price: [{3}]',
+    'log_bad_sms_code_used' =>
+        'SMS transaction failed. Used return code: [{1}] SMS text: [{2}] Number: [{3}] Error code: [{4}]',
     'log_external_payment_accepted' =>
         'Payment\'s been accepted. Purchase ID: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
     'log_external_payment_not_accepted' =>
         'Transaction authorization failure: [{1}] Amount: [{2}] Service: [{3}]',
     'log_external_no_purchase' =>
         'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
-    'log_new_account' => 'Create new account. ID: {1} User name: {2}, IP: {3}',
+    'log_new_account' => 'Create new account. ID: [{1}] User name: [{2}], IP: [{3}]',
     'log_password_changed' => 'User has changed their password.',
     'log_payment_invalid_amount' =>
         'Paid amount differs from purchase amount. Method: [{1}] ID: [{2}] Paid amount: [{3}] Expected amount: [{4}]',
     'log_purchase_no_data_file' =>
         'Payment: [{1}] was accepted, but there was no file with purchase data.',
+    'log_reset_key_email' =>
+        'E-mail with password reset key has been sent. User: [{1}][{2}] E-mail: [{3}] Form data. User name: [{4}] E-mail: [{5}]',
     'login_success' => 'Logging in successful.',
     'login_vert' => 'L<br />O<br />G<br /><br />I<br />N',
     'logout_success' => 'Logging out successful.',
@@ -89,8 +92,6 @@ return [
     'regulations' => 'Regulations',
     'repeat' => 'Repeat',
     'required_data' => 'Required data',
-    'reset_key_email' =>
-        'E-mail with password reset key has been sent. User: {1}({2}) E-mail: {3} Form data. User name: {4} E-mail: {5}',
     'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail box.<br/>
 Follow the directions in the e-mail.',
     'reset_pass' => 'Password has been reset. User ID: {1}.',

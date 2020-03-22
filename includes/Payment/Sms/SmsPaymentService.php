@@ -62,10 +62,7 @@ class SmsPaymentService
             throw $e;
         } catch (SmsPaymentException $e) {
             $this->logger->log(
-                'bad_sms_code_used',
-                $user->getUsername(),
-                $user->getUid(),
-                $user->getLastIp(),
+                'log_bad_sms_code_used',
                 $code,
                 $paymentModule->getSmsCode(),
                 $smsNumber->getNumber(),
@@ -75,7 +72,16 @@ class SmsPaymentService
             throw $e;
         }
 
-        return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+        $smsPaymentId = $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+        $this->logger->logWithActor(
+            $user,
+            'log_accepted_sms_code',
+            $code,
+            $paymentModule->getSmsCode(),
+            $smsNumber->getNumber()
+        );
+
+        return $smsPaymentId;
     }
 
     private function storePaymentSms(
@@ -133,13 +139,11 @@ class SmsPaymentService
     {
         $this->smsCodeRepository->create($code, $smsPrice, false);
 
-        $this->logger->log(
-            'add_code_to_reuse',
+        $this->logger->logWithActor(
+            $user,
+            'log_add_code_to_reuse',
             $code,
             $smsPrice,
-            $user->getUsername(),
-            $user->getUid(),
-            $user->getLastIp(),
             $expectedSmsPrice
         );
     }

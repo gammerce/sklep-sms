@@ -1,15 +1,11 @@
 <?php
 
 return [
-    'add_code_to_reuse' =>
-        'Dodano kod do tabeli kodów do wykorzystania. Kod: {1} Kwota SMS: {2} Próba użycia go przez {3}({4})({5}), oczekiwana kwota SMS: {6}.',
     'admin' => 'Admin',
     'answer' => 'Odpowiedź',
     'antispam_question' => 'Pytanie Antyspamowe',
     'bad_pass_nick' => 'No niestety, ale hasło i/lub nazwa użytkownika są błędne.',
     'bad_service_code' => 'Podany kod jest błędny lub nie pasuje do kupowanej usługi.',
-    'bad_sms_code_used' =>
-        'Transakcja SMS użytkownika: {1}({2})({3}) nie powiodła się. Użyto kodu zwrotnego: {4} Treść: {5} Numer: {6} Kod błędu: {7}',
     'change_password' => 'Zmiana hasła',
     'charge_wallet' => 'Doładowanie Portfela',
     'choose_payment' => 'Wybierz płatność',
@@ -31,18 +27,25 @@ return [
     'go_to_payment' => 'Przejdź do płatności',
     'got_code' => 'Mam kod!',
     'keyreset_error' => 'Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.',
+    'log_accepted_sms_code' => 'Zaakceptowana kod SMS [{1}] Treść: [{2}] Numer: [{3}]',
+    'log_add_code_to_reuse' =>
+        'Dodano kod do tabeli kodów do wykorzystania. Kod: [{1}] Kwota SMS: [{2}] Pczekiwana kwota SMS: [{3}]',
+    'log_bad_sms_code_used' =>
+        'Transakcja SMS nie powiodła się. Użyto kodu zwrotnego: [{1}] Treść: [{2}] Numer: [{3}] Kod błędu: [{4}]',
     'log_external_payment_accepted' =>
         'Zaakceptowano płatność. ID zakupu [{1}] ID transakcji: [{2}] Kwota: [{3}] Usługa: [{4}]',
     'log_external_payment_not_accepted' =>
         'Nieudana autoryzacja transakcji: [{1}] Kwota: [{2}] Usługa: [{3}]',
     'log_external_no_purchase' =>
         'Płatność: [{1}] została zaakceptowana, jednakże moduł usługi [{2}] nie implementuje interfejsu IServicePurchase.',
-    'log_new_account' => 'Założono nowe konto. ID: {1} Nazwa Użytkownika: {2}, IP: {3}',
+    'log_new_account' => 'Założono nowe konto. ID: [{1}] Nazwa Użytkownika: [{2}], IP: [{3}]',
     'log_password_changed' => 'Użytkownik zmienił swoje hasło.',
     'log_payment_invalid_amount' =>
         'Zapłacona kwota różni się od kwoty zakupu. Metoda: [{1}] ID: [{2}] Zapłacona kwota: [{3}] Oczekiwana kwota: [{4}]',
     'log_purchase_no_data_file' =>
         'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi zakupu.',
+    'log_reset_key_email' =>
+        'Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: [{1}][{2}] E-mail: [{3}] Dane formularza. Nazwa użytkownika: [{4}] E-mail: [{5}]',
     'login_success' => 'Logowanie przebiegło bez większych trudności.',
     'login_vert' => 'Z<br />A<br />L<br />O<br />G<br />U<br />J',
     'logout_success' => 'Wylogowywanie przebiegło bez większych trudności.',
@@ -92,8 +95,6 @@ return [
     'regulations' => 'Regulamin',
     'repeat' => 'Powtórz',
     'required_data' => 'Wymagane dane',
-    'reset_key_email' =>
-        'Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: {1}({2}) E-mail: {3} Dane formularza. Nazwa użytkownika: {4} E-mail: {5}',
     'reset_link_sent' => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
 Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.',
     'reset_pass' => 'Zresetowano hasło. ID Użytkownika: {1}.',

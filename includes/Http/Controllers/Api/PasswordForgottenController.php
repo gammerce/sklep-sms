@@ -68,7 +68,7 @@ class PasswordForgottenController
 
         if ($ret === "sent") {
             $logger->log(
-                'reset_key_email',
+                'log_reset_key_email',
                 $editedUser->getUsername(),
                 $editedUser->getUid(),
                 $editedUser->getEmail(),
