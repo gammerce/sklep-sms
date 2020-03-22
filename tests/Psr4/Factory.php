@@ -13,6 +13,7 @@ use App\Repositories\SmsCodeRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
@@ -278,6 +279,10 @@ class Factory
         );
     }
 
+    /**
+     * @param array $attributes
+     * @return ExtraFlagUserService
+     */
     public function extraFlagUserService(array $attributes = [])
     {
         $attributes = array_merge(
