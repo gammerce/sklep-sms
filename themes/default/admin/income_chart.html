@@ -3,6 +3,13 @@
 </div>
 
 <script>
+    Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
+        return {
+            x: eventPosition.x,
+            y: 0,
+        };
+    };
+
     window.onload = function() {
         var ctx = document.getElementById("{{ $id }}").getContext("2d");
         var config = {
@@ -15,8 +22,9 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 tooltips: {
-                    yAlign: "center",
+                    position: "custom",
                     intersect: false,
+                    caretSize: 0,
                 },
                 scales: {
                     yAxes: [
