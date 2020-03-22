@@ -12,18 +12,14 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\General\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\ServiceModules\Interfaces\IServiceAvailableOnServers;
 use App\ServiceModules\Interfaces\IServiceCreate;
-use App\ServiceModules\Interfaces\IServicePurchase;
-use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 
 class OtherServiceModule extends ServiceModule implements
-    IServicePurchase,
-    IServicePurchaseOutside,
     IServiceCreate,
     IServiceAdminManage,
-    IServiceAvailableOnServers
+    IServicePurchaseExternal
 {
     const MODULE_ID = "other";
 

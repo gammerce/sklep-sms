@@ -5,6 +5,7 @@ use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PaymentPlatformService;
 use App\Loggers\DatabaseLogger;
+use App\Models\Server;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Heart;
 use App\System\Settings;
@@ -57,14 +58,15 @@ class PaymentPlatformResource
             return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
         }
 
-        foreach ($heart->getServers() as $server) {
-            if ($server->getSmsPlatformId() === $paymentPlatform->getId()) {
-                return new ErrorApiResponse($lang->t('delete_payment_platform_server_constraint'));
-            }
+        $occupiedPlatforms = collect($heart->getServers())->flatMap(function (Server $server) {
+            return [$server->getSmsPlatformId(), $server->getTransferPlatformId()];
+        });
+
+        if ($occupiedPlatforms->includes($paymentPlatform->getId())) {
+            return new ErrorApiResponse($lang->t('delete_payment_platform_server_constraint'));
         }
 
         $paymentPlatformRepository->delete($paymentPlatform->getId());
-
         $databaseLogger->logWithActor('log_payment_platform_deleted', $paymentPlatformId);
 
         return new SuccessApiResponse($lang->t('payment_platform_deleted'));

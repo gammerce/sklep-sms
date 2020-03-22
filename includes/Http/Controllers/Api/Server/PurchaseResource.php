@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
-use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\System\Heart;
 use App\System\ServerAuth;
 use App\System\Settings;
@@ -47,7 +47,7 @@ class PurchaseResource
 
         $serviceModule = $heart->getServiceModule($request->request->get('service_id'));
 
-        if (!($serviceModule instanceof IServicePurchaseOutside)) {
+        if (!($serviceModule instanceof IServicePurchaseExternal)) {
             return $responseFactory->create(
                 $acceptHeader,
                 "bad_module",

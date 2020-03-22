@@ -113,6 +113,15 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     }
 
     /**
+     * @param mixed $key
+     * @return bool
+     */
+    public function includes($key)
+    {
+        return in_array($key, $this->items, true);
+    }
+
+    /**
      * @param mixed $item
      * @return Collection
      */

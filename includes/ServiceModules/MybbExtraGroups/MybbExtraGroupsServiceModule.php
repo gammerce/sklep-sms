@@ -27,7 +27,6 @@ use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
-use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
@@ -56,7 +55,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,
     IServiceUserServiceAdminDisplay,
-    IServicePurchase,
     IServicePurchaseWeb,
     IServiceUserServiceAdminAdd,
     IServiceUserOwnServices

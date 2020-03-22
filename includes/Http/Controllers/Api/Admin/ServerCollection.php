@@ -26,7 +26,8 @@ class ServerCollection
             $validated['name'],
             $validated['ip'],
             $validated['port'],
-            $validated['sms_platform']
+            $validated['sms_platform'],
+            $validated['transfer_platform']
         );
         $serverId = $server->getId();
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
