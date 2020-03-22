@@ -96,7 +96,7 @@ class BoughtServiceService
         $quantity = $forever ? $this->lang->t('forever') : "{$quantity} {$service->getTag()}";
 
         $this->logger->log(
-            'bought_service_info',
+            'log_bought_service_info',
             $serviceId,
             $authData,
             $quantity,

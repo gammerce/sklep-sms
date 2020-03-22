@@ -10,8 +10,6 @@ return [
     'august' => 'August',
     'bad_module' => 'Service module was programmed incorrectly.',
     'bought_date' => 'Puchase date',
-    'bought_service_info' =>
-        'Service was purchased {1}. Data: {2} Qunatity: {3} Server: {4} Transaction ID: {5}. Email: {6} {7}({8})({9})',
     'cancel' => 'Cancel',
     'choose_option' => 'Choose option',
     'choose_quantity' => 'Choose quantity',
@@ -31,9 +29,7 @@ return [
     'edit' => 'Edit',
     'edited_user_service' => 'Service edited correctly.',
     'email' => 'E-mail',
-    'email_was_sent' => 'An e-mail was sent to address: {1} saying: {2}',
     'error_occurred' => 'Error occurred.',
-    'expired_service_delete' => 'AUTOMAT: Player\'s expired service removed. {1}',
     'external_id' => 'External ID',
     'february' => 'February',
     'field_length_max_warn' => 'Field must consist of max. {1} chars.',
@@ -51,6 +47,12 @@ return [
     'january' => 'January',
     'july' => 'July',
     'june' => 'June',
+    'log_bought_service_info' =>
+        'Service was purchased [{1}]. Data: [{2}] Quantity: [{3}] Server: [{4}] Transaction ID: [{5}]. Email: [{6}] {7}({8})({9})',
+    'log_email_was_sent' => 'An e-mail was sent to an address: [{1}] saying: {2}',
+    'log_expired_service_delete' => 'AUTOMAT: Player\'s expired service removed. {1}',
+    'log_payment_remove_code_from_db' =>
+        'Code was removed from the list of codes to be used. Code: [{1}] SMS price: [{2}]',
     'logged' => 'You are logged in',
     'logout' => 'Log out',
     'main_page' => 'Main page',
@@ -80,8 +82,6 @@ return [
     'password' => 'Password',
     'payment_bad_type' => 'Error in Payment class constructor. Payment type not allowed.',
     'payment_id' => 'Payment ID',
-    'payment_remove_code_from_db' =>
-        'Code was removed from the list of codes to be used. Code: {1} SMS price: {2}',
     'previous' => 'Previous',
     'quantity' => 'Quantity',
     'question' => 'Question',

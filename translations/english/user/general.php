@@ -42,10 +42,12 @@ return [
     'log_password_changed' => 'User has changed their password.',
     'log_payment_invalid_amount' =>
         'Paid amount differs from purchase amount. Method: [{1}] ID: [{2}] Paid amount: [{3}] Expected amount: [{4}]',
+    'log_purchase_code' => 'Code [{1}] was used to purchase service. Payment ID: [{2}]',
     'log_purchase_no_data_file' =>
         'Payment: [{1}] was accepted, but there was no file with purchase data.',
     'log_reset_key_email' =>
         'E-mail with password reset key has been sent. User: [{1}][{2}] E-mail: [{3}] Form data. User name: [{4}] E-mail: [{5}]',
+    'log_reset_pass' => 'Password has been reset. User ID: {1}.',
     'login_success' => 'Logging in successful.',
     'login_vert' => 'L<br />O<br />G<br /><br />I<br />N',
     'logout_success' => 'Logging out successful.',
@@ -82,7 +84,6 @@ return [
     'profile' => 'Profile',
     'profile_edit' => 'Profile has been updated.',
     'purchase' => 'Service purchase',
-    'purchase_code' => 'Code {1} was used to purchase service by {2}({3}). Payment ID: {4}',
     'purchase_form_validated' => 'Given data is correct. Now choose payment method.',
     'purchase_success' => 'Service purchased successfully.',
     'register' => 'Registration',
@@ -94,7 +95,6 @@ return [
     'required_data' => 'Required data',
     'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail box.<br/>
 Follow the directions in the e-mail.',
-    'reset_pass' => 'Password has been reset. User ID: {1}.',
     'reset_password' => 'Reset password',
     'restore_password_info' => 'In order to restore password, give your address <strong>e-mail</strong> or <strong>nickname</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.',

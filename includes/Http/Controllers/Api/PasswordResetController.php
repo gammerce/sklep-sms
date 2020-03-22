@@ -44,7 +44,7 @@ class PasswordResetController
         }
 
         $userRepository->updatePassword($user->getUid(), $pass);
-        $logger->log('reset_pass', $user->getUid());
+        $logger->log('log_reset_pass', $user->getUid());
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }

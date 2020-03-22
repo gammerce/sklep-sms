@@ -69,7 +69,7 @@ class Mailer
 
             $mail->send();
 
-            $this->logger->log('email_was_sent', $email, $text);
+            $this->logger->log('log_email_was_sent', $email, $text);
 
             return "sent";
         } catch (Exception $e) {
@@ -107,7 +107,7 @@ class Mailer
             return "not_sent";
         }
 
-        $this->logger->log('email_was_sent', $email, $text);
+        $this->logger->log('log_email_was_sent', $email, $text);
 
         return "sent";
     }

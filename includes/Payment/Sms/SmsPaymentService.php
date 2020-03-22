@@ -124,7 +124,7 @@ class SmsPaymentService
         }
 
         $this->smsCodeRepository->delete($smsCode->getId());
-        $this->logger->log('payment_remove_code_from_db', $code, $smsPrice);
+        $this->logger->log('log_payment_remove_code_from_db', $code, $smsPrice);
 
         return new SmsSuccessResult($smsCode->isFree());
     }

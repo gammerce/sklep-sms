@@ -81,11 +81,10 @@ EOF
             $purchase->user->getPlatform()
         );
 
-        $this->logger->log(
-            'purchase_code',
+        $this->logger->logWithUser(
+            $purchase->user,
+            'log_purchase_code',
             $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
-            $purchase->user->getUsername(),
-            $purchase->user->getUid(),
             $paymentCode->getId()
         );
 
