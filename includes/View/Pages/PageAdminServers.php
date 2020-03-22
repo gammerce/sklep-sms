@@ -160,7 +160,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     "text" => "{$service->getName()} ( {$service->getId()} )",
                     "values" => implode("", $options),
                 ]);
-            });
+            })
+            ->join();
 
         switch ($boxId) {
             case "server_add":

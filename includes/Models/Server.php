@@ -92,7 +92,7 @@ class Server
 
     public function getTransferPlatformId()
     {
-        return $this->smsPlatformId;
+        return $this->transferPlatformId;
     }
 
     public function getVersion()
