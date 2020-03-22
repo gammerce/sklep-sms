@@ -30,27 +30,11 @@ class PurchasePriceService
 
     public function getServicePrices(Service $service, Server $server = null)
     {
-        if ($server && $server->getSmsPlatformId()) {
-            $smsPlatformId = $server->getSmsPlatformId();
-        } else {
-            $smsPlatformId = $this->settings->getSmsPlatformId();
-        }
-        $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
-
-        if ($smsModule instanceof SupportSms) {
-            $availableSmsPrices = collect($smsModule::getSmsNumbers())
-                ->map(function (SmsNumber $smsNumber) {
-                    return $smsNumber->getPrice();
-                })
-                ->all();
-        } else {
-            $availableSmsPrices = [];
-        }
-
+        $availableSmsPrices = $this->getAvailableSmsPrices($server);
         $prices = $this->priceRepository->findByServiceServer($service, $server);
 
         return collect($prices)
-            ->map(function (Price $price) use ($smsModule, $availableSmsPrices) {
+            ->map(function (Price $price) use ($availableSmsPrices) {
                 $item = [
                     'id' => $price->getId(),
                     'quantity' => $price->getQuantity(),
@@ -68,7 +52,6 @@ class PurchasePriceService
                 }
 
                 if (
-                    $smsModule &&
                     $price->hasSmsPrice() &&
                     in_array($price->getSmsPrice(), $availableSmsPrices, true)
                 ) {
@@ -83,5 +66,29 @@ class PurchasePriceService
                     $item['transfer_price'] !== null;
             })
             ->all();
+    }
+
+    /**
+     * @param Server $server
+     * @return int[]
+     */
+    private function getAvailableSmsPrices(Server $server = null)
+    {
+        $smsPlatformId =
+            $server && $server->getSmsPlatformId()
+                ? $server->getSmsPlatformId()
+                : $this->settings->getSmsPlatformId();
+
+        $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
+
+        if ($smsModule instanceof SupportSms) {
+            return collect($smsModule::getSmsNumbers())
+                ->map(function (SmsNumber $smsNumber) {
+                    return $smsNumber->getPrice();
+                })
+                ->all();
+        }
+
+        return [];
     }
 }

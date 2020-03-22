@@ -1,4 +1,4 @@
-import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -37,7 +37,7 @@ $(document).delegate("#form_payment_platform_add", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -106,7 +106,7 @@ $(document).delegate("#form_payment_platform_edit", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -152,7 +152,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
             if (jsonObj.return_id === "ok") {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

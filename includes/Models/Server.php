@@ -22,7 +22,10 @@ class Server
     private $type;
 
     /** @var int|null */
-    private $smsPlatform;
+    private $smsPlatformId;
+
+    /** @var int|null */
+    private $transferPlatformId;
 
     /** @var string */
     private $version;
@@ -38,7 +41,8 @@ class Server
         $name,
         $ip,
         $port,
-        $smsPlatform,
+        $smsPlatformId,
+        $transferPlatformId,
         $type,
         $version,
         $lastActiveAt,
@@ -48,7 +52,8 @@ class Server
         $this->name = $name;
         $this->ip = $ip;
         $this->port = $port;
-        $this->smsPlatform = $smsPlatform;
+        $this->smsPlatformId = $smsPlatformId;
+        $this->transferPlatformId = $transferPlatformId;
         $this->type = $type;
         $this->version = $version;
         $this->lastActiveAt = $lastActiveAt;
@@ -82,7 +87,12 @@ class Server
 
     public function getSmsPlatformId()
     {
-        return $this->smsPlatform;
+        return $this->smsPlatformId;
+    }
+
+    public function getTransferPlatformId()
+    {
+        return $this->transferPlatformId;
     }
 
     public function getVersion()

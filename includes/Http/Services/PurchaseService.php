@@ -5,7 +5,7 @@ use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
-use App\ServiceModules\Interfaces\IServicePurchaseOutside;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\Support\Result;
 use App\System\Auth;
@@ -40,7 +40,7 @@ class PurchaseService
      */
     public function purchase(ServiceModule $serviceModule, array $body)
     {
-        if (!($serviceModule instanceof IServicePurchaseOutside)) {
+        if (!($serviceModule instanceof IServicePurchaseExternal)) {
             throw new UnexpectedValueException();
         }
 

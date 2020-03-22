@@ -2,7 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServerRepository;
-use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\Cashbill;
 use App\Verification\PaymentModules\SimPay;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -24,8 +24,11 @@ class ServerResourceTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
         $server = $this->factory->server();
 
-        $paymentPlatform = $this->factory->paymentPlatform([
+        $smsPaymentPlatform = $this->factory->paymentPlatform([
             'module' => SimPay::MODULE_ID,
+        ]);
+        $transferPaymentPlatform = $this->factory->paymentPlatform([
+            'module' => Cashbill::MODULE_ID,
         ]);
 
         // when
@@ -33,7 +36,8 @@ class ServerResourceTest extends HttpTestCase
             'name' => 'My Example2',
             'ip' => '192.168.0.2',
             'port' => '27016',
-            'sms_platform' => $paymentPlatform->getId(),
+            'sms_platform' => $smsPaymentPlatform->getId(),
+            'transfer_platform' => $transferPaymentPlatform->getId(),
         ]);
 
         // then
@@ -44,7 +48,8 @@ class ServerResourceTest extends HttpTestCase
         $this->assertSame("My Example2", $freshServer->getName());
         $this->assertSame("192.168.0.2", $freshServer->getIp());
         $this->assertSame("27016", $freshServer->getPort());
-        $this->assertSame($paymentPlatform->getId(), $freshServer->getSmsPlatformId());
+        $this->assertSame($smsPaymentPlatform->getId(), $freshServer->getSmsPlatformId());
+        $this->assertSame($transferPaymentPlatform->getId(), $freshServer->getTransferPlatformId());
     }
 
     /** @test */

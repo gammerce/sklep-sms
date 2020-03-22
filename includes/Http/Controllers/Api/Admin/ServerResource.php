@@ -31,7 +31,8 @@ class ServerResource
             $validated['name'],
             $validated['ip'],
             $validated['port'],
-            $validated['sms_platform']
+            $validated['sms_platform'],
+            $validated['transfer_platform']
         );
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
         $databaseLogger->logWithActor('log_server_edited', $serverId);

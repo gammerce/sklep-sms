@@ -9,7 +9,6 @@ use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
 use App\Payment\Wallet\WalletPaymentService;
-use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
@@ -19,10 +18,7 @@ use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 use InvalidArgumentException;
 
-class ChargeWalletServiceModule extends ServiceModule implements
-    IServicePurchase,
-    IServicePurchaseWeb,
-    IBeLoggedMust
+class ChargeWalletServiceModule extends ServiceModule implements IServicePurchaseWeb, IBeLoggedMust
 {
     const MODULE_ID = "charge_wallet";
 
