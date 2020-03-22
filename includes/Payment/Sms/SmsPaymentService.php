@@ -73,7 +73,7 @@ class SmsPaymentService
         }
 
         $smsPaymentId = $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
-        $this->logger->logWithActor(
+        $this->logger->logWithUser(
             $user,
             'log_accepted_sms_code',
             $code,
@@ -139,7 +139,7 @@ class SmsPaymentService
     {
         $this->smsCodeRepository->create($code, $smsPrice, false);
 
-        $this->logger->logWithActor(
+        $this->logger->logWithUser(
             $user,
             'log_add_code_to_reuse',
             $code,
