@@ -36,6 +36,7 @@ class ServerCollection
         return new SuccessApiResponse($lang->t('server_added'), [
             "data" => [
                 "id" => $server->getId(),
+                "token" => $server->getToken(),
             ],
         ]);
     }

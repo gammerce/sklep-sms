@@ -9,6 +9,13 @@
         </tr>
 
         <tr>
+            <td>{$lang->t('token')}</td>
+            <td>
+                <input class="input is-small" value="{{ $server->getToken() }}" disabled />
+            </td>
+        </tr>
+
+        <tr>
             <td colspan="2" class="line"></td>
         </tr>
 

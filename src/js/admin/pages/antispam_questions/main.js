@@ -1,4 +1,4 @@
-import { clearAndHideActionBox, refresh_blocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -44,7 +44,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -81,7 +81,7 @@ $(document).delegate("#form_antispam_question_add", "submit", function(e) {
                 showWarnings($("#form_antispam_question_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -122,7 +122,7 @@ $(document).delegate("#form_antispam_question_edit", "submit", function(e) {
                 showWarnings($("#form_antispam_question_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refresh_blocks("admincontent");
+                refreshBlocks("admincontent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
