@@ -1,38 +1,31 @@
 ---
-name: Bug report
-about: Create a report to help us improve
+name: Zgłoś błąd
+about: Zgłoś problem ze sklepem
 title: ''
-labels: ''
+labels: 'bug'
 assignees: ''
 
 ---
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+**Opis problemu**
+Jasny i zwięzły opis tego, na czym polega problem.
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. Go to '...'
-2. Click on '....'
-3. Scroll down to '....'
-4. See error
+**Jak zreprodukować problem?**
+Podaj kroki, które pozwolą zreprodukować problematyczne zachowanie sklepu:
+1. Wejdź na stronę '...'
+2. Naciśnij na '....'
+3. Zobaczysz błąd
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
+**Oczekiwane zachowanie**
+Jasny i zwięzły opis jak sklep powinien się w danej sytuacji zachować.
 
 **Screenshots**
-If applicable, add screenshots to help explain your problem.
+W razie potrzeby dodaj zrzuty ekranu, aby pomóc lepiej zrozumieć problem.
 
-**Desktop (please complete the following information):**
- - OS: [e.g. iOS]
- - Browser [e.g. chrome, safari]
- - Version [e.g. 22]
+**Szczegóły (proszę, wypełnij poniższe informacje)**
+ - Czego dotyczy problem: [Strona WWW, Plugin SOURCEMOD, Plugin AmxModX]
+ - Wersja strony WWW: [podaj wersję]
+ - Wersja pluginu: [podaj wersję]
 
-**Smartphone (please complete the following information):**
- - Device: [e.g. iPhone6]
- - OS: [e.g. iOS8.1]
- - Browser [e.g. stock browser, safari]
- - Version [e.g. 22]
-
-**Additional context**
-Add any other context about the problem here.
+**Dodatkowy kontekst**
+Jeżeli masz coś więcej do dodania, zamieść to tutaj.
