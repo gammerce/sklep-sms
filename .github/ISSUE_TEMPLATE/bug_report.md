@@ -2,7 +2,7 @@
 name: Zgłoś błąd
 about: Zgłoś problem ze sklepem
 title: ''
-labels: 'bug'
+labels: bug
 assignees: ''
 
 ---
