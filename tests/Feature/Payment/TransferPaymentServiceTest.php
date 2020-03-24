@@ -46,7 +46,7 @@ class TransferPaymentServiceTest extends TestCase
         $price = $this->factory->price([
             'service_id' => $serviceId,
             'server_id' => $server->getId(),
-            'transfer_price' => 190,
+            'transfer_price' => 4080,
         ]);
 
         $purchase = new Purchase(new User());
@@ -80,6 +80,6 @@ class TransferPaymentServiceTest extends TestCase
         // then
         $paymentTransfer = $paymentTransferRepository->get($finalizedPayment->getOrderId());
         $this->assertNotNull($paymentTransfer);
-        $this->assertEquals(190, $paymentTransfer->getIncome());
+        $this->assertEquals(4080, $paymentTransfer->getIncome());
     }
 }

@@ -54,7 +54,7 @@ class Hostplay extends PaymentModule implements SupportSms
         }
 
         $content = $response->json();
-        $responseNumber = $this->getSmsNumberByProvision(intval($content['kwota'] * 100));
+        $responseNumber = $this->getSmsNumberByProvision(price_to_int($content['kwota']));
 
         if (strtoupper($content['status']) === 'OK') {
             if ($responseNumber == $number) {
