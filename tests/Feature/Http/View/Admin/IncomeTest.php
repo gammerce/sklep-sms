@@ -27,5 +27,6 @@ class IncomeTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertContains('Panel Admina', $response->getContent());
         $this->assertContains('PA: Przychód - Sklep SMS', $response->getContent());
+        $this->assertContains('<tbody class="summary">', $response->getContent());
     }
 }
