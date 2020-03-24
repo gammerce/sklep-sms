@@ -157,7 +157,8 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
      */
     public function push($item)
     {
-        return new Collection(array_merge($this->items, [$item]));
+        $this->items[] = $item;
+        return $this;
     }
 
     /**
@@ -166,7 +167,8 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
      */
     public function extend($data)
     {
-        return new Collection(array_merge($this->items, to_array($data)));
+        $this->items = array_merge($this->items, to_array($data));
+        return $this;
     }
 
     /**
