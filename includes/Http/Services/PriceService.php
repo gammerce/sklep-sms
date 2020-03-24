@@ -13,8 +13,8 @@ class PriceService
 {
     public function createValidator(array $body)
     {
-        $transferPrice = $this->getFloatValueAsInt($body, "transfer_price");
-        $directBillingPrice = $this->getFloatValueAsInt($body, "direct_billing_price");
+        $directBillingPrice = price_to_int(array_get($body, "direct_billing_price"));
+        $transferPrice = price_to_int(array_get($body, "transfer_price"));
 
         return new Validator(
             array_merge($body, [
@@ -33,10 +33,5 @@ class PriceService
                 "quantity" => [new RequiredRule(), new NumberRule()],
             ]
         );
-    }
-
-    private function getFloatValueAsInt(array $body, $key)
-    {
-        return strlen(array_get($body, $key)) ? intval(array_get($body, $key) * 100) : null;
     }
 }

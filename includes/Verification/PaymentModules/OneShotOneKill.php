@@ -80,7 +80,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
         switch ($content['status']) {
             case 'ok':
-                $responseNumber = $this->getSmsNumberByProvision(intval($content['amount'] * 100));
+                $responseNumber = $this->getSmsNumberByProvision(price_to_int($content['amount']));
 
                 if ($responseNumber === null) {
                     $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");

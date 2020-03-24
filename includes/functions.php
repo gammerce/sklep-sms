@@ -548,6 +548,20 @@ function as_datetime_string($value)
     return $date ? $date->format("Y-m-d H:i:s") : "";
 }
 
+/**
+ * @param string|float $value
+ * @return int|null
+ */
+function price_to_int($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    // We do it that way because of the floating point issues
+    return (int) str_replace(".", "", number_format($value, 2));
+}
+
 // https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
 function get_class_from_file($path)
 {

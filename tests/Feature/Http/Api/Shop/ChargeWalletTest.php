@@ -47,7 +47,7 @@ class ChargeWalletTest extends HttpTestCase
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
             "method" => Purchase::METHOD_TRANSFER,
-            "transfer_price" => 2.5,
+            "transfer_price" => 40.8,
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
         $json = $this->decodeJsonResponse($validationResponse);
@@ -62,14 +62,14 @@ class ChargeWalletTest extends HttpTestCase
 
         $response = $this->post("/api/ipn/transfer/{$paymentPlatform->getId()}", [
             "tr_id" => 1,
-            "tr_amount" => 2.5,
+            "tr_amount" => "40.80",
             "tr_crc" => $json["data"]["crc"],
             "id" => 1,
             "test_mode" => 1,
             "md5sum" => md5(
                 array_get($paymentPlatform->getData(), "account_id") .
                     "1" .
-                    "2.50" .
+                    "40.80" .
                     $json["data"]["crc"] .
                     ""
             ),
@@ -78,7 +78,7 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getUid());
-        $this->assertSame(250, $freshUser->getWallet());
+        $this->assertSame(4080, $freshUser->getWallet());
     }
 
     /** @test */

@@ -173,8 +173,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $this->tryToFetchIps();
 
         $id = array_get($body, "id");
-        $valueGross = intval(array_get($body, "valuenet_gross") * 100);
-        $valuePartner = intval(array_get($body, "valuepartner") * 100);
+        $valueGross = price_to_int(array_get($body, "valuenet_gross"));
+        $valuePartner = price_to_int(array_get($body, "valuepartner"));
         $control = array_get($body, "control");
 
         $finalizedPayment = new FinalizedPayment();

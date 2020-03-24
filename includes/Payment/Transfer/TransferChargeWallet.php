@@ -44,21 +44,21 @@ class TransferChargeWallet implements IChargeWallet
     {
         $validator = new Validator(
             [
-                'transfer_price' => as_float(array_get($body, 'transfer_price')),
+                'transfer_price' => array_get($body, 'transfer_price'),
             ],
             [
                 'transfer_price' => [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)],
             ]
         );
         $validated = $validator->validateOrFail();
-        $transferPrice = $validated["transfer_price"];
+        $transferPrice = price_to_int($validated["transfer_price"]);
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => intval($transferPrice * 100),
+            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
             Purchase::PAYMENT_DISABLED_TRANSFER => false,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => intval($transferPrice * 100),
+            Purchase::ORDER_QUANTITY => $transferPrice,
         ]);
     }
 
