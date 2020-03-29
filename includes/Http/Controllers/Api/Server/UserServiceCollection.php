@@ -27,7 +27,7 @@ FROM `ss_user_service` AS us
 INNER JOIN `ss_user_service_extra_flags` AS usef ON usef.us_id = us.id 
 INNER JOIN `ss_services` AS s ON us.service = s.id 
 WHERE usef.server = ?
-AND us.expire > UNIX_TIMESTAMP()
+AND (us.expire > UNIX_TIMESTAMP() OR us.expire = -1)
 AND (
     (usef.type = ? AND usef.auth_data = ?) 
     OR (usef.type = ? AND usef.auth_data = ?) 
