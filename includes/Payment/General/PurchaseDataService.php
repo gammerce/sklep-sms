@@ -33,7 +33,7 @@ class PurchaseDataService
     public function storePurchase(Purchase $purchase)
     {
         $serialized = $this->purchaseSerializer->serialize($purchase);
-        $fileName = time() . "-" . md5($serialized);
+        $fileName = $this->generateIdentifier($serialized);
         $path = $this->path->to('data/transfers/' . $fileName);
         $this->fileSystem->put($path, $serialized);
 
@@ -72,5 +72,17 @@ class PurchaseDataService
     public function deletePurchase($fileName)
     {
         $this->fileSystem->delete($this->path->to("data/transfers/$fileName"));
+    }
+
+    /**
+     * 32 characters long unique purchase identifier
+     *
+     * @param string $serialized
+     * @return string
+     */
+    private function generateIdentifier($serialized)
+    {
+        $fileName = hash("sha256", microtime() . $serialized);
+        return substr($fileName, 0, 32);
     }
 }
