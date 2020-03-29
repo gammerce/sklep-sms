@@ -86,6 +86,7 @@ class TransferPaymentService
         $this->logger->logWithUser(
             $purchase->user,
             'log_external_payment_accepted',
+            $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getCost() / 100,
