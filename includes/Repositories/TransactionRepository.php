@@ -38,7 +38,7 @@ LEFT JOIN `ss_payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
 LEFT JOIN `ss_payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.payment_id
 LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
 LEFT JOIN `ss_payment_code` AS pc ON bs.payment = 'service_code' AND pc.id = bs.payment_id
-LEFT JOIN `ss_payment_direct_billing` AS pdb ON bs.payment = 'direct_billing' AND pc.id = bs.payment_id)
+LEFT JOIN `ss_payment_direct_billing` AS pdb ON bs.payment = 'direct_billing' AND pdb.id = bs.payment_id)
 EOF;
 
     public function mapToModel(array $data)
