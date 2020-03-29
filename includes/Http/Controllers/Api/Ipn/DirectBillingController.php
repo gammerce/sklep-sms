@@ -40,7 +40,7 @@ class DirectBillingController
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
         } catch (LackOfValidPurchaseDataException $e) {
-            $logger->log('log_purchase_no_data_file', $finalizedPayment->getOrderId());
+            $logger->log('log_external_payment_no_transaction_file', $finalizedPayment->getOrderId());
             return new PlainResponse($finalizedPayment->getOutput());
         }
 
@@ -48,7 +48,7 @@ class DirectBillingController
             $directBillingPaymentService->finalizePurchase($purchase, $finalizedPayment);
         } catch (InvalidPaidAmountException $e) {
             $logger->log(
-                'log_payment_invalid_amount',
+                'log_external_payment_invalid_amount',
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
@@ -57,13 +57,14 @@ class DirectBillingController
         } catch (PaymentRejectedException $e) {
             $logger->log(
                 'log_external_payment_not_accepted',
+                $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()
             );
         } catch (InvalidServiceModuleException $e) {
             $logger->log(
-                'log_external_no_purchase',
+                'log_external_payment_invalid_module',
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
