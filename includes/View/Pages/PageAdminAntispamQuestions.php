@@ -59,9 +59,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-        $wrapper = (new Wrapper())
-            ->setTitle($this->title)
-            ->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (get_privileges("manage_antispam_questions")) {
             $button = (new Input())
@@ -90,14 +88,11 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             case "antispam_question_edit":
                 $antispamQuestion = $this->antiSpamQuestionRepository->get($query['id']);
 
-                $output = $this->template->render(
-                    "admin/action_boxes/antispam_question_edit",
-                    [
-                        'id' => $antispamQuestion->getId(),
-                        'question' => $antispamQuestion->getQuestion(),
-                        'answers' => implode(";", $antispamQuestion->getAnswers()),
-                    ]
-                );
+                $output = $this->template->render("admin/action_boxes/antispam_question_edit", [
+                    'id' => $antispamQuestion->getId(),
+                    'question' => $antispamQuestion->getQuestion(),
+                    'answers' => implode(";", $antispamQuestion->getAnswers()),
+                ]);
                 break;
 
             default:

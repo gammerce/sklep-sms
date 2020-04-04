@@ -268,7 +268,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->setDbId($row['id'])
                     ->addCell(
                         new Cell(
-                            $row['uid'] ? "{$row['username']} ({$row['uid']})" : $this->lang->t('none')
+                            $row['uid']
+                                ? "{$row['username']} ({$row['uid']})"
+                                : $this->lang->t('none')
                         )
                     )
                     ->addCell(new Cell($row['server']))
@@ -291,15 +293,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t('server')))
             ->addHeadCell(new HeadCell($this->lang->t('service')))
             ->addHeadCell(
-                new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
+                new HeadCell(
+                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
+                )
             )
             ->addHeadCell(new HeadCell($this->lang->t('expires')))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return (new Wrapper())
-            ->setSearch()
-            ->setTable($table);
+        return (new Wrapper())->setSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)

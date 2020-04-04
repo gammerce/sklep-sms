@@ -123,7 +123,12 @@ class Structure extends DOMElement
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
 
-        $pagination = $paginationService->createPagination($count, $currentPage->getPageNumber(), $path, $query);
+        $pagination = $paginationService->createPagination(
+            $count,
+            $currentPage->getPageNumber(),
+            $path,
+            $query
+        );
 
         if ($pagination) {
             $cell = new Cell($pagination);

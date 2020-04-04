@@ -37,9 +37,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())
-                    ->setDbId($row['id'])
-                    ->addCell(new Cell($row['name']));
+                $bodyRow = (new BodyRow())->setDbId($row['id'])->addCell(new Cell($row['name']));
 
                 if (get_privileges('manage_groups')) {
                     $bodyRow->setDeleteAction(true);
@@ -56,9 +54,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-        $wrapper = (new Wrapper())
-            ->setTitle($this->title)
-            ->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (get_privileges('manage_groups')) {
             $button = (new Input())

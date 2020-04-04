@@ -54,10 +54,10 @@ class PageAdminBoughtServices extends PageAdmin
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM ({$this->transactionRepository->getQuery()}) as t " .
-            $where .
-            "ORDER BY t.timestamp DESC " .
-            "LIMIT ?, ?"
+                "FROM ({$this->transactionRepository->getQuery()}) as t " .
+                $where .
+                "ORDER BY t.timestamp DESC " .
+                "LIMIT ?, ?"
         );
         $statement->execute(
             array_merge(
@@ -113,8 +113,10 @@ class PageAdminBoughtServices extends PageAdmin
                 $paymentLink->setParam('target', '_blank');
                 $paymentLink->addContent($this->lang->t('see_payment'));
 
-                $cellDate = (new Cell(convert_date($transaction->getTimestamp())))
-                    ->setParam('headers', 'date');
+                $cellDate = (new Cell(convert_date($transaction->getTimestamp())))->setParam(
+                    'headers',
+                    'date'
+                );
 
                 return (new BodyRow())
                     ->addAction($paymentLink)
@@ -142,7 +144,9 @@ class PageAdminBoughtServices extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t('service')))
             ->addHeadCell(new HeadCell($this->lang->t('amount')))
             ->addHeadCell(
-                new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
+                new HeadCell(
+                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
+                )
             )
             ->addHeadCell(new HeadCell($this->lang->t('additional')))
             ->addHeadCell(new HeadCell($this->lang->t('email')))
