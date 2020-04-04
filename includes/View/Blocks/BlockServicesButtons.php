@@ -46,13 +46,17 @@ class BlockServicesButtons extends Block
         $services = collect($this->heart->getServices())
             ->filter(function (Service $service) use ($user) {
                 $serviceModule = $this->heart->getServiceModule($service->getId());
-                return $serviceModule && $serviceModule->showOnWeb() && $this->heart->canUserUseService($user->getUid(), $service);
+                return $serviceModule &&
+                    $serviceModule->showOnWeb() &&
+                    $this->heart->canUserUseService($user->getUid(), $service);
             })
             ->map(function (Service $service) {
                 return create_dom_element(
                     "li",
                     create_dom_element("a", $service->getName(), [
-                        'href' => $this->url->to("/page/purchase?service=" . urlencode($service->getId())),
+                        'href' => $this->url->to(
+                            "/page/purchase?service=" . urlencode($service->getId())
+                        ),
                     ])
                 );
             })

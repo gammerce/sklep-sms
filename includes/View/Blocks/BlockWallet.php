@@ -48,9 +48,9 @@ class BlockWallet extends Block implements IBeLoggedMust
         $content = $this->getContent($query, $body, $params);
 
         return create_dom_element("a", new UnescapedSimpleText($content), [
-            'id'    => $this->getContentId(),
+            'id' => $this->getContentId(),
             'class' => $content !== null ? $this->getContentClass() : "",
-            'href'  => $this->url->to("/page/payment_log"),
+            'href' => $this->url->to("/page/payment_log"),
         ]);
     }
 }

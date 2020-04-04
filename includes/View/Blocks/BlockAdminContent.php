@@ -13,10 +13,8 @@ class BlockAdminContent extends Block
     /** @var Translator */
     private $lang;
 
-    public function __construct(
-        Heart $heart,
-        TranslationManager $translationManager
-    ) {
+    public function __construct(Heart $heart, TranslationManager $translationManager)
+    {
         $this->heart = $heart;
         $this->lang = $translationManager->user();
     }
