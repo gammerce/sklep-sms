@@ -14,12 +14,19 @@ class BrickResource
         $data = [];
 
         foreach ($brickList as $brick) {
-            if ($block = $heart->getBlock($brick)) {
-                // TODO Pass page_id
-                $content = $block->getContent($request->query->all(), $request->request->all(), []);
-                $data[$block->getContentId()]['content'] =
-                    $content !== null ? strval($content) : null;
-                $data[$block->getContentId()]['class'] = $content ? $block->getContentClass() : "";
+            $fragments = explode(":", $brick);
+            $brickName = $fragments[0];
+            $block = $heart->getBlock($brickName);
+
+            if ($block) {
+                $contentId = $block->getContentId();
+                $content = $block->getContent(
+                    $request->query->all(),
+                    $request->request->all(),
+                    array_slice($fragments, 1)
+                );
+                $data[$contentId]['content'] = $content !== null ? strval($content) : null;
+                $data[$contentId]['class'] = $content ? $block->getContentClass() : "";
             }
         }
 

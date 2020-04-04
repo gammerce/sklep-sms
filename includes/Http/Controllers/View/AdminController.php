@@ -56,7 +56,7 @@ class AdminController
             );
         }
 
-        $content = $blockRenderer->render("admincontent", $request);
+        $content = $blockRenderer->render("admincontent", $request, [$pageId]);
 
         // Pobranie przycisków do sidebaru
         if (get_privileges("view_player_flags")) {

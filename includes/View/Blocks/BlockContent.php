@@ -33,7 +33,8 @@ class BlockContent extends Block
 
     protected function content(array $query, array $body, array $params)
     {
-        $page = $this->heart->getPage($params["page_id"]);
+        $pageId = $params[0];
+        $page = $this->heart->getPage($pageId);
 
         if (!$page) {
             return null;

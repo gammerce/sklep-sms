@@ -35,12 +35,10 @@ class BlockAdminContent extends Block
             return $this->lang->t('must_be_logged_in');
         }
 
-        $page = $this->heart->getPage($params["page_id"], "admin");
+        $pageId = $params[0];
+        $page = $this->heart->getPage($pageId, "admin");
 
         if ($page) {
-            // TODO Use query pid
-            // Remove pid parametr since we don't want to add it to pagination urls
-            unset($query["pid"]);
             return $page->getContent($query, $body);
         }
 

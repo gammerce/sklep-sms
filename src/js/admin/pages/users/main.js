@@ -1,8 +1,8 @@
 import {
     clearAndHideActionBox,
     getAndSetTemplate,
-    refreshBlocks,
-    show_action_box,
+    refreshAdminContent,
+    showActionBox,
 } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
@@ -13,13 +13,13 @@ import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/glo
 var rowId = 0;
 $(document).delegate(".table-structure .charge_wallet", "click", function() {
     rowId = $(this).closest("tr");
-    show_action_box(currentPage, "charge_wallet", {
+    showActionBox(currentPage, "charge_wallet", {
         uid: rowId.children("td[headers=id]").text(),
     });
 });
 
 $(document).delegate(".table-structure .change_password", "click", function() {
-    show_action_box(currentPage, "change_password", {
+    showActionBox(currentPage, "change_password", {
         uid: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -28,7 +28,7 @@ $(document).delegate(".table-structure .change_password", "click", function() {
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    show_action_box(currentPage, "user_edit", {
+    showActionBox(currentPage, "user_edit", {
         uid: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -66,7 +66,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -202,7 +202,7 @@ $(document).delegate("#form_user_edit", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

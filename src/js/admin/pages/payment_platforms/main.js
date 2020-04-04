@@ -1,11 +1,11 @@
-import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 
 $(document).delegate("#payment_platform_button_add", "click", function() {
-    show_action_box(currentPage, "create");
+    showActionBox(currentPage, "create");
 });
 
 $(document).delegate("#form_payment_platform_add", "submit", function(e) {
@@ -37,7 +37,7 @@ $(document).delegate("#form_payment_platform_add", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -69,7 +69,7 @@ $(document).delegate("#form_payment_platform_add [name=module]", "change", funct
 
 // EDIT
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    show_action_box(currentPage, "edit", {
+    showActionBox(currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -106,7 +106,7 @@ $(document).delegate("#form_payment_platform_edit", "submit", function(e) {
                 showWarnings($(that), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -127,7 +127,8 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
         ") " +
         paymentPlatformName +
         " ?";
-    if (confirm(confirmText) == false) {
+
+    if (confirm(confirmText) === false) {
         return;
     }
 
@@ -152,7 +153,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
             if (jsonObj.return_id === "ok") {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

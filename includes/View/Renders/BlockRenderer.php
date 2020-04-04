@@ -14,13 +14,16 @@ class BlockRenderer
         $this->heart = $heart;
     }
 
-    public function render($blockId, Request $request)
+    public function render($blockId, Request $request, array $params = [])
     {
         $block = $this->heart->getBlock($blockId);
 
         if ($block) {
-            // TODO Pass page_id
-            return $block->getContentEnveloped($request->query->all(), $request->request->all());
+            return $block->getContentEnveloped(
+                $request->query->all(),
+                $request->request->all(),
+                $params
+            );
         }
 
         return "";

@@ -21,7 +21,7 @@ class IndexController
             throw new EntityNotFoundException();
         }
 
-        $content = $blockRenderer->render("content", $request);
+        $content = $blockRenderer->render("content", $request, [$pageId]);
         $output = $shopRenderer->render($content, $pageId, $heart->pageTitle, $request);
 
         return new Response($output);

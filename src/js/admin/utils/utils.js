@@ -38,6 +38,8 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
     });
 };
 
+export const refreshAdminContent = () => refreshBlocks(`admincontent:${currentPage}`);
+
 export const refreshBlocks = function(bricks, onSuccessFunction) {
     loader.show();
 
@@ -49,10 +51,8 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
 
     $.ajax({
         type: "GET",
-        url: buildUrl("/api/admin/bricks/" + bricks) + "?" + query,
-        data: {
-            pid: typeof currentPage !== "undefined" ? currentPage : undefined,
-        },
+        url: buildUrl("/api/admin/bricks/" + bricks),
+        data: query,
         complete: function() {
             loader.hide();
         },
@@ -83,7 +83,7 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
  * @param {string} boxId
  * @param {object} data
  */
-export const show_action_box = function(pageId, boxId, data) {
+export const showActionBox = function(pageId, boxId, data) {
     restRequest("GET", "/api/admin/pages/" + pageId + "/action_boxes/" + boxId, data, function(
         content
     ) {
