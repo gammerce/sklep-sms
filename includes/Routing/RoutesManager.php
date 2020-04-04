@@ -313,11 +313,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [
-                    SetAdminSession::class,
-                    LoadSettings::class,
-                    SetLanguage::class,
-                ],
+                "middlewares" => [SetAdminSession::class, LoadSettings::class, SetLanguage::class],
             ],
             function (RouteCollector $r) {
                 $r->get('/admin/login', [

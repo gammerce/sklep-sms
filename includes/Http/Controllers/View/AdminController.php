@@ -121,9 +121,9 @@ class AdminController
 
         $header = $template->render("admin/header", [
             'currentPageId' => $pageId,
-            'pageTitle'     => $heart->pageTitle,
-            'scripts'       => $heart->getScripts(),
-            'styles'        => $heart->getStyles(),
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
         ]);
         $currentVersion = $app->version();
         $logoutAction = $url->to("/admin/login");

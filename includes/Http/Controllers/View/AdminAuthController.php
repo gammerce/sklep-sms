@@ -37,9 +37,9 @@ class AdminAuthController
 
         $header = $template->render("admin/header", [
             'currentPageId' => "login",
-            'pageTitle'     => $heart->pageTitle,
-            'scripts'       => $heart->getScripts(),
-            'styles'        => $heart->getStyles(),
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
         ]);
 
         $action = $url->to("/admin/login", $request->query->all());
