@@ -52,7 +52,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($rowsCount);
+        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         foreach ($statement as $row) {
             $bodyRow = new BodyRow();

@@ -83,7 +83,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         );
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($rowsCount);
+        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         foreach ($statement as $row) {
             $user = $this->userRepository->mapToModel($row);
