@@ -8,12 +8,14 @@ use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
+use App\Http\Controllers\View\AdminAuthController;
 use App\Http\RequestHelper;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
 use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
+use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Html\Li;
@@ -23,6 +25,7 @@ use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionHandler implements ExceptionHandlerContract
@@ -42,6 +45,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var ServerResponseFactory */
     private $serverResponseFactory;
 
+    /** @var UrlGenerator */
+    private $url;
+
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
@@ -55,13 +61,15 @@ class ExceptionHandler implements ExceptionHandlerContract
         TranslationManager $translationManager,
         FileLogger $logger,
         ErrorRenderer $errorRenderer,
-        ServerResponseFactory $serverResponseFactory
+        ServerResponseFactory $serverResponseFactory,
+        UrlGenerator $url
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
         $this->fileLogger = $logger;
         $this->errorRenderer = $errorRenderer;
         $this->serverResponseFactory = $serverResponseFactory;
+        $this->url = $url;
     }
 
     public function render(Request $request, Exception $e)
@@ -71,7 +79,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof UnauthorizedException) {
-            return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
+            return $this->renderUnauthorizedError($request);
         }
 
         if ($e instanceof InvalidServiceModuleException) {
@@ -182,7 +190,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         return new HtmlResponse($output, $status);
     }
 
-    public function formatWarnings(array $warnings)
+    private function formatWarnings(array $warnings)
     {
         $output = [];
 
@@ -201,5 +209,21 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         return $output;
+    }
+
+    private function renderUnauthorizedError(Request $request)
+    {
+        $requestHelper = new RequestHelper($request);
+
+        if ($requestHelper->expectsJson()) {
+            return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
+        }
+
+        $session = $request->getSession();
+        if ($session) {
+            $session->set(AdminAuthController::URL_INTENDED_KEY, $request->getRequestUri());
+        }
+
+        return new RedirectResponse($this->url->to("/admin/login"));
     }
 }

@@ -8,19 +8,34 @@ use App\View\Interfaces\IBeLoggedMust;
 
 abstract class Block
 {
-    abstract public function getContentClass();
+    /**
+     * Zwraca treść danego bloku w otoczce
+     *
+     * @param array $query
+     * @param array $body
+     * @param array $params
+     * @return string|null
+     */
+    public function getContentEnveloped(array $query, array $body, array $params)
+    {
+        $content = $this->getContent($query, $body, $params);
 
-    abstract public function getContentId();
+        return create_dom_element("div", new UnescapedSimpleText($content), [
+            'id' => $this->getContentId(),
+            'class' => $content !== null ? $this->getContentClass() : "",
+        ]);
+    }
 
     /**
      * Zwraca treść danego bloku po przejściu wszystkich filtrów
      *
      * @param array $query
      * @param array $body
+     * @param array $params
      *
-     * @return I_ToHtml|string|null - zawartość do wyświetlenia
+     * @return I_ToHtml|string|null
      */
-    public function getContent(array $query, array $body)
+    public function getContent(array $query, array $body, array $params)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -29,7 +44,7 @@ abstract class Block
             return null;
         }
 
-        return $this->content($query, $body);
+        return $this->content($query, $body, $params);
     }
 
     /**
@@ -37,26 +52,13 @@ abstract class Block
      *
      * @param array $query
      * @param array $body
+     * @param array $params
      *
      * @return I_ToHtml|string
      */
-    abstract protected function content(array $query, array $body);
+    abstract protected function content(array $query, array $body, array $params);
 
-    /**
-     * Zwraca treść danego bloku w otoczce
-     *
-     * @param array $query
-     * @param array $body
-     *
-     * @return string|null
-     */
-    public function getContentEnveloped(array $query, array $body)
-    {
-        $content = $this->getContent($query, $body);
+    abstract public function getContentClass();
 
-        return create_dom_element("div", new UnescapedSimpleText($content), [
-            'id' => $this->getContentId(),
-            'class' => $content !== null ? $this->getContentClass() : "",
-        ]);
-    }
+    abstract public function getContentId();
 }

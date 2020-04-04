@@ -1,4 +1,4 @@
-import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -23,11 +23,11 @@ function showNotification(message) {
 }
 
 $(document).delegate("#server_button_add", "click", function() {
-    show_action_box(currentPage, "server_add");
+    showActionBox(currentPage, "server_add");
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    show_action_box(currentPage, "server_edit", {
+    showActionBox(currentPage, "server_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -109,7 +109,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -145,7 +145,7 @@ $(document).delegate("#form_server_add", "submit", function(e) {
                 showWarnings($("#form_server_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -186,7 +186,7 @@ $(document).delegate("#form_server_edit", "submit", function(e) {
                 showWarnings($("#form_server_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

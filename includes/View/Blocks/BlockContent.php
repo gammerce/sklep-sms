@@ -4,7 +4,6 @@ namespace App\View\Blocks;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
 
@@ -13,19 +12,12 @@ class BlockContent extends Block
     /** @var Heart */
     private $heart;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var Translator */
     private $lang;
 
-    public function __construct(
-        Heart $heart,
-        CurrentPage $currentPage,
-        TranslationManager $translationManager
-    ) {
+    public function __construct(Heart $heart, TranslationManager $translationManager)
+    {
         $this->heart = $heart;
-        $this->currentPage = $currentPage;
         $this->lang = $translationManager->user();
     }
 
@@ -39,10 +31,14 @@ class BlockContent extends Block
         return "content";
     }
 
-    // Nadpisujemy get_content, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function getContent(array $query, array $body)
+    protected function content(array $query, array $body, array $params)
     {
-        $page = $this->heart->getPage($this->currentPage->getPid());
+        $pageId = $params[0];
+        $page = $this->heart->getPage($pageId);
+
+        if (!$page) {
+            return null;
+        }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {
             return $this->lang->t('must_be_logged_in');
@@ -52,12 +48,6 @@ class BlockContent extends Block
             return $this->lang->t('must_be_logged_out');
         }
 
-        return $this->content($query, $body);
-    }
-
-    protected function content(array $query, array $body)
-    {
-        $page = $this->heart->getPage($this->currentPage->getPid());
-        return $page ? $page->getContent($query, $body) : null;
+        return $page->getContent($query, $body);
     }
 }

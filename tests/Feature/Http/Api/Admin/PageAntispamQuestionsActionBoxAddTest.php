@@ -31,7 +31,7 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get(
+        $response = $this->getJson(
             "/api/admin/pages/antispam_questions/action_boxes/antispam_question_add"
         );
 

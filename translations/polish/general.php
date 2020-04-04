@@ -67,7 +67,6 @@ return [
     'nick' => 'Nick',
     'nickpass' => 'Nick + Hasło',
     'no' => 'Nie',
-    'no_access' => 'Nie masz odpowiednich uprawnień.',
     'no_data' => 'Brak danych',
     'no_privileges' => 'Nie masz dostępu do tego miejsca, więc tu nie zerkaj!',
     'no_service' => 'Nie ma usługi o takim id.',

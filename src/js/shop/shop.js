@@ -43,7 +43,9 @@ $(document).delegate("#form_login", "submit", function(e) {
                 $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
                 refreshBlocks(
                     "logged_info,wallet,user_buttons,services_buttons" +
-                        ($("#form_login_reload_content").val() == "0" ? "" : ",content")
+                        ($("#form_login_reload_content").val() == "0"
+                            ? ""
+                            : `,content:${currentPage}`)
                 );
             }
 
@@ -78,7 +80,9 @@ $(document).delegate("#logout", "click", function(e) {
             }
 
             if (jsonObj.return_id === "logged_out") {
-                refreshBlocks("logged_info,wallet,user_buttons,services_buttons,content");
+                refreshBlocks(
+                    `logged_info,wallet,user_buttons,services_buttons,content:${currentPage}`
+                );
             }
             if (jsonObj.return_id === "already_logged_out") {
                 location.reload();

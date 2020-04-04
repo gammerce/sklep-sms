@@ -1,11 +1,11 @@
-import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 import { get_random_string, json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#service_code_button_add", "click", function() {
-    show_action_box(currentPage, "code_add");
+    showActionBox(currentPage, "code_add");
 });
 
 // Generate code
@@ -65,7 +65,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -106,7 +106,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
                 showWarnings($("#form_service_code_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

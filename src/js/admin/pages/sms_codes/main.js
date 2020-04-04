@@ -1,11 +1,11 @@
-import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import { get_random_string, json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#sms_code_button_add", "click", function() {
-    show_action_box(currentPage, "sms_code_add");
+    showActionBox(currentPage, "sms_code_add");
 });
 
 $(document).delegate("#form_sms_code_add [name=random_code]", "click", function() {
@@ -47,7 +47,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -94,7 +94,7 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
                 showWarnings($("#form_sms_code_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

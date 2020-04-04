@@ -30,6 +30,17 @@ trait MakesHttpRequests
         return $this->call('GET', $uri, $query, [], $headers);
     }
 
+    protected function getJson($uri, array $query = [], array $headers = [])
+    {
+        return $this->call(
+            'GET',
+            $uri,
+            $query,
+            [],
+            array_merge(["Accept" => "application/json"], $headers)
+        );
+    }
+
     protected function post($uri, array $body = [], array $query = [], array $headers = [])
     {
         return $this->call('POST', $uri, $query, $body, $headers);
@@ -38,6 +49,17 @@ trait MakesHttpRequests
     protected function put($uri, array $body = [], array $query = [], array $headers = [])
     {
         return $this->call('PUT', $uri, $query, $body, $headers);
+    }
+
+    protected function putJson($uri, array $body = [], array $query = [], array $headers = [])
+    {
+        return $this->call(
+            'PUT',
+            $uri,
+            $query,
+            $body,
+            array_merge(["Accept" => "application/json"], $headers)
+        );
     }
 
     protected function delete($uri, array $query = [], array $headers = [])

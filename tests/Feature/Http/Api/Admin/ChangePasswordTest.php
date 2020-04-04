@@ -19,7 +19,7 @@ class ChangePasswordTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->put("/api/admin/users/{$user->getUid()}/password", [
+        $response = $this->putJson("/api/admin/users/{$user->getUid()}/password", [
             "password" => $newPassword,
         ]);
 
@@ -44,7 +44,7 @@ class ChangePasswordTest extends HttpTestCase
         $user = $this->factory->user();
 
         // when
-        $response = $this->put("/api/admin/users/{$user->getUid()}/password", [
+        $response = $this->putJson("/api/admin/users/{$user->getUid()}/password", [
             "password" => $password,
         ]);
 

@@ -38,7 +38,7 @@ class PagePricingActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->get("/api/admin/pages/pricing/action_boxes/price_edit", [
+        $response = $this->getJson("/api/admin/pages/pricing/action_boxes/price_edit", [
             'id' => $price->getId(),
         ]);
 

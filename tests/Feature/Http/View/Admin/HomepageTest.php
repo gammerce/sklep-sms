@@ -50,13 +50,13 @@ class HomepageTest extends HttpTestCase
     }
 
     /** @test */
-    public function it_requires_login_when_not_logged()
+    public function requires_login_when_not_logged()
     {
         // when
         $response = $this->get('/admin');
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('PA: Login - Sklep SMS', $response->getContent());
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertStringEndsWith("/admin/login", $response->headers->get("Location"));
     }
 }

@@ -10,63 +10,32 @@ use App\System\Auth;
 use App\System\Heart;
 use App\System\License;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Renders\BlockRenderer;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminController
 {
-    public function action(
+    public function get(
         $pageId = 'home',
         Request $request,
         Application $app,
         Heart $heart,
         Auth $auth,
         License $license,
-        CurrentPage $currentPage,
         Template $template,
         TranslationManager $translationManager,
         BlockRenderer $blockRenderer,
         UrlGenerator $url
     ) {
-        if ($currentPage->getPid() !== "login") {
-            if (!$heart->pageExists($pageId, "admin")) {
-                throw new EntityNotFoundException();
-            }
-
-            $currentPage->setPid($pageId);
+        if (!$heart->pageExists($pageId, "admin")) {
+            throw new EntityNotFoundException();
         }
 
-        $session = $request->getSession();
         $user = $auth->user();
         $lang = $translationManager->user();
 
-        if ($currentPage->getPid() === "login") {
-            $heart->pageTitle = "Login";
-
-            $warning = "";
-            if ($session->has("info")) {
-                if ($session->get("info") == "wrong_data") {
-                    $text = $lang->t('wrong_login_data');
-                    $warning = $template->render("admin/login_warning", compact('text'));
-                } elseif ($session->get("info") == "no_privileges") {
-                    $text = $lang->t('no_access');
-                    $warning = $template->render("admin/login_warning", compact('text'));
-                }
-                $session->remove("info");
-            }
-
-            $header = $this->renderHeader($heart, $currentPage, $template);
-            $action = $url->to("/admin", $request->query->all());
-
-            return new Response(
-                $template->render("admin/login", compact('header', 'warning', 'action'))
-            );
-        }
-
-        $content = $blockRenderer->render("admincontent", $request);
+        $content = $blockRenderer->render("admincontent", $request, [$pageId]);
 
         // Pobranie przycisków do sidebaru
         if (get_privileges("view_player_flags")) {
@@ -150,61 +119,41 @@ class AdminController
             $logsLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
-        $header = $this->renderHeader($heart, $currentPage, $template);
+        $header = $template->render("admin/header", [
+            'currentPageId' => $pageId,
+            'pageTitle' => $heart->pageTitle,
+            'scripts' => $heart->getScripts(),
+            'styles' => $heart->getStyles(),
+        ]);
         $currentVersion = $app->version();
+        $logoutAction = $url->to("/admin/login");
 
         return new Response(
             $template->render(
                 "admin/index",
                 compact(
-                    'header',
-                    'license',
-                    'user',
-                    'settingsLink',
                     'antispamQuestionsLink',
-                    'transactionServicesLink',
-                    'servicesLink',
-                    'serversLink',
-                    'pricingLink',
-                    'userServiceLink',
-                    'playersFlagsLink',
-                    'usersLink',
-                    'groupsLink',
-                    'incomeLink',
-                    'serviceCodesLink',
-                    'smsCodesLink',
-                    'logsLink',
                     'content',
-                    'currentVersion'
+                    'currentVersion',
+                    'groupsLink',
+                    'header',
+                    'incomeLink',
+                    'license',
+                    'logoutAction',
+                    'logsLink',
+                    'playersFlagsLink',
+                    'pricingLink',
+                    'serversLink',
+                    'serviceCodesLink',
+                    'servicesLink',
+                    'settingsLink',
+                    'smsCodesLink',
+                    'transactionServicesLink',
+                    'user',
+                    'userServiceLink',
+                    'usersLink'
                 )
             )
         );
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldGet(Request $request, UrlGenerator $url)
-    {
-        $path = "/admin";
-
-        $query = $request->query->all();
-
-        if (array_key_exists("pid", $query)) {
-            $path .= "/{$query["pid"]}";
-            unset($query["pid"]);
-        }
-
-        return new RedirectResponse($url->to($path, $query), 301);
-    }
-
-    private function renderHeader(Heart $heart, CurrentPage $currentPage, Template $template)
-    {
-        return $template->render("admin/header", [
-            'currentPageId' => $currentPage->getPid(),
-            'pageTitle' => $heart->pageTitle,
-            'scripts' => $heart->getScripts(),
-            'styles' => $heart->getStyles(),
-        ]);
     }
 }

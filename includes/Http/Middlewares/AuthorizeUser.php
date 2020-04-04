@@ -5,7 +5,7 @@ use App\System\Auth;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
-class ManageAuthentication implements MiddlewareContract
+class AuthorizeUser implements MiddlewareContract
 {
     /** @var Auth */
     private $auth;
@@ -19,7 +19,6 @@ class ManageAuthentication implements MiddlewareContract
     {
         $session = $request->getSession();
 
-        // Pozyskujemy dane uzytkownika, jeżeli jeszcze ich nie ma
         if (!$this->auth->check() && $session->has('uid')) {
             $this->auth->loginUserUsingId($session->get('uid'));
         }

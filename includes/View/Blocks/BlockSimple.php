@@ -12,15 +12,14 @@ abstract class BlockSimple extends Block
     public function __construct()
     {
         if (!isset($this->template)) {
+            $className = get_class($this);
             throw new Exception(
-                'Class ' .
-                    get_class($this) .
-                    ' has to have field $template because it extends class BlockSimple'
+                "Class $className has to have field \$template because it extends class BlockSimple"
             );
         }
     }
 
-    protected function content(array $query, array $body)
+    protected function content(array $query, array $body, array $params)
     {
         /** @var Auth $auth */
         $auth = app()->make(Auth::class);
@@ -29,6 +28,6 @@ abstract class BlockSimple extends Block
         /** @var Template $template */
         $template = app()->make(Template::class);
 
-        return $template->render($this->template, compact('auth', 'user'));
+        return $template->render($this->template, compact('user'));
     }
 }
