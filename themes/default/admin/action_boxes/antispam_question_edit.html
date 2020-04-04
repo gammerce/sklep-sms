@@ -21,8 +21,7 @@
                             maxlength="128"
                             required
                         >
-{{ $row['question'] }}</textarea
-                        >
+{{ $question }}</textarea>
                     </div>
                 </div>
             </td>
@@ -45,8 +44,7 @@
                             maxlength="128"
                             required
                         >
-{{ $row['answers'] }}</textarea
-                        >
+{{ $answers }}</textarea>
                     </div>
                 </div>
             </td>
@@ -56,7 +54,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="id" value="{{ $row['id'] }}" />
+                <input type="hidden" name="id" value="{{ $id }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>
