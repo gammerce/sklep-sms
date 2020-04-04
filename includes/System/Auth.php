@@ -55,6 +55,8 @@ class Auth
         }
 
         $this->user = $user;
+
+        return $user;
     }
 
     public function logoutAdmin()

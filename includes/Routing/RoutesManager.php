@@ -63,6 +63,7 @@ use App\Http\Controllers\Api\UserServiceBrickController;
 use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
 use App\Http\Controllers\View\AdminController;
+use App\Http\Controllers\View\AdminLoginController;
 use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
@@ -310,6 +311,15 @@ class RoutesManager
                 );
             }
         );
+
+        $r->get('/admin/login', [
+            'middlewares' => [
+                SetAdminSession::class,
+                LoadSettings::class,
+                SetLanguage::class,
+            ],
+            'uses' => AdminLoginController::class . '@get',
+        ]);
 
         $r->addGroup(
             [

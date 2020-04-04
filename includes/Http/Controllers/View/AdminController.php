@@ -2,7 +2,6 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Support\Template;
 use App\System\Application;
@@ -25,36 +24,14 @@ class AdminController
         License $license,
         Template $template,
         TranslationManager $translationManager,
-        BlockRenderer $blockRenderer,
-        UrlGenerator $url
+        BlockRenderer $blockRenderer
     ) {
         if (!$heart->pageExists($pageId, "admin")) {
             throw new EntityNotFoundException();
         }
 
-        $session = $request->getSession();
         $user = $auth->user();
         $lang = $translationManager->user();
-
-        if ($pageId === "login") {
-            $heart->pageTitle = "Login";
-
-            $warning = "";
-            if ($session->has("info")) {
-                if ($session->get("info") == "wrong_data") {
-                    $text = $lang->t('wrong_login_data');
-                    $warning = $template->render("admin/login_warning", compact('text'));
-                }
-                $session->remove("info");
-            }
-
-            $header = $this->renderHeader($pageId, $heart, $template);
-            $action = $url->to("/admin", $request->query->all());
-
-            return new Response(
-                $template->render("admin/login", compact('header', 'warning', 'action'))
-            );
-        }
 
         $content = $blockRenderer->render("admincontent", $request, [$pageId]);
 
@@ -140,7 +117,12 @@ class AdminController
             $logsLink = $template->render("admin/page_link", compact('pid', 'name'));
         }
 
-        $header = $this->renderHeader($pageId, $heart, $template);
+        $header = $template->render("admin/header", [
+            'currentPageId' => $pageId,
+            'pageTitle'     => $heart->pageTitle,
+            'scripts'       => $heart->getScripts(),
+            'styles'        => $heart->getStyles(),
+        ]);
         $currentVersion = $app->version();
 
         return new Response(
@@ -169,15 +151,5 @@ class AdminController
                 )
             )
         );
-    }
-
-    private function renderHeader($pageId, Heart $heart, Template $template)
-    {
-        return $template->render("admin/header", [
-            'currentPageId' => $pageId,
-            'pageTitle' => $heart->pageTitle,
-            'scripts' => $heart->getScripts(),
-            'styles' => $heart->getStyles(),
-        ]);
     }
 }
