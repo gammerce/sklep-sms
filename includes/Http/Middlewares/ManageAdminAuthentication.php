@@ -48,6 +48,7 @@ class ManageAdminAuthentication implements MiddlewareContract
             /** @var CurrentPage $currentPage */
             $currentPage = $this->app->make(CurrentPage::class);
             $currentPage->setPid("login");
+            // TODO Instead of changing pid, redirect to /login page
 
             // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
             if ($this->auth->check()) {
