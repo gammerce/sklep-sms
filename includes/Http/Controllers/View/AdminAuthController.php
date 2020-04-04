@@ -2,15 +2,54 @@
 namespace App\Http\Controllers\View;
 
 use App\Routing\UrlGenerator;
+use App\Support\Template;
 use App\System\Auth;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminAuthController
 {
     const URL_INTENDED_KEY = "url.intended";
 
-    public function action(Request $request, Auth $auth, UrlGenerator $url)
+    public function get(
+        Request $request,
+        Heart $heart,
+        Template $template,
+        TranslationManager $translationManager,
+        UrlGenerator $url
+    ) {
+        $session = $request->getSession();
+        $lang = $translationManager->user();
+
+        $heart->pageTitle = "Login";
+
+        $warning = "";
+        if ($session->has("info")) {
+            if ($session->get("info") == "wrong_data") {
+                $text = $lang->t('wrong_login_data');
+                $warning = $template->render("admin/login_warning", compact('text'));
+            }
+            $session->remove("info");
+        }
+
+        $header = $template->render("admin/header", [
+            'currentPageId' => "login",
+            'pageTitle'     => $heart->pageTitle,
+            'scripts'       => $heart->getScripts(),
+            'styles'        => $heart->getStyles(),
+        ]);
+
+        $action = $url->to("/admin/login", $request->query->all());
+
+        return new Response(
+            $template->render("admin/login", compact('header', 'warning', 'action'))
+        );
+    }
+
+    public function post(Request $request, Auth $auth, UrlGenerator $url)
     {
         $session = $request->getSession();
 

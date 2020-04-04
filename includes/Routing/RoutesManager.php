@@ -63,7 +63,6 @@ use App\Http\Controllers\Api\UserServiceBrickController;
 use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
 use App\Http\Controllers\View\AdminAuthController;
-use App\Http\Controllers\View\AdminLoginController;
 use App\Http\Controllers\View\AdminController;
 use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\LanguageJsController;
@@ -312,14 +311,24 @@ class RoutesManager
             }
         );
 
-        $r->get('/admin/login', [
-            'middlewares' => [
-                SetAdminSession::class,
-                LoadSettings::class,
-                SetLanguage::class,
+        $r->addGroup(
+            [
+                "middlewares" => [
+                    SetAdminSession::class,
+                    LoadSettings::class,
+                    SetLanguage::class,
+                ],
             ],
-            'uses' => AdminLoginController::class . '@get',
-        ]);
+            function (RouteCollector $r) {
+                $r->get('/admin/login', [
+                    'uses' => AdminAuthController::class . '@get',
+                ]);
+
+                $r->post('/admin/login', [
+                    'uses' => AdminAuthController::class . '@post',
+                ]);
+            }
+        );
 
         $r->addGroup(
             [
@@ -334,10 +343,6 @@ class RoutesManager
                 ],
             ],
             function (RouteCollector $r) {
-                $r->post('/admin', [
-                    'uses' => AdminAuthController::class . '@action',
-                ]);
-
                 $r->get('/admin[/{pageId}]', [
                     'middlewares' => [RunCron::class],
                     'uses' => AdminController::class . '@get',

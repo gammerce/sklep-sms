@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Support\Template;
 use App\System\Application;
@@ -24,7 +25,8 @@ class AdminController
         License $license,
         Template $template,
         TranslationManager $translationManager,
-        BlockRenderer $blockRenderer
+        BlockRenderer $blockRenderer,
+        UrlGenerator $url
     ) {
         if (!$heart->pageExists($pageId, "admin")) {
             throw new EntityNotFoundException();
@@ -124,30 +126,32 @@ class AdminController
             'styles'        => $heart->getStyles(),
         ]);
         $currentVersion = $app->version();
+        $logoutAction = $url->to("/admin/login");
 
         return new Response(
             $template->render(
                 "admin/index",
                 compact(
-                    'header',
-                    'license',
-                    'user',
-                    'settingsLink',
                     'antispamQuestionsLink',
-                    'transactionServicesLink',
-                    'servicesLink',
-                    'serversLink',
-                    'pricingLink',
-                    'userServiceLink',
-                    'playersFlagsLink',
-                    'usersLink',
-                    'groupsLink',
-                    'incomeLink',
-                    'serviceCodesLink',
-                    'smsCodesLink',
-                    'logsLink',
                     'content',
-                    'currentVersion'
+                    'currentVersion',
+                    'groupsLink',
+                    'header',
+                    'incomeLink',
+                    'license',
+                    'logoutAction',
+                    'logsLink',
+                    'playersFlagsLink',
+                    'pricingLink',
+                    'serversLink',
+                    'serviceCodesLink',
+                    'servicesLink',
+                    'settingsLink',
+                    'smsCodesLink',
+                    'transactionServicesLink',
+                    'user',
+                    'userServiceLink',
+                    'usersLink'
                 )
             )
         );

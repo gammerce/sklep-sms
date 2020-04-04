@@ -24,7 +24,7 @@
                     </td>
                     <td class="has-text-right" style="width: 360px;">
                         {{ $user->getUsername() }}
-                        <form method="POST" class="form_logout">
+                        <form method="POST" action="{{ $logoutAction }}" class="form_logout">
                             <input type="hidden" name="action" value="logout" />
                             (
                             <a href="#" onclick="$(this).parents('form').submit()">
