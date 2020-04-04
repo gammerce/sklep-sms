@@ -961,15 +961,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     private function userServiceEdit(ExtraFlagUserService $userService, array $data)
     {
-        $forever = array_get($data, 'expire') === null;
-        $expire = as_int(array_get($data, 'expire', $userService->getExpire()));
+        $expire = array_key_exists("expire", $data)
+            ? as_int($data["expire"])
+            : $userService->getExpire();
         $type = as_int(array_get($data, 'type', $userService->getType()));
         $authData = array_get($data, 'auth_data', $userService->getAuthData());
         $serverId = as_int(array_get($data, 'server', $userService->getServerId()));
         $uid = as_int(array_get($data, 'uid'));
         $shouldUidBeUpdated = array_key_exists('uid', $data);
 
-        // Type is changed to SteamID from non-sid
+        // Edge-case: Type is changed to SteamID from non-SteamID
         if (
             $type === ExtraFlagType::TYPE_SID &&
             $userService->getType() !== ExtraFlagType::TYPE_SID
@@ -991,7 +992,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $set['uid'] = $uid;
         }
 
-        if ($forever) {
+        if (!$expire) {
             $set['expire'] = -1;
         }
 
@@ -1025,7 +1026,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->userServiceRepository->delete($userService->getId());
 
             // Dodajemy expire
-            if (!$forever) {
+            if ($expire) {
                 $set['expire'] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
             }
 
@@ -1041,7 +1042,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $set['type'] = $type;
             $set['auth_data'] = $authData;
 
-            if (!$forever) {
+            if ($expire) {
                 $set['expire'] = $expire;
             }
 
