@@ -117,13 +117,6 @@ class RoutesManager
         /**
          * @deprecated
          */
-        $r->get('/admin.php', [
-            'uses' => AdminController::class . '@oldGet',
-        ]);
-
-        /**
-         * @deprecated
-         */
         $r->redirectPermanent('/cron.php', '/api/cron');
 
         /**

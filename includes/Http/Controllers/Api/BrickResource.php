@@ -15,7 +15,8 @@ class BrickResource
 
         foreach ($brickList as $brick) {
             if ($block = $heart->getBlock($brick)) {
-                $content = $block->getContent($request->query->all(), $request->request->all());
+                // TODO Pass page_id
+                $content = $block->getContent($request->query->all(), $request->request->all(), []);
                 $data[$block->getContentId()]['content'] =
                     $content !== null ? strval($content) : null;
                 $data[$block->getContentId()]['class'] = $content ? $block->getContentClass() : "";

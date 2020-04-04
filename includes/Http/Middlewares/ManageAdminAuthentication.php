@@ -1,24 +1,24 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\System\Application;
+use App\Routing\UrlGenerator;
 use App\System\Auth;
-use App\View\CurrentPage;
 use Closure;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class ManageAdminAuthentication implements MiddlewareContract
 {
-    /** @var Application */
-    private $app;
-
     /** @var Auth */
     private $auth;
 
-    public function __construct(Application $app, Auth $auth)
+    /** @var UrlGenerator */
+    private $url;
+
+    public function __construct(Auth $auth, UrlGenerator $urlGenerator)
     {
-        $this->app = $app;
         $this->auth = $auth;
+        $this->url = $urlGenerator;
     }
 
     public function handle(Request $request, $args, Closure $next)
@@ -45,15 +45,9 @@ class ManageAdminAuthentication implements MiddlewareContract
 
         // Jeżeli próbujemy wejść do PA i nie jesteśmy zalogowani, to zmień stronę
         if (!$this->auth->check() || !get_privileges("acp")) {
-            /** @var CurrentPage $currentPage */
-            $currentPage = $this->app->make(CurrentPage::class);
-            $currentPage->setPid("login");
-            // TODO Instead of changing pid, redirect to /login page
-
-            // Jeżeli jest zalogowany, ale w międzyczasie odebrano mu dostęp do PA
-            if ($this->auth->check()) {
-                $session->set("info", "no_privileges");
-            }
+            // TODO Redirect after login
+            $session->set("url.intended", $request->getRequestUri());
+            return new RedirectResponse($this->url->to("/admin/login"));
         }
 
         return $next($request);

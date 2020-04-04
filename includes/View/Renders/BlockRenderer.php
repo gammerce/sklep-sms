@@ -19,6 +19,7 @@ class BlockRenderer
         $block = $this->heart->getBlock($blockId);
 
         if ($block) {
+            // TODO Pass page_id
             return $block->getContentEnveloped($request->query->all(), $request->request->all());
         }
 

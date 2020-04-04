@@ -67,7 +67,6 @@ return [
     'nick' => 'Nickname',
     'nickpass' => 'Nickname + Password',
     'no' => 'No',
-    'no_access' => 'You have no proper powers.',
     'no_data' => 'No data',
     'no_privileges' => 'You have no access to this place, so don\'t peek in here!',
     'no_service' => 'There is no service with such ID.',

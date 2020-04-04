@@ -42,6 +42,7 @@ class CurrentPage
         return $this->pageNumber;
     }
 
+    // TODO Remove it
     public function getPid()
     {
         return $this->pid;
