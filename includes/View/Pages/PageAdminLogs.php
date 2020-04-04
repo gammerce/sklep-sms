@@ -23,15 +23,6 @@ class PageAdminLogs extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('text')));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $queryParticle = new QueryParticle();
         if (isset($query['search'])) {
             $queryParticle->extend(
@@ -55,32 +46,40 @@ class PageAdminLogs extends PageAdmin
         );
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $div = new Div($row['text']);
+                $div->addClass('one_line');
+                $cellText = new Cell();
+                $cellText->addContent($div);
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                $cellDate = new Cell(convert_date($row['timestamp']));
+                $cellDate->setParam('headers', 'date');
 
-            $bodyRow->setDbId($row['id']);
+                $bodyRow = (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell($cellText)
+                    ->addCell($cellDate);
 
-            $cell = new Cell();
-            $div = new Div($row['text']);
-            $div->addClass('one_line');
-            $cell->addContent($div);
-            $bodyRow->addCell($cell);
+                if (get_privileges("manage_logs")) {
+                    $bodyRow->setDeleteAction(true);
+                }
 
-            $cell = new Cell(convert_date($row['timestamp']));
-            $cell->setParam('headers', 'date');
-            $bodyRow->addCell($cell);
+                return $bodyRow;
+            })
+            ->all();
 
-            if (get_privileges("manage_logs")) {
-                $bodyRow->setDeleteAction(true);
-            }
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('text')))
+            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setSearch()
+            ->setTable($table)
+            ->toHtml();
     }
 }

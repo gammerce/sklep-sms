@@ -67,10 +67,12 @@ class BodyRow extends Row
 
     /**
      * @param I_ToHtml $action
+     * @return $this
      */
     public function addAction($action)
     {
         $this->actions[] = $action;
+        return $this;
     }
 
     /**
