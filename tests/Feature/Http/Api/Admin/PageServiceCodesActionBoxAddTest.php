@@ -28,7 +28,7 @@ class PageServiceCodesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->get("/api/admin/pages/service_codes/action_boxes/service_code_add");
+        $response = $this->getJson("/api/admin/pages/service_codes/action_boxes/service_code_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

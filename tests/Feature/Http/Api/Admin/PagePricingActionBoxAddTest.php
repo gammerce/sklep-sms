@@ -29,7 +29,7 @@ class PagePricingActionBoxAddTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/pricing/action_boxes/price_add");
+        $response = $this->getJson("/api/admin/pages/pricing/action_boxes/price_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

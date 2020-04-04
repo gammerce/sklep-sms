@@ -49,9 +49,6 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
     $.ajax({
         type: "GET",
         url: buildUrl("/api/bricks/" + bricks) + "?" + query,
-        data: {
-            pid: typeof currentPage !== "undefined" ? currentPage : undefined,
-        },
         complete: function() {
             loader.hide();
         },
@@ -78,7 +75,7 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
 /**
  * Go to payment page
  */
-export const go_to_payment = function(data, sign) {
+export const goToPayment = function(data, sign) {
     var form = $("<form>", {
         action: buildUrl("/page/payment"),
         method: "POST",

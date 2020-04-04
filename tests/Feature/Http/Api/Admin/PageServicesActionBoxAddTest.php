@@ -12,7 +12,7 @@ class PageServicesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get("/api/admin/pages/services/action_boxes/service_add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -28,7 +28,7 @@ class PageServicesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->get("/api/admin/pages/services/action_boxes/service_add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

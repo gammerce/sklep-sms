@@ -1,4 +1,4 @@
-import { go_to_payment } from "../../utils/utils";
+import { goToPayment } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -36,7 +36,7 @@ $(document).delegate("#go_to_payment", "click", function() {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_purchase"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                go_to_payment(jsonObj.data, jsonObj.sign);
+                goToPayment(jsonObj.data, jsonObj.sign);
             }
 
             if (typeof jsonObj.length !== "undefined")

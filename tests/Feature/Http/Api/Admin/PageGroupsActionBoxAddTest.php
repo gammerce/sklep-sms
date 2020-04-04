@@ -28,7 +28,7 @@ class PageGroupsActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->get("/api/admin/pages/groups/action_boxes/group_add");
+        $response = $this->getJson("/api/admin/pages/groups/action_boxes/group_add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

@@ -1,4 +1,4 @@
-import { go_to_payment, refreshBlocks } from "../../utils/utils";
+import { goToPayment, refreshBlocks } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 import { loader } from "../../../general/loader";
@@ -60,7 +60,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             } else if (jsonObj.return_id === "ok") {
                 refreshBlocks("content");
             } else if (jsonObj.return_id === "payment") {
-                go_to_payment(jsonObj.data, jsonObj.sign);
+                goToPayment(jsonObj.data, jsonObj.sign);
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

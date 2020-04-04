@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminController
 {
-    public function action(
+    public function get(
         $pageId = 'home',
         Request $request,
         Application $app,
