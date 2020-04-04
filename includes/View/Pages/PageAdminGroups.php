@@ -29,43 +29,40 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('name')));
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $bodyRow = (new BodyRow())->setDbId($row['id'])->addCell(new Cell($row['name']));
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                if (get_privileges('manage_groups')) {
+                    $bodyRow->setDeleteAction(true);
+                    $bodyRow->setEditAction(true);
+                }
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($row['name']));
+                return $bodyRow;
+            })
+            ->all();
 
-            if (get_privileges('manage_groups')) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(true);
-            }
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('name')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (get_privileges('manage_groups')) {
-            $button = new Input();
-            $button->setParam('id', 'group_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_group'));
+            $button = (new Input())
+                ->setParam('id', 'group_button_add')
+                ->setParam('type', 'button')
+                ->addClass('button')
+                ->setParam('value', $this->lang->t('add_group'));
+
             $wrapper->addButton($button);
         }
 

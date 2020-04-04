@@ -242,16 +242,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
 
-        $wrapper = new Wrapper();
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(new HeadCell($this->lang->t('mybb_user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
-
         $queryParticle = new QueryParticle();
 
         if (isset($query['search'])) {
@@ -279,31 +269,42 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement->execute(
             array_merge($queryParticle->params(), get_row_limit($currentPage->getPageNumber()))
         );
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $bodyRow = (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(
+                        new Cell(
+                            $row['uid']
+                                ? $row['username'] . " ({$row['uid']})"
+                                : $this->lang->t('none')
+                        )
+                    )
+                    ->addCell(new Cell($row['service']))
+                    ->addCell(new Cell($row['mybb_uid']))
+                    ->addCell(new Cell(convert_expire($row['expire'])));
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(
-                new Cell(
-                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
-                )
-            );
-            $bodyRow->addCell(new Cell($row['service']));
-            $bodyRow->addCell(new Cell($row['mybb_uid']));
-            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
-            if (get_privileges("manage_user_services")) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(false);
-            }
+                if (get_privileges("manage_user_services")) {
+                    $bodyRow->setDeleteAction(true);
+                    $bodyRow->setEditAction(false);
+                }
 
-            $table->addBodyRow($bodyRow);
-        }
+                return $bodyRow;
+            })
+            ->all();
 
-        $wrapper->setTable($table);
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('user')))
+            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(new HeadCell($this->lang->t('mybb_user')))
+            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return $wrapper;
+        return (new Wrapper())->setSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)

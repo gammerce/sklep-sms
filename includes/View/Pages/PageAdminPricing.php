@@ -61,8 +61,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                 "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
+        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         foreach ($statement as $row) {
             $price = $this->priceRepository->mapToModel($row);

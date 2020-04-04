@@ -9,13 +9,13 @@ use App\View\CurrentPage;
 class BlockAdminContent extends Block
 {
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var CurrentPage */
-    protected $page;
+    private $page;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     public function __construct(
         Heart $heart,
@@ -50,6 +50,13 @@ class BlockAdminContent extends Block
     protected function content(array $query, array $body)
     {
         $page = $this->heart->getPage($this->page->getPid(), "admin");
-        return $page ? $page->getContent($query, $body) : null;
+
+        if ($page) {
+            // Remove pid parametr since we don't want to add it to pagination urls
+            unset($query["pid"]);
+            return $page->getContent($query, $body);
+        }
+
+        return null;
     }
 }

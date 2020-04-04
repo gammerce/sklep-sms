@@ -6,7 +6,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\PriceTextService;
 use App\System\Auth;
 use App\View\Interfaces\IBeLoggedMust;
-use App\View\Pagination;
+use App\View\PaginationService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
@@ -39,8 +39,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         /** @var Request $request */
         $request = $this->app->make(Request::class);
 
-        /** @var Pagination $pagination */
-        $pagination = $this->app->make(Pagination::class);
+        /** @var PaginationService $pagination */
+        $pagination = $this->app->make(PaginationService::class);
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -81,7 +81,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
         }
 
-        $paginationContent = $pagination->getPagination(
+        $paginationContent = $pagination->createPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),

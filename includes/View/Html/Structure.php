@@ -3,8 +3,7 @@ namespace App\View\Html;
 
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
-use App\View\Pagination;
-use Symfony\Component\HttpFoundation\Request;
+use App\View\PaginationService;
 
 class Structure extends DOMElement
 {
@@ -19,14 +18,6 @@ class Structure extends DOMElement
 
     /** @var BodyRow[] */
     private $bodyRows = [];
-
-    /**
-     * Ilość elementów w bazie danych
-     * potrzebne do stworzenia paginacji
-     *
-     * @var int
-     */
-    private $dbRowsCount;
 
     /** @var DOMElement */
     public $foot = null;
@@ -119,50 +110,37 @@ class Structure extends DOMElement
     }
 
     /**
-     * @return int
-     */
-    public function getDbRowsCount()
-    {
-        return $this->dbRowsCount;
-    }
-
-    /**
+     * @param string $path
+     * @param array $query
      * @param int $count
      * @return $this
      */
-    public function setDbRowsCount($count)
+    public function enablePagination($path, array $query, $count)
     {
+        /** @var PaginationService $paginationService */
+        $paginationService = app()->make(PaginationService::class);
+
         /** @var CurrentPage $currentPage */
         $currentPage = app()->make(CurrentPage::class);
 
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-
-        /** @var Pagination $pagination */
-        $pagination = app()->make(Pagination::class);
-
-        $pageNumber = $currentPage->getPageNumber();
-        $this->dbRowsCount = (int) $count;
-
-        $paginationContent = $pagination->getPagination(
-            $this->dbRowsCount,
-            $pageNumber,
-            $request->getPathInfo(),
-            $request->query->all()
+        $pagination = $paginationService->createPagination(
+            $count,
+            $currentPage->getPageNumber(),
+            $path,
+            $query
         );
 
-        if ($paginationContent) {
-            $this->foot = new DOMElement();
-            $this->foot->setName('tfoot');
-            $this->foot->addClass('display_tfoot');
-
-            $row = new Row();
-
-            $cell = new Cell($paginationContent);
+        if ($pagination) {
+            $cell = new Cell($pagination);
             $cell->setParam('colspan', '31');
 
+            $row = new Row();
             $row->addContent($cell);
-            $this->foot->addContent($row);
+
+            $this->foot = (new DOMElement())
+                ->setName('tfoot')
+                ->addClass('display_tfoot')
+                ->addContent($row);
         }
 
         return $this;

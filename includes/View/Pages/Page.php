@@ -70,8 +70,8 @@ abstract class Page
      */
     public function getContent(array $query, array $body)
     {
-        $path = "build/js/shop/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
+        $path = "build/js/shop/pages/{$this->getPageId()}/";
+        if ($this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->addScript($this->url->versioned($path . $file));
@@ -79,8 +79,8 @@ abstract class Page
             }
         }
 
-        $path = "build/css/shop/pages/" . $this::PAGE_ID . "/";
-        if (strlen($this::PAGE_ID) && $this->fileSystem->exists($this->path->to($path))) {
+        $path = "build/css/shop/pages/{$this->getPageId()}/";
+        if ($this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".css")) {
                     $this->heart->addStyle($this->url->versioned($path . $file));
@@ -89,7 +89,7 @@ abstract class Page
         }
 
         if (
-            in_array($this::PAGE_ID, [
+            in_array($this->getPageId(), [
                 "purchase",
                 "user_own_services",
                 "service_take_over",
@@ -105,6 +105,16 @@ abstract class Page
         }
 
         return $this->content($query, $body);
+    }
+
+    public function getPagePath()
+    {
+        return "/page/{$this->getPageId()}";
+    }
+
+    public function getPageId()
+    {
+        return $this::PAGE_ID;
     }
 
     /**

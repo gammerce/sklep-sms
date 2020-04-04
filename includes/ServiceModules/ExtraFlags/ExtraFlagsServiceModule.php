@@ -231,21 +231,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         /** @var CurrentPage $currentPage */
         $currentPage = $this->app->make(CurrentPage::class);
-
         $pageNumber = $currentPage->getPageNumber();
-
-        $wrapper = new Wrapper();
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(
-            new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
-        );
-        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
 
         $queryParticle = new QueryParticle();
 
@@ -274,40 +260,54 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "LIMIT ?, ?"
         );
         $statement->execute(array_merge($queryParticle->params(), get_row_limit($pageNumber)));
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $bodyRow = (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(
+                        new Cell(
+                            $row['uid']
+                                ? "{$row['username']} ({$row['uid']})"
+                                : $this->lang->t('none')
+                        )
+                    )
+                    ->addCell(new Cell($row['server']))
+                    ->addCell(new Cell($row['service']))
+                    ->addCell(new Cell($row['auth_data']))
+                    ->addCell(new Cell(convert_expire($row['expire'])));
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                if (get_privileges("manage_user_services")) {
+                    $bodyRow->setDeleteAction();
+                    $bodyRow->setEditAction();
+                }
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(
-                new Cell(
-                    $row['uid'] ? "{$row['username']} ({$row['uid']})" : $this->lang->t('none')
+                return $bodyRow;
+            })
+            ->all();
+
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('user')))
+            ->addHeadCell(new HeadCell($this->lang->t('server')))
+            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(
+                new HeadCell(
+                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
                 )
-            );
-            $bodyRow->addCell(new Cell($row['server']));
-            $bodyRow->addCell(new Cell($row['service']));
-            $bodyRow->addCell(new Cell($row['auth_data']));
-            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
-            if (get_privileges("manage_user_services")) {
-                $bodyRow->setDeleteAction();
-                $bodyRow->setEditAction();
-            }
+            )
+            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper;
+        return (new Wrapper())->setSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)
     {
         $user = $this->auth->user();
 
-        // Generujemy typy usługi
         $types = "";
         for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
             if ($this->service->getTypes() & $value) {
