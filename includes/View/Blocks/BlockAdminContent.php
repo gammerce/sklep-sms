@@ -9,13 +9,13 @@ use App\View\CurrentPage;
 class BlockAdminContent extends Block
 {
     /** @var Heart */
-    protected $heart;
+    private $heart;
 
     /** @var CurrentPage */
-    protected $page;
+    private $page;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
     public function __construct(
         Heart $heart,

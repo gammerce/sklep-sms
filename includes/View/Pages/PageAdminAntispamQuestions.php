@@ -37,8 +37,8 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_antispam_questions` LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
-
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $table->enablePagination($rowsCount);
 
         foreach ($statement as $row) {
             $bodyRow = new BodyRow();

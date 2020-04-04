@@ -84,8 +84,9 @@ class PageAdminBoughtServices extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->enablePagination($rowsCount);
 
         foreach ($statement as $row) {
             $transaction = $this->transactionRepository->mapToModel($row);

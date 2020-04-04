@@ -279,7 +279,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement->execute(
             array_merge($queryParticle->params(), get_row_limit($currentPage->getPageNumber()))
         );
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $table->enablePagination($rowsCount);
 
         foreach ($statement as $row) {
             $bodyRow = new BodyRow();

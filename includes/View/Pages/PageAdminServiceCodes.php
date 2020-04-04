@@ -50,8 +50,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                 "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $table->enablePagination($rowsCount);
 
         foreach ($statement as $row) {
             $bodyRow = new BodyRow();

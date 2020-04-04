@@ -10,7 +10,7 @@ use App\View\Html\Li;
 use App\View\Html\Link;
 use App\View\Html\Ul;
 
-class Pagination
+class PaginationService
 {
     /** @var Settings */
     private $settings;
@@ -31,7 +31,7 @@ class Pagination
         $this->lang = $translationManager->user();
     }
 
-    public function getPagination($all, $currentPage, $script, $query, $rowLimit = 0)
+    public function createPagination($all, $currentPage, $script, $query, $rowLimit = 0)
     {
         $rowLimit = $rowLimit ? $rowLimit : $this->settings['row_limit'];
 

@@ -69,7 +69,7 @@ class PageAdminPaymentAdmin extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->setDbRowsCount($rowsCount);
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->title)

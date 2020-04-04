@@ -69,7 +69,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addHeadCell(new HeadCell($this->lang->t("module")))
             ->addBodyRows($bodyRows)
-            ->setDbRowsCount($rowsCount);
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->title)
