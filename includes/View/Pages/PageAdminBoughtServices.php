@@ -29,10 +29,6 @@ class PageAdminBoughtServices extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-        $wrapper->setSearch();
-
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
         $table->addHeadCell(new HeadCell($this->lang->t('payment_admin')));
@@ -154,8 +150,10 @@ class PageAdminBoughtServices extends PageAdmin
             $table->addBodyRow($bodyRow);
         }
 
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setSearch()
+            ->setTable($table)
+            ->toHtml();
     }
 }

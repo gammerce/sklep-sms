@@ -36,6 +36,7 @@ class CurrentPage
         $this->pid = $pid;
     }
 
+    // TODO Remove it
     public function getPageNumber()
     {
         return $this->pageNumber;

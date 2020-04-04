@@ -25,8 +25,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
+
 
         $table = new Structure();
         $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
@@ -54,14 +53,17 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             $table->addBodyRow($bodyRow);
         }
 
-        $wrapper->setTable($table);
+        $wrapper = (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table);
 
         if (get_privileges("manage_antispam_questions")) {
-            $button = new Input();
-            $button->setParam('id', 'antispam_question_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_antispam_question'));
+            $button = (new Input())
+                ->setParam('id', 'antispam_question_button_add')
+                ->setParam('type', 'button')
+                ->addClass('button')
+                ->setParam('value', $this->lang->t('add_antispam_question'));
+
             $wrapper->addButton($button);
         }
 
