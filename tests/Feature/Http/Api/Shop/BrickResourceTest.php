@@ -14,7 +14,7 @@ class BrickResourceTest extends HttpTestCase
 
         // when
         $response = $this->get(
-            "/api/bricks/content,logged_info,services_buttons,user_buttons,wallet"
+            "/api/bricks/content:home,logged_info,services_buttons,user_buttons,wallet"
         );
 
         // then

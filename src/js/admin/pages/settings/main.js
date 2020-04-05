@@ -2,7 +2,7 @@ import { loader } from "../../../general/loader";
 import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
-import { refreshBlocks } from "../../utils/utils";
+import { refreshAdminContent } from "../../utils/utils";
 
 $(document).delegate("#form_settings_edit", "submit", function(e) {
     e.preventDefault();
@@ -29,7 +29,7 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_settings_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

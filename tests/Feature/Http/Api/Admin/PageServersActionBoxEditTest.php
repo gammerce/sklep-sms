@@ -13,7 +13,7 @@ class PageServersActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [
+        $response = $this->getJson("/api/admin/pages/servers/action_boxes/server_edit", [
             "id" => $server->getId(),
         ]);
 
@@ -32,7 +32,7 @@ class PageServersActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->get("/api/admin/pages/servers/action_boxes/server_edit", [
+        $response = $this->getJson("/api/admin/pages/servers/action_boxes/server_edit", [
             "id" => $server->getId(),
         ]);
 

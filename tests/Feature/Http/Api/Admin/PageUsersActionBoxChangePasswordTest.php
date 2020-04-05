@@ -32,7 +32,7 @@ class PageUsersActionBoxChangePasswordTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/servers/action_boxes/change_password", [
+        $response = $this->getJson("/api/admin/pages/servers/action_boxes/change_password", [
             "uid" => $admin->getUid(),
         ]);
 

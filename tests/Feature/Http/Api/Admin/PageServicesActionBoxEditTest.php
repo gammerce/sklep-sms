@@ -13,7 +13,7 @@ class PageServicesActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get("/api/admin/pages/services/action_boxes/service_edit", [
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_edit", [
             "id" => $service->getId(),
         ]);
 
@@ -33,7 +33,7 @@ class PageServicesActionBoxEditTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->get("/api/admin/pages/services/action_boxes/service_edit", [
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_edit", [
             "id" => $service->getId(),
         ]);
 

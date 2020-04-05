@@ -6,7 +6,6 @@ use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Html\UnescapedSimpleText;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,7 +16,6 @@ class ServiceLongDescriptionController
         Request $request,
         Template $template,
         Heart $heart,
-        CurrentPage $currentPage,
         TranslationManager $translationManager,
         UrlGenerator $url
     ) {
@@ -50,7 +48,7 @@ class ServiceLongDescriptionController
 
         $heart->addStyle($url->versioned("build/css/shop/long_desc.css"));
         $header = $template->render("header", [
-            'currentPageId' => $currentPage->getPid(),
+            'currentPageId' => "service_long_description",
             'footer' => "",
             'pageTitle' => $heart->pageTitle,
             'scripts' => $heart->getScripts(),

@@ -4,26 +4,18 @@ namespace App\View\Blocks;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\CurrentPage;
 
 class BlockAdminContent extends Block
 {
     /** @var Heart */
-    protected $heart;
-
-    /** @var CurrentPage */
-    protected $page;
+    private $heart;
 
     /** @var Translator */
-    protected $lang;
+    private $lang;
 
-    public function __construct(
-        Heart $heart,
-        CurrentPage $page,
-        TranslationManager $translationManager
-    ) {
+    public function __construct(Heart $heart, TranslationManager $translationManager)
+    {
         $this->heart = $heart;
-        $this->page = $page;
         $this->lang = $translationManager->user();
     }
 
@@ -37,19 +29,19 @@ class BlockAdminContent extends Block
         return "content";
     }
 
-    // Nadpisujemy getContent, aby wyswieltac info gdy nie jest zalogowany lub jest zalogowany, lecz nie powinien
-    public function getContent(array $query, array $body)
+    protected function content(array $query, array $body, array $params)
     {
         if (!is_logged()) {
             return $this->lang->t('must_be_logged_in');
         }
 
-        return $this->content($query, $body);
-    }
+        $pageId = $params[0];
+        $page = $this->heart->getPage($pageId, "admin");
 
-    protected function content(array $query, array $body)
-    {
-        $page = $this->heart->getPage($this->page->getPid(), "admin");
-        return $page ? $page->getContent($query, $body) : null;
+        if ($page) {
+            return $page->getContent($query, $body);
+        }
+
+        return null;
     }
 }

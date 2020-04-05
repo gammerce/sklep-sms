@@ -33,13 +33,6 @@ class RequestHelper
             (isset($acceptable[0]) && ($acceptable[0] === '*/*' || $acceptable[0] === '*'));
     }
 
-    public function wantsJson()
-    {
-        $acceptable = $this->getAcceptableContentTypes();
-        return isset($acceptable[0]) &&
-            (str_contains($acceptable[0], '/json') || str_contains($acceptable[0], '+json'));
-    }
-
     public function getAcceptableContentTypes()
     {
         return array_keys(AcceptHeader::fromString($this->request->headers->get('Accept'))->all());
@@ -52,5 +45,12 @@ class RequestHelper
             [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD],
             true
         );
+    }
+
+    private function wantsJson()
+    {
+        $acceptable = $this->getAcceptableContentTypes();
+        return isset($acceptable[0]) &&
+            (str_contains($acceptable[0], '/json') || str_contains($acceptable[0], '+json'));
     }
 }

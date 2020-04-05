@@ -40,7 +40,10 @@ class DirectBillingController
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
         } catch (LackOfValidPurchaseDataException $e) {
-            $logger->log('log_external_payment_no_transaction_file', $finalizedPayment->getOrderId());
+            $logger->log(
+                'log_external_payment_no_transaction_file',
+                $finalizedPayment->getOrderId()
+            );
             return new PlainResponse($finalizedPayment->getOutput());
         }
 

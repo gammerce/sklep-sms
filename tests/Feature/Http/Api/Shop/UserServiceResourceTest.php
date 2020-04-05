@@ -29,6 +29,7 @@ class UserServiceResourceTest extends HttpTestCase
         $userService = $this->factory->extraFlagUserService([
             'server_id' => $server->getId(),
             'uid' => $user->getUid(),
+            'seconds' => 7 * 24 * 60 * 60,
         ]);
 
         // when
@@ -46,6 +47,7 @@ class UserServiceResourceTest extends HttpTestCase
         $this->assertSame('192.0.2.5', $freshUserService->getAuthData());
         $this->assertSame('ab12ab', $freshUserService->getPassword());
         $this->assertSame(ExtraFlagType::TYPE_IP, $freshUserService->getType());
+        $this->assertAlmostSameTimestamp($userService->getExpire(), $freshUserService->getExpire());
     }
 
     /** @test */

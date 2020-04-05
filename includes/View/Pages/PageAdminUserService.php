@@ -59,7 +59,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $wrapper->addButton($this->createModuleSelectBox($query['subpage']));
 
         // Przycisk dodajacy nowa usluge użytkownikowi
-        if (get_privileges("manage_user_services")) {
+        if (has_privileges("manage_user_services")) {
             $button = new Input();
             $button->setParam('id', 'user_service_button_add');
             $button->setParam('type', 'button');
@@ -73,7 +73,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_user_services")) {
+        if (!has_privileges("manage_user_services")) {
             throw new UnauthorizedException();
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages;
 
+use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\QueryParticle;
@@ -29,26 +30,6 @@ class PageAdminBoughtServices extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('payment_admin')));
-        $table->addHeadCell(new HeadCell($this->lang->t('payment_id')));
-        $table->addHeadCell(new HeadCell($this->lang->t('user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(new HeadCell($this->lang->t('amount')));
-        $table->addHeadCell(
-            new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
-        );
-        $table->addHeadCell(new HeadCell($this->lang->t('additional')));
-        $table->addHeadCell(new HeadCell($this->lang->t('email')));
-        $table->addHeadCell(new HeadCell($this->lang->t('ip')));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $queryParticle = new QueryParticle();
 
         if (isset($query['search'])) {
@@ -84,77 +65,100 @@ class PageAdminBoughtServices extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query('SELECT FOUND_ROWS()')->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->transactionRepository->mapToModel($row);
+            })
+            ->map(function (Transaction $transaction) {
+                $service = $this->heart->getService($transaction->getServiceId());
+                $server = $this->heart->getServer($transaction->getServerId());
 
-        foreach ($statement as $row) {
-            $transaction = $this->transactionRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                $username = $transaction->getUserId()
+                    ? "{$transaction->getUserName()} ({$transaction->getUserId()})"
+                    : $this->lang->t('none');
 
-            $service = $this->heart->getService($transaction->getServiceId());
-            $server = $this->heart->getServer($transaction->getServerId());
+                $quantity =
+                    $transaction->getQuantity() != -1
+                        ? $transaction->getQuantity() . ' ' . ($service ? $service->getTag() : '')
+                        : $this->lang->t('forever');
 
-            $username = $transaction->getUserId()
-                ? "{$transaction->getUserName()} ({$transaction->getUserId()})"
-                : $this->lang->t('none');
+                $extraData = [];
+                foreach ($transaction->getExtraData() as $key => $value) {
+                    if (!strlen($value)) {
+                        continue;
+                    }
 
-            $quantity =
-                $transaction->getQuantity() != -1
-                    ? $transaction->getQuantity() . ' ' . ($service ? $service->getTag() : '')
-                    : $this->lang->t('forever');
+                    if ($key == "password") {
+                        $key = $this->lang->t('password');
+                    } elseif ($key == "type") {
+                        $key = $this->lang->t('type');
+                        $value = ExtraFlagType::getTypeName($value);
+                    }
 
-            $extraData = [];
-            foreach ($transaction->getExtraData() as $key => $value) {
-                if (!strlen($value)) {
-                    continue;
+                    $extraData[] = htmlspecialchars("$key: $value");
                 }
+                $extraData = implode('<br />', $extraData);
 
-                if ($key == "password") {
-                    $key = $this->lang->t('password');
-                } elseif ($key == "type") {
-                    $key = $this->lang->t('type');
-                    $value = ExtraFlagType::getTypeName($value);
-                }
+                // Pobranie linku płatności
+                $paymentLink = new Link();
+                $paymentLink->addClass("dropdown-item");
+                $paymentLink->setParam(
+                    'href',
+                    $this->url->to(
+                        "/admin/payment_{$transaction->getPaymentMethod()}?payid={$transaction->getPaymentId()}"
+                    )
+                );
+                $paymentLink->setParam('target', '_blank');
+                $paymentLink->addContent($this->lang->t('see_payment'));
 
-                $extraData[] = htmlspecialchars("$key: $value");
-            }
-            $extraData = implode('<br />', $extraData);
+                $cellDate = (new Cell(convert_date($transaction->getTimestamp())))->setParam(
+                    'headers',
+                    'date'
+                );
 
-            // Pobranie linku płatności
-            $paymentLink = new Link();
-            $paymentLink->addClass("dropdown-item");
-            $paymentLink->setParam(
-                'href',
-                $this->url->to(
-                    "/admin/payment_{$transaction->getPaymentMethod()}?payid={$transaction->getPaymentId()}"
+                return (new BodyRow())
+                    ->addAction($paymentLink)
+                    ->setDbId($transaction->getId())
+                    ->addCell(new Cell($transaction->getPaymentMethod()))
+                    ->addCell(new Cell($transaction->getPaymentId()))
+                    ->addCell(new Cell($username))
+                    ->addCell(new Cell($server ? $server->getName() : $this->lang->t('none')))
+                    ->addCell(new Cell($service ? $service->getName() : $this->lang->t('none')))
+                    ->addCell(new Cell($quantity))
+                    ->addCell(new Cell($transaction->getAuthData()))
+                    ->addCell(new Cell(new UnescapedSimpleText($extraData)))
+                    ->addCell(new Cell($transaction->getEmail()))
+                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell($cellDate);
+            })
+            ->all();
+
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('payment_admin')))
+            ->addHeadCell(new HeadCell($this->lang->t('payment_id')))
+            ->addHeadCell(new HeadCell($this->lang->t('user')))
+            ->addHeadCell(new HeadCell($this->lang->t('server')))
+            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(new HeadCell($this->lang->t('amount')))
+            ->addHeadCell(
+                new HeadCell(
+                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
                 )
-            );
-            $paymentLink->setParam('target', '_blank');
-            $paymentLink->addContent($this->lang->t('see_payment'));
+            )
+            ->addHeadCell(new HeadCell($this->lang->t('additional')))
+            ->addHeadCell(new HeadCell($this->lang->t('email')))
+            ->addHeadCell(new HeadCell($this->lang->t('ip')))
+            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $bodyRow->addAction($paymentLink);
-
-            $bodyRow->setDbId($transaction->getId());
-            $bodyRow->addCell(new Cell($transaction->getPaymentMethod()));
-            $bodyRow->addCell(new Cell($transaction->getPaymentId()));
-            $bodyRow->addCell(new Cell($username));
-            $bodyRow->addCell(new Cell($server ? $server->getName() : $this->lang->t('none')));
-            $bodyRow->addCell(new Cell($service ? $service->getName() : $this->lang->t('none')));
-            $bodyRow->addCell(new Cell($quantity));
-            $bodyRow->addCell(new Cell($transaction->getAuthData()));
-            $bodyRow->addCell(new Cell(new UnescapedSimpleText($extraData)));
-            $bodyRow->addCell(new Cell($transaction->getEmail()));
-            $bodyRow->addCell(new Cell($transaction->getIp()));
-
-            $cell = new Cell(convert_date($transaction->getTimestamp()));
-            $cell->setParam('headers', 'date');
-            $bodyRow->addCell($cell);
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setSearch()
+            ->setTable($table)
+            ->toHtml();
     }
 }

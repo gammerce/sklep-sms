@@ -8,7 +8,7 @@ use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Settings;
 use App\View\Interfaces\IBeLoggedMust;
-use App\View\Pagination;
+use App\View\PaginationService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
@@ -39,8 +39,8 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         /** @var Request $request */
         $request = $this->app->make(Request::class);
 
-        /** @var Pagination $pagination */
-        $pagination = $this->app->make(Pagination::class);
+        /** @var PaginationService $pagination */
+        $pagination = $this->app->make(PaginationService::class);
 
         $moduleIds = collect($this->heart->getEmptyServiceModules())
             ->filter(function (ServiceModule $serviceModule) {
@@ -125,7 +125,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $this->lang->t('no_data');
         }
 
-        $paginationContent = $pagination->getPagination(
+        $paginationContent = $pagination->createPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),

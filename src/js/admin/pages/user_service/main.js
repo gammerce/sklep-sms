@@ -1,4 +1,4 @@
-import { clearAndHideActionBox, refreshBlocks, show_action_box } from "../../utils/utils";
+import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
 import {
     buildUrl,
@@ -12,7 +12,7 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 
 // Kliknięcie dodania usługi użytkownika
 $(document).delegate("#user_service_button_add", "click", function() {
-    show_action_box(currentPage, "user_service_add");
+    showActionBox(currentPage, "user_service_add");
 });
 
 // Kliknięcie edycji usługi użytkownika
@@ -23,12 +23,12 @@ $(document).delegate("[id^=edit_row_]", "click", function() {
                 .attr("id")
                 .replace("edit_row_", "row_")
     );
-    show_action_box(currentPage, "user_service_edit", {
+    showActionBox(currentPage, "user_service_edit", {
         id: rowId.children("td[headers=id]").text(),
     });
 });
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    show_action_box(currentPage, "user_service_edit", {
+    showActionBox(currentPage, "user_service_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -109,7 +109,7 @@ $(document).delegate("[id^=delete_row_]", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -151,7 +151,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
 
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -192,7 +192,7 @@ $(document).delegate("#form_user_service_add", "submit", function(e) {
                 showWarnings($("#form_user_service_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);
@@ -233,7 +233,7 @@ $(document).delegate("#form_user_service_edit", "submit", function(e) {
                 showWarnings($("#form_user_service_edit"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
-                refreshBlocks("admincontent");
+                refreshAdminContent();
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

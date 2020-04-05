@@ -23,15 +23,6 @@ class PageAdminLogs extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('text')));
-        $table->addHeadCell(new HeadCell($this->lang->t('date')));
-
         $queryParticle = new QueryParticle();
         if (isset($query['search'])) {
             $queryParticle->extend(
@@ -53,33 +44,32 @@ class PageAdminLogs extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $div = new Div($row['text']);
+                $div->addClass('one_line');
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                return (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(new Cell($div))
+                    ->addCell(new Cell(convert_date($row['timestamp']), 'date'))
+                    ->setDeleteAction(has_privileges("manage_logs"));
+            })
+            ->all();
 
-            $bodyRow->setDbId($row['id']);
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('text')))
+            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $cell = new Cell();
-            $div = new Div($row['text']);
-            $div->addClass('one_line');
-            $cell->addContent($div);
-            $bodyRow->addCell($cell);
-
-            $cell = new Cell(convert_date($row['timestamp']));
-            $cell->setParam('headers', 'date');
-            $bodyRow->addCell($cell);
-
-            if (get_privileges("manage_logs")) {
-                $bodyRow->setDeleteAction(true);
-            }
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setSearch()
+            ->setTable($table)
+            ->toHtml();
     }
 }

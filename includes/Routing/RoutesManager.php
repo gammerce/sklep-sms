@@ -33,17 +33,18 @@ use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResour
 use App\Http\Controllers\Api\Admin\WalletChargeCollection;
 use App\Http\Controllers\Api\BrickResource;
 use App\Http\Controllers\Api\CronController;
-use App\Http\Controllers\Api\Ipn\DirectBillingController;
 use App\Http\Controllers\Api\IncomeController;
 use App\Http\Controllers\Api\InstallController;
+use App\Http\Controllers\Api\Ipn\DirectBillingController;
+use App\Http\Controllers\Api\Ipn\TransferController;
 use App\Http\Controllers\Api\LogInController;
 use App\Http\Controllers\Api\LogOutController;
 use App\Http\Controllers\Api\PasswordForgottenController;
 use App\Http\Controllers\Api\PasswordResetController;
 use App\Http\Controllers\Api\PasswordResource;
 use App\Http\Controllers\Api\PaymentResource;
-use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\PurchaseCollection;
+use App\Http\Controllers\Api\PurchaseResource;
 use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\Server\PlayerFlagCollection;
 use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
@@ -56,22 +57,21 @@ use App\Http\Controllers\Api\ServiceTakeOverController;
 use App\Http\Controllers\Api\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\SessionLanguageResource;
 use App\Http\Controllers\Api\TemplateResource;
-use App\Http\Controllers\Api\Ipn\TransferController;
 use App\Http\Controllers\Api\UpdateController;
 use App\Http\Controllers\Api\UserProfileResource;
 use App\Http\Controllers\Api\UserServiceBrickController;
 use App\Http\Controllers\Api\UserServiceEditFormController;
 use App\Http\Controllers\Api\UserServiceResource;
+use App\Http\Controllers\View\AdminAuthController;
 use App\Http\Controllers\View\AdminController;
 use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
 use App\Http\Middlewares\AuthorizeServer;
+use App\Http\Middlewares\AuthorizeUser;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\JsonBody;
 use App\Http\Middlewares\LoadSettings;
-use App\Http\Middlewares\ManageAdminAuthentication;
-use App\Http\Middlewares\ManageAuthentication;
 use App\Http\Middlewares\RequireAuthorized;
 use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
@@ -114,13 +114,6 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
-        /**
-         * @deprecated
-         */
-        $r->get('/admin.php', [
-            'uses' => AdminController::class . '@oldGet',
-        ]);
-
         /**
          * @deprecated
          */
@@ -182,7 +175,7 @@ class RoutesManager
                     SetUserSession::class,
                     LoadSettings::class,
                     SetLanguage::class,
-                    ManageAuthentication::class,
+                    AuthorizeUser::class,
                 ],
             ],
             function (RouteCollector $r) {
@@ -320,19 +313,35 @@ class RoutesManager
 
         $r->addGroup(
             [
+                "middlewares" => [SetAdminSession::class, LoadSettings::class, SetLanguage::class],
+            ],
+            function (RouteCollector $r) {
+                $r->get('/admin/login', [
+                    'uses' => AdminAuthController::class . '@get',
+                ]);
+
+                $r->post('/admin/login', [
+                    'uses' => AdminAuthController::class . '@post',
+                ]);
+            }
+        );
+
+        $r->addGroup(
+            [
                 "middlewares" => [
                     SetAdminSession::class,
                     LoadSettings::class,
                     SetLanguage::class,
-                    ManageAdminAuthentication::class,
+                    AuthorizeUser::class,
+                    [RequireAuthorized::class, "acp"],
                     ValidateLicense::class,
                     UpdateUserActivity::class,
                 ],
             ],
             function (RouteCollector $r) {
-                $r->addRoute(['GET', 'POST'], '/admin[/{pageId}]', [
+                $r->get('/admin[/{pageId}]', [
                     'middlewares' => [RunCron::class],
-                    'uses' => AdminController::class . '@action',
+                    'uses' => AdminController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/users/{userId}/password', [
