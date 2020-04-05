@@ -273,7 +273,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($row['id'])
                     ->addCell(
                         new Cell(
@@ -284,14 +284,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                     )
                     ->addCell(new Cell($row['service']))
                     ->addCell(new Cell($row['mybb_uid']))
-                    ->addCell(new Cell(convert_expire($row['expire'])));
-
-                if (get_privileges("manage_user_services")) {
-                    $bodyRow->setDeleteAction(true);
-                    $bodyRow->setEditAction(false);
-                }
-
-                return $bodyRow;
+                    ->addCell(new Cell(convert_expire($row['expire'])))
+                    ->setDeleteAction(has_privileges("manage_user_services"))
+                    ->setEditAction(false);
             })
             ->all();
 

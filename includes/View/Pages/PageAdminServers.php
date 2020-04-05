@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Models\PaymentPlatform;
+use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
@@ -35,45 +36,34 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
+        $bodyRows = collect($this->heart->getServers())
+            ->map(function (Server $server) {
+                return (new BodyRow())
+                    ->setDbId($server->getId())
+                    ->addCell(new Cell($server->getName(), "name"))
+                    ->addCell(new Cell($server->getIp() . ":" . $server->getPort()))
+                    ->addCell(new Cell($server->getType() ?: "n/a"))
+                    ->addCell(new Cell($server->getVersion() ?: "n/a"))
+                    ->addCell(new Cell($server->getLastActiveAt() ?: "n/a"))
+                    ->addAction($this->createRegenerateTokenButton())
+                    ->setDeleteAction(has_privileges("manage_servers"))
+                    ->setEditAction(has_privileges("manage_servers"));
+            })
+            ->all();
 
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t("id"), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t("name")));
-        $table->addHeadCell(new HeadCell($this->lang->t("ip") . ":" . $this->lang->t("port")));
-        $table->addHeadCell(new HeadCell($this->lang->t("platform")));
-        $table->addHeadCell(new HeadCell($this->lang->t("version")));
-        $table->addHeadCell(new HeadCell($this->lang->t("last_active_at")));
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("name")))
+            ->addHeadCell(new HeadCell($this->lang->t("ip") . ":" . $this->lang->t("port")))
+            ->addHeadCell(new HeadCell($this->lang->t("platform")))
+            ->addHeadCell(new HeadCell($this->lang->t("version")))
+            ->addHeadCell(new HeadCell($this->lang->t("last_active_at")))
+            ->addBodyRows($bodyRows);
 
-        foreach ($this->heart->getServers() as $server) {
-            $bodyRow = new BodyRow();
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
-            $bodyRow->setDbId($server->getId());
-
-            $nameCell = (new Cell($server->getName()))->setParam("headers", "name");
-            $bodyRow->addCell($nameCell);
-
-            $bodyRow->addCell(new Cell($server->getIp() . ":" . $server->getPort()));
-            $bodyRow->addCell(new Cell($server->getType() ?: "n/a"));
-            $bodyRow->addCell(new Cell($server->getVersion() ?: "n/a"));
-            $bodyRow->addCell(new Cell($server->getLastActiveAt() ?: "n/a"));
-
-            $bodyRow->addAction($this->createRegenerateTokenButton());
-
-            if (get_privileges("manage_servers")) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(true);
-            }
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        if (get_privileges("manage_servers")) {
-            $addButton = $this->createAddButton();
-            $wrapper->addButton($addButton);
+        if (has_privileges("manage_servers")) {
+            $wrapper->addButton($this->createAddButton());
         }
 
         return $wrapper->toHtml();
@@ -97,7 +87,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_servers")) {
+        if (!has_privileges("manage_servers")) {
             throw new UnauthorizedException();
         }
 

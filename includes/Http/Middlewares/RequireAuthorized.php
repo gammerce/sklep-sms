@@ -20,7 +20,7 @@ class RequireAuthorized implements MiddlewareContract
     {
         if (
             !$this->auth->check() ||
-            ($privilege && !get_privileges($privilege, $this->auth->user()))
+            ($privilege && !has_privileges($privilege, $this->auth->user()))
         ) {
             throw new UnauthorizedException();
         }

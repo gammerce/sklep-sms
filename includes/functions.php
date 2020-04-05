@@ -63,7 +63,7 @@ function is_logged()
  *
  * @return bool
  */
-function get_privileges($privilege, $user = null)
+function has_privileges($privilege, $user = null)
 {
     if (!$user) {
         /** @var Auth $auth */

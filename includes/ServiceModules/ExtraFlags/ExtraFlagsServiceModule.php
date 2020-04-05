@@ -264,7 +264,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($row['id'])
                     ->addCell(
                         new Cell(
@@ -276,14 +276,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->addCell(new Cell($row['server']))
                     ->addCell(new Cell($row['service']))
                     ->addCell(new Cell($row['auth_data']))
-                    ->addCell(new Cell(convert_expire($row['expire'])));
-
-                if (get_privileges("manage_user_services")) {
-                    $bodyRow->setDeleteAction();
-                    $bodyRow->setEditAction();
-                }
-
-                return $bodyRow;
+                    ->addCell(new Cell(convert_expire($row['expire'])))
+                    ->setDeleteAction(has_privileges("manage_user_services"))
+                    ->setEditAction(has_privileges("manage_user_services"));
             })
             ->all();
 

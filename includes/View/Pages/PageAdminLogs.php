@@ -50,22 +50,12 @@ class PageAdminLogs extends PageAdmin
             ->map(function (array $row) {
                 $div = new Div($row['text']);
                 $div->addClass('one_line');
-                $cellText = new Cell();
-                $cellText->addContent($div);
 
-                $cellDate = new Cell(convert_date($row['timestamp']));
-                $cellDate->setParam('headers', 'date');
-
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($row['id'])
-                    ->addCell($cellText)
-                    ->addCell($cellDate);
-
-                if (get_privileges("manage_logs")) {
-                    $bodyRow->setDeleteAction(true);
-                }
-
-                return $bodyRow;
+                    ->addCell(new Cell($div))
+                    ->addCell(new Cell(convert_date($row['timestamp']), 'date'))
+                    ->setDeleteAction(has_privileges("manage_logs"));
             })
             ->all();
 

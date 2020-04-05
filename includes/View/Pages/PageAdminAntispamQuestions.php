@@ -38,17 +38,12 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($row['id'])
                     ->addCell(new Cell(new UnescapedSimpleText($row['question'])))
-                    ->addCell(new Cell($row['answers']));
-
-                if (get_privileges("manage_antispam_questions")) {
-                    $bodyRow->setDeleteAction(true);
-                    $bodyRow->setEditAction(true);
-                }
-
-                return $bodyRow;
+                    ->addCell(new Cell($row['answers']))
+                    ->setDeleteAction(has_privileges("manage_antispam_questions"))
+                    ->setEditAction(has_privileges("manage_antispam_questions"));
             })
             ->all();
 
@@ -61,7 +56,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
         $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
-        if (get_privileges("manage_antispam_questions")) {
+        if (has_privileges("manage_antispam_questions")) {
             $button = (new Input())
                 ->setParam('id', 'antispam_question_button_add')
                 ->setParam('type', 'button')
@@ -76,7 +71,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_antispam_questions")) {
+        if (!has_privileges("manage_antispam_questions")) {
             throw new UnauthorizedException();
         }
 

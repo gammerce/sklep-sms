@@ -37,14 +37,11 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())->setDbId($row['id'])->addCell(new Cell($row['name']));
-
-                if (get_privileges('manage_groups')) {
-                    $bodyRow->setDeleteAction(true);
-                    $bodyRow->setEditAction(true);
-                }
-
-                return $bodyRow;
+                return (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(new Cell($row['name']))
+                    ->setDeleteAction(has_privileges('manage_groups'))
+                    ->setEditAction(has_privileges('manage_groups'));
             })
             ->all();
 
@@ -56,7 +53,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
-        if (get_privileges('manage_groups')) {
+        if (has_privileges('manage_groups')) {
             $button = (new Input())
                 ->setParam('id', 'group_button_add')
                 ->setParam('type', 'button')
@@ -71,7 +68,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_groups")) {
+        if (!has_privileges("manage_groups")) {
             throw new UnauthorizedException();
         }
 

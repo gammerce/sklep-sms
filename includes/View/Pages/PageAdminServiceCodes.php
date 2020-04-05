@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Models\Service;
 use App\Repositories\ServiceCodeRepository;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -29,18 +30,6 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('code')));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(new HeadCell($this->lang->t('quantity')));
-        $table->addHeadCell(new HeadCell($this->lang->t('user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('date_of_creation')));
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
                 "FROM `ss_service_codes` AS sc " .
@@ -52,40 +41,46 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $username = $row['uid']
+                    ? $row['username'] . " ({$row['uid']})"
+                    : $this->lang->t('none');
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                $quantity = "{$this->lang->t('price')} #{$row['price']}";
 
-            $username = $row['uid']
-                ? $row['username'] . " ({$row['uid']})"
-                : $this->lang->t('none');
+                return (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(new Cell($row['code']))
+                    ->addCell(new Cell($row['service']))
+                    ->addCell(new Cell($row['server']))
+                    ->addCell(new Cell($quantity))
+                    ->addCell(new Cell($username))
+                    ->addCell(new Cell(convert_date($row['timestamp'])))
+                    ->setDeleteAction(has_privileges('manage_service_codes'));
+            })
+            ->all();
 
-            $quantity = "{$this->lang->t('price')} #{$row['price']}";
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('code')))
+            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(new HeadCell($this->lang->t('server')))
+            ->addHeadCell(new HeadCell($this->lang->t('quantity')))
+            ->addHeadCell(new HeadCell($this->lang->t('user')))
+            ->addHeadCell(new HeadCell($this->lang->t('date_of_creation')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($row['code']));
-            $bodyRow->addCell(new Cell($row['service']));
-            $bodyRow->addCell(new Cell($row['server']));
-            $bodyRow->addCell(new Cell($quantity));
-            $bodyRow->addCell(new Cell($username));
-            $bodyRow->addCell(new Cell(convert_date($row['timestamp'])));
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
-            if (get_privileges('manage_service_codes')) {
-                $bodyRow->setDeleteAction(true);
-            }
+        if (has_privileges('manage_service_codes')) {
+            $button = (new Input())
+                ->setParam('id', 'service_code_button_add')
+                ->setParam('type', 'button')
+                ->addClass('button')
+                ->setParam('value', $this->lang->t('add_code'));
 
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        if (get_privileges('manage_service_codes')) {
-            $button = new Input();
-            $button->setParam('id', 'service_code_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_code'));
             $wrapper->addButton($button);
         }
 
@@ -94,21 +89,22 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_service_codes")) {
+        if (!has_privileges("manage_service_codes")) {
             throw new UnauthorizedException();
         }
 
         switch ($boxId) {
             case "code_add":
-                $services = [];
-                foreach ($this->heart->getServices() as $id => $service) {
-                    $services[] = create_dom_element("option", $service->getName(), [
-                        'value' => $service->getId(),
-                    ]);
-                }
+                $services = collect($this->heart->getServices())
+                    ->map(function (Service $service) {
+                        return create_dom_element("option", $service->getName(), [
+                            'value' => $service->getId(),
+                        ]);
+                    })
+                    ->join();
 
                 $output = $this->template->render("admin/action_boxes/service_code_add", [
-                    'services' => implode("", $services),
+                    'services' => $services,
                 ]);
                 break;
 

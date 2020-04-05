@@ -59,7 +59,7 @@ class BlockUserButtons extends Block
         $acpButton = "";
 
         // Panel Admina
-        if (get_privileges("acp", $user)) {
+        if (has_privileges("acp", $user)) {
             $acpButton = create_dom_element(
                 "li",
                 create_dom_element("a", $this->lang->t('acp'), [
