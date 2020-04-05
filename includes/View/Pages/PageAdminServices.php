@@ -49,7 +49,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $bodyRow->addCell(new Cell($service->getDescription()));
             $bodyRow->addCell(new Cell($service->getOrder()));
 
-            if (get_privileges('manage_services')) {
+            if (has_privileges('manage_services')) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(true);
             }
@@ -59,7 +59,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privileges('manage_services')) {
+        if (has_privileges('manage_services')) {
             $button = new Input();
             $button->setParam('id', 'service_button_add');
             $button->setParam('type', 'button');
@@ -73,7 +73,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_services")) {
+        if (!has_privileges("manage_services")) {
             throw new UnauthorizedException();
         }
 

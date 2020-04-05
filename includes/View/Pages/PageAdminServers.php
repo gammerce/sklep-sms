@@ -61,7 +61,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
             $bodyRow->addAction($this->createRegenerateTokenButton());
 
-            if (get_privileges("manage_servers")) {
+            if (has_privileges("manage_servers")) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(true);
             }
@@ -71,7 +71,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $wrapper->setTable($table);
 
-        if (get_privileges("manage_servers")) {
+        if (has_privileges("manage_servers")) {
             $addButton = $this->createAddButton();
             $wrapper->addButton($addButton);
         }
@@ -97,7 +97,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_servers")) {
+        if (!has_privileges("manage_servers")) {
             throw new UnauthorizedException();
         }
 

@@ -48,7 +48,7 @@ class Auth
     {
         $user = $this->heart->getUserByLogin($username, $password);
 
-        if ($user->exists() && get_privileges("acp", $user)) {
+        if ($user->exists() && has_privileges("acp", $user)) {
             $this->getSession()->set("uid", $user->getUid());
         } else {
             $this->getSession()->set("info", "wrong_data");

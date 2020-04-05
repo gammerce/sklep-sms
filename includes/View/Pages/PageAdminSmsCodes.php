@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Models\SmsCode;
 use App\Repositories\SmsCodeRepository;
 use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
@@ -42,54 +43,52 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('sms_code')));
-        $table->addHeadCell(new HeadCell($this->lang->t('sms_price')));
-        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `ss_sms_codes` " .
-                "WHERE `free` = '1' " .
-                "LIMIT ?, ?"
+            "FROM `ss_sms_codes` " .
+            "WHERE `free` = '1' " .
+            "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->smsCodeRepository->mapToModel($row);
+            })
+            ->map(function (SmsCode $smsCode) {
+                return (new BodyRow())
+                    ->setDbId($smsCode->getId())
+                    ->addCell(new Cell($smsCode->getCode()))
+                    ->addCell(
+                        new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
+                    )
+                    ->addCell(
+                        new Cell(as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never"))
+                    )
+                    ->setDeleteAction(has_privileges('manage_sms_codes'));
+            })
+            ->all();
 
-        foreach ($statement as $row) {
-            $smsCode = $this->smsCodeRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('sms_code')))
+            ->addHeadCell(new HeadCell($this->lang->t('sms_price')))
+            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $bodyRow->setDbId($smsCode->getId());
-            $bodyRow->addCell(new Cell($smsCode->getCode()));
-            $bodyRow->addCell(
-                new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
-            );
-            $bodyRow->addCell(
-                new Cell(as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never"))
-            );
+        $wrapper = (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table);
 
-            if (get_privileges('manage_sms_codes')) {
-                $bodyRow->setDeleteAction(true);
-            }
+        if (has_privileges('manage_sms_codes')) {
+            $button = (new Input())
+                ->setParam('id', 'sms_code_button_add')
+                ->setParam('type', 'button')
+                ->addClass('button')
+                ->setParam('value', $this->lang->t('add_code'));
 
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        if (get_privileges('manage_sms_codes')) {
-            $button = new Input();
-            $button->setParam('id', 'sms_code_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_code'));
             $wrapper->addButton($button);
         }
 
@@ -98,7 +97,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_sms_codes")) {
+        if (!has_privileges("manage_sms_codes")) {
             throw new UnauthorizedException();
         }
 
@@ -126,7 +125,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         }
 
         return [
-            'status' => 'ok',
+            'status'   => 'ok',
             'template' => $output,
         ];
     }

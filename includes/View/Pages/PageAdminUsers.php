@@ -119,7 +119,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             $changePasswordCharge = $this->createPasswordButton();
             $bodyRow->addAction($changePasswordCharge);
 
-            if (get_privileges('manage_users')) {
+            if (has_privileges('manage_users')) {
                 $bodyRow->setDeleteAction(true);
                 $bodyRow->setEditAction(true);
             }
@@ -148,7 +148,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_users")) {
+        if (!has_privileges("manage_users")) {
             throw new UnauthorizedException();
         }
 

@@ -79,7 +79,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!get_privileges("manage_settings")) {
+        if (!has_privileges("manage_settings")) {
             throw new UnauthorizedException();
         }
 

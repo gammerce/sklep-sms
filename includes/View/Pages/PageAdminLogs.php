@@ -61,7 +61,7 @@ class PageAdminLogs extends PageAdmin
                     ->addCell($cellText)
                     ->addCell($cellDate);
 
-                if (get_privileges("manage_logs")) {
+                if (has_privileges("manage_logs")) {
                     $bodyRow->setDeleteAction(true);
                 }
 

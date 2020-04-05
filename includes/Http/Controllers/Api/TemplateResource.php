@@ -41,7 +41,7 @@ class TemplateResource
         $email = $request->query->get('email');
 
         if ($templateName === "admin_user_wallet") {
-            if (!get_privileges("manage_users")) {
+            if (!has_privileges("manage_users")) {
                 throw new UnauthorizedException();
             }
 

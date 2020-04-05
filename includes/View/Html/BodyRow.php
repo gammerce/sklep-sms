@@ -61,6 +61,7 @@ class BodyRow extends Row
      */
     public function setDeleteAction($deleteAction = true)
     {
+        // TODO Refactor usage
         $this->deleteAction = (bool) $deleteAction;
         return $this;
     }
