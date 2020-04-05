@@ -22,20 +22,6 @@ class PageAdminPlayersFlags extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('server')));
-        $table->addHeadCell(
-            new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
-        );
-
-        foreach (PlayerFlag::FLAGS as $flag) {
-            $table->addHeadCell(new HeadCell($flag));
-        }
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
                 "ORDER BY `id` DESC " .
@@ -44,32 +30,40 @@ class PageAdminPlayersFlags extends PageAdmin
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                $server = $this->heart->getServer($row['server']);
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+                $bodyRow = (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(new Cell($server->getName()))
+                    ->addCell(new Cell($row['auth_data']));
 
-            $tempServer = $this->heart->getServer($row['server']);
-            $serverName = $tempServer->getName();
-            unset($tempServer);
-
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(new Cell($serverName));
-            $bodyRow->addCell(new Cell($row['auth_data']));
-
-            foreach (PlayerFlag::FLAGS as $flag) {
-                if (!$row[$flag]) {
-                    $bodyRow->addCell(new Cell(' '));
-                } else {
-                    $bodyRow->addCell(new Cell(convert_expire($row[$flag])));
+                foreach (PlayerFlag::FLAGS as $flag) {
+                    $value = $row[$flag] ? convert_expire($row[$flag]) : " ";
+                    $bodyRow->addCell(new Cell($value));
                 }
-            }
 
-            $table->addBodyRow($bodyRow);
+                return $bodyRow;
+            })
+            ->all();
+
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('server')))
+            ->addHeadCell(
+                new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
+            )
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+
+        foreach (PlayerFlag::FLAGS as $flag) {
+            $table->addHeadCell(new HeadCell($flag));
         }
 
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->toHtml();
     }
 }

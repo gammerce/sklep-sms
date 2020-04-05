@@ -2,6 +2,9 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Models\Price;
+use App\Models\Server;
+use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
@@ -42,73 +45,69 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t("id"), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t("service")));
-        $table->addHeadCell(new HeadCell($this->lang->t("server")));
-        $table->addHeadCell(new HeadCell($this->lang->t("quantity")));
-        $table->addHeadCell(new HeadCell($this->lang->t("sms_price")));
-        $table->addHeadCell(new HeadCell($this->lang->t("transfer_price")));
-        $table->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")));
-
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `ss_prices` " .
-                "ORDER BY `service`, `server`, `quantity` " .
-                "LIMIT ?, ?"
+            "FROM `ss_prices` " .
+            "ORDER BY `service`, `server`, `quantity` " .
+            "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->priceRepository->mapToModel($row);
+            })
+            ->map(function (Price $price) {
+                if ($price->isForEveryServer()) {
+                    $serverName = $this->lang->t("all_servers");
+                } else {
+                    $server = $this->heart->getServer($price->getServerId());
+                    $serverName = $server ? $server->getName() : "n/a";
+                }
 
-        foreach ($statement as $row) {
-            $price = $this->priceRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                $service = $this->heart->getService($price->getServiceId());
+                $serviceName = $service ? "{$service->getName()} ( {$service->getId()} )" : "n/a";
+                $quantity = $price->isForever() ? $this->lang->t("forever") : $price->getQuantity();
+                $smsPrice = $price->hasSmsPrice()
+                    ? $this->priceTextService->getPriceGrossText($price->getSmsPrice())
+                    : "n/a";
+                $transferPrice = $price->hasTransferPrice()
+                    ? $this->priceTextService->getPriceText($price->getTransferPrice())
+                    : "n/a";
+                $directBillingPrice = $price->hasDirectBillingPrice()
+                    ? $this->priceTextService->getPriceText($price->getDirectBillingPrice())
+                    : "n/a";
 
-            if ($price->isForEveryServer()) {
-                $serverName = $this->lang->t("all_servers");
-            } else {
-                $server = $this->heart->getServer($price->getServerId());
-                $serverName = $server ? $server->getName() : "n/a";
-            }
+                return (new BodyRow())
+                    ->setDbId($price->getId())
+                    ->addCell(new Cell($serviceName))
+                    ->addCell(new Cell($serverName))
+                    ->addCell(new Cell($quantity))
+                    ->addCell(new Cell($smsPrice))
+                    ->addCell(new Cell($transferPrice))
+                    ->addCell(new Cell($directBillingPrice))
+                    ->setDeleteAction(true)
+                    ->setEditAction(true);
+            })
+            ->all();
 
-            $service = $this->heart->getService($price->getServiceId());
-            $serviceName = $service ? "{$service->getName()} ( {$service->getId()} )" : "n/a";
-            $quantity = $price->isForever() ? $this->lang->t("forever") : $price->getQuantity();
-            $smsPrice = $price->hasSmsPrice()
-                ? $this->priceTextService->getPriceGrossText($price->getSmsPrice())
-                : "n/a";
-            $transferPrice = $price->hasTransferPrice()
-                ? $this->priceTextService->getPriceText($price->getTransferPrice())
-                : "n/a";
-            $directBillingPrice = $price->hasDirectBillingPrice()
-                ? $this->priceTextService->getPriceText($price->getDirectBillingPrice())
-                : "n/a";
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("service")))
+            ->addHeadCell(new HeadCell($this->lang->t("server")))
+            ->addHeadCell(new HeadCell($this->lang->t("quantity")))
+            ->addHeadCell(new HeadCell($this->lang->t("sms_price")))
+            ->addHeadCell(new HeadCell($this->lang->t("transfer_price")))
+            ->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $bodyRow->setDbId($price->getId());
-            $bodyRow->addCell(new Cell($serviceName));
-            $bodyRow->addCell(new Cell($serverName));
-            $bodyRow->addCell(new Cell($quantity));
-            $bodyRow->addCell(new Cell($smsPrice));
-            $bodyRow->addCell(new Cell($transferPrice));
-            $bodyRow->addCell(new Cell($directBillingPrice));
-
-            $bodyRow->setDeleteAction(true);
-            $bodyRow->setEditAction(true);
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        $button = $this->createAddButton();
-        $wrapper->addButton($button);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setTable($table)
+            ->addButton($this->createAddButton())
+            ->toHtml();
     }
 
     private function createAddButton()
@@ -126,47 +125,51 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
+        $price = null;
         if ($boxId == "price_edit") {
             $price = $this->priceRepository->getOrFail($query["id"]);
             $allServers = $price->isForEveryServer() ? "selected" : "";
         }
 
-        $services = "";
-        foreach ($this->heart->getServices() as $serviceId => $service) {
-            $services .= create_dom_element(
-                "option",
-                $service->getName() . " ( " . $service->getId() . " )",
-                [
-                    "value" => $service->getId(),
-                    "selected" =>
-                        isset($price) && $price->getServiceId() === $service->getId()
-                            ? "selected"
-                            : "",
-                ]
-            );
-        }
+        $services = collect($this->heart->getServices())
+            ->map(function (Service $service) use ($price) {
+                return create_dom_element(
+                    "option",
+                    "{$service->getName()} ( {$service->getId()} )",
+                    [
+                        "value"    => $service->getId(),
+                        "selected" =>
+                            $price && $price->getServiceId() === $service->getId()
+                                ? "selected"
+                                : "",
+                    ]
+                );
+            })
+            ->join();
 
-        $servers = "";
-        foreach ($this->heart->getServers() as $serverId => $server) {
-            $servers .= create_dom_element("option", $server->getName(), [
-                "value" => $server->getId(),
-                "selected" =>
-                    isset($price) && $price->getServerId() === $server->getId() ? "selected" : "",
-            ]);
-        }
-
-        $smsPrices = "";
-        foreach ($this->smsPriceRepository->all() as $smsPrice) {
-            $smsPrices .= create_dom_element(
-                "option",
-                $this->priceTextService->getPriceGrossText($smsPrice),
-                [
-                    "value" => $smsPrice,
+        $servers = collect($this->heart->getServers())
+            ->map(function (Server $server) use ($price) {
+                return create_dom_element("option", $server->getName(), [
+                    "value"    => $server->getId(),
                     "selected" =>
-                        isset($price) && $price->getSmsPrice() === $smsPrice ? "selected" : "",
-                ]
-            );
-        }
+                        $price && $price->getServerId() === $server->getId() ? "selected" : "",
+                ]);
+            })
+            ->join();
+
+        $smsPrices = collect($this->smsPriceRepository->all())
+            ->map(function ($smsPrice) use ($price) {
+                return create_dom_element(
+                    "option",
+                    $this->priceTextService->getPriceGrossText($smsPrice),
+                    [
+                        "value"    => $smsPrice,
+                        "selected" =>
+                            $price && $price->getSmsPrice() === $smsPrice ? "selected" : "",
+                    ]
+                );
+            })
+            ->join();
 
         switch ($boxId) {
             case "price_add":
@@ -202,7 +205,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         }
 
         return [
-            "status" => "ok",
+            "status"   => "ok",
             "template" => $output,
         ];
     }
