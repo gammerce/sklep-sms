@@ -37,14 +37,11 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $bodyRow = (new BodyRow())->setDbId($row['id'])->addCell(new Cell($row['name']));
-
-                if (has_privileges('manage_groups')) {
-                    $bodyRow->setDeleteAction(true);
-                    $bodyRow->setEditAction(true);
-                }
-
-                return $bodyRow;
+                return (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(new Cell($row['name']))
+                    ->setDeleteAction(has_privileges('manage_groups'))
+                    ->setEditAction(has_privileges('manage_groups'));
             })
             ->all();
 

@@ -2,8 +2,11 @@
 namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
+use App\Models\Group;
+use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
+use App\ServiceModules\ServiceModule;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -27,44 +30,36 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
+        $bodyRows = collect($this->heart->getServices())
+            ->map(function (Service $service) {
+                return (new BodyRow())
+                    ->setDbId($service->getId())
+                    ->addCell(new Cell($service->getName(), 'name'))
+                    ->addCell(new Cell($service->getShortDescription()))
+                    ->addCell(new Cell($service->getDescription()))
+                    ->addCell(new Cell($service->getOrder()))
+                    ->setDeleteAction(has_privileges('manage_services'))
+                    ->setEditAction(has_privileges('manage_services'));
+            })
+            ->all();
 
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('name')));
-        $table->addHeadCell(new HeadCell($this->lang->t('short_description')));
-        $table->addHeadCell(new HeadCell($this->lang->t('description')));
-        $table->addHeadCell(new HeadCell($this->lang->t('order')));
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('name')))
+            ->addHeadCell(new HeadCell($this->lang->t('short_description')))
+            ->addHeadCell(new HeadCell($this->lang->t('description')))
+            ->addHeadCell(new HeadCell($this->lang->t('order')))
+            ->addBodyRows($bodyRows);
 
-        foreach ($this->heart->getServices() as $service) {
-            $bodyRow = new BodyRow();
-
-            $bodyRow->setDbId($service->getId());
-
-            $nameCell = new Cell($service->getName());
-            $nameCell->setParam('headers', 'name');
-            $bodyRow->addCell($nameCell);
-            $bodyRow->addCell(new Cell($service->getShortDescription()));
-            $bodyRow->addCell(new Cell($service->getDescription()));
-            $bodyRow->addCell(new Cell($service->getOrder()));
-
-            if (has_privileges('manage_services')) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(true);
-            }
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (has_privileges('manage_services')) {
-            $button = new Input();
-            $button->setParam('id', 'service_button_add');
-            $button->setParam('type', 'button');
-            $button->addClass('button');
-            $button->setParam('value', $this->lang->t('add_service'));
+            $button = (new Input())
+                ->setParam('id', 'service_button_add')
+                ->setParam('type', 'button')
+                ->addClass('button')
+                ->setParam('value', $this->lang->t('add_service'));
+
             $wrapper->addButton($button);
         }
 
@@ -80,7 +75,6 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         if ($boxId == "service_edit") {
             $service = $this->heart->getService($query['id']);
 
-            // Pobieramy pola danego modułu
             if (strlen($service->getModule())) {
                 $serviceModule = $this->heart->getServiceModule($service->getId());
 
@@ -94,36 +88,34 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                     );
                 }
             }
-        }
-        // Pobranie dostępnych modułów usług
-        elseif ($boxId == "service_add") {
-            $servicesModules = "";
-            foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
-                if (!($serviceModule instanceof IServiceCreate)) {
-                    continue;
-                }
-
-                $servicesModules .= create_dom_element(
-                    "option",
-                    $this->heart->getServiceModuleName($serviceModule->getModuleId()),
-                    [
-                        'value' => $serviceModule->getModuleId(),
-                    ]
-                );
-            }
+        } elseif ($boxId == "service_add") {
+            $servicesModules = collect($this->heart->getEmptyServiceModules())
+                ->filter(function (ServiceModule $serviceModule) {
+                    return $serviceModule instanceof IServiceCreate;
+                })
+                ->map(function (ServiceModule $serviceModule) {
+                    return create_dom_element(
+                        "option",
+                        $this->heart->getServiceModuleName($serviceModule->getModuleId()),
+                        [
+                            'value' => $serviceModule->getModuleId(),
+                        ]
+                    );
+                })
+                ->join();
         }
 
-        // Grupy
-        $groups = "";
-        foreach ($this->heart->getGroups() as $group) {
-            $groups .= create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
-                'value' => $group->getId(),
-                'selected' =>
-                    isset($service) && in_array($group->getId(), $service->getGroups())
-                        ? "selected"
-                        : "",
-            ]);
-        }
+        $groups = collect($this->heart->getGroups())
+            ->map(function (Group $group) {
+                return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
+                    'value' => $group->getId(),
+                    'selected' =>
+                        isset($service) && in_array($group->getId(), $service->getGroups())
+                            ? "selected"
+                            : "",
+                ]);
+            })
+            ->join();
 
         switch ($boxId) {
             case "service_add":
