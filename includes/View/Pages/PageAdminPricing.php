@@ -47,9 +47,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM `ss_prices` " .
-            "ORDER BY `service`, `server`, `quantity` " .
-            "LIMIT ?, ?"
+                "FROM `ss_prices` " .
+                "ORDER BY `service`, `server`, `quantity` " .
+                "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -137,7 +137,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                     "option",
                     "{$service->getName()} ( {$service->getId()} )",
                     [
-                        "value"    => $service->getId(),
+                        "value" => $service->getId(),
                         "selected" =>
                             $price && $price->getServiceId() === $service->getId()
                                 ? "selected"
@@ -150,7 +150,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $servers = collect($this->heart->getServers())
             ->map(function (Server $server) use ($price) {
                 return create_dom_element("option", $server->getName(), [
-                    "value"    => $server->getId(),
+                    "value" => $server->getId(),
                     "selected" =>
                         $price && $price->getServerId() === $server->getId() ? "selected" : "",
                 ]);
@@ -163,7 +163,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                     "option",
                     $this->priceTextService->getPriceGrossText($smsPrice),
                     [
-                        "value"    => $smsPrice,
+                        "value" => $smsPrice,
                         "selected" =>
                             $price && $price->getSmsPrice() === $smsPrice ? "selected" : "",
                     ]
@@ -205,7 +205,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         }
 
         return [
-            "status"   => "ok",
+            "status" => "ok",
             "template" => $output,
         ];
     }

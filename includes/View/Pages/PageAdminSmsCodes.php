@@ -45,9 +45,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
-            "FROM `ss_sms_codes` " .
-            "WHERE `free` = '1' " .
-            "LIMIT ?, ?"
+                "FROM `ss_sms_codes` " .
+                "WHERE `free` = '1' " .
+                "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -61,10 +61,14 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                     ->setDbId($smsCode->getId())
                     ->addCell(new Cell($smsCode->getCode()))
                     ->addCell(
-                        new Cell($this->priceTextService->getPriceGrossText($smsCode->getSmsPrice()))
+                        new Cell(
+                            $this->priceTextService->getPriceGrossText($smsCode->getSmsPrice())
+                        )
                     )
                     ->addCell(
-                        new Cell(as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never"))
+                        new Cell(
+                            as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never")
+                        )
                     )
                     ->setDeleteAction(has_privileges('manage_sms_codes'));
             })
@@ -78,9 +82,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-        $wrapper = (new Wrapper())
-            ->setTitle($this->title)
-            ->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (has_privileges('manage_sms_codes')) {
             $button = (new Input())
@@ -125,7 +127,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         }
 
         return [
-            'status'   => 'ok',
+            'status' => 'ok',
             'template' => $output,
         ];
     }

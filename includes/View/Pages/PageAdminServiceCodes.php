@@ -32,11 +32,11 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS `service`, srv.name AS `server`, sc.price, u.username, u.uid, sc.timestamp " .
-            "FROM `ss_service_codes` AS sc " .
-            "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
-            "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
-            "LEFT JOIN `ss_users` AS u ON sc.uid = u.uid " .
-            "LIMIT ?, ?"
+                "FROM `ss_service_codes` AS sc " .
+                "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
+                "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
+                "LEFT JOIN `ss_users` AS u ON sc.uid = u.uid " .
+                "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
         $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
@@ -72,9 +72,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-        $wrapper = (new Wrapper())
-            ->setTitle($this->title)
-            ->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
         if (has_privileges('manage_service_codes')) {
             $button = (new Input())
@@ -115,7 +113,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
         }
 
         return [
-            'status'   => 'ok',
+            'status' => 'ok',
             'template' => $output,
         ];
     }

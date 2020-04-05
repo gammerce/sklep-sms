@@ -3,6 +3,7 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Models\Group;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\PriceTextService;
 use App\Support\QueryParticle;
@@ -36,23 +37,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setTitle($this->title);
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('username')));
-        $table->addHeadCell(new HeadCell($this->lang->t('firstname')));
-        $table->addHeadCell(new HeadCell($this->lang->t('surname')));
-        $table->addHeadCell(new HeadCell($this->lang->t('email')));
-        $table->addHeadCell(new HeadCell($this->lang->t('sid')));
-        $table->addHeadCell(new HeadCell($this->lang->t('groups')));
-        $table->addHeadCell(new HeadCell($this->lang->t('wallet')));
-
         $queryParticle = new QueryParticle();
 
-        if (isset($query['search'])) {
+        if (isset($query["search"])) {
             $queryParticle->extend(
                 create_search_query(
                     [
@@ -65,7 +52,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                         "`groups`",
                         "`wallet`",
                     ],
-                    $query['search']
+                    $query["search"]
                 )
             );
         }
@@ -81,69 +68,77 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-        $table->enablePagination($this->getPagePath(), $query, $rowsCount);
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return $this->userRepository->mapToModel($row);
+            })
+            ->map(function (User $user) {
+                $groups = collect($user->getGroups())
+                    ->map(function ($groupId) {
+                        return $this->heart->getGroup($groupId);
+                    })
+                    ->filter(function ($group) {
+                        return !!$group;
+                    })
+                    ->map(function (Group $group) {
+                        return "{$group->getName()} ({$group->getId()})";
+                    })
+                    ->join("; ");
 
-        foreach ($statement as $row) {
-            $user = $this->userRepository->mapToModel($row);
-            $bodyRow = new BodyRow();
+                return (new BodyRow())
+                    ->setDbId($user->getUid())
+                    ->addCell(new Cell($user->getUsername()))
+                    ->addCell(new Cell($user->getForename()))
+                    ->addCell(new Cell($user->getSurname()))
+                    ->addCell(new Cell($user->getEmail()))
+                    ->addCell(new Cell($user->getSteamId()))
+                    ->addCell(new Cell($groups))
+                    ->addCell(
+                        new Cell(
+                            $this->priceTextService->getPriceText($user->getWallet()),
+                            "wallet"
+                        )
+                    )
+                    ->addAction($this->createChargeButton())
+                    ->addAction($this->createPasswordButton())
+                    ->setDeleteAction(has_privileges("manage_users"))
+                    ->setEditAction(has_privileges("manage_users"));
+            })
+            ->all();
 
-            $groups = collect($user->getGroups())
-                ->map(function ($groupId) {
-                    return $this->heart->getGroup($groupId);
-                })
-                ->filter(function ($group) {
-                    return !!$group;
-                })
-                ->map(function (Group $group) {
-                    return "{$group->getName()} ({$group->getId()})";
-                })
-                ->join("; ");
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("username")))
+            ->addHeadCell(new HeadCell($this->lang->t("firstname")))
+            ->addHeadCell(new HeadCell($this->lang->t("surname")))
+            ->addHeadCell(new HeadCell($this->lang->t("email")))
+            ->addHeadCell(new HeadCell($this->lang->t("sid")))
+            ->addHeadCell(new HeadCell($this->lang->t("groups")))
+            ->addHeadCell(new HeadCell($this->lang->t("wallet")))
+            ->addBodyRows($bodyRows)
+            ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
-            $bodyRow->setDbId($user->getUid());
-            $bodyRow->addCell(new Cell($user->getUsername()));
-            $bodyRow->addCell(new Cell($user->getForename()));
-            $bodyRow->addCell(new Cell($user->getSurname()));
-            $bodyRow->addCell(new Cell($user->getEmail()));
-            $bodyRow->addCell(new Cell($user->getSteamId()));
-            $bodyRow->addCell(new Cell($groups));
-
-            $cell = new Cell($this->priceTextService->getPriceText($user->getWallet()));
-            $cell->setParam('headers', 'wallet');
-            $bodyRow->addCell($cell);
-
-            $buttonCharge = $this->createChargeButton();
-            $bodyRow->addAction($buttonCharge);
-
-            $changePasswordCharge = $this->createPasswordButton();
-            $bodyRow->addAction($changePasswordCharge);
-
-            if (has_privileges('manage_users')) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(true);
-            }
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper->toHtml();
+        return (new Wrapper())
+            ->setTitle($this->title)
+            ->setSearch()
+            ->setTable($table)
+            ->toHtml();
     }
 
     private function createChargeButton()
     {
         return (new Link())
-            ->addClass('dropdown-item charge_wallet')
-            ->addContent($this->lang->t('charge'));
+            ->addClass("dropdown-item charge_wallet")
+            ->addContent($this->lang->t("charge"));
     }
 
     private function createPasswordButton()
     {
         return (new Link())
-            ->addClass('dropdown-item change_password')
-            ->addContent($this->lang->t('change_password'));
+            ->addClass("dropdown-item change_password")
+            ->addContent($this->lang->t("change_password"));
     }
 
     public function getActionBox($boxId, array $query)
@@ -154,21 +149,22 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "user_edit":
-                $user = $this->heart->getUser($query['uid']);
+                $user = $this->heart->getUser($query["uid"]);
 
-                $groups = '';
-                foreach ($this->heart->getGroups() as $group) {
-                    $groups .= create_dom_element(
-                        "option",
-                        "{$group->getName()} ( {$group->getId()} )",
-                        [
-                            'value' => $group->getId(),
-                            'selected' => in_array($group->getId(), $user->getGroups())
-                                ? "selected"
-                                : "",
-                        ]
-                    );
-                }
+                $groups = collect($this->heart->getGroups())
+                    ->map(function (Group $group) use ($user) {
+                        return create_dom_element(
+                            "option",
+                            "{$group->getName()} ( {$group->getId()} )",
+                            [
+                                "value" => $group->getId(),
+                                "selected" => in_array($group->getId(), $user->getGroups())
+                                    ? "selected"
+                                    : "",
+                            ]
+                        );
+                    })
+                    ->join();
 
                 $output = $this->template->render("admin/action_boxes/user_edit", [
                     "email" => $user->getEmail(),
@@ -183,28 +179,28 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "charge_wallet":
-                $user = $this->heart->getUser($query['uid']);
+                $user = $this->heart->getUser($query["uid"]);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
-                    compact('user')
+                    compact("user")
                 );
                 break;
 
             case "change_password":
-                $user = $this->heart->getUser($query['uid']);
+                $user = $this->heart->getUser($query["uid"]);
                 $output = $this->template->render(
                     "admin/action_boxes/user_change_password",
-                    compact('user')
+                    compact("user")
                 );
                 break;
 
             default:
-                $output = '';
+                $output = "";
         }
 
         return [
-            'status' => 'ok',
-            'template' => $output,
+            "status" => "ok",
+            "template" => $output,
         ];
     }
 }

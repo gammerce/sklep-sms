@@ -52,7 +52,9 @@ class PageAdminPlayersFlags extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
             ->addHeadCell(new HeadCell($this->lang->t('server')))
             ->addHeadCell(
-                new HeadCell("{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}")
+                new HeadCell(
+                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
+                )
             )
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
