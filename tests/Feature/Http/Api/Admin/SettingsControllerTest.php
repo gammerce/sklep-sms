@@ -2,7 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\System\Settings;
-use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -22,7 +22,7 @@ class SettingsControllerTest extends HttpTestCase
             'module' => SimPay::MODULE_ID,
         ]);
         $smsPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => Microsms::MODULE_ID,
+            'module' => MicroSMS::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
             'module' => TPay::MODULE_ID,

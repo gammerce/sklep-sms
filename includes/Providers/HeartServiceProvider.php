@@ -13,7 +13,7 @@ use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
-use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\PaymentModules\Profitsms;
 use App\Verification\PaymentModules\Pukawka;
@@ -92,7 +92,7 @@ class HeartServiceProvider
         $heart->registerPaymentModule(Gosetti::MODULE_ID, Gosetti::class);
         $heart->registerPaymentModule(Homepay::MODULE_ID, Homepay::class);
         $heart->registerPaymentModule(Hostplay::MODULE_ID, Hostplay::class);
-        $heart->registerPaymentModule(Microsms::MODULE_ID, Microsms::class);
+        $heart->registerPaymentModule(MicroSMS::MODULE_ID, MicroSMS::class);
         $heart->registerPaymentModule(Profitsms::MODULE_ID, Profitsms::class);
         $heart->registerPaymentModule(Pukawka::MODULE_ID, Pukawka::class);
         $heart->registerPaymentModule(SimPay::MODULE_ID, SimPay::class);
