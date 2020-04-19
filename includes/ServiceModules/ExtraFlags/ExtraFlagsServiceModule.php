@@ -301,25 +301,26 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        $user = $this->auth->user();
-
-        $types = "";
-        for ($i = 0, $value = 1; $i < 3; $value = 1 << ++$i) {
-            if ($this->service->getTypes() & $value) {
-                $type = ExtraFlagType::getTypeName($value);
-                $types .= $this->template->render(
-                    "services/extra_flags/service_type",
-                    compact('value', 'type')
-                );
-            }
-        }
+        $types = collect(ExtraFlagType::ALL)
+            ->filter(function ($type) {
+                return $this->service->getTypes() & $type;
+            })
+            ->map(function ($value) {
+                return $this->template->render("services/extra_flags/service_type", [
+                    "type" => ExtraFlagType::getTypeName($value),
+                    "value" => $value,
+                ]);
+            })
+            ->join();
 
         $servers = $this->getServerOptions();
 
-        return $this->template->render(
-            "services/extra_flags/purchase_form",
-            compact('types', 'user', 'servers') + ['serviceId' => $this->service->getId()]
-        );
+        return $this->template->render("services/extra_flags/purchase_form", [
+            "servers" => $servers,
+            "serviceId" => $this->service->getId(),
+            "types" => $types,
+            "user" => $this->auth->user(),
+        ]);
     }
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
@@ -413,7 +414,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function orderDetails(Purchase $purchase)
     {
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-        $typeName = $this->getTypeName2($purchase->getOrder('type'));
+        $typeName = $this->getTypeName($purchase->getOrder('type'));
 
         $password = '';
         if (strlen($purchase->getOrder('password'))) {
@@ -565,7 +566,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "services/extra_flags/purchase_info_email",
                 compact('quantity', 'password', 'setinfo') + [
                     'authData' => $transaction->getAuthData(),
-                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
+                    'typeName' => $this->getTypeName($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
                     'serverName' => $server ? $server->getName() : 'n/a',
                 ]
@@ -578,7 +579,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 compact('cost', 'quantity', 'password', 'setinfo') + [
                     'authData' => $transaction->getAuthData(),
                     'email' => $transaction->getEmail(),
-                    'typeName' => $this->getTypeName2($transaction->getExtraDatum('type')),
+                    'typeName' => $this->getTypeName($transaction->getExtraDatum('type')),
                     'serviceName' => $this->service->getName(),
                     'serverName' => $server ? $server->getName() : 'n/a',
                 ]
@@ -851,17 +852,21 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "password" => "disabled",
         ];
 
-        // Dodajemy typ uslugi, (1<<2) ostatni typ
-        for ($i = 0, $optionId = 1; $i < 3; $optionId = 1 << ++$i) {
-            // Kiedy dana usługa nie wspiera danego typu i wykupiona usługa nie ma tego typu
+        foreach (ExtraFlagType::ALL as $optionId) {
+            // When given service doesn't support given type
+            // and type of user service differs from given type
             if (!($this->service->getTypes() & $optionId) && $optionId != $userService->getType()) {
                 continue;
             }
 
-            $serviceInfo['types'] .= create_dom_element("option", $this->getTypeName($optionId), [
-                'value' => $optionId,
-                'selected' => $optionId == $userService->getType() ? "selected" : "",
-            ]);
+            $serviceInfo['types'] .= create_dom_element(
+                "option",
+                ExtraFlagType::getTypeName($optionId),
+                [
+                    'value' => $optionId,
+                    'selected' => $optionId == $userService->getType() ? "selected" : "",
+                ]
+            );
 
             if ($optionId == $userService->getType()) {
                 switch ($optionId) {
@@ -917,7 +922,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'moduleId' => $this->getModuleId(),
             'serverName' => $server->getName(),
             'serviceName' => $this->service->getName(),
-            'type' => $this->getTypeName2($userService->getType()),
+            'type' => $this->getTypeName($userService->getType()),
         ]);
     }
 
@@ -951,7 +956,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /**
      * @param ExtraFlagUserService $userService
-     * @param array                $data
+     * @param array $data
      * @return bool
      */
     private function userServiceEdit(ExtraFlagUserService $userService, array $data)
@@ -1194,12 +1199,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     private function getTypeOptions($availableTypes, $selectedTypes = 0)
     {
-        return collect([1 << 0, 1 << 1, 1 << 2])
+        return collect(ExtraFlagType::ALL)
             ->filter(function ($optionId) use ($availableTypes) {
                 return $availableTypes & $optionId;
             })
             ->map(function ($optionId) use ($selectedTypes) {
-                return create_dom_element("option", $this->getTypeName($optionId), [
+                return create_dom_element("option", ExtraFlagType::getTypeName($optionId), [
                     'value' => $optionId,
                     'selected' => $optionId & $selectedTypes ? "selected" : "",
                 ]);
@@ -1244,23 +1249,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     }
 
     private function getTypeName($value)
-    {
-        if ($value == ExtraFlagType::TYPE_NICK) {
-            return $this->lang->t('nickpass');
-        }
-
-        if ($value == ExtraFlagType::TYPE_IP) {
-            return $this->lang->t('ippass');
-        }
-
-        if ($value == ExtraFlagType::TYPE_SID) {
-            return $this->lang->t('sid');
-        }
-
-        return "";
-    }
-
-    private function getTypeName2($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
             return $this->lang->t('nick');
