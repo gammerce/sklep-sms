@@ -9,11 +9,15 @@ class PagePurchase extends Page
 {
     const PAGE_ID = 'purchase';
 
-    public function __construct()
+    /** @var Auth */
+    private $auth;
+
+    public function __construct(Auth $auth)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('purchase');
+        $this->auth = $auth;
     }
 
     public function getContent(array $query, array $body)
@@ -23,15 +27,11 @@ class PagePurchase extends Page
 
     protected function content(array $query, array $body)
     {
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
-        $user = $auth->user();
-
-        $serviceId = $query['service'];
+        $serviceId = array_get($query, 'service');
 
         $serviceModule = $this->heart->getServiceModule($serviceId);
 
-        if (!$serviceModule) {
+        if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t('site_not_exists');
         }
 
@@ -68,31 +68,28 @@ class PagePurchase extends Page
 
         $this->heart->pageTitle .= " - " . $serviceModule->service->getName();
 
-        // Sprawdzamy, czy usluga wymaga, by użytkownik był zalogowany
-        // Jeżeli wymaga, to to sprawdzamy
-        if ($serviceModule instanceof IBeLoggedMust && !$auth->check()) {
+        if ($serviceModule instanceof IBeLoggedMust && !$this->auth->check()) {
             return $this->lang->t('must_be_logged_in');
         }
 
-        // Użytkownik nie posiada grupy, która by zezwalała na zakup tej usługi
+        $user = $this->auth->user();
+
         if (!$this->heart->canUserUseService($user->getUid(), $serviceModule->service)) {
             return $this->lang->t('service_no_permission');
         }
 
-        // Nie ma formularza zakupu, to tak jakby strona nie istniała
-        if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return $this->lang->t('site_not_exists');
-        }
-
-        // Dodajemy długi opis
-        $showMore = '';
         if (strlen($serviceModule->descriptionLongGet())) {
             $showMore = $this->template->render("services/show_more");
+        } else {
+            $showMore = "";
         }
 
         $output = $this->template->render(
             "services/short_description",
-            compact('serviceModule', 'showMore')
+            [
+                "shortDescription" => $serviceModule->descriptionShortGet(),
+                "showMore" => $showMore,
+            ]
         );
 
         return $output . $serviceModule->purchaseFormGet($query);

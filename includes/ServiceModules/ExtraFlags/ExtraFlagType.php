@@ -8,6 +8,7 @@ class ExtraFlagType
     const TYPE_NICK = 1 << 0;
     const TYPE_IP = 1 << 1;
     const TYPE_SID = 1 << 2;
+    const ALL = [self::TYPE_NICK, self::TYPE_IP, self::TYPE_SID];
 
     public static function getTypeName($value)
     {
