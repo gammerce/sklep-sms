@@ -84,13 +84,10 @@ class PagePurchase extends Page
             $showMore = "";
         }
 
-        $output = $this->template->render(
-            "services/short_description",
-            [
-                "shortDescription" => $serviceModule->descriptionShortGet(),
-                "showMore" => $showMore,
-            ]
-        );
+        $output = $this->template->render("services/short_description", [
+            "shortDescription" => $serviceModule->descriptionShortGet(),
+            "showMore" => $showMore,
+        ]);
 
         return $output . $serviceModule->purchaseFormGet($query);
     }
