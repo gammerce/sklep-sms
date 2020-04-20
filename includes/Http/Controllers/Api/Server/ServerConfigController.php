@@ -86,6 +86,7 @@ class ServerConfigController
                 'p' => $price->getSmsPrice(),
                 // Replace null with -1 cause it's easier to handle it by plugins
                 'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
+                'd' => 40,
             ];
         });
 

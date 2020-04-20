@@ -131,7 +131,8 @@ class PriceRepository
             as_int($data['sms_price']),
             as_int($data['transfer_price']),
             as_int($data['direct_billing_price']),
-            as_int($data['quantity'])
+            as_int($data['quantity']),
+            as_int($data['discount'])
         );
     }
 }

@@ -69,6 +69,7 @@ return [
     'description_on_server' => 'Description on server </br> HTML: not allowed',
     'description_on_www' => 'Description on WWW website </br> HTML: allowed',
     'direct_billing_price' => 'Direct Billing price',
+    'discount' => 'Discount',
     'dont_delete' => '( 0 - don\'t delete )',
     'edit_antispam_question' => 'Edit anti-spam question',
     'edit_group' => 'Edit group',

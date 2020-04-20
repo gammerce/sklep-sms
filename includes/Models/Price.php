@@ -24,6 +24,9 @@ class Price
     /** @var int|null */
     private $quantity;
 
+    /** @var int|null */
+    private $discount;
+
     public function __construct(
         $id,
         $serviceId,
@@ -31,7 +34,8 @@ class Price
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
-        $quantity
+        $quantity,
+        $discount
     ) {
         $this->id = $id;
         $this->service = $serviceId;
@@ -40,6 +44,7 @@ class Price
         $this->transferPrice = $transferPrice;
         $this->directBillingPrice = $directBillingPrice;
         $this->quantity = $quantity;
+        $this->discount = $discount;
     }
 
     public function getId()
@@ -90,6 +95,11 @@ class Price
     public function getQuantity()
     {
         return $this->quantity;
+    }
+
+    public function getDiscount()
+    {
+        return $this->discount;
     }
 
     public function isForever()
