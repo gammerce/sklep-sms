@@ -1,6 +1,8 @@
 <?php
 namespace App\Http\Services;
 
+use App\Http\Validation\Rules\IntegerRule;
+use App\Http\Validation\Rules\MaxValueRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
@@ -23,6 +25,7 @@ class PriceService
                 "sms_price" => as_int(array_get($body, "sms_price")),
                 "transfer_price" => $transferPrice,
                 "quantity" => as_int(array_get($body, "quantity")),
+                "discount" => as_int(array_get($body, "discount")),
             ]),
             [
                 "direct_billing_price" => [new MinValueRule(0.01)],
@@ -31,6 +34,7 @@ class PriceService
                 "sms_price" => [new SmsPriceExistsRule()],
                 "transfer_price" => [new MinValueRule(1)],
                 "quantity" => [new RequiredRule(), new NumberRule()],
+                "discount" => [new IntegerRule(), new MinValueRule(1), new MaxValueRule(100)],
             ]
         );
     }

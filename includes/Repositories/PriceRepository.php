@@ -7,6 +7,8 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Support\Database;
 
+// TODO Add migration to add discount
+
 class PriceRepository
 {
     /** @var Database */
@@ -46,11 +48,12 @@ class PriceRepository
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
-        $quantity
+        $quantity,
+        $discount
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`) " .
+                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
                     "VALUES ( ?, ?, ?, ?, ?, ? )"
             )
             ->execute([
@@ -60,6 +63,7 @@ class PriceRepository
                 $transferPrice,
                 $directBillingPrice,
                 $quantity,
+                $discount
             ]);
 
         return $this->get($this->db->lastId());
@@ -94,11 +98,12 @@ class PriceRepository
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
-        $quantity
+        $quantity,
+        $discount
     ) {
         $statement = $this->db->statement(
             "UPDATE `ss_prices` " .
-                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ? " .
+                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ?, `discount` = ? " .
                 "WHERE `id` = ?"
         );
         $statement->execute([
@@ -108,6 +113,7 @@ class PriceRepository
             $transferPrice,
             $directBillingPrice,
             $quantity,
+            $discount,
             $id,
         ]);
 
