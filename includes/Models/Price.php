@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+// TODO Display discount value in purchase form
+
 class Price
 {
     /** @var int */
