@@ -86,7 +86,7 @@ class UserServiceRepository
 
         $affected = $this->update($id, $baseData->all());
 
-        if ($moduleData) {
+        if ($moduleData->isPopulated()) {
             $params = map_to_params($moduleData);
             $values = map_to_values($moduleData);
 
