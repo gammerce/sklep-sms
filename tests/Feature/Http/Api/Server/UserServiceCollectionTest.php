@@ -117,4 +117,44 @@ class UserServiceCollectionTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals([], $json);
     }
+
+    /** @test */
+    public function works_with_special_characters()
+    {
+        // given
+        $userName = "❀zażółć gęślą jaźń ㋛ヅ❤♫";
+
+        $userServiceNick = $this->factory->extraFlagUserService([
+            'server_id' => $this->server->getId(),
+            'service_id' => "vippro",
+            'type' => ExtraFlagType::TYPE_NICK,
+            'auth_data' => $userName,
+        ]);
+
+        // when
+        $response = $this->get(
+            '/api/server/user_services',
+            [
+                'key' => md5($this->settings->get("random_key")),
+                'server_id' => $this->server->getId(),
+                'nick' => $userName,
+            ],
+            [
+                'Accept' => 'application/json',
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertEquals(
+            [
+                [
+                    "s" => "VIP PRO",
+                    "e" => convert_expire($userServiceNick->getExpire()),
+                ],
+            ],
+            $json
+        );
+    }
 }
