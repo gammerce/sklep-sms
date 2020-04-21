@@ -74,7 +74,7 @@ class UserServiceRepository
         return $statement->rowCount();
     }
 
-    public function updateWithModule(ServiceModule $serviceModule, $id, array $data)
+    public function updateWithModule(ServiceModule $serviceModule, $userServiceId, array $data)
     {
         $baseData = collect($data)->filter(function ($value, $key) {
             return in_array($key, ['uid', 'service', 'expire'], true);
@@ -84,7 +84,7 @@ class UserServiceRepository
             return !in_array($key, ['uid', 'expire'], true);
         });
 
-        $affected = $this->update($id, $baseData->all());
+        $affected = $this->update($userServiceId, $baseData->all());
 
         if ($moduleData->isPopulated()) {
             $params = map_to_params($moduleData);
@@ -92,7 +92,7 @@ class UserServiceRepository
 
             $table = $serviceModule::USER_SERVICE_TABLE;
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
-            $statement->execute(array_merge($values, [$id]));
+            $statement->execute(array_merge($values, [$userServiceId]));
             $affected = max($affected, $statement->rowCount());
         }
 
