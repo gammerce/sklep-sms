@@ -79,18 +79,25 @@ $(document).delegate("#form_purchase [name=price_id]", "change", function() {
     var directBillingPrice = option.data("direct-billing-price");
     var transferPrice = option.data("transfer-price");
     var smsPrice = option.data("sms-price");
+    var discount = option.data("discount");
 
-    toggleCost(form.find("#cost_direct_billing"), directBillingPrice);
-    toggleCost(form.find("#cost_sms"), smsPrice);
-    toggleCost(form.find("#cost_transfer"), transferPrice);
+    toggleCost(form.find("#cost_direct_billing"), directBillingPrice, discount);
+    toggleCost(form.find("#cost_sms"), smsPrice, discount);
+    toggleCost(form.find("#cost_transfer"), transferPrice, discount);
 });
 
-function toggleCost(node, price) {
+function toggleCost(node, price, discount) {
+    node.text("");
+    node.parent().find(".discount").text("");
+    node.parent().hide();
+
     if (price) {
         node.text(price);
+
+        if (discount) {
+            node.parent().find(".discount").text(`-${discount}%`);
+        }
+
         node.parent().show();
-    } else {
-        node.text("");
-        node.parent().hide();
     }
 }

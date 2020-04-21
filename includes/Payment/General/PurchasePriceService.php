@@ -37,12 +37,13 @@ class PurchasePriceService
                 $item = [
                     'id' => $price->getId(),
                     'quantity' => $price->getQuantity(),
+                    'discount' => $price->getDiscount(),
                     'direct_billing_price' => null,
                     'sms_price' => null,
                     'transfer_price' => null,
                 ];
 
-                if ($this->isAvailableUsingDirectBilling($price, $server)) {
+                if ($this->isAvailableUsingDirectBilling($price)) {
                     $item['direct_billing_price'] = $price->getDirectBillingPrice();
                 }
 
@@ -99,7 +100,7 @@ class PurchasePriceService
             $this->settings->getTransferPlatformId();
     }
 
-    private function isAvailableUsingDirectBilling(Price $price, Server $server = null)
+    private function isAvailableUsingDirectBilling(Price $price)
     {
         return $price->hasDirectBillingPrice();
     }

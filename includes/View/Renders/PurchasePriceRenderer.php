@@ -41,10 +41,11 @@ class PurchasePriceRenderer
         $smsPrice = $this->priceTextService->getPriceGrossText($price['sms_price']);
         $transferPrice = $this->priceTextService->getPriceText($price['transfer_price']);
         $quantity = $this->priceTextService->getQuantityText($price['quantity'], $service);
+        $discount = array_get($price, "discount");
 
         return $this->template->renderNoComments(
             "purchase/purchase_price",
-            compact('directBillingPrice', 'priceId', 'quantity', 'smsPrice', 'transferPrice')
+            compact('directBillingPrice', 'priceId', 'quantity', 'smsPrice', 'transferPrice', 'discount')
         );
     }
 }
