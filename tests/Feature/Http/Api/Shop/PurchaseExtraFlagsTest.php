@@ -3,6 +3,8 @@ namespace Tests\Feature\Http\Api\Shop;
 
 use App\Models\Purchase;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
+use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Verification\PaymentModules\Zabijaka;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -14,6 +16,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
+
         $this->mockPaymentModuleFactory();
     }
 
@@ -22,6 +25,13 @@ class PurchaseExtraFlagsTest extends HttpTestCase
     {
         $this->makeVerifySmsSuccessful(Zabijaka::class);
         $this->actingAs($this->factory->user());
+
+        /** @var ExtraFlagUserServiceRepository $extraFlagUserServiceRepository */
+        $extraFlagUserServiceRepository = $this->app->make(ExtraFlagUserServiceRepository::class);
+
+        /** @var PlayerFlagRepository $playerFlagRepository */
+        $playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
+
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => Zabijaka::MODULE_ID,
         ]);
@@ -36,6 +46,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
             "service_id" => "vippro",
             "server_id" => $server->getId(),
             "sms_price" => 500,
+            "quantity" => 2,
         ]);
 
         $validationResponse = $this->post("/api/purchases", [
@@ -47,20 +58,40 @@ class PurchaseExtraFlagsTest extends HttpTestCase
             "password" => "manq12a",
             "password_repeat" => "manq12a",
             "server_id" => $server->getId(),
-            "price_id" => $price->getId(),
+            "quantity" => $price->getQuantity(),
             "email" => "a@a.pl",
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
         $json = $this->decodeJsonResponse($validationResponse);
+        $transactionId = $json["transaction_id"];
 
-        $response = $this->post("/api/payment", [
+        $response = $this->post("/api/payment/{$transactionId}", [
             "method" => Purchase::METHOD_SMS,
             "sms_code" => "abc123",
-            "purchase_sign" => $json["sign"],
-            "purchase_data" => $json["data"],
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("purchased", $json["return_id"]);
+
+        $expctedExpire = time() + 2 * 24 * 60 * 60;
+        $userService = $extraFlagUserServiceRepository->findOrFail([
+            "us.service" => "vippro",
+        ]);
+        $this->assertAlmostSameTimestamp($expctedExpire, $userService->getExpire());
+        $this->assertSame($server->getId(), $userService->getServerId());
+        $this->assertSame("vippro", $userService->getServiceId());
+        $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());
+        $this->assertSame("mama", $userService->getAuthData());
+        $this->assertSame("manq12a", $userService->getPassword());
+
+        $playerFlag = $playerFlagRepository->findOrFail([]);
+        $this->assertSame($server->getId(), $playerFlag->getServerId());
+        $this->assertSame(ExtraFlagType::TYPE_NICK, $playerFlag->getType());
+        $this->assertSame("mama", $playerFlag->getAuthData());
+        $this->assertSame("manq12a", $playerFlag->getPassword());
+        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("b"));
+        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("t"));
+        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("x"));
+        $this->assertSame(0, $playerFlag->getFlag("z"));
     }
 }

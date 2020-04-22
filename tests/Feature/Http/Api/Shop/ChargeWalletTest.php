@@ -51,11 +51,10 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
         $json = $this->decodeJsonResponse($validationResponse);
+        $transactionId = $json["transaction_id"];
 
-        $paymentResponse = $this->post("/api/payment", [
+        $paymentResponse = $this->post("/api/payment/{$transactionId}", [
             "method" => Purchase::METHOD_TRANSFER,
-            "purchase_sign" => $json["sign"],
-            "purchase_data" => $json["data"],
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
         $json = $this->decodeJsonResponse($paymentResponse);
@@ -116,11 +115,10 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
         $json = $this->decodeJsonResponse($validationResponse);
+        $transactionId = $json["transaction_id"];
 
-        $paymentResponse = $this->post("/api/payment", [
+        $paymentResponse = $this->post("/api/payment/{$transactionId}", [
             "method" => Purchase::METHOD_DIRECT_BILLING,
-            "purchase_sign" => $json["sign"],
-            "purchase_data" => $json["data"],
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
 
@@ -168,12 +166,11 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
         $json = $this->decodeJsonResponse($validationResponse);
+        $transactionId = $json["transaction_id"];
 
-        $response = $this->post("/api/payment", [
+        $response = $this->post("/api/payment/{$transactionId}", [
             "method" => Purchase::METHOD_SMS,
             "sms_code" => "abc123",
-            "purchase_sign" => $json["sign"],
-            "purchase_data" => $json["data"],
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getUid());

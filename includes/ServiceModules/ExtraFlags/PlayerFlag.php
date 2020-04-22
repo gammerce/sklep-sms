@@ -46,6 +46,7 @@ class PlayerFlag
 
     /** @var string */
     private $password;
+
     /** @var array */
     private $flags;
 

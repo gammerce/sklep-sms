@@ -46,22 +46,22 @@ class ServiceCodePaymentService
      */
     public function payWithServiceCode(Purchase $purchase)
     {
-        // TODO Remove price usage
         $statement = $this->db->statement(
             <<<EOF
-            SELECT * FROM `ss_service_codes` 
-            WHERE `code` = ?
-            AND `service` = ?
-            AND `price` = ?
-            AND (`server` IS NULL OR `server` = ?)
-            AND (`uid` IS NULL OR `uid` = ?)
+            SELECT sc.* FROM `ss_service_codes` sc
+            INNER JOIN `ss_prices` sp on sc.price = sp.id
+            WHERE sc.code = ?
+            AND sp.quantity = ?
+            AND sc.service = ?
+            AND (sc.server IS NULL OR sc.server = ?)
+            AND (sc.uid IS NULL OR sc.uid = ?)
             LIMIT 1
 EOF
         );
         $statement->execute([
             $purchase->getPayment(Purchase::PAYMENT_SERVICE_CODE),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getServiceId(),
-            $purchase->getPrice()->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->user->getUid(),
         ]);
