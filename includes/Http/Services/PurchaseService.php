@@ -71,16 +71,17 @@ class PurchaseService
         $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type'                 => $type,
-            'auth_data'            => $authData,
-            'password'             => $password,
-            'passwordr'            => $password,
+            'type' => $type,
+            'auth_data' => $authData,
+            'password' => $password,
+            'passwordr' => $password,
         ]);
 
         $purchase->setPayment([
-            Purchase::PAYMENT_METHOD       => $method,
-            Purchase::PAYMENT_SMS_CODE     => $smsCode,
-            Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId(),
+            Purchase::PAYMENT_METHOD => $method,
+            Purchase::PAYMENT_SMS_CODE => $smsCode,
+            Purchase::PAYMENT_PLATFORM_SMS =>
+                $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId(),
         ]);
 
         if ($price) {

@@ -58,12 +58,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->server->getToken(),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -115,12 +110,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->server->getToken(),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -161,12 +151,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
     {
         // given
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->server->getToken(),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -214,12 +199,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->server->getToken(),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -247,9 +227,12 @@ class PurchaseResourceWalletTest extends HttpTestCase
         // then
         $this->assertSame(402, $response->getStatusCode());
         $json = json_decode($response->getContent(), true);
-        $this->assertEquals([
-            "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
-        ], $json);
+        $this->assertEquals(
+            [
+                "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
+            ],
+            $json
+        );
         $freshUser = $this->userRepository->get($user->getUid());
         $this->assertEquals(10000, $freshUser->getWallet());
     }

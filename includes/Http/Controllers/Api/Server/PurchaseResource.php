@@ -46,7 +46,11 @@ class PurchaseResource
         }
 
         try {
-            $purchaseResult = $purchaseService->purchase($serviceModule, $server, $request->request->all());
+            $purchaseResult = $purchaseService->purchase(
+                $serviceModule,
+                $server,
+                $request->request->all()
+            );
         } catch (ValidationException $e) {
             $warnings = $this->formatWarnings($e->warnings);
             $firstWarning = $this->getFirstWarning($e->warnings) ?: $lang->t('form_wrong_filled');

@@ -1152,13 +1152,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
         );
-        $statement->execute([
-            $this->service->getId(),
-            $serverId,
-            $type,
-            $authData,
-            $password,
-        ]);
+        $statement->execute([$this->service->getId(), $serverId, $type, $authData, $password]);
 
         if (!$statement->rowCount()) {
             return [
