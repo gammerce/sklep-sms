@@ -107,8 +107,7 @@ class SettingsController
         ];
 
         if ($validated['license_token']) {
-            $values['license_password'] = $validated['license_token'];
-            $values['license_login'] = 'license';
+            $values['license_token'] = $validated['license_token'];
         }
 
         $updated = $settingsRepository->update($values);

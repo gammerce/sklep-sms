@@ -36,7 +36,7 @@ class DatabaseMigration
             ->execute([get_random_string(16)]);
 
         $this->db
-            ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'license_password';")
+            ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'license_token'")
             ->execute([$token]);
 
         $this->db
