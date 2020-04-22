@@ -610,7 +610,7 @@ class LicenseServiceModule extends ServiceModule implements
 
             $output = $this->priceTextService->getPriceText($cost);
             if ($bargainPercentage) {
-                $output .= (new DOMElement("-{$bargainPercentage}%"))
+                $output .= (new DOMElement("&nbsp;-{$bargainPercentage}%"))
                     ->setName("sup")
                     ->setParam("class", "discount");
             }
