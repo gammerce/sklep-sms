@@ -105,8 +105,7 @@ function has_privileges($privilege, $user = null)
 
 function create_dom_element($name, $content = "", $data = [])
 {
-    $element = new DOMElement($content);
-    $element->setName($name);
+    $element = new DOMElement($name, $content);
 
     foreach ($data as $key => $value) {
         $element->setParam($key, $value);
