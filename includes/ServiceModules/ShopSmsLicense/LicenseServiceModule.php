@@ -13,7 +13,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\General\BoughtServiceService;
-use App\Payment\General\PurchaseSerializer;
+use App\Payment\General\PurchaseDataService;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -30,7 +30,6 @@ use App\Services\PriceTextService;
 use App\Services\UserServiceService;
 use App\Support\QueryParticle;
 use App\System\Auth;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -89,9 +88,6 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var Translator */
     private $lang;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var Auth */
     private $auth;
 
@@ -110,8 +106,8 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
+    /** @var PurchaseDataService */
+    private $purchaseDataService;
 
     /** @var LicenseUserServiceRepository */
     private $licenseUserServiceRepository;
@@ -129,14 +125,13 @@ class LicenseServiceModule extends ServiceModule implements
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
-        $this->settings = $this->app->make(Settings::class);
         $this->auth = $this->app->make(Auth::class);
         $this->currentPage = $this->app->make(CurrentPage::class);
         $this->licenseServerService = $this->app->make(LicenseServerService::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->userServiceService = $this->app->make(UserServiceService::class);
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
-        $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
+        $this->purchaseDataService = $this->app->make(PurchaseDataService::class);
         $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->engineService = $this->app->make(EngineService::class);
@@ -158,18 +153,6 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function userServiceAdminDisplayGet(array $query, array $body)
     {
-        $wrapper = new Wrapper();
-        $wrapper->setSearch();
-
-        $table = new Structure();
-        $table->addHeadCell(new HeadCell($this->lang->t('id'), "id"));
-        $table->addHeadCell(new HeadCell($this->lang->t('user')));
-        $table->addHeadCell(new HeadCell($this->lang->t('service')));
-        $table->addHeadCell(new HeadCell($this->lang->t('identifier')));
-        $table->addHeadCell(new HeadCell($this->lang->t('external_license_id')));
-        $table->addHeadCell(new HeadCell($this->lang->t('cost_daily')));
-        $table->addHeadCell(new HeadCell($this->lang->t('expires')));
-
         $queryParticle = new QueryParticle();
 
         if (isset($query['search'])) {
@@ -208,35 +191,41 @@ class LicenseServiceModule extends ServiceModule implements
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
-        $table->setDbRowsCount($this->db->query("SELECT FOUND_ROWS()")->fetchColumn());
+        $bodyRows = collect($statement)
+            ->map(function (array $row) {
+                return (new BodyRow())
+                    ->setDbId($row['id'])
+                    ->addCell(
+                        new Cell(
+                            $row['uid']
+                                ? $row['username'] . " ({$row['uid']})"
+                                : $this->lang->t('none')
+                        )
+                    )
+                    ->addCell(new Cell($row['service']))
+                    ->addCell(new Cell($row['identifier']))
+                    ->addCell(new Cell($row['external_license_id']))
+                    ->addCell(new Cell($this->priceTextService->getPriceText($row['cost_daily'])))
+                    ->addCell(new Cell(convert_expire($row['expire'])))
+                    ->setDeleteAction(has_privileges("manage_user_services"))
+                    ->setEditAction(false);
+            })
+            ->all();
 
-        foreach ($statement as $row) {
-            $bodyRow = new BodyRow();
+        $table = (new Structure())
+            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t('user')))
+            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(new HeadCell($this->lang->t('identifier')))
+            ->addHeadCell(new HeadCell($this->lang->t('external_license_id')))
+            ->addHeadCell(new HeadCell($this->lang->t('cost_daily')))
+            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addBodyRows($bodyRows)
+            ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-            $bodyRow->setDbId($row['id']);
-            $bodyRow->addCell(
-                new Cell(
-                    $row['uid'] ? $row['username'] . " ({$row['uid']})" : $this->lang->t('none')
-                )
-            );
-            $bodyRow->addCell(new Cell($row['service']));
-            $bodyRow->addCell(new Cell($row['identifier']));
-            $bodyRow->addCell(new Cell($row['external_license_id']));
-            $bodyRow->addCell(new Cell($this->priceTextService->getPriceText($row['cost_daily'])));
-            $bodyRow->addCell(new Cell(convert_expire($row['expire'])));
-
-            if (get_privileges("manage_user_services")) {
-                $bodyRow->setDeleteAction(true);
-                $bodyRow->setEditAction(false);
-            }
-
-            $table->addBodyRow($bodyRow);
-        }
-
-        $wrapper->setTable($table);
-
-        return $wrapper;
+        return (new Wrapper())->setSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)
@@ -526,15 +515,14 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
         $purchase->setEmail($validated['email']);
 
-        $purchaseData = $this->purchaseSerializer->serializeAndEncode($purchase);
+        $transactionId = $this->purchaseDataService->storePurchase($purchase);
 
         return [
             'status' => "payment",
             'text' => $this->lang->t('purchase_form_validated'),
             'positive' => true,
             'data' => [
-                'data' => $purchaseData,
-                'sign' => md5($purchaseData . $this->settings->getSecret()),
+                'transaction_id' => $transactionId,
             ],
         ];
     }
