@@ -4,14 +4,10 @@ namespace Tests\Feature\Http\Api\Server;
 use App\Models\Server;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\PlayerFlagService;
-use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PlayerFlagCollectionTest extends HttpTestCase
 {
-    /** @var Settings */
-    private $settings;
-
     /** @var Server */
     private $server;
 
@@ -22,7 +18,6 @@ class PlayerFlagCollectionTest extends HttpTestCase
     {
         parent::setUp();
 
-        $this->settings = $this->app->make(Settings::class);
         $this->server = $this->factory->server();
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
     }

@@ -3,22 +3,16 @@ namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\Server;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
-use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserServiceCollectionTest extends HttpTestCase
 {
-    /** @var Settings */
-    private $settings;
-
     /** @var Server */
     private $server;
 
     protected function setUp()
     {
         parent::setUp();
-
-        $this->settings = $this->app->make(Settings::class);
         $this->server = $this->factory->server();
     }
 
@@ -53,7 +47,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $response = $this->get(
             '/api/server/user_services',
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
                 'server_id' => $this->server->getId(),
                 'nick' => 'example',
                 'ip' => '192.0.2.1',
@@ -101,7 +95,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $response = $this->get(
             '/api/server/user_services',
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
                 'server_id' => $this->server->getId(),
                 'nick' => 'example',
                 'ip' => '192.0.2.1',
@@ -135,7 +129,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $response = $this->get(
             '/api/server/user_services',
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
                 'server_id' => $this->server->getId(),
                 'nick' => $userName,
             ],

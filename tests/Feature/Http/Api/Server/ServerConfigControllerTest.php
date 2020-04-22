@@ -30,10 +30,10 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->settings = $this->app->make(Settings::class);
 
         $this->paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Gosetti::MODULE_ID,
+            "module" => Gosetti::MODULE_ID,
         ]);
         $this->server = $this->factory->server([
-            'sms_platform_id' => $this->paymentPlatform->getId(),
+            "sms_platform_id" => $this->paymentPlatform->getId(),
         ]);
 
         $this->mockRequester();
@@ -45,27 +45,27 @@ class ServerConfigControllerTest extends HttpTestCase
     {
         // given
         $this->factory->serverService([
-            'server_id' => $this->server->getId(),
-            'service_id' => 'vip',
+            "server_id" => $this->server->getId(),
+            "service_id" => "vip",
         ]);
 
         $price = $this->factory->price([
-            'service_id' => 'vip',
-            'sms_price' => 200,
-            'quantity' => 10,
+            "service_id" => "vip",
+            "sms_price" => 200,
+            "quantity" => 10,
         ]);
 
         // when
         $response = $this->get(
-            '/api/server/config',
+            "/api/server/config",
             [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => $this->server->getIp(),
-                'port' => $this->server->getPort(),
-                'version' => '3.9.1-rc.1242',
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.10.1-rc.1242",
             ],
             [
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -104,6 +104,7 @@ class ServerConfigControllerTest extends HttpTestCase
             "pr.0.p:200",
             "pr.0.q:10",
             "pr.0.d:0",
+            "pf.c:0",
         ];
         $this->assertSame(200, $response->getStatusCode());
         $this->assertSame(implode("\n", $data), $response->getContent());
@@ -115,16 +116,16 @@ class ServerConfigControllerTest extends HttpTestCase
         // given
         // when
         $response = $this->get(
-            '/api/server/config',
+            "/api/server/config",
             [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => $this->server->getIp(),
-                'port' => $this->server->getPort(),
-                'version' => '3.9.0',
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.10.0",
             ],
             [
-                'Accept' => 'application/json',
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Accept" => "application/json",
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -153,15 +154,15 @@ class ServerConfigControllerTest extends HttpTestCase
 
         // when
         $response = $this->get(
-            'api/server/config',
+            "api/server/config",
             [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => $this->server->getIp(),
-                'port' => $this->server->getPort(),
-                'version' => '3.8.0',
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.9.0",
             ],
             [
-                'User-Agent' => Server::TYPE_SOURCEMOD,
+                "User-Agent" => Server::TYPE_SOURCEMOD,
             ]
         );
 
@@ -175,15 +176,15 @@ class ServerConfigControllerTest extends HttpTestCase
     {
         // when
         $response = $this->get(
-            '/api/server/config',
+            "/api/server/config",
             [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => $this->server->getIp(),
-                'port' => $this->server->getPort(),
-                'version' => '3.7.0',
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.9.0",
             ],
             [
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -192,38 +193,17 @@ class ServerConfigControllerTest extends HttpTestCase
     }
 
     /** @test */
-    public function returns_404_if_invalid_ip_port()
-    {
-        // when
-        $response = $this->get(
-            '/api/server/config',
-            [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => '1.1.1.1',
-                'port' => '11111',
-                'version' => '3.9.0',
-            ],
-            [
-                'User-Agent' => Server::TYPE_AMXMODX,
-            ]
-        );
-
-        // then
-        $this->assertSame(404, $response->getStatusCode());
-    }
-
-    /** @test */
     public function returns_400_if_invalid_token()
     {
         // when
         $response = $this->get(
-            '/api/server/config',
+            "/api/server/config",
             [
-                'token' => "asd",
-                'version' => '3.9.0',
+                "token" => "asd",
+                "version" => "3.10.0",
             ],
             [
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -239,7 +219,7 @@ class ServerConfigControllerTest extends HttpTestCase
         $playerFlagService = $this->app->make(PlayerFlagService::class);
 
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
+            "server_id" => $this->server->getId(),
         ]);
         $playerFlagService->recalculatePlayerFlags(
             $this->server->getId(),
@@ -249,17 +229,16 @@ class ServerConfigControllerTest extends HttpTestCase
 
         // when
         $response = $this->get(
-            '/api/server/config',
+            "/api/server/config",
             [
-                'key' => md5($this->settings->get("random_key")),
-                'ip' => $this->server->getIp(),
-                'port' => $this->server->getPort(),
-                'version' => '3.9.0',
-                'player_flags' => '1',
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.10.0",
             ],
             [
-                'Accept' => 'application/json',
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Accept" => "application/json",
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -269,10 +248,10 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->assertSame(
             [
                 [
-                    't' => ExtraFlagType::TYPE_NICK,
-                    'a' => 'my_nickname',
-                    'p' => 'pokll12',
-                    'f' => 't',
+                    "t" => ExtraFlagType::TYPE_NICK,
+                    "a" => "my_nickname",
+                    "p" => "pokll12",
+                    "f" => "t",
                 ],
             ],
             $json["pf"]

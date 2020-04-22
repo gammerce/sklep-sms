@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature\Http;
+namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\PaymentPlatform;
 use App\Models\Price;
@@ -8,8 +8,6 @@ use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
-use App\ServiceModules\Other\OtherServiceModule;
-use App\System\Settings;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
@@ -19,9 +17,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
 {
     use GosettiConcern;
     use PaymentModuleFactoryConcern;
-
-    /** @var PaymentPlatform */
-    private $paymentPlatform;
 
     /** @var Server */
     private $server;
@@ -42,10 +37,11 @@ class PurchaseResourceSmsTest extends HttpTestCase
 
         /** @var PaymentPlatformRepository $paymentPlatformRepository */
         $paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+        $paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
 
-        $this->paymentPlatform = $paymentPlatformRepository->create("test", Gosetti::MODULE_ID);
-
-        $this->server = $this->factory->server();
+        $this->server = $this->factory->server([
+            "sms_platform_id" => $paymentPlatform->getId(),
+        ]);
         $this->factory->serverService([
             'server_id' => $this->server->getId(),
             'service_id' => $this->serviceId,
@@ -63,22 +59,18 @@ class PurchaseResourceSmsTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
         $type = ExtraFlagType::TYPE_NICK;
 
-        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
             '/api/server/purchase',
             [
                 'service_id' => $this->serviceId,
-                'payment_platform_id' => $this->paymentPlatform->getId(),
                 'server_id' => $this->server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
@@ -90,7 +82,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
@@ -115,22 +107,18 @@ class PurchaseResourceSmsTest extends HttpTestCase
     public function purchase_using_sms_accept_application_assoc()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         $authData = 'test';
         $password = 'test123';
         $smsCode = 'ABCD12EF';
         $type = ExtraFlagType::TYPE_NICK;
 
-        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
             '/api/server/purchase',
             [
                 'service_id' => $this->serviceId,
-                'payment_platform_id' => $this->paymentPlatform->getId(),
                 'server_id' => $this->server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
@@ -142,7 +130,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'Accept' => 'application/assoc',
@@ -164,21 +152,17 @@ class PurchaseResourceSmsTest extends HttpTestCase
     public function fails_with_invalid_data_passed()
     {
         // given
-        /** @var Settings $settings */
-        $settings = $this->app->make(Settings::class);
-
         $authData = 'a';
         $smsCode = 'ABCD12EF';
         $type = ExtraFlagType::TYPE_NICK;
 
-        $sign = md5(implode("#", [$type, $authData, $smsCode, $settings->get("random_key")]));
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
             '/api/server/purchase',
             [
                 'service_id' => $this->serviceId,
-                'payment_platform_id' => $this->paymentPlatform->getId(),
                 'server_id' => $this->server->getId(),
                 'type' => $type,
                 'auth_data' => $authData,
@@ -189,7 +173,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'User-Agent' => Server::TYPE_AMXMODX,
