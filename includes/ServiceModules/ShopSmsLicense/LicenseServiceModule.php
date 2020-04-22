@@ -35,6 +35,7 @@ use App\Translation\Translator;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
@@ -255,7 +256,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $validated = $validator->validateOrFail();
 
-        $costDaily = $this->getCostDaily($validated);
+        $costDaily = $this->getDailyCost($validated);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $validated['amount'],
             'engines' => [
@@ -268,8 +269,7 @@ class LicenseServiceModule extends ServiceModule implements
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost(
                 $costDaily,
-                $validated['amount'],
-                true
+                $validated['amount']
             ),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
@@ -597,13 +597,25 @@ class LicenseServiceModule extends ServiceModule implements
     public function actionExecute($action, array $body)
     {
         if ($action === "get_cost") {
-            if ($body['amount'] < 30) {
+            $daysAmount = (int) $body['amount'];
+
+            if ($daysAmount < 30) {
                 return $this->lang->t('none');
             }
 
-            return $this->priceTextService->getPriceText(
-                $this->getCost($this->getCostDaily($body), $body['amount'], true)
-            );
+            $dailyCost = $this->getDailyCost($body);
+            $bargainPercentage = $this->getBargainPercentage($daysAmount);
+            $bargain = (100 - $bargainPercentage) / 100;
+            $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
+
+            $output = $this->priceTextService->getPriceText($cost);
+            if ($bargainPercentage) {
+                $output .= (new DOMElement("-{$bargainPercentage}%"))
+                    ->setName("sup")
+                    ->setParam("class", "discount");
+            }
+
+            return $output;
         }
 
         if ($action === "get_cost_user_edit") {
@@ -659,14 +671,11 @@ class LicenseServiceModule extends ServiceModule implements
     /**
      * @param int $costDaily
      * @param int $daysAmount
-     * @param bool $bargain
      * @return int
      */
-    private function getCost($costDaily, $daysAmount, $bargain = true)
+    private function getCost($costDaily, $daysAmount)
     {
-        return (int) ceil(
-            $costDaily * $daysAmount * ($bargain ? $this->getBargain($daysAmount) : 1)
-        );
+        return (int) ceil($costDaily * $daysAmount * $this->getBargain($daysAmount));
     }
 
     /**
@@ -675,7 +684,7 @@ class LicenseServiceModule extends ServiceModule implements
      * @param array $body
      * @return int|null
      */
-    private function getCostDaily(array $body)
+    private function getDailyCost(array $body)
     {
         $cost = $this::COST_SHOP_PER_DAY;
         $costEngines = 0;
@@ -722,7 +731,7 @@ class LicenseServiceModule extends ServiceModule implements
             // i przeliczamy normalnie koszt jaki wychodzi
             if ($engineData['old'] && !$engineData['new']) {
                 $body['amount'] = $daysLeft; // Tworzymy tak jakby zapytanie z formularza zakupu
-                $costDaily = $this->getCostDaily($body);
+                $costDaily = $this->getDailyCost($body);
                 break;
             }
 
@@ -744,13 +753,18 @@ class LicenseServiceModule extends ServiceModule implements
         ];
     }
 
-    private function getBargain($daysCount)
+    private function getBargainPercentage($daysCount)
     {
         if ($daysCount >= 365) {
-            return 0.8;
+            return 20;
         }
 
-        return 1.0;
+        return 0;
+    }
+
+    private function getBargain($daysCount)
+    {
+        return (100 - $this->getBargainPercentage($daysCount)) / 100;
     }
 
     public function showOnWeb()

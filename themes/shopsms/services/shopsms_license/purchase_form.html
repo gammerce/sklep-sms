@@ -73,12 +73,9 @@
         </div>
 
         <div class="column is-full has-text-centered">
-            <input
-                type="button"
-                id="go_to_payment"
-                value="{$lang->t('go_to_payment')}"
-                class="button is-success purchase_button"
-            />
+            <button type="submit" class="button is-success purchase-button">
+                {{ $lang->t('go_to_payment') }}
+            </button>
         </div>
     </div>
 
