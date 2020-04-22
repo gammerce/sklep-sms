@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-// TODO Display discount value in purchase form
-
 class Price
 {
     /** @var int */
@@ -23,7 +21,11 @@ class Price
     /** @var int|null */
     private $directBillingPrice;
 
-    /** @var int|null */
+    /**
+     * Null means infinity/forever
+     *
+     * @var int|null
+     */
     private $quantity;
 
     /** @var int|null */

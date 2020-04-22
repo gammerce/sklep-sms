@@ -46,6 +46,7 @@ class ServiceCodePaymentService
      */
     public function payWithServiceCode(Purchase $purchase)
     {
+        // TODO Remove price usage
         $statement = $this->db->statement(
             <<<EOF
             SELECT * FROM `ss_service_codes` 

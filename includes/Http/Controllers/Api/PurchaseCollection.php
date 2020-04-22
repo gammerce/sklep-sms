@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
-use App\Payment\General\PurchaseSerializer;
+use App\Payment\General\PurchaseDataService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\System\Auth;
 use App\System\Heart;
@@ -20,7 +20,7 @@ class PurchaseCollection
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        PurchaseSerializer $purchaseSerializer
+        PurchaseDataService $purchaseDataService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -63,12 +63,10 @@ class PurchaseCollection
         }
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
-        $purchaseEncoded = $purchaseSerializer->serializeAndEncode($purchase);
+        $transactionId = $purchaseDataService->storePurchase($purchase);
 
         return new ApiResponse("ok", $lang->t('purchase_form_validated'), true, [
-            'length' => 8000,
-            'data' => $purchaseEncoded,
-            'sign' => md5($purchaseEncoded . $settings->getSecret()),
+            "transaction_id" => $transactionId,
         ]);
     }
 }

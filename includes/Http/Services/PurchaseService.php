@@ -64,6 +64,7 @@ class PurchaseService
         $purchase->setServiceId($serviceModule->service->getId());
         $purchase->setEmail($email);
         $purchase->setOrder([
+            Purchase::ORDER_QUANTITY => $price ? $price->getQuantity() : null,
             Purchase::ORDER_SERVER => $serverId,
             'type' => $type,
             'auth_data' => $authData,
@@ -75,11 +76,12 @@ class PurchaseService
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_SMS_CODE => $smsCode,
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatformId,
+            Purchase::PAYMENT_PRICE_SMS => $price ? $price->getSmsPrice() : null,
+            Purchase::PAYMENT_PRICE_TRANSFER => $price ? $price->getTransferPrice() : null,
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price
+                ? $price->getDirectBillingPrice()
+                : null,
         ]);
-
-        if ($price) {
-            $purchase->setPrice($price);
-        }
 
         $validator = $serviceModule->purchaseDataValidate($purchase);
         $validator->validateOrFail();

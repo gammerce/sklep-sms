@@ -39,7 +39,7 @@
 
         <tr>
             <td>
-                <label class="required" for="quantity">{$lang->t('quantity')}</label>
+                <label for="quantity">{$lang->t('quantity')}</label>
             </td>
             <td>
                 <div class="field">
@@ -50,7 +50,6 @@
                             name="quantity"
                             class="input is-small"
                             value="{{ $price->getQuantity() }}"
-                            required
                         />
                     </div>
                 </div>
@@ -66,6 +65,7 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_price" name="sms_price">
+                                <option value="">{$lang->t('choose_sms_price')}</option>
                                 {$smsPrices}
                             </select>
                         </div>

@@ -5,32 +5,32 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { json_parse } from "../../../general/stocks";
 
 $(document).delegate("#pay_wallet", "click", function() {
-    purchase_service("wallet");
+    purchaseService("wallet");
 });
 
 $(document).delegate("#pay_transfer", "click", function() {
-    purchase_service("transfer");
+    purchaseService("transfer");
 });
 
 $(document).delegate("#pay_direct_billing", "click", function() {
-    purchase_service("direct_billing");
+    purchaseService("direct_billing");
 });
 
 $(document).delegate("#pay_sms", "click", function() {
     if ($("#sms_details").css("display") === "none") {
         $("#sms_details").slideDown("slow");
     } else {
-        purchase_service("sms");
+        purchaseService("sms");
     }
 });
 
 $(document).delegate("#pay_service_code", "click", function() {
     $("#sms_details").slideUp();
-    purchase_service("service_code");
+    purchaseService("service_code");
 });
 
 function redirectToExternalWithPost(jsonObj) {
-    var form = $("<form>", {
+    const form = $("<form>", {
         action: jsonObj.data.url,
         method: "POST",
     });
@@ -55,33 +55,36 @@ function redirectToExternalWithPost(jsonObj) {
 }
 
 function redirectToExternalWithGet(jsonObj) {
-    var url = jsonObj.data.url;
+    const url = jsonObj.data.url;
     delete jsonObj.data.url;
-    var urlWithPath = url + "?" + $.param(jsonObj.data);
-    window.location.href = urlWithPath;
+
+    window.location.href = url + "?" + $.param(jsonObj.data);
 }
 
-function purchase_service(method) {
-    if (loader.blocked) return;
+function purchaseService(method) {
+    if (loader.blocked) {
+        return;
+    }
+
+    const queryParams = new URLSearchParams(window.location.search);
+    const transactionId = encodeURIComponent(queryParams.get("tid"));
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/payment"),
+        url: buildUrl(`/api/payment/${transactionId}`),
         data: {
             method: method,
             sms_code: $("#sms_code").val(),
             service_code: $("#service_code").val(),
-            purchase_data: $("#payment [name=purchase_data]").val(),
-            purchase_sign: $("#payment [name=purchase_sign]").val(),
         },
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;
             }
@@ -103,7 +106,7 @@ function purchase_service(method) {
                     $("#wallet").effect("highlight", "slow");
                 });
             } else if (jsonObj.return_id === "external") {
-                var method = jsonObj.data.method;
+                const method = jsonObj.data.method;
                 delete jsonObj.data.method;
 
                 if (method === "GET") {

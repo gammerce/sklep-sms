@@ -243,7 +243,7 @@ return [
     'sm_server' => 'Game server (SM)',
     'sms_code' => 'SMS code',
     'sms_code_add' => 'SMS code added successfully.',
-    'sms_codes' => 'SMS codes to be used',
+    'sms_codes' => 'Free SMS codes',
     'sms_payment_platform' => 'SMS payment platform',
     'sms_price' => 'SMS price',
     'sum' => 'Sum',

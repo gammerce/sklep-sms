@@ -1,9 +1,11 @@
 <option
-    value="{{ $priceId }}"
+    value="{{ $value }}"
+    data-direct-billing-discount="{{ $directBillingDiscount }}"
     data-direct-billing-price="{{ $directBillingPrice }}"
+    data-sms-discount="{{ $smsDiscount }}"
     data-sms-price="{{ $smsPrice }}"
+    data-transfer-discount="{{ $transferDiscount }}"
     data-transfer-price="{{ $transferPrice }}"
-    data-discount="{{ $discount }}"
 >
     {{ $quantity }}
 </option>

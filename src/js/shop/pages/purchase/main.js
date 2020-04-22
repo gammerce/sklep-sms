@@ -8,10 +8,10 @@ import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/glo
 // Send purchase form
 $(document).delegate("#form_purchase", "submit", function(e) {
     e.preventDefault();
-});
 
-$(document).delegate("#go_to_payment", "click", function() {
-    if (loader.blocked) return;
+    if (loader.blocked) {
+        return;
+    }
 
     loader.show();
     $.ajax({
@@ -36,12 +36,14 @@ $(document).delegate("#go_to_payment", "click", function() {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_purchase"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                goToPayment(jsonObj.data, jsonObj.sign);
+                goToPayment(jsonObj.transaction_id);
             }
 
-            if (typeof jsonObj.length !== "undefined")
-                infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
-            else infobox.show_info(jsonObj.text, jsonObj.positive);
+            if (jsonObj.positive) {
+                infobox.show_info(jsonObj.text, jsonObj.positive, 8000);
+            } else {
+                infobox.show_info(jsonObj.text, jsonObj.positive);
+            }
         },
         error: handleErrorResponse,
     });
@@ -65,7 +67,7 @@ $(document).delegate("#show_service_desc", "click", function() {
     });
 });
 
-$(document).delegate("#form_purchase [name=price_id]", "change", function() {
+$(document).delegate("#form_purchase [name=quantity]", "change", function() {
     var form = $(this).closest("form");
 
     if ($(this).val().length) {
@@ -76,26 +78,32 @@ $(document).delegate("#form_purchase [name=price_id]", "change", function() {
     }
 
     var option = $(this).find("option:selected");
+    var directBillingDiscount = option.data("direct-billing-discount");
     var directBillingPrice = option.data("direct-billing-price");
+    var transferDiscount = option.data("transfer-discount");
     var transferPrice = option.data("transfer-price");
+    var smsDiscount = option.data("sms-discount");
     var smsPrice = option.data("sms-price");
-    var discount = option.data("discount");
 
-    toggleCost(form.find("#cost_direct_billing"), directBillingPrice, discount);
-    toggleCost(form.find("#cost_sms"), smsPrice, discount);
-    toggleCost(form.find("#cost_transfer"), transferPrice, discount);
+    toggleCost(form.find("#cost_direct_billing"), directBillingPrice, directBillingDiscount);
+    toggleCost(form.find("#cost_sms"), smsPrice, smsDiscount);
+    toggleCost(form.find("#cost_transfer"), transferPrice, transferDiscount);
 });
 
 function toggleCost(node, price, discount) {
     node.text("");
-    node.parent().find(".discount").text("");
+    node.parent()
+        .find(".discount")
+        .text("");
     node.parent().hide();
 
     if (price) {
         node.text(price);
 
         if (discount) {
-            node.parent().find(".discount").text(`-${discount}%`);
+            node.parent()
+                .find(".discount")
+                .text(`-${discount}%`);
         }
 
         node.parent().show();

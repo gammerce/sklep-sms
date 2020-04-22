@@ -46,9 +46,6 @@ class Purchase
     /** @var User */
     public $user;
 
-    /** @var Price|null */
-    private $price = null;
-
     /** @var string */
     private $email = null;
 
@@ -126,27 +123,6 @@ class Purchase
     public function getPaymentList()
     {
         return $this->payment;
-    }
-
-    /**
-     * @return Price|null
-     */
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    public function setPrice(Price $price)
-    {
-        $this->price = $price;
-        $this->setPayment([
-            Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
-            Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
-        ]);
-        $this->setOrder([
-            Purchase::ORDER_QUANTITY => $price->getQuantity(),
-        ]);
     }
 
     /**

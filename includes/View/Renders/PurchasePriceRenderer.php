@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Renders;
 
+use App\Models\QuantityPrice;
 use App\Models\Service;
 use App\Services\PriceTextService;
 use App\Support\Template;
@@ -34,18 +35,19 @@ class PurchasePriceRenderer
         $this->priceTextService = $priceTextService;
     }
 
-    public function render(array $price, Service $service)
+    public function render(QuantityPrice $price, Service $service)
     {
-        $priceId = $price['id'];
-        $directBillingPrice = $this->priceTextService->getPriceText($price['direct_billing_price']);
-        $smsPrice = $this->priceTextService->getPriceGrossText($price['sms_price']);
-        $transferPrice = $this->priceTextService->getPriceText($price['transfer_price']);
-        $quantity = $this->priceTextService->getQuantityText($price['quantity'], $service);
-        $discount = array_get($price, "discount");
-
-        return $this->template->renderNoComments(
-            "purchase/purchase_price",
-            compact('directBillingPrice', 'priceId', 'quantity', 'smsPrice', 'transferPrice', 'discount')
-        );
+        return $this->template->renderNoComments("purchase/purchase_price", [
+            "directBillingDiscount" => $price->directBillingDiscount,
+            "directBillingPrice" => $this->priceTextService->getPriceText(
+                $price->directBillingPrice
+            ),
+            "quantity" => $this->priceTextService->getQuantityText($price->getQuantity(), $service),
+            "smsDiscount" => $price->smsDiscount,
+            "smsPrice" => $this->priceTextService->getPriceGrossText($price->smsPrice),
+            "transferDiscount" => $price->transferDiscount,
+            "transferPrice" => $this->priceTextService->getPriceText($price->transferPrice),
+            "value" => $price->getQuantity(),
+        ]);
     }
 }

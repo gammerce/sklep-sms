@@ -33,7 +33,7 @@ class PriceService
                 "server_id" => [new ServerExistsRule()],
                 "sms_price" => [new SmsPriceExistsRule()],
                 "transfer_price" => [new MinValueRule(1)],
-                "quantity" => [new RequiredRule(), new NumberRule()],
+                "quantity" => [new NumberRule()],
                 "discount" => [new IntegerRule(), new MinValueRule(1), new MaxValueRule(100)],
             ]
         );

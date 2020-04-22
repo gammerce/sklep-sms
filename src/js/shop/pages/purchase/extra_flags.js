@@ -28,7 +28,7 @@ $(document).delegate("#form_purchase [name=server_id]", "change", function() {
 
     form.find("#cost_wrapper").slideUp();
     if ($(this).val() == "") {
-        form.find("[name=price_id]")
+        form.find("[name=quantity]")
             .children()
             .not("[value='']")
             .remove();
@@ -44,7 +44,7 @@ $(document).delegate("#form_purchase [name=server_id]", "change", function() {
             server_id: $(this).val(),
         },
         function(html) {
-            form.find("[name=price_id]").html(html);
+            form.find("[name=quantity]").html(html);
         }
     );
 });

@@ -7,8 +7,6 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Support\Database;
 
-// TODO Add migration to add discount
-
 class PriceRepository
 {
     /** @var Database */
@@ -54,7 +52,7 @@ class PriceRepository
         $this->db
             ->statement(
                 "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
-                    "VALUES ( ?, ?, ?, ?, ?, ? )"
+                    "VALUES ( ?, ?, ?, ?, ?, ?, ? )"
             )
             ->execute([
                 $service,
@@ -63,7 +61,7 @@ class PriceRepository
                 $transferPrice,
                 $directBillingPrice,
                 $quantity,
-                $discount
+                $discount,
             ]);
 
         return $this->get($this->db->lastId());

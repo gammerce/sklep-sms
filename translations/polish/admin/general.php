@@ -246,7 +246,7 @@ return [
     'sm_server' => 'Serwer gry (SM)',
     'sms_code' => 'Kod SMS',
     'sms_code_add' => 'Kod SMS został prawidłowo dodany.',
-    'sms_codes' => 'Kody SMS do wykorzystania',
+    'sms_codes' => 'Darmowe kody SMS',
     'sms_payment_platform' => 'Platforma płatności SMS',
     'sms_price' => 'Koszt SMS',
     'sum' => 'Suma',
