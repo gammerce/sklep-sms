@@ -55,8 +55,6 @@ trait MakePurchaseConcern
 
         $attributes = array_merge(
             [
-                'payment_platform_id' => $paymentPlatform->getId(),
-                'server_id' => $server->getId(),
                 'price_id' => $price->getId(),
                 'type' => ExtraFlagType::TYPE_NICK,
                 'auth_data' => "example",
@@ -70,7 +68,7 @@ trait MakePurchaseConcern
         );
 
         $serviceModule = $heart->getServiceModule('vip');
-        $result = $purchaseService->purchase($serviceModule, $attributes);
+        $result = $purchaseService->purchase($serviceModule, $server, $attributes);
 
         if ($result->getStatus() !== 'purchased') {
             throw new UnexpectedValueException();

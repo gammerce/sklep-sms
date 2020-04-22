@@ -21,8 +21,6 @@ use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// TODO Remove authorization by ip:port
-
 class ServerConfigController
 {
     public function get(
@@ -35,13 +33,10 @@ class ServerConfigController
         ServerAuth $serverAuth
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
-        $ip = $request->query->get("ip");
-        $port = $request->query->get("port");
         $version = $request->query->get("version");
-        $withPlayerFlags = $request->query->get("player_flags") === "1";
         $platform = $request->headers->get("User-Agent");
 
-        $server = $serverAuth->server() ?: $serverRepository->findByIpPort($ip, $port);
+        $server = $serverAuth->server();
         if (!$server) {
             throw new EntityNotFoundException();
         }
@@ -91,17 +86,15 @@ class ServerConfigController
             ];
         });
 
-        if ($withPlayerFlags) {
-            $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-            $playerFlagItems = collect($playersFlags)->map(function (array $item) {
-                return [
-                    "t" => $item["type"],
-                    "a" => $item["auth_data"],
-                    "p" => $item["password"],
-                    "f" => $item["flags"],
-                ];
-            });
-        }
+        $playersFlags = $serverDataService->getPlayersFlags($server->getId());
+        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
+            return [
+                "t" => $item["type"],
+                "a" => $item["auth_data"],
+                "p" => $item["password"],
+                "f" => $item["flags"],
+            ];
+        });
 
         $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
             return $smsNumber->getNumber();
@@ -141,8 +134,8 @@ class ServerConfigController
     private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.9.0",
-            Server::TYPE_SOURCEMOD => "3.8.0",
+            Server::TYPE_AMXMODX => "3.10.0",
+            Server::TYPE_SOURCEMOD => "3.9.0",
         ];
 
         $minimumVersion = array_get($minimumVersions, $platform);

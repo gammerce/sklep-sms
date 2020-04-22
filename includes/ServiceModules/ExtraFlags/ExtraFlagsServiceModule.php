@@ -1147,20 +1147,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $user = $this->auth->user();
 
-        // TODO: Remove md5
         $statement = $this->db->statement(
             "SELECT `id` FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
-                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `password` = ? OR `password` = ? )"
+                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
         );
-        $statement->execute([
-            $this->service->getId(),
-            $serverId,
-            $type,
-            $authData,
-            $password,
-            md5($password),
-        ]);
+        $statement->execute([$this->service->getId(), $serverId, $type, $authData, $password]);
 
         if (!$statement->rowCount()) {
             return [
