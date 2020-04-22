@@ -7,8 +7,6 @@ use App\Http\Validation\Rules\IntegerCommaSeparatedListRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\MybbUserExistsRule;
 use App\Http\Validation\Rules\NumberRule;
-use App\Http\Validation\Rules\PriceAvailableRule;
-use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
@@ -17,6 +15,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\MybbExtraGroupsUserService;
 use App\Models\MybbUser;
 use App\Models\Purchase;
+use App\Models\QuantityPrice;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
@@ -304,18 +303,17 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        $user = $this->auth->user();
-
         $quantities = collect($this->purchasePriceService->getServicePrices($this->service))
-            ->map(function (array $price) {
+            ->map(function (QuantityPrice $price) {
                 return $this->purchasePriceRenderer->render($price, $this->service);
             })
             ->join();
 
-        return $this->template->render(
-            "services/mybb_extra_groups/purchase_form",
-            compact('quantities', 'user') + ['serviceId' => $this->service->getId()]
-        );
+        return $this->template->render("services/mybb_extra_groups/purchase_form", [
+            "quantities" => $quantities,
+            "serviceId" => $this->service->getId(),
+            "user" => $this->auth->user(),
+        ]);
     }
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
@@ -324,28 +322,36 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             [
-                'email' => array_get($body, 'email'),
-                'price_id' => array_get($body, "price_id"),
-                'username' => array_get($body, 'username'),
+                "email" => array_get($body, "email"),
+                "quantity" => as_int(array_get($body, "quantity")),
+                "username" => array_get($body, "username"),
             ],
             [
-                'email' => [new RequiredRule(), new EmailRule()],
-                'price_id' => [
-                    new RequiredRule(),
-                    new PriceExistsRule(),
-                    new PriceAvailableRule($this->service),
-                ],
-                'username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                "email" => [new RequiredRule(), new EmailRule()],
+                "quantity" => [new RequiredRule()],
+                "username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
             ]
         );
 
         $validated = $validator->validateOrFail();
+        $quantity = $validated["quantity"] === -1 ? null : $validated["quantity"];
 
         $purchase->setOrder([
-            'username' => $validated['username'],
+            "username" => $validated["username"],
         ]);
-        $purchase->setEmail($validated['email']);
-        $purchase->setPrice($this->priceRepository->get($validated['price_id']));
+        $purchase->setEmail($validated["email"]);
+
+        $quantityPrice = $this->purchasePriceService->getServicePriceByQuantity(
+            $quantity,
+            $this->service
+        );
+        if ($quantityPrice) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
+                Purchase::PAYMENT_PRICE_TRANSFER => $quantityPrice->transferPrice,
+                Purchase::PAYMENT_PRICE_DIRECT_BILLING => $quantityPrice->directBillingPrice,
+            ]);
+        }
     }
 
     public function orderDetails(Purchase $purchase)

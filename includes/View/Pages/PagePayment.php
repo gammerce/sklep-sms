@@ -2,59 +2,46 @@
 namespace App\View\Pages;
 
 use App\Payment\General\PaymentMethodFactory;
-use App\Payment\General\PurchaseSerializer;
+use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\System\Settings;
 
 class PagePayment extends Page
 {
-    const PAGE_ID = 'payment';
-
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
-
-    /** @var Settings */
-    private $settings;
+    const PAGE_ID = "payment";
 
     /** @var PaymentMethodFactory */
     private $paymentMethodFactory;
 
+    /** @var PurchaseDataService */
+    private $purchaseDataService;
+
     public function __construct(
-        PurchaseSerializer $purchaseSerializer,
-        PaymentMethodFactory $paymentMethodFactory,
-        Settings $settings
+        PurchaseDataService $purchaseDataService,
+        PaymentMethodFactory $paymentMethodFactory
     ) {
         parent::__construct();
 
-        $this->purchaseSerializer = $purchaseSerializer;
-        $this->heart->pageTitle = $this->title = $this->lang->t('title_payment');
-        $this->settings = $settings;
+        $this->heart->pageTitle = $this->title = $this->lang->t("title_payment");
         $this->paymentMethodFactory = $paymentMethodFactory;
+        $this->purchaseDataService = $purchaseDataService;
     }
 
     protected function content(array $query, array $body)
     {
-        $sign = array_get($body, 'sign');
-        $data = array_get($body, 'data');
+        $transactionId = array_get($query, "tid");
+        $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
-        // Check form sign
-        if ($sign !== md5($data . $this->settings->getSecret())) {
-            return $this->lang->t('wrong_sign');
-        }
-
-        $purchase = $this->purchaseSerializer->deserializeAndDecode($data);
         if (!$purchase) {
-            return $this->lang->t('error_occurred');
+            return $this->lang->t("error_occurred");
         }
 
         $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return $this->lang->t('bad_module');
+            return $this->lang->t("bad_module");
         }
 
         $orderDetails = $serviceModule->orderDetails($purchase);
-
         $renderers = $this->paymentMethodFactory->createAll();
 
         $paymentMethods = collect($renderers)
@@ -67,10 +54,8 @@ class PagePayment extends Page
             ->join();
 
         return $this->template->render("payment/payment_form", [
-            'orderDetails' => $orderDetails,
-            'paymentMethods' => $paymentMethods,
-            'purchaseData' => $data,
-            'purchaseSign' => $sign,
+            "orderDetails" => $orderDetails,
+            "paymentMethods" => $paymentMethods,
         ]);
     }
 }

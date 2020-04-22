@@ -58,7 +58,7 @@ class TransferPaymentServiceTest extends TestCase
             Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
             Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceModule->service->getId());
         $purchase->setDesc("Description");
 

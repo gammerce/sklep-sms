@@ -128,7 +128,6 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $price = null;
         if ($boxId == "price_edit") {
             $price = $this->priceRepository->getOrFail($query["id"]);
-            $allServers = $price->isForEveryServer() ? "selected" : "";
         }
 
         $services = collect($this->heart->getServices())
@@ -190,13 +189,15 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                     "admin/action_boxes/price_edit",
                     compact(
                         "directBillingPrice",
-                        "services",
-                        "servers",
-                        "smsPrices",
                         "price",
-                        "transferPrice",
-                        "allServers"
-                    )
+                        "servers",
+                        "services",
+                        "smsPrices",
+                        "transferPrice"
+                    ) + [
+                        "allServers" => $price->isForEveryServer() ? "selected" : "",
+                        "discount" => $price->getDiscount(),
+                    ]
                 );
                 break;
 

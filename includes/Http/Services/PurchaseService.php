@@ -78,7 +78,7 @@ class PurchaseService
         ]);
 
         if ($price) {
-            $purchase->setPrice($price);
+            $purchase->setUsingPrice($price);
         }
 
         $validator = $serviceModule->purchaseDataValidate($purchase);

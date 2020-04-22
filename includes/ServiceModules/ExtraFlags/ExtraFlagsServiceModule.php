@@ -9,8 +9,6 @@ use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\PasswordRule;
-use App\Http\Validation\Rules\PriceAvailableRule;
-use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServerLinkedToServiceRule;
@@ -20,6 +18,7 @@ use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
+use App\Models\QuantityPrice;
 use App\Models\Server;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -325,15 +324,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $priceId = as_int(array_get($body, 'price_id'));
+        $quantity = as_int(array_get($body, 'quantity'));
+        $quantity = $quantity === -1 ? null : $quantity;
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
         $authData = trim(array_get($body, 'auth_data'));
         $password = array_get($body, 'password');
         $passwordRepeat = array_get($body, 'password_repeat');
         $email = array_get($body, 'email');
-
-        $price = $this->priceRepository->get($priceId);
 
         $purchase->setEmail($email);
         $purchase->setOrder([
@@ -343,18 +341,31 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'password' => $password,
             'passwordr' => $passwordRepeat,
         ]);
-        if ($price) {
-            $purchase->setPrice($price);
-        }
+        $purchase->setOrder([
+            Purchase::ORDER_QUANTITY => $quantity,
+        ]);
 
         $validator = $this->purchaseDataValidate($purchase);
         $validator->validateOrFail();
+
+        $quantityPrice = $this->purchasePriceService->getServicePriceByQuantity(
+            $quantity,
+            $this->service,
+            $this->heart->getServer($serverId)
+        );
+
+        if ($quantityPrice) {
+            $purchase->setPayment([
+                Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
+                Purchase::PAYMENT_PRICE_TRANSFER => $quantityPrice->transferPrice,
+                Purchase::PAYMENT_PRICE_DIRECT_BILLING => $quantityPrice->directBillingPrice,
+            ]);
+        }
     }
 
     public function purchaseDataValidate(Purchase $purchase)
     {
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-        $price = $purchase->getPrice();
 
         if ($server) {
             if ($server->getSmsPlatformId()) {
@@ -376,7 +387,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 'password' => $purchase->getOrder('password'),
                 'password_repeat' => $purchase->getOrder('passwordr'),
                 'email' => $purchase->getEmail(),
-                'price_id' => $price ? $price->getId() : null,
+                'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
                 'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
                 'type' => $purchase->getOrder('type'),
             ],
@@ -392,11 +403,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     new ConfirmedRule(),
                     new ExtraFlagPasswordDiffersRule(),
                 ],
-                'price_id' => [
-                    new RequiredRule(),
-                    new PriceExistsRule(),
-                    new PriceAvailableRule($this->service),
-                ],
+                'quantity' => [],
                 'server_id' => [
                     new RequiredRule(),
                     new ServerExistsRule(),
@@ -478,19 +485,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     private function addPlayerFlags($uid, $type, $authData, $password, $days, $serverId)
     {
-        $forever = $days === null;
         $authData = trim($authData);
         $password = strlen($password) ? $password : '';
 
-        // Usunięcie przestarzałych usług gracza
+        // Let's delete expired data. Just in case, to avoid risk of conflicts.
         $this->expiredUserServiceService->deleteExpired();
-
-        // Usunięcie przestarzałych flag graczy
-        // Tak jakby co
         $this->playerFlagRepository->deleteOldFlags();
 
-        // Dodajemy usługę gracza do listy usług
-        // Jeżeli już istnieje dokładnie taka sama, to ją przedłużamy
+        // Let's add a user service. If there is service with the same data,
+        // let's prolong the existing one.
         $statement = $this->db->statement(
             "SELECT * FROM `{$this->getUserServiceTable()}` " .
                 "WHERE `service` = ? AND `server` = ? AND `type` = ? AND `auth_data` = ?"
@@ -500,18 +503,24 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($statement->rowCount()) {
             $row = $statement->fetch();
             $userServiceId = $row['us_id'];
-            $seconds = $days * 24 * 60 * 60;
 
-            $this->userServiceRepository->updateWithModule($this, $userServiceId, [
-                'uid' => $uid,
-                'password' => $password,
-                'expire' => $forever ? null : new Expression("`expire` + $seconds"),
-            ]);
+            if ($days === null) {
+                $expire = null;
+            } else {
+                $seconds = $days * 24 * 60 * 60;
+                $expire = new Expression("`expire` + {$seconds}");
+            }
+
+            $this->userServiceRepository->updateWithModule(
+                $this,
+                $userServiceId,
+                compact("uid", "password", "expire")
+            );
         } else {
             $this->extraFlagUserServiceRepository->create(
                 $this->service->getId(),
                 $uid,
-                $forever ? null : $days * 24 * 60 * 60,
+                $days !== null ? $days * 24 * 60 * 60 : null,
                 $serverId,
                 $type,
                 $authData,
@@ -519,7 +528,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             );
         }
 
-        // Ustawiamy jednakowe hasła dla wszystkich usług tego gracza na tym serwerze
+        // Let's set identical passwords for all services of that player on that server
         $this->db
             ->statement(
                 "UPDATE `{$this->getUserServiceTable()}` " .
@@ -528,7 +537,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             )
             ->execute([$password, $serverId, $type, $authData]);
 
-        // Przeliczamy flagi gracza, ponieważ dodaliśmy nową usługę
+        // Let's recalculate players flags since we've added new user service
         $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
@@ -1221,11 +1230,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function pricesForServer($serverId)
     {
         $server = $this->heart->getServer($serverId);
+        $service = $this->service;
 
-        $quantities = collect(
-            $this->purchasePriceService->getServicePrices($this->service, $server)
-        )
-            ->map(function (array $price) {
+        $quantities = collect($this->purchasePriceService->getServicePrices($service, $server))
+            ->map(function (QuantityPrice $price) {
                 return $this->purchasePriceRenderer->render($price, $this->service);
             })
             ->join();

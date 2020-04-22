@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Support\Database;
 
 class PlayerFlagRepository
@@ -13,6 +14,33 @@ class PlayerFlagRepository
         $this->db = $db;
     }
 
+    /**
+     * @param array $data
+     * @return PlayerFlag
+     * @throws EntityNotFoundException
+     */
+    public function findOrFail(array $data)
+    {
+        $params = map_to_where_params($data);
+        $values = map_to_values($data);
+
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_players_flags` " . ($params ? "WHERE {$params}" : "")
+        );
+        $statement->execute($values);
+
+        $data = $statement->fetch();
+        if (!$data) {
+            throw new EntityNotFoundException();
+        }
+
+        return $this->mapToModel($data);
+    }
+
+    /**
+     * @param int $id
+     * @return PlayerFlag|null
+     */
     public function get($id)
     {
         if ($id) {

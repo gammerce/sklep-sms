@@ -46,12 +46,13 @@ class PriceRepository
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
-        $quantity
+        $quantity,
+        $discount
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`) " .
-                    "VALUES ( ?, ?, ?, ?, ?, ? )"
+                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
+                    "VALUES ( ?, ?, ?, ?, ?, ?, ? )"
             )
             ->execute([
                 $service,
@@ -60,6 +61,7 @@ class PriceRepository
                 $transferPrice,
                 $directBillingPrice,
                 $quantity,
+                $discount,
             ]);
 
         return $this->get($this->db->lastId());
@@ -94,11 +96,12 @@ class PriceRepository
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
-        $quantity
+        $quantity,
+        $discount
     ) {
         $statement = $this->db->statement(
             "UPDATE `ss_prices` " .
-                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ? " .
+                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ?, `discount` = ? " .
                 "WHERE `id` = ?"
         );
         $statement->execute([
@@ -108,6 +111,7 @@ class PriceRepository
             $transferPrice,
             $directBillingPrice,
             $quantity,
+            $discount,
             $id,
         ]);
 
@@ -131,7 +135,8 @@ class PriceRepository
             as_int($data['sms_price']),
             as_int($data['transfer_price']),
             as_int($data['direct_billing_price']),
-            as_int($data['quantity'])
+            as_int($data['quantity']),
+            as_int($data['discount'])
         );
     }
 }

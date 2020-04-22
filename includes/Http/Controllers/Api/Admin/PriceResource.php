@@ -31,7 +31,8 @@ class PriceResource
             $validated["sms_price"],
             $validated["transfer_price"],
             $validated["direct_billing_price"],
-            $validated["quantity"]
+            $validated["quantity"],
+            $validated["discount"]
         );
 
         if ($updated) {

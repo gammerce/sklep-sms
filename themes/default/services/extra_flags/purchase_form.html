@@ -38,6 +38,7 @@
                                             class="input is-small"
                                             maxlength="32"
                                             autocomplete="off"
+                                            required
                                             disabled
                                         />
                                     </div>
@@ -59,6 +60,7 @@
                                             class="input is-small"
                                             maxlength="16"
                                             autocomplete="off"
+                                            required
                                             disabled
                                         />
                                     </div>
@@ -79,6 +81,7 @@
                                             class="input is-small"
                                             maxlength="32"
                                             autocomplete="off"
+                                            required
                                             disabled
                                         />
                                     </div>
@@ -101,6 +104,7 @@
                                             class="input is-small"
                                             maxlength="32"
                                             autocomplete="off"
+                                            required
                                             disabled
                                         />
                                     </div>
@@ -126,6 +130,7 @@
                                             class="input is-small"
                                             maxlength="32"
                                             autocomplete="off"
+                                            required
                                             disabled
                                         />
                                     </div>
@@ -180,7 +185,7 @@
                                 <div class="field">
                                     <div class="control">
                                         <div class="select is-small">
-                                            <select id="server_id" name="server_id">
+                                            <select id="server_id" name="server_id" required>
                                                 <option value="">
                                                     {$lang->t('choose_server')}
                                                 </option>
@@ -196,13 +201,13 @@
                     <tbody>
                         <tr>
                             <td>
-                                <label for="price_id">{$lang->t('quantity')}</label>
+                                <label for="quantity">{$lang->t('quantity')}</label>
                             </td>
                             <td>
                                 <div class="field">
                                     <div class="control">
                                         <div class="select is-small">
-                                            <select id="price_id" name="price_id">
+                                            <select id="quantity" name="quantity" required>
                                                 <option value="">
                                                     {$lang->t('choose_quantity')}
                                                 </option>
@@ -226,16 +231,19 @@
                         <span>
                             <strong>{$lang->t('transfer_price')}</strong>:
                             <span id="cost_transfer"></span>
+                            <sup class="discount"></sup>
                         </span>
                         <br />
                         <span>
                             <strong>{$lang->t('sms_price')}</strong>:
                             <span id="cost_sms"></span>
+                            <sup class="discount"></sup>
                         </span>
                         <br />
                         <span>
                             <strong>{$lang->t('direct_billing_price')}</strong>:
                             <span id="cost_direct_billing"></span>
+                            <sup class="discount"></sup>
                         </span>
                     </div>
                 </div>
@@ -244,12 +252,9 @@
     </table>
 
     <div class="purchase-button-wrapper">
-        <input
-            type="button"
-            id="go_to_payment"
-            value="{$lang->t('go_to_payment')}"
-            class="button is-success purchase-button"
-        />
+        <button type="submit" class="button is-success purchase-button">
+            {{ $lang->t('go_to_payment') }}
+        </button>
     </div>
 
     <input type="hidden" name="service_id" value="{{ $serviceId }}" />
