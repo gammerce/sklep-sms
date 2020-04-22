@@ -51,7 +51,7 @@ class PriceTextService
      */
     public function getQuantityText($quantity, Service $service)
     {
-        return $quantity === null
+        return $quantity === null || $quantity === -1
             ? $this->lang->t('forever')
             : $quantity . " " . $service->getTag();
     }

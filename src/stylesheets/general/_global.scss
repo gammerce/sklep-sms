@@ -282,3 +282,11 @@ hr,
 .card.gapped {
     margin-bottom: 1rem;
 }
+
+.required {
+    &:after {
+        content: "*";
+        color: $danger;
+        margin-left: 4px;
+    }
+}

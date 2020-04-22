@@ -21,8 +21,6 @@ use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// TODO Remove authorization by ip:port
-
 class ServerConfigController
 {
     public function get(
@@ -34,20 +32,17 @@ class ServerConfigController
         Settings $settings,
         ServerAuth $serverAuth
     ) {
-        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
-        $ip = $request->query->get("ip");
-        $port = $request->query->get("port");
+        $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
-        $withPlayerFlags = $request->query->get("player_flags") === "1";
-        $platform = $request->headers->get('User-Agent');
+        $platform = $request->headers->get("User-Agent");
 
-        $server = $serverAuth->server() ?: $serverRepository->findByIpPort($ip, $port);
+        $server = $serverAuth->server();
         if (!$server) {
             throw new EntityNotFoundException();
         }
 
         if (!$this->isVersionAcceptable($platform, $version)) {
-            return new Response('', 402);
+            return new Response("", 402);
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
@@ -70,36 +65,36 @@ class ServerConfigController
 
         $serviceItems = collect($services)->map(function (Service $service) {
             return [
-                'i' => $service->getId(),
-                'n' => $service->getName(),
-                'd' => $service->getShortDescription(),
-                'ta' => $service->getTag(),
-                'f' => $service->getFlags(),
-                'ty' => $service->getTypes(),
+                "i" => $service->getId(),
+                "n" => $service->getName(),
+                "d" => $service->getShortDescription(),
+                "ta" => $service->getTag(),
+                "f" => $service->getFlags(),
+                "ty" => $service->getTypes(),
             ];
         });
 
         $priceItems = collect($prices)->map(function (Price $price) {
             return [
-                'i' => $price->getId(),
-                's' => $price->getServiceId(),
-                'p' => $price->getSmsPrice(),
+                "i" => $price->getId(),
+                "s" => $price->getServiceId(),
+                "p" => $price->getSmsPrice(),
                 // Replace null with -1 cause it's easier to handle it by plugins
-                'q' => $price->getQuantity() !== null ? $price->getQuantity() : -1,
+                "q" => $price->getQuantity() !== null ? $price->getQuantity() : -1,
+                // Replace null with 0 cause it's easier to handle it by plugins
+                "d" => $price->getDiscount() ?: 0,
             ];
         });
 
-        if ($withPlayerFlags) {
-            $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-            $playerFlagItems = collect($playersFlags)->map(function (array $item) {
-                return [
-                    't' => $item['type'],
-                    'a' => $item['auth_data'],
-                    'p' => $item['password'],
-                    'f' => $item['flags'],
-                ];
-            });
-        }
+        $playersFlags = $serverDataService->getPlayersFlags($server->getId());
+        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
+            return [
+                "t" => $item["type"],
+                "a" => $item["auth_data"],
+                "p" => $item["password"],
+                "f" => $item["flags"],
+            ];
+        });
 
         $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
             return $smsNumber->getNumber();
@@ -114,21 +109,21 @@ class ServerConfigController
         $serverRepository->touch($server->getId(), $platform, $version);
 
         $data = [
-            'id' => $server->getId(),
-            'license_token' => $settings->getLicenseToken(),
-            'sms_platform_id' => $smsPlatformId,
-            'sms_text' => $smsModule->getSmsCode(),
-            'steam_ids' => "$steamIds;",
-            'currency' => $settings->getCurrency(),
-            'contact' => $settings->getContact(),
-            'vat' => $settings->getVat(),
-            'sn' => $smsNumberItems->all(),
-            'se' => $serviceItems->all(),
-            'pr' => $priceItems->all(),
+            "id" => $server->getId(),
+            "license_token" => $settings->getLicenseToken(),
+            "sms_platform_id" => $smsPlatformId,
+            "sms_text" => $smsModule->getSmsCode(),
+            "steam_ids" => "$steamIds;",
+            "currency" => $settings->getCurrency(),
+            "contact" => $settings->getContact(),
+            "vat" => $settings->getVat(),
+            "sn" => $smsNumberItems->all(),
+            "se" => $serviceItems->all(),
+            "pr" => $priceItems->all(),
         ];
 
         if (isset($playerFlagItems)) {
-            $data['pf'] = $playerFlagItems->all();
+            $data["pf"] = $playerFlagItems->all();
         }
 
         return $acceptHeader->has("application/json")
@@ -139,8 +134,8 @@ class ServerConfigController
     private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.9.0",
-            Server::TYPE_SOURCEMOD => "3.8.0",
+            Server::TYPE_AMXMODX => "3.10.0",
+            Server::TYPE_SOURCEMOD => "3.9.0",
         ];
 
         $minimumVersion = array_get($minimumVersions, $platform);

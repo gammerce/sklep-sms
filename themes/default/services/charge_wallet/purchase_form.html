@@ -21,12 +21,9 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input
-                        id="go_to_payment"
-                        type="button"
-                        value="{$lang->t('go_to_payment')}"
-                        class="button is-success purchase-button"
-                    />
+                    <button type="submit" class="button is-success purchase-button">
+                        {{ $lang->t('go_to_payment') }}
+                    </button>
                 </td>
             </tr>
         </tfoot>

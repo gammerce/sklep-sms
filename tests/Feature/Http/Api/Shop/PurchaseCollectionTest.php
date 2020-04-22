@@ -29,8 +29,6 @@ class PurchaseCollectionTest extends HttpTestCase
                     '<ul class="form_warning help is-danger"><li >Pole nie może być puste.</li></ul>',
                 'password' =>
                     '<ul class="form_warning help is-danger"><li >Pole nie może być puste.</li></ul>',
-                'price_id' =>
-                    '<ul class="form_warning help is-danger"><li >Pole nie może być puste.</li></ul>',
             ],
             $json['warnings']
         );

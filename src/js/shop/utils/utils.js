@@ -76,33 +76,6 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
 /**
  * Go to payment page
  */
-export const goToPayment = function(data, sign) {
-    var form = $("<form>", {
-        action: buildUrl("/page/payment"),
-        method: "POST",
-    });
-
-    // Add data
-    form.append(
-        $("<input>", {
-            type: "hidden",
-            name: "data",
-            value: data,
-        })
-    );
-
-    // Sign data
-    form.append(
-        $("<input>", {
-            type: "hidden",
-            name: "sign",
-            value: sign,
-        })
-    );
-
-    // Required for firefox
-    $("body").append(form);
-
-    // Send purchase form
-    form.submit();
+export const goToPayment = function(transactionId) {
+    window.location.href = buildUrl("/page/payment", { tid: transactionId });
 };

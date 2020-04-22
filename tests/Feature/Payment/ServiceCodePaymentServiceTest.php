@@ -41,7 +41,7 @@ class ServiceCodePaymentServiceTest extends TestCase
         $purchase->setOrder([
             Purchase::ORDER_SERVER => 'blah',
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceModule->service->getId());
 
         // when

@@ -95,21 +95,6 @@ class ServerRepository
         return !!$statement->rowCount();
     }
 
-    public function findByIpPort($ip, $port)
-    {
-        if (!$ip || !$port) {
-            return null;
-        }
-
-        $statement = $this->db->statement(
-            "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `ss_servers` WHERE `ip` = ? AND `port` = ? LIMIT 1"
-        );
-        $statement->execute([$ip, $port]);
-        $row = $statement->fetch();
-
-        return $row ? $this->mapToModel($row) : null;
-    }
-
     public function touch($id, $type, $version)
     {
         $this->db

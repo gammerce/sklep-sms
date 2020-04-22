@@ -58,6 +58,7 @@ return [
     'main_page' => 'Main page',
     'march' => 'March',
     'may' => 'May',
+    'max_value' => 'Value has to be lesser or equal {1}.',
     'min_value' => 'Value has to be greater or equal {1}.',
     'minutes' => 'minutes',
     'name' => 'Name',

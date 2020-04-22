@@ -9,14 +9,10 @@ use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\License;
-use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseResourceWalletTest extends HttpTestCase
 {
-    /** @var Settings */
-    private $settings;
-
     /** @var BoughtServiceRepository */
     private $boughtServiceRepository;
 
@@ -37,7 +33,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
     {
         parent::setUp();
 
-        $this->settings = $this->app->make(Settings::class);
         $this->boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
         $this->userRepository = $this->app->make(UserRepository::class);
 
@@ -63,12 +58,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->settings->get("random_key"),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -85,7 +75,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'Authorization' => $this->steamId,
@@ -120,12 +110,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->settings->get("random_key"),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -142,7 +127,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'Authorization' => $this->steamId,
@@ -166,12 +151,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
     {
         // given
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->settings->get("random_key"),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -188,7 +168,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'Authorization' => $this->steamId,
@@ -219,12 +199,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         ]);
 
         $sign = md5(
-            implode("#", [
-                ExtraFlagType::TYPE_SID,
-                $this->steamId,
-                "",
-                $this->settings->get("random_key"),
-            ])
+            implode("#", [ExtraFlagType::TYPE_SID, $this->steamId, "", $this->server->getToken()])
         );
 
         // when
@@ -241,7 +216,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 'sign' => $sign,
             ],
             [
-                'key' => md5($this->settings->get("random_key")),
+                'token' => $this->server->getToken(),
             ],
             [
                 'Authorization' => $this->steamId,
@@ -252,9 +227,12 @@ class PurchaseResourceWalletTest extends HttpTestCase
         // then
         $this->assertSame(402, $response->getStatusCode());
         $json = json_decode($response->getContent(), true);
-        $this->assertEquals($json, [
-            "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
-        ]);
+        $this->assertEquals(
+            [
+                "message" => "Coś poszło nie tak podczas łączenia się z serwerem weryfikacyjnym.",
+            ],
+            $json
+        );
         $freshUser = $this->userRepository->get($user->getUid());
         $this->assertEquals(10000, $freshUser->getWallet());
     }

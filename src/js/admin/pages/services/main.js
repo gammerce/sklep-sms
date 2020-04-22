@@ -118,9 +118,11 @@ $(document).delegate("#form_service_add", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            if (typeof jsonObj.length !== "undefined")
+            if (typeof jsonObj.length !== "undefined") {
                 infobox.show_info(jsonObj.text, jsonObj.positive, jsonObj.length);
-            else infobox.show_info(jsonObj.text, jsonObj.positive);
+            } else {
+                infobox.show_info(jsonObj.text, jsonObj.positive);
+            }
         },
         error: handleErrorResponse,
     });

@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServerRepository;
 use App\Repositories\SettingsRepository;
-use App\Verification\PaymentModules\Microsms;
+use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -25,7 +25,7 @@ class ServerCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $smsPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => Microsms::MODULE_ID,
+            'module' => MicroSMS::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
             'module' => TPay::MODULE_ID,
@@ -62,7 +62,7 @@ class ServerCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Microsms::MODULE_ID,
+            'module' => MicroSMS::MODULE_ID,
         ]);
 
         $settingsRepository->update([

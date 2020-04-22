@@ -5,13 +5,13 @@
     <table>
         <tr>
             <td>
-                <label for="service_id">{$lang->t('service')}</label>
+                <label class="required" for="service_id">{$lang->t('service')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="service_id" name="service_id">
+                            <select id="service_id" name="service_id" required>
                                 <option value="">{$lang->t('choose_service')}</option>
                                 {$services}
                             </select>
@@ -115,6 +115,29 @@
                         <a class="button is-static is-small">
                             {{ $settings->getCurrency() }}
                         </a>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                <label for="discount">{$lang->t('discount')}</label>
+            </td>
+            <td>
+                <div class="field has-addons">
+                    <div class="control">
+                        <input
+                            type="number"
+                            id="discount"
+                            name="discount"
+                            class="input is-small"
+                            min="1"
+                            max="100"
+                        />
+                    </div>
+                    <div class="control">
+                        <a class="button is-static is-small">%</a>
                     </div>
                 </div>
             </td>

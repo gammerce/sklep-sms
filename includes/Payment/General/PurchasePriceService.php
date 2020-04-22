@@ -2,6 +2,7 @@
 namespace App\Payment\General;
 
 use App\Models\Price;
+use App\Models\QuantityPrice;
 use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
@@ -28,40 +29,57 @@ class PurchasePriceService
         $this->priceRepository = $priceRepository;
     }
 
+    /**
+     * @param Service $service
+     * @param Server|null $server
+     * @return QuantityPrice[]
+     */
     public function getServicePrices(Service $service, Server $server = null)
     {
+        $output = [];
         $prices = $this->priceRepository->findByServiceServer($service, $server);
 
-        return collect($prices)
-            ->map(function (Price $price) use ($server) {
-                $item = [
-                    'id' => $price->getId(),
-                    'quantity' => $price->getQuantity(),
-                    'direct_billing_price' => null,
-                    'sms_price' => null,
-                    'transfer_price' => null,
-                ];
+        foreach ($prices as $price) {
+            // Use -1 as null value because frontend treats null as an empty string.
+            // What is more in PHP it's prohibited to use null as array key.
+            $quantity = $price->getQuantity() === null ? -1 : $price->getQuantity();
 
-                if ($this->isAvailableUsingDirectBilling($price, $server)) {
-                    $item['direct_billing_price'] = $price->getDirectBillingPrice();
-                }
+            /** @var QuantityPrice $item */
+            $item = array_get($output, $quantity, new QuantityPrice($quantity));
 
-                if ($this->isAvailableUsingTransfer($price, $server)) {
-                    $item['transfer_price'] = $price->getTransferPrice();
-                }
+            if ($this->isAvailableUsingDirectBilling($price)) {
+                $item->directBillingPrice = $price->getDirectBillingPrice();
+                $item->directBillingDiscount = $price->getDiscount();
+            }
 
-                if ($this->isAvailableUsingSms($price, $server)) {
-                    $item['sms_price'] = $price->getSmsPrice();
-                }
+            if ($this->isAvailableUsingSms($price, $server)) {
+                $item->smsPrice = $price->getSmsPrice();
+                $item->smsDiscount = $price->getDiscount();
+            }
 
-                return $item;
-            })
-            ->filter(function (array $item) {
-                return $item['direct_billing_price'] !== null ||
-                    $item['sms_price'] !== null ||
-                    $item['transfer_price'] !== null;
-            })
-            ->all();
+            if ($this->isAvailableUsingTransfer($price, $server)) {
+                $item->transferPrice = $price->getTransferPrice();
+                $item->transferDiscount = $price->getDiscount();
+            }
+
+            if ($item) {
+                $output[$quantity] = $item;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * @param int $quantity
+     * @param Service $service
+     * @param Server|null $server
+     * @return QuantityPrice|null
+     */
+    public function getServicePriceByQuantity($quantity, Service $service, Server $server = null)
+    {
+        $quantityPrices = $this->getServicePrices($service, $server);
+        return array_get($quantityPrices, $quantity);
     }
 
     private function isAvailableUsingSms(Price $price, Server $server = null)
@@ -99,7 +117,7 @@ class PurchasePriceService
             $this->settings->getTransferPlatformId();
     }
 
-    private function isAvailableUsingDirectBilling(Price $price, Server $server = null)
+    private function isAvailableUsingDirectBilling(Price $price)
     {
         return $price->hasDirectBillingPrice();
     }

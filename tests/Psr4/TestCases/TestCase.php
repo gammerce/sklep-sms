@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Psr4\TestCases;
 
-use App\System\Application;
 use App\Support\Database;
+use App\System\Application;
 use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
@@ -97,7 +97,7 @@ class TestCase extends BaseTestCase
         $this->afterApplicationCreatedCallbacks[] = $callback;
     }
 
-    protected function mockLicense()
+    private function mockLicense()
     {
         $license = Mockery::mock(License::class);
         $license->shouldReceive('validate')->andReturn();
@@ -116,7 +116,7 @@ class TestCase extends BaseTestCase
         $this->app->instance(License::class, $license);
     }
 
-    protected function mockLocale()
+    private function mockLocale()
     {
         $localeService = Mockery::mock(LocaleService::class);
         $localeService->shouldReceive('getLocale')->andReturn('pl');
@@ -127,5 +127,28 @@ class TestCase extends BaseTestCase
     {
         $this->assertLessThanOrEqual($expected + 5, $value);
         $this->assertGreaterThanOrEqual($expected - 5, $value);
+    }
+
+    protected function assertDatabaseHas($table, array $data)
+    {
+        $this->assertTrue($this->databaseHas($table, $data));
+    }
+
+    private function databaseHas($table, array $data)
+    {
+        if (!$data) {
+            return false;
+        }
+
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
+
+        $params = map_to_where_params($data);
+        $values = map_to_values($data);
+
+        $statement = $db->statement("SELECT `id` FROM `{$table}` WHERE {$params}");
+        $statement->execute($values);
+
+        return $statement->rowCount() > 0;
     }
 }

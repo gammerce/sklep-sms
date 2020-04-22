@@ -2,8 +2,6 @@
 namespace App\ServiceModules\Other;
 
 use App\Http\Validation\Rules\EmailRule;
-use App\Http\Validation\Rules\PriceAvailableRule;
-use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServerLinkedToServiceRule;
@@ -35,17 +33,13 @@ class OtherServiceModule extends ServiceModule implements
 
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $price = $purchase->getPrice();
-
         return new Validator(
             [
                 'email' => $purchase->getEmail(),
-                'price_id' => $price ? $price->getId() : null,
                 'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
             ],
             [
                 'email' => [new EmailRule()],
-                'price_id' => [new PriceExistsRule(), new PriceAvailableRule($this->service)],
                 'server_id' => [
                     new RequiredRule(),
                     new ServerExistsRule(),

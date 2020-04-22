@@ -21,7 +21,7 @@ use App\Verification\Results\SmsSuccessResult;
 /**
  * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
  */
-class Microsms extends PaymentModule implements SupportSms, SupportTransfer
+class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
 
@@ -113,7 +113,7 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
         if (strlen(array_get($content, 'error'))) {
             $this->fileLogger->error(
-                "Kod błędu: {$content['error']['errorCode']} - {$content['error']['message']}"
+                "MicroSMS sms. Error {$content['error']['errorCode']} - {$content['error']['message']}"
             );
             throw new UnknownErrorException();
         }
@@ -125,7 +125,9 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
                 throw new BadCodeException();
             }
 
-            $this->fileLogger->error("Kod błędu: $errorCode - {$content['data']['message']}");
+            $this->fileLogger->error(
+                "MicroSMS sms. DataError [$errorCode] - {$content['data']['message']}"
+            );
             throw new UnknownErrorException();
         }
 
@@ -173,15 +175,28 @@ class Microsms extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isPaymentValid(array $body)
     {
-        if (strtolower(array_get($body, 'status')) !== "true") {
+        $userId = array_get($body, 'userid');
+        $status = strtolower(array_get($body, 'status'));
+        $ip = get_ip();
+
+        if ($status !== "true") {
+            $this->fileLogger->error("MicroSMS transfer. Invalid status [{$status}]");
             return false;
         }
 
-        if (array_get($body, 'userid') != $this->userId) {
+        if ($userId != $this->userId) {
+            $this->fileLogger->error(
+                "MicroSMS transfer. Invalid userId, expected [{$this->userId}], actual [{$userId}]"
+            );
             return false;
         }
 
-        return $this->isIpValid(get_ip());
+        if (!$this->isIpValid($ip)) {
+            $this->fileLogger->error("MicroSMS transfer. Invalid IP address [{$ip}]");
+            return false;
+        }
+
+        return true;
     }
 
     private function isIpValid($ip)

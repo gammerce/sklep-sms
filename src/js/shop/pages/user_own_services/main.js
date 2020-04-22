@@ -60,7 +60,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             } else if (jsonObj.return_id === "ok") {
                 refreshBlocks("content");
             } else if (jsonObj.return_id === "payment") {
-                goToPayment(jsonObj.data, jsonObj.sign);
+                goToPayment(jsonObj.transaction_id);
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

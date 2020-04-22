@@ -2,14 +2,13 @@
 namespace App\Payment\Exceptions;
 
 use Exception;
-use Throwable;
 
 class FinalizePurchaseException extends Exception
 {
     public function __construct(
         $message = "Finalize purchase exception",
         $code = 0,
-        Throwable $previous = null
+        Exception $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }

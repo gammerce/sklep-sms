@@ -630,6 +630,19 @@ function log_info($text, array $data = [])
     $logger->info($text, $data);
 }
 
+function map_to_where_params($data)
+{
+    return collect($data)
+        ->map(function ($value, $key) {
+            if ($value instanceof Expression) {
+                return "$key = $value";
+            }
+
+            return "$key = ?";
+        })
+        ->join(" AND ");
+}
+
 function map_to_params($data)
 {
     return collect($data)

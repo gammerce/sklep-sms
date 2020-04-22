@@ -58,6 +58,7 @@ return [
     'main_page' => 'Strona główna',
     'march' => 'Marzec',
     'may' => 'Maj',
+    'max_value' => 'Wartość musi być mniejsza lub równa {1}.',
     'min_value' => 'Wartość musi być większa lub równa {1}.',
     'minutes' => 'minut',
     'name' => 'Nazwa',

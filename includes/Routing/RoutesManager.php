@@ -264,7 +264,7 @@ class RoutesManager
                             'uses' => PurchaseResource::class . '@get',
                         ]);
 
-                        $r->post('/api/payment', [
+                        $r->post('/api/payment/{transactionId}', [
                             'uses' => PaymentResource::class . '@post',
                         ]);
 

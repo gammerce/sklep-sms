@@ -30,12 +30,7 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
         $statement->execute([$type, $authData, $serverId]);
         $existingPassword = $statement->fetchColumn();
 
-        // TODO: Remove md5
-        if (
-            $existingPassword &&
-            $existingPassword !== $value &&
-            $existingPassword !== md5($value)
-        ) {
+        if ($existingPassword && $existingPassword !== $value) {
             return [$this->lang->t('existing_service_has_different_password')];
         }
 

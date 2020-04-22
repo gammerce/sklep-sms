@@ -22,7 +22,7 @@ class PriceRepositoryTest extends TestCase
         $server = $this->factory->server();
 
         // when
-        $price = $this->priceRepository->create("vip", $server->getId(), 1, 10, 15, 100);
+        $price = $this->priceRepository->create("vip", $server->getId(), 1, 10, 15, 100, null);
 
         // then
         $this->assertSame("vip", $price->getServiceId());
@@ -39,7 +39,7 @@ class PriceRepositoryTest extends TestCase
     public function creates_price_for_all_servers()
     {
         // when
-        $price = $this->priceRepository->create("vip", null, 1, 10, 50, 100);
+        $price = $this->priceRepository->create("vip", null, 1, 10, 50, 100, null);
 
         // then
         $this->assertNull($price->getServerId());
@@ -49,7 +49,7 @@ class PriceRepositoryTest extends TestCase
     public function creates_sms_price()
     {
         // when
-        $price = $this->priceRepository->create("vip", null, 2, null, null, 100);
+        $price = $this->priceRepository->create("vip", null, 2, null, null, 100, null);
 
         // then
         $this->assertNull($price->getServerId());
@@ -63,7 +63,7 @@ class PriceRepositoryTest extends TestCase
     public function creates_transfer_price()
     {
         // when
-        $price = $this->priceRepository->create("vip", null, null, 10, null, 100);
+        $price = $this->priceRepository->create("vip", null, null, 10, null, 100, null);
 
         // then
         $this->assertNull($price->getServerId());

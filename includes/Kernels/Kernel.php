@@ -5,11 +5,9 @@ use App\Routing\RoutesManager;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use Exception;
-use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Throwable;
 
 class Kernel implements KernelContract
 {
@@ -34,12 +32,6 @@ class Kernel implements KernelContract
         } catch (Exception $e) {
             /** @var ExceptionHandlerContract $handler */
             $handler = $this->app->make(ExceptionHandlerContract::class);
-            $handler->report($e);
-            return $handler->render($request, $e);
-        } catch (Throwable $e) {
-            /** @var ExceptionHandlerContract $handler */
-            $handler = $this->app->make(ExceptionHandlerContract::class);
-            $e = new FatalThrowableError($e);
             $handler->report($e);
             return $handler->render($request, $e);
         }

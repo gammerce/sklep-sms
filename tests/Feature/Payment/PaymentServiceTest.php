@@ -57,7 +57,7 @@ class PaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => $server->getId(),
             'type' => ExtraFlagType::TYPE_SID,
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
@@ -103,7 +103,7 @@ class PaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => $server->getId(),
             'type' => ExtraFlagType::TYPE_SID,
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
@@ -149,7 +149,7 @@ class PaymentServiceTest extends TestCase
             Purchase::ORDER_SERVER => $server->getId(),
             'type' => ExtraFlagType::TYPE_SID,
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
@@ -187,7 +187,7 @@ class PaymentServiceTest extends TestCase
             'type' => ExtraFlagType::TYPE_SID,
             'auth_data' => 'STEAM_1:0:22309350',
         ]);
-        $purchase->setPrice($price);
+        $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
         $purchase->setPayment([
             Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),

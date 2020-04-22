@@ -154,6 +154,7 @@ class Factory
         $attributes = array_merge(
             [
                 "direct_billing_price" => 15,
+                "discount" => null,
                 "service_id" => "vip",
                 "server_id" => null,
                 "sms_price" => 100,
@@ -169,7 +170,8 @@ class Factory
             $attributes["sms_price"],
             $attributes["transfer_price"],
             $attributes["direct_billing_price"],
-            $attributes["quantity"]
+            $attributes["quantity"],
+            $attributes["discount"]
         );
     }
 
