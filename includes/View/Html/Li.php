@@ -3,5 +3,8 @@ namespace App\View\Html;
 
 class Li extends DOMElement
 {
-    protected $name = 'li';
+    public function __construct($content = null)
+    {
+        parent::__construct("li", $content);
+    }
 }

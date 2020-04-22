@@ -71,9 +71,9 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     private function createRegenerateTokenButton()
     {
-        return (new Link())
-            ->addClass("dropdown-item regenerate-token")
-            ->addContent($this->lang->t("regenerate_token"));
+        return (new Link($this->lang->t("regenerate_token")))->addClass(
+            "dropdown-item regenerate-token"
+        );
     }
 
     private function createAddButton()

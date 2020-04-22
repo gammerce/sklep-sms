@@ -129,13 +129,11 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     protected function createModuleSelectBox($subpage)
     {
-        $button = new Select();
-        $button->setParam('id', 'user_service_display_module');
-        $button->addClass("select is-small");
+        $button = (new Select())
+            ->setParam('id', 'user_service_display_module')
+            ->addClass("select is-small");
 
-        $selectWrapper = new Div();
-        $selectWrapper->addClass("select is-small");
-        $selectWrapper->addContent($button);
+        $selectWrapper = (new Div($button))->addClass("select is-small");
 
         foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
             if (!($serviceModule instanceof IServiceUserServiceAdminDisplay)) {

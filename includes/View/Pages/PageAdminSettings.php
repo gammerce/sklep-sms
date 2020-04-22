@@ -118,13 +118,11 @@ class PageAdminSettings extends PageAdmin
             $noOption->setParam("selected", "selected");
         }
 
-        $cronSelect = new Select();
-        $cronSelect->setParam("id", "cron");
-        $cronSelect->setParam("name", "cron");
-        $cronSelect->addContent($yesOption);
-        $cronSelect->addContent($noOption);
-
-        return $cronSelect;
+        return (new Select())
+            ->setParam("id", "cron")
+            ->setParam("name", "cron")
+            ->addContent($yesOption)
+            ->addContent($noOption);
     }
 
     private function createPaymentPlatformOption(PaymentPlatform $paymentPlatform, $currentId)

@@ -3,5 +3,8 @@ namespace App\View\Html;
 
 class Ul extends DOMElement
 {
-    protected $name = 'ul';
+    public function __construct($content = null)
+    {
+        parent::__construct("ul", $content);
+    }
 }

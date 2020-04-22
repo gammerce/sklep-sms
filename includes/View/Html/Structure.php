@@ -7,12 +7,6 @@ use App\View\PaginationService;
 
 class Structure extends DOMElement
 {
-    protected $name = 'table';
-
-    protected $params = [
-        "class" => "table is-fullwidth is-hoverable",
-    ];
-
     /** @var DOMElement[] */
     private $headCells = [];
 
@@ -22,6 +16,12 @@ class Structure extends DOMElement
     /** @var DOMElement */
     public $foot = null;
 
+    public function __construct($content = null)
+    {
+        parent::__construct("table", $content);
+        $this->addClass("table is-fullwidth is-hoverable");
+    }
+
     public function toHtml()
     {
         /** @var TranslationManager $translationManager */
@@ -29,8 +29,7 @@ class Structure extends DOMElement
         $lang = $translationManager->user();
 
         // Tworzymy thead
-        $head = new DOMElement();
-        $head->setName('thead');
+        $head = new DOMElement("thead");
 
         $headRow = new Row();
         foreach ($this->headCells as $cell) {
@@ -43,8 +42,7 @@ class Structure extends DOMElement
         $head->addContent($headRow);
 
         // Tworzymy tbody
-        $body = new DOMElement();
-        $body->setName('tbody');
+        $body = new DOMElement("tbody");
         foreach ($this->bodyRows as $row) {
             $body->addContent($row);
         }
@@ -134,13 +132,9 @@ class Structure extends DOMElement
             $cell = new Cell($pagination);
             $cell->setParam('colspan', '31');
 
-            $row = new Row();
-            $row->addContent($cell);
+            $row = new Row($cell);
 
-            $this->foot = (new DOMElement())
-                ->setName('tfoot')
-                ->addClass('display_tfoot')
-                ->addContent($row);
+            $this->foot = (new DOMElement("tfoot", $row))->addClass('display_tfoot');
         }
 
         return $this;

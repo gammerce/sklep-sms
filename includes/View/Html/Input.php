@@ -3,5 +3,8 @@ namespace App\View\Html;
 
 class Input extends DOMElement
 {
-    protected $name = 'input';
+    public function __construct($content = null)
+    {
+        parent::__construct("input", $content);
+    }
 }

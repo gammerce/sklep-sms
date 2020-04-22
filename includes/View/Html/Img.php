@@ -3,5 +3,8 @@ namespace App\View\Html;
 
 class Img extends DOMElement
 {
-    protected $name = 'img';
+    public function __construct($content = null)
+    {
+        parent::__construct("img", $content);
+    }
 }

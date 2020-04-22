@@ -101,17 +101,15 @@ class PageAdminBoughtServices extends PageAdmin
                 }
                 $extraData = implode('<br />', $extraData);
 
-                // Pobranie linku płatności
-                $paymentLink = new Link();
-                $paymentLink->addClass("dropdown-item");
-                $paymentLink->setParam(
-                    'href',
-                    $this->url->to(
-                        "/admin/payment_{$transaction->getPaymentMethod()}?payid={$transaction->getPaymentId()}"
+                $paymentLink = (new Link($this->lang->t('see_payment')))
+                    ->addClass("dropdown-item")
+                    ->setParam(
+                        'href',
+                        $this->url->to(
+                            "/admin/payment_{$transaction->getPaymentMethod()}?payid={$transaction->getPaymentId()}"
+                        )
                     )
-                );
-                $paymentLink->setParam('target', '_blank');
-                $paymentLink->addContent($this->lang->t('see_payment'));
+                    ->setParam('target', '_blank');
 
                 $cellDate = (new Cell(convert_date($transaction->getTimestamp())))->setParam(
                     'headers',

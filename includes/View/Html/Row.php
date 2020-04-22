@@ -3,5 +3,8 @@ namespace App\View\Html;
 
 class Row extends DOMElement
 {
-    protected $name = 'tr';
+    public function __construct($content = null)
+    {
+        parent::__construct("tr", $content);
+    }
 }
