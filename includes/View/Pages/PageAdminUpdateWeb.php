@@ -15,7 +15,7 @@ class PageAdminUpdateWeb extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('update_web');
+        $this->heart->pageTitle = $this->title = $this->lang->t("update_web");
         $this->version = $version;
     }
 
@@ -28,9 +28,11 @@ class PageAdminUpdateWeb extends PageAdmin
             return $this->template->render("admin/no_update");
         }
 
+        $pageTitle = $this->template->render("admin/page_title", ["title" => $this->title]);
+
         return $this->template->render(
             "admin/update_web",
-            compact('currentVersion', 'newestVersion') + ['title' => $this->title]
+            compact("currentVersion", "newestVersion", "pageTitle")
         );
     }
 }

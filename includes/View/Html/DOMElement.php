@@ -31,30 +31,30 @@ class DOMElement implements I_ToHtml
         $oldParams = $this->params;
 
         $style = [];
-        foreach ((array) $this->getParam('style') as $key => $value) {
+        foreach ((array) $this->getParam("style") as $key => $value) {
             if (!strlen($value)) {
                 continue;
             }
 
-            $style[] = htmlspecialchars($key) . ': ' . htmlspecialchars($value);
+            $style[] = htmlspecialchars($key) . ": " . htmlspecialchars($value);
         }
         if (!empty($style)) {
-            $this->setParam('style', implode('; ', $style));
+            $this->setParam("style", implode("; ", $style));
         }
 
         $params = [];
         foreach ($this->params as $key => $value) {
             if (strlen($value)) {
-                $params[] = htmlspecialchars($key) . '="' . htmlspecialchars($value) . '"';
+                $params[] = htmlspecialchars($key) . "=\"" . htmlspecialchars($value) . "\"";
             }
         }
-        $params = implode(' ', $params);
+        $params = implode(" ", $params);
 
         $tagName = htmlspecialchars($this->getName());
 
         $output = "<{$tagName} {$params}>";
 
-        if (!in_array($this->getName(), ['input', 'img', 'br', 'hr'])) {
+        if (!in_array($this->getName(), ["input", "img", "br", "hr"])) {
             foreach ($this->contents as $element) {
                 $output .= $element->toHtml();
             }
@@ -110,7 +110,7 @@ class DOMElement implements I_ToHtml
      */
     public function getParam($key)
     {
-        return array_get($this->params, $key, '');
+        return array_get($this->params, $key, "");
     }
 
     /**
@@ -130,10 +130,10 @@ class DOMElement implements I_ToHtml
      */
     public function addClass($value)
     {
-        if (empty($this->params['class'])) {
-            $this->params['class'] = (string) $value;
+        if (empty($this->params["class"])) {
+            $this->params["class"] = (string) $value;
         } else {
-            $this->params['class'] .= " $value";
+            $this->params["class"] .= " $value";
         }
 
         return $this;
@@ -146,7 +146,17 @@ class DOMElement implements I_ToHtml
      */
     public function setStyle($key, $value)
     {
-        $this->params['style'][$key] = (string) $value;
+        $this->params["style"][$key] = (string) $value;
+        return $this;
+    }
+
+    /**
+     * @param string $value
+     * @return $this
+     */
+    public function setId($value)
+    {
+        $this->params["id"] = (string) $value;
         return $this;
     }
 

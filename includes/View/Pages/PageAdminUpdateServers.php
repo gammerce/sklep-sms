@@ -59,9 +59,11 @@ class PageAdminUpdateServers extends PageAdmin
             return $output;
         }
 
+        $pageTitle = $this->template->render("admin/page_title", ['title' => $this->title]);
+
         return $this->template->render(
             "admin/update_server",
-            compact('versionBricks') + ['title' => $this->title]
+            compact("pageTitle", "versionBricks")
         );
     }
 }

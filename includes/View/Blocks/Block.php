@@ -2,7 +2,7 @@
 namespace App\View\Blocks;
 
 use App\View\Html\I_ToHtml;
-use App\View\Html\UnescapedSimpleText;
+use App\View\Html\RawText;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
 
@@ -20,7 +20,7 @@ abstract class Block
     {
         $content = $this->getContent($query, $body, $params);
 
-        return create_dom_element("div", new UnescapedSimpleText($content), [
+        return create_dom_element("div", new RawText($content), [
             'id' => $this->getContentId(),
             'class' => $content !== null ? $this->getContentClass() : "",
         ]);

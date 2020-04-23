@@ -8,7 +8,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Structure;
-use App\View\Html\UnescapedSimpleText;
+use App\View\Html\RawText;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
 
@@ -40,7 +40,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             ->map(function (array $row) {
                 return (new BodyRow())
                     ->setDbId($row['id'])
-                    ->addCell(new Cell(new UnescapedSimpleText($row['question'])))
+                    ->addCell(new Cell(new RawText($row['question'])))
                     ->addCell(new Cell($row['answers']))
                     ->setDeleteAction(has_privileges("manage_antispam_questions"))
                     ->setEditAction(has_privileges("manage_antispam_questions"));

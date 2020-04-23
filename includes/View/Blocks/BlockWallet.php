@@ -4,7 +4,7 @@ namespace App\View\Blocks;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Auth;
-use App\View\Html\UnescapedSimpleText;
+use App\View\Html\RawText;
 use App\View\Interfaces\IBeLoggedMust;
 
 class BlockWallet extends Block implements IBeLoggedMust
@@ -47,7 +47,7 @@ class BlockWallet extends Block implements IBeLoggedMust
     {
         $content = $this->getContent($query, $body, $params);
 
-        return create_dom_element("a", new UnescapedSimpleText($content), [
+        return create_dom_element("a", new RawText($content), [
             'id' => $this->getContentId(),
             'class' => $content !== null ? $this->getContentClass() : "",
             'href' => $this->url->to("/page/payment_log"),

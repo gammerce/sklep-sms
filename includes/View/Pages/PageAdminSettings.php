@@ -68,14 +68,15 @@ class PageAdminSettings extends PageAdmin
         $userEditServiceSelect = $this->createUserEditServiceSelect();
         $themesList = to_array($this->createThemesList());
         $languagesList = to_array($this->createLanguagesList());
+        $pageTitle = $this->template->render("admin/page_title", ['title' => $this->title]);
 
         return $this->template->render("admin/settings", [
             "cronSelect" => $cronSelect,
             "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
+            "pageTitle" => $pageTitle,
             "smsPlatforms" => implode("", $smsPlatforms),
             "themesList" => implode("", $themesList),
-            "title" => $this->title,
             "transferPlatforms" => implode("", $transferPlatforms),
             "userEditServiceSelect" => $userEditServiceSelect,
         ]);

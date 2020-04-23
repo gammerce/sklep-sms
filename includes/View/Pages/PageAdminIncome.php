@@ -7,12 +7,12 @@ use App\View\Html\HeadCell;
 
 class PageAdminIncome extends PageAdmin
 {
-    const PAGE_ID = 'income';
+    const PAGE_ID = "income";
 
-    protected $privilege = 'view_income';
+    protected $privilege = "view_income";
 
     private $months = [
-        '',
+        "",
         "january",
         "february",
         "march",
@@ -34,7 +34,7 @@ class PageAdminIncome extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('income');
+        $this->heart->pageTitle = $this->title = $this->lang->t("income");
         $this->incomeService = $incomeService;
     }
 
@@ -42,8 +42,8 @@ class PageAdminIncome extends PageAdmin
     {
         $this->heart->addScript("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
 
-        $queryYear = array_get($query, 'year', date("Y"));
-        $queryMonth = array_get($query, 'month', date("m"));
+        $queryYear = array_get($query, "year", date("Y"));
+        $queryMonth = array_get($query, "month", date("m"));
 
         $incomeFromPeriod = $this->incomeService->get($queryYear, $queryMonth);
 
@@ -74,21 +74,26 @@ class PageAdminIncome extends PageAdmin
             "dataset" => json_encode($this->getDataset($labels, $incomeFromPeriod)),
         ]);
 
+        $pageTitle = $this->template->render("admin/page_title", [
+            "buttons" => $buttons,
+            "title" => $this->title,
+        ]);
+
         return $this->template->render("admin/table_structure", [
             "aboveTable" => $aboveTable,
             "buttons" => $buttons,
-            "thead" => $thead,
+            "pageTitle" => $pageTitle,
+            "pagination" => "",
             "tbody" => $tbody->join(),
-            "pagination" => '',
-            "tfootClass" => '',
-            'title' => $this->title,
+            "tfootClass" => "",
+            "thead" => $thead,
         ]);
     }
 
     private function getDataset(array $labels, array $data)
     {
         $dataset = [
-            0 => $this->createDatasetEntry($this->lang->t('other'), $this->getColor(0)),
+            0 => $this->createDatasetEntry($this->lang->t("other"), $this->getColor(0)),
         ];
 
         foreach ($this->heart->getServers() as $server) {
@@ -136,23 +141,23 @@ class PageAdminIncome extends PageAdmin
 
     private function renderButtons($year, $month)
     {
-        $months = '';
+        $months = "";
         for ($dayId = 1; $dayId <= 12; $dayId++) {
             $months .= create_dom_element("option", $this->lang->t($this->months[$dayId]), [
-                'value' => str_pad($dayId, 2, 0, STR_PAD_LEFT),
-                'selected' => $month == $dayId ? "selected" : "",
+                "value" => str_pad($dayId, 2, 0, STR_PAD_LEFT),
+                "selected" => $month == $dayId ? "selected" : "",
             ]);
         }
 
-        $years = '';
+        $years = "";
         for ($dayId = 2014; $dayId <= intval(date("Y")); $dayId++) {
             $years .= create_dom_element("option", $dayId, [
-                'value' => $dayId,
-                'selected' => $year == $dayId ? "selected" : "",
+                "value" => $dayId,
+                "selected" => $year == $dayId ? "selected" : "",
             ]);
         }
 
-        return $this->template->render("admin/income_button", compact('years', 'months'));
+        return $this->template->render("admin/income_button", compact("years", "months"));
     }
 
     private function renderTHead()
@@ -163,7 +168,7 @@ class PageAdminIncome extends PageAdmin
             $tableRow .= new HeadCell($server->getName());
         }
 
-        return $this->template->render("admin/income_thead", compact('tableRow'));
+        return $this->template->render("admin/income_thead", compact("tableRow"));
     }
 
     private function renderTRow($date, array $incomes)
@@ -182,7 +187,7 @@ class PageAdminIncome extends PageAdmin
 
         return $this->template->render(
             "admin/income_trow",
-            compact('date', 'tableRow', 'dayIncome')
+            compact("date", "tableRow", "dayIncome")
         );
     }
 
@@ -209,7 +214,7 @@ class PageAdminIncome extends PageAdmin
         $totalIncome = number_format($totalIncome / 100.0, 2);
         $tableRow = implode("", $tableRows);
 
-        return $this->template->render("admin/income_trow2", compact('tableRow', 'totalIncome'));
+        return $this->template->render("admin/income_trow2", compact("tableRow", "totalIncome"));
     }
 
     /**

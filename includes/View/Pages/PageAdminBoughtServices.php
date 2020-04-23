@@ -10,7 +10,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Link;
 use App\View\Html\Structure;
-use App\View\Html\UnescapedSimpleText;
+use App\View\Html\RawText;
 use App\View\Html\Wrapper;
 
 class PageAdminBoughtServices extends PageAdmin
@@ -126,7 +126,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell($service ? $service->getName() : $this->lang->t('none')))
                     ->addCell(new Cell($quantity))
                     ->addCell(new Cell($transaction->getAuthData()))
-                    ->addCell(new Cell(new UnescapedSimpleText($extraData)))
+                    ->addCell(new Cell(new RawText($extraData)))
                     ->addCell(new Cell($transaction->getEmail()))
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell($cellDate);

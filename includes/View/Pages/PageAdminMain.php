@@ -8,7 +8,7 @@ use App\Requesting\Requester;
 use App\Services\PriceTextService;
 use App\Support\Version;
 use App\System\License;
-use App\View\Html\UnescapedSimpleText;
+use App\View\Html\RawText;
 
 class PageAdminMain extends PageAdmin
 {
@@ -56,8 +56,11 @@ class PageAdminMain extends PageAdmin
     {
         $bricks = $this->getBricks();
         $notes = $this->getNotes();
+        $pageTitle = $this->template->render("admin/page_title", [
+            "title" => $this->lang->t('main_page'),
+        ]);
 
-        return $this->template->render("admin/home", compact("notes", "bricks"));
+        return $this->template->render("admin/home", compact("bricks", "pageTitle", "notes"));
     }
 
     private function getNotes()
@@ -236,8 +239,8 @@ class PageAdminMain extends PageAdmin
 
     private function createNote($text, $class)
     {
-        return create_dom_element("div", new UnescapedSimpleText($text), [
-            "class" => "notification " . $class,
+        return create_dom_element("div", new RawText($text), [
+            "class" => "notification {$class}",
         ]);
     }
 

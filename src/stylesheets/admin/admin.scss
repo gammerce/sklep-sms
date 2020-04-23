@@ -15,12 +15,6 @@ $body-background-color: $background;
 // Sidebar
 $sidebar-width: 350px;
 
-// Navbar
-$navbar-height: 4rem;
-$navbar-item-color: $scheme-invert-bis;
-$navbar-item-hover-color: $text-invert;
-$navbar-dropdown-item-hover-color: $text;
-
 @import "../general/variables";
 @import "../general/animations";
 @import "../general/global";
@@ -100,6 +94,7 @@ h4 {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     background: linear-gradient(to right, rgba(67, 67, 67, 1) 0%, rgba(204, 204, 204, 1) 92%);
     margin-left: -1rem;
     margin-right: -1rem;
@@ -110,6 +105,13 @@ h4 {
         color: #fff;
         text-shadow: 1px 1px 10px #000;
         margin: 0;
+    }
+
+    .navbar-burger {
+        margin-left: 0;
+        width: 2rem;
+        height: initial;
+        margin-right: 0.5rem;
     }
 }
 
