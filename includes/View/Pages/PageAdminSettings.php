@@ -13,8 +13,8 @@ use App\View\Html\Select;
 
 class PageAdminSettings extends PageAdmin
 {
-    const PAGE_ID = 'settings';
-    protected $privilege = 'manage_settings';
+    const PAGE_ID = "settings";
+    protected $privilege = "manage_settings";
 
     /** @var Settings */
     private $settings;
@@ -28,7 +28,7 @@ class PageAdminSettings extends PageAdmin
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('settings');
+        $this->heart->pageTitle = $this->title = $this->lang->t("settings");
         $this->settings = $settings;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
@@ -68,7 +68,10 @@ class PageAdminSettings extends PageAdmin
         $userEditServiceSelect = $this->createUserEditServiceSelect();
         $themesList = to_array($this->createThemesList());
         $languagesList = to_array($this->createLanguagesList());
-        $pageTitle = $this->template->render("admin/page_title", ['title' => $this->title]);
+        $pageTitle = $this->template->render("admin/page_title", [
+            "buttons" => "",
+            "title" => $this->title,
+        ]);
 
         return $this->template->render("admin/settings", [
             "cronSelect" => $cronSelect,
@@ -129,23 +132,23 @@ class PageAdminSettings extends PageAdmin
     private function createPaymentPlatformOption(PaymentPlatform $paymentPlatform, $currentId)
     {
         return create_dom_element("option", $paymentPlatform->getName(), [
-            'value' => $paymentPlatform->getId(),
-            'selected' => $paymentPlatform->getId() === $currentId ? "selected" : "",
+            "value" => $paymentPlatform->getId(),
+            "selected" => $paymentPlatform->getId() === $currentId ? "selected" : "",
         ]);
     }
 
     private function createThemesList()
     {
-        $dirList = $this->fileSystem->scanDirectory($this->path->to('themes'));
+        $dirList = $this->fileSystem->scanDirectory($this->path->to("themes"));
 
         foreach ($dirList as $dirName) {
             if (
-                $dirName[0] != '.' &&
+                $dirName[0] != "." &&
                 $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
             ) {
                 yield create_dom_element("option", $dirName, [
-                    'value' => $dirName,
-                    'selected' => $dirName == $this->settings->getTheme() ? "selected" : "",
+                    "value" => $dirName,
+                    "selected" => $dirName == $this->settings->getTheme() ? "selected" : "",
                 ]);
             }
         }
@@ -157,16 +160,16 @@ class PageAdminSettings extends PageAdmin
         $translationManager = $this->app->make(TranslationManager::class);
         $langShop = $translationManager->shop();
 
-        $dirList = $this->fileSystem->scanDirectory($this->path->to('translations'));
+        $dirList = $this->fileSystem->scanDirectory($this->path->to("translations"));
 
         foreach ($dirList as $dirName) {
             if (
-                $dirName[0] != '.' &&
+                $dirName[0] != "." &&
                 $this->fileSystem->isDirectory($this->path->to("translations/{$dirName}"))
             ) {
-                yield create_dom_element("option", $this->lang->t('language_' . $dirName), [
-                    'value' => $dirName,
-                    'selected' => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                yield create_dom_element("option", $this->lang->t("language_" . $dirName), [
+                    "value" => $dirName,
+                    "selected" => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
                 ]);
             }
         }

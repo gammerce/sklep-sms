@@ -49,8 +49,8 @@ class Wrapper extends Div
         }
 
         $pageTitle = $template->render("admin/page_title", [
-            "title" => $this->getTitle(),
             "buttons" => $buttons,
+            "title" => $this->getTitle(),
         ]);
 
         $this->addContent(new RawText($pageTitle));
