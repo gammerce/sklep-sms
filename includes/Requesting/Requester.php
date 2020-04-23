@@ -12,7 +12,7 @@ class Requester
      */
     public function get($url, array $query = [], array $headers = [], $timeout = 10)
     {
-        return $this->curl('GET', $url, $query, [], $headers, $timeout);
+        return $this->curl("GET", $url, $query, [], $headers, $timeout);
     }
 
     /**
@@ -23,7 +23,7 @@ class Requester
      */
     public function post($url, $body = [], array $headers = [])
     {
-        return $this->curl('POST', $url, [], $body, $headers);
+        return $this->curl("POST", $url, [], $body, $headers);
     }
 
     /**
@@ -34,7 +34,7 @@ class Requester
      */
     public function patch($url, $body = [], array $headers = [])
     {
-        return $this->curl('PATCH', $url, [], $body, $headers);
+        return $this->curl("PATCH", $url, [], $body, $headers);
     }
 
     /**
@@ -45,7 +45,7 @@ class Requester
      */
     public function put($url, $body = [], array $headers = [])
     {
-        return $this->curl('PUT', $url, [], $body, $headers);
+        return $this->curl("PUT", $url, [], $body, $headers);
     }
 
     /**
@@ -57,7 +57,7 @@ class Requester
      */
     public function delete($url, array $query = [], array $headers = [])
     {
-        return $this->curl('DELETE', $url, $query, [], $headers);
+        return $this->curl("DELETE", $url, $query, [], $headers);
     }
 
     /**
@@ -78,7 +78,7 @@ class Requester
         $timeout = 10
     ) {
         if (!empty($query)) {
-            $url .= '?' . http_build_query($query);
+            $url .= "?" . http_build_query($query);
         }
 
         $curl = curl_init();
@@ -87,7 +87,7 @@ class Requester
             CURLOPT_URL => $url,
             CURLOPT_CUSTOMREQUEST => $method,
             CURLOPT_TIMEOUT => $timeout,
-            CURLOPT_USERAGENT => 'gammerce/sklep-sms',
+            CURLOPT_USERAGENT => "gammerce/sklep-sms",
         ]);
 
         $formattedHeaders = $this->formatHeaders($headers);
