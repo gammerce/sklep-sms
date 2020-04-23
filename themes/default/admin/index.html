@@ -6,14 +6,36 @@
 <body>
     <nav class="navbar">
         <div class="navbar-brand">
-            <a class="navbar-item" href="{{ $url->to('/') }}">
-                <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="{$lang->t('shop_sms')}" height="60">
+            <a class="navbar-item" href="https://sklep-sms.pl" target="_blank">
+                <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="{$lang->t('shop_sms')}">
             </a>
 
             <div class="navbar-burger burger" data-target="navMenubd-example">
                 <span></span>
                 <span></span>
                 <span></span>
+            </div>
+        </div>
+
+<!--        TODO: Change logout colors-->
+
+        <div class="navbar-menu">
+            <div class="navbar-end">
+                <form id="logout-form" method="POST" action="{{ $logoutAction }}">
+                    <input type="hidden" name="action" value="logout" />
+                </form>
+
+                <div class="navbar-item has-dropdown is-hoverable">
+                    <a class="navbar-link">
+                        {{ $user->getUsername() }}
+                    </a>
+
+                    <div class="navbar-dropdown is-right">
+                        <a class="navbar-item" onclick="document.getElementById('logout-form').submit()">
+                            {$lang->t('logout')}
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </nav>
@@ -29,6 +51,8 @@
                         {$lang->t('license_expires')}: {{ $license->getExpires() }}
                     </div>
                 </div>
+
+                <hr />
 
                 <p class="menu-label">
                     {{ $lang->t('main') }}

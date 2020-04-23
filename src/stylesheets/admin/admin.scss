@@ -11,7 +11,7 @@ $scheme-invert-ter: hsl(0, 0%, 86%);
 // Navbar
 $navbar-height: 4rem;
 
-@import "../general/all";
+@import "src/stylesheets/general/variables";
 @import "../general/global";
 @import "../general/loader";
 @import "../general/infobox";
