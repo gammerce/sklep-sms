@@ -7,6 +7,10 @@
         <div class="layout">
             <div id="overlay" class="overlay"></div>
 
+            <form id="logout-form" method="POST" action="{{ $logoutAction }}">
+                <input type="hidden" name="action" value="logout" />
+            </form>
+
             <div class="sidebar-menu is-hidden-mobile">
                 <aside class="menu">
                     <div class="logo-box">

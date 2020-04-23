@@ -13,7 +13,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = '3.13.0-rc.1';
+    const VERSION = "3.13.0-rc.1";
 
     /** @var array */
     private $providers = [
@@ -63,7 +63,7 @@ class Application extends Container
         $path = $this->make(Path::class);
 
         try {
-            (new Dotenv($path->to('confidential')))->load();
+            (new Dotenv($path->to("confidential")))->load();
         } catch (InvalidPathException $e) {
             //
         }
@@ -72,7 +72,7 @@ class Application extends Container
     private function registerServiceProviders()
     {
         foreach ($this->providers as $provider) {
-            if (method_exists($provider, 'register')) {
+            if (method_exists($provider, "register")) {
                 $this->call("$provider@register");
             }
         }
@@ -81,7 +81,7 @@ class Application extends Container
     private function bootServiceProviders()
     {
         foreach ($this->providers as $provider) {
-            if (method_exists($provider, 'boot')) {
+            if (method_exists($provider, "boot")) {
                 $this->call("$provider@boot");
             }
         }
@@ -100,8 +100,8 @@ class Application extends Container
 
             $dir = new DirectoryIterator($path->to("/includes/Providers"));
             foreach ($dir as $fileInfo) {
-                if (ends_at($fileInfo->getFilename(), '.php')) {
-                    $fileName = $fileInfo->getBasename('.php');
+                if (ends_at($fileInfo->getFilename(), ".php")) {
+                    $fileName = $fileInfo->getBasename(".php");
                     $providerClassName = "App\\Providers\\{$fileName}";
 
                     if (!in_array($providerClassName, $this->providers)) {
