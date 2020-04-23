@@ -26,8 +26,6 @@
                 </div>
             </div>
 
-            <!--        TODO: Change logout colors-->
-
             <div class="navbar-menu">
                 <div class="navbar-end">
                     <form id="logout-form" method="POST" action="{{ $logoutAction }}">
@@ -40,6 +38,9 @@
                         </a>
 
                         <div class="navbar-dropdown is-right">
+                            <a class="navbar-item" href="{{ $url->to('/') }}">
+                                {{ $lang->t('shop_sms') }}
+                            </a>
                             <a
                                 class="navbar-item"
                                 onclick="document.getElementById('logout-form').submit()"

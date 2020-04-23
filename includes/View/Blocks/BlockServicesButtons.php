@@ -3,6 +3,7 @@ namespace App\View\Blocks;
 
 use App\Models\Service;
 use App\Routing\UrlGenerator;
+use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
@@ -21,12 +22,21 @@ class BlockServicesButtons extends Block
     /** @var UrlGenerator */
     private $url;
 
-    public function __construct(Auth $auth, Template $template, Heart $heart, UrlGenerator $url)
-    {
+    /** @var UserServiceAccessService */
+    private $userServiceAccessService;
+
+    public function __construct(
+        Auth $auth,
+        Template $template,
+        Heart $heart,
+        UrlGenerator $url,
+        UserServiceAccessService $userServiceAccessService
+    ) {
         $this->auth = $auth;
         $this->template = $template;
         $this->heart = $heart;
         $this->url = $url;
+        $this->userServiceAccessService = $userServiceAccessService;
     }
 
     public function getContentClass()
@@ -48,7 +58,7 @@ class BlockServicesButtons extends Block
                 $serviceModule = $this->heart->getServiceModule($service->getId());
                 return $serviceModule &&
                     $serviceModule->showOnWeb() &&
-                    $this->heart->canUserUseService($user->getUid(), $service);
+                    $this->userServiceAccessService->canUserUseService($service, $user);
             })
             ->map(function (Service $service) {
                 return create_dom_element(
