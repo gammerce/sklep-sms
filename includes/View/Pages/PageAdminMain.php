@@ -43,7 +43,7 @@ class PageAdminMain extends PageAdmin
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('main_page');
+        $this->heart->pageTitle = $this->title = $this->lang->t("main_page");
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
@@ -57,7 +57,7 @@ class PageAdminMain extends PageAdmin
         $bricks = $this->getBricks();
         $notes = $this->getNotes();
 
-        return $this->template->render("admin/home", compact('notes', 'bricks'));
+        return $this->template->render("admin/home", compact("notes", "bricks"));
     }
 
     private function getNotes()
@@ -68,7 +68,7 @@ class PageAdminMain extends PageAdmin
         if (!$this->license->isValid()) {
             $settingsUrl = $this->url->to("/admin/settings");
             $notes[] = $this->createNote(
-                $this->lang->t('license_error', $settingsUrl),
+                $this->lang->t("license_error", $settingsUrl),
                 "is-danger"
             );
         }
@@ -81,7 +81,7 @@ class PageAdminMain extends PageAdmin
         ) {
             $notes[] = $this->createNote(
                 $this->lang->t(
-                    'license_soon_expire',
+                    "license_soon_expire",
                     seconds_to_time(strtotime($this->license->getExpires()) - time())
                 ),
                 "is-danger"
@@ -97,7 +97,7 @@ class PageAdminMain extends PageAdmin
 
             $notes[] = $this->createNote(
                 $this->lang->t(
-                    'update_available',
+                    "update_available",
                     htmlspecialchars($newestVersion),
                     $updateWebLink
                 ),
@@ -117,7 +117,7 @@ class PageAdminMain extends PageAdmin
 
             $notes[] = $this->createNote(
                 $this->lang->t(
-                    'update_available_servers',
+                    "update_available_servers",
                     $serversCount,
                     $this->heart->getServersAmount(),
                     $updateServersLink
@@ -135,22 +135,27 @@ class PageAdminMain extends PageAdmin
 
         // Server
         $bricks[] = $this->createBrick(
-            $this->lang->t('number_of_servers', $this->heart->getServersAmount())
+            $this->lang->t("number_of_servers", $this->heart->getServersAmount()),
+            $this->url->to("/admin/servers")
         );
 
         // User
         $bricks[] = $this->createBrick(
             $this->lang->t(
-                'number_of_users',
+                "number_of_users",
                 $this->db->query("SELECT COUNT(*) FROM `ss_users`")->fetchColumn()
-            )
+            ),
+            $this->url->to("/admin/users")
         );
 
         // Bought service
         $quantity = $this->db
             ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_bought_services', $quantity));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_bought_services", $quantity),
+            $this->url->to("/admin/bought_services")
+        );
 
         // SMS
         $quantity = $this->db
@@ -160,7 +165,10 @@ class PageAdminMain extends PageAdmin
                     "WHERE t.payment = 'sms' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_sent_smses', $quantity));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_sent_smses", $quantity),
+            $this->url->to("/admin/payment_sms")
+        );
 
         // Transfer
         $quantity = $this->db
@@ -170,7 +178,10 @@ class PageAdminMain extends PageAdmin
                     "WHERE t.payment = 'transfer' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t('number_of_transfers', $quantity));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_transfers", $quantity),
+            $this->url->to("/admin/payment_transfer")
+        );
 
         // Income
         $incomeData = $this->incomeService->get(date("Y"), date("m"));
@@ -181,13 +192,19 @@ class PageAdminMain extends PageAdmin
             }
         }
         $incomeText = $this->priceTextService->getPriceText($income);
-        $bricks[] = $this->createBrick($this->lang->t('note_income', $incomeText));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("note_income", $incomeText),
+            $this->url->to("/admin/income")
+        );
 
         // Whole income
         $wholeIncomeText = $this->priceTextService->getPriceText(
             $this->incomeService->getWholeIncome()
         );
-        $bricks[] = $this->createBrick($this->lang->t('note_whole_income', $wholeIncomeText));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("note_whole_income", $wholeIncomeText),
+            $this->url->to("/admin/income")
+        );
 
         return implode("", $bricks);
     }
@@ -220,12 +237,12 @@ class PageAdminMain extends PageAdmin
     private function createNote($text, $class)
     {
         return create_dom_element("div", new UnescapedSimpleText($text), [
-            'class' => "notification " . $class,
+            "class" => "notification " . $class,
         ]);
     }
 
-    private function createBrick($content)
+    private function createBrick($content, $link)
     {
-        return $this->template->render("admin/brick_card", compact('content'));
+        return $this->template->render("admin/brick_card", compact("content", "link"));
     }
 }

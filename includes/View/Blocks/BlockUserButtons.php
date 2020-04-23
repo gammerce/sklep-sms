@@ -2,6 +2,7 @@
 namespace App\View\Blocks;
 
 use App\Routing\UrlGenerator;
+use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
@@ -25,18 +26,23 @@ class BlockUserButtons extends Block
     /** @var Translator */
     private $lang;
 
+    /** @var UserServiceAccessService */
+    private $userServiceAccessService;
+
     public function __construct(
         Auth $auth,
         Template $template,
         TranslationManager $translationManager,
         Heart $heart,
-        UrlGenerator $url
+        UrlGenerator $url,
+        UserServiceAccessService $userServiceAccessService
     ) {
         $this->auth = $auth;
         $this->template = $template;
         $this->heart = $heart;
         $this->url = $url;
         $this->lang = $translationManager->user();
+        $this->userServiceAccessService = $userServiceAccessService;
     }
 
     public function getContentClass()
@@ -68,11 +74,10 @@ class BlockUserButtons extends Block
             );
         }
 
-        // Doładowanie portfela
         if (
-            $this->heart->canUserUseService(
-                $user->getUid(),
-                $this->heart->getService("charge_wallet")
+            $this->userServiceAccessService->canUserUseService(
+                $this->heart->getService("charge_wallet"),
+                $user
             )
         ) {
             $chargeWalletButton = create_dom_element(

@@ -1,4 +1,4 @@
-@import "../general/all";
+@import "../general/variables";
 @import "../general/global";
 @import "../general/loader";
 @import "../general/infobox";
@@ -96,7 +96,7 @@ body {
     box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7);
 }
 
-.custom_content {
+.custom-content {
     padding: 1em;
     text-align: left;
     color: #ccc;
