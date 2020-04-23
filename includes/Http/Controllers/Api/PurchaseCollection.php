@@ -6,6 +6,7 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\Services\UserServiceAccessService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -20,7 +21,8 @@ class PurchaseCollection
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        PurchaseDataService $purchaseDataService
+        PurchaseDataService $purchaseDataService,
+        UserServiceAccessService $userServiceAccessService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -32,8 +34,7 @@ class PurchaseCollection
             throw new InvalidServiceModuleException();
         }
 
-        // User does not belong to the group that allows to purchase that service
-        if (!$heart->canUserUseService($user->getUid(), $serviceModule->service)) {
+        if (!$userServiceAccessService->canUserUseService($serviceModule->service, $user)) {
             return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
         }
 

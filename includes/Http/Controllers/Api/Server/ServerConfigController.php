@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
+use App\Services\UserServiceAccessService;
 use App\System\Heart;
 use App\System\ServerAuth;
 use App\System\Settings;
@@ -30,7 +31,8 @@ class ServerConfigController
         ServerDataService $serverDataService,
         Heart $heart,
         Settings $settings,
-        ServerAuth $serverAuth
+        ServerAuth $serverAuth,
+        UserServiceAccessService $userServiceAccessService
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
@@ -55,15 +57,19 @@ class ServerConfigController
         }
 
         $smsNumbers = $smsModule::getSmsNumbers();
-        $services = $serverDataService->getServices($server->getId());
-        $serviceIds = collect($services)
+        $services = collect($serverDataService->getServices($server->getId()))->filter(function (
+            Service $service
+        ) use ($userServiceAccessService) {
+            return $userServiceAccessService->canUserUseService($service, null);
+        });
+        $serviceIds = $services
             ->map(function (Service $service) {
                 return $service->getId();
             })
             ->all();
         $prices = $serverDataService->getPrices($serviceIds, $server);
 
-        $serviceItems = collect($services)->map(function (Service $service) {
+        $serviceItems = $services->map(function (Service $service) {
             return [
                 "i" => $service->getId(),
                 "n" => $service->getName(),

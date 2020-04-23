@@ -407,21 +407,6 @@ class Heart
         $this->servicesFetched = true;
     }
 
-    /**
-     * Check if user has access to groups required by a service
-     *
-     * @param $uid
-     * @param Service $service
-     * @return bool
-     */
-    public function canUserUseService($uid, Service $service)
-    {
-        $user = $this->getUser($uid);
-        $combined = array_intersect($service->getGroups(), $user->getGroups());
-
-        return empty($service->getGroups()) || !empty($combined);
-    }
-
     //
     // SERVERS
     //

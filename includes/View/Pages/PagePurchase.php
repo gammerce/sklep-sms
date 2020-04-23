@@ -2,6 +2,7 @@
 namespace App\View\Pages;
 
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\Services\UserServiceAccessService;
 use App\System\Auth;
 use App\View\Interfaces\IBeLoggedMust;
 
@@ -12,12 +13,16 @@ class PagePurchase extends Page
     /** @var Auth */
     private $auth;
 
-    public function __construct(Auth $auth)
+    /** @var UserServiceAccessService */
+    private $userServiceAccessService;
+
+    public function __construct(Auth $auth, UserServiceAccessService $userServiceAccessService)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t('purchase');
         $this->auth = $auth;
+        $this->userServiceAccessService = $userServiceAccessService;
     }
 
     public function getContent(array $query, array $body)
@@ -72,9 +77,12 @@ class PagePurchase extends Page
             return $this->lang->t('must_be_logged_in');
         }
 
-        $user = $this->auth->user();
-
-        if (!$this->heart->canUserUseService($user->getUid(), $serviceModule->service)) {
+        if (
+            !$this->userServiceAccessService->canUserUseService(
+                $serviceModule->service,
+                $this->auth->user()
+            )
+        ) {
             return $this->lang->t('service_no_permission');
         }
 
