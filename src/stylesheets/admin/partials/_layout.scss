@@ -1,14 +1,26 @@
-.navbar-brand {
-    justify-content: space-between;
+body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.navbar-burger {
-    margin-left: 0;
+.navbar {
+    flex: 0 1 $navbar-height;
+
+    .navbar-brand {
+        justify-content: space-between;
+    }
+
+    .navbar-burger {
+        margin-left: 0;
+    }
 }
 
 .layout {
     display: flex;
-    height: calc(100vh - #{$navbar-height});
+    flex: 1;
+    overflow: hidden;
 }
 
 .overlay {
