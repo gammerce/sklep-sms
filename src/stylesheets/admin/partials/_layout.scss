@@ -1,0 +1,38 @@
+.layout {
+  display: flex;
+  height: calc(100vh - #{$navbar-height});
+}
+
+.is-sidebar-menu {
+  flex: 0 1 350px;
+  padding: 1rem;
+  background: $grey-dark;
+  overflow: auto;
+
+  li {
+    a {
+      color: $white-ter;
+    }
+  }
+}
+
+.is-main-content {
+  flex: 1;
+  background: $grey-lighter;
+  padding: 1rem;
+  overflow: auto;
+}
+
+.acp-info {
+  text-align: center;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+
+  .title {
+    color: $white-bis;
+  }
+
+  .subtitle {
+    color: $white-ter;
+  }
+}

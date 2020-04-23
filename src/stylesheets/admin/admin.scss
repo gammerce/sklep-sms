@@ -1,9 +1,22 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
+
+$scheme-main: hsl(0, 0%, 14%);
+$scheme-main-bis: hsl(0, 0%, 21%);
+$scheme-main-ter: hsl(0, 0%, 29%);
+
+$scheme-invert: hsl(0, 0%, 96%);
+$scheme-invert-bis: hsl(0, 0%, 93%);
+$scheme-invert-ter: hsl(0, 0%, 86%);
+
+// Navbar
+$navbar-height: 4rem;
+
 @import "../general/all";
 @import "../general/global";
 @import "../general/loader";
 @import "../general/infobox";
 @import "./partials/login";
+@import "./partials/layout";
 @import "./partials/server";
 
 h3 {
@@ -50,50 +63,6 @@ h4 {
     display: inline-block;
 }
 
-.sidebar,
-.custom_content {
-    padding: 10px;
-    height: calc(100% - 100px);
-}
-
-.sidebar {
-    float: left;
-    min-width: 280px;
-    background: $grey-darker;
-    white-space: nowrap;
-    margin: 0;
-    padding: 0 0 20px 0;
-    overflow: auto;
-
-    ul {
-        list-style-type: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    a {
-        color: $grey-lighter;
-        text-shadow: 2px 2px 2px black;
-        text-decoration: none !important;
-
-        li {
-            margin: 2px;
-            padding: 3px;
-            background: $grey-dark;
-
-            &:hover {
-                box-shadow: inset 0 0 4px #c7c7c7;
-            }
-        }
-    }
-}
-
-.custom_content {
-    width: auto;
-    overflow: auto;
-    background: $grey-lighter;
-}
-
 .table-structure {
     [headers="id"] {
         width: 4%;
@@ -121,8 +90,8 @@ h4 {
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(to right, rgba(67, 67, 67, 1) 0%, rgba(204, 204, 204, 1) 92%);
-    margin-left: -10px;
-    margin-right: -10px;
+    margin-left: -1rem;
+    margin-right: -1rem;
     margin-bottom: 1rem;
     padding: 0.5rem;
 

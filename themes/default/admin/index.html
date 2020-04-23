@@ -1,88 +1,122 @@
-<html>
-    <head>
-        {$header}
-    </head>
-    <body>
-        <div class="header">
-            <table>
-                <tr>
-                    <td style="width: 360px">
-                        <a href="{{ $url->to('/') }}">
-                            <img
-                                class="logo"
-                                src="https://sklep-sms.pl/images/logo_simple.svg"
-                                alt="{$lang->t('shop_sms')}"
-                                style="height: 60px"
-                            />
-                        </a>
-                    </td>
-                    <td class="has-text-centered">
+<html lang="{{ $lang->getCurrentLanguageShort() }}">
+<head>
+    {$header}
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a class="navbar-item" href="{{ $url->to('/') }}">
+                <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="{$lang->t('shop_sms')}" height="60">
+            </a>
+
+            <div class="navbar-burger burger" data-target="navMenubd-example">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="layout">
+        <div class="is-sidebar-menu is-hidden-mobile">
+            <aside class="menu">
+                <div class="acp-info">
+                    <div class="title is-5">
                         {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
-                        <div class="hint">
-                            {$lang->t('license_expires')}: {{ $license->getExpires() }}
-                        </div>
-                    </td>
-                    <td class="has-text-right" style="width: 360px;">
-                        {{ $user->getUsername() }}
-                        <form method="POST" action="{{ $logoutAction }}" class="form_logout">
-                            <input type="hidden" name="action" value="logout" />
-                            (
-                            <a href="#" onclick="$(this).parents('form').submit()">
-                                {$lang->t('logout')}
-                            </a>
-                            )
-                        </form>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                    <div class="subtitle is-6">
+                        {$lang->t('license_expires')}: {{ $license->getExpires() }}
+                    </div>
+                </div>
+
+                <p class="menu-label">
+                    {{ $lang->t('main') }}
+                </p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ $url->to('/admin/home') }}">{$lang->t('main_page')}</a>
+                    </li>
+                    {$settingsLink}
+                    {$antispamQuestionsLink}
+                    {$transactionServicesLink}
+                    {$servicesLink}
+                    {$serversLink}
+                    {$pricingLink}
+                </ul>
+
+                <p class="menu-label">
+                    {$lang->t('users_services')}
+                </p>
+                <ul class="menu-list">
+                    {$userServiceLink}
+                    {$playersFlagsLink}
+                </ul>
+
+                <p class="menu-label">
+                    {$lang->t('users')}
+                </p>
+                <ul class="menu-list">
+                    {$usersLink}
+                    {$groupsLink}
+                </ul>
+
+                <p class="menu-label">
+                    {$lang->t('additions')}
+                </p>
+                <ul class="menu-list">
+                    {$incomeLink}
+                    {$serviceCodesLink}
+                    {$smsCodesLink}
+                </ul>
+
+                <p class="menu-label">
+                    {$lang->t('logs')}
+                </p>
+                <ul class="menu-list">
+                    <li>
+                        <a href="{{ $url->to('/admin/bought_services') }}">
+                            {$lang->t('bought_services')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_sms') }}">
+                            {$lang->t('payments_sms')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_direct_billing') }}">
+                            {$lang->t('payments_direct_billing')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_transfer') }}">
+                            {$lang->t('payments_transfer')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_wallet') }}">
+                            {$lang->t('payments_wallet')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_admin') }}">
+                            {$lang->t('payments_admin')}
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ $url->to('/admin/payment_service_code') }}">
+                            {$lang->t('payments_service_code')}
+                        </a>
+                    </li>
+                    {$logsLink}
+                </ul>
+            </aside>
         </div>
-        <div class="sidebar">
-            <h3>{$lang->t('main')}</h3>
-            <ul>
-                <a href="{{ $url->to('/admin/home') }}">
-                    <li>&#8594; {$lang->t('main_page')}</li>
-                </a>
-                {$settingsLink} {$antispamQuestionsLink} {$transactionServicesLink} {$servicesLink}
-                {$serversLink} {$pricingLink}
-            </ul>
-            <h3>{$lang->t('users_services')}</h3>
-            <ul>
-                {$userServiceLink} {$playersFlagsLink}
-            </ul>
-            <h3>{$lang->t('users')}</h3>
-            <ul>
-                {$usersLink} {$groupsLink}
-            </ul>
-            <h3>{$lang->t('additions')}</h3>
-            <ul>
-                {$incomeLink} {$serviceCodesLink} {$smsCodesLink}
-            </ul>
-            <h3>{$lang->t('logs')}</h3>
-            <ul>
-                <a href="{{ $url->to('/admin/bought_services') }}">
-                    <li>&#8594; {$lang->t('bought_services')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_sms') }}">
-                    <li>&#8594; {$lang->t('payments_sms')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_direct_billing') }}">
-                    <li>&#8594; {$lang->t('payments_direct_billing')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_transfer') }}">
-                    <li>&#8594; {$lang->t('payments_transfer')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_wallet') }}">
-                    <li>&#8594; {$lang->t('payments_wallet')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_admin') }}">
-                    <li>&#8594; {$lang->t('payments_admin')}</li>
-                </a>
-                <a href="{{ $url->to('/admin/payment_service_code') }}">
-                    <li>&#8594; {$lang->t('payments_service_code')}</li>
-                </a>
-                {$logsLink}
-            </ul>
+
+        <div class="is-main-content">
+            {$content}
         </div>
-        {$content}
-    </body>
+    </div>
+</body>
 </html>
