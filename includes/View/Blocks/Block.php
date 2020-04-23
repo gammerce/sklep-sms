@@ -47,6 +47,11 @@ abstract class Block
         return $this->content($query, $body, $params);
     }
 
+    public function getContentClass()
+    {
+        return "";
+    }
+
     /**
      * Zwraca treść danego bloku
      *
@@ -57,8 +62,6 @@ abstract class Block
      * @return I_ToHtml|string
      */
     abstract protected function content(array $query, array $body, array $params);
-
-    abstract public function getContentClass();
 
     abstract public function getContentId();
 }

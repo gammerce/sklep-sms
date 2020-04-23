@@ -29,9 +29,28 @@ $(document).delegate(".dropdown", "click", function() {
     $(this).toggleClass("is-active");
 });
 
+$(document).delegate("#navbar-burger", "click", function() {
+    $(this).toggleClass("is-active");
+    $(".navbar-menu").toggleClass("is-active");
+});
+
+$(document).delegate("#sidebar-burger", "click", function(e) {
+    e.stopImmediatePropagation();
+    $(this).toggleClass("is-active");
+    $(".sidebar-menu").toggleClass("is-active");
+    $("#overlay").toggleClass("is-active");
+});
+
 document.addEventListener("click", function(e) {
-    // Do not remove class if user clicked dropdown element
+    // Do not remove class if user clicks dropdown element
     if (!$(e.target).closest(".dropdown").length) {
         $(".dropdown").removeClass("is-active");
+    }
+
+    // Do not hide sidebar if user clicks sidebar
+    if (!$(e.target).closest(".sidebar-menu").length) {
+        $("#sidebar-burger").removeClass("is-active");
+        $(".sidebar-menu").removeClass("is-active");
+        $("#overlay").removeClass("is-active");
     }
 });
