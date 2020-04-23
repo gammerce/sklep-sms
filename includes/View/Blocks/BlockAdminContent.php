@@ -19,11 +19,6 @@ class BlockAdminContent extends Block
         $this->lang = $translationManager->user();
     }
 
-    public function getContentClass()
-    {
-        return "custom_content";
-    }
-
     public function getContentId()
     {
         return "content";

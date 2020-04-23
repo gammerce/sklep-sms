@@ -1,0 +1,77 @@
+.navbar-brand {
+    justify-content: space-between;
+}
+
+.navbar-burger {
+    margin-left: 0;
+}
+
+.layout {
+    display: flex;
+    height: calc(100vh - #{$navbar-height});
+}
+
+.overlay {
+    position: fixed;
+    top: $navbar-height;
+    left: 0;
+    z-index: 1;
+    background-color: rgba(0, 0, 0, 0.4);
+    height: calc(100vh - #{$navbar-height});
+    width: 100vw;
+    animation: fadeIn 0.6s;
+
+    &:not(.is-active) {
+        display: none;
+    }
+}
+
+.sidebar-menu {
+    @keyframes slideRight {
+        from {
+            left: -$sidebar-width;
+        }
+    }
+
+    flex: 0 1 $sidebar-width;
+    padding: 1rem;
+    background: $scheme-main-ter;
+    overflow: auto;
+
+    &.is-active {
+        position: fixed;
+        top: $navbar-height;
+        left: 0;
+        z-index: 2;
+        height: calc(100vh - #{$navbar-height});
+        display: block !important;
+        box-shadow: 2px 0 2px rgba(0, 0, 0, 0.3);
+        animation: slideRight 0.6s;
+    }
+
+    li {
+        a {
+            color: $scheme-invert;
+        }
+    }
+}
+
+.main-content {
+    flex: 1;
+    background: $background;
+    padding: 1rem;
+    overflow: auto;
+}
+
+.acp-info {
+    text-align: center;
+    padding-top: 1rem;
+
+    .title {
+        color: $scheme-invert;
+    }
+
+    .subtitle {
+        color: $scheme-invert-bis;
+    }
+}
