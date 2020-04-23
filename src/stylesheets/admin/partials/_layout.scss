@@ -5,18 +5,6 @@ body {
     overflow: hidden;
 }
 
-.navbar {
-    flex: 0 1 $navbar-height;
-
-    .navbar-brand {
-        justify-content: space-between;
-    }
-
-    .navbar-burger {
-        margin-left: 0;
-    }
-}
-
 .layout {
     display: flex;
     flex: 1;
@@ -25,11 +13,11 @@ body {
 
 .overlay {
     position: fixed;
-    top: $navbar-height;
+    top: 0;
     left: 0;
     z-index: 5;
     background-color: rgba(0, 0, 0, 0.4);
-    height: calc(100vh - #{$navbar-height});
+    height: 100vh;
     width: 100vw;
     animation: fadeIn 0.6s;
 
@@ -51,12 +39,13 @@ body {
     overflow: auto;
     border-right: 1px solid $scheme-main-bis;
     z-index: 6;
+    color: $scheme-invert;
 
     &.is-active {
         position: fixed;
-        top: $navbar-height;
+        top: 0;
         left: 0;
-        height: calc(100vh - #{$navbar-height});
+        height: 100vh;
         display: block !important;
         animation: slideRight 0.6s;
         box-shadow: 2px 0 4px rgba(0, 0, 0, 0.3);
@@ -76,7 +65,20 @@ body {
     overflow: auto;
 }
 
-.acp-info {
+.logo-box {
+    text-align: center;
+    margin-bottom: 1rem;
+
+    img {
+        height: 50px;
+    }
+}
+
+.user-box {
+    text-align: center;
+}
+
+.acp-box {
     text-align: center;
     padding-top: 1rem;
 

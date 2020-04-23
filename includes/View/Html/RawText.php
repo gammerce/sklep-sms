@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Html;
 
-class UnescapedSimpleText implements I_ToHtml
+class RawText implements I_ToHtml
 {
     /** @var string */
     private $text;

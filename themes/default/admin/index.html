@@ -4,67 +4,37 @@
     </head>
 
     <body>
-        <nav class="navbar">
-            <div class="navbar-brand">
-                <div id="sidebar-burger" class="navbar-burger burger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-
-                <a class="navbar-item" href="https://sklep-sms.pl" target="_blank">
-                    <img
-                        src="https://sklep-sms.pl/images/logo_simple.svg"
-                        alt="{$lang->t('shop_sms')}"
-                    />
-                </a>
-
-                <div id="navbar-burger" class="navbar-burger burger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-            </div>
-
-            <div class="navbar-menu">
-                <div class="navbar-end">
-                    <form id="logout-form" method="POST" action="{{ $logoutAction }}">
-                        <input type="hidden" name="action" value="logout" />
-                    </form>
-
-                    <div class="navbar-item has-dropdown is-hoverable">
-                        <a class="navbar-link">
-                            {{ $user->getUsername() }}
-                        </a>
-
-                        <div class="navbar-dropdown is-right">
-                            <a class="navbar-item" href="{{ $url->to('/') }}">
-                                {{ $lang->t('shop_sms') }}
-                            </a>
-                            <a
-                                class="navbar-item"
-                                onclick="document.getElementById('logout-form').submit()"
-                            >
-                                {$lang->t('logout')}
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </nav>
-
         <div class="layout">
             <div id="overlay" class="overlay"></div>
 
             <div class="sidebar-menu is-hidden-mobile">
                 <aside class="menu">
-                    <div class="acp-info">
+                    <div class="logo-box">
+                        <a href="{{ $url->to('/') }}" target="_blank">
+                            <img
+                                src="https://sklep-sms.pl/images/logo_simple.svg"
+                                alt="{$lang->t('shop_sms')}"
+                            />
+                        </a>
+                    </div>
+
+                    <div class="acp-box">
                         <div class="title is-5">
                             {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
                         </div>
                         <div class="subtitle is-6">
                             {$lang->t('license_expires')}: {{ $license->getExpires() }}
                         </div>
+                    </div>
+
+                    <hr />
+
+                    <div class="user-box">
+                        {{ $user->getUsername() }} (
+                        <a onclick="document.getElementById('logout-form').submit()">
+                            {$lang->t('logout')}
+                        </a>
+                        )
                     </div>
 
                     <hr />

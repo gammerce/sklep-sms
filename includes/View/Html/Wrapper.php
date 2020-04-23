@@ -39,9 +39,7 @@ class Wrapper extends Div
         if ($this->search) {
             $searchText = $request->get('search');
             $buttons->addContent(
-                new UnescapedSimpleText(
-                    $template->render("admin/form_search", compact('searchText'))
-                )
+                new RawText($template->render("admin/form_search", compact('searchText')))
             );
         }
 
@@ -50,15 +48,12 @@ class Wrapper extends Div
             $buttons->addContent(' ');
         }
 
-        $title = new Div($this->getTitle());
-        $title->addClass("title is-4");
+        $pageTitle = $template->render("admin/page_title", [
+            "title" => $this->getTitle(),
+            "buttons" => $buttons,
+        ]);
 
-        $pageTitle = new Div();
-        $pageTitle->addClass('page-title');
-        $pageTitle->addContent($title);
-        $pageTitle->addContent($buttons);
-
-        $this->addContent($pageTitle);
+        $this->addContent(new RawText($pageTitle));
         $this->addContent($this->getTableContainer());
 
         $output = parent::toHtml();
