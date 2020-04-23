@@ -257,4 +257,42 @@ class ServerConfigControllerTest extends HttpTestCase
             $json["pf"]
         );
     }
+
+    /** @test */
+    public function do_not_include_service_with_group()
+    {
+        // given
+        $this->factory->serverService([
+            "server_id" => $this->server->getId(),
+            "service_id" => "vip",
+        ]);
+        $this->factory->service([
+            "id" => "test",
+            "groups" => [1],
+        ]);
+        $this->factory->serverService([
+            "server_id" => $this->server->getId(),
+            "service_id" => "test",
+        ]);
+
+        // when
+        $response = $this->get(
+            "/api/server/config",
+            [
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.10.0",
+            ],
+            [
+                "Accept" => "application/json",
+                "User-Agent" => Server::TYPE_AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertCount(1, $json["se"]);
+    }
 }
