@@ -29,12 +29,12 @@ $(document).delegate(".dropdown", "click", function() {
     $(this).toggleClass("is-active");
 });
 
-$(document).delegate("#navbar-burger", "click", function () {
+$(document).delegate("#navbar-burger", "click", function() {
     $(this).toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
 });
 
-$(document).delegate("#sidebar-burger", "click", function (e) {
+$(document).delegate("#sidebar-burger", "click", function(e) {
     e.stopImmediatePropagation();
     $(this).toggleClass("is-active");
     $(".sidebar-menu").toggleClass("is-active");

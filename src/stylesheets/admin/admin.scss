@@ -1,4 +1,5 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~bulma/sass/utilities/all";
 
 $scheme-main: hsl(0, 0%, 14%);
 $scheme-main-bis: hsl(0, 0%, 21%);
@@ -8,8 +9,17 @@ $scheme-invert: hsl(0, 0%, 96%);
 $scheme-invert-bis: hsl(0, 0%, 93%);
 $scheme-invert-ter: hsl(0, 0%, 86%);
 
+$background: $scheme-invert-ter;
+$body-background-color: $background;
+
+// Sidebar
+$sidebar-width: 350px;
+
 // Navbar
 $navbar-height: 4rem;
+$navbar-item-color: $scheme-invert-bis;
+$navbar-item-hover-color: $text-invert;
+$navbar-dropdown-item-hover-color: $text;
 
 @import "../general/variables";
 @import "../general/animations";
@@ -122,8 +132,6 @@ h4 {
 }
 
 #form_settings_edit {
-    margin: 24px;
-
     .field-body {
         flex-grow: 3;
     }

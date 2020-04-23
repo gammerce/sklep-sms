@@ -152,7 +152,10 @@ class PageAdminMain extends PageAdmin
         $quantity = $this->db
             ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t("number_of_bought_services", $quantity), $this->url->to("/admin/bought_services"));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_bought_services", $quantity),
+            $this->url->to("/admin/bought_services")
+        );
 
         // SMS
         $quantity = $this->db
@@ -162,7 +165,10 @@ class PageAdminMain extends PageAdmin
                     "WHERE t.payment = 'sms' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t("number_of_sent_smses", $quantity), $this->url->to("/admin/payment_sms"));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_sent_smses", $quantity),
+            $this->url->to("/admin/payment_sms")
+        );
 
         // Transfer
         $quantity = $this->db
@@ -172,7 +178,10 @@ class PageAdminMain extends PageAdmin
                     "WHERE t.payment = 'transfer' AND t.free='0'"
             )
             ->fetchColumn();
-        $bricks[] = $this->createBrick($this->lang->t("number_of_transfers", $quantity), $this->url->to("/admin/payment_transfer"));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("number_of_transfers", $quantity),
+            $this->url->to("/admin/payment_transfer")
+        );
 
         // Income
         $incomeData = $this->incomeService->get(date("Y"), date("m"));
@@ -183,13 +192,19 @@ class PageAdminMain extends PageAdmin
             }
         }
         $incomeText = $this->priceTextService->getPriceText($income);
-        $bricks[] = $this->createBrick($this->lang->t("note_income", $incomeText), $this->url->to("/admin/income"));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("note_income", $incomeText),
+            $this->url->to("/admin/income")
+        );
 
         // Whole income
         $wholeIncomeText = $this->priceTextService->getPriceText(
             $this->incomeService->getWholeIncome()
         );
-        $bricks[] = $this->createBrick($this->lang->t("note_whole_income", $wholeIncomeText), $this->url->to("/admin/income"));
+        $bricks[] = $this->createBrick(
+            $this->lang->t("note_whole_income", $wholeIncomeText),
+            $this->url->to("/admin/income")
+        );
 
         return implode("", $bricks);
     }

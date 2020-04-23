@@ -1,154 +1,152 @@
 <html lang="{{ $lang->getCurrentLanguageShort() }}">
-<head>
-    {$header}
-</head>
+    <head>
+        {$header}
+    </head>
 
-<body>
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <div id="sidebar-burger" class="navbar-burger burger">
-                <span></span>
-                <span></span>
-                <span></span>
+    <body>
+        <nav class="navbar">
+            <div class="navbar-brand">
+                <div id="sidebar-burger" class="navbar-burger burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+                <a class="navbar-item" href="https://sklep-sms.pl" target="_blank">
+                    <img
+                        src="https://sklep-sms.pl/images/logo_simple.svg"
+                        alt="{$lang->t('shop_sms')}"
+                    />
+                </a>
+
+                <div id="navbar-burger" class="navbar-burger burger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
             </div>
 
-            <a class="navbar-item" href="https://sklep-sms.pl" target="_blank">
-                <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="{$lang->t('shop_sms')}">
-            </a>
+            <!--        TODO: Change logout colors-->
 
-            <div id="navbar-burger" class="navbar-burger burger">
-                <span></span>
-                <span></span>
-                <span></span>
-            </div>
-        </div>
+            <div class="navbar-menu">
+                <div class="navbar-end">
+                    <form id="logout-form" method="POST" action="{{ $logoutAction }}">
+                        <input type="hidden" name="action" value="logout" />
+                    </form>
 
-<!--        TODO: Change logout colors-->
-
-        <div class="navbar-menu">
-            <div class="navbar-end">
-                <form id="logout-form" method="POST" action="{{ $logoutAction }}">
-                    <input type="hidden" name="action" value="logout" />
-                </form>
-
-                <div class="navbar-item has-dropdown is-hoverable">
-                    <a class="navbar-link">
-                        {{ $user->getUsername() }}
-                    </a>
-
-                    <div class="navbar-dropdown is-right">
-                        <a class="navbar-item" onclick="document.getElementById('logout-form').submit()">
-                            {$lang->t('logout')}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                        <a class="navbar-link">
+                            {{ $user->getUsername() }}
                         </a>
+
+                        <div class="navbar-dropdown is-right">
+                            <a
+                                class="navbar-item"
+                                onclick="document.getElementById('logout-form').submit()"
+                            >
+                                {$lang->t('logout')}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <div class="layout">
-        <div id="overlay" class="overlay"></div>
+        <div class="layout">
+            <div id="overlay" class="overlay"></div>
 
-        <div class="sidebar-menu is-hidden-mobile">
-            <aside class="menu">
-                <div class="acp-info">
-                    <div class="title is-5">
-                        {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
+            <div class="sidebar-menu is-hidden-mobile">
+                <aside class="menu">
+                    <div class="acp-info">
+                        <div class="title is-5">
+                            {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
+                        </div>
+                        <div class="subtitle is-6">
+                            {$lang->t('license_expires')}: {{ $license->getExpires() }}
+                        </div>
                     </div>
-                    <div class="subtitle is-6">
-                        {$lang->t('license_expires')}: {{ $license->getExpires() }}
-                    </div>
-                </div>
 
-                <hr />
+                    <hr />
 
-                <p class="menu-label">
-                    {{ $lang->t('main') }}
-                </p>
-                <ul class="menu-list">
-                    <li>
-                        <a href="{{ $url->to('/admin/home') }}">{$lang->t('main_page')}</a>
-                    </li>
-                    {$settingsLink}
-                    {$antispamQuestionsLink}
-                    {$transactionServicesLink}
-                    {$servicesLink}
-                    {$serversLink}
-                    {$pricingLink}
-                </ul>
+                    <p class="menu-label">
+                        {{ $lang->t('main') }}
+                    </p>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="{{ $url->to('/admin/home') }}">{$lang->t('main_page')}</a>
+                        </li>
+                        {$settingsLink} {$antispamQuestionsLink} {$transactionServicesLink}
+                        {$servicesLink} {$serversLink} {$pricingLink}
+                    </ul>
 
-                <p class="menu-label">
-                    {$lang->t('users_services')}
-                </p>
-                <ul class="menu-list">
-                    {$userServiceLink}
-                    {$playersFlagsLink}
-                </ul>
+                    <p class="menu-label">
+                        {$lang->t('users_services')}
+                    </p>
+                    <ul class="menu-list">
+                        {$userServiceLink} {$playersFlagsLink}
+                    </ul>
 
-                <p class="menu-label">
-                    {$lang->t('users')}
-                </p>
-                <ul class="menu-list">
-                    {$usersLink}
-                    {$groupsLink}
-                </ul>
+                    <p class="menu-label">
+                        {$lang->t('users')}
+                    </p>
+                    <ul class="menu-list">
+                        {$usersLink} {$groupsLink}
+                    </ul>
 
-                <p class="menu-label">
-                    {$lang->t('additions')}
-                </p>
-                <ul class="menu-list">
-                    {$incomeLink}
-                    {$serviceCodesLink}
-                    {$smsCodesLink}
-                </ul>
+                    <p class="menu-label">
+                        {$lang->t('additions')}
+                    </p>
+                    <ul class="menu-list">
+                        {$incomeLink} {$serviceCodesLink} {$smsCodesLink}
+                    </ul>
 
-                <p class="menu-label">
-                    {$lang->t('logs')}
-                </p>
-                <ul class="menu-list">
-                    <li>
-                        <a href="{{ $url->to('/admin/bought_services') }}">
-                            {$lang->t('bought_services')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_sms') }}">
-                            {$lang->t('payments_sms')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_direct_billing') }}">
-                            {$lang->t('payments_direct_billing')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_transfer') }}">
-                            {$lang->t('payments_transfer')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_wallet') }}">
-                            {$lang->t('payments_wallet')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_admin') }}">
-                            {$lang->t('payments_admin')}
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ $url->to('/admin/payment_service_code') }}">
-                            {$lang->t('payments_service_code')}
-                        </a>
-                    </li>
-                    {$logsLink}
-                </ul>
-            </aside>
+                    <p class="menu-label">
+                        {$lang->t('logs')}
+                    </p>
+                    <ul class="menu-list">
+                        <li>
+                            <a href="{{ $url->to('/admin/bought_services') }}">
+                                {$lang->t('bought_services')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_sms') }}">
+                                {$lang->t('payments_sms')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_direct_billing') }}">
+                                {$lang->t('payments_direct_billing')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_transfer') }}">
+                                {$lang->t('payments_transfer')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_wallet') }}">
+                                {$lang->t('payments_wallet')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_admin') }}">
+                                {$lang->t('payments_admin')}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ $url->to('/admin/payment_service_code') }}">
+                                {$lang->t('payments_service_code')}
+                            </a>
+                        </li>
+                        {$logsLink}
+                    </ul>
+                </aside>
+            </div>
+
+            <div class="main-content">
+                {$content}
+            </div>
         </div>
-
-        <div class="main-content">
-            {$content}
-        </div>
-    </div>
-</body>
+    </body>
 </html>
