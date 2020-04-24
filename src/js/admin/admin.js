@@ -27,7 +27,9 @@ $(document).delegate(".table-structure .search", "submit", function(e) {
 
 $(document).delegate(".dropdown", "click", function(e) {
     e.stopImmediatePropagation();
-    $(".dropdown").not(this).removeClass("is-active");
+    $(".dropdown")
+        .not(this)
+        .removeClass("is-active");
     $(this).toggleClass("is-active");
 });
 

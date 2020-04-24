@@ -38,9 +38,15 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $username = $row["uid"]
-                    ? $row["username"] . " ({$row["uid"]})"
-                    : $this->lang->t("none");
+                $username =
+                    $row["uid"] !== null
+                        ? $row["username"] . " ({$row["uid"]})"
+                        : $this->lang->t("none");
+
+                $server = $row["server"] !== null ? $row["server"] : $this->lang->t("all_servers");
+
+                $quantity =
+                    $row["quantity"] !== null ? $row["quantity"] : $this->lang->t("forever");
 
                 // TODO Add navigation to user
 
@@ -48,8 +54,8 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
                     ->setDbId($row["id"])
                     ->addCell(new Cell($row["code"]))
                     ->addCell(new Cell($row["service"]))
-                    ->addCell(new Cell($row["server"]))
-                    ->addCell(new Cell($row["quantity"]))
+                    ->addCell(new Cell($server))
+                    ->addCell(new Cell($quantity))
                     ->addCell(new Cell($username))
                     ->addCell(new Cell(convert_date($row["timestamp"])))
                     ->setDeleteAction(has_privileges("manage_service_codes"));
