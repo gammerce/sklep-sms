@@ -28,6 +28,8 @@ class PageAdminPaymentAdmin extends PageAdmin
 
     protected function content(array $query, array $body)
     {
+        $recordId = as_int(array_get($query, "record"));
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -42,23 +44,20 @@ class PageAdminPaymentAdmin extends PageAdmin
             ->map(function (array $row) {
                 return $this->transactionRepository->mapToModel($row);
             })
-            ->map(function (Transaction $transaction) use ($query) {
+            ->map(function (Transaction $transaction) use ($recordId) {
                 $adminName = $transaction->getAdminId()
                     ? "{$transaction->getAdminName()} ({$transaction->getAdminId()})"
                     : $this->lang->t("none");
 
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($transaction->getId())
                     ->addCell(new Cell($adminName))
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
-                    ->addCell(new DateCell($transaction->getTimestamp()));
-
-                if ($query["payid"] == $transaction->getPaymentId()) {
-                    $bodyRow->addClass("highlighted");
-                }
-
-                return $bodyRow;
+                    ->addCell(new DateCell($transaction->getTimestamp()))
+                    ->when($recordId === $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass('highlighted');
+                    });
             })
             ->all();
 

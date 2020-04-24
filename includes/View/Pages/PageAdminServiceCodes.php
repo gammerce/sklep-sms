@@ -7,7 +7,10 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\ServerRef;
+use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
+use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
 
@@ -26,7 +29,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
     protected function content(array $query, array $body)
     {
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.name AS service, srv.name AS server, sc.quantity, u.username, u.uid, sc.timestamp " .
+            "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.id AS service_id, s.name AS service_name, srv.id AS server_id, srv.name AS server_name, sc.quantity, u.username, u.uid, sc.timestamp " .
                 "FROM `ss_service_codes` AS sc " .
                 "LEFT JOIN `ss_services` AS s ON sc.service = s.id " .
                 "LEFT JOIN `ss_servers` AS srv ON sc.server = srv.id " .
@@ -38,25 +41,25 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $username =
-                    $row["uid"] !== null
-                        ? $row["username"] . " ({$row["uid"]})"
-                        : $this->lang->t("none");
-
-                $server = $row["server"] !== null ? $row["server"] : $this->lang->t("all_servers");
-
+                $server = $row["server_id"]
+                    ? new ServerRef($row["server_id"], $row["server_name"])
+                    : $this->lang->t("all_servers");
+                $user = $row["uid"]
+                    ? new UserRef($row["uid"], $row["username"])
+                    : $this->lang->t("none");
+                $service = $row["service_id"]
+                    ? new ServiceRef($row["service_id"], $row["service_name"])
+                    : $this->lang->t("none");
                 $quantity =
                     $row["quantity"] !== null ? $row["quantity"] : $this->lang->t("forever");
-
-                // TODO Add navigation to user
 
                 return (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($row["code"]))
-                    ->addCell(new Cell($row["service"]))
+                    ->addCell(new Cell($service))
                     ->addCell(new Cell($server))
                     ->addCell(new Cell($quantity))
-                    ->addCell(new Cell($username))
+                    ->addCell(new Cell($user))
                     ->addCell(new Cell(convert_date($row["timestamp"])))
                     ->setDeleteAction(has_privileges("manage_service_codes"));
             })

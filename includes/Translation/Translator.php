@@ -95,7 +95,7 @@ class Translator
 
     /**
      * @param string $key
-     * @param string ...$args
+     * @param mixed ...$args
      * @return string
      */
     public function t($key, ...$args)
