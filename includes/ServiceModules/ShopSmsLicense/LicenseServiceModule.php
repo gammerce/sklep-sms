@@ -226,7 +226,7 @@ class LicenseServiceModule extends ServiceModule implements
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return (new Wrapper())->setSearch()->setTable($table);
+        return (new Wrapper())->enableSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)
@@ -267,10 +267,7 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
         $purchase->setEmail($validated['email']);
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost(
-                $costDaily,
-                $validated['amount']
-            ),
+            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost($costDaily, $validated['amount']),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
     }
@@ -611,8 +608,7 @@ class LicenseServiceModule extends ServiceModule implements
             $output = $this->priceTextService->getPriceText($cost);
             if ($bargainPercentage) {
                 $output .= "&nbsp;";
-                $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))
-                    ->addClass("discount");
+                $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");
             }
 
             return $output;

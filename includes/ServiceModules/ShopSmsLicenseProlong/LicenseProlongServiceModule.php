@@ -153,7 +153,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
         $expiresAt = $result['expires_at'];
 
-        // Aktualizujemy informacje o licencji w sklepie
+        // Update license expire time
         $this->db
             ->statement("UPDATE `ss_user_service` SET `expire` = ? WHERE `id` = ?")
             ->execute([$expiresAt, $userService->getId()]);
