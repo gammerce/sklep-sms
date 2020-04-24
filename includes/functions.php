@@ -502,6 +502,19 @@ function as_float($value)
 }
 
 /**
+ * @param mixed $value
+ * @return string|null
+ */
+function as_string($value)
+{
+    if ($value === null) {
+        return null;
+    }
+
+    return (string) $value;
+}
+
+/**
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */

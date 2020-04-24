@@ -8,7 +8,9 @@ class ReplacePricesPriceWithQuantity extends Migration
     {
         $this->db->query("ALTER TABLE `ss_service_codes` ADD COLUMN `quantity` INT(11)");
 
-        $statement = $this->db->query("SELECT sc.id, sp.quantity FROM `ss_service_codes` sc INNER JOIN ss_prices sp on sc.price = sp.id");
+        $statement = $this->db->query(
+            "SELECT sc.id, sp.quantity FROM `ss_service_codes` sc INNER JOIN ss_prices sp on sc.price = sp.id"
+        );
 
         foreach ($statement as $row) {
             $this->db

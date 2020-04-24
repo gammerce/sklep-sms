@@ -4,7 +4,6 @@ namespace App\Http\Services;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MaxValueRule;
 use App\Http\Validation\Rules\MinValueRule;
-use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServiceExistsRule;
@@ -33,7 +32,7 @@ class PriceService
                 "server_id" => [new ServerExistsRule()],
                 "sms_price" => [new SmsPriceExistsRule()],
                 "transfer_price" => [new MinValueRule(1)],
-                "quantity" => [new NumberRule()],
+                "quantity" => [new IntegerRule()],
                 "discount" => [new IntegerRule(), new MinValueRule(1), new MaxValueRule(100)],
             ]
         );
