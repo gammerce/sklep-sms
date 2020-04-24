@@ -14,14 +14,14 @@ class ServiceCodeRepository
         $this->db = $db;
     }
 
-    public function create($code, $serviceId, $priceId, $serverId = null, $uid = null)
+    public function create($code, $serviceId, $quantity, $serverId = null, $uid = null)
     {
         $this->db
             ->statement(
                 "INSERT INTO `ss_service_codes` " .
-                    "SET `code` = ?, `service` = ?, `price` = ?, `server` = ?, `uid` = ?"
+                    "SET `code` = ?, `service` = ?, `quantity` = ?, `server` = ?, `uid` = ?"
             )
-            ->execute([$code, $serviceId, $priceId, $serverId, $uid]);
+            ->execute([$code, $serviceId, $quantity, $serverId, $uid]);
 
         return $this->get($this->db->lastId());
     }
@@ -54,7 +54,7 @@ class ServiceCodeRepository
             as_int($data['id']),
             $data['code'],
             $data['service'],
-            as_int($data['price']),
+            as_int($data['quantity']),
             as_int($data['server']),
             as_int($data['uid']),
             $data['timestamp']

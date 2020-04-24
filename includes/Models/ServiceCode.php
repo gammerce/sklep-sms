@@ -16,7 +16,7 @@ class ServiceCode
     private $server;
 
     /** @var int */
-    private $price;
+    private $quantity;
 
     /** @var int|null */
     private $uid;
@@ -24,13 +24,13 @@ class ServiceCode
     /** @var string */
     private $timestamp;
 
-    public function __construct($id, $code, $service, $price, $server, $uid, $timestamp)
+    public function __construct($id, $code, $service, $quantity, $server, $uid, $timestamp)
     {
         $this->id = $id;
         $this->code = $code;
         $this->service = $service;
         $this->server = $server;
-        $this->price = $price;
+        $this->quantity = $quantity;
         $this->uid = $uid;
         $this->timestamp = $timestamp;
     }
@@ -70,9 +70,9 @@ class ServiceCode
     /**
      * @return int
      */
-    public function getPriceId()
+    public function getQuantity()
     {
-        return $this->price;
+        return $this->quantity;
     }
 
     /**

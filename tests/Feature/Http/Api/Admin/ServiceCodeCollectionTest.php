@@ -20,13 +20,12 @@ class ServiceCodeCollectionTest extends HttpTestCase
     {
         // given
         $server = $this->factory->server();
-        $price = $this->factory->price();
         $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->post("/api/admin/services/vippro/service_codes", [
             'code' => 'abcpo',
-            'price_id' => $price->getId(),
+            'quantity' => 40,
             'uid' => null,
             'server_id' => $server->getId(),
         ]);
@@ -40,7 +39,7 @@ class ServiceCodeCollectionTest extends HttpTestCase
         $this->assertNull($serviceCode->getUid());
         $this->assertSame($server->getId(), $serviceCode->getServerId());
         $this->assertSame("abcpo", $serviceCode->getCode());
-        $this->assertSame($price->getId(), $serviceCode->getPriceId());
+        $this->assertSame(40, $serviceCode->getQuantity());
         $this->assertSame('vippro', $serviceCode->getServiceId());
         $this->assertNotNull($serviceCode->getTimestamp());
     }
@@ -53,7 +52,7 @@ class ServiceCodeCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/services/vippro/service_codes", [
-            'price_id' => 'asd',
+            'quantity' => 'asd',
             'server_id' => 'asd',
             'uid' => 'asd',
         ]);
@@ -62,5 +61,6 @@ class ServiceCodeCollectionTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("warnings", $json["return_id"]);
+        // TODO Add more detailed assertion
     }
 }
