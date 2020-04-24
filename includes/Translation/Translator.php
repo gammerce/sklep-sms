@@ -61,15 +61,24 @@ class Translator
     }
 
     /**
+     * @param string $lang
+     * @return bool
+     */
+    public function languageExists($lang)
+    {
+        return array_key_exists($lang, $this->langList);
+    }
+
+    /**
      * Returns full language name by its shortcut
      *
      * @param string $short
-     *
-     * @return string
+     * @return string|null
      */
     public function getLanguageByShort($short)
     {
-        return array_search(strtolower($short), $this->langList);
+        $mapping = array_flip($this->langList);
+        return array_get($mapping, strtolower($short));
     }
 
     /**

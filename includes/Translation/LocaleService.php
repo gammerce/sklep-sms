@@ -33,7 +33,7 @@ class LocaleService
 
     public function getLocale(Request $request)
     {
-        $queryLocale = $request->query->get('language');
+        $queryLocale = $this->resolveLocale($request->query->get('language'));
         if ($queryLocale) {
             return $queryLocale;
         }
@@ -43,7 +43,7 @@ class LocaleService
             return $cookieLocale;
         }
 
-        $locale = $this->getLocaleFromIp($request);
+        $locale = $this->getLocaleFromHeader($request);
         if ($locale) {
             return $locale;
         }
@@ -51,34 +51,41 @@ class LocaleService
         return $this->settings->getLanguage();
     }
 
-    private function getLocaleFromIp(Request $request)
+    /**
+     * @param string|null $locale
+     * @return string|null
+     */
+    private function resolveLocale($locale)
     {
-        $ip = get_ip($request);
-        $response = $this->requester->get("https://ipinfo.io/{$ip}/json", [], [], 2);
+        $translator = $this->translationManager->user();
 
-        if ($response && $response->isOk()) {
-            $details = $response->json();
+        if ($translator->languageExists($locale)) {
+            return $locale;
+        }
 
-            if (isset($details['country'])) {
-                $country = $this->mapCountry($details['country']);
-                $locale = $this->translationManager->user()->getLanguageByShort($country);
-
-                if (strlen($locale)) {
-                    return $locale;
-                }
-            }
+        $locale = $translator->getLanguageByShort($locale);
+        if ($translator->languageExists($locale)) {
+            return $locale;
         }
 
         return null;
     }
 
-    private function mapCountry($country)
+    /**
+     * @param Request $request
+     * @return string|null
+     */
+    private function getLocaleFromHeader(Request $request)
     {
-        $mapping = [
-            'us' => 'en',
-            'gb' => 'en',
-        ];
+        $translator = $this->translationManager->user();
 
-        return array_get($mapping, strtolower($country), $country);
+        foreach ($request->getLanguages() as $shortLocale) {
+            $locale = $translator->getLanguageByShort($shortLocale);
+            if ($locale) {
+                return $locale;
+            }
+        }
+
+        return null;
     }
 }
