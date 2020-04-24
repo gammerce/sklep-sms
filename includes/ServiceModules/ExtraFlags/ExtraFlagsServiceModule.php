@@ -60,7 +60,10 @@ use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
+use App\View\Html\ServerRef;
+use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
+use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use InvalidArgumentException;
@@ -246,8 +249,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
-                "srv.name AS `server`, s.id AS `service_id`, s.name AS `service`, " .
+            "SELECT SQL_CALC_FOUND_ROWS " .
+                "us.id AS `id`, us.uid AS `uid`, u.username AS `username`, " .
+                "srv.id AS `server_id`, srv.name AS `server_name`, " .
+                "s.id AS `service_id`, s.name AS `service_name`, " .
                 "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
                 "FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
@@ -263,17 +268,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
+                $userEntry = $row["uid"]
+                    ? new UserRef($row["uid"], $row["username"])
+                    : $this->lang->t('none');
+
                 return (new BodyRow())
                     ->setDbId($row['id'])
-                    ->addCell(
-                        new Cell(
-                            $row['uid']
-                                ? "{$row['username']} ({$row['uid']})"
-                                : $this->lang->t('none')
-                        )
-                    )
-                    ->addCell(new Cell($row['server']))
-                    ->addCell(new Cell($row['service']))
+                    ->addCell(new Cell($userEntry))
+                    ->addCell(new Cell(new ServerRef($row["server_id"], $row["server_name"])))
+                    ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
                     ->addCell(new Cell($row['auth_data']))
                     ->addCell(new Cell(convert_expire($row['expire'])))
                     ->setDeleteAction(has_privileges("manage_user_services"))
@@ -295,7 +298,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return (new Wrapper())->setSearch()->setTable($table);
+        return (new Wrapper())->enableSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)

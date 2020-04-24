@@ -25,7 +25,11 @@ $(document).delegate(".table-structure .search", "submit", function(e) {
     });
 });
 
-$(document).delegate(".dropdown", "click", function() {
+$(document).delegate(".dropdown", "click", function(e) {
+    e.stopImmediatePropagation();
+    $(".dropdown")
+        .not(this)
+        .removeClass("is-active");
     $(this).toggleClass("is-active");
 });
 
@@ -42,10 +46,8 @@ $(document).delegate("#sidebar-burger", "click", function(e) {
 });
 
 document.addEventListener("click", function(e) {
-    // Do not remove class if user clicks dropdown element
-    if (!$(e.target).closest(".dropdown").length) {
-        $(".dropdown").removeClass("is-active");
-    }
+    // Close all dropdowns
+    $(".dropdown").removeClass("is-active");
 
     // Do not hide sidebar if user clicks sidebar
     if (!$(e.target).closest(".sidebar-menu").length) {

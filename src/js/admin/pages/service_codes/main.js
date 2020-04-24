@@ -114,29 +114,3 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
         error: handleErrorResponse,
     });
 });
-
-// Change server
-$(document).delegate("#form_service_code_add [name=server_id]", "change", function() {
-    var form = $(this).closest("form");
-
-    if (!$(this).val().length) {
-        form.find("[name=price_id]")
-            .children()
-            .not("[value='']")
-            .remove();
-        return;
-    }
-
-    var serviceId = form.find("[name=service_id]").val();
-
-    restRequest(
-        "POST",
-        "/api/admin/services/" + serviceId + "/actions/prices_for_server",
-        {
-            server_id: $(this).val(),
-        },
-        function(html) {
-            form.find("[name=price_id]").html(html);
-        }
-    );
-});

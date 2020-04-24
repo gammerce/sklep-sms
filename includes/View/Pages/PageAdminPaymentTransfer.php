@@ -36,17 +36,19 @@ class PageAdminPaymentTransfer extends PageAdmin
 
     protected function content(array $query, array $body)
     {
+        $recordId = array_get($query, "record");
+        $search = array_get($query, "search");
+
         $queryParticle = new QueryParticle();
         $queryParticle->add("( t.payment = 'transfer' )");
 
-        if (isset($query['search'])) {
+        if (strlen($recordId)) {
+            $queryParticle->add("AND `payment_id` = ?", [$recordId]);
+        } elseif (strlen($search)) {
+            $queryParticle->add("AND");
             $queryParticle->extend(
-                create_search_query(["t.payment_id", "t.income", "t.ip"], $query['search'])
+                create_search_query(["t.payment_id", "t.income", "t.ip"], $search)
             );
-        }
-
-        if (isset($query['payid'])) {
-            $queryParticle->add("AND `payment_id` = ?", [$query['payid']]);
         }
 
         $statement = $this->db->statement(
@@ -68,21 +70,18 @@ class PageAdminPaymentTransfer extends PageAdmin
             ->map(function (array $row) {
                 return $this->transactionRepository->mapToModel($row);
             })
-            ->map(function (Transaction $transaction) use ($query) {
+            ->map(function (Transaction $transaction) use ($recordId) {
                 $income = $this->priceTextService->getPriceText($transaction->getIncome());
 
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())
                     ->addCell(new Cell($income))
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
-                    ->addCell(new DateCell($transaction->getTimestamp()));
-
-                if ($query['payid'] == $transaction->getPaymentId()) {
-                    $bodyRow->addClass('highlighted');
-                }
-
-                return $bodyRow;
+                    ->addCell(new DateCell($transaction->getTimestamp()))
+                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass('highlighted');
+                    });
             })
             ->all();
 
@@ -97,6 +96,7 @@ class PageAdminPaymentTransfer extends PageAdmin
 
         return (new Wrapper())
             ->setTitle($this->title)
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

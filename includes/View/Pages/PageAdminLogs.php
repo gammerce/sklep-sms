@@ -68,7 +68,7 @@ class PageAdminLogs extends PageAdmin
 
         return (new Wrapper())
             ->setTitle($this->title)
-            ->setSearch()
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

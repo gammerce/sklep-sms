@@ -83,12 +83,11 @@ trait MakesHttpRequests
 
     private function castValuesToString(array $data)
     {
-        $output = [];
-
-        foreach ($data as $key => $value) {
-            $output[$key] = $value;
-        }
-
-        return $output;
+        return $data;
+        //        return collect($data)
+        //            ->mapWithKeys(function ($value) {
+        //                return $value;
+        //            })
+        //            ->all();
     }
 }

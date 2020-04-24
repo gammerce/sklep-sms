@@ -11,7 +11,7 @@
                 <div class="control">
                     <div class="select is-small">
                         <select id="server_id" name="server_id">
-                            <option value="">{$lang->t('choose_server')}</option>
+                            <option value="">{$lang->t('all_servers')}</option>
                             {$servers}
                         </select>
                     </div>
@@ -21,16 +21,12 @@
     </tr>
     <tr>
         <td>
-            <label for="price_id">{$lang->t('quantity')}</label>
+            <label for="quantity">{$lang->t('quantity')}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
-                    <div class="select is-small">
-                        <select id="price_id" name="price_id">
-                            <option value="">{$lang->t('choose_quantity')}</option>
-                        </select>
-                    </div>
+                    <input type="number" id="quantity" name="quantity" class="input is-small" />
                 </div>
             </div>
         </td>

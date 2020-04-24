@@ -14,7 +14,7 @@ use App\View\Html\Wrapper;
 
 class PageAdminPaymentServiceCode extends PageAdmin
 {
-    const PAGE_ID = 'payment_service_code';
+    const PAGE_ID = "payment_service_code";
 
     /** @var TransactionRepository */
     private $transactionRepository;
@@ -23,22 +23,34 @@ class PageAdminPaymentServiceCode extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('payments_service_code');
+        $this->heart->pageTitle = $this->title = $this->lang->t("payments_service_code");
         $this->transactionRepository = $transactionRepository;
     }
 
     protected function content(array $query, array $body)
     {
-        $queryParticle = new QueryParticle();
+        $recordId = array_get($query, "record");
+        $search = array_get($query, "search");
 
-        if (isset($query['payid'])) {
-            $queryParticle->add(" AND `payment_id` = ? ", [$query['payid']]);
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("t.payment = 'service_code'");
+
+        if (strlen($recordId)) {
+            $queryParticle->add("AND `payment_id` = ?", [$recordId]);
+        } elseif (strlen($search)) {
+            $queryParticle->add("AND");
+            $queryParticle->extend(
+                create_search_query(
+                    ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
+                    $search
+                )
+            );
         }
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                "WHERE t.payment = 'service_code' $queryParticle" .
+                "WHERE $queryParticle" .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
@@ -48,40 +60,37 @@ class PageAdminPaymentServiceCode extends PageAdmin
                 get_row_limit($this->currentPage->getPageNumber())
             )
         );
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
                 return $this->transactionRepository->mapToModel($row);
             })
-            ->map(function (Transaction $transaction) use ($query) {
-                $bodyRow = new BodyRow();
-
-                if ($query['payid'] == $transaction->getPaymentId()) {
-                    $bodyRow->addClass('highlighted');
-                }
-
-                $bodyRow->setDbId($transaction->getPaymentId());
-                $bodyRow->addCell(new Cell($transaction->getServiceCode()));
-                $bodyRow->addCell(new Cell($transaction->getIp()));
-                $bodyRow->addCell(new PlatformCell($transaction->getPlatform()));
-                $bodyRow->addCell(new DateCell($transaction->getTimestamp()));
-
-                return $bodyRow;
+            ->map(function (Transaction $transaction) use ($recordId) {
+                return (new BodyRow())
+                    ->setDbId($transaction->getPaymentId())
+                    ->addCell(new Cell($transaction->getServiceCode()))
+                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell(new PlatformCell($transaction->getPlatform()))
+                    ->addCell(new DateCell($transaction->getTimestamp()))
+                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass('highlighted');
+                    });
             })
             ->all();
 
         $table = (new Structure())
-            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
-            ->addHeadCell(new HeadCell($this->lang->t('code')))
-            ->addHeadCell(new HeadCell($this->lang->t('ip')))
-            ->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"))
-            ->addHeadCell(new HeadCell($this->lang->t('date')))
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("code")))
+            ->addHeadCell(new HeadCell($this->lang->t("ip")))
+            ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
+            ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $query, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->title)
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

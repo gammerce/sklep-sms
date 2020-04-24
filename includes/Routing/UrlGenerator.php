@@ -22,6 +22,11 @@ class UrlGenerator
         $this->app = $app;
     }
 
+    /**
+     * @param string $path
+     * @param array $query
+     * @return string
+     */
     public function to($path, array $query = [])
     {
         $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, '/');

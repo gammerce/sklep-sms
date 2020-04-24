@@ -7,6 +7,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
+use App\Support\QueryParticle;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\BodyRow;
@@ -36,8 +37,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
+        $recordId = as_int(array_get($query, "record"));
+
         $bodyRows = collect($this->heart->getServers())
-            ->map(function (Server $server) {
+            ->filter(function (Server $server) use ($recordId) {
+                return $recordId === null || $server->getId() === $recordId;
+            })
+            ->map(function (Server $server) use ($recordId) {
                 return (new BodyRow())
                     ->setDbId($server->getId())
                     ->addCell(new Cell($server->getName(), "name"))
@@ -47,7 +53,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($server->getLastActiveAt() ?: "n/a"))
                     ->addAction($this->createRegenerateTokenButton())
                     ->setDeleteAction(has_privileges("manage_servers"))
-                    ->setEditAction(has_privileges("manage_servers"));
+                    ->setEditAction(has_privileges("manage_servers"))
+                    ->when($recordId === $server->getId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass("highlighted");
+                    });
             })
             ->all();
 

@@ -88,22 +88,6 @@ abstract class Page
             }
         }
 
-        if (
-            in_array($this->getPageId(), [
-                "purchase",
-                "user_own_services",
-                "service_take_over",
-                "payment_log",
-            ])
-        ) {
-            foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
-                $path = "build/css/general/services/{$serviceModule->getModuleId()}.css";
-                if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->addStyle($this->url->versioned($path));
-                }
-            }
-        }
-
         return $this->content($query, $body);
     }
 
