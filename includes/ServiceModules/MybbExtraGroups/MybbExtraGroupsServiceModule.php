@@ -4,6 +4,7 @@ namespace App\ServiceModules\MybbExtraGroups;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\IntegerCommaSeparatedListRule;
+use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\MybbUserExistsRule;
 use App\Http\Validation\Rules\NumberRule;
@@ -298,7 +299,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return (new Wrapper())->setSearch()->setTable($table);
+        return (new Wrapper())->enableSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)
@@ -328,7 +329,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ],
             [
                 "email" => [new RequiredRule(), new EmailRule()],
-                "quantity" => [new RequiredRule()],
+                "quantity" => [new IntegerRule()],
                 "username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
             ]
         );

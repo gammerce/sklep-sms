@@ -48,13 +48,12 @@ class ServiceCodePaymentService
     {
         $statement = $this->db->statement(
             <<<EOF
-            SELECT sc.* FROM `ss_service_codes` sc
-            INNER JOIN `ss_prices` sp on sc.price = sp.id
-            WHERE sc.code = ?
-            AND sp.quantity = ?
-            AND sc.service = ?
-            AND (sc.server IS NULL OR sc.server = ?)
-            AND (sc.uid IS NULL OR sc.uid = ?)
+            SELECT * FROM `ss_service_codes`
+            WHERE code = ?
+            AND quantity <=> ?
+            AND service = ?
+            AND (server IS NULL OR server = ?)
+            AND (uid IS NULL OR uid = ?)
             LIMIT 1
 EOF
         );

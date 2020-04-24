@@ -3,6 +3,7 @@
 use App\Loggers\FileLogger;
 use App\Models\Server;
 use App\Models\User;
+use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\QueryParticle;
@@ -502,6 +503,19 @@ function as_float($value)
 }
 
 /**
+ * @param mixed $value
+ * @return string|null
+ */
+function as_string($value)
+{
+    if ($value === null) {
+        return null;
+    }
+
+    return (string) $value;
+}
+
+/**
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */
@@ -672,4 +686,28 @@ function to_array($items)
     }
 
     return (array) $items;
+}
+
+/**
+ * @param string $key
+ * @param mixed ...$args
+ * @return string
+ */
+function __($key, ...$args)
+{
+    /** @var TranslationManager $translationManager */
+    $translationManager = app()->make(TranslationManager::class);
+    return $translationManager->user()->t($key, ...$args);
+}
+
+/**
+ * @param string $path
+ * @param array $query
+ * @return string
+ */
+function url($path, array $query = [])
+{
+    /** @var UrlGenerator $url */
+    $url = app()->make(UrlGenerator::class);
+    return $url->to($path, $query);
 }

@@ -37,9 +37,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     protected function content(array $query, array $body)
     {
+        $recordId = as_int(array_get($query, "record"));
+        $search = array_get($query, "search");
+
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($recordId) {
+            $queryParticle->add("`uid` = ?", [$recordId]);
+        } elseif ($search) {
             $queryParticle->extend(
                 create_search_query(
                     [
@@ -52,7 +57,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                         "`groups`",
                         "`wallet`",
                     ],
-                    $query["search"]
+                    $search
                 )
             );
         }
@@ -74,7 +79,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->map(function (array $row) {
                 return $this->userRepository->mapToModel($row);
             })
-            ->map(function (User $user) {
+            ->map(function (User $user) use ($recordId) {
                 $groups = collect($user->getGroups())
                     ->map(function ($groupId) {
                         return $this->heart->getGroup($groupId);
@@ -104,7 +109,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ->addAction($this->createChargeButton())
                     ->addAction($this->createPasswordButton())
                     ->setDeleteAction(has_privileges("manage_users"))
-                    ->setEditAction(has_privileges("manage_users"));
+                    ->setEditAction(has_privileges("manage_users"))
+                    ->when($recordId === $user->getUid(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass("highlighted");
+                    });
             })
             ->all();
 
@@ -122,7 +130,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         return (new Wrapper())
             ->setTitle($this->title)
-            ->setSearch()
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

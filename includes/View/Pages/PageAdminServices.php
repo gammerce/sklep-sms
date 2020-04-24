@@ -11,54 +11,62 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
-use App\View\Html\Structure;
 use App\View\Html\RawText;
+use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
-    const PAGE_ID = 'services';
-    protected $privilege = 'view_services';
+    const PAGE_ID = "services";
+    protected $privilege = "view_services";
 
     public function __construct()
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('services');
+        $this->heart->pageTitle = $this->title = $this->lang->t("services");
     }
 
     protected function content(array $query, array $body)
     {
+        $recordId = array_get($query, "record");
+
         $bodyRows = collect($this->heart->getServices())
-            ->map(function (Service $service) {
+            ->filter(function (Service $service) use ($recordId) {
+                return $recordId === null || $service->getId() === $recordId;
+            })
+            ->map(function (Service $service) use ($recordId) {
                 return (new BodyRow())
                     ->setDbId($service->getId())
-                    ->addCell(new Cell($service->getName(), 'name'))
+                    ->addCell(new Cell($service->getName(), "name"))
                     ->addCell(new Cell($service->getShortDescription()))
                     ->addCell(new Cell($service->getDescription()))
                     ->addCell(new Cell($service->getOrder()))
-                    ->setDeleteAction(has_privileges('manage_services'))
-                    ->setEditAction(has_privileges('manage_services'));
+                    ->setDeleteAction(has_privileges("manage_services"))
+                    ->setEditAction(has_privileges("manage_services"))
+                    ->when($recordId === $service->getId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass("highlighted");
+                    });
             })
             ->all();
 
         $table = (new Structure())
-            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
-            ->addHeadCell(new HeadCell($this->lang->t('name')))
-            ->addHeadCell(new HeadCell($this->lang->t('short_description')))
-            ->addHeadCell(new HeadCell($this->lang->t('description')))
-            ->addHeadCell(new HeadCell($this->lang->t('order')))
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("name")))
+            ->addHeadCell(new HeadCell($this->lang->t("short_description")))
+            ->addHeadCell(new HeadCell($this->lang->t("description")))
+            ->addHeadCell(new HeadCell($this->lang->t("order")))
             ->addBodyRows($bodyRows);
 
         $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
 
-        if (has_privileges('manage_services')) {
+        if (has_privileges("manage_services")) {
             $button = (new Input())
-                ->setParam('id', 'service_button_add')
-                ->setParam('type', 'button')
-                ->addClass('button')
-                ->setParam('value', $this->lang->t('add_service'));
+                ->setParam("id", "service_button_add")
+                ->setParam("type", "button")
+                ->addClass("button")
+                ->setParam("value", $this->lang->t("add_service"));
 
             $wrapper->addButton($button);
         }
@@ -73,7 +81,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "service_edit") {
-            $service = $this->heart->getService($query['id']);
+            $service = $this->heart->getService($query["id"]);
 
             if (strlen($service->getModule())) {
                 $serviceModule = $this->heart->getServiceModule($service->getId());
@@ -83,7 +91,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                         "tbody",
                         new RawText($serviceModule->serviceAdminExtraFieldsGet()),
                         [
-                            'class' => 'extra_fields',
+                            "class" => "extra_fields",
                         ]
                     );
                 }
@@ -98,7 +106,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                         "option",
                         $this->heart->getServiceModuleName($serviceModule->getModuleId()),
                         [
-                            'value' => $serviceModule->getModuleId(),
+                            "value" => $serviceModule->getModuleId(),
                         ]
                     );
                 })
@@ -108,8 +116,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $groups = collect($this->heart->getGroups())
             ->map(function (Group $group) {
                 return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
-                    'value' => $group->getId(),
-                    'selected' =>
+                    "value" => $group->getId(),
+                    "selected" =>
                         isset($service) && in_array($group->getId(), $service->getGroups())
                             ? "selected"
                             : "",
@@ -121,7 +129,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             case "service_add":
                 $output = $this->template->render(
                     "admin/action_boxes/service_add",
-                    compact('groups', 'servicesModules')
+                    compact("groups", "servicesModules")
                 );
                 break;
 
@@ -130,17 +138,17 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
                 $output = $this->template->render(
                     "admin/action_boxes/service_edit",
-                    compact('service', 'groups', 'serviceModuleName', 'extraFields')
+                    compact("service", "groups", "serviceModuleName", "extraFields")
                 );
                 break;
 
             default:
-                $output = '';
+                $output = "";
         }
 
         return [
-            'status' => 'ok',
-            'template' => $output,
+            "status" => "ok",
+            "template" => $output,
         ];
     }
 }

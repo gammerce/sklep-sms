@@ -28,7 +28,10 @@ class PageAdminUpdateWeb extends PageAdmin
             return $this->template->render("admin/no_update");
         }
 
-        $pageTitle = $this->template->render("admin/page_title", ["title" => $this->title]);
+        $pageTitle = $this->template->render("admin/page_title", [
+            "buttons" => "",
+            "title" => $this->title,
+        ]);
 
         return $this->template->render(
             "admin/update_web",

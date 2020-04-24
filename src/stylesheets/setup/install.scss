@@ -1,6 +1,8 @@
-@import "../general/variables";
-@import "../general/loader";
-@import "../general/infobox";
+@import "src/stylesheets/general/variables";
+@import "src/stylesheets/general/vendors";
+@import "src/stylesheets/general/partials/loader";
+@import "src/stylesheets/general/partials/infobox";
+
 @import "./partials/setup";
 
 #form_install {

@@ -5,6 +5,7 @@ use App\ServiceModules\ExtraFlags\PlayerFlag;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
+use App\View\Html\ServerRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 
@@ -36,7 +37,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
                 $bodyRow = (new BodyRow())
                     ->setDbId($row['id'])
-                    ->addCell(new Cell($server->getName()))
+                    ->addCell(new Cell(new ServerRef($server->getId(), $server->getName())))
                     ->addCell(new Cell($row['auth_data']));
 
                 foreach (PlayerFlag::FLAGS as $flag) {

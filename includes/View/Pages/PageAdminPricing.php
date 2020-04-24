@@ -12,6 +12,8 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\ServerRef;
+use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
@@ -60,14 +62,19 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             })
             ->map(function (Price $price) {
                 if ($price->isForEveryServer()) {
-                    $serverName = $this->lang->t("all_servers");
+                    $serverEntry = $this->lang->t("all_servers");
                 } else {
                     $server = $this->heart->getServer($price->getServerId());
-                    $serverName = $server ? $server->getName() : "n/a";
+                    $serverEntry = $server
+                        ? new ServerRef($server->getId(), $server->getName())
+                        : "n/a";
                 }
 
                 $service = $this->heart->getService($price->getServiceId());
-                $serviceName = $service ? "{$service->getName()} ( {$service->getId()} )" : "n/a";
+                $serviceEntry = $service
+                    ? new ServiceRef($service->getId(), $service->getName())
+                    : "n/a";
+
                 $quantity = $price->isForever() ? $this->lang->t("forever") : $price->getQuantity();
                 $smsPrice = $price->hasSmsPrice()
                     ? $this->priceTextService->getPriceGrossText($price->getSmsPrice())
@@ -81,8 +88,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
                 return (new BodyRow())
                     ->setDbId($price->getId())
-                    ->addCell(new Cell($serviceName))
-                    ->addCell(new Cell($serverName))
+                    ->addCell(new Cell($serviceEntry))
+                    ->addCell(new Cell($serverEntry))
                     ->addCell(new Cell($quantity))
                     ->addCell(new Cell($smsPrice))
                     ->addCell(new Cell($transferPrice))

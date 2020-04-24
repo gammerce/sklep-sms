@@ -73,9 +73,7 @@ class PaginationService
                         );
                     }
 
-                    $paginationLink = new Link("...");
-                    $paginationLink->addClass("pagination-link");
-                    $paginationLink->setParam("href", $href);
+                    $paginationLink = (new Link("...", $href))->addClass("pagination-link");
                     $paginationList->addContent(new Li($paginationLink));
 
                     $dots = true;
@@ -84,12 +82,11 @@ class PaginationService
             }
 
             $href = $this->url->to($script, array_merge($query, ["page" => $i]));
-            $paginationLink = new Link($i);
-            $paginationLink->addClass("pagination-link");
-            if ($currentPage == $i) {
-                $paginationLink->addClass("is-current");
-            }
-            $paginationLink->setParam("href", $href);
+            $paginationLink = (new Link($i, $href))
+                ->addClass("pagination-link")
+                ->when($currentPage == $i, function (Link $link) {
+                    $link->addClass("is-current");
+                });
             $paginationList->addContent(new Li($paginationLink));
 
             $dots = false;

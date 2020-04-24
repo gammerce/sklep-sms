@@ -7,8 +7,8 @@ use App\Support\Version;
 
 class PageAdminUpdateServers extends PageAdmin
 {
-    const PAGE_ID = 'update_servers';
-    protected $privilege = 'update';
+    const PAGE_ID = "update_servers";
+    protected $privilege = "update";
 
     /** @var Requester */
     private $requester;
@@ -21,7 +21,7 @@ class PageAdminUpdateServers extends PageAdmin
         parent::__construct();
 
         $this->requester = $requester;
-        $this->heart->pageTitle = $this->title = $this->lang->t('update_servers');
+        $this->heart->pageTitle = $this->title = $this->lang->t("update_servers");
         $this->version = $version;
     }
 
@@ -47,19 +47,21 @@ class PageAdminUpdateServers extends PageAdmin
             }
 
             $versionBricks .= $this->template->render("admin/update_version_block", [
-                'name' => $server->getName(),
-                'currentVersion' => $server->getVersion(),
-                'newestVersion' => $newestVersion,
-                'link' => $link,
+                "name" => $server->getName(),
+                "currentVersion" => $server->getVersion(),
+                "newestVersion" => $newestVersion,
+                "link" => $link,
             ]);
         }
 
         if (!strlen($versionBricks)) {
-            $output = $this->template->render("admin/no_update");
-            return $output;
+            return $this->template->render("admin/no_update");
         }
 
-        $pageTitle = $this->template->render("admin/page_title", ['title' => $this->title]);
+        $pageTitle = $this->template->render("admin/page_title", [
+            "buttons" => "",
+            "title" => $this->title,
+        ]);
 
         return $this->template->render(
             "admin/update_server",

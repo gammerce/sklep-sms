@@ -10,19 +10,15 @@ class ServiceCodesTest extends HttpTestCase
     {
         // given
         $this->actingAs($this->factory->admin());
-        $this->factory->serviceCode([
-            'price_id' => $this->factory->price()->getId(),
-        ]);
-        $this->factory->serviceCode([
-            'price_id' => $this->factory->price()->getId(),
-        ]);
+        $this->factory->serviceCode();
+        $this->factory->serviceCode();
 
         // when
-        $response = $this->get('/admin/service_codes');
+        $response = $this->get("/admin/service_codes");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
-        $this->assertContains('<div class="title is-4">Kody na usługi', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
+        $this->assertContains("<div class=\"title is-4\">Kody na usługi", $response->getContent());
     }
 }

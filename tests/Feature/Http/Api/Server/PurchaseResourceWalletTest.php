@@ -25,7 +25,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
     /** @var Price */
     private $price;
 
-    private $serviceId = 'vip';
+    private $serviceId = "vip";
     private $ip = "192.0.2.1";
     private $steamId = "STEAM_1:0:22309350";
 
@@ -38,13 +38,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         $this->server = $this->factory->server();
         $this->factory->serverService([
-            'server_id' => $this->server->getId(),
-            'service_id' => $this->serviceId,
+            "server_id" => $this->server->getId(),
+            "service_id" => $this->serviceId,
         ]);
         $this->price = $this->factory->price([
-            'service_id' => $this->serviceId,
-            'server_id' => $this->server->getId(),
-            'transfer_price' => 100,
+            "service_id" => $this->serviceId,
+            "server_id" => $this->server->getId(),
+            "transfer_price" => 100,
         ]);
     }
 
@@ -63,23 +63,23 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'server_id' => (string) $this->server->getId(),
-                'service_id' => (string) $this->serviceId,
-                'type' => (string) ExtraFlagType::TYPE_SID,
-                'auth_data' => $this->steamId,
-                'ip' => $this->ip,
-                'price_id' => (string) $this->price->getId(),
-                'method' => Purchase::METHOD_WALLET,
-                'sign' => $sign,
+                "server_id" => $this->server->getId(),
+                "service_id" => $this->serviceId,
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => $this->steamId,
+                "ip" => $this->ip,
+                "price_id" => $this->price->getId(),
+                "method" => Purchase::METHOD_WALLET,
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'Authorization' => $this->steamId,
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Authorization" => $this->steamId,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -115,23 +115,23 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'server_id' => $this->server->getId(),
-                'service_id' => $this->serviceId,
-                'type' => ExtraFlagType::TYPE_SID,
-                'auth_data' => $this->steamId,
-                'ip' => $this->ip,
-                'price_id' => $this->price->getId(),
-                'method' => Purchase::METHOD_WALLET,
-                'sign' => $sign,
+                "server_id" => $this->server->getId(),
+                "service_id" => $this->serviceId,
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => $this->steamId,
+                "ip" => $this->ip,
+                "price_id" => $this->price->getId(),
+                "method" => Purchase::METHOD_WALLET,
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'Authorization' => $this->steamId,
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Authorization" => $this->steamId,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -156,23 +156,23 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'server_id' => $this->server->getId(),
-                'service_id' => $this->serviceId,
-                'type' => ExtraFlagType::TYPE_SID,
-                'auth_data' => $this->steamId,
-                'ip' => $this->ip,
-                'price_id' => $this->price->getId(),
-                'method' => Purchase::METHOD_WALLET,
-                'sign' => $sign,
+                "server_id" => $this->server->getId(),
+                "service_id" => $this->serviceId,
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => $this->steamId,
+                "ip" => $this->ip,
+                "price_id" => $this->price->getId(),
+                "method" => Purchase::METHOD_WALLET,
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'Authorization' => $this->steamId,
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Authorization" => $this->steamId,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -189,8 +189,8 @@ class PurchaseResourceWalletTest extends HttpTestCase
     {
         // given
         $license = $this->app->make(License::class);
-        $license->shouldReceive('isValid')->andReturn(false);
-        $license->shouldReceive('getLoadingException')->andReturn(new LicenseRequestException());
+        $license->shouldReceive("isValid")->andReturn(false);
+        $license->shouldReceive("getLoadingException")->andReturn(new LicenseRequestException());
 
         // given
         $user = $this->factory->user([
@@ -204,23 +204,23 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'server_id' => $this->server->getId(),
-                'service_id' => $this->serviceId,
-                'type' => ExtraFlagType::TYPE_SID,
-                'auth_data' => $this->steamId,
-                'ip' => $this->ip,
-                'price_id' => $this->price->getId(),
-                'method' => Purchase::METHOD_WALLET,
-                'sign' => $sign,
+                "server_id" => $this->server->getId(),
+                "service_id" => $this->serviceId,
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => $this->steamId,
+                "ip" => $this->ip,
+                "price_id" => $this->price->getId(),
+                "method" => Purchase::METHOD_WALLET,
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'Authorization' => $this->steamId,
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Authorization" => $this->steamId,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 

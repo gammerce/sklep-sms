@@ -235,8 +235,9 @@ class Factory
         $attributes = array_merge(
             [
                 "code" => $this->faker->word,
-                "service_id" => "vip",
+                "quantity" => $this->faker->numberBetween(1, 100),
                 "server_id" => null,
+                "service_id" => "vip",
                 "uid" => null,
             ],
             $attributes
@@ -245,7 +246,7 @@ class Factory
         return $this->serviceCodeRepository->create(
             $attributes["code"],
             $attributes["service_id"],
-            $attributes["price_id"],
+            $attributes["quantity"],
             $attributes["server_id"],
             $attributes["uid"]
         );

@@ -110,7 +110,6 @@ module.exports = {
         new CopyWebpackPlugin([
             {from: './src/images/', to: './images/'},
             {from: './src/stylesheets/shop/pages/', to: './css/shop/pages/'},
-            {from: './src/stylesheets/general/services/', to: './css/general/services/'},
             {from: './src/stylesheets/shop/long_desc.css', to: './css/shop/long_desc.css'},
         ]),
         new ExtractTextPlugin({

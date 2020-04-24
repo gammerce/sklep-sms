@@ -57,6 +57,7 @@ class PageAdminMain extends PageAdmin
         $bricks = $this->getBricks();
         $notes = $this->getNotes();
         $pageTitle = $this->template->render("admin/page_title", [
+            "buttons" => "",
             "title" => $this->lang->t('main_page'),
         ]);
 

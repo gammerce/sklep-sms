@@ -1,7 +1,7 @@
-@import "../general/variables";
-@import "../general/global";
-@import "../general/loader";
-@import "../general/infobox";
+@import "src/stylesheets/general/variables";
+@import "src/stylesheets/general/vendors";
+@import "src/stylesheets/general/global";
+@import "src/stylesheets/general/services/extra_flags";
 
 @import "./partials/payment";
 @import "./partials/payment_log";
