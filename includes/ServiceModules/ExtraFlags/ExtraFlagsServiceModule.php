@@ -328,7 +328,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         $quantity = as_int(array_get($body, 'quantity'));
-        $quantity = $quantity === -1 ? null : $quantity;
         $serverId = as_int(array_get($body, 'server_id'));
         $type = as_int(array_get($body, 'type'));
         $authData = trim(array_get($body, 'auth_data'));
@@ -345,7 +344,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             'passwordr' => $passwordRepeat,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $quantity,
+            Purchase::ORDER_QUANTITY => $quantity === -1 ? null : $quantity,
         ]);
 
         $validator = $this->purchaseDataValidate($purchase);
