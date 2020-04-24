@@ -36,13 +36,19 @@ class PageAdminPaymentWallet extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $recordId = as_int(array_get($query, "record"));
+        $recordId = array_get($query, "record");
+        $search = array_get($query, "search");
 
         $queryParticle = new QueryParticle();
         $queryParticle->add("t.payment = 'wallet'");
 
-        if ($recordId) {
+        if (strlen($recordId)) {
             $queryParticle->add("AND `payment_id` = ?", [$recordId]);
+        } elseif (strlen($search)) {
+            $queryParticle->add("AND");
+            $queryParticle->extend(
+                create_search_query(["t.payment_id", "t.income", "t.ip"], $search)
+            );
         }
 
         $statement = $this->db->statement(
@@ -73,7 +79,7 @@ class PageAdminPaymentWallet extends PageAdmin
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
                     ->addCell(new DateCell($transaction->getTimestamp()))
-                    ->when($recordId === $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass('highlighted');
                     });
             })
@@ -90,6 +96,7 @@ class PageAdminPaymentWallet extends PageAdmin
 
         return (new Wrapper())
             ->setTitle($this->title)
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

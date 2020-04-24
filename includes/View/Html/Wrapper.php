@@ -91,12 +91,11 @@ class Wrapper extends Div
     }
 
     /**
-     * @param bool $value
      * @return $this
      */
-    public function setSearch($value = true)
+    public function enableSearch()
     {
-        $this->search = $value;
+        $this->search = true;
         return $this;
     }
 

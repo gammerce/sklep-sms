@@ -36,7 +36,7 @@ class PageAdminPaymentSms extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $recordId = as_int(array_get($query, "record"));
+        $recordId = array_get($query, "record");
         $search = array_get($query, "search");
 
         $queryParticle = new QueryParticle();
@@ -45,6 +45,7 @@ class PageAdminPaymentSms extends PageAdmin
         if (strlen($recordId)) {
             $queryParticle->add("AND ( t.payment_id = ? )", [$recordId]);
         } elseif (strlen($search)) {
+            $queryParticle->add("AND");
             $queryParticle->extend(
                 create_search_query(
                     ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
@@ -80,7 +81,7 @@ class PageAdminPaymentSms extends PageAdmin
                 $income = $this->priceTextService->getPriceText($transaction->getIncome());
                 $cost = $this->priceTextService->getPriceText($transaction->getCost());
 
-                $bodyRow = (new BodyRow())
+                return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())
                     ->addCell(new Cell($transaction->getSmsText()))
                     ->addCell(new Cell($transaction->getSmsNumber()))
@@ -90,13 +91,10 @@ class PageAdminPaymentSms extends PageAdmin
                     ->addCell(new Cell($free))
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
-                    ->addCell(new DateCell($transaction->getTimestamp()));
-
-                if ($recordId === $transaction->getPaymentId()) {
-                    $bodyRow->addClass("highlighted");
-                }
-
-                return $bodyRow;
+                    ->addCell(new DateCell($transaction->getTimestamp()))
+                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                        $bodyRow->addClass("highlighted");
+                    });
             })
             ->all();
 
@@ -116,6 +114,7 @@ class PageAdminPaymentSms extends PageAdmin
 
         return (new Wrapper())
             ->setTitle($this->title)
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

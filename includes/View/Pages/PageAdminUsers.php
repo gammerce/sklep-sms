@@ -130,7 +130,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         return (new Wrapper())
             ->setTitle($this->title)
-            ->setSearch()
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }

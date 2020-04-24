@@ -299,7 +299,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
-        return (new Wrapper())->setSearch()->setTable($table);
+        return (new Wrapper())->enableSearch()->setTable($table);
     }
 
     public function purchaseFormGet(array $query)

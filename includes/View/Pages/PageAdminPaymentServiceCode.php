@@ -29,17 +29,28 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
     protected function content(array $query, array $body)
     {
-        $recordId = as_int(array_get($query, "record"));
-        $queryParticle = new QueryParticle();
+        $recordId = array_get($query, "record");
+        $search = array_get($query, "search");
 
-        if ($recordId) {
-            $queryParticle->add(" AND `payment_id` = ? ", [$recordId]);
+        $queryParticle = new QueryParticle();
+        $queryParticle->add("t.payment = 'service_code'");
+
+        if (strlen($recordId)) {
+            $queryParticle->add("AND `payment_id` = ?", [$recordId]);
+        } elseif (strlen($search)) {
+            $queryParticle->add("AND");
+            $queryParticle->extend(
+                create_search_query(
+                    ["t.payment_id", "t.sms_text", "t.sms_code", "t.sms_number"],
+                    $search
+                )
+            );
         }
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                "WHERE t.payment = 'service_code' $queryParticle" .
+                "WHERE $queryParticle" .
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
@@ -62,7 +73,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
                     ->addCell(new DateCell($transaction->getTimestamp()))
-                    ->when($recordId === $transaction->getPaymentId(), function (BodyRow $bodyRow) {
+                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass('highlighted');
                     });
             })
@@ -79,6 +90,7 @@ class PageAdminPaymentServiceCode extends PageAdmin
 
         return (new Wrapper())
             ->setTitle($this->title)
+            ->enableSearch()
             ->setTable($table)
             ->toHtml();
     }
