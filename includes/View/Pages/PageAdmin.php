@@ -5,12 +5,12 @@ use App\View\Interfaces\IBeLoggedMust;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
-    protected $privilege = 'acp';
+    protected $privilege = "acp";
 
     public function getContent(array $query, array $body)
     {
         if (!has_privileges($this->privilege)) {
-            return $this->lang->t('no_privileges');
+            return $this->lang->t("no_privileges");
         }
 
         $path = "build/js/admin/pages/{$this->getPageId()}/";
@@ -18,15 +18,6 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {
                     $this->heart->addScript($this->url->versioned($path . $file));
-                }
-            }
-        }
-
-        if (in_array($this->getPageId(), ["service_codes", "services", "user_service"])) {
-            foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
-                $path = "build/css/general/services/{$serviceModule->getModuleId()}.css";
-                if ($this->fileSystem->exists($this->path->to($path))) {
-                    $this->heart->addStyle($this->url->versioned($path));
                 }
             }
         }

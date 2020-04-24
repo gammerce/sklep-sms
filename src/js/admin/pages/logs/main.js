@@ -5,18 +5,22 @@ import { refreshAdminContent } from "../../utils/utils";
 import { buildUrl } from "../../../general/global";
 
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var rowId = $(this).closest("tr");
-    var logId = rowId.children("td[headers=id]").text();
+    const rowId = $(this).closest("tr");
+    const logId = rowId.children("td[headers=id]").text();
+
+    if (!confirm(`Na pewno chcesz usunąć log: ${logId} ?`)) {
+        return;
+    }
 
     loader.show();
 
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/logs/" + logId),
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             var jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;

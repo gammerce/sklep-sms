@@ -1,5 +1,4 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
-@import "~bulma/sass/utilities/all";
 
 $scheme-main: hsl(0, 0%, 14%);
 $scheme-main-bis: hsl(0, 0%, 21%);
@@ -15,11 +14,12 @@ $body-background-color: $background;
 // Sidebar
 $sidebar-width: 320px;
 
-@import "../general/variables";
-@import "../general/animations";
-@import "../general/global";
-@import "../general/loader";
-@import "../general/infobox";
+@import "src/stylesheets/general/variables";
+@import "src/stylesheets/general/vendors";
+@import "src/stylesheets/general/global";
+@import "src/stylesheets/general/partials/animations";
+@import "src/stylesheets/general/services/extra_flags";
+
 @import "./partials/login";
 @import "./partials/layout";
 @import "./partials/server";
@@ -196,4 +196,8 @@ h4 {
         font-size: 1.5rem;
         margin-right: 1rem;
     }
+}
+
+.dropdown-content {
+    border: 1px solid darken($dropdown-content-background-color, 20%);
 }
