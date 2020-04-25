@@ -214,6 +214,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
+        $serviceData = $this->service ? $this->service->getData() : [];
         $extraData = [
             'mybb_groups' => implode(",", $mybbGroups),
             'web' => $body['web'],
@@ -222,7 +223,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             'db_password' => array_get(
                 $body,
                 'db_password',
-                array_get($this->service->getData(), 'db_password')
+                array_get($serviceData, 'db_password')
             ),
             'db_name' => $body['db_name'],
         ];
