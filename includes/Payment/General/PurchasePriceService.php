@@ -57,7 +57,7 @@ class PurchasePriceService
                 $item->smsDiscount = $price->getDiscount();
             }
 
-            if ($this->isAvailableUsingTransfer($price, $server)) {
+            if ($this->isAvailableUsingWallet($price)) {
                 $item->transferPrice = $price->getTransferPrice();
                 $item->transferDiscount = $price->getDiscount();
             }
@@ -107,14 +107,9 @@ class PurchasePriceService
         return false;
     }
 
-    private function isAvailableUsingTransfer(Price $price, Server $server = null)
+    private function isAvailableUsingWallet(Price $price)
     {
-        if (!$price->hasTransferPrice()) {
-            return false;
-        }
-
-        return ($server && $server->getTransferPlatformId()) ||
-            $this->settings->getTransferPlatformId();
+        return $price->hasTransferPrice();
     }
 
     private function isAvailableUsingDirectBilling(Price $price)
