@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'coma_separated' => 'Oddzielone przecinkiem.',
+    'comma_separated' => 'Oddzielone przecinkiem.',
     'db_host' => 'Host',
     'db_name' => 'Nazwa bazy',
     'db_password' => 'Hasło',

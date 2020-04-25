@@ -249,7 +249,7 @@ return [
     'text' => 'Text',
     'theme' => 'Theme',
     'transfer_payment_platform' => 'Transfer payment platform',
-    'transfer_price' => 'Transfer price',
+    'transfer_price' => 'Transfer/Wallet price',
     'type_to_search' => 'Type to search',
     'unzip_arch' =>
         'We unzip the archive, and then copy the files on server, keeping catalogues hierarchy.',

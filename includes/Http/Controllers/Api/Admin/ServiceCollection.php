@@ -27,12 +27,12 @@ class ServiceCollection
     ) {
         $lang = $translationManager->user();
 
-        $module = $request->request->get('module');
+        $module = $request->request->get("module");
         $serviceModule = $heart->getEmptyServiceModule($module);
 
         $validator = new Validator($request->request->all(), [
-            'id' => [new RequiredRule(), new MaxLengthRule(16), new ServiceNotExistsRule()],
-            'module' => [new RequiredRule(), new ServiceModuleExistsRule()],
+            "id" => [new RequiredRule(), new MaxLengthRule(16), new ServiceNotExistsRule()],
+            "module" => [new RequiredRule(), new ServiceModuleExistsRule()],
         ]);
         $validator = $serviceService->extendValidator($validator, $serviceModule);
         $validated = $validator->validateOrFail();
@@ -43,23 +43,23 @@ class ServiceCollection
                 : [];
 
         $serviceRepository->create(
-            $validated['id'],
-            $validated['name'],
-            $validated['short_description'],
-            $validated['description'],
-            $validated['tag'],
+            $validated["id"],
+            $validated["name"],
+            $validated["short_description"],
+            $validated["description"],
+            $validated["tag"],
             $serviceModule->getModuleId(),
-            $validated['groups'],
-            $validated['order'],
+            $validated["groups"],
+            $validated["order"],
             array_get($additionalData, "data", []),
             array_get($additionalData, "types", 0),
-            array_get($additionalData, "flags", '')
+            array_get($additionalData, "flags", "")
         );
 
-        $logger->logWithActor('log_service_added', $validated['id']);
+        $logger->logWithActor("log_service_added", $validated["id"]);
 
-        return new SuccessApiResponse($lang->t('service_added'), [
-            'length' => 10000,
+        return new SuccessApiResponse($lang->t("service_added"), [
+            "length" => 10000,
         ]);
     }
 }
