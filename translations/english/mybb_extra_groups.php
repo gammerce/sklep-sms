@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'coma_separated' => 'Separated with a coma.',
+    'comma_separated' => 'Separated with a comma.',
     'db_host' => 'Host',
     'db_name' => 'Database name',
     'db_password' => 'Password',
     'db_user' => 'User',
-    'group_not_integer' => 'Groups have to be integers separated with a coma.',
+    'group_not_integer' => 'Groups have to be integers separated with a comma.',
     'log_mybb_purchase_no_user' => 'User was deleted from MyBB db during purchase. Payment: [{1}]',
     'mybb_change_display_group' => 'If you want to change your display group, follow steps bellow:<br />
 Enter user control panel <i>(on the board)</i> -> Click <b>User groups</b> -> <b>Set it as default</b>',
