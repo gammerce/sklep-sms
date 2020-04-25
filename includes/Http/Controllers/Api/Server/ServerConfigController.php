@@ -126,11 +126,8 @@ class ServerConfigController
             "sn" => $smsNumberItems->all(),
             "se" => $serviceItems->all(),
             "pr" => $priceItems->all(),
+            "pf" => $playerFlagItems->all(),
         ];
-
-        if (isset($playerFlagItems)) {
-            $data["pf"] = $playerFlagItems->all();
-        }
 
         return $acceptHeader->has("application/json")
             ? new JsonResponse($data)
