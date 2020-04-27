@@ -12,15 +12,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPlayersFlags extends PageAdmin
 {
-    const PAGE_ID = 'players_flags';
-    protected $privilege = 'view_player_flags';
+    const PAGE_ID = "players_flags";
+
+    public function getPrivilege()
+    {
+        return "view_player_flags";
+    }
 
     public function getTitle(Request $request)
     {
         return $this->lang->t("players_flags");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
@@ -28,16 +32,16 @@ class PageAdminPlayersFlags extends PageAdmin
                 "LIMIT ?, ?"
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $server = $this->heart->getServer($row['server']);
+                $server = $this->heart->getServer($row["server"]);
 
                 $bodyRow = (new BodyRow())
-                    ->setDbId($row['id'])
+                    ->setDbId($row["id"])
                     ->addCell(new Cell(new ServerRef($server->getId(), $server->getName())))
-                    ->addCell(new Cell($row['auth_data']));
+                    ->addCell(new Cell($row["auth_data"]));
 
                 foreach (PlayerFlag::FLAGS as $flag) {
                     $value = $row[$flag] ? convert_expire($row[$flag]) : " ";
@@ -49,22 +53,22 @@ class PageAdminPlayersFlags extends PageAdmin
             ->all();
 
         $table = (new Structure())
-            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
-            ->addHeadCell(new HeadCell($this->lang->t('server')))
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("server")))
             ->addHeadCell(
                 new HeadCell(
-                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
+                    "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
                 )
             )
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         foreach (PlayerFlag::FLAGS as $flag) {
             $table->addHeadCell(new HeadCell($flag));
         }
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->setTable($table)
             ->toHtml();
     }

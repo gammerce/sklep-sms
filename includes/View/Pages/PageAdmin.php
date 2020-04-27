@@ -5,11 +5,6 @@ use App\View\Interfaces\IBeLoggedMust;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
-    /**
-     * @deprecated
-     */
-    protected $privilege = "acp";
-
     public function getPrivilege()
     {
         return "acp";

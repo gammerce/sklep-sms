@@ -3,8 +3,13 @@ namespace App\View\Pages;
 
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
+use App\Support\FileSystem;
+use App\Support\Path;
+use App\Support\Template;
+use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -15,7 +20,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminSettings extends PageAdmin
 {
     const PAGE_ID = "settings";
-    protected $privilege = "manage_settings";
 
     /** @var Settings */
     private $settings;
@@ -23,14 +27,40 @@ class PageAdminSettings extends PageAdmin
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var Heart */
+    private $heart;
+
+    /** @var Translator */
+    private $langShop;
+
+    /** @var FileSystem */
+    private $fileSystem;
+
+    /** @var Path */
+    private $path;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         Settings $settings,
-        PaymentPlatformRepository $paymentPlatformRepository
+        PaymentPlatformRepository $paymentPlatformRepository,
+        Heart $heart,
+        FileSystem $fileSystem,
+        Path $path
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->settings = $settings;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->heart = $heart;
+        $this->langShop = $translationManager->shop();
+        $this->fileSystem = $fileSystem;
+        $this->path = $path;
+    }
+
+    public function getPrivilege()
+    {
+        return "manage_settings";
     }
 
     public function getTitle(Request $request)
@@ -38,7 +68,7 @@ class PageAdminSettings extends PageAdmin
         return $this->lang->t("settings");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $smsPlatforms = [];
         $transferPlatforms = [];
@@ -75,7 +105,7 @@ class PageAdminSettings extends PageAdmin
         $languagesList = to_array($this->createLanguagesList());
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => "",
-            "title" => $this->title,
+            "title" => $this->getTitle($request),
         ]);
 
         return $this->template->render("admin/settings", [
@@ -161,10 +191,6 @@ class PageAdminSettings extends PageAdmin
 
     private function createLanguagesList()
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
-        $langShop = $translationManager->shop();
-
         $dirList = $this->fileSystem->scanDirectory($this->path->to("translations"));
 
         foreach ($dirList as $dirName) {
@@ -174,7 +200,8 @@ class PageAdminSettings extends PageAdmin
             ) {
                 yield create_dom_element("option", $this->lang->t("language_" . $dirName), [
                     "value" => $dirName,
-                    "selected" => $dirName == $langShop->getCurrentLanguage() ? "selected" : "",
+                    "selected" =>
+                        $dirName == $this->langShop->getCurrentLanguage() ? "selected" : "",
                 ]);
             }
         }

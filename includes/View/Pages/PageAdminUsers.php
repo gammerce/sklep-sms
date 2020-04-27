@@ -6,7 +6,12 @@ use App\Models\Group;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Services\PriceTextService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -18,8 +23,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
-    const PAGE_ID = 'users';
-    protected $privilege = 'view_users';
+    const PAGE_ID = "users";
 
     /** @var UserRepository */
     private $userRepository;
@@ -27,12 +31,36 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(UserRepository $userRepository, PriceTextService $priceTextService)
-    {
-        parent::__construct();
+    /** @var Heart */
+    private $heart;
+
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        UserRepository $userRepository,
+        PriceTextService $priceTextService,
+        Heart $heart,
+        Database $db,
+        CurrentPage $currentPage
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->userRepository = $userRepository;
         $this->priceTextService = $priceTextService;
+        $this->heart = $heart;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+    }
+
+    public function getPrivilege()
+    {
+        return "view_users";
     }
 
     public function getTitle(Request $request)
@@ -40,10 +68,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         return $this->lang->t("users");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $recordId = as_int(array_get($query, "record"));
-        $search = array_get($query, "search");
+        $recordId = as_int($request->query->get("record"));
+        $search = $request->query->get("search");
 
         $queryParticle = new QueryParticle();
 
@@ -131,10 +159,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("groups")))
             ->addHeadCell(new HeadCell($this->lang->t("wallet")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->enableSearch()
             ->setTable($table)
             ->toHtml();

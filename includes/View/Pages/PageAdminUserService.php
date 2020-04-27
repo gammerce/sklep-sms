@@ -22,7 +22,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "user_service";
-    protected $privilege = "view_user_services";
 
     /** @var UserServiceService */
     private $userServiceService;
@@ -41,10 +40,14 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $this->heart = $heart;
     }
 
+    public function getPrivilege()
+    {
+        return "view_user_services";
+    }
+
     public function getTitle(Request $request)
     {
         $serviceModule = $this->getServiceModule($request);
-
         $title = $this->lang->t("users_services");
 
         if ($serviceModule) {

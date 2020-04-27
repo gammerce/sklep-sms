@@ -3,13 +3,15 @@ namespace App\View\Pages;
 
 use App\Models\Server;
 use App\Requesting\Requester;
+use App\Support\Template;
 use App\Support\Version;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = "update_servers";
-    protected $privilege = "update";
 
     /** @var Requester */
     private $requester;
@@ -17,12 +19,26 @@ class PageAdminUpdateServers extends PageAdmin
     /** @var Version */
     private $version;
 
-    public function __construct(Requester $requester, Version $version)
-    {
-        parent::__construct();
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Requester $requester,
+        Version $version,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->requester = $requester;
         $this->version = $version;
+        $this->heart = $heart;
+    }
+
+    public function getPrivilege()
+    {
+        return "update";
     }
 
     public function getTitle(Request $request)
@@ -30,7 +46,7 @@ class PageAdminUpdateServers extends PageAdmin
         return $this->lang->t("update_servers");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $newestAmxxVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
@@ -65,7 +81,7 @@ class PageAdminUpdateServers extends PageAdmin
 
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => "",
-            "title" => $this->title,
+            "title" => $this->getTitle($request),
         ]);
 
         return $this->template->render(

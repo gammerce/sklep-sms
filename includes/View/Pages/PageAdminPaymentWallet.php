@@ -39,10 +39,10 @@ class PageAdminPaymentWallet extends PageAdmin
         return $this->lang->t("payments_wallet");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $recordId = array_get($query, "record");
-        $search = array_get($query, "search");
+        $recordId = $request->query->get("record");
+        $search = $request->query->get("search");
 
         $queryParticle = new QueryParticle();
         $queryParticle->add("t.payment = 'wallet'");
@@ -97,10 +97,10 @@ class PageAdminPaymentWallet extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->enableSearch()
             ->setTable($table)
             ->toHtml();

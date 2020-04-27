@@ -11,11 +11,6 @@ abstract class Page
 {
     const PAGE_ID = "";
 
-    /**
-     * @deprecated
-     */
-    public $title;
-
     /** @var Template */
     protected $template;
 

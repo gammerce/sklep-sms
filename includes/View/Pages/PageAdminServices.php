@@ -7,6 +7,9 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\ServiceModule;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -20,16 +23,32 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "services";
-    protected $privilege = "view_services";
+
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->heart = $heart;
+    }
+
+    public function getPrivilege()
+    {
+        return "view_services";
+    }
 
     public function getTitle(Request $request)
     {
         return $this->lang->t("services");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $recordId = array_get($query, "record");
+        $recordId = $request->query->get("record");
 
         $bodyRows = collect($this->heart->getServices())
             ->filter(function (Service $service) use ($recordId) {
@@ -58,7 +77,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("order")))
             ->addBodyRows($bodyRows);
 
-        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_services")) {
             $button = (new Input())

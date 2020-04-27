@@ -18,7 +18,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "payment_platforms";
-    protected $privilege = "manage_settings";
 
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
@@ -36,12 +35,17 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $this->dataFieldService = $dataFieldService;
     }
 
+    public function getPrivilege()
+    {
+        return "manage_settings";
+    }
+
     public function getTitle(Request $request)
     {
         return $this->lang->t("payment_platforms");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $addButton = new Input();
         $addButton->setParam("id", "payment_platform_button_add");
@@ -74,10 +78,10 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addHeadCell(new HeadCell($this->lang->t("module")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->setTable($table)
             ->addButton($addButton);
     }

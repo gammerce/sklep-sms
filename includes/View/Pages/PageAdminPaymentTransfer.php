@@ -5,6 +5,8 @@ use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateCell;
@@ -25,10 +27,12 @@ class PageAdminPaymentTransfer extends PageAdmin
     private $transactionRepository;
 
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         PriceTextService $priceTextService,
         TransactionRepository $transactionRepository
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
@@ -39,10 +43,10 @@ class PageAdminPaymentTransfer extends PageAdmin
         return $this->lang->t("payments_transfer");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $recordId = array_get($query, "record");
-        $search = array_get($query, "search");
+        $recordId = $request->query->get("record");
+        $search = $request->query->get("search");
 
         $queryParticle = new QueryParticle();
         $queryParticle->add("( t.payment = 'transfer' )");
@@ -97,10 +101,10 @@ class PageAdminPaymentTransfer extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t('date')))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->enableSearch()
             ->setTable($table)
             ->toHtml();

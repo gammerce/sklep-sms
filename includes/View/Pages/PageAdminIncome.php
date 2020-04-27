@@ -3,6 +3,8 @@ namespace App\View\Pages;
 
 use App\Http\Services\IncomeService;
 use App\Models\Server;
+use App\Support\Template;
+use App\Translation\TranslationManager;
 use App\View\Html\HeadCell;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
@@ -10,8 +12,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = "income";
-
-    protected $privilege = "view_income";
 
     private $months = [
         "",
@@ -35,12 +35,21 @@ class PageAdminIncome extends PageAdmin
     /** @var WebsiteHeader */
     private $websiteHeader;
 
-    public function __construct(IncomeService $incomeService, WebsiteHeader $websiteHeader)
-    {
-        parent::__construct();
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        IncomeService $incomeService,
+        WebsiteHeader $websiteHeader
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->incomeService = $incomeService;
         $this->websiteHeader = $websiteHeader;
+    }
+
+    public function getPrivilege()
+    {
+        return "view_income";
     }
 
     public function getTitle(Request $request)
@@ -48,14 +57,14 @@ class PageAdminIncome extends PageAdmin
         return $this->lang->t("income");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $this->websiteHeader->addScript(
             "https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"
         );
 
-        $queryYear = array_get($query, "year", date("Y"));
-        $queryMonth = array_get($query, "month", date("m"));
+        $queryYear = $request->query->get("year", date("Y"));
+        $queryMonth = $request->query->get("month", date("m"));
 
         $incomeFromPeriod = $this->incomeService->get($queryYear, $queryMonth);
 
@@ -88,7 +97,7 @@ class PageAdminIncome extends PageAdmin
 
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => $buttons,
-            "title" => $this->title,
+            "title" => $this->getTitle($request),
         ]);
 
         return $this->template->render("admin/table_structure", [

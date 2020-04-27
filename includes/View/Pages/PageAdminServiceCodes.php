@@ -18,14 +18,18 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "service_codes";
-    protected $privilege = "view_service_codes";
+
+    public function getPrivilege()
+    {
+        return "view_service_codes";
+    }
 
     public function getTitle(Request $request)
     {
         return $this->lang->t("service_codes");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.id AS service_id, s.name AS service_name, srv.id AS server_id, srv.name AS server_name, sc.quantity, u.username, u.uid, sc.timestamp " .
@@ -73,9 +77,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("user")))
             ->addHeadCell(new HeadCell($this->lang->t("date_of_creation")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
-        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_service_codes")) {
             $button = (new Input())

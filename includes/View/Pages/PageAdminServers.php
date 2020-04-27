@@ -7,7 +7,9 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
-use App\Support\QueryParticle;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\BodyRow;
@@ -23,16 +25,27 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "servers";
-    protected $privilege = "manage_servers";
 
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    public function __construct(PaymentPlatformRepository $paymentPlatformRepository)
-    {
-        parent::__construct();
+    /** @var Heart */
+    private $heart;
 
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        PaymentPlatformRepository $paymentPlatformRepository,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->heart = $heart;
+    }
+
+    public function getPrivilege()
+    {
+        return "manage_servers";
     }
 
     public function getTitle(Request $request)
@@ -40,9 +53,9 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         return $this->lang->t("servers");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $recordId = as_int(array_get($query, "record"));
+        $recordId = as_int($request->query->get("record"));
 
         $bodyRows = collect($this->heart->getServers())
             ->filter(function (Server $server) use ($recordId) {
@@ -74,7 +87,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("last_active_at")))
             ->addBodyRows($bodyRows);
 
-        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_servers")) {
             $wrapper->addButton($this->createAddButton());

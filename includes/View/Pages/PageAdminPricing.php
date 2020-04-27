@@ -8,6 +8,11 @@ use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
+use App\Support\Database;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -22,7 +27,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "pricing";
-    protected $privilege = "manage_settings";
 
     /** @var PriceRepository */
     private $priceRepository;
@@ -33,16 +37,38 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     /** @var PriceTextService */
     private $priceTextService;
 
+    /** @var Heart */
+    private $heart;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Database */
+    private $db;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         PriceRepository $priceRepository,
         SmsPriceRepository $smsPriceRepository,
-        PriceTextService $priceTextService
+        PriceTextService $priceTextService,
+        Heart $heart,
+        CurrentPage $currentPage,
+        Database $db
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->priceRepository = $priceRepository;
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
+        $this->heart = $heart;
+        $this->currentPage = $currentPage;
+        $this->db = $db;
+    }
+
+    public function getPrivilege()
+    {
+        return "manage_settings";
     }
 
     public function getTitle(Request $request)
@@ -50,7 +76,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         return $this->lang->t("pricing");
     }
 
-    protected function content(array $query, array $body)
+    public function getContent(Request $request)
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
@@ -113,10 +139,10 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("transfer_price")))
             ->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->setTable($table)
             ->addButton($this->createAddButton())
             ->toHtml();
