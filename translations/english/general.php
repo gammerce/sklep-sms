@@ -96,6 +96,7 @@ return [
     'shop_sms' => 'SMS Shop',
     'sid' => 'SteamID',
     'sign_in' => 'Sign in',
+    'sign_up' => 'Sign up',
     'sms_return_code' => 'Return code',
     'sth_went_wrong' => 'Something went wrong',
     'surname' => 'Surname',

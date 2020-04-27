@@ -10,9 +10,10 @@
                 <td></td>
                 <td>{$loggedInfo}{$wallet}</td>
                 <td>
-                    <div id="language_choice">
+                    <div class="language_choice">
                         <img
                             id="language_polish"
+                            class="language-item"
                             src="{{ $url->to('build/images/polish.jpg') }}"
                             title="{$lang->t('language_polish')}"
                             alt="polish"
@@ -20,6 +21,7 @@
                         &nbsp;
                         <img
                             id="language_english"
+                            class="language-item"
                             src="{{ $url->to('build/images/english.jpg') }}"
                             title="{$lang->t('language_english')}"
                             alt="english"

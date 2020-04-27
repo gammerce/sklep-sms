@@ -51,13 +51,19 @@ body {
         ul.link-list {
             line-height: 40px;
             font-size: 1.1rem;
+
             a {
                 color: #98a9c3;
                 font-weight: 400;
                 transition: all 0.5s;
-            }
-            :hover {
-                color: $scheme-invert;
+
+                &:hover {
+                    color: $scheme-invert;
+                }
+
+                &.is-active {
+                    color: $scheme-invert;
+                }
             }
         }
     }

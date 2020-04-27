@@ -10,7 +10,7 @@ $(document).ready(function() {
         $(".content_td").append(atob(f));
     }
 
-    $("#language_" + language).addClass("current");
+    $("#language_" + language).addClass("is-active");
 });
 
 // Login
@@ -117,8 +117,8 @@ $(document).delegate("#loginarea_roll_button", "click", function() {
         );
 });
 
-// Choosing a language
-$(document).delegate("#language_choice img", "click", function() {
+// Choose a language
+$(document).delegate(".language-item", "click", function() {
     var langClicked = $(this)
         .attr("id")
         .replace("language_", "");
