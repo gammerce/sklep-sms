@@ -44,7 +44,7 @@ class ServerConfigController
         }
 
         if (!$this->isVersionAcceptable($platform, $version)) {
-            return new Response("", 402);
+            return new Response("", Response::HTTP_PAYMENT_REQUIRED);
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();

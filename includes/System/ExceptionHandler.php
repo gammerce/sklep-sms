@@ -27,6 +27,7 @@ use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
@@ -75,7 +76,7 @@ class ExceptionHandler implements ExceptionHandlerContract
     public function render(Request $request, Exception $e)
     {
         if ($e instanceof EntityNotFoundException) {
-            return $this->renderError(404, $e, $request);
+            return $this->renderError(Response::HTTP_NOT_FOUND, $e, $request);
         }
 
         if ($e instanceof UnauthorizedException) {
