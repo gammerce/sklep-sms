@@ -4,6 +4,7 @@ namespace App\View\Blocks;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Pages\PageAdmin;
+use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class BlockAdminContent extends Block
@@ -21,7 +22,12 @@ class BlockAdminContent extends Block
         return "content";
     }
 
-    protected function content(array $query, array $body, array $params)
+    public function getContentClass()
+    {
+        return "";
+    }
+
+    protected function content(Request $request, array $params)
     {
         if (!is_logged()) {
             return $this->lang->t('must_be_logged_in');
@@ -38,6 +44,6 @@ class BlockAdminContent extends Block
             return $this->lang->t("no_privileges");
         }
 
-        return $page->getContent($query, $body);
+        return $page->getContent($request);
     }
 }

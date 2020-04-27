@@ -42,9 +42,9 @@ class PagePayment extends Page
         return $this->lang->t("title_payment");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $transactionId = array_get($query, "tid");
+        $transactionId = $request->query->get("tid");
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
         if (!$purchase) {

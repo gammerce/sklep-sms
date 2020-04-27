@@ -13,7 +13,7 @@ class PageChangePassword extends Page implements IBeLoggedMust
         return $this->lang->t("change_password");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         return $this->template->render("change_password");
     }

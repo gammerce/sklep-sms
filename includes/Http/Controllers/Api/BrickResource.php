@@ -20,11 +20,7 @@ class BrickResource
 
             if ($block) {
                 $contentId = $block->getContentId();
-                $content = $block->getContent(
-                    $request->query->all(),
-                    $request->request->all(),
-                    array_slice($fragments, 1)
-                );
+                $content = $block->getContent($request, array_slice($fragments, 1));
                 $data[$contentId]['content'] = $content !== null ? strval($content) : null;
                 $data[$contentId]['class'] = $content ? $block->getContentClass() : "";
             }

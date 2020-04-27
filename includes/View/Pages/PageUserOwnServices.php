@@ -68,7 +68,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         return $this->lang->t('user_own_services');
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         $user = $this->auth->user();
 
@@ -159,7 +159,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $rowsCount,
             $this->currentPage->getPageNumber(),
             request()->getPathInfo(),
-            $query,
+            $request->query->all(),
             4
         );
         $paginationClass = $paginationContent ? "" : "display_none";

@@ -36,16 +36,13 @@ abstract class Page
      */
     abstract public function getTitle(Request $request);
 
-    // TODO Should accept request
     /**
      * Get page content
      *
-     * @param array $query
-     * @param array $body
-     *
+     * @param Request $request
      * @return I_ToHtml|string
      */
-    abstract public function getContent(array $query, array $body);
+    abstract public function getContent(Request $request);
 
     public function getPageId()
     {

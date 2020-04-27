@@ -63,7 +63,7 @@ class PagePurchase extends Page
 
     public function getTitle(Request $request)
     {
-        $serviceModule = $this->getServiceModule($request->query->all());
+        $serviceModule = $this->getServiceModule($request);
         $title = $this->lang->t("purchase");
 
         if ($serviceModule) {
@@ -73,9 +73,9 @@ class PagePurchase extends Page
         return $title;
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $serviceModule = $this->getServiceModule($query);
+        $serviceModule = $this->getServiceModule($request);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t("site_not_exists");
@@ -116,12 +116,12 @@ class PagePurchase extends Page
             "showMore" => $showMore,
         ]);
 
-        return $output . $serviceModule->purchaseFormGet($query);
+        return $output . $serviceModule->purchaseFormGet($request->query->all());
     }
 
-    private function getServiceModule(array $query)
+    private function getServiceModule(Request $request)
     {
-        $serviceId = array_get($query, "service");
+        $serviceId = $request->query->get("service");
         return $this->heart->getServiceModule($serviceId);
     }
 }

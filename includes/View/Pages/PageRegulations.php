@@ -12,7 +12,7 @@ class PageRegulations extends Page
         return $this->lang->t("regulations");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         return $this->template->render("regulations_desc");
     }

@@ -28,7 +28,7 @@ class PageProfile extends Page implements IBeLoggedMust
         return $this->lang->t('profile');
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         $user = $this->auth->user();
         $email = $user->getEmail();

@@ -2,6 +2,8 @@
 namespace App\View\Pages;
 
 use App\Repositories\UserRepository;
+use App\Support\Template;
+use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -12,9 +14,12 @@ class PageResetPassword extends Page implements IBeLoggedCannot
     /** @var UserRepository */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
-    {
-        parent::__construct();
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        UserRepository $userRepository
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->userRepository = $userRepository;
     }
@@ -24,9 +29,9 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         return $this->lang->t("reset_password");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
-        $resetKey = array_get($query, "code");
+        $resetKey = array_get($request->query->all(), "code");
 
         if (!strlen($resetKey)) {
             return $this->lang->t("no_reset_key");

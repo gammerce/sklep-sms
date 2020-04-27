@@ -7,6 +7,7 @@ use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
+use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class BlockContent extends Block
@@ -33,7 +34,7 @@ class BlockContent extends Block
         return "content";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         /** @var Page $page */
         $page = $params[0];
@@ -50,6 +51,6 @@ class BlockContent extends Block
             return $this->lang->t('must_be_logged_out');
         }
 
-        return $page->getContent($query, $body);
+        return $page->getContent($request);
     }
 }

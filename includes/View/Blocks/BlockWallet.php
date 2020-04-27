@@ -6,6 +6,7 @@ use App\Support\Template;
 use App\System\Auth;
 use App\View\Html\RawText;
 use App\View\Interfaces\IBeLoggedMust;
+use Symfony\Component\HttpFoundation\Request;
 
 class BlockWallet extends Block implements IBeLoggedMust
 {
@@ -35,22 +36,22 @@ class BlockWallet extends Block implements IBeLoggedMust
         return "wallet";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         $user = $this->auth->user();
         $amount = number_format($user->getWallet() / 100, 2);
 
-        return $this->template->render('wallet', compact('amount'));
+        return $this->template->render("wallet", compact("amount"));
     }
 
-    public function getContentEnveloped(array $query, array $body, array $params)
+    public function getContentEnveloped(Request $request, array $params)
     {
-        $content = $this->getContent($query, $body, $params);
+        $content = $this->getContent($request, $params);
 
         return create_dom_element("a", new RawText($content), [
-            'id' => $this->getContentId(),
-            'class' => $content !== null ? $this->getContentClass() : "",
-            'href' => $this->url->to("/page/payment_log"),
+            "id" => $this->getContentId(),
+            "class" => $content !== null ? $this->getContentClass() : "",
+            "href" => $this->url->to("/page/payment_log"),
         ]);
     }
 }

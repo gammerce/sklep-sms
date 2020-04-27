@@ -12,7 +12,7 @@ class PagePaymentSuccess extends Page
         return "Płatność Zaakceptowana";
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         return $this->template->render("payment/payment_success");
     }

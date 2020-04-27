@@ -12,7 +12,7 @@ class PageContact extends Page
         return $this->lang->t("contact");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         return $this->template->render("contact");
     }

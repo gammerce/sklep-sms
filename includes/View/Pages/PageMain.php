@@ -12,7 +12,7 @@ class PageMain extends Page
         return $this->lang->t("main_page");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         $navbar = $this->template->render("navbar");
         $footer = $this->template->render("footer");

@@ -53,7 +53,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         return $this->lang->t("antispam_questions");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_antispam_questions` LIMIT ?, ?"
@@ -77,7 +77,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             ->addHeadCell(new HeadCell($this->lang->t("question")))
             ->addHeadCell(new HeadCell($this->lang->t("answers")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle(request()))->setTable($table);
 

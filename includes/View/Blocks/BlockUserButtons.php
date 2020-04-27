@@ -8,6 +8,7 @@ use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use Symfony\Component\HttpFoundation\Request;
 
 class BlockUserButtons extends Block
 {
@@ -55,7 +56,7 @@ class BlockUserButtons extends Block
         return "user_buttons";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         if (!$this->auth->check()) {
             return $this->template->render("loginarea");

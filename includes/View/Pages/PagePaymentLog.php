@@ -66,7 +66,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         return $this->lang->t("payment_log");
     }
 
-    public function getContent(array $query, array $body)
+    public function getContent(Request $request)
     {
         $user = $this->auth->user();
 
@@ -113,7 +113,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $rowsCount,
             $this->currentPage->getPageNumber(),
             request()->getPathInfo(),
-            $query,
+            $request->query->all(),
             10
         );
         $paginationClass = $paginationContent ? "" : "display_none";

@@ -7,6 +7,7 @@ use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
+use Symfony\Component\HttpFoundation\Request;
 
 class BlockServicesButtons extends Block
 {
@@ -49,7 +50,7 @@ class BlockServicesButtons extends Block
         return "services_buttons";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         $user = $this->auth->user();
 
