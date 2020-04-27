@@ -1,15 +1,19 @@
 <?php
 namespace App\View\Pages;
 
-class PageRegulations extends PageSimple
+use Symfony\Component\HttpFoundation\Request;
+
+class PageRegulations extends Page
 {
-    const PAGE_ID = 'regulations';
-    protected $templateName = 'regulations_desc';
+    const PAGE_ID = "regulations";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return $this->lang->t("regulations");
+    }
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('regulations');
+    public function getContent(array $query, array $body)
+    {
+        return $this->template->render("regulations_desc");
     }
 }

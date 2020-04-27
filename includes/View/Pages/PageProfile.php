@@ -1,8 +1,11 @@
 <?php
 namespace App\View\Pages;
 
+use App\Support\Template;
 use App\System\Auth;
+use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageProfile extends Page implements IBeLoggedMust
 {
@@ -11,14 +14,21 @@ class PageProfile extends Page implements IBeLoggedMust
     /** @var Auth */
     private $auth;
 
-    public function __construct()
-    {
-        parent::__construct();
-        $this->heart->pageTitle = $this->title = $this->lang->t('profile');
-        $this->auth = $this->app->make(Auth::class);
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Auth $auth
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->auth = $auth;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t('profile');
+    }
+
+    public function getContent(array $query, array $body)
     {
         $user = $this->auth->user();
         $email = $user->getEmail();

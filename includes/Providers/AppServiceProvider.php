@@ -15,6 +15,7 @@ use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
+use App\View\WebsiteHeader;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -36,6 +37,7 @@ class AppServiceProvider
         $app->singleton(License::class);
         $app->singleton(TranslationManager::class);
         $app->singleton(ExternalConfigProvider::class);
+        $app->singleton(WebsiteHeader::class);
     }
 
     private function registerDatabase(Application $app)

@@ -5,6 +5,10 @@ use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class PagePayment extends Page
 {
@@ -16,18 +20,29 @@ class PagePayment extends Page
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Heart $heart,
         PurchaseDataService $purchaseDataService,
         PaymentMethodFactory $paymentMethodFactory
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("title_payment");
         $this->paymentMethodFactory = $paymentMethodFactory;
         $this->purchaseDataService = $purchaseDataService;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("title_payment");
+    }
+
+    public function getContent(array $query, array $body)
     {
         $transactionId = array_get($query, "tid");
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);

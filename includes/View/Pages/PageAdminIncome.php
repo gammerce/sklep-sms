@@ -4,6 +4,7 @@ namespace App\View\Pages;
 use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\View\Html\HeadCell;
+use App\View\WebsiteHeader;
 
 class PageAdminIncome extends PageAdmin
 {
@@ -30,17 +31,23 @@ class PageAdminIncome extends PageAdmin
     /** @var IncomeService */
     private $incomeService;
 
-    public function __construct(IncomeService $incomeService)
+    /** @var WebsiteHeader */
+    private $websiteHeader;
+
+    public function __construct(IncomeService $incomeService, WebsiteHeader $websiteHeader)
     {
         parent::__construct();
 
         $this->heart->pageTitle = $this->title = $this->lang->t("income");
         $this->incomeService = $incomeService;
+        $this->websiteHeader = $websiteHeader;
     }
 
     protected function content(array $query, array $body)
     {
-        $this->heart->addScript("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
+        $this->websiteHeader->addScript(
+            "https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"
+        );
 
         $queryYear = array_get($query, "year", date("Y"));
         $queryMonth = array_get($query, "month", date("m"));

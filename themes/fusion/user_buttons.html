@@ -1,0 +1,29 @@
+<div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link">
+        More
+    </a>
+
+    <div class="navbar-dropdown">
+        {$acpButton}
+        <a class="navbar-item" href="{{ $url->to('/page/profile') }}">
+            {{ __('profile') }}
+        </a>
+        {$chargeWalletButton}
+        <a class="navbar-item" href="{{ $url->to('/page/user_own_services') }}">
+            {{ __('my_services') }}
+        </a>
+        <a class="navbar-item" href="{{ $url->to('/page/user_own_services') }}">
+            {{ __('my_services') }}
+        </a>
+        <a class="navbar-item" href="{{ $url->to('/page/service_take_over') }}">
+            {{ __('take_over_service') }}
+        </a>
+        <a class="navbar-item" href="{{ $url->to('/page/change_password') }}">
+            {{ __('change_password') }}
+        </a>
+        <hr class="navbar-divider" />
+        <a id="logout" class="navbar-item">
+            {{ __('logout') }}
+        </a>
+    </div>
+</div>

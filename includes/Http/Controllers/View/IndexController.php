@@ -17,12 +17,14 @@ class IndexController
         ShopRenderer $shopRenderer,
         BlockRenderer $blockRenderer
     ) {
-        if (!$heart->pageExists($pageId, "user")) {
+        $page = $heart->getPage($pageId, "user");
+
+        if (!$page) {
             throw new EntityNotFoundException();
         }
 
-        $content = $blockRenderer->render("content", $request, [$pageId]);
-        $output = $shopRenderer->render($content, $pageId, $heart->pageTitle, $request);
+        $content = $blockRenderer->render("content", $request, [$page]);
+        $output = $shopRenderer->render($content, $page, $request);
 
         return new Response($output);
     }

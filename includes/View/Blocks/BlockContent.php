@@ -6,6 +6,8 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
+use App\View\Pages\Page;
+use UnexpectedValueException;
 
 class BlockContent extends Block
 {
@@ -33,11 +35,11 @@ class BlockContent extends Block
 
     protected function content(array $query, array $body, array $params)
     {
-        $pageId = $params[0];
-        $page = $this->heart->getPage($pageId);
+        /** @var Page $page */
+        $page = $params[0];
 
         if (!$page) {
-            return null;
+            throw new UnexpectedValueException("No page provided");
         }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {

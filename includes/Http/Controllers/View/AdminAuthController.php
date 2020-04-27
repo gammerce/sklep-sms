@@ -4,8 +4,8 @@ namespace App\Http\Controllers\View;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +16,8 @@ class AdminAuthController
 
     public function get(
         Request $request,
-        Heart $heart,
         Template $template,
+        WebsiteHeader $websiteHeader,
         TranslationManager $translationManager,
         UrlGenerator $url
     ) {
@@ -36,8 +36,8 @@ class AdminAuthController
         $header = $template->render("admin/header", [
             "currentPageId" => "login",
             "pageTitle" => "Login",
-            "scripts" => $heart->getScripts(),
-            "styles" => $heart->getStyles(),
+            "scripts" => $websiteHeader->getScripts(),
+            "styles" => $websiteHeader->getStyles(),
         ]);
 
         $action = $url->to("/admin/login", $request->query->all());

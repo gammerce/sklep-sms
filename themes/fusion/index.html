@@ -4,98 +4,63 @@
         {$header}
     </head>
     <body>
-        <nav
-            class="navbar"
-            role="navigation"
-            aria-label="main navigation"
-            style="background-color: #efefef"
-        >
-            <div class="navbar-brand" style="justify-content: space-between">
-                <a class="navbar-item" href="https://bulma.io">
-                    <img
-                        src="https://sklep-sms.pl/images/logo_simple.svg"
-                        alt="{$lang->t('shop_sms')}"
-                        width="112"
-                        height="28"
-                    />
-                </a>
+        {$navbar}
 
-                <a class="navbar-item">
-                    <span class="icon" style="margin-right: 2px">
-                        <i class="fas fa-user"></i>
-                    </span>
-                    88.07 PLN
-                </a>
+        <main class="site-content">
+            <div class="container is-fullheight">
+                <div class="columns is-multiline is-vcentered is-gapless is-fullheight">
+                    <div class="column">
+                        <div class="section has-text-centered">
+                            <h1 class="title">Witaj w Sklepie SMS!</h1>
+                            <h2 class="subtitle">Życzymy udanych zakupów!</h2>
 
-                <a role="button" class="navbar-burger" style="margin-left: 0">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
+                            <p class="content">
+                                Przed zakupem licencji <a href="#">zarejestruj się</a>!<br />
+                                Uzyskasz w ten sposób dostęp do zarządzania nią.<br />
+                                <br />
+                                Po zakupie licencji postępuj zgodnie z
+                                <a href="#">instrukcją instalacji</a>. Umożliwi Ci ona bezproblemową
+                                instalację sklepu na swojej stronie WWW jak i serwerze gry.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="section has-text-centered">
+                            <h1 class="title is-4" style="margin-bottom: 2rem;">Dostępne usługi</h1>
+
+                            <div class="card product-card">
+                                <div class="card-content">
+                                    <strong>
+                                        Licencja Sklep SMS
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="card product-card">
+                                <div class="card-content">
+                                    <strong>
+                                        Przedłużenie Licencji
+                                    </strong>
+                                </div>
+                            </div>
+
+                            <div class="card product-card">
+                                <div class="card-content">
+                                    <strong>
+                                        [COD 400] Shooter + Assasin
+                                    </strong>
+                                </div>
+                            </div>
+                            <br />
+
+                            <a href="#">Pokaż więcej...</a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </nav>
+        </main>
 
-        <section class="section has-text-centered">
-            <h1 class="title is-4">Witaj w Sklepie SMS!</h1>
-            <h2 class="subtitle is-5">Mam nadzieję, że wydasz pieniądze</h2>
-        </section>
-
-        <div class="columns">
-            <section class="column section" style="background: #4c4c4c; color: white">
-                <p class="content has-text-centered" style="font-size: 1.1rem">
-                    Przed zakupem licencji <a href="#">zarejestruj się</a>!<br />
-                    Uzyskasz w ten sposób dostęp do zarządzania nią.<br />
-                    <br />
-                    Po zakupie licencji postępuj zgodnie z <a href="#">instrukcją instalacji</a>.
-                    Umożliwi Ci ona bezproblemową instalację sklepu na swojej stronie WWW jak i
-                    serwerze gry.
-                </p>
-            </section>
-
-            <section class="column section has-text-centered" style="background-color: #efefef">
-                <h1 class="title is-4" style="margin-bottom: 3rem;">Dostępne usługi</h1>
-
-                <div class="card">
-                    <div class="card-content">
-                        <strong>
-                            Licencja Sklep SMS
-                        </strong>
-                    </div>
-                </div>
-                <br />
-
-                <div class="card">
-                    <div class="card-content">
-                        <strong>
-                            Przedłużenie Licencji
-                        </strong>
-                    </div>
-                </div>
-                <br />
-
-                <div class="card">
-                    <div class="card-content">
-                        <strong>
-                            [COD 400] Shooter + Assasin
-                        </strong>
-                    </div>
-                </div>
-                <br />
-
-                <a href="#">Pokaż więcej usług...</a>
-            </section>
-        </div>
-
-        <footer class="footer" style="background-color: #344258">
-            <div class="content has-text-centered">
-                <p>
-                    <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The
-                    source code is licensed
-                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website
-                    content is licensed
-                    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-                </p>
-            </div>
-        </footer>
+        {$footer}
     </body>
 </html>

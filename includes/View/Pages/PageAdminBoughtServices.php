@@ -31,7 +31,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->transactionRepository = $transactionRepository;
     }
 
-    protected function content(array $query, array $body)
+    public function content(array $query, array $body)
     {
         $search = array_get($query, "search");
 

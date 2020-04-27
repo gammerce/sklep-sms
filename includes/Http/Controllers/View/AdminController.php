@@ -4,6 +4,8 @@ namespace App\Http\Controllers\View;
 use App\Exceptions\EntityNotFoundException;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\Support\FileSystem;
+use App\Support\Path;
 use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
@@ -11,6 +13,7 @@ use App\System\Heart;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\Renders\BlockRenderer;
+use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,14 +29,29 @@ class AdminController
         Template $template,
         TranslationManager $translationManager,
         BlockRenderer $blockRenderer,
-        UrlGenerator $url
+        UrlGenerator $url,
+        WebsiteHeader $websiteHeader,
+        FileSystem $fileSystem,
+        Path $path
     ) {
-        if (!$heart->pageExists($pageId, "admin")) {
+        $page = $heart->getPage($pageId, "admin");
+
+        if (!$page) {
             throw new EntityNotFoundException();
         }
 
         $user = $auth->user();
         $lang = $translationManager->user();
+
+        // Add page scripts
+        $scriptPath = "build/js/admin/pages/{$page->getPageId()}/";
+        if ($fileSystem->exists($path->to($scriptPath))) {
+            foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
+                if (ends_at($file, ".js")) {
+                    $websiteHeader->addScript($url->versioned($scriptPath . $file));
+                }
+            }
+        }
 
         $content = $blockRenderer->render("admincontent", $request, [$pageId]);
 
@@ -126,8 +144,8 @@ class AdminController
         $header = $template->render("admin/header", [
             "currentPageId" => $pageId,
             "pageTitle" => $heart->pageTitle,
-            "scripts" => $heart->getScripts(),
-            "styles" => $heart->getStyles(),
+            "scripts" => $websiteHeader->getScripts(),
+            "styles" => $websiteHeader->getStyles(),
         ]);
         $currentVersion = $app->version();
         $logoutAction = $url->to("/admin/login");

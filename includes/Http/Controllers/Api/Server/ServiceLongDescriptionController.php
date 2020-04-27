@@ -7,6 +7,7 @@ use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
+use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
@@ -16,6 +17,7 @@ class ServiceLongDescriptionController
         Request $request,
         Template $template,
         Heart $heart,
+        WebsiteHeader $websiteHeader,
         TranslationManager $translationManager,
         UrlGenerator $url
     ) {
@@ -48,8 +50,8 @@ class ServiceLongDescriptionController
             "currentPageId" => "service_long_description",
             "footer" => "",
             "pageTitle" => $pageTitle,
-            "scripts" => $heart->getScripts(),
-            "styles" => $heart->getStyles(),
+            "scripts" => $websiteHeader->getScripts(),
+            "styles" => $websiteHeader->getStyles(),
         ]);
 
         $output = $template->render("service_long_description", compact("header", "body"));

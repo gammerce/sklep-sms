@@ -1,15 +1,19 @@
 <?php
 namespace App\View\Pages;
 
-class PageContact extends PageSimple
+use Symfony\Component\HttpFoundation\Request;
+
+class PageContact extends Page
 {
-    const PAGE_ID = 'contact';
-    protected $templateName = 'contact';
+    const PAGE_ID = "contact";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return $this->lang->t("contact");
+    }
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('contact');
+    public function getContent(array $query, array $body)
+    {
+        return $this->template->render("contact");
     }
 }

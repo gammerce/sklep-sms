@@ -5,15 +5,19 @@
  */
 namespace App\View\Pages;
 
-class PageTPaySuccess extends PageSimple
+use Symfony\Component\HttpFoundation\Request;
+
+class PageTPaySuccess extends Page
 {
-    const PAGE_ID = 'tpay_success';
-    protected $templateName = 'payment/tpay_success';
+    const PAGE_ID = "tpay_success";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return "Płatność Zaakceptowana";
+    }
 
-        $this->heart->pageTitle = $this->title = 'Płatność Zaakceptowana';
+    public function getContent(array $query, array $body)
+    {
+        return $this->template->render("payment/tpay_success");
     }
 }
