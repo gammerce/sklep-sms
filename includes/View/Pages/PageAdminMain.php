@@ -9,6 +9,7 @@ use App\Services\PriceTextService;
 use App\Support\Version;
 use App\System\License;
 use App\View\Html\RawText;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminMain extends PageAdmin
 {
@@ -43,13 +44,17 @@ class PageAdminMain extends PageAdmin
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("main_page");
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
         $this->incomeService = $incomeService;
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("main_page");
     }
 
     protected function content(array $query, array $body)

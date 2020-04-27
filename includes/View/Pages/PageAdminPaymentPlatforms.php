@@ -13,6 +13,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
@@ -33,7 +34,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
-        $this->heart->pageTitle = $this->title = $this->lang->t("payment_platforms");
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("payment_platforms");
     }
 
     protected function content(array $query, array $body)

@@ -17,6 +17,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 {
@@ -39,10 +40,14 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("pricing");
         $this->priceRepository = $priceRepository;
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("pricing");
     }
 
     protected function content(array $query, array $body)

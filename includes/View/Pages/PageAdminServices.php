@@ -15,17 +15,16 @@ use App\View\Html\RawText;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "services";
     protected $privilege = "view_services";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
-
-        $this->heart->pageTitle = $this->title = $this->lang->t("services");
+        return $this->lang->t("services");
     }
 
     protected function content(array $query, array $body)

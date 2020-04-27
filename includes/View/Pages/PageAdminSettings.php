@@ -10,6 +10,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\Option;
 use App\View\Html\Select;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSettings extends PageAdmin
 {
@@ -28,9 +29,13 @@ class PageAdminSettings extends PageAdmin
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("settings");
         $this->settings = $settings;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("settings");
     }
 
     protected function content(array $query, array $body)

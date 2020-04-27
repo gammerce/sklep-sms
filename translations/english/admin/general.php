@@ -156,7 +156,7 @@ return [
     'no_language' => 'Given language does not exist',
     'no_service_chosen' => 'No service chosen.',
     'no_sms_platform' => 'No SMS payment platform with such an ID.',
-    'no_subpage' => 'There is no subpage with ID: {1}',
+    'no_subpage' => 'There is no such subpage.',
     'no_such_group' => 'Group with such ID does not exist.',
     'no_such_service' => 'Such service does not exist.',
     'no_theme' => 'Given theme does not exist',

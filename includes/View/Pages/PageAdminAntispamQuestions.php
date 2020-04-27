@@ -79,7 +79,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
-        $wrapper = (new Wrapper())->setTitle($this->getTitle(request()))->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_antispam_questions")) {
             $button = (new Input())

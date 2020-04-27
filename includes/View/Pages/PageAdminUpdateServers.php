@@ -4,6 +4,7 @@ namespace App\View\Pages;
 use App\Models\Server;
 use App\Requesting\Requester;
 use App\Support\Version;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUpdateServers extends PageAdmin
 {
@@ -21,8 +22,12 @@ class PageAdminUpdateServers extends PageAdmin
         parent::__construct();
 
         $this->requester = $requester;
-        $this->heart->pageTitle = $this->title = $this->lang->t("update_servers");
         $this->version = $version;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("update_servers");
     }
 
     protected function content(array $query, array $body)

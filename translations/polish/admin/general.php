@@ -158,7 +158,7 @@ return [
     'no_language' => 'Podany język nie istnieje',
     'no_service_chosen' => 'Nie wybrano usługi.',
     'no_sms_platform' => 'Brak platformy płatności SMS o takim ID.',
-    'no_subpage' => 'Brak podstrony o ID: {1}',
+    'no_subpage' => 'Brak takiej podstrony.',
     'no_such_group' => 'Nie istnieje grupa o takim ID.',
     'no_such_service' => 'Taka usługa nie istnieje.',
     'no_theme' => 'Podany motyw nie istnieje',

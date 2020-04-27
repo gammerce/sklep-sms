@@ -5,6 +5,7 @@ use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\View\Html\HeadCell;
 use App\View\WebsiteHeader;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminIncome extends PageAdmin
 {
@@ -38,9 +39,13 @@ class PageAdminIncome extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("income");
         $this->incomeService = $incomeService;
         $this->websiteHeader = $websiteHeader;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("income");
     }
 
     protected function content(array $query, array $body)

@@ -711,11 +711,3 @@ function url($path, array $query = [])
     $url = app()->make(UrlGenerator::class);
     return $url->to($path, $query);
 }
-
-/**
- * @return Request
- */
-function request()
-{
-    return app(Request::class);
-}

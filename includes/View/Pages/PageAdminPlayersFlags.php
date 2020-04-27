@@ -8,17 +8,16 @@ use App\View\Html\HeadCell;
 use App\View\Html\ServerRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = 'players_flags';
     protected $privilege = 'view_player_flags';
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
-
-        $this->heart->pageTitle = $this->title = $this->lang->t('players_flags');
+        return $this->lang->t("players_flags");
     }
 
     protected function content(array $query, array $body)

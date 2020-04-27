@@ -18,6 +18,7 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
@@ -31,8 +32,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("servers");
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("servers");
     }
 
     protected function content(array $query, array $body)

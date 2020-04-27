@@ -11,6 +11,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentServiceCode extends PageAdmin
 {
@@ -23,8 +24,12 @@ class PageAdminPaymentServiceCode extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("payments_service_code");
         $this->transactionRepository = $transactionRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("payments_service_code");
     }
 
     protected function content(array $query, array $body)

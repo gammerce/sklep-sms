@@ -12,6 +12,7 @@ use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentAdmin extends PageAdmin
 {
@@ -24,8 +25,12 @@ class PageAdminPaymentAdmin extends PageAdmin
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("payments_admin");
         $this->transactionRepository = $transactionRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("payments_admin");
     }
 
     protected function content(array $query, array $body)

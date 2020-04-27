@@ -158,7 +158,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $paginationContent = $this->paginationService->createPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
-            request()->getPathInfo(),
+            $request->getPathInfo(),
             $request->query->all(),
             4
         );

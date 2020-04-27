@@ -143,7 +143,7 @@ class AdminController
 
         $header = $template->render("admin/header", [
             "currentPageId" => $pageId,
-            "pageTitle" => $heart->pageTitle,
+            "pageTitle" => $page->getTitle($request),
             "scripts" => $websiteHeader->getScripts(),
             "styles" => $websiteHeader->getStyles(),
         ]);

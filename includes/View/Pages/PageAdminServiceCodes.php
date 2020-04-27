@@ -13,17 +13,16 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "service_codes";
     protected $privilege = "view_service_codes";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
-
-        $this->heart->pageTitle = $this->title = $this->lang->t("service_codes");
+        return $this->lang->t("service_codes");
     }
 
     protected function content(array $query, array $body)

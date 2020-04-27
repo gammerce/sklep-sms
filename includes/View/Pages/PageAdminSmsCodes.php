@@ -13,6 +13,7 @@ use App\View\Html\Input;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
@@ -35,10 +36,14 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     ) {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('sms_codes');
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
         $this->smsCodeRepository = $smsCodeRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("sms_codes");
     }
 
     protected function content(array $query, array $body)

@@ -10,6 +10,7 @@ use App\View\Html\Input;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
@@ -23,8 +24,12 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     {
         parent::__construct();
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('groups');
         $this->groupRepository = $groupRepository;
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("groups");
     }
 
     protected function content(array $query, array $body)
