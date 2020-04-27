@@ -3,8 +3,10 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Repositories\GroupRepository;
+use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -21,13 +23,23 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     /** @var GroupRepository */
     private $groupRepository;
 
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        GroupRepository $groupRepository
+        GroupRepository $groupRepository,
+        Database $db,
+        CurrentPage $currentPage
     ) {
         parent::__construct($template, $translationManager);
         $this->groupRepository = $groupRepository;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
     }
 
     public function getPrivilege()

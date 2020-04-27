@@ -4,6 +4,7 @@ namespace App\View\Pages;
 use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\Support\Template;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\HeadCell;
 use App\View\WebsiteHeader;
@@ -35,16 +36,21 @@ class PageAdminIncome extends PageAdmin
     /** @var WebsiteHeader */
     private $websiteHeader;
 
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         IncomeService $incomeService,
-        WebsiteHeader $websiteHeader
+        WebsiteHeader $websiteHeader,
+        Heart $heart
     ) {
         parent::__construct($template, $translationManager);
 
         $this->incomeService = $incomeService;
         $this->websiteHeader = $websiteHeader;
+        $this->heart = $heart;
     }
 
     public function getPrivilege()

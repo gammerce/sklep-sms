@@ -3,7 +3,11 @@ namespace App\View\Pages;
 
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateCell;
@@ -20,11 +24,24 @@ class PageAdminPaymentServiceCode extends PageAdmin
     /** @var TransactionRepository */
     private $transactionRepository;
 
-    public function __construct(TransactionRepository $transactionRepository)
-    {
-        parent::__construct();
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        TransactionRepository $transactionRepository,
+        Database $db,
+        CurrentPage $currentPage
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
     }
 
     public function getTitle(Request $request)

@@ -4,7 +4,11 @@ namespace App\View\Pages;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateCell;
@@ -24,14 +28,26 @@ class PageAdminPaymentWallet extends PageAdmin
     /** @var TransactionRepository */
     private $transactionRepository;
 
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         PriceTextService $priceTextService,
-        TransactionRepository $transactionRepository
+        TransactionRepository $transactionRepository,
+        Database $db,
+        CurrentPage $currentPage
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
     }
 
     public function getTitle(Request $request)

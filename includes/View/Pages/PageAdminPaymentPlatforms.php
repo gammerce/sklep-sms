@@ -5,6 +5,11 @@ use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
+use App\Support\Database;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -25,14 +30,31 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var DataFieldService */
     private $dataFieldService;
 
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
-        DataFieldService $dataFieldService
+        DataFieldService $dataFieldService,
+        Database $db,
+        CurrentPage $currentPage,
+        Heart $heart
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
     }
 
     public function getPrivilege()

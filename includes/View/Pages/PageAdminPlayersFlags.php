@@ -2,6 +2,11 @@
 namespace App\View\Pages;
 
 use App\ServiceModules\ExtraFlags\PlayerFlag;
+use App\Support\Database;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -13,6 +18,28 @@ use Symfony\Component\HttpFoundation\Request;
 class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = "players_flags";
+
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Database $db,
+        CurrentPage $currentPage,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
+    }
 
     public function getPrivilege()
     {
