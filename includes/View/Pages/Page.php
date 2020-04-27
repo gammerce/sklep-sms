@@ -79,15 +79,6 @@ abstract class Page
             }
         }
 
-        $path = "build/css/shop/pages/{$this->getPageId()}/";
-        if ($this->fileSystem->exists($this->path->to($path))) {
-            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
-                if (ends_at($file, ".css")) {
-                    $this->heart->addStyle($this->url->versioned($path . $file));
-                }
-            }
-        }
-
         return $this->content($query, $body);
     }
 

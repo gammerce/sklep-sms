@@ -53,19 +53,6 @@ class PagePurchase extends Page
             }
         }
 
-        if (strlen($this->getPageId())) {
-            $path = "build/css/shop/pages/{$this->getPageId()}/";
-            $pathFile = $path . "main.css";
-            if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->addStyle($this->url->versioned($pathFile));
-            }
-
-            $pathFile = $path . $serviceModule->getModuleId() . ".css";
-            if ($this->fileSystem->exists($this->path->to($pathFile))) {
-                $this->heart->addStyle($this->url->versioned($pathFile));
-            }
-        }
-
         $this->heart->pageTitle .= " - " . $serviceModule->service->getName();
 
         if ($serviceModule instanceof IBeLoggedMust && !$this->auth->check()) {

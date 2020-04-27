@@ -1,104 +1,111 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <title>@yield('title') - Sklep SMS</title>
+<html lang="{{ $lang->getCurrentLanguageShort() }}">
+    <head>
+        {$header}
+    </head>
+    <body>
+        <style>
+            .card {
+                border-radius: 30px;
+                margin: 0 auto;
+                text-align: center;
+                margin-bottom: 1rem;
+                display: inline-block;
+            }
+        </style>
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <nav
+            class="navbar"
+            role="navigation"
+            aria-label="main navigation"
+            style="background-color: #efefef"
+        >
+            <div class="navbar-brand" style="justify-content: space-between">
+                <a class="navbar-item" href="https://bulma.io">
+                    <img
+                        src="/images/logo_simple.svg"
+                        alt="Bulma: Free, open source, and modern CSS framework based on Flexbox"
+                        width="112"
+                        height="28"
+                    />
+                </a>
 
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.8.2/css/bulma.css">
+                <a class="navbar-item">
+                    <span class="icon" style="margin-right: 2px">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    88.07 PLN
+                </a>
 
-  <style>
-    .card {
-      border-radius: 30px;
-      margin: 0 auto;
-      text-align: center;
-      margin-bottom: 1rem;
-      display: inline-block;
-    }
-  </style>
-</head>
-<body>
-<nav class="navbar" role="navigation" aria-label="main navigation" style="background-color: #efefef">
-  <div class="navbar-brand" style="justify-content: space-between">
-    <a class="navbar-item" href="https://bulma.io">
-      <img src="/images/logo_simple.svg" alt="Bulma: Free, open source, and modern CSS framework based on Flexbox" width="112" height="28">
-    </a>
+                <a role="button" class="navbar-burger" style="margin-left: 0">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+        </nav>
 
-    <a class="navbar-item">
-      <span class="icon" style="margin-right: 2px">
-        <i class="fas fa-user"></i>
-      </span>
-      88.07 PLN
-    </a>
+        <section class="section has-text-centered">
+            <h1 class="title is-4">Witaj w Sklepie SMS!</h1>
+            <h2 class="subtitle is-5">Mam nadzieję, że wydasz pieniądze</h2>
+        </section>
 
-    <a role="button" class="navbar-burger" style="margin-left: 0">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-</nav>
+        <div class="columns">
+            <section class="column section" style="background: #4c4c4c; color: white">
+                <p class="content has-text-centered" style="font-size: 1.1rem">
+                    Przed zakupem licencji <a href="#">zarejestruj się</a>!<br />
+                    Uzyskasz w ten sposób dostęp do zarządzania nią.<br />
+                    <br />
+                    Po zakupie licencji postępuj zgodnie z <a href="#">instrukcją instalacji</a>.
+                    Umożliwi Ci ona bezproblemową instalację sklepu na swojej stronie WWW jak i
+                    serwerze gry.
+                </p>
+            </section>
 
-<section class="section has-text-centered">
-  <h1 class="title is-4">Witaj w Sklepie SMS!</h1>
-  <h2 class="subtitle is-5">Mam nadzieję, że wydasz pieniądze</h2>
-</section>
+            <section class="column section has-text-centered" style="background-color: #efefef">
+                <h1 class="title is-4" style="margin-bottom: 3rem;">Dostępne usługi</h1>
 
-<div class="columns">
-  <section class="column section" style="background: #4c4c4c; color: white">
-    <p class="content has-text-centered" style="font-size: 1.1rem">
-      Przed zakupem licencji <a href="#">zarejestruj się</a>!<br/>
-      Uzyskasz w ten sposób dostęp do zarządzania nią.<br />
-      <br/>
-      Po zakupie licencji postępuj zgodnie z <a href="#">instrukcją instalacji</a>. Umożliwi Ci ona bezproblemową instalację sklepu na swojej stronie WWW jak i serwerze gry.
-    </p>
-  </section>
+                <div class="card">
+                    <div class="card-content">
+                        <strong>
+                            Licencja Sklep SMS
+                        </strong>
+                    </div>
+                </div>
+                <br />
 
-  <section class="column section has-text-centered" style="background-color: #efefef">
-    <h1 class="title is-4" style="margin-bottom: 3rem;">Dostępne usługi</h1>
+                <div class="card">
+                    <div class="card-content">
+                        <strong>
+                            Przedłużenie Licencji
+                        </strong>
+                    </div>
+                </div>
+                <br />
 
-    <div class="card">
-      <div class="card-content">
-        <strong>
-          Licencja Sklep SMS
-        </strong>
-      </div>
-    </div>
-    <br/>
+                <div class="card">
+                    <div class="card-content">
+                        <strong>
+                            [COD 400] Shooter + Assasin
+                        </strong>
+                    </div>
+                </div>
+                <br />
 
-    <div class="card">
-      <div class="card-content">
-        <strong>
-          Przedłużenie Licencji
-        </strong>
-      </div>
-    </div>
-    <br/>
+                <a href="#">Pokaż więcej usług...</a>
+            </section>
+        </div>
 
-    <div class="card">
-      <div class="card-content">
-        <strong>
-          [COD 400] Shooter + Assasin
-        </strong>
-      </div>
-    </div>
-    <br/>
-
-    <a href="#">Pokaż więcej usług...</a>
-  </section>
-</div>
-
-<footer class="footer" style="background-color: #344258">
-  <div class="content has-text-centered">
-    <p>
-      <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The source code is licensed
-      <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website content
-      is licensed <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
-    </p>
-  </div>
-</footer>
-</body>
+        <footer class="footer" style="background-color: #344258">
+            <div class="content has-text-centered">
+                <p>
+                    <strong>Bulma</strong> by <a href="https://jgthms.com">Jeremy Thomas</a>. The
+                    source code is licensed
+                    <a href="http://opensource.org/licenses/mit-license.php">MIT</a>. The website
+                    content is licensed
+                    <a href="http://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY NC SA 4.0</a>.
+                </p>
+            </div>
+        </footer>
+    </body>
 </html>
