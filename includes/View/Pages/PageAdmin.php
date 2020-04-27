@@ -12,6 +12,6 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
 
     public function getPagePath()
     {
-        return "/admin/{$this->getPageId()}";
+        return "/admin/{$this->getId()}";
     }
 }

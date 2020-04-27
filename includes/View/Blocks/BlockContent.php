@@ -36,8 +36,11 @@ class BlockContent extends Block
 
     protected function content(Request $request, array $params)
     {
-        /** @var Page $page */
         $page = $params[0];
+
+        if (!($page instanceof Page)) {
+            $page = $this->heart->getPage($page);
+        }
 
         if (!$page) {
             throw new UnexpectedValueException("No page provided");

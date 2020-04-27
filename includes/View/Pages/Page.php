@@ -39,13 +39,13 @@ abstract class Page
      */
     abstract public function getContent(Request $request);
 
-    public function getPageId()
+    public function getId()
     {
         return $this::PAGE_ID;
     }
 
     public function getPagePath()
     {
-        return "/page/{$this->getPageId()}";
+        return "/page/{$this->getId()}";
     }
 }

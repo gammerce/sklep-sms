@@ -81,7 +81,7 @@ class PagePurchase extends Page
             return $this->lang->t("site_not_exists");
         }
 
-        $path = "build/js/shop/pages/{$this->getPageId()}/";
+        $path = "build/js/shop/pages/{$this->getId()}/";
         $pathFile = $path . "main.js";
         if ($this->fileSystem->exists($this->path->to($pathFile))) {
             $this->websiteHeader->addScript($this->url->versioned($pathFile));

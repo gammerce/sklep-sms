@@ -18,10 +18,10 @@ class WebsiteHeader
     private $url;
 
     /** @var string[] */
-    private $scripts;
+    private $scripts = [];
 
     /** @var string[] */
-    private $styles;
+    private $styles = [];
 
     public function __construct(Path $path, FileSystem $fileSystem, UrlGenerator $url)
     {
@@ -32,7 +32,7 @@ class WebsiteHeader
 
     public function addPageScripts(Page $page)
     {
-        $path = "build/js/shop/pages/{$page->getPageId()}/";
+        $path = "build/js/shop/pages/{$page->getId()}/";
         if ($this->fileSystem->exists($this->path->to($path))) {
             foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
                 if (ends_at($file, ".js")) {

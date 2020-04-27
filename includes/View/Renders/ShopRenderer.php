@@ -5,7 +5,6 @@ use App\Support\Template;
 use App\System\Heart;
 use App\System\License;
 use App\System\Settings;
-use App\View\Pages\Page;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,9 +12,6 @@ class ShopRenderer
 {
     /** @var Template */
     private $template;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var License */
     private $license;
@@ -31,26 +27,24 @@ class ShopRenderer
 
     public function __construct(
         Template $template,
-        Heart $heart,
         License $license,
         BlockRenderer $blockRenderer,
         Settings $settings,
         WebsiteHeader $websiteHeader
     ) {
         $this->template = $template;
-        $this->heart = $heart;
         $this->license = $license;
         $this->blockRenderer = $blockRenderer;
         $this->settings = $settings;
         $this->websiteHeader = $websiteHeader;
     }
 
-    public function render($content, Page $page, Request $request)
+    public function render($content, $pageId, $pageTitle, Request $request)
     {
         $header = $this->template->render("header", [
-            "currentPageId" => $page->getPageId(),
+            "currentPageId" => $pageId,
             "footer" => $this->license->getFooter(),
-            "pageTitle" => $page->getTitle($request),
+            "pageTitle" => $pageTitle,
             "scripts" => $this->websiteHeader->getScripts(),
             "styles" => $this->websiteHeader->getStyles(),
         ]);

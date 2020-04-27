@@ -44,7 +44,7 @@ class AdminController
         $lang = $translationManager->user();
 
         // Add page scripts
-        $scriptPath = "build/js/admin/pages/{$page->getPageId()}/";
+        $scriptPath = "build/js/admin/pages/{$page->getId()}/";
         if ($fileSystem->exists($path->to($scriptPath))) {
             foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
                 if (ends_at($file, ".js")) {
@@ -53,7 +53,7 @@ class AdminController
             }
         }
 
-        $content = $blockRenderer->render("admincontent", $request, [$pageId]);
+        $content = $blockRenderer->render("admincontent", $request, [$page]);
 
         if (has_privileges("view_player_flags")) {
             $pid = "players_flags";
@@ -142,7 +142,7 @@ class AdminController
         }
 
         $header = $template->render("admin/header", [
-            "currentPageId" => $pageId,
+            "currentPageId" => $page->getId(),
             "pageTitle" => $page->getTitle($request),
             "scripts" => $websiteHeader->getScripts(),
             "styles" => $websiteHeader->getStyles(),

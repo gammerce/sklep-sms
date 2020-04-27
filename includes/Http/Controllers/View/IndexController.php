@@ -24,7 +24,12 @@ class IndexController
         }
 
         $content = $blockRenderer->render("content", $request, [$page]);
-        $output = $shopRenderer->render($content, $page, $request);
+        $output = $shopRenderer->render(
+            $content,
+            $page->getId(),
+            $page->getTitle($request),
+            $request
+        );
 
         return new Response($output);
     }

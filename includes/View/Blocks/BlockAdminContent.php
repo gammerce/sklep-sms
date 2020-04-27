@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Blocks;
 
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Pages\PageAdmin;
@@ -9,11 +10,15 @@ use UnexpectedValueException;
 
 class BlockAdminContent extends Block
 {
+    /** @var Heart */
+    private $heart;
+
     /** @var Translator */
     private $lang;
 
-    public function __construct(TranslationManager $translationManager)
+    public function __construct(Heart $heart, TranslationManager $translationManager)
     {
+        $this->heart = $heart;
         $this->lang = $translationManager->user();
     }
 
@@ -33,8 +38,11 @@ class BlockAdminContent extends Block
             return $this->lang->t('must_be_logged_in');
         }
 
-        /** @var PageAdmin $page */
         $page = $params[0];
+
+        if (!($page instanceof PageAdmin)) {
+            $page = $this->heart->getPage($page);
+        }
 
         if (!$page) {
             throw new UnexpectedValueException("No page provided");
