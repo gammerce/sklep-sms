@@ -14,9 +14,6 @@ class PageMain extends Page
 
     public function getContent(Request $request)
     {
-        $navbar = $this->template->render("navbar");
-        $footer = $this->template->render("footer");
-
-        return $this->template->render("home", compact("navbar", "footer"));
+        return $this->template->render("home");
     }
 }

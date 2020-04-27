@@ -54,6 +54,8 @@ class ShopRenderer
             "scripts" => $this->websiteHeader->getScripts(),
             "styles" => $this->websiteHeader->getStyles(),
         ]);
+        $navbar = $this->template->render("navbar");
+        $footer = $this->template->render("footer");
         $loggedInfo = $this->blockRenderer->render("logged_info", $request);
         $wallet = $this->blockRenderer->render("wallet", $request);
         $servicesButtons = $this->blockRenderer->render("services_buttons", $request);
@@ -64,9 +66,11 @@ class ShopRenderer
             "index",
             compact(
                 "content",
+                "footer",
                 "googleAnalytics",
                 "header",
                 "loggedInfo",
+                "navbar",
                 "pageTitle",
                 "servicesButtons",
                 "userButtons",
