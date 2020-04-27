@@ -1,11 +1,24 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Support\Template;
+use App\System\Auth;
 use App\View\Interfaces\IBeLoggedMust;
+use Symfony\Component\HttpFoundation\Request;
 
-class BlockLoggedInfo extends BlockSimple implements IBeLoggedMust
+class BlockLoggedInfo extends Block implements IBeLoggedMust
 {
-    protected $template = "logged_in_informations";
+    /** @var Auth */
+    private $auth;
+
+    /** @var Template */
+    private $template;
+
+    public function __construct(Auth $auth, Template $template)
+    {
+        $this->auth = $auth;
+        $this->template = $template;
+    }
 
     public function getContentClass()
     {
@@ -15,5 +28,12 @@ class BlockLoggedInfo extends BlockSimple implements IBeLoggedMust
     public function getContentId()
     {
         return "logged_info";
+    }
+
+    protected function content(Request $request, array $params)
+    {
+        return $this->template->render("logged_in_informations", [
+            "user" => $this->auth->user(),
+        ]);
     }
 }

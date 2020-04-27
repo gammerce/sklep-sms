@@ -7,6 +7,7 @@ use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
+use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
@@ -16,6 +17,7 @@ class ServiceLongDescriptionController
         Request $request,
         Template $template,
         Heart $heart,
+        WebsiteHeader $websiteHeader,
         TranslationManager $translationManager,
         UrlGenerator $url
     ) {
@@ -26,9 +28,9 @@ class ServiceLongDescriptionController
             $safeLink = str_replace('"', '\"', $link);
             $output = create_dom_element(
                 "script",
-                new RawText('window.open("' . $safeLink . '", "", "height=720,width=1280");'),
+                new RawText("window.open(\"$safeLink\", \"\", \"height=720,width=1280\");"),
                 [
-                    'type' => "text/javascript",
+                    "type" => "text/javascript",
                 ]
             );
 
@@ -36,27 +38,23 @@ class ServiceLongDescriptionController
         }
 
         $body = "";
-        $heart->pageTitle = $lang->t('description') . ": ";
+        $pageTitle = $lang->t("description") . ": ";
 
         $serviceModule = $heart->getServiceModule($serviceId);
         if ($serviceModule) {
             $body = $serviceModule->descriptionLongGet();
-            $heart->pageTitle .= $serviceModule->service->getName();
+            $pageTitle .= $serviceModule->service->getName();
         }
 
-        $heart->addStyle($url->versioned("build/css/shop/long_desc.css"));
         $header = $template->render("header", [
-            'currentPageId' => "service_long_description",
-            'footer' => "",
-            'pageTitle' => $heart->pageTitle,
-            'scripts' => $heart->getScripts(),
-            'styles' => $heart->getStyles(),
+            "currentPageId" => "service_long_description",
+            "footer" => "",
+            "pageTitle" => $pageTitle,
+            "scripts" => $websiteHeader->getScripts(),
+            "styles" => $websiteHeader->getStyles(),
         ]);
 
-        $output = create_dom_element("html", [
-            create_dom_element("head", new RawText($header)),
-            create_dom_element("body", new RawText($body)),
-        ]);
+        $output = $template->render("service_long_description", compact("header", "body"));
 
         return new HtmlResponse($output);
     }

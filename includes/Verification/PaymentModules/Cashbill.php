@@ -137,20 +137,20 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      * Funkcja sprawdzajaca poprawnosc sygnatury
      * przy płatnościach za pomocą przelewu
      *
-     * @param $body - dane
+     * @param $data - dane
      * @param $key - klucz do hashowania
      * @param $sign - hash danych
      *
      * @return bool
      */
-    public function checkSign(array $body, $key, $sign)
+    public function checkSign(array $data, $key, $sign)
     {
         $calculatedSign = md5(
-            $body['service'] .
-                $body['orderid'] .
-                $body['amount'] .
-                $body['userdata'] .
-                $body['status'] .
+            $data['service'] .
+                $data['orderid'] .
+                $data['amount'] .
+                $data['userdata'] .
+                $data['status'] .
                 $key
         );
         return $calculatedSign == $sign;

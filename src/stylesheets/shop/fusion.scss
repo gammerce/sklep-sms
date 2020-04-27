@@ -1,0 +1,81 @@
+$primary: #fc443c;
+
+$scheme-main: hsl(0, 0%, 14%);
+$scheme-main-bis: hsl(0, 0%, 21%);
+$scheme-main-ter: hsl(0, 0%, 29%);
+
+$scheme-invert: hsl(0, 0%, 96%);
+$scheme-invert-bis: hsl(0, 0%, 93%);
+$scheme-invert-ter: hsl(0, 0%, 86%);
+
+$text-strong: inherit;
+$footer-color: $scheme-invert;
+$navbar-item-color: $scheme-invert;
+$card-color: $scheme-invert;
+
+@import "src/stylesheets/general/vendors";
+
+html,
+body {
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: min-content auto min-content;
+}
+
+.section {
+    @include mobile {
+        padding: 3rem 0.5rem;
+    }
+}
+
+.site-content {
+    background: url("../../images/background.jpg") no-repeat fixed;
+}
+
+.footer {
+    .footer-logo {
+        img {
+            height: 40px;
+        }
+    }
+
+    .footer-column {
+        .footer-header h3 {
+            font-weight: 500;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+        }
+
+        ul.link-list {
+            line-height: 40px;
+            font-size: 1.1rem;
+
+            a {
+                color: #98a9c3;
+                font-weight: 400;
+                transition: all 0.5s;
+
+                &:hover {
+                    color: $scheme-invert;
+                }
+
+                &.is-active {
+                    color: $scheme-invert;
+                }
+            }
+        }
+    }
+}
+
+.product-card {
+    border-radius: 30px;
+    text-align: center;
+    margin: 0 auto 1rem;
+    display: inline-block;
+}
+
+.is-fullheight {
+    height: 100%;
+}

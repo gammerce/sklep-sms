@@ -3,6 +3,11 @@ namespace App\View\Pages;
 
 use App\Exceptions\UnauthorizedException;
 use App\Models\Service;
+use App\Support\Database;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -13,20 +18,45 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "service_codes";
-    protected $privilege = "view_service_codes";
 
-    public function __construct()
-    {
-        parent::__construct();
+    /** @var Database */
+    private $db;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("service_codes");
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Database $db,
+        CurrentPage $currentPage,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getPrivilege()
+    {
+        return "view_service_codes";
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("service_codes");
+    }
+
+    public function getContent(Request $request)
     {
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *, sc.id, sc.code, s.id AS service_id, s.name AS service_name, srv.id AS server_id, srv.name AS server_name, sc.quantity, u.username, u.uid, sc.timestamp " .
@@ -74,9 +104,9 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("user")))
             ->addHeadCell(new HeadCell($this->lang->t("date_of_creation")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
-        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_service_codes")) {
             $button = (new Input())

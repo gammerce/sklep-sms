@@ -5,20 +5,18 @@ use App\View\Html\I_ToHtml;
 use App\View\Html\RawText;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
+use Symfony\Component\HttpFoundation\Request;
 
 abstract class Block
 {
     /**
-     * Zwraca treść danego bloku w otoczce
-     *
-     * @param array $query
-     * @param array $body
+     * @param Request $request
      * @param array $params
      * @return string|null
      */
-    public function getContentEnveloped(array $query, array $body, array $params)
+    public function getContentEnveloped(Request $request, array $params)
     {
-        $content = $this->getContent($query, $body, $params);
+        $content = $this->getContent($request, $params);
 
         return create_dom_element("div", new RawText($content), [
             'id' => $this->getContentId(),
@@ -27,15 +25,12 @@ abstract class Block
     }
 
     /**
-     * Zwraca treść danego bloku po przejściu wszystkich filtrów
-     *
-     * @param array $query
-     * @param array $body
+     * @param Request $request
      * @param array $params
      *
      * @return I_ToHtml|string|null
      */
-    public function getContent(array $query, array $body, array $params)
+    public function getContent(Request $request, array $params)
     {
         if (
             ($this instanceof IBeLoggedMust && !is_logged()) ||
@@ -44,24 +39,18 @@ abstract class Block
             return null;
         }
 
-        return $this->content($query, $body, $params);
-    }
-
-    public function getContentClass()
-    {
-        return "";
+        return $this->content($request, $params);
     }
 
     /**
-     * Zwraca treść danego bloku
-     *
-     * @param array $query
-     * @param array $body
+     * @param Request $request
      * @param array $params
      *
      * @return I_ToHtml|string
      */
-    abstract protected function content(array $query, array $body, array $params);
+    abstract protected function content(Request $request, array $params);
 
     abstract public function getContentId();
+
+    abstract public function getContentClass();
 }

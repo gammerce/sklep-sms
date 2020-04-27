@@ -1,25 +1,45 @@
 <?php
 namespace App\View\Pages;
 
+use App\Support\Template;
 use App\Support\Version;
+use App\System\Application;
+use App\Translation\TranslationManager;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUpdateWeb extends PageAdmin
 {
     const PAGE_ID = "update_web";
-    protected $privilege = "update";
 
     /** @var Version */
     private $version;
 
-    public function __construct(Version $version)
-    {
-        parent::__construct();
+    /** @var Application */
+    private $app;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("update_web");
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Version $version,
+        Application $app
+    ) {
+        parent::__construct($template, $translationManager);
+
         $this->version = $version;
+        $this->app = $app;
     }
 
-    protected function content(array $query, array $body)
+    public function getPrivilege()
+    {
+        return "update";
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("update_web");
+    }
+
+    public function getContent(Request $request)
     {
         $newestVersion = $this->version->getNewestWeb();
         $currentVersion = $this->app->version();
@@ -30,7 +50,7 @@ class PageAdminUpdateWeb extends PageAdmin
 
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => "",
-            "title" => $this->title,
+            "title" => $this->getTitle($request),
         ]);
 
         return $this->template->render(

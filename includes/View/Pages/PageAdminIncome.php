@@ -3,13 +3,16 @@ namespace App\View\Pages;
 
 use App\Http\Services\IncomeService;
 use App\Models\Server;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use App\View\Html\HeadCell;
+use App\View\WebsiteHeader;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = "income";
-
-    protected $privilege = "view_income";
 
     private $months = [
         "",
@@ -30,20 +33,44 @@ class PageAdminIncome extends PageAdmin
     /** @var IncomeService */
     private $incomeService;
 
-    public function __construct(IncomeService $incomeService)
-    {
-        parent::__construct();
+    /** @var WebsiteHeader */
+    private $websiteHeader;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("income");
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        IncomeService $incomeService,
+        WebsiteHeader $websiteHeader,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+
         $this->incomeService = $incomeService;
+        $this->websiteHeader = $websiteHeader;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getPrivilege()
     {
-        $this->heart->addScript("https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js");
+        return "view_income";
+    }
 
-        $queryYear = array_get($query, "year", date("Y"));
-        $queryMonth = array_get($query, "month", date("m"));
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("income");
+    }
+
+    public function getContent(Request $request)
+    {
+        $this->websiteHeader->addScript(
+            "https://cdn.jsdelivr.net/npm/chart.js@2.9.3/dist/Chart.min.js"
+        );
+
+        $queryYear = $request->query->get("year", date("Y"));
+        $queryMonth = $request->query->get("month", date("m"));
 
         $incomeFromPeriod = $this->incomeService->get($queryYear, $queryMonth);
 
@@ -76,7 +103,7 @@ class PageAdminIncome extends PageAdmin
 
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => $buttons,
-            "title" => $this->title,
+            "title" => $this->getTitle($request),
         ]);
 
         return $this->template->render("admin/table_structure", [

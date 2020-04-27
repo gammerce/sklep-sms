@@ -5,6 +5,11 @@ use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
+use App\Support\Database;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -13,11 +18,11 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "payment_platforms";
-    protected $privilege = "manage_settings";
 
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
@@ -25,18 +30,44 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var DataFieldService */
     private $dataFieldService;
 
+    /** @var Database */
+    private $db;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
-        DataFieldService $dataFieldService
+        DataFieldService $dataFieldService,
+        Database $db,
+        CurrentPage $currentPage,
+        Heart $heart
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
-        $this->heart->pageTitle = $this->title = $this->lang->t("payment_platforms");
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getPrivilege()
+    {
+        return "manage_settings";
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("payment_platforms");
+    }
+
+    public function getContent(Request $request)
     {
         $addButton = new Input();
         $addButton->setParam("id", "payment_platform_button_add");
@@ -69,10 +100,10 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addHeadCell(new HeadCell($this->lang->t("module")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->setTable($table)
             ->addButton($addButton);
     }

@@ -25,6 +25,10 @@ use Exception;
 
 class Heart
 {
+    /**
+     * TODO remove it
+     * @deprecated
+     */
     public $pageTitle;
 
     /** @var Application */
@@ -76,9 +80,6 @@ class Heart
 
     private $pagesClasses = [];
     private $blocksClasses = [];
-
-    private $scripts = [];
-    private $styles = [];
 
     public function __construct(
         Application $app,
@@ -556,47 +557,5 @@ class Heart
         }
 
         $this->groupsFetched = true;
-    }
-
-    /**
-     * Add JS script
-     *
-     * @param string $path
-     */
-    public function addScript($path)
-    {
-        if (!in_array($path, $this->scripts)) {
-            $this->scripts[] = $path;
-        }
-    }
-
-    /**
-     * Add CSS stylesheet
-     *
-     * @param string $path
-     */
-    public function addStyle($path)
-    {
-        if (!in_array($path, $this->styles)) {
-            $this->styles[] = $path;
-        }
-    }
-
-    public function getScripts()
-    {
-        return collect($this->scripts)
-            ->map(function ($path) {
-                return "<script type=\"text/javascript\" src=\"{$path}\"></script>";
-            })
-            ->join("\n");
-    }
-
-    public function getStyles()
-    {
-        return collect($this->styles)
-            ->map(function ($path) {
-                return "<link href=\"{$path}\" rel=\"stylesheet\" />";
-            })
-            ->join("\n");
     }
 }

@@ -4,7 +4,11 @@ namespace App\View\Pages;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateCell;
@@ -12,6 +16,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentTransfer extends PageAdmin
 {
@@ -23,21 +28,37 @@ class PageAdminPaymentTransfer extends PageAdmin
     /** @var TransactionRepository */
     private $transactionRepository;
 
-    public function __construct(
-        PriceTextService $priceTextService,
-        TransactionRepository $transactionRepository
-    ) {
-        parent::__construct();
+    /** @var Database */
+    private $db;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('payments_transfer');
+    /** @var CurrentPage */
+    private $currentPage;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository,
+        Database $db,
+        CurrentPage $currentPage
+    ) {
+        parent::__construct($template, $translationManager);
+
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
     {
-        $recordId = array_get($query, "record");
-        $search = array_get($query, "search");
+        return $this->lang->t("payments_transfer");
+    }
+
+    public function getContent(Request $request)
+    {
+        $recordId = $request->query->get("record");
+        $search = $request->query->get("search");
 
         $queryParticle = new QueryParticle();
         $queryParticle->add("( t.payment = 'transfer' )");
@@ -92,10 +113,10 @@ class PageAdminPaymentTransfer extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t('platform'), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t('date')))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->enableSearch()
             ->setTable($table)
             ->toHtml();

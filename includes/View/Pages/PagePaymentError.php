@@ -5,15 +5,19 @@
  */
 namespace App\View\Pages;
 
-class PagePaymentError extends PageSimple
+use Symfony\Component\HttpFoundation\Request;
+
+class PagePaymentError extends Page
 {
     const PAGE_ID = 'payment_error';
-    protected $templateName = 'payment/payment_error';
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return "Płatność Odrzucona";
+    }
 
-        $this->heart->pageTitle = $this->title = 'Płatność Odrzucona';
+    public function getContent(Request $request)
+    {
+        return $this->template->render("payment/payment_error");
     }
 }

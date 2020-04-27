@@ -17,15 +17,6 @@ class BlockRenderer
     public function render($blockId, Request $request, array $params = [])
     {
         $block = $this->heart->getBlock($blockId);
-
-        if ($block) {
-            return $block->getContentEnveloped(
-                $request->query->all(),
-                $request->request->all(),
-                $params
-            );
-        }
-
-        return "";
+        return $block ? $block->getContentEnveloped($request, $params) : "";
     }
 }

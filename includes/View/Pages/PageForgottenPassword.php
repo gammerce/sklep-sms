@@ -2,16 +2,19 @@
 namespace App\View\Pages;
 
 use App\View\Interfaces\IBeLoggedCannot;
+use Symfony\Component\HttpFoundation\Request;
 
-class PageForgottenPassword extends PageSimple implements IBeLoggedCannot
+class PageForgottenPassword extends Page implements IBeLoggedCannot
 {
-    const PAGE_ID = 'forgotten_password';
-    protected $templateName = 'forgotten_password';
+    const PAGE_ID = "forgotten_password";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return $this->lang->t("forgotten_password");
+    }
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('forgotten_password');
+    public function getContent(Request $request)
+    {
+        return $this->template->render("forgotten_password");
     }
 }

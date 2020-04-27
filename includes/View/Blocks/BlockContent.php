@@ -6,6 +6,9 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
+use App\View\Pages\Page;
+use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class BlockContent extends Block
 {
@@ -31,13 +34,16 @@ class BlockContent extends Block
         return "content";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
-        $pageId = $params[0];
-        $page = $this->heart->getPage($pageId);
+        $page = $params[0];
+
+        if (!($page instanceof Page)) {
+            $page = $this->heart->getPage($page);
+        }
 
         if (!$page) {
-            return null;
+            throw new UnexpectedValueException("No page provided");
         }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {
@@ -48,6 +54,6 @@ class BlockContent extends Block
             return $this->lang->t('must_be_logged_out');
         }
 
-        return $page->getContent($query, $body);
+        return $page->getContent($request);
     }
 }

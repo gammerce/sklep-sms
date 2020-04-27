@@ -8,6 +8,7 @@ use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use Symfony\Component\HttpFoundation\Request;
 
 class BlockUserButtons extends Block
 {
@@ -55,7 +56,7 @@ class BlockUserButtons extends Block
         return "user_buttons";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         if (!$this->auth->check()) {
             return $this->template->render("loginarea");
@@ -64,14 +65,11 @@ class BlockUserButtons extends Block
         $user = $this->auth->user();
         $acpButton = "";
 
-        // Panel Admina
         if (has_privileges("acp", $user)) {
-            $acpButton = create_dom_element(
-                "li",
-                create_dom_element("a", $this->lang->t('acp'), [
-                    'href' => $this->url->to("/admin"),
-                ])
-            );
+            $acpButton = $this->template->render("navigation_item", [
+                "link" => $this->url->to("/admin"),
+                "text" => $this->lang->t("acp"),
+            ]);
         }
 
         if (
@@ -80,14 +78,12 @@ class BlockUserButtons extends Block
                 $user
             )
         ) {
-            $chargeWalletButton = create_dom_element(
-                "li",
-                create_dom_element("a", $this->lang->t('charge_wallet'), [
-                    'href' => $this->url->to("/page/purchase?service=charge_wallet"),
-                ])
-            );
+            $chargeWalletButton = $this->template->render("navigation_item", [
+                "link" => $this->url->to("/page/purchase?service=charge_wallet"),
+                "text" => $this->lang->t("charge_wallet"),
+            ]);
         }
 
-        return $this->template->render("user_buttons", compact('acpButton', 'chargeWalletButton'));
+        return $this->template->render("user_buttons", compact("acpButton", "chargeWalletButton"));
     }
 }

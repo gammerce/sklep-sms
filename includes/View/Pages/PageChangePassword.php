@@ -2,16 +2,19 @@
 namespace App\View\Pages;
 
 use App\View\Interfaces\IBeLoggedMust;
+use Symfony\Component\HttpFoundation\Request;
 
-class PageChangePassword extends PageSimple implements IBeLoggedMust
+class PageChangePassword extends Page implements IBeLoggedMust
 {
-    const PAGE_ID = 'change_password';
-    protected $templateName = 'change_password';
+    const PAGE_ID = "change_password";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return $this->lang->t("change_password");
+    }
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('change_password');
+    public function getContent(Request $request)
+    {
+        return $this->template->render("change_password");
     }
 }

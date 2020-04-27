@@ -6,6 +6,7 @@
 @import "./partials/payment";
 @import "./partials/payment_log";
 @import "./partials/purchase";
+@import "./partials/service_take_over";
 @import "./partials/user_own_services";
 
 body {
@@ -272,18 +273,18 @@ body {
     color: #f7d358;
 }
 
-#language_choice {
+.language_choice {
     padding-right: 12px;
     padding-top: 6px;
     text-align: right;
 
-    img {
+    .language-item {
         max-height: 25px;
         max-width: 40px;
         filter: grayscale(100%);
         -webkit-filter: grayscale(100%);
 
-        &.current {
+        &.is-active {
             max-height: 28px;
             max-width: 45px;
             filter: grayscale(0%) !important;

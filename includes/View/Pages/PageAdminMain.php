@@ -5,10 +5,17 @@ use App\Http\Services\IncomeService;
 use App\Models\Server;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
 use App\Services\PriceTextService;
+use App\Support\Database;
+use App\Support\Template;
 use App\Support\Version;
+use App\System\Application;
+use App\System\Heart;
 use App\System\License;
+use App\Translation\TranslationManager;
 use App\View\Html\RawText;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminMain extends PageAdmin
 {
@@ -33,26 +40,52 @@ class PageAdminMain extends PageAdmin
     /** @var TransactionRepository */
     private $transactionRepository;
 
+    /** @var UrlGenerator */
+    private $url;
+
+    /** @var Application */
+    private $app;
+
+    /** @var Heart */
+    private $heart;
+
+    /** @var Database */
+    private $db;
+
     public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
         Version $version,
         License $license,
         Requester $requester,
         IncomeService $incomeService,
         PriceTextService $priceTextService,
-        TransactionRepository $transactionRepository
+        TransactionRepository $transactionRepository,
+        UrlGenerator $url,
+        Application $app,
+        Heart $heart,
+        Database $db
     ) {
-        parent::__construct();
+        parent::__construct($template, $translationManager);
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("main_page");
         $this->version = $version;
         $this->license = $license;
         $this->requester = $requester;
         $this->incomeService = $incomeService;
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
+        $this->url = $url;
+        $this->app = $app;
+        $this->heart = $heart;
+        $this->db = $db;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("main_page");
+    }
+
+    public function getContent(Request $request)
     {
         $bricks = $this->getBricks();
         $notes = $this->getNotes();

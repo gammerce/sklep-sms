@@ -1,31 +1,42 @@
 <?php
 namespace App\View\Pages;
 
+use App\Support\Database;
+use App\Support\Template;
+use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageRegister extends Page implements IBeLoggedCannot
 {
-    const PAGE_ID = 'register';
+    const PAGE_ID = "register";
 
-    public function __construct()
-    {
-        parent::__construct();
+    /** @var Database */
+    private $db;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('register');
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Database $db
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->db = $db;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
     {
-        /** @var Request $request */
-        $request = $this->app->make(Request::class);
-        $session = $request->getSession();
+        return $this->lang->t("register");
+    }
 
+    public function getContent(Request $request)
+    {
         $antispamQuestion = $this->db
             ->query("SELECT * FROM `ss_antispam_questions` ORDER BY RAND() LIMIT 1")
             ->fetch();
-        $session->set("asid", $antispamQuestion['id']);
 
-        return $this->template->render("register", compact('antispamQuestion'));
+        $session = $request->getSession();
+        $session->set("asid", $antispamQuestion["id"]);
+
+        return $this->template->render("register", compact("antispamQuestion"));
     }
 }

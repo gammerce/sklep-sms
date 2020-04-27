@@ -5,8 +5,13 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\UserServiceService;
+use App\Support\Database;
+use App\Support\Template;
 use App\System\Auth;
+use App\System\Heart;
 use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\PaginationService;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,26 +26,51 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var Settings */
     private $settings;
 
-    public function __construct(UserServiceService $userServiceService, Settings $settings)
-    {
-        parent::__construct();
+    /** @var Auth */
+    private $auth;
+
+    /** @var Database */
+    private $db;
+
+    /** @var Heart */
+    private $heart;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var PaginationService */
+    private $paginationService;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        UserServiceService $userServiceService,
+        Settings $settings,
+        Auth $auth,
+        Database $db,
+        Heart $heart,
+        CurrentPage $currentPage,
+        PaginationService $paginationService
+    ) {
+        parent::__construct($template, $translationManager);
 
         $this->userServiceService = $userServiceService;
-        $this->heart->pageTitle = $this->title = $this->lang->t('user_own_services');
         $this->settings = $settings;
+        $this->auth = $auth;
+        $this->db = $db;
+        $this->heart = $heart;
+        $this->currentPage = $currentPage;
+        $this->paginationService = $paginationService;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
     {
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
-        $user = $auth->user();
+        return $this->lang->t('user_own_services');
+    }
 
-        /** @var Request $request */
-        $request = $this->app->make(Request::class);
-
-        /** @var PaginationService $pagination */
-        $pagination = $this->app->make(PaginationService::class);
+    public function getContent(Request $request)
+    {
+        $user = $this->auth->user();
 
         $moduleIds = collect($this->heart->getEmptyServiceModules())
             ->filter(function (ServiceModule $serviceModule) {
@@ -125,11 +155,11 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $this->lang->t('no_data');
         }
 
-        $paginationContent = $pagination->createPagination(
+        $paginationContent = $this->paginationService->createPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $query,
+            $request->query->all(),
             4
         );
         $paginationClass = $paginationContent ? "" : "display_none";

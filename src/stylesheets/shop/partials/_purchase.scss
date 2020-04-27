@@ -1,4 +1,73 @@
-.discount {
-    color: $danger;
-    font-size: $size-7;
+#form_purchase {
+    .discount {
+        color: $danger;
+        font-size: $size-7;
+    }
+
+    .purchase-button-wrapper {
+        text-align: center;
+        margin-top: 2em;
+    }
+
+    .purchase-button {
+        font-size: 14px;
+    }
+
+    &.module-charge-wallet {
+        tfoot {
+            display: none;
+        }
+
+        #charge_table {
+            .charge-body {
+                display: none;
+            }
+
+            tfoot tr td {
+                text-align: center;
+            }
+        }
+    }
+
+    &.module-extra-flags {
+        ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #cost_wrapper {
+            width: 100%;
+            margin: 50px 0;
+            text-align: center;
+            display: none;
+
+            div {
+                display: inline-block;
+                text-align: left;
+            }
+        }
+    }
+
+    &.module-mybb-extra-groups {
+        margin-top: 20px;
+        text-align: center;
+
+        .inputs {
+            display: inline-block;
+            text-align: left;
+        }
+
+        #cost_wrapper {
+            width: 100%;
+            margin: 20px 0 40px 0;
+            text-align: center;
+            display: none;
+
+            div {
+                display: inline-block;
+                text-align: left;
+            }
+        }
+    }
 }

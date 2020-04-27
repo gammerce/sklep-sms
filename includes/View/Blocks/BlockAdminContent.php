@@ -4,6 +4,9 @@ namespace App\View\Blocks;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Pages\PageAdmin;
+use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class BlockAdminContent extends Block
 {
@@ -24,19 +27,31 @@ class BlockAdminContent extends Block
         return "content";
     }
 
-    protected function content(array $query, array $body, array $params)
+    public function getContentClass()
+    {
+        return "";
+    }
+
+    protected function content(Request $request, array $params)
     {
         if (!is_logged()) {
             return $this->lang->t('must_be_logged_in');
         }
 
-        $pageId = $params[0];
-        $page = $this->heart->getPage($pageId, "admin");
+        $page = $params[0];
 
-        if ($page) {
-            return $page->getContent($query, $body);
+        if (!($page instanceof PageAdmin)) {
+            $page = $this->heart->getPage($page);
         }
 
-        return null;
+        if (!$page) {
+            throw new UnexpectedValueException("No page provided");
+        }
+
+        if (!has_privileges($page->getPrivilege())) {
+            return $this->lang->t("no_privileges");
+        }
+
+        return $page->getContent($request);
     }
 }

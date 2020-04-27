@@ -7,6 +7,9 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\ServiceModule;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,22 +18,37 @@ use App\View\Html\RawText;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\Interfaces\IPageAdminActionBox;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "services";
-    protected $privilege = "view_services";
 
-    public function __construct()
-    {
-        parent::__construct();
+    /** @var Heart */
+    private $heart;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("services");
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getPrivilege()
     {
-        $recordId = array_get($query, "record");
+        return "view_services";
+    }
+
+    public function getTitle(Request $request)
+    {
+        return $this->lang->t("services");
+    }
+
+    public function getContent(Request $request)
+    {
+        $recordId = $request->query->get("record");
 
         $bodyRows = collect($this->heart->getServices())
             ->filter(function (Service $service) use ($recordId) {
@@ -59,7 +77,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("order")))
             ->addBodyRows($bodyRows);
 
-        $wrapper = (new Wrapper())->setTitle($this->title)->setTable($table);
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_services")) {
             $button = (new Input())

@@ -4,14 +4,19 @@ namespace App\View\Pages;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\PriceTextService;
+use App\Support\Database;
+use App\Support\Template;
 use App\System\Auth;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\PaginationService;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
 {
-    const PAGE_ID = 'payment_log';
+    const PAGE_ID = "payment_log";
 
     /** @var PriceTextService */
     private $priceTextService;
@@ -19,28 +24,51 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var TransactionRepository */
     private $transactionRepository;
 
-    public function __construct(
-        PriceTextService $priceTextService,
-        TransactionRepository $transactionRepository
-    ) {
-        parent::__construct();
+    /** @var Auth */
+    private $auth;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('payment_log');
+    /** @var Database */
+    private $db;
+
+    /** @var PaginationService */
+    private $paginationService;
+
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        PriceTextService $priceTextService,
+        TransactionRepository $transactionRepository,
+        Auth $auth,
+        Database $db,
+        PaginationService $paginationService,
+        CurrentPage $currentPage,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
+        $this->auth = $auth;
+        $this->db = $db;
+        $this->paginationService = $paginationService;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
     {
-        /** @var Auth $auth */
-        $auth = $this->app->make(Auth::class);
-        $user = $auth->user();
+        return $this->lang->t("payment_log");
+    }
 
-        /** @var Request $request */
-        $request = $this->app->make(Request::class);
-
-        /** @var PaginationService $pagination */
-        $pagination = $this->app->make(PaginationService::class);
+    public function getContent(Request $request)
+    {
+        $user = $this->auth->user();
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -62,37 +90,37 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $serviceModule = $this->heart->getServiceModule($transaction->getServiceId());
             if ($serviceModule instanceof IServicePurchaseWeb) {
                 $logInfo = $serviceModule->purchaseInfo("payment_log", $transaction);
-                $desc = $logInfo['text'];
-                $class = $logInfo['class'];
+                $desc = $logInfo["text"];
+                $class = $logInfo["class"];
             } else {
                 $service = $this->heart->getService($transaction->getServiceId());
                 $server = $this->heart->getServer($transaction->getServerId());
                 $desc = $this->lang->t(
-                    'service_was_bought',
-                    $service ? $service->getName() : '',
-                    $server ? $server->getName() : ''
+                    "service_was_bought",
+                    $service ? $service->getName() : "",
+                    $server ? $server->getName() : ""
                 );
                 $class = "outcome";
             }
 
             $paymentLogs .= $this->template->render(
                 "payment_log_brick",
-                compact('class', 'date', 'cost', 'desc')
+                compact("class", "date", "cost", "desc")
             );
         }
 
-        $paginationContent = $pagination->createPagination(
+        $paginationContent = $this->paginationService->createPagination(
             $rowsCount,
             $this->currentPage->getPageNumber(),
             $request->getPathInfo(),
-            $query,
+            $request->query->all(),
             10
         );
         $paginationClass = $paginationContent ? "" : "display_none";
 
         return $this->template->render(
             "payment_log",
-            compact('paymentLogs', 'paginationClass', 'paginationContent')
+            compact("paymentLogs", "paginationClass", "paginationContent")
         );
     }
 }

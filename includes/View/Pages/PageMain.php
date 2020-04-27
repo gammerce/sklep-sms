@@ -1,15 +1,19 @@
 <?php
 namespace App\View\Pages;
 
-class PageMain extends PageSimple
+use Symfony\Component\HttpFoundation\Request;
+
+class PageMain extends Page
 {
-    const PAGE_ID = 'home';
-    protected $templateName = 'home';
+    const PAGE_ID = "home";
 
-    public function __construct()
+    public function getTitle(Request $request)
     {
-        parent::__construct();
+        return $this->lang->t("main_page");
+    }
 
-        $this->heart->pageTitle = $this->title = $this->lang->t('main_page');
+    public function getContent(Request $request)
+    {
+        return $this->template->render("home");
     }
 }

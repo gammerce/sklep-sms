@@ -4,7 +4,12 @@ namespace App\View\Pages;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -15,6 +20,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminBoughtServices extends PageAdmin
 {
@@ -23,17 +29,39 @@ class PageAdminBoughtServices extends PageAdmin
     /** @var TransactionRepository */
     private $transactionRepository;
 
-    public function __construct(TransactionRepository $transactionRepository)
-    {
-        parent::__construct();
+    /** @var Database */
+    private $db;
 
-        $this->heart->pageTitle = $this->title = $this->lang->t("bought_services");
+    /** @var CurrentPage */
+    private $currentPage;
+
+    /** @var Heart */
+    private $heart;
+
+    public function __construct(
+        Template $template,
+        TranslationManager $translationManager,
+        TransactionRepository $transactionRepository,
+        Database $db,
+        CurrentPage $currentPage,
+        Heart $heart
+    ) {
+        parent::__construct($template, $translationManager);
+
         $this->transactionRepository = $transactionRepository;
+        $this->db = $db;
+        $this->currentPage = $currentPage;
+        $this->heart = $heart;
     }
 
-    protected function content(array $query, array $body)
+    public function getTitle(Request $request)
     {
-        $search = array_get($query, "search");
+        return $this->lang->t("bought_services");
+    }
+
+    public function getContent(Request $request)
+    {
+        $search = $request->query->get("search");
 
         $queryParticle = new QueryParticle();
 
@@ -151,10 +179,10 @@ class PageAdminBoughtServices extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("ip")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $query, $rowsCount);
+            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         return (new Wrapper())
-            ->setTitle($this->title)
+            ->setTitle($this->getTitle($request))
             ->enableSearch()
             ->setTable($table)
             ->toHtml();
