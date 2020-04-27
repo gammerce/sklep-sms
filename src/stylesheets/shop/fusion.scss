@@ -1,0 +1,9 @@
+@import "src/stylesheets/general/variables";
+@import "src/stylesheets/general/vendors";
+
+.card {
+    border-radius: 30px;
+    text-align: center;
+    margin: 0 auto 1rem;
+    display: inline-block;
+}

@@ -1,5 +1,3 @@
-import "../../stylesheets/shop/shop.scss";
-
 import "core-js";
 import { refreshBlocks } from "./utils/utils";
 import { loader } from "../general/loader";
@@ -8,11 +6,10 @@ import { json_parse } from "../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../general/infobox";
 
 $(document).ready(function() {
-    if (typeof f !== "undefined") $(".content_td").append(atob(f));
+    if (typeof f !== "undefined") {
+        $(".content_td").append(atob(f));
+    }
 
-    /*$("#bck").bind('input',function() {
-     $("body").css({"background-image":"url('"+$(this).val()+"')"});
-     });*/
     $("#language_" + language).addClass("current");
 });
 
