@@ -3,6 +3,7 @@ namespace App\Payment\ServiceCode;
 
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -11,7 +12,6 @@ use App\Support\Result;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Managers\ServiceModuleManager;
 
 class ServiceCodePaymentMethod implements IPaymentMethod
 {

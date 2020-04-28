@@ -1,12 +1,12 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Managers\ServiceModuleManager;
 use InvalidArgumentException;
 
 class PaymentService

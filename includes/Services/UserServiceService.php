@@ -1,10 +1,10 @@
 <?php
 namespace App\Services;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\UserService;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
-use App\Managers\ServiceModuleManager;
 
 class UserServiceService
 {

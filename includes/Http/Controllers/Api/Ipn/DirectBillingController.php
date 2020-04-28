@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Ipn;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
 use App\Payment\Exceptions\InvalidPaidAmountException;
@@ -11,7 +12,6 @@ use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Verification\Abstracts\SupportDirectBilling;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class DirectBillingController

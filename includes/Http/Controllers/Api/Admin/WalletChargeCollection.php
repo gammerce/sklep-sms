@@ -8,6 +8,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
@@ -15,7 +16,6 @@ use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class WalletChargeCollection

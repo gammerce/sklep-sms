@@ -2,6 +2,9 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Managers\PageManager;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Support\FileSystem;
@@ -12,10 +15,7 @@ use App\System\Auth;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\Blocks\BlockAdminContent;
-use App\Managers\PageManager;
 use App\View\Renders\BlockRenderer;
-use App\Managers\ServiceModuleManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

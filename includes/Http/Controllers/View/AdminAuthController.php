@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;

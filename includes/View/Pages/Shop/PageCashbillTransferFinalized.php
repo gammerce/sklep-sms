@@ -2,6 +2,7 @@
 namespace App\View\Pages\Shop;
 
 use App\Exceptions\InvalidConfigException;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseInformation;
 use App\Support\Template;
@@ -9,7 +10,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\PaymentModules\Cashbill;
 use App\View\Pages\Page;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageCashbillTransferFinalized extends Page

@@ -2,8 +2,8 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\Verification\Abstracts\SupportTransfer;
 use App\Managers\PaymentModuleManager;
+use App\Verification\Abstracts\SupportTransfer;
 
 class SupportTransferRule extends BaseRule
 {

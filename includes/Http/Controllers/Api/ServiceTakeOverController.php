@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
-use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\Managers\ServiceModuleManager;
+use App\ServiceModules\Interfaces\IServiceTakeOver;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceTakeOverController

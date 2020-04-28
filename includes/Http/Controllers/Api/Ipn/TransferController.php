@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Ipn;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
@@ -12,7 +13,6 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TransferController

@@ -3,9 +3,9 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceCollection

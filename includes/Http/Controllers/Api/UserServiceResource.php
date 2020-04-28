@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceResource

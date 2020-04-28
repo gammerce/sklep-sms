@@ -3,8 +3,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
-use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\Managers\ServiceModuleManager;
+use App\ServiceModules\Interfaces\IServiceTakeOver;
 
 class ServiceTakeOverFormController
 {

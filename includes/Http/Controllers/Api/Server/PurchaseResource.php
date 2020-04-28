@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\System\ServerAuth;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 

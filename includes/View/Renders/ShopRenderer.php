@@ -1,12 +1,12 @@
 <?php
 namespace App\View\Renders;
 
+use App\Managers\WebsiteHeader;
 use App\Support\Template;
 use App\System\License;
 use App\System\Settings;
 use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
-use App\Managers\WebsiteHeader;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
 use Symfony\Component\HttpFoundation\Request;

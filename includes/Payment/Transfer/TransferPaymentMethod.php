@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Transfer;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -13,7 +14,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Managers\PaymentModuleManager;
 
 class TransferPaymentMethod implements IPaymentMethod
 {

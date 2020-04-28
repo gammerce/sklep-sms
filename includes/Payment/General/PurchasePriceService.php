@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Price;
 use App\Models\QuantityPrice;
 use App\Models\Server;
@@ -9,7 +10,6 @@ use App\Models\SmsNumber;
 use App\Repositories\PriceRepository;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
-use App\Managers\PaymentModuleManager;
 
 class PurchasePriceService
 {

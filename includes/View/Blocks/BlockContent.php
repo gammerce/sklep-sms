@@ -1,11 +1,11 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Managers\PageManager;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
-use App\Managers\PageManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;

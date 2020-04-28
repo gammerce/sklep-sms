@@ -4,6 +4,7 @@ namespace App\Payment\Sms;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -15,7 +16,6 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\SmsPaymentException;
-use App\Managers\PaymentModuleManager;
 
 class SmsPaymentMethod implements IPaymentMethod
 {

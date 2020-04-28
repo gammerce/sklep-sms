@@ -2,12 +2,12 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\HtmlResponse;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
-use App\Managers\ServiceModuleManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController

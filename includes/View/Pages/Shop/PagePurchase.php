@@ -1,6 +1,8 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\UserServiceAccessService;
@@ -11,8 +13,6 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\Managers\ServiceModuleManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePurchase extends Page

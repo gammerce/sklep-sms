@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\DirectBilling;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -11,7 +12,6 @@ use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
-use App\Managers\PaymentModuleManager;
 
 class DirectBillingPaymentMethod implements IPaymentMethod
 {

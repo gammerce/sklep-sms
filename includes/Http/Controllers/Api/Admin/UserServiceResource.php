@@ -6,11 +6,11 @@ use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\Services\UserServiceService;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceResource

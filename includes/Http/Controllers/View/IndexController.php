@@ -2,12 +2,12 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Managers\PageManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
 use App\Support\Path;
 use App\View\Blocks\BlockContent;
-use App\Managers\PageManager;
 use App\View\Renders\BlockRenderer;
 use App\View\Renders\ShopRenderer;
 use Symfony\Component\HttpFoundation\Request;

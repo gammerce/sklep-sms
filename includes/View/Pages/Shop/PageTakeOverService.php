@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\Support\Template;
@@ -8,7 +9,6 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageTakeOverService extends Page implements IBeLoggedMust

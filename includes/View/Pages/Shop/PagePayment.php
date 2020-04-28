@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceModuleManager;
 use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -8,7 +9,6 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePayment extends Page

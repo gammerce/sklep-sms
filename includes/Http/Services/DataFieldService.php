@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Services;
 
+use App\Managers\PaymentModuleManager;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Managers\PaymentModuleManager;
 
 class DataFieldService
 {

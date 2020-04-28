@@ -1,13 +1,13 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockServicesButtons extends Block

@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
-use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\Managers\ServiceModuleManager;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 
 class UserServiceAddFormController
 {

@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -10,7 +11,6 @@ use App\Services\UserServiceAccessService;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PurchaseCollection

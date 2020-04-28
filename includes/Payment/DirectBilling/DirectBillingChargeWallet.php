@@ -4,6 +4,7 @@ namespace App\Payment\DirectBilling;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
@@ -11,7 +12,6 @@ use App\Services\PriceTextService;
 use App\Support\Template;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportDirectBilling;
-use App\Managers\PaymentModuleManager;
 use UnexpectedValueException;
 
 class DirectBillingChargeWallet implements IChargeWallet

@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
@@ -14,7 +15,6 @@ use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust

@@ -2,8 +2,8 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\Verification\Abstracts\SupportSms;
 use App\Managers\PaymentModuleManager;
+use App\Verification\Abstracts\SupportSms;
 
 class SupportSmsRule extends BaseRule
 {
