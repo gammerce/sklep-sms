@@ -165,7 +165,13 @@
             </div>
 
             <input type="reset" value="{{ __('clear') }}" class="button" />
-            <input type="submit" value="{{ __('create_account') }}" class="button is-success" />
+
+            <button class="button is-success" type="submit">
+                <span class="icon">
+                    <i class="fas fa-user-plus"></i>
+                </span>
+                <span>{{ __('create_account') }}</span>
+            </button>
         </form>
     </div>
 </main>
