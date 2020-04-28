@@ -5,11 +5,11 @@ use App\Exceptions\InvalidConfigException;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseInformation;
 use App\Support\Template;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\PaymentModules\Cashbill;
 use App\View\Pages\Page;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageCashbillTransferFinalized extends Page
@@ -22,21 +22,21 @@ class PageCashbillTransferFinalized extends Page
     /** @var Settings */
     private $settings;
 
-    /** @var Heart */
-    private $heart;
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         PurchaseInformation $purchaseInformation,
         Settings $settings,
-        Heart $heart
+        PaymentModuleManager $paymentModuleManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->purchaseInformation = $purchaseInformation;
         $this->settings = $settings;
-        $this->heart = $heart;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -46,7 +46,7 @@ class PageCashbillTransferFinalized extends Page
 
     public function getContent(Request $request)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $this->settings->getTransferPlatformId()
         );
 

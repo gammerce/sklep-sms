@@ -17,7 +17,7 @@ use App\View\Html\Option;
 use App\View\Html\Select;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox

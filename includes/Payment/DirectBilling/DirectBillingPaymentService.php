@@ -11,7 +11,7 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class DirectBillingPaymentService
 {

@@ -6,7 +6,6 @@ use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\System\Application;
-use App\System\Heart;
 use App\Verification\PaymentModules\Cashbill;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\GetPay;
@@ -20,14 +19,14 @@ use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
 use App\Verification\PaymentModules\Zabijaka;
-use App\View\BlockManager;
+use App\Managers\BlockManager;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
-use App\View\PageManager;
+use App\Managers\PageManager;
 use App\View\Pages\Admin\PageAdminAntispamQuestions;
 use App\View\Pages\Admin\PageAdminBoughtServices;
 use App\View\Pages\Admin\PageAdminGroups;
@@ -70,51 +69,50 @@ use App\View\Pages\Shop\PageSignIn;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
 use App\View\Pages\Shop\PageUserOwnServices;
-use App\View\ServiceModuleManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class HeartServiceProvider
 {
     public function register(Application $app)
     {
-        $app->extend(Heart::class, function (Heart $heart) {
-            $this->registerPaymentModules($heart);
-            return $heart;
+        $app->extend(PaymentModuleManager::class, function (PaymentModuleManager $manager) {
+            $this->registerPaymentModules($manager);
+            return $manager;
         });
 
-        $app->extend(BlockManager::class, function (BlockManager $blockManager) {
-            $this->registerBlocks($blockManager);
-            return $blockManager;
+        $app->extend(BlockManager::class, function (BlockManager $manager) {
+            $this->registerBlocks($manager);
+            return $manager;
         });
 
-        $app->extend(PageManager::class, function (PageManager $pageManager) {
-            $this->registerPages($pageManager);
-            $this->registerAdminPages($pageManager);
-            return $pageManager;
+        $app->extend(PageManager::class, function (PageManager $manager) {
+            $this->registerPages($manager);
+            $this->registerAdminPages($manager);
+            return $manager;
         });
 
-        $app->extend(ServiceModuleManager::class, function (
-            ServiceModuleManager $serviceModuleManager
-        ) {
-            $this->registerServices($serviceModuleManager);
-            return $serviceModuleManager;
+        $app->extend(ServiceModuleManager::class, function (ServiceModuleManager $manager) {
+            $this->registerServices($manager);
+            return $manager;
         });
     }
 
-    private function registerPaymentModules(Heart $heart)
+    private function registerPaymentModules(PaymentModuleManager $paymentModuleManager)
     {
-        $heart->registerPaymentModule(OneShotOneKill::MODULE_ID, OneShotOneKill::class);
-        $heart->registerPaymentModule(Cashbill::MODULE_ID, Cashbill::class);
-        $heart->registerPaymentModule(Cssetti::MODULE_ID, Cssetti::class);
-        $heart->registerPaymentModule(GetPay::MODULE_ID, GetPay::class);
-        $heart->registerPaymentModule(Gosetti::MODULE_ID, Gosetti::class);
-        $heart->registerPaymentModule(Homepay::MODULE_ID, Homepay::class);
-        $heart->registerPaymentModule(Hostplay::MODULE_ID, Hostplay::class);
-        $heart->registerPaymentModule(MicroSMS::MODULE_ID, MicroSMS::class);
-        $heart->registerPaymentModule(Profitsms::MODULE_ID, Profitsms::class);
-        $heart->registerPaymentModule(Pukawka::MODULE_ID, Pukawka::class);
-        $heart->registerPaymentModule(SimPay::MODULE_ID, SimPay::class);
-        $heart->registerPaymentModule(TPay::MODULE_ID, TPay::class);
-        $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
+        $paymentModuleManager->register(OneShotOneKill::class);
+        $paymentModuleManager->register(Cashbill::class);
+        $paymentModuleManager->register(Cssetti::class);
+        $paymentModuleManager->register(GetPay::class);
+        $paymentModuleManager->register(Gosetti::class);
+        $paymentModuleManager->register(Homepay::class);
+        $paymentModuleManager->register(Hostplay::class);
+        $paymentModuleManager->register(MicroSMS::class);
+        $paymentModuleManager->register(Profitsms::class);
+        $paymentModuleManager->register(Pukawka::class);
+        $paymentModuleManager->register(SimPay::class);
+        $paymentModuleManager->register(TPay::class);
+        $paymentModuleManager->register(Zabijaka::class);
     }
 
     private function registerPages(PageManager $pageManager)

@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Renders;
 
-use App\View\BlockManager;
+use App\Managers\BlockManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockRenderer

@@ -1,10 +1,9 @@
 <?php
-namespace App\View;
+namespace App\Managers;
 
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
 use App\Support\Path;
-use App\View\Pages\Page;
 
 class WebsiteHeader
 {
@@ -28,18 +27,6 @@ class WebsiteHeader
         $this->path = $path;
         $this->fileSystem = $fileSystem;
         $this->url = $url;
-    }
-
-    public function addPageScripts(Page $page)
-    {
-        $path = "build/js/shop/pages/{$page->getId()}/";
-        if ($this->fileSystem->exists($this->path->to($path))) {
-            foreach ($this->fileSystem->scanDirectory($this->path->to($path)) as $file) {
-                if (ends_at($file, ".js")) {
-                    $this->addScript($this->url->versioned($path . $file));
-                }
-            }
-        }
     }
 
     /**

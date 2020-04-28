@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class ServiceModuleExtraFieldsController
 {

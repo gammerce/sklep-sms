@@ -3,7 +3,7 @@ namespace Tests\Feature\Services;
 
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class UserServiceRepositoryTest extends TestCase

@@ -14,10 +14,10 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
 use App\Services\UserServiceAccessService;
-use App\System\Heart;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +29,7 @@ class ServerConfigController
         UserRepository $userRepository,
         ServerRepository $serverRepository,
         ServerDataService $serverDataService,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         Settings $settings,
         ServerAuth $serverAuth,
         UserServiceAccessService $userServiceAccessService
@@ -48,7 +48,7 @@ class ServerConfigController
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
-        $smsModule = $heart->getPaymentModuleByPlatformId($smsPlatformId);
+        $smsModule = $paymentModuleManager->getByPlatformId($smsPlatformId);
 
         if (!($smsModule instanceof SupportSms)) {
             throw new InvalidConfigException(

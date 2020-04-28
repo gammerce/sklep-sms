@@ -12,6 +12,7 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class TransferController
@@ -19,12 +20,12 @@ class TransferController
     public function action(
         $paymentPlatform,
         Request $request,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         ExternalPaymentService $externalPaymentService,
         TransferPaymentService $transferPaymentService,
         DatabaseLogger $logger
     ) {
-        $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
+        $paymentModule = $paymentModuleManager->getByPlatformId($paymentPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new PlainResponse(

@@ -11,7 +11,7 @@ use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 

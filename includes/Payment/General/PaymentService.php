@@ -6,7 +6,7 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use InvalidArgumentException;
 
 class PaymentService

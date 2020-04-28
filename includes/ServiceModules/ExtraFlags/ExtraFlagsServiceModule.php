@@ -66,7 +66,7 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use InvalidArgumentException;
 use UnexpectedValueException;
 

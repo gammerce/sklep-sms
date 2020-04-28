@@ -10,7 +10,7 @@ use App\Services\UserServiceAccessService;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PurchaseCollection

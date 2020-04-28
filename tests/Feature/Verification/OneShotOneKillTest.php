@@ -2,9 +2,9 @@
 namespace Tests\Feature\Verification;
 
 use App\Requesting\Response;
-use App\System\Heart;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\Results\SmsSuccessResult;
+use App\Managers\PaymentModuleManager;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
@@ -22,14 +22,14 @@ class OneShotOneKillTest extends TestCase
 
         $this->mockRequester();
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var PaymentModuleManager $paymentModuleManager */
+        $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
             'module' => OneShotOneKill::MODULE_ID,
         ]);
 
-        $this->oneShotOneKill = $heart->getPaymentModule($paymentPlatform);
+        $this->oneShotOneKill = $paymentModuleManager->get($paymentPlatform);
     }
 
     /** @test */

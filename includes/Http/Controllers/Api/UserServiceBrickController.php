@@ -9,7 +9,7 @@ use App\Services\UserServiceService;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class UserServiceBrickController
 {

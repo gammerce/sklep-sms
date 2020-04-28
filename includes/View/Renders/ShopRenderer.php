@@ -5,7 +5,7 @@ use App\Support\Template;
 use App\System\License;
 use App\System\Settings;
 use App\View\Blocks\BlockServicesButtons;
-use App\View\WebsiteHeader;
+use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ShopRenderer

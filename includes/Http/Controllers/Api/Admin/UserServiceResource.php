@@ -10,7 +10,7 @@ use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\Services\UserServiceService;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceResource

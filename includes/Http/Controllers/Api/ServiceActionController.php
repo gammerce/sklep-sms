@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceActionController

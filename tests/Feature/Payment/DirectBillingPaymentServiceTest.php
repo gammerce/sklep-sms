@@ -10,10 +10,10 @@ use App\Requesting\Response;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\PaymentModules\SimPay;
-use App\View\ServiceModuleManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
@@ -51,8 +51,8 @@ class DirectBillingPaymentServiceTest extends TestCase
         /** @var PaymentDirectBillingRepository $paymentDirectBillingRepository */
         $paymentDirectBillingRepository = $this->app->make(PaymentDirectBillingRepository::class);
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var PaymentModuleManager $paymentModuleManager */
+        $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         /** @var ServiceModuleManager $serviceModuleManager */
         $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
@@ -62,7 +62,7 @@ class DirectBillingPaymentServiceTest extends TestCase
         ]);
 
         /** @var SupportDirectBilling $paymentModule */
-        $paymentModule = $heart->getPaymentModule($paymentPlatform);
+        $paymentModule = $paymentModuleManager->get($paymentPlatform);
 
         $serviceId = "vip";
         /** @var IServicePurchase|ServiceModule $serviceModule */

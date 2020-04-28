@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\PlainResponse;
-use App\View\BlockManager;
+use App\Managers\BlockManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BrickResource

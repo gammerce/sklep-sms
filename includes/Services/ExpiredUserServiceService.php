@@ -4,7 +4,7 @@ namespace App\Services;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class ExpiredUserServiceService
 {

@@ -1,5 +1,5 @@
 <?php
-namespace App\View;
+namespace App\Managers;
 
 use App\Exceptions\InvalidConfigException;
 use App\ServiceModules\ServiceModule;

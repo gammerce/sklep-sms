@@ -2,23 +2,23 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportSms;
+use App\Managers\PaymentModuleManager;
 
 class SupportSmsRule extends BaseRule
 {
-    /** @var Heart */
-    private $heart;
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
 
     public function __construct()
     {
         parent::__construct();
-        $this->heart = app()->make(Heart::class);
+        $this->paymentModuleManager = app()->make(PaymentModuleManager::class);
     }
 
     public function validate($attribute, $value, array $data)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId($value);
+        $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
 
         if (!($paymentModule instanceof SupportSms)) {
             return [$this->lang->t('no_sms_platform')];

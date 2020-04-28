@@ -5,7 +5,7 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
-use App\View\PageManager;
+use App\Managers\PageManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;

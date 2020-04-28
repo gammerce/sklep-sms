@@ -1,29 +1,19 @@
 <?php
 namespace App\System;
 
-use App\Exceptions\InvalidConfigException;
-use App\Exceptions\InvalidPaymentModuleException;
 use App\Models\Group;
-use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\ServerService;
 use App\Models\Service;
 use App\Models\User;
-use App\Payment\General\PaymentModuleFactory;
 use App\Repositories\GroupRepository;
-use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\Verification\Abstracts\PaymentModule;
-use App\Verification\DataField;
 
 class Heart
 {
-    /** @var Application */
-    private $app;
-
     /** @var UserRepository */
     private $userRepository;
 
@@ -36,14 +26,8 @@ class Heart
     /** @var GroupRepository */
     private $groupRepository;
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
     /** @var ServerServiceRepository */
     private $serverServiceRepository;
-
-    /** @var PaymentModuleFactory */
-    private $paymentModuleFactory;
 
     /** @var Server[] */
     private $servers = [];
@@ -64,99 +48,19 @@ class Heart
     /** @var User[] */
     private $users = [];
 
-    private $paymentModuleClasses = [];
-
     public function __construct(
-        Application $app,
         UserRepository $userRepository,
         ServiceRepository $serviceRepository,
         ServerRepository $serverRepository,
         GroupRepository $groupRepository,
-        PaymentPlatformRepository $paymentPlatformRepository,
-        ServerServiceRepository $serverServiceRepository,
-        PaymentModuleFactory $paymentModuleFactory
+        ServerServiceRepository $serverServiceRepository
     ) {
         $this->userRepository = $userRepository;
         $this->serviceRepository = $serviceRepository;
         $this->serverRepository = $serverRepository;
         $this->groupRepository = $groupRepository;
-        $this->paymentPlatformRepository = $paymentPlatformRepository;
-        $this->paymentModuleFactory = $paymentModuleFactory;
-        $this->app = $app;
         $this->serverServiceRepository = $serverServiceRepository;
     }
-
-    public function registerPaymentModule($moduleId, $class)
-    {
-        if (isset($this->paymentModuleClasses[$moduleId])) {
-            throw new InvalidConfigException(
-                "There is a payment api with id: [$moduleId] already."
-            );
-        }
-
-        $this->paymentModuleClasses[$moduleId] = $class;
-    }
-
-    public function getPaymentModuleIds()
-    {
-        return array_keys($this->paymentModuleClasses);
-    }
-
-    /**
-     * @param string $moduleId
-     * @return DataField[]
-     */
-    public function getPaymentModuleDataFields($moduleId)
-    {
-        $className = array_get($this->paymentModuleClasses, $moduleId);
-
-        if ($className) {
-            return $className::getDataFields();
-        }
-
-        throw new InvalidPaymentModuleException();
-    }
-
-    /**
-     * @param PaymentPlatform $paymentPlatform
-     * @return PaymentModule|null
-     */
-    public function getPaymentModule(PaymentPlatform $paymentPlatform)
-    {
-        $paymentModuleClass = array_get(
-            $this->paymentModuleClasses,
-            $paymentPlatform->getModuleId()
-        );
-
-        if ($paymentModuleClass) {
-            return $this->paymentModuleFactory->create($paymentModuleClass, $paymentPlatform);
-        }
-
-        return null;
-    }
-
-    /**
-     * @param string $platformId
-     * @return PaymentModule|null
-     */
-    public function getPaymentModuleByPlatformId($platformId)
-    {
-        $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
-        if (!$paymentPlatform) {
-            return null;
-        }
-
-        $paymentModule = $this->getPaymentModule($paymentPlatform);
-        if (!$paymentModule) {
-            return null;
-        }
-
-        return $paymentModule;
-    }
-
-    //
-    // SERVICES
-    //
 
     /**
      * Returns purchasable services
@@ -229,10 +133,6 @@ class Heart
         $this->serversFetched = true;
     }
 
-    //
-    // Servers - Services
-    //
-
     /**
      * Checks if the service can be purchased on the given server
      *
@@ -260,10 +160,6 @@ class Heart
 
         $this->serversServicesFetched = true;
     }
-
-    //
-    // Users
-    //
 
     /**
      * @param int $uid
@@ -301,10 +197,6 @@ class Heart
 
         return new User();
     }
-
-    //
-    // Groups
-    //
 
     /**
      * @return Group[]

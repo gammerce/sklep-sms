@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\PlainResponse;
 use App\Support\Template;
 use App\System\Heart;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class ServiceCodeAddFormController
 {

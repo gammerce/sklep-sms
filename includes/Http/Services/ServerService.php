@@ -10,7 +10,7 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
 use App\System\Heart;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class ServerService
 {

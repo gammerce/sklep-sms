@@ -11,8 +11,8 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\View\ServiceModuleManager;
-use App\View\WebsiteHeader;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePurchase extends Page

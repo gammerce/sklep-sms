@@ -8,7 +8,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePayment extends Page

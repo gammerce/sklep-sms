@@ -12,10 +12,10 @@ use App\System\Auth;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\Blocks\BlockAdminContent;
-use App\View\PageManager;
+use App\Managers\PageManager;
 use App\View\Renders\BlockRenderer;
-use App\View\ServiceModuleManager;
-use App\View\WebsiteHeader;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 

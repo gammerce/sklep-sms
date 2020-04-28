@@ -10,7 +10,7 @@ use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Cssetti;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use UnexpectedValueException;
 
 trait MakePurchaseConcern

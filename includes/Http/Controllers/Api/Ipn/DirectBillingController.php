@@ -10,8 +10,8 @@ use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportDirectBilling;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class DirectBillingController
@@ -19,12 +19,12 @@ class DirectBillingController
     public function action(
         $paymentPlatform,
         Request $request,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         DatabaseLogger $logger,
         ExternalPaymentService $externalPaymentService,
         DirectBillingPaymentService $directBillingPaymentService
     ) {
-        $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
+        $paymentModule = $paymentModuleManager->getByPlatformId($paymentPlatform);
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
             return new PlainResponse(

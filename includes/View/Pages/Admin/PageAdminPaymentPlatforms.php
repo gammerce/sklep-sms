@@ -7,7 +7,6 @@ use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\Database;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -18,6 +17,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
@@ -36,8 +36,8 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
 
     public function __construct(
         Template $template,
@@ -46,7 +46,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         DataFieldService $dataFieldService,
         Database $db,
         CurrentPage $currentPage,
-        Heart $heart
+        PaymentModuleManager $paymentModuleManager
     ) {
         parent::__construct($template, $translationManager);
 
@@ -54,7 +54,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $this->dataFieldService = $dataFieldService;
         $this->db = $db;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function getPrivilege()
@@ -127,7 +127,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         if ($boxId === "create") {
             $paymentModules = array_map(function ($paymentModuleId) {
                 return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
-            }, $this->heart->getPaymentModuleIds());
+            }, $this->paymentModuleManager->allIds());
 
             return $this->template->render("admin/action_boxes/payment_platform_add", [
                 "paymentModules" => implode("", $paymentModules),

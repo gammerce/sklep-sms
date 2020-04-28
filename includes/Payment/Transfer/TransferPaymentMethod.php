@@ -13,6 +13,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;
+use App\Managers\PaymentModuleManager;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
@@ -25,9 +26,6 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var Heart */
     private $heart;
 
-    /** @var TransferPaymentService */
-    private $transferPaymentService;
-
     /** @var Translator */
     private $lang;
 
@@ -37,22 +35,25 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Heart $heart,
         Template $template,
         PriceTextService $priceTextService,
-        TransferPaymentService $transferPaymentService,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager,
+        PaymentModuleManager $paymentModuleManager,
         Settings $settings
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->heart = $heart;
-        $this->transferPaymentService = $transferPaymentService;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
         $this->purchaseDataService = $purchaseDataService;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function render(Purchase $purchase)
@@ -74,7 +75,7 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
         );
 

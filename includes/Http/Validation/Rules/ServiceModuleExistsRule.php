@@ -2,7 +2,7 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class ServiceModuleExistsRule extends BaseRule
 {

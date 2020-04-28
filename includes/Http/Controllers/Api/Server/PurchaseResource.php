@@ -7,7 +7,7 @@ use App\Http\Services\PurchaseService;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\System\ServerAuth;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 

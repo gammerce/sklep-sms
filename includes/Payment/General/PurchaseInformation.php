@@ -5,7 +5,7 @@ use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class PurchaseInformation
 {

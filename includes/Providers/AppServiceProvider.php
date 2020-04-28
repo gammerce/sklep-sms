@@ -14,11 +14,12 @@ use App\System\License;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\BlockManager;
+use App\Managers\BlockManager;
 use App\View\CurrentPage;
-use App\View\PageManager;
-use App\View\ServiceModuleManager;
-use App\View\WebsiteHeader;
+use App\Managers\PageManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -44,6 +45,7 @@ class AppServiceProvider
         $app->singleton(PageManager::class);
         $app->singleton(BlockManager::class);
         $app->singleton(ServiceModuleManager::class);
+        $app->singleton(PaymentModuleManager::class);
     }
 
     private function registerDatabase(Application $app)

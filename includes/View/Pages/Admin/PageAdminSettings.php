@@ -6,7 +6,6 @@ use App\Repositories\PaymentPlatformRepository;
 use App\Support\FileSystem;
 use App\Support\Path;
 use App\Support\Template;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -15,6 +14,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\Option;
 use App\View\Html\Select;
+use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSettings extends PageAdmin
@@ -27,9 +27,6 @@ class PageAdminSettings extends PageAdmin
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var Translator */
     private $langShop;
 
@@ -39,12 +36,15 @@ class PageAdminSettings extends PageAdmin
     /** @var Path */
     private $path;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Settings $settings,
         PaymentPlatformRepository $paymentPlatformRepository,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         FileSystem $fileSystem,
         Path $path
     ) {
@@ -52,10 +52,10 @@ class PageAdminSettings extends PageAdmin
 
         $this->settings = $settings;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
-        $this->heart = $heart;
         $this->langShop = $translationManager->shop();
         $this->fileSystem = $fileSystem;
         $this->path = $path;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function getPrivilege()
@@ -75,7 +75,7 @@ class PageAdminSettings extends PageAdmin
         $directBillingPlatforms = [];
 
         foreach ($this->paymentPlatformRepository->all() as $paymentPlatform) {
-            $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
+            $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
             if ($paymentModule instanceof SupportSms) {
                 $smsPlatforms[] = $this->createPaymentPlatformOption(

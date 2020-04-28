@@ -7,7 +7,7 @@ use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\HeadCell;
-use App\View\WebsiteHeader;
+use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminIncome extends PageAdmin

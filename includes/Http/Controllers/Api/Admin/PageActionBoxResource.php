@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
 use App\Translation\TranslationManager;
-use App\View\PageManager;
+use App\Managers\PageManager;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 

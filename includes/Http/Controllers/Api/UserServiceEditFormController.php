@@ -9,7 +9,7 @@ use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\ServiceModuleManager;
+use App\Managers\ServiceModuleManager;
 
 class UserServiceEditFormController
 {

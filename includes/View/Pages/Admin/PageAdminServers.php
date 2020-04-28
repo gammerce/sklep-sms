@@ -20,7 +20,8 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
-use App\View\ServiceModuleManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
@@ -36,17 +37,22 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
         ServiceModuleManager $serviceModuleManager,
+        PaymentModuleManager $paymentModuleManager,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function getPrivilege()
@@ -132,7 +138,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $smsPlatforms = collect($this->paymentPlatformRepository->all())
             ->filter(function (PaymentPlatform $paymentPlatform) {
-                $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
+                $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
                 return $paymentModule instanceof SupportSms;
             })
             ->map(function (PaymentPlatform $paymentPlatform) use ($server) {
@@ -146,7 +152,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $transferPlatforms = collect($this->paymentPlatformRepository->all())
             ->filter(function (PaymentPlatform $paymentPlatform) {
-                $paymentModule = $this->heart->getPaymentModule($paymentPlatform);
+                $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
                 return $paymentModule instanceof SupportTransfer;
             })
             ->map(function (PaymentPlatform $paymentPlatform) use ($server) {

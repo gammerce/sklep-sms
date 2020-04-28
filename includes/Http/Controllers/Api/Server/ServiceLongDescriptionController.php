@@ -6,8 +6,8 @@ use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
-use App\View\ServiceModuleManager;
-use App\View\WebsiteHeader;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
