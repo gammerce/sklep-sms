@@ -40,7 +40,7 @@ class BlockManager
      */
     public function exists($blockId)
     {
-        return isset($this->blocksClasses[$blockId]);
+        return isset($this->classes[$blockId]);
     }
 
     /**

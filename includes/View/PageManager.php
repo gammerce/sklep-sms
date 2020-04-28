@@ -57,18 +57,18 @@ class PageManager
 
     /**
      * @param string $pageId
-     * @return PageAdmin|null
+     * @return Page|null
      */
-    public function getAdmin($pageId)
+    public function getUser($pageId)
     {
-        return $this->get($pageId, "admin");
+        return $this->get($pageId, "user");
     }
 
     /**
      * @param string $pageId
-     * @return Page|null
+     * @return PageAdmin|null
      */
-    public function getUser($pageId)
+    public function getAdmin($pageId)
     {
         return $this->get($pageId, "admin");
     }

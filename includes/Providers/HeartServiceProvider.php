@@ -141,7 +141,7 @@ class HeartServiceProvider
 
     private function registerAdminPages(PageManager $pageManager)
     {
-        $pageManager->registerAdmin(PageAdminAntispamQuestions::PAGE_ID);
+        $pageManager->registerAdmin(PageAdminAntispamQuestions::class);
         $pageManager->registerAdmin(PageAdminBoughtServices::class);
         $pageManager->registerAdmin(PageAdminGroups::class);
         $pageManager->registerAdmin(PageAdminMain::class);

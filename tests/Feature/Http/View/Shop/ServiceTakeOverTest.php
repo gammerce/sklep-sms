@@ -13,23 +13,23 @@ class ServiceTakeOverTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/page/service_take_over');
+        $response = $this->get("/page/service_take_over");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Przejmij usługę', $response->getContent());
+        $this->assertContains("Przejmij usługę", $response->getContent());
     }
 
     /** @test */
     public function requires_being_logged()
     {
         // when
-        $response = $this->get('/page/service_take_over');
+        $response = $this->get("/page/service_take_over");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $this->assertContains(
-            'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
+            "Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.",
             $response->getContent()
         );
     }

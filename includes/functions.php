@@ -14,6 +14,7 @@ use App\Translation\TranslationManager;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Get the available container instance.
@@ -710,4 +711,13 @@ function url($path, array $query = [])
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
     return $url->to($path, $query);
+}
+
+function dd(...$vars)
+{
+    foreach ($vars as $v) {
+        VarDumper::dump($v);
+    }
+
+    exit(1);
 }
