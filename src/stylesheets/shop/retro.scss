@@ -133,22 +133,22 @@ body {
 }
 
 /* Przyciski funkcji konta (prawa część strony) */
-.user_buttons_td {
+.user-buttons-td {
     vertical-align: bottom;
     width: 200px;
 }
 
-.user_buttons {
+.user-buttons {
     margin: 0;
     white-space: nowrap;
     text-align: left;
 }
 
-.user_buttons ul {
+.user-buttons ul {
     text-align: left;
 }
 
-.user_buttons li a,
+.user-buttons li a,
 #loginarea_roll_button,
 #register_redirect_button,
 #logout {
@@ -156,11 +156,11 @@ body {
     box-shadow: 4px 3px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
-.user_buttons li:nth-child(2n) a {
+.user-buttons li:nth-child(2n) a {
     background-color: #3f3c41;
 }
 
-.user_buttons li a:hover,
+.user-buttons li a:hover,
 #loginarea_roll_button:hover,
 #logout:hover {
     color: #6d9782;
@@ -168,14 +168,14 @@ body {
 
 /* Wspólne klasy dla przycisków po lewej i po prawej stronie */
 .services_buttons ul,
-.user_buttons ul {
+.user-buttons ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
 .services_buttons li a,
-.user_buttons li a,
+.user-buttons li a,
 #loginarea_roll_button,
 #register_redirect_button,
 #logout {
@@ -193,7 +193,7 @@ body {
     background: #fff;
 }
 
-.user_buttons li a:hover,
+.user-buttons li a:hover,
 #loginarea_roll_button:hover,
 #register_redirect_button:hover,
 #logout:hover {

@@ -1,29 +1,62 @@
 <div class="navbar-item has-dropdown is-hoverable">
     <a class="navbar-link">
-        {{ $userName }}
+        <span class="icon">
+            <i class="fas fa-dollar-sign"></i>
+        </span>
+        <span>88.88</span>
     </a>
 
-    <div class="navbar-dropdown">
-        {$acpButton}
-        <a class="navbar-item" href="{{ $url->to('/page/profile') }}">
-            {{ __('profile') }}
+    <div class="navbar-dropdown is-right">
+        <a class="navbar-item" href="{{ $url->to('/page/payment_log') }}">
+            <span class="icon">
+                <i class="fas fa-database"></i>
+            </span>
+            <span>{{ __('payment_log') }}</span>
         </a>
         {$chargeWalletButton}
-        <a class="navbar-item" href="{{ $url->to('/page/user_own_services') }}">
-            {{ __('my_services') }}
+    </div>
+</div>
+
+<div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link">
+        <span class="icon">
+            <i class="fas fa-user"></i>
+        </span>
+        <span>{{ $username }} ({{ $userId }})</span>
+    </a>
+
+    <div class="navbar-dropdown is-right">
+        {$acpButton}
+        <a class="navbar-item" href="{{ $url->to('/page/profile') }}">
+            <span class="icon">
+                <i class="fas fa-user-circle"></i>
+            </span>
+            <span>{{ __('profile') }}</span>
         </a>
         <a class="navbar-item" href="{{ $url->to('/page/user_own_services') }}">
-            {{ __('my_services') }}
+            <span class="icon">
+                <i class="fas fa-list"></i>
+            </span>
+            <span>{{ __('my_services') }}</span>
         </a>
         <a class="navbar-item" href="{{ $url->to('/page/service_take_over') }}">
-            {{ __('take_over_service') }}
+            <span class="icon">
+                <i class="fas fa-exchange-alt"></i>
+            </span>
+            <span>{{ __('take_over_service') }}</span>
         </a>
         <a class="navbar-item" href="{{ $url->to('/page/change_password') }}">
-            {{ __('change_password') }}
+            <span class="icon">
+                <i class="fas fa-key"></i>
+            </span>
+            <span>{{ __('change_password') }}</span>
         </a>
         <hr class="navbar-divider" />
         <a id="logout" class="navbar-item">
-            {{ __('logout') }}
+            <span class="icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </span>
+            <span>{{ __('logout') }}</span>
         </a>
     </div>
 </div>

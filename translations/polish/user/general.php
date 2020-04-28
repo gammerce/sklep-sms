@@ -7,7 +7,7 @@ return [
     'available_services' => 'Dostępne usługi',
     'bad_service_code' => 'Podany kod jest błędny lub nie pasuje do kupowanej usługi.',
     'change_password' => 'Zmiana hasła',
-    'charge_wallet' => 'Doładowanie Portfela',
+    'charge_wallet' => 'Doładuj portfel',
     'choose_payment' => 'Wybierz płatność',
     'choose_payment_module' => 'Wybierz moduł płatności',
     'clear' => 'Wyczyść',

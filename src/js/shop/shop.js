@@ -36,8 +36,12 @@ $(document).delegate("#form_login", "submit", function(e) {
                 return sthWentWrong();
             }
 
+            if (window.location.pathname.endsWith("/page/signin")) {
+                window.location.href = buildUrl("/");
+            }
+
             if (jsonObj.return_id === "logged_in") {
-                $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
+                $("#user-buttons").css({ overflow: "hidden" }); // Hide login area
                 refreshBlocks(
                     "logged_info,wallet,user_buttons,services_buttons" +
                         ($("#form_login_reload_content").val() == "0"
@@ -102,7 +106,7 @@ $(document).delegate("#loginarea_roll_button", "click", function() {
             },
             500,
             function() {
-                $("#user_buttons").css({
+                $("#user-buttons").css({
                     overflow: area.css("overflow") != "hidden" ? "hidden" : "visible",
                 });
                 $(".loginarea table")
@@ -126,4 +130,9 @@ $(document).delegate(".language-item", "click", function() {
     restRequest("PUT", "/api/session/language", { language: langClicked }, function() {
         location.reload();
     });
+});
+
+$(document).delegate(".navbar-burger", "click", function() {
+    $(this).toggleClass("is-active");
+    $(".navbar-menu").toggleClass("is-active");
 });

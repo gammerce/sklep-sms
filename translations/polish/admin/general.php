@@ -269,7 +269,6 @@ return [
     'vat' => 'VAT',
     'version' => 'Wersja',
     'versions' => 'Wersje',
-    'wallet_charge' => 'Doładowanie portfela',
     'web_update_instruction' =>
         'Wchodzimy na stronę <a href="https://github.com/gammerce/sklep-sms/releases/latest" target="_blank">repozytorium sklepu</a> i pobieramy plik <strong>build.zip</strong>',
     'wrong_group' => 'Wybrano błędną grupę.',

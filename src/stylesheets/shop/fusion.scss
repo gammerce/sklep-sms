@@ -9,9 +9,13 @@ $scheme-invert: hsl(0, 0%, 96%);
 $scheme-invert-bis: hsl(0, 0%, 93%);
 $scheme-invert-ter: hsl(0, 0%, 86%);
 
+$background: $scheme-invert-bis;
+$body-background-color: $background;
+
 $text-strong: inherit;
 $footer-color: $scheme-invert;
 $navbar-item-color: $scheme-invert;
+$navbar-dropdown-item-hover-color: $scheme-main;
 $card-color: $scheme-invert;
 $button-color: $scheme-invert;
 $button-hover-color: #fff;
@@ -36,6 +40,10 @@ body {
 .site-content {
     background: url("../../images/background.jpg") no-repeat fixed;
     padding-bottom: 5rem;
+}
+
+.user-buttons {
+    display: contents;
 }
 
 .footer {

@@ -50,12 +50,12 @@ class BlockUserButtons extends Block
 
     public function getContentClass()
     {
-        return is_logged() ? "user_buttons" : "loginarea";
+        return is_logged() ? "user-buttons" : "loginarea";
     }
 
     public function getContentId()
     {
-        return "user_buttons";
+        return "user-buttons";
     }
 
     protected function content(Request $request, array $params)
@@ -69,6 +69,7 @@ class BlockUserButtons extends Block
 
         if (has_privileges("acp", $user)) {
             $acpButton = $this->template->render("navigation_item", [
+                "icon" => "fa-user-shield",
                 "link" => $this->url->to("/admin"),
                 "text" => $this->lang->t("acp"),
             ]);
@@ -81,13 +82,18 @@ class BlockUserButtons extends Block
             )
         ) {
             $chargeWalletButton = $this->template->render("navigation_item", [
-                "link" => $this->url->to("/page/purchase?service=charge_wallet"),
+                "icon" => "fa-wallet",
+                "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
                 "text" => $this->lang->t("charge_wallet"),
             ]);
         }
 
-        return $this->template->render("user_buttons", compact("acpButton", "chargeWalletButton") + [
-            "userName" => $user->getUsername()
-        ]);
+        return $this->template->render(
+            "user_buttons",
+            compact("acpButton", "chargeWalletButton") + [
+                "username" => $user->getUsername(),
+                "userId" => $user->getUid(),
+            ]
+        );
     }
 }

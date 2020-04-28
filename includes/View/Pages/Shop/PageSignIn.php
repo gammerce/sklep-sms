@@ -1,10 +1,11 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageSignIn extends Page
+class PageSignIn extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = "signin";
 

@@ -7,7 +7,7 @@ return [
     'available_services' => 'Available services',
     'bad_service_code' => 'Code is wrong or doesn\'t match purchase details.',
     'change_password' => 'Change password',
-    'charge_wallet' => 'Wallet Charge',
+    'charge_wallet' => 'Top up your wallet',
     'choose_payment' => 'Choose payment',
     'choose_payment_module' => 'Choose payment module',
     'clear' => 'Clear',
