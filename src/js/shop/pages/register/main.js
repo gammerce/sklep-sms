@@ -48,11 +48,9 @@ $(document).delegate("#register", "submit", function(e) {
                     showWarnings($("#register"), jsonObj.warnings);
                 }
 
-                $("#register .register_antispam [headers=as_question]").html(
-                    jsonObj.antispam.question
-                );
-                $("#register .register_antispam [name=as_id]").val(jsonObj.antispam.id);
-                $("#register .register_antispam [name=as_answer]").val("");
+                $("#register [headers=as_question]").html(jsonObj.antispam.question);
+                $("#register [name=as_id]").val(jsonObj.antispam.id);
+                $("#register [name=as_answer]").val("");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

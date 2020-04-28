@@ -12,6 +12,9 @@ $text-strong: inherit;
 $footer-color: $scheme-invert;
 $navbar-item-color: $scheme-invert;
 $card-color: $scheme-invert;
+$button-color: $scheme-invert;
+$button-hover-color: #fff;
+$input-color: $scheme-invert;
 
 @import "src/stylesheets/general/vendors";
 
@@ -30,6 +33,7 @@ body {
 
 .site-content {
     background: url("../../images/background.jpg") no-repeat fixed;
+    padding-bottom: 5rem;
 }
 
 .footer {
@@ -77,5 +81,24 @@ body {
 }
 
 .is-fullheight {
+    height: 100%;
+}
+
+.section-body {
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+}
+
+.required {
+    &:after {
+        content: "*";
+        color: $danger;
+        margin-left: 4px;
+    }
+}
+
+.homepage-box {
+    display: flex;
+    align-items: center;
     height: 100%;
 }

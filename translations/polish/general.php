@@ -112,7 +112,7 @@ return [
     'wallet' => 'Portfel',
     'wrong_email' => 'Wprowadzony adres e-mail jest nieprawidłowy.',
     'wrong_ip' => 'Wprowadzony adres IP jest nieprawidłowy.',
-    'wrong_login_data' => 'Login i/lub hasło są nieprawidłowe.',
+    'wrong_login_data' => 'Podane dane są nieprawidłowe.',
     'wrong_sid' => 'Wprowadzony Steam ID jest nieprawidłowy.',
     'wrong_sign' => 'Coś tu nie gra, weryfikacja danych zakończyła się informatyczną klęską.',
     'yes' => 'Tak',

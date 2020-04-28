@@ -77,10 +77,16 @@ export const showAndEnable = function(node) {
 
 export const showWarnings = function(form, warnings) {
     $.each(warnings, function(name, element) {
-        var inputElement = form.find('[name="' + name + '"]');
-        var appendedElement = Array.isArray(element) ? element.join("<br />") : element;
-        inputElement.closest(".field").append(appendedElement);
-        inputElement.effect("highlight", 1000);
+        const inputElement = form.find('[name="' + name + '"]');
+        const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
+        const field = inputElement.closest(".field");
+
+        inputElement.addClass("is-danger");
+        field.append(appendedElement);
+
+        if (inputElement.effect) {
+            inputElement.effect("highlight", 1000);
+        }
     });
 };
 

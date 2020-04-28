@@ -1,6 +1,10 @@
 <?php
 namespace App\Providers;
 
+use App\Managers\BlockManager;
+use App\Managers\PageManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
@@ -19,14 +23,12 @@ use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
 use App\Verification\PaymentModules\Zabijaka;
-use App\Managers\BlockManager;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
-use App\Managers\PageManager;
 use App\View\Pages\Admin\PageAdminAntispamQuestions;
 use App\View\Pages\Admin\PageAdminBoughtServices;
 use App\View\Pages\Admin\PageAdminGroups;
@@ -66,12 +68,9 @@ use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
 use App\View\Pages\Shop\PageSignIn;
-use App\View\Pages\Shop\PageSignUp;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
 use App\View\Pages\Shop\PageUserOwnServices;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
 
 class HeartServiceProvider
 {
@@ -133,7 +132,6 @@ class HeartServiceProvider
         $pageManager->registerUser(PageRegulations::class);
         $pageManager->registerUser(PageResetPassword::class);
         $pageManager->registerUser(PageSignIn::class);
-        $pageManager->registerUser(PageSignUp::class);
         $pageManager->registerUser(PageTPaySuccess::class);
         $pageManager->registerUser(PageTakeOverService::class);
         $pageManager->registerUser(PageUserOwnServices::class);

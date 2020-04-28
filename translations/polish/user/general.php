@@ -4,7 +4,6 @@ return [
     'admin' => 'Admin',
     'answer' => 'Odpowiedź',
     'antispam_question' => 'Pytanie Antyspamowe',
-    'bad_pass_nick' => 'No niestety, ale hasło i/lub nazwa użytkownika są błędne.',
     'bad_service_code' => 'Podany kod jest błędny lub nie pasuje do kupowanej usługi.',
     'change_password' => 'Zmiana hasła',
     'charge_wallet' => 'Doładowanie Portfela',

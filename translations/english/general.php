@@ -112,8 +112,8 @@ return [
     'wallet' => 'Wallet',
     'wrong_email' => 'Given e-mail is incorrect.',
     'wrong_ip' => 'Given IP address is incorrect.',
-    'wrong_login_data' => 'Nickname and/or password are incorrect.',
+    'wrong_login_data' => 'Provided credentials are incorrect.',
     'wrong_sid' => 'Given Steam ID is incorrect.',
-    'wrong_sign' => 'Something is wrong, data verification ended up an IT failure.',
+    'wrong_sign' => 'Something is wrong, couldn\'t verify data. Please refresh the page.',
     'yes' => 'Yes',
 ];

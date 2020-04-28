@@ -1,1 +1,62 @@
-Siema signin
+<header class="section">
+    <div class="container">
+        <h1 class="title">{{ __('sign_in') }}</h1>
+        <h2 class="subtitle">Login to your account</h2>
+    </div>
+</header>
+
+<main class="section section-body">
+    <div class="container">
+        <form id="form_login">
+            <div class="field">
+                <label class="label has-text-black" for="username">
+                    {{ __('username') }}
+                </label>
+
+                <div class="control">
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        class="input"
+                        maxlength="256"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field">
+                <label class="label has-text-black" for="password">
+                    {{ __('password') }}
+                </label>
+
+                <div class="control">
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        class="input"
+                        maxlength="256"
+                        required
+                    />
+                </div>
+            </div>
+
+            <div class="field">
+                <div class="control">
+                    <a href="{{ url('/page/forgotten_password') }}">
+                        {{ __('forgot_password') }}
+                    </a>
+                </div>
+            </div>
+
+            <div class="field action-buttons">
+                <div class="control is-expanded">
+                    <button class="button w100">
+                        {{ __('sign_in') }}
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
