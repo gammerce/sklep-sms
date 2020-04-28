@@ -10,8 +10,8 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,8 +21,8 @@ class ServiceResource
         $serviceId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
         ServiceService $serviceService,
+        ServiceModuleManager $serviceModuleManager,
         ServiceRepository $serviceRepository,
         DatabaseLogger $logger
     ) {
@@ -39,7 +39,7 @@ class ServiceResource
             ]
         );
 
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         $serviceService->extendValidator($validator, $serviceModule);
 
         $validated = $validator->validateOrFail();
@@ -75,12 +75,12 @@ class ServiceResource
         $serviceId,
         TranslationManager $translationManager,
         ServiceRepository $serviceRepository,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
 
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         if ($serviceModule !== null) {
             $serviceModule->serviceDelete($serviceId);
         }

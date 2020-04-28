@@ -8,6 +8,7 @@ use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageTakeOverService extends Page implements IBeLoggedMust
@@ -17,13 +18,18 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
+        ServiceModuleManager $serviceModuleManager,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
         $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -35,7 +41,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
     {
         $servicesOptions = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                $serviceModule = $this->heart->getServiceModule($service->getId());
+                $serviceModule = $this->serviceModuleManager->get($service->getId());
                 // Service module doesn't allow taking the service over
                 return $serviceModule instanceof IServiceTakeOver;
             })

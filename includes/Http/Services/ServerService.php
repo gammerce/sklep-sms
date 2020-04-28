@@ -10,6 +10,7 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
 use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class ServerService
 {
@@ -19,10 +20,17 @@ class ServerService
     /** @var ServerServiceService */
     private $serverServiceService;
 
-    public function __construct(Heart $heart, ServerServiceService $serverServiceService)
-    {
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
+    public function __construct(
+        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
+        ServerServiceService $serverServiceService
+    ) {
         $this->heart = $heart;
         $this->serverServiceService = $serverServiceService;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function createValidator(array $body)
@@ -48,7 +56,7 @@ class ServerService
     {
         $serversServices = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                return $this->heart->getServiceModule($service->getId()) instanceof
+                return $this->serviceModuleManager->get($service->getId()) instanceof
                     IServicePurchaseExternal;
             })
             ->map(function (Service $service) use ($serverId, $body) {

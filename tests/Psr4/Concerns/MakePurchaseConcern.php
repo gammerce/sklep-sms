@@ -9,8 +9,8 @@ use App\Models\Purchase;
 use App\Models\Server;
 use App\Repositories\BoughtServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
-use App\System\Heart;
 use App\Verification\PaymentModules\Cssetti;
+use App\View\ServiceModuleManager;
 use UnexpectedValueException;
 
 trait MakePurchaseConcern
@@ -26,8 +26,8 @@ trait MakePurchaseConcern
         $this->mockPaymentModuleFactory();
         $this->makeVerifySmsSuccessful(Cssetti::class);
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var ServiceModuleManager $serviceModuleManager */
+        $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
 
         /** @var PurchaseService $purchaseService */
         $purchaseService = $this->app->make(PurchaseService::class);
@@ -67,7 +67,7 @@ trait MakePurchaseConcern
             $attributes
         );
 
-        $serviceModule = $heart->getServiceModule('vip');
+        $serviceModule = $serviceModuleManager->get('vip');
         $result = $purchaseService->purchase($serviceModule, $server, $attributes);
 
         if ($result->getStatus() !== 'purchased') {

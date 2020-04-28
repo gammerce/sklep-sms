@@ -8,10 +8,10 @@ use App\Support\FileSystem;
 use App\Support\Path;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
+use App\View\ServiceModuleManager;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -28,9 +28,6 @@ class PagePurchase extends Page
     /** @var WebsiteHeader */
     private $websiteHeader;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var Path */
     private $path;
 
@@ -40,13 +37,16 @@ class PagePurchase extends Page
     /** @var UrlGenerator */
     private $url;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Auth $auth,
         UserServiceAccessService $userServiceAccessService,
         WebsiteHeader $websiteHeader,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         Path $path,
         FileSystem $fileSystem,
         UrlGenerator $url
@@ -56,10 +56,10 @@ class PagePurchase extends Page
         $this->auth = $auth;
         $this->userServiceAccessService = $userServiceAccessService;
         $this->websiteHeader = $websiteHeader;
-        $this->heart = $heart;
         $this->path = $path;
         $this->fileSystem = $fileSystem;
         $this->url = $url;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -123,6 +123,6 @@ class PagePurchase extends Page
     private function getServiceModule(Request $request)
     {
         $serviceId = $request->query->get("service");
-        return $this->heart->getServiceModule($serviceId);
+        return $this->serviceModuleManager->get($serviceId);
     }
 }

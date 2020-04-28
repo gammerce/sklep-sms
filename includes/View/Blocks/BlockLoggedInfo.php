@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BlockLoggedInfo extends Block implements IBeLoggedMust
 {
+    const BLOCK_ID = "logged_info";
+
     /** @var Auth */
     private $auth;
 

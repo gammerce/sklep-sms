@@ -11,8 +11,8 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceCollection
@@ -20,7 +20,7 @@ class ServiceCollection
     public function post(
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         ServiceService $serviceService,
         ServiceRepository $serviceRepository,
         DatabaseLogger $logger
@@ -28,7 +28,7 @@ class ServiceCollection
         $lang = $translationManager->user();
 
         $module = $request->request->get("module");
-        $serviceModule = $heart->getEmptyServiceModule($module);
+        $serviceModule = $serviceModuleManager->getEmpty($module);
 
         $validator = new Validator($request->request->all(), [
             "id" => [new RequiredRule(), new MaxLengthRule(16), new ServiceNotExistsRule()],

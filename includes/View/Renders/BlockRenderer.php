@@ -1,22 +1,22 @@
 <?php
 namespace App\View\Renders;
 
-use App\System\Heart;
+use App\View\BlockManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockRenderer
 {
-    /** @var Heart */
-    private $heart;
+    /** @var BlockManager */
+    private $blockManager;
 
-    public function __construct(Heart $heart)
+    public function __construct(BlockManager $blockManager)
     {
-        $this->heart = $heart;
+        $this->blockManager = $blockManager;
     }
 
     public function render($blockId, Request $request, array $params = [])
     {
-        $block = $this->heart->getBlock($blockId);
+        $block = $this->blockManager->get($blockId);
         return $block ? $block->getContentEnveloped($request, $params) : "";
     }
 }

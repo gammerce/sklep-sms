@@ -9,8 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class Page
 {
-    const PAGE_ID = "";
-
     /** @var Template */
     protected $template;
 

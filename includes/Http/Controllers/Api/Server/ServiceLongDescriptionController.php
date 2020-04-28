@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Api\Server;
 use App\Http\Responses\HtmlResponse;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
+use App\View\ServiceModuleManager;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -16,7 +16,7 @@ class ServiceLongDescriptionController
         $serviceId,
         Request $request,
         Template $template,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         WebsiteHeader $websiteHeader,
         TranslationManager $translationManager,
         UrlGenerator $url
@@ -40,7 +40,7 @@ class ServiceLongDescriptionController
         $body = "";
         $pageTitle = $lang->t("description") . ": ";
 
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         if ($serviceModule) {
             $body = $serviceModule->descriptionLongGet();
             $pageTitle .= $serviceModule->service->getName();

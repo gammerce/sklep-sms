@@ -6,9 +6,9 @@ use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePayment extends Page
@@ -21,13 +21,13 @@ class PagePayment extends Page
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
         PaymentMethodFactory $paymentMethodFactory
     ) {
@@ -35,7 +35,7 @@ class PagePayment extends Page
 
         $this->paymentMethodFactory = $paymentMethodFactory;
         $this->purchaseDataService = $purchaseDataService;
-        $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -52,7 +52,7 @@ class PagePayment extends Page
             return $this->lang->t("error_occurred");
         }
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
+        $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             return $this->lang->t("bad_module");
         }

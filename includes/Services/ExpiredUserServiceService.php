@@ -4,15 +4,12 @@ namespace App\Services;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class ExpiredUserServiceService
 {
     /** @var Database */
     private $db;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var DatabaseLogger */
     private $logger;
@@ -23,18 +20,21 @@ class ExpiredUserServiceService
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Database $db,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         DatabaseLogger $logger,
         UserServiceService $userServiceService,
         UserServiceRepository $userServiceRepository
     ) {
         $this->db = $db;
-        $this->heart = $heart;
         $this->logger = $logger;
         $this->userServiceService = $userServiceService;
         $this->userServiceRepository = $userServiceRepository;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function deleteExpired()
@@ -50,7 +50,7 @@ class ExpiredUserServiceService
             )
             as $userService
         ) {
-            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+            $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
             if (!$serviceModule) {
                 continue;
             }
@@ -69,7 +69,7 @@ class ExpiredUserServiceService
         $this->userServiceRepository->deleteMany($deleteIds);
 
         foreach ($usersServices as $userService) {
-            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+            $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
             if ($serviceModule) {
                 $serviceModule->userServiceDeletePost($userService);
             }

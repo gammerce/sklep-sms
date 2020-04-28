@@ -18,6 +18,7 @@ use App\View\Html\RawText;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox
@@ -27,13 +28,18 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
+        ServiceModuleManager $serviceModuleManager,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
         $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getPrivilege()
@@ -102,7 +108,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             $service = $this->heart->getService($query["id"]);
 
             if (strlen($service->getModule())) {
-                $serviceModule = $this->heart->getServiceModule($service->getId());
+                $serviceModule = $this->serviceModuleManager->get($service->getId());
 
                 if ($serviceModule instanceof IServiceAdminManage) {
                     $extraFields = create_dom_element(
@@ -115,14 +121,14 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 }
             }
         } elseif ($boxId == "service_add") {
-            $servicesModules = collect($this->heart->getEmptyServiceModules())
+            $servicesModules = collect($this->serviceModuleManager->all())
                 ->filter(function (ServiceModule $serviceModule) {
                     return $serviceModule instanceof IServiceCreate;
                 })
                 ->map(function (ServiceModule $serviceModule) {
                     return create_dom_element(
                         "option",
-                        $this->heart->getServiceModuleName($serviceModule->getModuleId()),
+                        $this->serviceModuleManager->getName($serviceModule->getModuleId()),
                         [
                             "value" => $serviceModule->getModuleId(),
                         ]
@@ -152,7 +158,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "service_edit":
-                $serviceModuleName = $this->heart->getServiceModuleName($service->getModule());
+                $serviceModuleName = $this->serviceModuleManager->getName($service->getModule());
 
                 $output = $this->template->render(
                     "admin/action_boxes/service_edit",

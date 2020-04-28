@@ -2,8 +2,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\PageManager;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -14,7 +14,7 @@ class PageActionBoxResource
         $actionBoxId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart
+        PageManager $pageManager
     ) {
         $lang = $translationManager->user();
 
@@ -22,7 +22,7 @@ class PageActionBoxResource
             return new ApiResponse("no_data", $lang->t('not_all_data'), 0);
         }
 
-        $page = $heart->getPage($pageId, "admin");
+        $page = $pageManager->getAdmin($pageId);
         if (!$page) {
             return new ApiResponse("wrong_page", $lang->t('wrong_page_id'), 0);
         }

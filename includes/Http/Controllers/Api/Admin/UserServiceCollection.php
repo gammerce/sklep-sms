@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceCollection
@@ -13,12 +13,12 @@ class UserServiceCollection
     public function post(
         $serviceId,
         Request $request,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
 
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         if (!($serviceModule instanceof IServiceUserServiceAdminAdd)) {
             throw new InvalidServiceModuleException();
         }

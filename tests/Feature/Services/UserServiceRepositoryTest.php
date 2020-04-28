@@ -3,7 +3,7 @@ namespace Tests\Feature\Services;
 
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class UserServiceRepositoryTest extends TestCase
@@ -21,10 +21,10 @@ class UserServiceRepositoryTest extends TestCase
     public function do_not_update_if_empty_data()
     {
         // given
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var ServiceModuleManager $serviceModuleManager */
+        $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
 
-        $serviceModule = $heart->getEmptyServiceModule(ExtraFlagsServiceModule::MODULE_ID);
+        $serviceModule = $serviceModuleManager->getEmpty(ExtraFlagsServiceModule::MODULE_ID);
         $userService = $this->factory->extraFlagUserService([
             "server_id" => $this->factory->server()->getId(),
         ]);

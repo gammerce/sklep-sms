@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api;
 
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Response;
 
 class ServiceLongDescriptionResource
 {
-    public function get($serviceId, Heart $heart)
+    public function get($serviceId, ServiceModuleManager $serviceModuleManager)
     {
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         return new Response($serviceModule ? $serviceModule->descriptionLongGet() : '');
     }
 }

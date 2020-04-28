@@ -7,18 +7,18 @@ use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockServicesButtons extends Block
 {
+    const BLOCK_ID = "services_buttons";
+
     /** @var Auth */
     private $auth;
 
     /** @var Template */
     private $template;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var UrlGenerator */
     private $url;
@@ -26,18 +26,26 @@ class BlockServicesButtons extends Block
     /** @var UserServiceAccessService */
     private $userServiceAccessService;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
+    /** @var Heart */
+    private $heart;
+
     public function __construct(
         Auth $auth,
         Template $template,
         Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         UrlGenerator $url,
         UserServiceAccessService $userServiceAccessService
     ) {
         $this->auth = $auth;
         $this->template = $template;
-        $this->heart = $heart;
         $this->url = $url;
         $this->userServiceAccessService = $userServiceAccessService;
+        $this->serviceModuleManager = $serviceModuleManager;
+        $this->heart = $heart;
     }
 
     public function getContentClass()
@@ -56,7 +64,7 @@ class BlockServicesButtons extends Block
 
         $services = collect($this->heart->getServices())
             ->filter(function (Service $service) use ($user) {
-                $serviceModule = $this->heart->getServiceModule($service->getId());
+                $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&
                     $serviceModule->showOnWeb() &&
                     $this->userServiceAccessService->canUserUseService($service, $user);

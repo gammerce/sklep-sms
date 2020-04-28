@@ -5,27 +5,27 @@ use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class PurchaseInformation
 {
     /** @var Database */
     private $db;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var TransactionRepository */
     private $transactionRepository;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Database $db,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         TransactionRepository $transactionRepository
     ) {
         $this->db = $db;
-        $this->heart = $heart;
         $this->transactionRepository = $transactionRepository;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     //
@@ -64,7 +64,7 @@ class PurchaseInformation
 
         $transaction = $this->transactionRepository->mapToModel($statement->fetch());
 
-        $serviceModule = $this->heart->getServiceModule($transaction->getServiceId());
+        $serviceModule = $this->serviceModuleManager->get($transaction->getServiceId());
 
         return $serviceModule instanceof IServicePurchaseWeb
             ? $serviceModule->purchaseInfo($data['action'], $transaction)

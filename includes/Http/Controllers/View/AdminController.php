@@ -9,10 +9,12 @@ use App\Support\Path;
 use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\View\Blocks\BlockAdminContent;
+use App\View\PageManager;
 use App\View\Renders\BlockRenderer;
+use App\View\ServiceModuleManager;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,18 +25,19 @@ class AdminController
         $pageId = "home",
         Request $request,
         Application $app,
-        Heart $heart,
         Auth $auth,
         License $license,
         Template $template,
         TranslationManager $translationManager,
         BlockRenderer $blockRenderer,
         UrlGenerator $url,
+        PageManager $pageManager,
         WebsiteHeader $websiteHeader,
         FileSystem $fileSystem,
+        ServiceModuleManager $serviceModuleManager,
         Path $path
     ) {
-        $page = $heart->getPage($pageId, "admin");
+        $page = $pageManager->getAdmin($pageId);
 
         if (!$page) {
             throw new EntityNotFoundException();
@@ -53,7 +56,7 @@ class AdminController
             }
         }
 
-        $content = $blockRenderer->render("admincontent", $request, [$page]);
+        $content = $blockRenderer->render(BlockAdminContent::BLOCK_ID, $request, [$page]);
 
         if (has_privileges("view_player_flags")) {
             $pid = "players_flags";
@@ -63,7 +66,7 @@ class AdminController
 
         if (has_privileges("view_user_services")) {
             $pid = "";
-            foreach ($heart->getEmptyServiceModules() as $serviceModule) {
+            foreach ($serviceModuleManager->all() as $serviceModule) {
                 if ($serviceModule instanceof IServiceUserServiceAdminDisplay) {
                     $pid = "user_service?subpage=" . urlencode($serviceModule->getModuleId());
                     break;

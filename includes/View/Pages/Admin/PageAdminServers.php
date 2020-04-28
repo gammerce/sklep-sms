@@ -20,6 +20,7 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
@@ -32,15 +33,20 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
+        ServiceModuleManager $serviceModuleManager,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getPrivilege()
@@ -155,7 +161,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $services = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                $serviceModule = $this->heart->getServiceModule($service->getId());
+                $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule instanceof IServicePurchaseExternal;
             })
             ->map(function (Service $service) use ($server) {

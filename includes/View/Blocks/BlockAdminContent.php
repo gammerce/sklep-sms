@@ -4,21 +4,24 @@ namespace App\View\Blocks;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\PageManager;
 use App\View\Pages\Admin\PageAdmin;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class BlockAdminContent extends Block
 {
-    /** @var Heart */
-    private $heart;
+    const BLOCK_ID = "admincontent";
 
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
+    /** @var PageManager */
+    private $pageManager;
+
+    public function __construct(PageManager $pageManager, TranslationManager $translationManager)
     {
-        $this->heart = $heart;
+        $this->pageManager = $pageManager;
         $this->lang = $translationManager->user();
     }
 
@@ -41,7 +44,7 @@ class BlockAdminContent extends Block
         $page = $params[0];
 
         if (!($page instanceof PageAdmin)) {
-            $page = $this->heart->getPage($page);
+            $page = $this->pageManager->getAdmin($page);
         }
 
         if (!$page) {

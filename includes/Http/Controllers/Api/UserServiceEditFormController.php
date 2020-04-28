@@ -7,9 +7,9 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 
 class UserServiceEditFormController
 {
@@ -18,7 +18,7 @@ class UserServiceEditFormController
         TranslationManager $translationManager,
         Settings $settings,
         Auth $auth,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         Template $template,
         UserServiceService $userServiceService
     ) {
@@ -39,7 +39,7 @@ class UserServiceEditFormController
             return new PlainResponse($lang->t('dont_play_games'));
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServicesEdit)) {
             return new PlainResponse($lang->t('service_cant_be_modified'));
         }

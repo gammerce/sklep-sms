@@ -7,9 +7,9 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 
 class UserServiceBrickController
 {
@@ -18,7 +18,7 @@ class UserServiceBrickController
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
@@ -34,7 +34,7 @@ class UserServiceBrickController
             return new PlainResponse($lang->t('dont_play_games'));
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServices)) {
             return new PlainResponse($lang->t('service_not_displayed'));
         }

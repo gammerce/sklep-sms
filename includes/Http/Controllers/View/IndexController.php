@@ -2,7 +2,8 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
-use App\System\Heart;
+use App\View\Blocks\BlockContent;
+use App\View\PageManager;
 use App\View\Renders\BlockRenderer;
 use App\View\Renders\ShopRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,17 +14,17 @@ class IndexController
     public function action(
         $pageId = 'home',
         Request $request,
-        Heart $heart,
+        PageManager $pageManager,
         ShopRenderer $shopRenderer,
         BlockRenderer $blockRenderer
     ) {
-        $page = $heart->getPage($pageId, "user");
+        $page = $pageManager->getUser($pageId);
 
         if (!$page) {
             throw new EntityNotFoundException();
         }
 
-        $content = $blockRenderer->render("content", $request, [$page]);
+        $content = $blockRenderer->render(BlockContent::BLOCK_ID, $request, [$page]);
         $output = $shopRenderer->render(
             $content,
             $page->getId(),

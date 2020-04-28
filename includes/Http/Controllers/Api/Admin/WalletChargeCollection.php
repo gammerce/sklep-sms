@@ -10,10 +10,12 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class WalletChargeCollection
@@ -26,6 +28,7 @@ class WalletChargeCollection
         Auth $auth,
         Settings $settings,
         DatabaseLogger $logger,
+        ServiceModuleManager $serviceModuleManager,
         AdminPaymentService $adminPaymentService
     ) {
         $lang = $translationManager->user();
@@ -43,7 +46,7 @@ class WalletChargeCollection
 
         $validated = $validator->validateOrFail();
 
-        $serviceModule = $heart->getServiceModule("charge_wallet");
+        $serviceModule = $serviceModuleManager->get(ChargeWalletServiceModule::MODULE_ID);
         if (!$serviceModule) {
             throw new InvalidServiceModuleException();
         }

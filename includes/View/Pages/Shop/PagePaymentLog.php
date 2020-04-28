@@ -13,6 +13,7 @@ use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
@@ -40,6 +41,9 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
@@ -48,6 +52,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         Auth $auth,
         Database $db,
         PaginationService $paginationService,
+        ServiceModuleManager $serviceModuleManager,
         CurrentPage $currentPage,
         Heart $heart
     ) {
@@ -60,6 +65,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->paginationService = $paginationService;
         $this->currentPage = $currentPage;
         $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -88,7 +94,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             $date = $transaction->getTimestamp();
             $cost = $this->priceTextService->getPriceText($transaction->getCost());
 
-            $serviceModule = $this->heart->getServiceModule($transaction->getServiceId());
+            $serviceModule = $this->serviceModuleManager->get($transaction->getServiceId());
             if ($serviceModule instanceof IServicePurchaseWeb) {
                 $logInfo = $serviceModule->purchaseInfo("payment_log", $transaction);
                 $desc = $logInfo["text"];

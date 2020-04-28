@@ -4,27 +4,27 @@ namespace App\Services;
 use App\Models\UserService;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class UserServiceService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var Database */
     private $db;
 
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         Database $db,
         UserServiceRepository $userServiceRepository
     ) {
-        $this->heart = $heart;
         $this->db = $db;
         $this->userServiceRepository = $userServiceRepository;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     /**
@@ -39,7 +39,7 @@ class UserServiceService
 
         $output = [];
 
-        foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
+        foreach ($this->serviceModuleManager->all() as $serviceModule) {
             $table = $serviceModule::USER_SERVICE_TABLE;
 
             if (!strlen($table)) {

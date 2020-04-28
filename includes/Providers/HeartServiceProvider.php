@@ -20,12 +20,14 @@ use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
 use App\Verification\PaymentModules\Zabijaka;
+use App\View\BlockManager;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
+use App\View\PageManager;
 use App\View\Pages\Admin\PageAdminAntispamQuestions;
 use App\View\Pages\Admin\PageAdminBoughtServices;
 use App\View\Pages\Admin\PageAdminGroups;
@@ -56,6 +58,7 @@ use App\View\Pages\Shop\PageContact;
 use App\View\Pages\Shop\PageForgottenPassword;
 use App\View\Pages\Shop\PageMain;
 use App\View\Pages\Shop\PagePayment;
+use App\View\Pages\Shop\PagePaymentError;
 use App\View\Pages\Shop\PagePaymentLog;
 use App\View\Pages\Shop\PagePaymentSuccess;
 use App\View\Pages\Shop\PageProfile;
@@ -63,10 +66,11 @@ use App\View\Pages\Shop\PagePurchase;
 use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
+use App\View\Pages\Shop\PageSignIn;
 use App\View\Pages\Shop\PageTakeOverService;
-use App\View\Pages\Shop\PagePaymentError;
 use App\View\Pages\Shop\PageTPaySuccess;
 use App\View\Pages\Shop\PageUserOwnServices;
+use App\View\ServiceModuleManager;
 
 class HeartServiceProvider
 {
@@ -74,12 +78,25 @@ class HeartServiceProvider
     {
         $app->extend(Heart::class, function (Heart $heart) {
             $this->registerPaymentModules($heart);
-            $this->registerPages($heart);
-            $this->registerAdminPages($heart);
-            $this->registerBlocks($heart);
-            $this->registerServices($heart);
-
             return $heart;
+        });
+
+        $app->extend(BlockManager::class, function (BlockManager $blockManager) {
+            $this->registerBlocks($blockManager);
+            return $blockManager;
+        });
+
+        $app->extend(PageManager::class, function (PageManager $pageManager) {
+            $this->registerPages($pageManager);
+            $this->registerAdminPages($pageManager);
+            return $pageManager;
+        });
+
+        $app->extend(ServiceModuleManager::class, function (
+            ServiceModuleManager $serviceModuleManager
+        ) {
+            $this->registerServices($serviceModuleManager);
+            return $serviceModuleManager;
         });
     }
 
@@ -100,107 +117,81 @@ class HeartServiceProvider
         $heart->registerPaymentModule(Zabijaka::MODULE_ID, Zabijaka::class);
     }
 
-    private function registerPages(Heart $heart)
+    private function registerPages(PageManager $pageManager)
     {
-        $heart->registerUserPage(
-            PageCashbillTransferFinalized::PAGE_ID,
-            PageCashbillTransferFinalized::class
-        );
-        $heart->registerUserPage(PageChangePassword::PAGE_ID, PageChangePassword::class);
-        $heart->registerUserPage(PageContact::PAGE_ID, PageContact::class);
-        $heart->registerUserPage(PageForgottenPassword::PAGE_ID, PageForgottenPassword::class);
-        $heart->registerUserPage(PageMain::PAGE_ID, PageMain::class);
-        $heart->registerUserPage(PagePayment::PAGE_ID, PagePayment::class);
-        $heart->registerUserPage(PagePaymentLog::PAGE_ID, PagePaymentLog::class);
-        $heart->registerUserPage(PageProfile::PAGE_ID, PageProfile::class);
-        $heart->registerUserPage(PagePurchase::PAGE_ID, PagePurchase::class);
-        $heart->registerUserPage(PageRegister::PAGE_ID, PageRegister::class);
-        $heart->registerUserPage(PageRegulations::PAGE_ID, PageRegulations::class);
-        $heart->registerUserPage(PageResetPassword::PAGE_ID, PageResetPassword::class);
-        $heart->registerUserPage(PageTakeOverService::PAGE_ID, PageTakeOverService::class);
-        $heart->registerUserPage(PagePaymentError::PAGE_ID, PagePaymentError::class);
-        $heart->registerUserPage(PagePaymentSuccess::PAGE_ID, PagePaymentSuccess::class);
-        $heart->registerUserPage(PageTPaySuccess::PAGE_ID, PageTPaySuccess::class);
-        $heart->registerUserPage(PageUserOwnServices::PAGE_ID, PageUserOwnServices::class);
+        $pageManager->registerUser(PageCashbillTransferFinalized::class);
+        $pageManager->registerUser(PageChangePassword::class);
+        $pageManager->registerUser(PageContact::class);
+        $pageManager->registerUser(PageForgottenPassword::class);
+        $pageManager->registerUser(PageMain::class);
+        $pageManager->registerUser(PagePayment::class);
+        $pageManager->registerUser(PagePaymentLog::class);
+        $pageManager->registerUser(PageProfile::class);
+        $pageManager->registerUser(PagePurchase::class);
+        $pageManager->registerUser(PageRegister::class);
+        $pageManager->registerUser(PageRegulations::class);
+        $pageManager->registerUser(PageResetPassword::class);
+        $pageManager->registerUser(PageTakeOverService::class);
+        $pageManager->registerUser(PagePaymentError::class);
+        $pageManager->registerUser(PagePaymentSuccess::class);
+        $pageManager->registerUser(PageTPaySuccess::class);
+        $pageManager->registerUser(PageUserOwnServices::class);
+        $pageManager->registerUser(PageSignIn::class);
     }
 
-    private function registerAdminPages(Heart $heart)
+    private function registerAdminPages(PageManager $pageManager)
     {
-        $heart->registerAdminPage(
-            PageAdminAntispamQuestions::PAGE_ID,
-            PageAdminAntispamQuestions::class
-        );
-        $heart->registerAdminPage(PageAdminBoughtServices::PAGE_ID, PageAdminBoughtServices::class);
-        $heart->registerAdminPage(PageAdminGroups::PAGE_ID, PageAdminGroups::class);
-        $heart->registerAdminPage(PageAdminMain::PAGE_ID, PageAdminMain::class);
-        $heart->registerAdminPage(PageAdminIncome::PAGE_ID, PageAdminIncome::class);
-        $heart->registerAdminPage(PageAdminLogs::PAGE_ID, PageAdminLogs::class);
-        $heart->registerAdminPage(PageAdminPaymentAdmin::PAGE_ID, PageAdminPaymentAdmin::class);
-        $heart->registerAdminPage(
-            PageAdminPaymentServiceCode::PAGE_ID,
-            PageAdminPaymentServiceCode::class
-        );
-        $heart->registerAdminPage(PageAdminPaymentSms::PAGE_ID, PageAdminPaymentSms::class);
-        $heart->registerAdminPage(
-            PageAdminPaymentTransfer::PAGE_ID,
-            PageAdminPaymentTransfer::class
-        );
-        $heart->registerAdminPage(
-            PageAdminPaymentDirectBilling::PAGE_ID,
-            PageAdminPaymentDirectBilling::class
-        );
-        $heart->registerAdminPage(PageAdminPaymentWallet::PAGE_ID, PageAdminPaymentWallet::class);
-        $heart->registerAdminPage(PageAdminPlayersFlags::PAGE_ID, PageAdminPlayersFlags::class);
-        $heart->registerAdminPage(PageAdminPricing::PAGE_ID, PageAdminPricing::class);
-        $heart->registerAdminPage(PageAdminServers::PAGE_ID, PageAdminServers::class);
-        $heart->registerAdminPage(PageAdminServiceCodes::PAGE_ID, PageAdminServiceCodes::class);
-        $heart->registerAdminPage(PageAdminServices::PAGE_ID, PageAdminServices::class);
-        $heart->registerAdminPage(PageAdminSettings::PAGE_ID, PageAdminSettings::class);
-        $heart->registerAdminPage(PageAdminSmsCodes::PAGE_ID, PageAdminSmsCodes::class);
-        $heart->registerAdminPage(
-            PageAdminPaymentPlatforms::PAGE_ID,
-            PageAdminPaymentPlatforms::class
-        );
-        $heart->registerAdminPage(PageAdminUpdateServers::PAGE_ID, PageAdminUpdateServers::class);
-        $heart->registerAdminPage(PageAdminUpdateWeb::PAGE_ID, PageAdminUpdateWeb::class);
-        $heart->registerAdminPage(PageAdminUserService::PAGE_ID, PageAdminUserService::class);
-        $heart->registerAdminPage(PageAdminUsers::PAGE_ID, PageAdminUsers::class);
+        $pageManager->registerAdmin(PageAdminAntispamQuestions::PAGE_ID);
+        $pageManager->registerAdmin(PageAdminBoughtServices::class);
+        $pageManager->registerAdmin(PageAdminGroups::class);
+        $pageManager->registerAdmin(PageAdminMain::class);
+        $pageManager->registerAdmin(PageAdminIncome::class);
+        $pageManager->registerAdmin(PageAdminLogs::class);
+        $pageManager->registerAdmin(PageAdminPaymentAdmin::class);
+        $pageManager->registerAdmin(PageAdminPaymentServiceCode::class);
+        $pageManager->registerAdmin(PageAdminPaymentSms::class);
+        $pageManager->registerAdmin(PageAdminPaymentTransfer::class);
+        $pageManager->registerAdmin(PageAdminPaymentDirectBilling::class);
+        $pageManager->registerAdmin(PageAdminPaymentWallet::class);
+        $pageManager->registerAdmin(PageAdminPlayersFlags::class);
+        $pageManager->registerAdmin(PageAdminPricing::class);
+        $pageManager->registerAdmin(PageAdminServers::class);
+        $pageManager->registerAdmin(PageAdminServiceCodes::class);
+        $pageManager->registerAdmin(PageAdminServices::class);
+        $pageManager->registerAdmin(PageAdminSettings::class);
+        $pageManager->registerAdmin(PageAdminSmsCodes::class);
+        $pageManager->registerAdmin(PageAdminPaymentPlatforms::class);
+        $pageManager->registerAdmin(PageAdminUpdateServers::class);
+        $pageManager->registerAdmin(PageAdminUpdateWeb::class);
+        $pageManager->registerAdmin(PageAdminUserService::class);
+        $pageManager->registerAdmin(PageAdminUsers::class);
     }
 
-    private function registerBlocks(Heart $heart)
+    private function registerBlocks(BlockManager $blockManager)
     {
-        $heart->registerBlock('admincontent', BlockAdminContent::class);
-        $heart->registerBlock('content', BlockContent::class);
-        $heart->registerBlock('logged_info', BlockLoggedInfo::class);
-        $heart->registerBlock('services_buttons', BlockServicesButtons::class);
-        $heart->registerBlock('user_buttons', BlockUserButtons::class);
-        $heart->registerBlock('wallet', BlockWallet::class);
+        $blockManager->register(BlockAdminContent::class);
+        $blockManager->register(BlockContent::class);
+        $blockManager->register(BlockLoggedInfo::class);
+        $blockManager->register(BlockServicesButtons::class);
+        $blockManager->register(BlockUserButtons::class);
+        $blockManager->register(BlockWallet::class);
     }
 
-    private function registerServices(Heart $heart)
+    private function registerServices(ServiceModuleManager $serviceModuleManager)
     {
-        $heart->registerServiceModule(
-            ChargeWalletServiceModule::MODULE_ID,
-            'Doładowanie Portfela',
-            ChargeWalletServiceModule::class
+        // TODO Translate it
+        $serviceModuleManager->register(ChargeWalletServiceModule::class, "Doładowanie Portfela");
+
+        $serviceModuleManager->register(
+            ExtraFlagsServiceModule::class,
+            "Dodatkowe Uprawnienia / Flagi"
         );
 
-        $heart->registerServiceModule(
-            ExtraFlagsServiceModule::MODULE_ID,
-            'Dodatkowe Uprawnienia / Flagi',
-            ExtraFlagsServiceModule::class
+        $serviceModuleManager->register(
+            MybbExtraGroupsServiceModule::class,
+            "Dodatkowe Grupy (MyBB)"
         );
 
-        $heart->registerServiceModule(
-            MybbExtraGroupsServiceModule::MODULE_ID,
-            'Dodatkowe Grupy (MyBB)',
-            MybbExtraGroupsServiceModule::class
-        );
-
-        $heart->registerServiceModule(
-            OtherServiceModule::MODULE_ID,
-            'Inne',
-            OtherServiceModule::class
-        );
+        $serviceModuleManager->register(OtherServiceModule::class, "Inne");
     }
 }

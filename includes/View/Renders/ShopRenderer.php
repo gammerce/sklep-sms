@@ -4,6 +4,7 @@ namespace App\View\Renders;
 use App\Support\Template;
 use App\System\License;
 use App\System\Settings;
+use App\View\Blocks\BlockServicesButtons;
 use App\View\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,7 +50,7 @@ class ShopRenderer
         ]);
         $loggedInfo = $this->blockRenderer->render("logged_info", $request);
         $wallet = $this->blockRenderer->render("wallet", $request);
-        $servicesButtons = $this->blockRenderer->render("services_buttons", $request);
+        $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
         $userButtons = $this->blockRenderer->render("user_buttons", $request);
         $googleAnalytics = $this->getGoogleAnalytics();
 

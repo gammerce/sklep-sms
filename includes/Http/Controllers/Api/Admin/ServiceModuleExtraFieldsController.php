@@ -3,21 +3,21 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class ServiceModuleExtraFieldsController
 {
-    public function get($serviceId, $moduleId, Heart $heart)
+    public function get($serviceId, $moduleId, ServiceModuleManager $serviceModuleManager)
     {
         $output = "";
 
         // Pobieramy moduł obecnie edytowanej usługi, jeżeli powróciliśmy do pierwotnego modułu
         // W przeciwnym razie pobieramy wybrany moduł
 
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
 
         if ($serviceModule === null || $serviceModule->getModuleId() != $moduleId) {
-            $serviceModule = $heart->getEmptyServiceModule($moduleId);
+            $serviceModule = $serviceModuleManager->getEmpty($moduleId);
         }
 
         if ($serviceModule instanceof IServiceAdminManage) {

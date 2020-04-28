@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BlockWallet extends Block implements IBeLoggedMust
 {
+    const BLOCK_ID = "wallet";
+
     /** @var Auth */
     private $auth;
 

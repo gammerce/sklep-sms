@@ -7,9 +7,10 @@ use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserServiceRepository;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\Services\UserServiceService;
-use App\System\Heart;
 use App\Translation\TranslationManager;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserServiceResource
@@ -18,7 +19,7 @@ class UserServiceResource
         $userServiceId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         UserServiceService $userServiceService
     ) {
         $lang = $translationManager->user();
@@ -30,8 +31,8 @@ class UserServiceResource
 
         $serviceId = $request->request->get('service_id', $userService->getServiceId());
 
-        $serviceModule = $heart->getServiceModule($serviceId);
-        if (!$serviceModule) {
+        $serviceModule = $serviceModuleManager->get($serviceId);
+        if (!($serviceModule instanceof IServiceUserServiceAdminEdit)) {
             throw new InvalidServiceModuleException();
         }
 
@@ -45,7 +46,7 @@ class UserServiceResource
 
     public function delete(
         $userServiceId,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         TranslationManager $translationManager,
         DatabaseLogger $logger,
         UserServiceService $userServiceService,
@@ -58,7 +59,7 @@ class UserServiceResource
             return new ApiResponse("no_service", $lang->t('no_service'), 0);
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if ($serviceModule && !$serviceModule->userServiceDelete($userService, 'admin')) {
             return new ApiResponse(
                 "user_service_cannot_be_deleted",

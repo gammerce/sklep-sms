@@ -12,6 +12,7 @@ use App\ServiceModules\ServiceModule;
 use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
+use App\View\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -32,6 +33,9 @@ class TransferPaymentServiceTest extends TestCase
         /** @var Heart $heart */
         $heart = $this->app->make(Heart::class);
 
+        /** @var ServiceModuleManager $serviceModuleManager */
+        $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
+
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,
         ]);
@@ -41,7 +45,7 @@ class TransferPaymentServiceTest extends TestCase
 
         $serviceId = "vip";
         /** @var IServicePurchase|ServiceModule $serviceModule */
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
             'service_id' => $serviceId,

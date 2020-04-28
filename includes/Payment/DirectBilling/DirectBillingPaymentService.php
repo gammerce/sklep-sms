@@ -11,7 +11,7 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class DirectBillingPaymentService
 {
@@ -24,15 +24,15 @@ class DirectBillingPaymentService
     /** @var ExternalPaymentService */
     private $externalPaymentService;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         DatabaseLogger $logger,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
         PaymentDirectBillingRepository $paymentDirectBillingRepository,
         ExternalPaymentService $externalPaymentService
@@ -40,8 +40,8 @@ class DirectBillingPaymentService
         $this->logger = $logger;
         $this->paymentDirectBillingRepository = $paymentDirectBillingRepository;
         $this->externalPaymentService = $externalPaymentService;
-        $this->heart = $heart;
         $this->purchaseDataService = $purchaseDataService;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     /**
@@ -64,7 +64,7 @@ class DirectBillingPaymentService
             throw new InvalidPaidAmountException();
         }
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
+        $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchase)) {
             throw new InvalidServiceModuleException();
         }

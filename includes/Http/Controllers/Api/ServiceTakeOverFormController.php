@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
-use App\System\Heart;
+use App\View\ServiceModuleManager;
 
 class ServiceTakeOverFormController
 {
-    public function get($service, Heart $heart)
+    public function get($service, ServiceModuleManager $serviceModuleManager)
     {
-        $serviceModule = $heart->getServiceModule($service);
+        $serviceModule = $serviceModuleManager->get($service);
         if (!($serviceModule instanceof IServiceTakeOver)) {
             throw new InvalidServiceModuleException();
         }

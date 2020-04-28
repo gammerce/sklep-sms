@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BlockUserButtons extends Block
 {
+    const BLOCK_ID = "user_buttons";
+
     /** @var Auth */
     private $auth;
 

@@ -17,6 +17,7 @@ use App\View\Html\Option;
 use App\View\Html\Select;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
@@ -29,15 +30,20 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         UserServiceService $userServiceService,
+        ServiceModuleManager $serviceModuleManager,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
         $this->userServiceService = $userServiceService;
         $this->heart = $heart;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getPrivilege()
@@ -101,7 +107,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             case "user_service_add":
                 $services = collect($this->heart->getServices())
                     ->filter(function (Service $service) {
-                        $serviceModule = $this->heart->getServiceModule($service->getId());
+                        $serviceModule = $this->serviceModuleManager->get($service->getId());
                         return $serviceModule instanceof IServiceUserServiceAdminAdd;
                     })
                     ->map(function (Service $service) {
@@ -123,7 +129,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                 $formData = $this->lang->t("service_edit_unable");
 
                 if ($userService) {
-                    $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+                    $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
 
                     if ($serviceModule instanceof IServiceUserServiceAdminEdit) {
                         $serviceModuleId = $serviceModule->getModuleId();
@@ -152,13 +158,13 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
         $selectWrapper = (new Div($button))->addClass("select is-small");
 
-        foreach ($this->heart->getEmptyServiceModules() as $serviceModule) {
+        foreach ($this->serviceModuleManager->all() as $serviceModule) {
             if (!($serviceModule instanceof IServiceUserServiceAdminDisplay)) {
                 continue;
             }
 
             $option = new Option(
-                $this->heart->getServiceModuleName($serviceModule->getModuleId()),
+                $this->serviceModuleManager->getName($serviceModule->getModuleId()),
                 $serviceModule->getModuleId()
             );
 
@@ -179,7 +185,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     private function getServiceModule(Request $request)
     {
         $subPage = $request->query->get("subpage");
-        $serviceModule = $this->heart->getEmptyServiceModule($subPage);
+        $serviceModule = $this->serviceModuleManager->getEmpty($subPage);
         return $serviceModule instanceof IServiceUserServiceAdminDisplay ? $serviceModule : null;
     }
 }

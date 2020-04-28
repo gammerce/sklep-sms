@@ -66,6 +66,7 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
+use App\View\ServiceModuleManager;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
@@ -91,6 +92,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var Heart */
     private $heart;
+
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     /** @var Auth */
     private $auth;
@@ -140,6 +144,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $this->auth = $this->app->make(Auth::class);
         $this->heart = $this->app->make(Heart::class);
+        $this->serviceModuleManager = $this->app->make(ServiceModuleManager::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
@@ -679,7 +684,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $services = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                $serviceModule = $this->heart->getEmptyServiceModule($service->getModule());
+                $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
 
                 // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
                 // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową

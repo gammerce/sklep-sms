@@ -8,13 +8,13 @@ use App\Services\UserServiceService;
 use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
+use App\View\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
@@ -33,14 +33,14 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var Database */
     private $db;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var CurrentPage */
     private $currentPage;
 
     /** @var PaginationService */
     private $paginationService;
+
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     public function __construct(
         Template $template,
@@ -49,7 +49,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         Settings $settings,
         Auth $auth,
         Database $db,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         CurrentPage $currentPage,
         PaginationService $paginationService
     ) {
@@ -59,9 +59,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->settings = $settings;
         $this->auth = $auth;
         $this->db = $db;
-        $this->heart = $heart;
         $this->currentPage = $currentPage;
         $this->paginationService = $paginationService;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function getTitle(Request $request)
@@ -73,7 +73,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     {
         $user = $this->auth->user();
 
-        $moduleIds = collect($this->heart->getEmptyServiceModules())
+        $moduleIds = collect($this->serviceModuleManager->all())
             ->filter(function (ServiceModule $serviceModule) {
                 return $serviceModule instanceof IServiceUserOwnServices;
             })
@@ -128,7 +128,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $userOwnServices = '';
         foreach ($usersServices as $userService) {
-            $serviceModule = $this->heart->getServiceModule($userService->getServiceId());
+            $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
 
             if (!($serviceModule instanceof IServiceUserOwnServices)) {
                 continue;

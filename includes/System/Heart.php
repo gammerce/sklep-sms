@@ -16,21 +16,11 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\UserRepository;
-use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\DataField;
-use App\View\Blocks\Block;
-use App\View\Pages\Page;
-use Exception;
 
 class Heart
 {
-    /**
-     * TODO remove it
-     * @deprecated
-     */
-    public $pageTitle;
-
     /** @var Application */
     private $app;
 
@@ -74,12 +64,7 @@ class Heart
     /** @var User[] */
     private $users = [];
 
-    private $servicesClasses = [];
-
     private $paymentModuleClasses = [];
-
-    private $pagesClasses = [];
-    private $blocksClasses = [];
 
     public function __construct(
         Application $app,
@@ -100,94 +85,6 @@ class Heart
         $this->app = $app;
         $this->serverServiceRepository = $serverServiceRepository;
     }
-
-    /**
-     * @param string $id
-     * @param string $name
-     * @param string $class
-     *
-     * @throws Exception
-     */
-    public function registerServiceModule($id, $name, $class)
-    {
-        if (isset($this->servicesClasses[$id])) {
-            throw new InvalidConfigException("There is a service with such an id: [$id] already.");
-        }
-
-        $this->servicesClasses[$id] = [
-            'name' => $name,
-            'class' => $class,
-        ];
-    }
-
-    /**
-     * Get service module with service included
-     *
-     * @param string $serviceId Service identifier from ss_services
-     * @return ServiceModule|null
-     */
-    public function getServiceModule($serviceId)
-    {
-        $service = $this->getService($serviceId);
-
-        if (!$service) {
-            return null;
-        }
-
-        if (!isset($this->servicesClasses[$service->getModule()])) {
-            return null;
-        }
-
-        $className = $this->servicesClasses[$service->getModule()]['class'];
-
-        return $className ? $this->app->makeWith($className, compact('service')) : null;
-    }
-
-    /**
-     * Get service module without service included
-     *
-     * @param $moduleId
-     * @return ServiceModule|null
-     */
-    public function getEmptyServiceModule($moduleId)
-    {
-        if (!isset($this->servicesClasses[$moduleId])) {
-            return null;
-        }
-
-        if (!isset($this->servicesClasses[$moduleId]['class'])) {
-            return null;
-        }
-
-        $classname = $this->servicesClasses[$moduleId]['class'];
-
-        return $this->app->make($classname);
-    }
-
-    public function getServiceModuleName($moduleId)
-    {
-        if (!isset($this->servicesClasses[$moduleId])) {
-            return null;
-        }
-
-        return $this->servicesClasses[$moduleId]['name'];
-    }
-
-    /**
-     * @return ServiceModule[]
-     */
-    public function getEmptyServiceModules()
-    {
-        $modules = [];
-        foreach (array_keys($this->servicesClasses) as $moduleId) {
-            $modules[] = $this->getEmptyServiceModule($moduleId);
-        }
-        return $modules;
-    }
-
-    //
-    // Klasy API płatności
-    //
 
     public function registerPaymentModule($moduleId, $class)
     {
@@ -258,116 +155,6 @@ class Heart
     }
 
     //
-    // Obsługa bloków
-    //
-
-    /**
-     * Rejestruje blok
-     *
-     * @param string $blockId
-     * @param string $class
-     *
-     * @throws Exception
-     */
-    public function registerBlock($blockId, $class)
-    {
-        if ($this->blockExists($blockId)) {
-            throw new InvalidConfigException(
-                "There is a block with such an id: [$blockId] already."
-            );
-        }
-
-        $this->blocksClasses[$blockId] = $class;
-    }
-
-    /**
-     * Sprawdza czy dany blok istnieje
-     *
-     * @param string $blockId
-     * @return bool
-     */
-    public function blockExists($blockId)
-    {
-        return isset($this->blocksClasses[$blockId]);
-    }
-
-    /**
-     * Zwraca obiekt bloku
-     *
-     * @param string $blockId
-     * @return Block|null
-     */
-    public function getBlock($blockId)
-    {
-        return $this->blockExists($blockId)
-            ? $this->app->make($this->blocksClasses[$blockId])
-            : null;
-    }
-
-    //
-    // Obsługa stron
-    //
-
-    public function registerUserPage($pageId, $class)
-    {
-        $this->registerPage($pageId, $class, "user");
-    }
-
-    public function registerAdminPage($pageId, $class)
-    {
-        $this->registerPage($pageId, $class, "admin");
-    }
-
-    /**
-     * Rejestruje strone
-     *
-     * @param string $pageId
-     * @param string $class
-     * @param string $type
-     *
-     * @throws Exception
-     */
-    private function registerPage($pageId, $class, $type)
-    {
-        if ($this->pageExists($pageId, $type)) {
-            throw new InvalidConfigException("There is a page with such an id: [$pageId] already.");
-        }
-
-        $this->pagesClasses[$type][$pageId] = $class;
-    }
-
-    /**
-     * Sprawdza czy dana strona istnieje
-     *
-     * @param string $pageId
-     * @param string $type
-     *
-     * @return bool
-     */
-    public function pageExists($pageId, $type)
-    {
-        return isset($this->pagesClasses[$type][$pageId]);
-    }
-
-    /**
-     * Zwraca obiekt strony
-     *
-     * @param string $pageId
-     * @param string $type
-     *
-     * @return Page|null
-     */
-    public function getPage($pageId, $type = "user")
-    {
-        if ($this->pageExists($pageId, $type)) {
-            $classname = $this->pagesClasses[$type][$pageId];
-            return $this->app->make($classname);
-        }
-
-        return null;
-    }
-
-    //
     // SERVICES
     //
 
@@ -387,7 +174,6 @@ class Heart
 
     /**
      * @param $serviceId
-     *
      * @return Service|null
      */
     public function getService($serviceId)
@@ -407,10 +193,6 @@ class Heart
 
         $this->servicesFetched = true;
     }
-
-    //
-    // SERVERS
-    //
 
     /**
      * @return Server[]
@@ -489,7 +271,6 @@ class Heart
      */
     public function getUser($uid)
     {
-        // Wcześniej już pobraliśmy takiego użytkownika
         if ($uid && isset($this->users[$uid])) {
             return $this->users[$uid];
         }

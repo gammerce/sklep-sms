@@ -1,27 +1,29 @@
 <?php
 namespace App\View\Blocks;
 
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
+use App\View\PageManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class BlockContent extends Block
 {
-    /** @var Heart */
-    private $heart;
+    const BLOCK_ID = "content";
 
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
+    /** @var PageManager */
+    private $pageManager;
+
+    public function __construct(PageManager $pageManager, TranslationManager $translationManager)
     {
-        $this->heart = $heart;
         $this->lang = $translationManager->user();
+        $this->pageManager = $pageManager;
     }
 
     public function getContentClass()
@@ -39,7 +41,7 @@ class BlockContent extends Block
         $page = $params[0];
 
         if (!($page instanceof Page)) {
-            $page = $this->heart->getPage($page);
+            $page = $this->pageManager->getUser($page);
         }
 
         if (!$page) {
