@@ -33,8 +33,6 @@ $input-color: $scheme-invert;
 html,
 body {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: min-content auto min-content;
 }
 
 .section {
@@ -50,6 +48,7 @@ body {
 
 .site-content {
     background: url("../../images/background.jpg") no-repeat fixed;
+    min-height: calc(100vh - #{$navbar-height});
     padding-bottom: 5rem;
 }
 
@@ -95,9 +94,19 @@ body {
 }
 
 // Utils
+
 .card {
     .subtitle {
         color: $scheme-invert-ter;
+    }
+}
+
+.card-group {
+    display: flex;
+    flex-wrap: wrap;
+
+    .card.gapped {
+        margin-right: 1rem;
     }
 }
 
@@ -106,26 +115,25 @@ body {
 .homepage-box {
     display: flex;
     align-items: center;
-    height: 100%;
+    min-height: calc(100vh - #{$navbar-height});
 
-    .product-card {
-        border-radius: 30px;
-        text-align: center;
-        margin: 0 auto 1rem;
-        display: inline-block;
-    }
+    .home-container {
+        display: flex;
+        align-items: center;
+        height: 100%;
 
-    .shop-icon {
-        margin: 1rem 1rem 3rem;
-        color: $primary;
-    }
-}
+        .card-group {
+            justify-content: center;
+        }
 
-.services-container {
-    display: flex;
-    flex-wrap: wrap;
+        .product-card {
+            border-radius: 30px;
+            text-align: center;
+        }
 
-    .card.gapped {
-        margin-right: 1rem;
+        .shop-icon {
+            margin: 1rem 1rem 3rem;
+            color: $primary;
+        }
     }
 }

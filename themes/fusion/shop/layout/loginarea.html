@@ -1,10 +1,16 @@
 <div class="navbar-item">
     <div class="buttons">
         <a class="button is-primary" href="{{ url('/page/register') }}">
+            <span class="icon">
+                <i class="fas fa-user-plus"></i>
+            </span>
             <strong>{{ __('sign_up') }}</strong>
         </a>
         <a class="button is-light" href="{{ url('/page/signin') }}">
-            {{ __('sign_in') }}
+            <span class="icon">
+                <i class="fas fa-sign-in-alt"></i>
+            </span>
+            <span>{{ __('sign_in') }}</span>
         </a>
     </div>
 </div>

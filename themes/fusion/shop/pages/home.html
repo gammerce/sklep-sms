@@ -1,32 +1,35 @@
 <div class="homepage-box">
-    <div class="container">
+    <div class="container home-container">
         <div class="columns is-multiline is-vcentered is-gapless">
             <div class="column">
                 <div class="section has-text-centered">
-                    <h1 class="title">{{ __('welcome_title') }}</h1>
-                    <h2 class="subtitle">{{ __('welcome_subtitle') }}</h2>
+                    <h1 class="title is-2">{{ __('welcome_title') }}</h1>
+                    <h2 class="subtitle is-4">{{ __('welcome_subtitle') }}</h2>
 
-                    <span class="icon is-large shop-icon">
-                        <i class="fas fa-3x fa-shopping-cart"></i>
-                    </span>
+                    <div class="section">
+                        <p class="content is-size-5">
+                            {!! __('welcome_message') !!}
+                        </p>
 
-                    <span class="icon is-large shop-icon">
-                        <i class="fas fa-3x fa-shopping-basket"></i>
-                    </span>
-
-                    <span class="icon is-large shop-icon">
-                        <i class="fas fa-3x fa-shopping-bag"></i>
-                    </span>
+                        <a class="button is-primary is-medium" href="{{ url('/page/register') }}">
+                            <span class="icon">
+                                <i class="fas fa-user-plus"></i>
+                            </span>
+                            <span>{{ __('sign_up') }}!</span>
+                        </a>
+                    </div>
                 </div>
             </div>
 
             <div class="column">
                 <div class="section has-text-centered">
-                    <h1 class="title is-4" style="margin-bottom: 2rem;">
+                    <div class="title is-3" style="margin-bottom: 2.5rem;">
                         {{ __('available_services') }}
-                    </h1>
+                    </div>
 
-                    {$services}
+                    <div class="card-group">
+                        {$services}
+                    </div>
 
                     <div>
                         <a class="is-size-5" href="{{ url('/page/services') }}">

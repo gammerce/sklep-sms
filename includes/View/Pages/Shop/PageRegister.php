@@ -26,7 +26,7 @@ class PageRegister extends Page implements IBeLoggedCannot
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t("register");
+        return $this->lang->t("sign_up");
     }
 
     public function getContent(Request $request)

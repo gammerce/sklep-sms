@@ -96,7 +96,7 @@ return [
     'shop_sms' => 'Sklep SMS',
     'sid' => 'SteamID',
     'sign_in' => 'Zaloguj się',
-    'sign_up' => 'Rejestracja',
+    'sign_up' => 'Zarejestruj się',
     'sms_return_code' => 'Kod zwrotny',
     'sth_went_wrong' => 'Coś poszło nie tak',
     'surname' => 'Nazwisko',
