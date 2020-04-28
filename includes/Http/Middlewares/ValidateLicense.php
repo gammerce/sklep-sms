@@ -40,7 +40,7 @@ class ValidateLicense implements MiddlewareContract
         // so that it would be easier for us to debug any potential exceptions
         if ($this->app->bound(Raven_Client::class)) {
             $this->app->make(Raven_Client::class)->tags_context([
-                'license_id' => $this->license->getExternalId(),
+                "license_id" => $this->license->getExternalId(),
             ]);
         }
 

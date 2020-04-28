@@ -11,7 +11,7 @@ class LanguageJsController
         $output = $template->render("js/language.js", [], true, false);
 
         return new Response($output, 200, [
-            'Content-type' => 'text/javascript; charset=UTF-8',
+            "Content-type" => "text/javascript; charset=UTF-8",
         ]);
     }
 }

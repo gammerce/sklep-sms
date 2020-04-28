@@ -17,6 +17,7 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\QuantityPrice;
 use App\Models\Server;
@@ -27,7 +28,6 @@ use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
-use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
@@ -66,7 +66,6 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
-use App\Managers\ServiceModuleManager;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
@@ -111,9 +110,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
-    /** @var PriceRepository */
-    private $priceRepository;
-
     /** @var PurchasePriceService */
     private $purchasePriceService;
 
@@ -149,7 +145,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->extraFlagUserServiceRepository = $this->app->make(
@@ -191,8 +186,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return $this->template->renderNoComments(
             "services/extra_flags/extra_fields",
-            compact('webSelNo', 'webSelYes', 'types', 'flags') + [
-                'moduleId' => $this->getModuleId(),
+            compact("webSelNo", "webSelYes", "types", "flags") + [
+                "moduleId" => $this->getModuleId(),
             ]
         );
     }
@@ -200,9 +195,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function serviceAdminManagePre(Validator $validator)
     {
         $validator->extendRules([
-            'flags' => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
-            'type' => [new RequiredRule(), new ExtraFlagTypeListRule()],
-            'web' => [new RequiredRule(), new YesNoRule()],
+            "flags" => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
+            "type" => [new RequiredRule(), new ExtraFlagTypeListRule()],
+            "web" => [new RequiredRule(), new YesNoRule()],
         ]);
     }
 
@@ -210,19 +205,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
         $types = 0;
-        foreach ($body['type'] as $type) {
+        foreach ($body["type"] as $type) {
             $types |= $type;
         }
 
         $data = $this->service ? $this->service->getData() : [];
-        $data['web'] = $body['web'];
+        $data["web"] = $body["web"];
 
-        $this->serviceDescriptionService->create($body['id']);
+        $this->serviceDescriptionService->create($body["id"]);
 
         return [
-            'types' => $types,
-            'flags' => $body['flags'],
-            'data' => $data,
+            "types" => $types,
+            "flags" => $body["flags"],
+            "data" => $data,
         ];
     }
 
@@ -231,7 +226,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->t('extra_flags');
+        return $this->lang->t("extra_flags");
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
@@ -242,11 +237,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $queryParticle = new QueryParticle();
 
-        if (isset($query['search'])) {
+        if (isset($query["search"])) {
             $queryParticle->extend(
                 create_search_query(
                     ["us.id", "us.uid", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                    $query['search']
+                    $query["search"]
                 )
             );
         }
@@ -269,37 +264,37 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "LIMIT ?, ?"
         );
         $statement->execute(array_merge($queryParticle->params(), get_row_limit($pageNumber)));
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
                 $userEntry = $row["uid"]
                     ? new UserRef($row["uid"], $row["username"])
-                    : $this->lang->t('none');
+                    : $this->lang->t("none");
 
                 return (new BodyRow())
-                    ->setDbId($row['id'])
+                    ->setDbId($row["id"])
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell(new ServerRef($row["server_id"], $row["server_name"])))
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
-                    ->addCell(new Cell($row['auth_data']))
-                    ->addCell(new Cell(convert_expire($row['expire'])))
+                    ->addCell(new Cell($row["auth_data"]))
+                    ->addCell(new Cell(convert_expire($row["expire"])))
                     ->setDeleteAction(has_privileges("manage_user_services"))
                     ->setEditAction(has_privileges("manage_user_services"));
             })
             ->all();
 
         $table = (new Structure())
-            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
-            ->addHeadCell(new HeadCell($this->lang->t('user')))
-            ->addHeadCell(new HeadCell($this->lang->t('server')))
-            ->addHeadCell(new HeadCell($this->lang->t('service')))
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("user")))
+            ->addHeadCell(new HeadCell($this->lang->t("server")))
+            ->addHeadCell(new HeadCell($this->lang->t("service")))
             ->addHeadCell(
                 new HeadCell(
-                    "{$this->lang->t('nick')}/{$this->lang->t('ip')}/{$this->lang->t('sid')}"
+                    "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
                 )
             )
-            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
@@ -332,21 +327,21 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $quantity = as_int(array_get($body, 'quantity'));
-        $serverId = as_int(array_get($body, 'server_id'));
-        $type = as_int(array_get($body, 'type'));
-        $authData = trim(array_get($body, 'auth_data'));
-        $password = array_get($body, 'password');
-        $passwordRepeat = array_get($body, 'password_repeat');
-        $email = array_get($body, 'email');
+        $quantity = as_int(array_get($body, "quantity"));
+        $serverId = as_int(array_get($body, "server_id"));
+        $type = as_int(array_get($body, "type"));
+        $authData = trim(array_get($body, "auth_data"));
+        $password = array_get($body, "password");
+        $passwordRepeat = array_get($body, "password_repeat");
+        $email = array_get($body, "email");
 
         $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $serverId,
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-            'passwordr' => $passwordRepeat,
+            "type" => $type,
+            "auth_data" => $authData,
+            "password" => $password,
+            "passwordr" => $passwordRepeat,
         ]);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $quantity === -1 ? null : $quantity,
@@ -390,33 +385,33 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return new Validator(
             [
-                'auth_data' => $purchase->getOrder('auth_data'),
-                'password' => $purchase->getOrder('password'),
-                'password_repeat' => $purchase->getOrder('passwordr'),
-                'email' => $purchase->getEmail(),
-                'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
-                'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
-                'type' => $purchase->getOrder('type'),
+                "auth_data" => $purchase->getOrder("auth_data"),
+                "password" => $purchase->getOrder("password"),
+                "password_repeat" => $purchase->getOrder("passwordr"),
+                "email" => $purchase->getEmail(),
+                "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
+                "server_id" => $purchase->getOrder(Purchase::ORDER_SERVER),
+                "type" => $purchase->getOrder("type"),
             ],
             [
-                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
-                'email' => [
+                "auth_data" => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+                "email" => [
                     is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
                     new EmailRule(),
                 ],
-                'password' => [
+                "password" => [
                     new ExtraFlagPasswordRule(),
                     new PasswordRule(),
                     new ConfirmedRule(),
                     new ExtraFlagPasswordDiffersRule(),
                 ],
-                'quantity' => [],
-                'server_id' => [
+                "quantity" => [],
+                "server_id" => [
                     new RequiredRule(),
                     new ServerExistsRule(),
                     new ServerLinkedToServiceRule($this->service),
                 ],
-                'type' => [
+                "type" => [
                     new RequiredRule(),
                     new ExtraFlagTypeRule(),
                     new ExtraFlagServiceTypesRule($this->service),
@@ -428,35 +423,35 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function orderDetails(Purchase $purchase)
     {
         $server = $this->heart->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
-        $typeName = $this->getTypeName($purchase->getOrder('type'));
+        $typeName = $this->getTypeName($purchase->getOrder("type"));
 
-        $password = '';
-        if (strlen($purchase->getOrder('password'))) {
+        $password = "";
+        if (strlen($purchase->getOrder("password"))) {
             $password =
-                "<strong>{$this->lang->t('password')}</strong>: " .
-                htmlspecialchars($purchase->getOrder('password')) .
+                "<strong>{$this->lang->t("password")}</strong>: " .
+                htmlspecialchars($purchase->getOrder("password")) .
                 "<br />";
         }
 
-        $email = $purchase->getEmail() ?: $this->lang->t('none');
-        $authData = $purchase->getOrder('auth_data');
+        $email = $purchase->getEmail() ?: $this->lang->t("none");
+        $authData = $purchase->getOrder("auth_data");
         $serviceName = $this->service->getName();
         $serverName = $server->getName();
         $quantity =
             $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
-                ? $this->lang->t('forever')
+                ? $this->lang->t("forever")
                 : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
             "services/extra_flags/order_details",
             compact(
-                'quantity',
-                'typeName',
-                'authData',
-                'password',
-                'email',
-                'serviceName',
-                'serverName'
+                "quantity",
+                "typeName",
+                "authData",
+                "password",
+                "email",
+                "serviceName",
+                "serverName"
             )
         );
     }
@@ -465,9 +460,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $this->addPlayerFlags(
             $purchase->user->getUid(),
-            $purchase->getOrder('type'),
-            $purchase->getOrder('auth_data'),
-            $purchase->getOrder('password'),
+            $purchase->getOrder("type"),
+            $purchase->getOrder("auth_data"),
+            $purchase->getOrder("password"),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getOrder(Purchase::ORDER_SERVER)
         );
@@ -481,11 +476,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder('auth_data'),
+            $purchase->getOrder("auth_data"),
             $purchase->getEmail(),
             [
-                'type' => $purchase->getOrder('type'),
-                'password' => $purchase->getOrder('password'),
+                "type" => $purchase->getOrder("type"),
+                "password" => $purchase->getOrder("password"),
             ]
         );
     }
@@ -493,7 +488,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function addPlayerFlags($uid, $type, $authData, $password, $days, $serverId)
     {
         $authData = trim($authData);
-        $password = strlen($password) ? $password : '';
+        $password = strlen($password) ? $password : "";
 
         // Let's delete expired data. Just in case, to avoid risk of conflicts.
         $this->expiredUserServiceService->deleteExpired();
@@ -551,40 +546,40 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function purchaseInfo($action, Transaction $transaction)
     {
         $password = "";
-        if (strlen($transaction->getExtraDatum('password'))) {
+        if (strlen($transaction->getExtraDatum("password"))) {
             $password =
-                "<strong>{$this->lang->t('password')}</strong>: " .
-                htmlspecialchars($transaction->getExtraDatum('password')) .
+                "<strong>{$this->lang->t("password")}</strong>: " .
+                htmlspecialchars($transaction->getExtraDatum("password")) .
                 "<br />";
         }
 
         $quantity =
             $transaction->getQuantity() != -1
                 ? "{$transaction->getQuantity()} {$this->service->getTag()}"
-                : $this->lang->t('forever');
+                : $this->lang->t("forever");
 
         $cost = $transaction->getCost()
             ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t('none');
+            : $this->lang->t("none");
 
         $server = $this->heart->getServer($transaction->getServerId());
 
         $setinfo = "";
         if (
-            $transaction->getExtraDatum('type') &
+            $transaction->getExtraDatum("type") &
             (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
         ) {
-            $setinfo = $this->lang->t('type_setinfo', $transaction->getExtraDatum('password'));
+            $setinfo = $this->lang->t("type_setinfo", $transaction->getExtraDatum("password"));
         }
 
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_email",
-                compact('quantity', 'password', 'setinfo') + [
-                    'authData' => $transaction->getAuthData(),
-                    'typeName' => $this->getTypeName($transaction->getExtraDatum('type')),
-                    'serviceName' => $this->service->getName(),
-                    'serverName' => $server ? $server->getName() : 'n/a',
+                compact("quantity", "password", "setinfo") + [
+                    "authData" => $transaction->getAuthData(),
+                    "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
+                    "serviceName" => $this->service->getName(),
+                    "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
         }
@@ -592,28 +587,28 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         if ($action === "web") {
             return $this->template->renderNoComments(
                 "services/extra_flags/purchase_info_web",
-                compact('cost', 'quantity', 'password', 'setinfo') + [
-                    'authData' => $transaction->getAuthData(),
-                    'email' => $transaction->getEmail(),
-                    'typeName' => $this->getTypeName($transaction->getExtraDatum('type')),
-                    'serviceName' => $this->service->getName(),
-                    'serverName' => $server ? $server->getName() : 'n/a',
+                compact("cost", "quantity", "password", "setinfo") + [
+                    "authData" => $transaction->getAuthData(),
+                    "email" => $transaction->getEmail(),
+                    "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
+                    "serviceName" => $this->service->getName(),
+                    "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
         }
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t(
-                    'service_was_bought',
+                "text" => $this->lang->t(
+                    "service_was_bought",
                     $this->service->getName(),
                     $server->getName()
                 ),
-                'class' => "outcome",
+                "class" => "outcome",
             ];
         }
 
-        return '';
+        return "";
     }
 
     // ----------------------------------------------------------------------------------
@@ -626,28 +621,28 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return $this->template->renderNoComments(
             "services/extra_flags/user_service_admin_add",
-            compact('types', 'servers') + ['moduleId' => $this->getModuleId()]
+            compact("types", "servers") + ["moduleId" => $this->getModuleId()]
         );
     }
 
     public function userServiceAdminAdd(array $body)
     {
-        $forever = (bool) array_get($body, 'forever');
+        $forever = (bool) array_get($body, "forever");
 
         $validator = new Validator(
             array_merge($body, [
-                'quantity' => as_int(array_get($body, 'quantity')),
-                'server_id' => as_int(array_get($body, 'server_id')),
-                'uid' => as_int(array_get($body, 'uid')),
+                "quantity" => as_int(array_get($body, "quantity")),
+                "server_id" => as_int(array_get($body, "server_id")),
+                "uid" => as_int(array_get($body, "uid")),
             ]),
             [
-                'email' => [new EmailRule()],
-                'password' => [new ExtraFlagPasswordRule()],
-                'quantity' => $forever
+                "email" => [new EmailRule()],
+                "password" => [new ExtraFlagPasswordRule()],
+                "quantity" => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
-                'server_id' => [new RequiredRule(), new ServerExistsRule()],
-                'uid' => [new UserExistsRule()],
+                "server_id" => [new RequiredRule(), new ServerExistsRule()],
+                "uid" => [new UserExistsRule()],
             ]
         );
         $this->verifyUserServiceData($validator);
@@ -656,7 +651,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $admin = $this->auth->user();
         $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
-        $purchasingUser = $this->heart->getUser($validated['uid']);
+        $purchasingUser = $this->heart->getUser($validated["uid"]);
         $purchase = new Purchase($purchasingUser);
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
@@ -664,16 +659,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_SERVER => $validated['server_id'],
-            'type' => $validated['type'],
-            'auth_data' => $validated['auth_data'],
-            'password' => $validated['password'],
-            Purchase::ORDER_QUANTITY => $forever ? null : $validated['quantity'],
+            Purchase::ORDER_SERVER => $validated["server_id"],
+            "type" => $validated["type"],
+            "auth_data" => $validated["auth_data"],
+            "password" => $validated["password"],
+            Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
         ]);
-        $purchase->setEmail($validated['email']);
+        $purchase->setEmail($validated["email"]);
         $boughtServiceId = $this->purchase($purchase);
 
-        $this->logger->logWithActor('log_user_service_added', $boughtServiceId);
+        $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
     }
 
     public function userServiceAdminEditFormGet(UserService $userService)
@@ -692,8 +687,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             })
             ->map(function (Service $service) use ($userService) {
                 return create_dom_element("option", $service->getName(), [
-                    'value' => $service->getId(),
-                    'selected' =>
+                    "value" => $service->getId(),
+                    "selected" =>
                         $userService->getServiceId() === $service->getId() ? "selected" : "",
                 ]);
             })
@@ -722,16 +717,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
-            $styles['nick'] = $styles['password'] = "display: table-row-group";
-            $disabled['nick'] = $disabled['password'] = "";
+            $styles["nick"] = $styles["password"] = "display: table-row-group";
+            $disabled["nick"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_IP) {
             $ip = $userService->getAuthData();
-            $styles['ip'] = $styles['password'] = "display: table-row-group";
-            $disabled['ip'] = $disabled['password'] = "";
+            $styles["ip"] = $styles["password"] = "display: table-row-group";
+            $disabled["ip"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_SID) {
             $sid = $userService->getAuthData();
-            $styles['sid'] = "display: table-row-group";
-            $disabled['sid'] = "";
+            $styles["sid"] = "display: table-row-group";
+            $disabled["sid"] = "";
         }
 
         $servers = $this->getServerOptions($userService->getServerId());
@@ -742,10 +737,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Zamiana daty
-        $userServiceExpire = '';
+        $userServiceExpire = "";
         if ($userService->isForever()) {
-            $checked['forever'] = "checked";
-            $disabled['expire'] = "disabled";
+            $checked["forever"] = "checked";
+            $disabled["expire"] = "disabled";
         } else {
             $userServiceExpire = convert_date($userService->getExpire());
         }
@@ -753,21 +748,21 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->template->renderNoComments(
             "services/extra_flags/user_service_admin_edit",
             compact(
-                'types',
-                'styles',
-                'nick',
-                'ip',
-                'sid',
-                'password',
-                'services',
-                'servers',
-                'disabled',
-                'checked',
-                'userServiceExpire'
+                "types",
+                "styles",
+                "nick",
+                "ip",
+                "sid",
+                "password",
+                "services",
+                "servers",
+                "disabled",
+                "checked",
+                "userServiceExpire"
             ) + [
-                'moduleId' => $this->getModuleId(),
-                'userServiceId' => $userService->getId(),
-                'userServiceUid' => $userService->getUid() ?: "",
+                "moduleId" => $this->getModuleId(),
+                "userServiceId" => $userService->getId(),
+                "userServiceUid" => $userService->getUid() ?: "",
             ]
         );
     }
@@ -810,14 +805,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function verifyUserServiceData(Validator $validator)
     {
         $validator->extendData([
-            'auth_data' => trim($validator->getData('auth_data')),
-            'type' => as_int($validator->getData('type')),
+            "auth_data" => trim($validator->getData("auth_data")),
+            "type" => as_int($validator->getData("type")),
         ]);
 
         $validator->extendRules([
-            'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
-            'password' => [],
-            'type' => [
+            "auth_data" => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+            "password" => [],
+            "type" => [
                 new RequiredRule(),
                 new ExtraFlagTypeRule(),
                 new ExtraFlagServiceTypesRule($this->service),
@@ -875,50 +870,50 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 continue;
             }
 
-            $serviceInfo['types'] .= create_dom_element(
+            $serviceInfo["types"] .= create_dom_element(
                 "option",
                 ExtraFlagType::getTypeName($optionId),
                 [
-                    'value' => $optionId,
-                    'selected' => $optionId == $userService->getType() ? "selected" : "",
+                    "value" => $optionId,
+                    "selected" => $optionId == $userService->getType() ? "selected" : "",
                 ]
             );
 
             if ($optionId == $userService->getType()) {
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
-                        $serviceInfo['player_nick'] = $userService->getAuthData();
-                        $styles['nick'] = $styles['password'] = "display: table-row";
-                        $disabled['nick'] = $disabled['password'] = "";
+                        $serviceInfo["player_nick"] = $userService->getAuthData();
+                        $styles["nick"] = $styles["password"] = "display: table-row";
+                        $disabled["nick"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
-                        $serviceInfo['player_ip'] = $userService->getAuthData();
-                        $styles['ip'] = $styles['password'] = "display: table-row";
-                        $disabled['ip'] = $disabled['password'] = "";
+                        $serviceInfo["player_ip"] = $userService->getAuthData();
+                        $styles["ip"] = $styles["password"] = "display: table-row";
+                        $disabled["ip"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
-                        $serviceInfo['player_sid'] = $userService->getAuthData();
-                        $styles['sid'] = "display: table-row";
-                        $disabled['sid'] = "";
+                        $serviceInfo["player_sid"] = $userService->getAuthData();
+                        $styles["sid"] = "display: table-row";
+                        $disabled["sid"] = "";
                         break;
                 }
             }
         }
 
         if (strlen($userService->getPassword()) && $userService->getPassword() != md5("")) {
-            $serviceInfo['password'] = "********";
+            $serviceInfo["password"] = "********";
         }
 
         $server = $this->heart->getServer($userService->getServerId());
-        $serviceInfo['server'] = $server->getName();
-        $serviceInfo['expire'] = convert_expire($userService->getExpire());
-        $serviceInfo['service'] = $this->service->getName();
+        $serviceInfo["server"] = $server->getName();
+        $serviceInfo["expire"] = convert_expire($userService->getExpire());
+        $serviceInfo["service"] = $this->service->getName();
 
         return $this->template->render(
             "services/extra_flags/user_own_service_edit",
-            compact('serviceInfo', 'disabled', 'styles')
+            compact("serviceInfo", "disabled", "styles")
         );
     }
 
@@ -931,14 +926,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->heart->getServer($userService->getServerId());
 
         return $this->template->render("services/extra_flags/user_own_service", [
-            'buttonEdit' => $buttonEdit,
-            'authData' => $userService->getAuthData(),
-            'userServiceId' => $userService->getId(),
-            'expire' => convert_expire($userService->getExpire()),
-            'moduleId' => $this->getModuleId(),
-            'serverName' => $server->getName(),
-            'serviceName' => $this->service->getName(),
-            'type' => $this->getTypeName($userService->getType()),
+            "buttonEdit" => $buttonEdit,
+            "authData" => $userService->getAuthData(),
+            "userServiceId" => $userService->getId(),
+            "expire" => convert_expire($userService->getExpire()),
+            "moduleId" => $this->getModuleId(),
+            "serverName" => $server->getName(),
+            "serviceName" => $this->service->getName(),
+            "type" => $this->getTypeName($userService->getType()),
         ]);
     }
 
@@ -949,7 +944,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         $validator = new Validator($body, [
-            'password' => [
+            "password" => [
                 new ExtraFlagPasswordRule(),
                 new PasswordRule(),
                 new ExtraFlagPasswordDiffersRule(),
@@ -961,7 +956,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $result = $this->userServiceEdit($userService, $validated);
 
         if ($result) {
-            $this->logger->logWithActor('log_user_edited_service', $userService->getId());
+            $this->logger->logWithActor("log_user_edited_service", $userService->getId());
         }
 
         return $result;
@@ -980,36 +975,36 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $expire = array_key_exists("expire", $data)
             ? as_int($data["expire"])
             : $userService->getExpire();
-        $type = as_int(array_get($data, 'type', $userService->getType()));
-        $authData = array_get($data, 'auth_data', $userService->getAuthData());
-        $serverId = as_int(array_get($data, 'server', $userService->getServerId()));
-        $uid = as_int(array_get($data, 'uid'));
-        $shouldUidBeUpdated = array_key_exists('uid', $data);
+        $type = as_int(array_get($data, "type", $userService->getType()));
+        $authData = array_get($data, "auth_data", $userService->getAuthData());
+        $serverId = as_int(array_get($data, "server", $userService->getServerId()));
+        $uid = as_int(array_get($data, "uid"));
+        $shouldUidBeUpdated = array_key_exists("uid", $data);
 
         // Edge-case: Type is changed to SteamID from non-SteamID
         if (
             $type === ExtraFlagType::TYPE_SID &&
             $userService->getType() !== ExtraFlagType::TYPE_SID
         ) {
-            $password = array_get($data, 'password', "");
+            $password = array_get($data, "password", "");
             $shouldPasswordBeUpdated = true;
         } else {
-            $password = array_get($data, 'password');
+            $password = array_get($data, "password");
             $shouldPasswordBeUpdated = !!strlen($password);
         }
 
         $set = [];
 
         if ($shouldPasswordBeUpdated) {
-            $set['password'] = $password;
+            $set["password"] = $password;
         }
 
         if ($shouldUidBeUpdated) {
-            $set['uid'] = $uid;
+            $set["uid"] = $uid;
         }
 
         if (!$expire) {
-            $set['expire'] = -1;
+            $set["expire"] = -1;
         }
 
         // Sprawdzenie czy nie ma już takiej usługi
@@ -1031,11 +1026,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             // Since $shouldUidBeUpdated is false we can assume that it is action done via ACP
             // not by "user own service edit"
             $canManageThisUserService =
-                !$shouldUidBeUpdated && $userService->getUid() != $existingUserService['uid'];
+                !$shouldUidBeUpdated && $userService->getUid() != $existingUserService["uid"];
 
             if ($canManageThisUserService) {
                 throw new ValidationException([
-                    'auth_data' => [$this->lang->t('service_isnt_yours')],
+                    "auth_data" => [$this->lang->t("service_isnt_yours")],
                 ]);
             }
 
@@ -1043,23 +1038,23 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
             // Dodajemy expire
             if ($expire) {
-                $set['expire'] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
+                $set["expire"] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
             }
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
             $affected = $this->userServiceRepository->updateWithModule(
                 $this,
-                $existingUserService['id'],
+                $existingUserService["id"],
                 $set
             );
         } else {
-            $set['service'] = $this->service->getId();
-            $set['server'] = $serverId;
-            $set['type'] = $type;
-            $set['auth_data'] = $authData;
+            $set["service"] = $this->service->getId();
+            $set["server"] = $serverId;
+            $set["type"] = $type;
+            $set["auth_data"] = $authData;
 
             if ($expire) {
-                $set['expire'] = $expire;
+                $set["expire"] = $expire;
             }
 
             $affected = $this->userServiceRepository->updateWithModule(
@@ -1105,7 +1100,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return $this->template->render(
             "services/extra_flags/service_take_over",
-            compact('servers', 'types') + ['moduleId' => $this->getModuleId()]
+            compact("servers", "types") + ["moduleId" => $this->getModuleId()]
         );
     }
 
@@ -1123,32 +1118,32 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
-                'auth_data' => trim(array_get($body, 'auth_data')),
-                'password' => array_get($body, 'password') ?: "",
-                'server_id' => as_int(array_get($body, 'server_id')),
-                'type' => as_int(array_get($body, 'type')),
+                "auth_data" => trim(array_get($body, "auth_data")),
+                "password" => array_get($body, "password") ?: "",
+                "server_id" => as_int(array_get($body, "server_id")),
+                "type" => as_int(array_get($body, "type")),
             ]),
             [
-                'auth_data' => [new RequiredRule(), new ExtraFlagAuthDataRule()],
-                'password' => [new ExtraFlagPasswordRule()],
-                'payment_id' => [new RequiredRule()],
-                'server_id' => [new RequiredRule()],
-                'type' => [new RequiredRule(), new ExtraFlagTypeRule()],
+                "auth_data" => [new RequiredRule(), new ExtraFlagAuthDataRule()],
+                "password" => [new ExtraFlagPasswordRule()],
+                "payment_id" => [new RequiredRule()],
+                "server_id" => [new RequiredRule()],
+                "type" => [new RequiredRule(), new ExtraFlagTypeRule()],
             ]
         );
 
         $validated = $validator->validateOrFail();
-        $paymentId = $validated['payment_id'];
-        $serverId = $validated['server_id'];
-        $authData = $validated['auth_data'];
-        $type = $validated['type'];
-        $password = $validated['password'];
+        $paymentId = $validated["payment_id"];
+        $serverId = $validated["server_id"];
+        $authData = $validated["auth_data"];
+        $type = $validated["type"];
+        $password = $validated["password"];
 
         if (!$paymentMethod->isValid($paymentId, $this->service->getId(), $authData, $serverId)) {
             return [
-                'status' => "no_service",
-                'text' => $this->lang->t('no_user_service'),
-                'positive' => false,
+                "status" => "no_service",
+                "text" => $this->lang->t("no_user_service"),
+                "positive" => false,
             ];
         }
 
@@ -1163,19 +1158,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if (!$statement->rowCount()) {
             return [
-                'status' => "no_service",
-                'text' => $this->lang->t('no_user_service'),
-                'positive' => false,
+                "status" => "no_service",
+                "text" => $this->lang->t("no_user_service"),
+                "positive" => false,
             ];
         }
 
         $row = $statement->fetch();
-        $this->userServiceRepository->updateUid($row['id'], $user->getUid());
+        $this->userServiceRepository->updateUid($row["id"], $user->getUid());
 
         return [
-            'status' => "ok",
-            'text' => $this->lang->t('service_taken_over'),
-            'positive' => true,
+            "status" => "ok",
+            "text" => $this->lang->t("service_taken_over"),
+            "positive" => true,
         ];
     }
 
@@ -1193,8 +1188,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             })
             ->map(function (Server $server) use ($selectedServerId) {
                 return create_dom_element("option", $server->getName(), [
-                    'value' => $server->getId(),
-                    'selected' => $selectedServerId === $server->getId() ? "selected" : "",
+                    "value" => $server->getId(),
+                    "selected" => $selectedServerId === $server->getId() ? "selected" : "",
                 ]);
             })
             ->join();
@@ -1213,8 +1208,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             })
             ->map(function ($optionId) use ($selectedTypes) {
                 return create_dom_element("option", ExtraFlagType::getTypeName($optionId), [
-                    'value' => $optionId,
-                    'selected' => $optionId & $selectedTypes ? "selected" : "",
+                    "value" => $optionId,
+                    "selected" => $optionId & $selectedTypes ? "selected" : "",
                 ]);
             })
             ->join();
@@ -1247,26 +1242,26 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         switch ($action) {
             case "prices_for_server":
-                return $this->pricesForServer((int) $body['server_id']);
+                return $this->pricesForServer((int) $body["server_id"]);
             case "servers_for_service":
-                return $this->getServerOptions(as_int($body['server_id']));
+                return $this->getServerOptions(as_int($body["server_id"]));
             default:
-                return '';
+                return "";
         }
     }
 
     private function getTypeName($value)
     {
         if ($value == ExtraFlagType::TYPE_NICK) {
-            return $this->lang->t('nick');
+            return $this->lang->t("nick");
         }
 
         if ($value == ExtraFlagType::TYPE_IP) {
-            return $this->lang->t('ip');
+            return $this->lang->t("ip");
         }
 
         if ($value == ExtraFlagType::TYPE_SID) {
-            return $this->lang->t('sid');
+            return $this->lang->t("sid");
         }
 
         return "";

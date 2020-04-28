@@ -11,7 +11,7 @@ class AssocResponse extends Response
         $content = implode("\n", $items);
 
         parent::__construct($content, $status, [
-            "Content-type" => 'application/assoc',
+            "Content-type" => "application/assoc",
         ]);
     }
 

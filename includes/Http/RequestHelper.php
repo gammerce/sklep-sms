@@ -22,7 +22,7 @@ class RequestHelper
 
     public function ajax()
     {
-        return 'XMLHttpRequest' === $this->request->headers->get('X-Requested-With');
+        return "XMLHttpRequest" === $this->request->headers->get("X-Requested-With");
     }
 
     public function acceptsAnyContentType()
@@ -30,12 +30,12 @@ class RequestHelper
         $acceptable = $this->getAcceptableContentTypes();
 
         return count($acceptable) === 0 ||
-            (isset($acceptable[0]) && ($acceptable[0] === '*/*' || $acceptable[0] === '*'));
+            (isset($acceptable[0]) && ($acceptable[0] === "*/*" || $acceptable[0] === "*"));
     }
 
     public function getAcceptableContentTypes()
     {
-        return array_keys(AcceptHeader::fromString($this->request->headers->get('Accept'))->all());
+        return array_keys(AcceptHeader::fromString($this->request->headers->get("Accept"))->all());
     }
 
     public function isFromServer()
@@ -51,6 +51,6 @@ class RequestHelper
     {
         $acceptable = $this->getAcceptableContentTypes();
         return isset($acceptable[0]) &&
-            (str_contains($acceptable[0], '/json') || str_contains($acceptable[0], '+json'));
+            (str_contains($acceptable[0], "/json") || str_contains($acceptable[0], "+json"));
     }
 }

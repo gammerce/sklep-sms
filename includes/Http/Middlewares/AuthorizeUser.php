@@ -19,8 +19,8 @@ class AuthorizeUser implements MiddlewareContract
     {
         $session = $request->getSession();
 
-        if (!$this->auth->check() && $session->has('uid')) {
-            $this->auth->loginUserUsingId($session->get('uid'));
+        if (!$this->auth->check() && $session->has("uid")) {
+            $this->auth->loginUserUsingId($session->get("uid"));
         }
 
         return $next($request);

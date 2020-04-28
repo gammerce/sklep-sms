@@ -45,7 +45,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
             $message = $this->getMessageFromInvalidResponse($e->response);
 
             if (starts_with($request->getPathInfo(), "/api")) {
-                return new JsonResponse(compact('message'), Response::HTTP_PAYMENT_REQUIRED);
+                return new JsonResponse(compact("message"), Response::HTTP_PAYMENT_REQUIRED);
             }
 
             return $this->renderErrorPage($message);
@@ -66,16 +66,16 @@ class BlockOnInvalidLicense implements MiddlewareContract
             }
         }
 
-        return $this->lang->t('verification_error');
+        return $this->lang->t("verification_error");
     }
 
     private function renderErrorPage($message)
     {
         return new Response(
             $this->template->render("license/error", [
-                'lang' => $this->lang,
-                'message' => $message,
-                'url' => $this->url,
+                "lang" => $this->lang,
+                "message" => $message,
+                "url" => $this->url,
             ])
         );
     }

@@ -22,7 +22,7 @@ class RunCron implements MiddlewareContract
 
     public function handle(Request $request, $args, Closure $next)
     {
-        if ($this->settings['cron_each_visit']) {
+        if ($this->settings["cron_each_visit"]) {
             $this->cronExecutor->run();
         }
 

@@ -19,7 +19,7 @@ class RequireNotInstalled implements MiddlewareContract
     public function handle(Request $request, $args, Closure $next)
     {
         if ($this->shopState->isInstalled()) {
-            return new Response('Shop has been installed already.');
+            return new Response("Shop has been installed already.");
         }
 
         return $next($request);

@@ -52,14 +52,14 @@ class PurchaseService
             throw new UnexpectedValueException();
         }
 
-        $type = as_int(array_get($body, 'type'));
-        $authData = trim(array_get($body, 'auth_data'));
-        $password = array_get($body, 'password');
-        $ip = array_get($body, 'ip');
-        $method = array_get($body, 'method');
-        $smsCode = trim(array_get($body, 'sms_code'));
-        $priceId = as_int(array_get($body, 'price_id'));
-        $email = trim(array_get($body, 'email'));
+        $type = as_int(array_get($body, "type"));
+        $authData = trim(array_get($body, "auth_data"));
+        $password = array_get($body, "password");
+        $ip = array_get($body, "ip");
+        $method = array_get($body, "method");
+        $smsCode = trim(array_get($body, "sms_code"));
+        $priceId = as_int(array_get($body, "price_id"));
+        $email = trim(array_get($body, "email"));
 
         $price = $this->priceRepository->get($priceId);
 
@@ -71,10 +71,10 @@ class PurchaseService
         $purchase->setEmail($email);
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type' => $type,
-            'auth_data' => $authData,
-            'password' => $password,
-            'passwordr' => $password,
+            "type" => $type,
+            "auth_data" => $authData,
+            "password" => $password,
+            "passwordr" => $password,
         ]);
 
         $purchase->setPayment([

@@ -49,10 +49,10 @@ class DataFieldService
     private function getCustomDataText($name)
     {
         switch ($name) {
-            case 'sms_text':
-                return $this->lang->strtoupper($this->lang->t('sms_code'));
-            case 'account_id':
-                return $this->lang->strtoupper($this->lang->t('account_id'));
+            case "sms_text":
+                return $this->lang->strtoupper($this->lang->t("sms_code"));
+            case "account_id":
+                return $this->lang->strtoupper($this->lang->t("account_id"));
             default:
                 return $this->lang->strtoupper($name);
         }

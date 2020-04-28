@@ -37,17 +37,17 @@ class ServerService
     {
         return new Validator(
             array_merge($body, [
-                'ip' => trim(array_get($body, 'ip')),
-                'port' => trim(array_get($body, 'port')),
-                'sms_platform' => as_int(array_get($body, 'sms_platform')),
-                'transfer_platform' => as_int(array_get($body, 'transfer_platform')),
+                "ip" => trim(array_get($body, "ip")),
+                "port" => trim(array_get($body, "port")),
+                "sms_platform" => as_int(array_get($body, "sms_platform")),
+                "transfer_platform" => as_int(array_get($body, "transfer_platform")),
             ]),
             [
-                'name' => [new RequiredRule()],
-                'ip' => [new RequiredRule()],
-                'port' => [new RequiredRule()],
-                'sms_platform' => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
-                'transfer_platform' => [new SupportTransferRule()],
+                "name" => [new RequiredRule()],
+                "ip" => [new RequiredRule()],
+                "port" => [new RequiredRule()],
+                "sms_platform" => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
+                "transfer_platform" => [new SupportTransferRule()],
             ]
         );
     }
@@ -61,9 +61,9 @@ class ServerService
             })
             ->map(function (Service $service) use ($serverId, $body) {
                 return [
-                    'service_id' => $service->getId(),
-                    'server_id' => $serverId,
-                    'connect' => (bool) array_get($body, $service->getId()),
+                    "service_id" => $service->getId(),
+                    "server_id" => $serverId,
+                    "connect" => (bool) array_get($body, $service->getId()),
                 ];
             })
             ->all();

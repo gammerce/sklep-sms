@@ -9,10 +9,6 @@ class IncomeController
 {
     public function get(Request $request, PageAdminIncome $page)
     {
-        // TODO Check it
-
-        return new HtmlResponse(
-            $page->getContent($request->query->all(), $request->request->all())
-        );
+        return new HtmlResponse($page->getContent($request));
     }
 }
