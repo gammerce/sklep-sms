@@ -4,7 +4,7 @@ namespace App\View\Blocks;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\Pages\PageAdmin;
+use App\View\Pages\Admin\PageAdmin;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 

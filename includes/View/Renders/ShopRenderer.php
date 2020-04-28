@@ -2,7 +2,6 @@
 namespace App\View\Renders;
 
 use App\Support\Template;
-use App\System\Heart;
 use App\System\License;
 use App\System\Settings;
 use App\View\WebsiteHeader;
