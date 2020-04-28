@@ -1,0 +1,32 @@
+<header class="section">
+    <div class="container">
+        <h1 class="title">{{ __('regulations') }}</h1>
+        <h2 class="subtitle">{{ __('contact_info') }}</h2>
+    </div>
+</header>
+
+<main class="section section-body">
+    <div class="container">
+        <strong>{{ __('contact') }}:</strong>
+        <a href="{{ $settings->getContact() }}">{{ $settings->getContact() }}</a><br /><br />
+
+        <strong>Gadu-Gadu:</strong>
+        <div style="margin: 0 0 0 1.5em;">
+            <table>
+                <tbody>
+                    <tr>
+                        <td>
+                            <img
+                                src="https://status.gadu-gadu.pl/users/status.asp?id={{ $settings['gadugadu'] }}&amp;styl=0"
+                                alt="gg_status"
+                            />&nbsp;
+                        </td>
+                        <td style="vertical-align: top;">
+                            <a href="GG:{{ $settings['gadugadu'] }}">{{ $settings['gadugadu'] }}</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>

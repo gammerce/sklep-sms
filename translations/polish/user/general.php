@@ -7,6 +7,8 @@ return [
     'available_services' => 'Dostępne usługi',
     'bad_service_code' => 'Podany kod jest błędny lub nie pasuje do kupowanej usługi.',
     'change_password' => 'Zmiana hasła',
+    'change_password_subtitle' =>
+        'W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.',
     'charge_wallet' => 'Doładuj portfel',
     'choose_payment' => 'Wybierz płatność',
     'choose_payment_module' => 'Wybierz moduł płatności',
@@ -67,8 +69,6 @@ return [
     'order_details' => 'Szczegóły zamówienia',
     'pages' => 'Strony',
     'pass_changed' => 'Hasło zostało prawidłowo zmienione.',
-    'password_change' =>
-        'W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.',
     'password_changed' => 'Hasło zostało prawidłowo zmienione.',
     'password_repeat' => 'Powtórz Hasło',
     'password_reset' =>
@@ -88,6 +88,7 @@ return [
     'price' => 'Cena',
     'profile' => 'Profil',
     'profile_edit' => 'Profil został zaktualizowany.',
+    'profile_subtitle' => 'Powiedz nam nieco więcej o sobie.',
     'purchase' => 'Zakup usługi',
     'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz metodę płatności.',
     'purchase_success' => 'Usługa została prawidłowo zakupiona.',
@@ -134,6 +135,7 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'sms_send_sms' => 'Wyślij SMSa',
     'sms_text' => 'O treści',
     'sms_unavailable' => 'Nie można dokonać płatności za pomocą SMSa.',
+    'steam_id_hint' => 'Wypełniając to pole, zyskujesz możliwość płacenia portfelem w trakcie gry.',
     'steam_id_occupied' => 'Podany SteamID jest już przypisany do innego konta.',
     'take_over' => 'Przejmij',
     'take_over_service' => 'Przejmij usługę',
