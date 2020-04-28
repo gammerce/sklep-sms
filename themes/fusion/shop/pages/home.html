@@ -26,34 +26,13 @@
                         {{ __('available_services') }}
                     </h1>
 
-                    <div class="card product-card">
-                        <div class="card-content">
-                            <strong>
-                                Licencja Sklep SMS
-                            </strong>
-                        </div>
-                    </div>
+                    {$products}
 
-                    <div class="card product-card">
-                        <div class="card-content">
-                            <strong>
-                                Przedłużenie Licencji
-                            </strong>
-                        </div>
+                    <div>
+                        <a class="is-size-5" href="{{ url('/page/products') }}">
+                            {{ __('show_more') }}
+                        </a>
                     </div>
-
-                    <div class="card product-card">
-                        <div class="card-content">
-                            <strong>
-                                [COD 400] Shooter + Assasin
-                            </strong>
-                        </div>
-                    </div>
-                    <br />
-
-                    <a class="is-size-5" href="{{ url('/page/services') }}"
-                        >{{ __('show_more') }}</a
-                    >
                 </div>
             </div>
         </div>

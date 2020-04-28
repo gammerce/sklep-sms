@@ -49,7 +49,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
-        return $this->template->render("payment/payment_method_direct_billing", compact("price"));
+        return $this->template->render(
+            "shop/payment/payment_method_direct_billing",
+            compact("price")
+        );
     }
 
     /**

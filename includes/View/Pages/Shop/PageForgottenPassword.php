@@ -16,6 +16,6 @@ class PageForgottenPassword extends Page implements IBeLoggedCannot
 
     public function getContent(Request $request)
     {
-        return $this->template->render("forgotten_password");
+        return $this->template->render("shop/pages/forgotten_password");
     }
 }

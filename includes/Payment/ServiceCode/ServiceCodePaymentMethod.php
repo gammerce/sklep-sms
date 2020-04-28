@@ -41,7 +41,7 @@ class ServiceCodePaymentMethod implements IPaymentMethod
 
     public function render(Purchase $purchase)
     {
-        return $this->template->render("payment/payment_method_code");
+        return $this->template->render("shop/payment/payment_method_code");
     }
 
     public function isAvailable(Purchase $purchase)

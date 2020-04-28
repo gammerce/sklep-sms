@@ -16,6 +16,6 @@ class PageSignIn extends Page implements IBeLoggedCannot
 
     public function getContent(Request $request)
     {
-        return $this->template->render("sign_in");
+        return $this->template->render("shop/pages/sign_in");
     }
 }

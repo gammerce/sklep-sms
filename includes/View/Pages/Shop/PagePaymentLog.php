@@ -111,7 +111,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             }
 
             $paymentLogs .= $this->template->render(
-                "payment_log_brick",
+                "shop/components/payment_log/payment_log_brick",
                 compact("class", "date", "cost", "desc")
             );
         }
@@ -126,7 +126,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $paginationClass = $paginationContent ? "" : "display_none";
 
         return $this->template->render(
-            "payment_log",
+            "shop/pages/payment_log",
             compact("paymentLogs", "paginationClass", "paginationContent")
         );
     }

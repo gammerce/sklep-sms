@@ -44,7 +44,7 @@ class ShopRenderer
 
     public function render($content, $pageId, $pageTitle, Request $request)
     {
-        $header = $this->template->render("header", [
+        $header = $this->template->render("shop/layout/header", [
             "currentPageId" => $pageId,
             "footer" => $this->license->getFooter(),
             "pageTitle" => $pageTitle,
@@ -58,11 +58,11 @@ class ShopRenderer
         $googleAnalytics = $this->getGoogleAnalytics();
         $contact = $this->settings->getContact();
 
-        $navbar = $this->template->render("navbar", compact("userButtons"));
-        $footer = $this->template->render("footer", compact("contact"));
+        $navbar = $this->template->render("shop/layout/navbar", compact("userButtons"));
+        $footer = $this->template->render("shop/layout/footer", compact("contact"));
 
         return $this->template->render(
-            "index",
+            "shop/index",
             compact(
                 "content",
                 "footer",
@@ -81,7 +81,7 @@ class ShopRenderer
     private function getGoogleAnalytics()
     {
         return strlen($this->settings["google_analytics"])
-            ? $this->template->render("google_analytics")
+            ? $this->template->render("shop/layout/google_analytics")
             : "";
     }
 }

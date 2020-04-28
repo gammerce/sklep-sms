@@ -38,6 +38,6 @@ class PageRegister extends Page implements IBeLoggedCannot
         $session = $request->getSession();
         $session->set("asid", $antispamQuestion["id"]);
 
-        return $this->template->render("register", compact("antispamQuestion"));
+        return $this->template->render("shop/pages/register", compact("antispamQuestion"));
     }
 }

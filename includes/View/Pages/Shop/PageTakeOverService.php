@@ -52,6 +52,6 @@ class PageTakeOverService extends Page implements IBeLoggedMust
             })
             ->join();
 
-        return $this->template->render("service_take_over", compact("servicesOptions"));
+        return $this->template->render("shop/pages/service_take_over", compact("servicesOptions"));
     }
 }

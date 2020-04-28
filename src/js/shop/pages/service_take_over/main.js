@@ -10,12 +10,12 @@ $(document).delegate("#form_service_take_over [name=service_id]", "change", func
     if (serviceId == "") {
         form.find(".extra_data").html("");
         form.find(".take_over").hide();
-        form.find("[type=submit]").prop('disabled', true);
+        form.find("[type=submit]").prop("disabled", true);
     } else {
-        restRequest("GET", `/api/services/${serviceId}/take_over/create_form`, {}, function (html) {
+        restRequest("GET", `/api/services/${serviceId}/take_over/create_form`, {}, function(html) {
             form.find(".extra_data").html(html);
             form.find(".take_over").show();
-            form.find("[type=submit]").prop('disabled', false);
+            form.find("[type=submit]").prop("disabled", false);
         });
     }
 });

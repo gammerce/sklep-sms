@@ -43,7 +43,7 @@ class BlockWallet extends Block implements IBeLoggedMust
         $user = $this->auth->user();
         $amount = number_format($user->getWallet() / 100, 2);
 
-        return $this->template->render("wallet", compact("amount"));
+        return $this->template->render("shop/layout/wallet", compact("amount"));
     }
 
     public function getContentEnveloped(Request $request, array $params)

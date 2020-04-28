@@ -166,7 +166,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $paginationClass = $paginationContent ? "" : "display_none";
 
         return $this->template->render(
-            "user_own_services",
+            "shop/pages/user_own_services",
             compact('userOwnServices', 'paginationClass', 'paginationContent')
         );
     }

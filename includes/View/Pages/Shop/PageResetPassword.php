@@ -43,6 +43,6 @@ class PageResetPassword extends Page implements IBeLoggedCannot
             return $this->lang->t("wrong_reset_key");
         }
 
-        return $this->template->render("reset_password", ["code" => $resetKey]);
+        return $this->template->render("shop/pages/reset_password", ["code" => $resetKey]);
     }
 }

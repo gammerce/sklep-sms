@@ -40,6 +40,23 @@ body {
     }
 }
 
+.is-fullheight {
+    height: 100%;
+}
+
+.section-body {
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
+}
+
+.required {
+    &:after {
+        content: "*";
+        color: $primary;
+        margin-left: 4px;
+    }
+}
+
 .site-content {
     background: url("../../images/background.jpg") no-repeat fixed;
     padding-bottom: 5rem;
@@ -86,34 +103,17 @@ body {
     }
 }
 
-.product-card {
-    border-radius: 30px;
-    text-align: center;
-    margin: 0 auto 1rem;
-    display: inline-block;
-}
-
-.is-fullheight {
-    height: 100%;
-}
-
-.section-body {
-    background: rgba(255, 255, 255, 0.8);
-    width: 100%;
-}
-
-.required {
-    &:after {
-        content: "*";
-        color: $primary;
-        margin-left: 4px;
-    }
-}
-
 .homepage-box {
     display: flex;
     align-items: center;
     height: 100%;
+
+    .product-card {
+        border-radius: 30px;
+        text-align: center;
+        margin: 0 auto 1rem;
+        display: inline-block;
+    }
 
     .shop-icon {
         margin: 1rem 1rem 3rem;

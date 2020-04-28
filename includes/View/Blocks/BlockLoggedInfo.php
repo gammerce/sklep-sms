@@ -34,7 +34,7 @@ class BlockLoggedInfo extends Block implements IBeLoggedMust
 
     protected function content(Request $request, array $params)
     {
-        return $this->template->render("logged_in_informations", [
+        return $this->template->render("shop/layout/logged_in_informations", [
             "user" => $this->auth->user(),
         ]);
     }

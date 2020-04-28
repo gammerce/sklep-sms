@@ -62,7 +62,7 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment/payment_method_transfer", compact('price'));
+        return $this->template->render("shop/payment/payment_method_transfer", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)

@@ -185,7 +185,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->renderNoComments(
-            "services/extra_flags/extra_fields",
+            "shop/services/extra_flags/extra_fields",
             compact("webSelNo", "webSelYes", "types", "flags") + [
                 "moduleId" => $this->getModuleId(),
             ]
@@ -308,7 +308,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 return $this->service->getTypes() & $type;
             })
             ->map(function ($value) {
-                return $this->template->render("services/extra_flags/service_type", [
+                return $this->template->render("shop/services/extra_flags/service_type", [
                     "type" => ExtraFlagType::getTypeName($value),
                     "value" => $value,
                 ]);
@@ -317,7 +317,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $servers = $this->getServerOptions();
 
-        return $this->template->render("services/extra_flags/purchase_form", [
+        return $this->template->render("shop/services/extra_flags/purchase_form", [
             "servers" => $servers,
             "serviceId" => $this->service->getId(),
             "types" => $types,
@@ -443,7 +443,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
-            "services/extra_flags/order_details",
+            "shop/services/extra_flags/order_details",
             compact(
                 "quantity",
                 "typeName",
@@ -574,7 +574,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/extra_flags/purchase_info_email",
+                "shop/services/extra_flags/purchase_info_email",
                 compact("quantity", "password", "setinfo") + [
                     "authData" => $transaction->getAuthData(),
                     "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
@@ -586,7 +586,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/extra_flags/purchase_info_web",
+                "shop/services/extra_flags/purchase_info_web",
                 compact("cost", "quantity", "password", "setinfo") + [
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
@@ -620,7 +620,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $servers = $this->getServerOptions();
 
         return $this->template->renderNoComments(
-            "services/extra_flags/user_service_admin_add",
+            "shop/services/extra_flags/user_service_admin_add",
             compact("types", "servers") + ["moduleId" => $this->getModuleId()]
         );
     }
@@ -746,7 +746,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "services/extra_flags/user_service_admin_edit",
+            "shop/services/extra_flags/user_service_admin_edit",
             compact(
                 "types",
                 "styles",
@@ -912,7 +912,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $serviceInfo["service"] = $this->service->getName();
 
         return $this->template->render(
-            "services/extra_flags/user_own_service_edit",
+            "shop/services/extra_flags/user_own_service_edit",
             compact("serviceInfo", "disabled", "styles")
         );
     }
@@ -925,7 +925,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->heart->getServer($userService->getServerId());
 
-        return $this->template->render("services/extra_flags/user_own_service", [
+        return $this->template->render("shop/services/extra_flags/user_own_service", [
             "buttonEdit" => $buttonEdit,
             "authData" => $userService->getAuthData(),
             "userServiceId" => $userService->getId(),
@@ -1099,7 +1099,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $servers = $this->getServerOptions();
 
         return $this->template->render(
-            "services/extra_flags/service_take_over",
+            "shop/services/extra_flags/service_take_over",
             compact("servers", "types") + ["moduleId" => $this->getModuleId()]
         );
     }
@@ -1233,7 +1233,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->join();
 
         return $this->template->render(
-            "services/extra_flags/prices_for_server",
+            "shop/services/extra_flags/prices_for_server",
             compact("quantities")
         );
     }

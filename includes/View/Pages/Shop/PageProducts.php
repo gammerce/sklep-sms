@@ -11,10 +11,9 @@ use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageMain extends Page
+class PageProducts extends Page
 {
-    const PAGE_ID = "home";
-    const PRODUCT_LIMIT = 5;
+    const PAGE_ID = "products";
 
     /** @var Heart */
     private $heart;
@@ -45,12 +44,12 @@ class PageMain extends Page
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t("main_page");
+        return $this->lang->t("products");
     }
 
     public function getContent(Request $request)
     {
-        $products = collect($this->heart->getServices())
+        $cards = collect($this->heart->getServices())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&
@@ -60,14 +59,14 @@ class PageMain extends Page
                         $this->auth->user()
                     );
             })
-            ->limit($this::PRODUCT_LIMIT)
             ->map(function (Service $service) {
-                return $this->template->render("shop/components/home/product_tile", [
+                return $this->template->render("shop/components/products/product_card", [
                     "name" => $service->getName(),
+                    "description" => $service->getShortDescription(),
                 ]);
             })
             ->join();
 
-        return $this->template->render("shop/pages/home", compact("products"));
+        return $this->template->render("shop/pages/products", compact("cards"));
     }
 }

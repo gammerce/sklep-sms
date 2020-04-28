@@ -46,7 +46,7 @@ class ServiceLongDescriptionController
             $pageTitle .= $serviceModule->service->getName();
         }
 
-        $header = $template->render("header", [
+        $header = $template->render("shop/layout/header", [
             "currentPageId" => "service_long_description",
             "footer" => "",
             "pageTitle" => $pageTitle,
@@ -54,7 +54,10 @@ class ServiceLongDescriptionController
             "styles" => $websiteHeader->getStyles(),
         ]);
 
-        $output = $template->render("service_long_description", compact("header", "body"));
+        $output = $template->render(
+            "shop/pages/service_long_description",
+            compact("header", "body")
+        );
 
         return new HtmlResponse($output);
     }

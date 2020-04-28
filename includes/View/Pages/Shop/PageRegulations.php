@@ -15,6 +15,6 @@ class PageRegulations extends Page
 
     public function getContent(Request $request)
     {
-        return $this->template->render("regulations_desc");
+        return $this->template->render("shop/pages/regulations");
     }
 }

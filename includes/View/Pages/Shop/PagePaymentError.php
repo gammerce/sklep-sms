@@ -19,6 +19,6 @@ class PagePaymentError extends Page
 
     public function getContent(Request $request)
     {
-        return $this->template->render("payment/payment_error");
+        return $this->template->render("shop/payment/payment_error");
     }
 }

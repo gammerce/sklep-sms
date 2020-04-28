@@ -61,14 +61,14 @@ class BlockUserButtons extends Block
     protected function content(Request $request, array $params)
     {
         if (!$this->auth->check()) {
-            return $this->template->render("loginarea");
+            return $this->template->render("shop/layout/loginarea");
         }
 
         $user = $this->auth->user();
         $acpButton = "";
 
         if (has_privileges("acp", $user)) {
-            $acpButton = $this->template->render("navigation_item", [
+            $acpButton = $this->template->render("shop/components/navbar/navigation_item", [
                 "icon" => "fa-user-shield",
                 "link" => $this->url->to("/admin"),
                 "text" => $this->lang->t("acp"),
@@ -81,15 +81,18 @@ class BlockUserButtons extends Block
                 $user
             )
         ) {
-            $chargeWalletButton = $this->template->render("navigation_item", [
-                "icon" => "fa-wallet",
-                "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
-                "text" => $this->lang->t("charge_wallet"),
-            ]);
+            $chargeWalletButton = $this->template->render(
+                "shop/components/navbar/navigation_item",
+                [
+                    "icon" => "fa-wallet",
+                    "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
+                    "text" => $this->lang->t("charge_wallet"),
+                ]
+            );
         }
 
         return $this->template->render(
-            "user_buttons",
+            "shop/layout/user_buttons",
             compact("acpButton", "chargeWalletButton") + [
                 "username" => $user->getUsername(),
                 "userId" => $user->getUid(),

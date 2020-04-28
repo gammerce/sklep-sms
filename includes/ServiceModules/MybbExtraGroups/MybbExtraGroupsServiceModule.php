@@ -179,7 +179,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/extra_fields",
+            "shop/services/mybb_extra_groups/extra_fields",
             compact(
                 'webSelNo',
                 'webSelYes',
@@ -311,7 +311,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             })
             ->join();
 
-        return $this->template->render("services/mybb_extra_groups/purchase_form", [
+        return $this->template->render("shop/services/mybb_extra_groups/purchase_form", [
             "quantities" => $quantities,
             "serviceId" => $this->service->getId(),
             "user" => $this->auth->user(),
@@ -367,7 +367,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/order_details",
+            "shop/services/mybb_extra_groups/order_details",
             compact('quantity', 'username', 'email', 'serviceName')
         );
     }
@@ -429,7 +429,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/mybb_extra_groups/purchase_info_email",
+                "shop/services/mybb_extra_groups/purchase_info_email",
                 compact('username', 'quantity', 'cost') + [
                     'serviceName' => $this->service->getName(),
                 ]
@@ -438,7 +438,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/mybb_extra_groups/purchase_info_web",
+                "shop/services/mybb_extra_groups/purchase_info_web",
                 compact('cost', 'username', 'quantity') + [
                     'email' => $transaction->getEmail(),
                     'serviceName' => $this->service->getName(),
@@ -574,7 +574,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/user_service_admin_add",
+            "shop/services/mybb_extra_groups/user_service_admin_add",
             ['moduleId' => $this->getModuleId()]
         );
     }
@@ -644,7 +644,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(
-            "services/mybb_extra_groups/user_own_service",
+            "shop/services/mybb_extra_groups/user_own_service",
             compact('mybbUid', 'expire') + [
                 'moduleId' => $this->getModuleId(),
                 'serviceName' => $this->service->getName(),
