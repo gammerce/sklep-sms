@@ -10,7 +10,7 @@ return [
     'change_password_subtitle' =>
         'In order to change your enter an old password. Then enter a new password and type it again.',
     'charge_wallet' => 'Top up your wallet',
-    'choose_payment' => 'Choose payment',
+    'choose_payment' => 'Choose payment method',
     'choose_payment_module' => 'Choose payment module',
     'clear' => 'Clear',
     'contact_info' => 'You can contact us in one of the following ways.',
@@ -105,8 +105,9 @@ At the next step, an e-mail with a link to restore password will be send to you.
     'service_no_permission' => 'You have no permission to use this service.',
     'service_not_displayed' =>
         'Service cannot be displayed, because its module does not provide such functionality.',
-    'service_takeover' =>
-        '<strong>Service takeover</strong> is to assign specific, time-bound service to your account. Usually used when buying service while not logged in.',
+    'service_takeover' => 'Service takeover',
+    'service_takeover_subtitle' =>
+        'Assign specific, time-bound service to your account. Usually used after buying a service while not being logged in.',
     'service_taken_over' => 'Service has been taken over.',
     'service_was_bought' => 'Service {1} was purchased on server {2}',
     'show_more' => 'Show more...',
@@ -135,7 +136,6 @@ You can now profit from many add-ons.',
         'By filling out this field you gain access to wallet payment during the game.',
     'steam_id_occupied' => 'Given SteamID is already affiliated with another account.',
     'take_over' => 'Take over',
-    'take_over_service' => 'Take over service',
     'title_payment' => 'Payment',
     'transfer_above_amount' => 'You can pay by transfer only for purchase above 1.00 {1}',
     'transfer_cost' => 'Transfer cost',

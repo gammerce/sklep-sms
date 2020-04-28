@@ -130,11 +130,15 @@ class Template
             return htmlspecialchars($value);
         };
 
+        $v = function ($value) {
+            return $value;
+        };
+
         $addSlashes = function ($value) {
             return addslashes($value);
         };
 
-        return eval('return "' . $__content . '";');
+        return eval("return \"$__content\";");
     }
 
     private function addDefaultVariables(array $data)
@@ -158,7 +162,7 @@ class Template
     {
         return preg_replace(
             ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
-            ['{$e(', ')}', '{', '}'],
+            ['{$e(', ')}', '{$v(', ')}'],
             $template
         );
     }

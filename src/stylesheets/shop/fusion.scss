@@ -23,6 +23,7 @@ $input-color: $scheme-invert;
 
 @import "src/stylesheets/general/vendors";
 @import "~@fortawesome/fontawesome-free/css/all.css";
+@import "src/stylesheets/general/services/extra_flags";
 
 html,
 body {

@@ -11,3 +11,7 @@
 .type_password {
     display: none;
 }
+
+[data-type=nick], [data-type=ip], [data-type=sid], [data-type=password] {
+    display: none;
+}

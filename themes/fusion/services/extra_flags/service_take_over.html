@@ -1,0 +1,115 @@
+<div class="columns" data-module="{{ $moduleId }}">
+    <div class="column">
+        <div class="field">
+            <label for="server_id" class="label required">{{ __('server') }}</label>
+            <div class="control">
+                <div class="select">
+                    <select id="server_id" name="server_id" required>
+                        <option value="">{{ __('choose_server') }}</option>
+                        {$servers}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label for="type" class="label required">{{ __('type') }}</label>
+            <div class="control">
+                <div class="select">
+                    <select id="type" name="type" required>
+                        <option value="">{{ __('choose_type') }}</option>
+                        {$types}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field" data-type="nick">
+            <label for="nick" class="label required">{{ __('nick') }}</label>
+            <div class="control">
+                <input
+                    type="text"
+                    id="nick"
+                    name="auth_data"
+                    class="input"
+                    required
+                    disabled
+                />
+            </div>
+        </div>
+
+        <div class="field" data-type="ip">
+            <label for="ip" class="label required">{{ __('ip') }}</label>
+            <div class="control">
+                <input
+                    type="text"
+                    id="ip"
+                    name="auth_data"
+                    class="input"
+                    required
+                    disabled
+                />
+            </div>
+        </div>
+
+        <div class="field" data-type="sid">
+            <label for="sid" class="label required">{{ __('sid') }}</label>
+            <div class="control">
+                <input
+                    type="text"
+                    id="sid"
+                    name="auth_data"
+                    class="input"
+                    required
+                    disabled
+                />
+            </div>
+        </div>
+
+        <div class="field" data-type="password">
+            <div class="control">
+                <label for="password" class="label required">{{ __('password') }}</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="input"
+                    required
+                    disabled
+                />
+            </div>
+        </div>
+    </div>
+
+    <div class="column">
+        <div class="field">
+            <label for="payment_method" class="label required">{{ __('way_of_payment') }}</label>
+            <div class="control">
+                <div class="select">
+                    <select id="payment_method" name="payment_method" required>
+                        <option value="">{{ __('choose_payment') }}</option>
+                        <option value="sms">SMS</option>
+                        <option value="transfer">
+                            {{ __('transfer_transfer') }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="field" data-name="payment_id">
+            <label for="payment_id" class="label required">{{ __('payment_id') }}</label>
+            <div class="control">
+                <input
+                    type="text"
+                    id="payment_id"
+                    name="payment_id"
+                    class="input"
+                    autocomplete="off"
+                    placeholder="{{ __('sms_code_transfer_id') }}"
+                    required
+                />
+            </div>
+        </div>
+    </div>
+</div>
