@@ -65,13 +65,13 @@ class PagePurchase extends Page
     public function getTitle(Request $request)
     {
         $serviceModule = $this->getServiceModule($request);
-        $title = $this->lang->t("purchase");
+        $title = "";
 
         if ($serviceModule) {
-            $title .= " - " . $serviceModule->service->getName();
+            $title .= $serviceModule->service->getName() . " - ";
         }
 
-        return $title;
+        return $title . $this->lang->t("purchase");
     }
 
     public function getContent(Request $request)
@@ -112,12 +112,13 @@ class PagePurchase extends Page
             $showMore = "";
         }
 
-        $output = $this->template->render("shop/services/short_description", [
+        $description = $this->template->render("shop/services/short_description", [
             "shortDescription" => $serviceModule->descriptionShortGet(),
             "showMore" => $showMore,
         ]);
+        $purchaseForm = $serviceModule->purchaseFormGet($request->query->all());
 
-        return $output . $serviceModule->purchaseFormGet($request->query->all());
+        return $this->template->render("shop/pages/purchase", compact("description", "purchaseForm"));
     }
 
     private function getServiceModule(Request $request)

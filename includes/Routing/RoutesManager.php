@@ -71,7 +71,6 @@ use App\Http\Middlewares\AuthorizeServer;
 use App\Http\Middlewares\AuthorizeUser;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\JsonBody;
-use App\Http\Middlewares\LoadSettings;
 use App\Http\Middlewares\RequireAuthorized;
 use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
@@ -85,6 +84,7 @@ use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
 use App\Install\ShopState;
 use App\System\Application;
+use App\System\Settings;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -105,11 +105,15 @@ class RoutesManager
     /** @var ShopState */
     private $shopState;
 
-    public function __construct(Application $app, UrlGenerator $url, ShopState $shopState)
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(Application $app, UrlGenerator $url, ShopState $shopState, Settings $settings)
     {
         $this->app = $app;
         $this->url = $url;
         $this->shopState = $shopState;
+        $this->settings = $settings;
     }
 
     private function defineRoutes(RouteCollector $r)
@@ -125,18 +129,16 @@ class RoutesManager
         $r->redirectPermanent('/cron', '/api/cron');
 
         $r->get('/lang.js', [
-            'middlewares' => [LoadSettings::class],
             'uses' => LanguageJsController::class . '@get',
         ]);
 
         $r->get('/api/cron', [
-            'middlewares' => [LoadSettings::class],
             'uses' => CronController::class . '@get',
         ]);
 
         $r->addGroup(
             [
-                "middlewares" => [LoadSettings::class, SetLanguage::class],
+                "middlewares" => [SetLanguage::class],
             ],
             function (RouteCollector $r) {
                 $r->get('/api/server/services/{serviceId}/long_description', [
@@ -173,7 +175,6 @@ class RoutesManager
             [
                 "middlewares" => [
                     SetUserSession::class,
-                    LoadSettings::class,
                     SetLanguage::class,
                     AuthorizeUser::class,
                 ],
@@ -313,7 +314,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [SetAdminSession::class, LoadSettings::class, SetLanguage::class],
+                "middlewares" => [SetAdminSession::class, SetLanguage::class],
             ],
             function (RouteCollector $r) {
                 $r->get('/admin/login', [
@@ -330,7 +331,6 @@ class RoutesManager
             [
                 "middlewares" => [
                     SetAdminSession::class,
-                    LoadSettings::class,
                     SetLanguage::class,
                     AuthorizeUser::class,
                     [RequireAuthorized::class, "acp"],
@@ -584,6 +584,8 @@ class RoutesManager
         if ($this->shouldRedirectToSetup($routeInfo)) {
             return new RedirectResponse($this->url->to('/setup'));
         }
+
+        $this->settings->load();
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:

@@ -1,6 +1,7 @@
 @import "partials/action_box";
 @import "partials/infobox";
 @import "partials/loader";
+@import "partials/helpers";
 
 html {
     overflow-y: auto;
@@ -61,14 +62,6 @@ hr,
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.w100 {
-    width: 100%;
-}
-
-.h100 {
-    height: 100%;
 }
 
 .display_none {
@@ -191,33 +184,6 @@ hr,
     text-transform: uppercase;
 }
 
-.clickable {
-    cursor: pointer;
-}
-
 .action-buttons {
     margin-top: 2rem;
-}
-
-.no-decoration {
-    text-decoration: none !important;
-}
-
-.card {
-    &.gapped {
-        margin-bottom: 1rem;
-    }
-
-    &.clickable:hover {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12),
-            0 1px 5px 0 rgba(0, 0, 0, 0.2);
-    }
-}
-
-.required {
-    &:after {
-        content: "*";
-        color: $danger;
-        margin-left: 4px;
-    }
 }

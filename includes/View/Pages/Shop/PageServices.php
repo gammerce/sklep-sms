@@ -3,6 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
+use App\Routing\UrlGenerator;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
@@ -11,9 +12,9 @@ use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageProducts extends Page
+class PageServices extends Page
 {
-    const PAGE_ID = "products";
+    const PAGE_ID = "services";
 
     /** @var Heart */
     private $heart;
@@ -27,11 +28,15 @@ class PageProducts extends Page
     /** @var UserServiceAccessService */
     private $userServiceAccessService;
 
+    /** @var UrlGenerator */
+    private $url;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Heart $heart,
         Auth $auth,
+        UrlGenerator $url,
         ServiceModuleManager $serviceModuleManager,
         UserServiceAccessService $userServiceAccessService
     ) {
@@ -40,11 +45,12 @@ class PageProducts extends Page
         $this->auth = $auth;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->userServiceAccessService = $userServiceAccessService;
+        $this->url = $url;
     }
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t("products");
+        return $this->lang->t("services");
     }
 
     public function getContent(Request $request)
@@ -60,13 +66,14 @@ class PageProducts extends Page
                     );
             })
             ->map(function (Service $service) {
-                return $this->template->render("shop/components/products/product_card", [
-                    "name" => $service->getName(),
+                return $this->template->render("shop/components/services/service_card", [
+                    "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
                     "description" => $service->getShortDescription(),
+                    "name" => $service->getName(),
                 ]);
             })
             ->join();
 
-        return $this->template->render("shop/pages/products", compact("cards"));
+        return $this->template->render("shop/pages/services", compact("cards"));
     }
 }

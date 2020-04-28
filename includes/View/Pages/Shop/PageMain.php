@@ -3,6 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
+use App\Routing\UrlGenerator;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
@@ -14,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 class PageMain extends Page
 {
     const PAGE_ID = "home";
-    const PRODUCT_LIMIT = 5;
+    const SERVICE_LIMIT = 5;
 
     /** @var Heart */
     private $heart;
@@ -28,19 +29,24 @@ class PageMain extends Page
     /** @var UserServiceAccessService */
     private $userServiceAccessService;
 
+    /** @var UrlGenerator */
+    private $url;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Heart $heart,
         Auth $auth,
         ServiceModuleManager $serviceModuleManager,
-        UserServiceAccessService $userServiceAccessService
+        UserServiceAccessService $userServiceAccessService,
+        UrlGenerator $url
     ) {
         parent::__construct($template, $translationManager);
         $this->heart = $heart;
         $this->auth = $auth;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->userServiceAccessService = $userServiceAccessService;
+        $this->url = $url;
     }
 
     public function getTitle(Request $request)
@@ -50,7 +56,7 @@ class PageMain extends Page
 
     public function getContent(Request $request)
     {
-        $products = collect($this->heart->getServices())
+        $services = collect($this->heart->getServices())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&
@@ -60,14 +66,15 @@ class PageMain extends Page
                         $this->auth->user()
                     );
             })
-            ->limit($this::PRODUCT_LIMIT)
+            ->limit($this::SERVICE_LIMIT)
             ->map(function (Service $service) {
-                return $this->template->render("shop/components/home/product_tile", [
+                return $this->template->render("shop/components/home/service_tile", [
+                    "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
                     "name" => $service->getName(),
                 ]);
             })
             ->join();
 
-        return $this->template->render("shop/pages/home", compact("products"));
+        return $this->template->render("shop/pages/home", compact("services"));
     }
 }
