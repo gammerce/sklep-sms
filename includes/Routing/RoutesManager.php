@@ -108,8 +108,12 @@ class RoutesManager
     /** @var Settings */
     private $settings;
 
-    public function __construct(Application $app, UrlGenerator $url, ShopState $shopState, Settings $settings)
-    {
+    public function __construct(
+        Application $app,
+        UrlGenerator $url,
+        ShopState $shopState,
+        Settings $settings
+    ) {
         $this->app = $app;
         $this->url = $url;
         $this->shopState = $shopState;
@@ -173,11 +177,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [
-                    SetUserSession::class,
-                    SetLanguage::class,
-                    AuthorizeUser::class,
-                ],
+                "middlewares" => [SetUserSession::class, SetLanguage::class, AuthorizeUser::class],
             ],
             function (RouteCollector $r) {
                 /**

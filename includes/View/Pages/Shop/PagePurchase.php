@@ -118,7 +118,10 @@ class PagePurchase extends Page
         ]);
         $purchaseForm = $serviceModule->purchaseFormGet($request->query->all());
 
-        return $this->template->render("shop/pages/purchase", compact("description", "purchaseForm"));
+        return $this->template->render(
+            "shop/pages/purchase",
+            compact("description", "purchaseForm")
+        );
     }
 
     private function getServiceModule(Request $request)
