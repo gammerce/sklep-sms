@@ -53,9 +53,10 @@ class ShopRenderer
         $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
         $userButtons = $this->blockRenderer->render("user_buttons", $request);
         $googleAnalytics = $this->getGoogleAnalytics();
+        $contact = $this->settings->getContact();
 
         $navbar = $this->template->render("navbar", compact("userButtons"));
-        $footer = $this->template->render("footer");
+        $footer = $this->template->render("footer", compact("contact"));
 
         return $this->template->render(
             "index",

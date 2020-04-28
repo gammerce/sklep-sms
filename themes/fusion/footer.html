@@ -4,7 +4,7 @@
             <div class="column">
                 <div class="footer-logo">
                     <a href="{{ url('/') }}">
-                        <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="Logo" />
+                        <img src="https://sklep-sms.pl/images/logo_simple.svg" alt="{{ __('shop_sms') }}" />
                     </a>
                 </div>
             </div>
@@ -12,7 +12,7 @@
             <div class="column">
                 <div class="footer-column">
                     <div class="footer-header">
-                        <h3>Languages</h3>
+                        <h3>{{ __('languages') }}</h3>
                     </div>
                     <ul class="link-list">
                         <li>
@@ -28,7 +28,7 @@
             <div class="column">
                 <div class="footer-column">
                     <div class="footer-header">
-                        <h3>Miscellaneous</h3>
+                        <h3>{{ __('pages') }}</h3>
                     </div>
                     <ul class="link-list">
                         <li>
@@ -48,15 +48,15 @@
             <div class="column">
                 <div class="footer-column">
                     <div class="footer-header">
-                        <h3>Contact</h3>
+                        <h3>{{ __('contact') }}</h3>
                     </div>
                     <ul class="link-list">
                         <li>
                             <span class="icon">
                                 <i class="fas fa-envelope"></i>
                             </span>
-                            <a href="mailto:seek@sklep-sms.pl">
-                                seek@sklep-sms.pl
+                            <a>
+                                {{ $contact }}
                             </a>
                         </li>
                     </ul>

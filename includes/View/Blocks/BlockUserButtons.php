@@ -86,6 +86,8 @@ class BlockUserButtons extends Block
             ]);
         }
 
-        return $this->template->render("user_buttons", compact("acpButton", "chargeWalletButton"));
+        return $this->template->render("user_buttons", compact("acpButton", "chargeWalletButton") + [
+            "userName" => $user->getUsername()
+        ]);
     }
 }
