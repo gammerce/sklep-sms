@@ -1,8 +1,19 @@
-<a href="{{ $link }}">
-    <div class="card gapped clickable">
-        <div class="card-content">
-            <div class="title is-6">{{ $name }}</div>
-            <div class="subtitle is-7">{{ $description }}</div>
+<div class="card service-card gapped">
+    <div class="card-header">
+        <div class="card-header-title is-size-4">
+            {{ $name }}
         </div>
+
+        <a href="{{ $link }}" class="card-header-icon">
+            <span class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </span>
+        </a>
     </div>
-</a>
+
+    <div class="card-content">
+        <p class="content">
+            {!! $description !!}
+        </p>
+    </div>
+</div>
