@@ -28,7 +28,7 @@ class BlockContent extends Block
 
     public function getContentClass()
     {
-        return "custom-content";
+        return "site-content";
     }
 
     public function getContentId()

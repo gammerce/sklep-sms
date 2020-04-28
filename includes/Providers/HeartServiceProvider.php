@@ -66,6 +66,7 @@ use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
 use App\View\Pages\Shop\PageSignIn;
+use App\View\Pages\Shop\PageSignUp;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
 use App\View\Pages\Shop\PageUserOwnServices;
@@ -100,7 +101,6 @@ class HeartServiceProvider
 
     private function registerPaymentModules(PaymentModuleManager $paymentModuleManager)
     {
-        $paymentModuleManager->register(OneShotOneKill::class);
         $paymentModuleManager->register(Cashbill::class);
         $paymentModuleManager->register(Cssetti::class);
         $paymentModuleManager->register(GetPay::class);
@@ -108,6 +108,7 @@ class HeartServiceProvider
         $paymentModuleManager->register(Homepay::class);
         $paymentModuleManager->register(Hostplay::class);
         $paymentModuleManager->register(MicroSMS::class);
+        $paymentModuleManager->register(OneShotOneKill::class);
         $paymentModuleManager->register(Profitsms::class);
         $paymentModuleManager->register(Pukawka::class);
         $paymentModuleManager->register(SimPay::class);
@@ -123,18 +124,19 @@ class HeartServiceProvider
         $pageManager->registerUser(PageForgottenPassword::class);
         $pageManager->registerUser(PageMain::class);
         $pageManager->registerUser(PagePayment::class);
+        $pageManager->registerUser(PagePaymentError::class);
         $pageManager->registerUser(PagePaymentLog::class);
+        $pageManager->registerUser(PagePaymentSuccess::class);
         $pageManager->registerUser(PageProfile::class);
         $pageManager->registerUser(PagePurchase::class);
         $pageManager->registerUser(PageRegister::class);
         $pageManager->registerUser(PageRegulations::class);
         $pageManager->registerUser(PageResetPassword::class);
-        $pageManager->registerUser(PageTakeOverService::class);
-        $pageManager->registerUser(PagePaymentError::class);
-        $pageManager->registerUser(PagePaymentSuccess::class);
-        $pageManager->registerUser(PageTPaySuccess::class);
-        $pageManager->registerUser(PageUserOwnServices::class);
         $pageManager->registerUser(PageSignIn::class);
+        $pageManager->registerUser(PageSignUp::class);
+        $pageManager->registerUser(PageTPaySuccess::class);
+        $pageManager->registerUser(PageTakeOverService::class);
+        $pageManager->registerUser(PageUserOwnServices::class);
     }
 
     private function registerAdminPages(PageManager $pageManager)
@@ -142,14 +144,15 @@ class HeartServiceProvider
         $pageManager->registerAdmin(PageAdminAntispamQuestions::class);
         $pageManager->registerAdmin(PageAdminBoughtServices::class);
         $pageManager->registerAdmin(PageAdminGroups::class);
-        $pageManager->registerAdmin(PageAdminMain::class);
         $pageManager->registerAdmin(PageAdminIncome::class);
         $pageManager->registerAdmin(PageAdminLogs::class);
+        $pageManager->registerAdmin(PageAdminMain::class);
         $pageManager->registerAdmin(PageAdminPaymentAdmin::class);
+        $pageManager->registerAdmin(PageAdminPaymentDirectBilling::class);
+        $pageManager->registerAdmin(PageAdminPaymentPlatforms::class);
         $pageManager->registerAdmin(PageAdminPaymentServiceCode::class);
         $pageManager->registerAdmin(PageAdminPaymentSms::class);
         $pageManager->registerAdmin(PageAdminPaymentTransfer::class);
-        $pageManager->registerAdmin(PageAdminPaymentDirectBilling::class);
         $pageManager->registerAdmin(PageAdminPaymentWallet::class);
         $pageManager->registerAdmin(PageAdminPlayersFlags::class);
         $pageManager->registerAdmin(PageAdminPricing::class);
@@ -158,7 +161,6 @@ class HeartServiceProvider
         $pageManager->registerAdmin(PageAdminServices::class);
         $pageManager->registerAdmin(PageAdminSettings::class);
         $pageManager->registerAdmin(PageAdminSmsCodes::class);
-        $pageManager->registerAdmin(PageAdminPaymentPlatforms::class);
         $pageManager->registerAdmin(PageAdminUpdateServers::class);
         $pageManager->registerAdmin(PageAdminUpdateWeb::class);
         $pageManager->registerAdmin(PageAdminUserService::class);

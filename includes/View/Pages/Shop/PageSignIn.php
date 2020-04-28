@@ -6,7 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageSignIn extends Page
 {
-    const PAGE_ID = "sign_in";
+    const PAGE_ID = "signin";
 
     public function getTitle(Request $request)
     {
