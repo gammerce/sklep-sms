@@ -26,28 +26,24 @@ $(document).delegate("#form_login", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
 
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 
-            if (window.location.pathname.endsWith("/page/signin")) {
-                window.location.href = buildUrl("/");
-            }
-
             if (jsonObj.return_id === "logged_in") {
-                $("#user-buttons").css({ overflow: "hidden" }); // Hide login area
-                refreshBlocks(
-                    "logged_info,wallet,user_buttons,services_buttons" +
-                        ($("#form_login_reload_content").val() == "0"
-                            ? ""
-                            : `,content:${currentPage}`)
-                );
+                if (window.location.pathname.endsWith("/page/signin")) {
+                    window.location.href = buildUrl("/");
+                } else {
+                    $("#user-buttons").css({ overflow: "hidden" }); // Hide login area
+                    refreshBlocks(
+                        "logged_info,wallet,user_buttons,services_buttons" +
+                            ($("#form_login_reload_content").val() == "0"
+                                ? ""
+                                : `,content:${currentPage}`)
+                    );
+                }
             }
 
             if (jsonObj.return_id === "already_logged_in") {
@@ -71,12 +67,9 @@ $(document).delegate("#logout", "click", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
+            const jsonObj = json_parse(content);
 
-            if (!jsonObj.return_id) {
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 

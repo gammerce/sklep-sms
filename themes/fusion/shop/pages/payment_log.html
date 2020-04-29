@@ -1,0 +1,16 @@
+<header class="section">
+    <div class="container">
+        <h1 class="title">{{ __('payment_log') }}</h1>
+    </div>
+</header>
+
+<main class="section section-body">
+    <div class="container">
+        <div class="payment-log-box">
+            {$paymentLogs}
+        </div>
+        <div class="{{ $paginationClass }}">
+            {$paginationContent}
+        </div>
+    </div>
+</main>

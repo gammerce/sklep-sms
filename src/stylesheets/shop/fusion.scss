@@ -166,3 +166,27 @@ body {
         }
     }
 }
+
+.payment-log-box {
+    margin-bottom: 2rem;
+
+    .card-content {
+        color: $scheme-main-bis;
+    }
+
+    .income {
+        background-color: rgba($success, 0.8);
+
+        &:hover {
+            background-color: $success;
+        }
+    }
+
+    .outcome {
+        background-color: rgba($danger, 0.8);
+
+        &:hover {
+            background-color: $danger;
+        }
+    }
+}
