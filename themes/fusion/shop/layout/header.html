@@ -8,17 +8,17 @@
     type="text/javascript"
     src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
 ></script>
-<script type="text/javascript" src="{{ $url->versioned('build/js/vendors.js') }}"></script>
-<script type="text/javascript" src="{{ $url->versioned('build/js/shop.js') }}"></script>
-<script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
+<script type="text/javascript" src="{{ versioned('build/js/vendors.js') }}"></script>
+<script type="text/javascript" src="{{ versioned('build/js/shop.js') }}"></script>
+<script type="text/javascript" src="{{ versioned('lang.js') }}"></script>
 <script type="text/javascript">
-    var f = "{$footer}";
+    var f = "{!! $footer !!}";
     var language = "{{ $lang->getCurrentLanguage() }}";
-    var baseUrl = "{{ $url->to('/') }}";
+    var baseUrl = "{{ url('/') }}";
     var currentPage = "{{ $currentPageId }}";
 </script>
-{$scripts}
+{!! $scripts !!}
 
-<link href="{{ $url->versioned('build/css/shop_fusion.css') }}" rel="stylesheet" />
-<link rel="shortcut icon" href="{{ $url->to('favicon.png') }}" />
-{$styles}
+<link href="{{ versioned('build/css/shop_fusion.css') }}" rel="stylesheet" />
+<link rel="shortcut icon" href="{{ url('favicon.png') }}" />
+{!! $styles !!}

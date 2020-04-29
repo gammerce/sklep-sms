@@ -11,6 +11,7 @@ return [
     'bad_module' => 'Service module was programmed incorrectly.',
     'bought_date' => 'Puchase date',
     'cancel' => 'Cancel',
+    'change_license_token' => 'You can change license token using',
     'choose_option' => 'Choose option',
     'choose_quantity' => 'Choose quantity',
     'choose_server' => 'Choose server',

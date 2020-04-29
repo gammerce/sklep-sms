@@ -62,21 +62,32 @@ class PageCashbillTransferFinalized extends Page
         $orderId = $request->query->get("orderid");
 
         if (
-            $paymentModule->checkSign($request->query->all(), $paymentModule->getKey(), $sign) &&
+            !$paymentModule->checkSign($request->query->all(), $paymentModule->getKey(), $sign) ||
             $service != $paymentModule->getService()
         ) {
-            return $this->lang->t("transfer_unverified");
+            return $this->template->render("shop/components/general/header", [
+                "title" => $this->getTitle($request),
+                "subtitle" => $this->lang->t("transfer_unverified"),
+            ]);
         }
 
-        // prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
         if (strtoupper($status) != "OK") {
-            return $this->lang->t("transfer_error");
+            return $this->template->render("shop/components/general/header", [
+                "title" => $this->getTitle($request),
+                "subtitle" => $this->lang->t("transfer_error"),
+            ]);
         }
 
-        return $this->purchaseInformation->get([
+        $content = $this->purchaseInformation->get([
             "payment" => Purchase::METHOD_TRANSFER,
             "payment_id" => $orderId,
             "action" => "web",
+        ]);
+
+        return $this->template->render("shop/pages/transfer_finalized", [
+            "title" => $this->getTitle($request),
+            "subtitle" => $this->lang->t("transfer_error"),
+            "content" => $content,
         ]);
     }
 }

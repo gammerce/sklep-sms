@@ -59,7 +59,7 @@ class PurchaseInformation
         $statement->execute($queryParticle->params());
 
         if (!$statement->rowCount()) {
-            return "Brak zakupu w bazie.";
+            return "";
         }
 
         $transaction = $this->transactionRepository->mapToModel($statement->fetch());

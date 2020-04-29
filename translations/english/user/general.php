@@ -79,7 +79,9 @@ return [
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
+    'payment_rejected' => 'Payment rejected',
     'payment_sms' => 'SMS payment',
+    'payment_success' => 'Payment success',
     'payment_transfer' => 'Transfer payment',
     'payment_wallet' => 'Wallet payment',
     'price' => 'Price',
@@ -95,10 +97,10 @@ return [
     'regulations' => 'Regulations',
     'repeat' => 'Repeat',
     'required_data' => 'Required data',
-    'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail box.<br/>
+    'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail.<br/>
 Follow the directions in the e-mail.',
     'reset_password' => 'Reset password',
-    'restore_password_info' => 'In order to restore password, give your address <strong>e-mail</strong> or <strong>nickname</strong>.<br />
+    'restore_password_info' => 'In order to restore password, give your address <strong>e-mail</strong> or <strong>username</strong>.<br />
 At the next step, an e-mail with a link to restore password will be send to you.',
     'send' => 'Send',
     'service_no_permission' => 'You have no permission to use this service.',
@@ -158,7 +160,7 @@ You can now profit from many add-ons.',
     'wrong_id' => 'Wrong ID',
     'wrong_payment_method' => 'Wrong payment method was chosen.',
     'wrong_reset_key' => 'Reset key incorrect.<br />
-Contact our service administrator to receive more information.',
+<a href="{1}">Contact us</a> to receive more information.',
     'wrong_sender_email' =>
         'E-mail assigned you your account is incorrect. Report it to the shop owner.',
 ];

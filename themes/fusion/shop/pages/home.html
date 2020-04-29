@@ -28,12 +28,15 @@
                     </div>
 
                     <div class="card-group">
-                        {$services}
+                        {!! $services !!}
                     </div>
 
                     <div>
                         <a class="is-size-5" href="{{ url('/page/services') }}">
-                            {{ __('show_more') }}
+                            <span class="icon">
+                                <i class="fa fa-angle-double-right"></i>
+                            </span>
+                            <strong>{{ __('show_more') }}</strong>
                         </a>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ return [
     'bad_module' => 'Moduł usługi został źle zaprogramowany.',
     'bought_date' => 'Data zakupu',
     'cancel' => 'Anuluj',
+    'change_license_token' => 'Możesz zmienić token licencji korzystając z',
     'choose_option' => 'Wybierz opcję',
     'choose_quantity' => 'Wybierz ilość',
     'choose_server' => 'Wybierz serwer',

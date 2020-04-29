@@ -94,6 +94,7 @@ class BlockUserButtons extends Block
         return $this->template->render(
             "shop/layout/user_buttons",
             compact("acpButton", "chargeWalletButton") + [
+                "balance" => number_format($user->getWallet() / 100, 2),
                 "username" => $user->getUsername(),
                 "userId" => $user->getUid(),
             ]

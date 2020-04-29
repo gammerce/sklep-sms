@@ -82,7 +82,9 @@ return [
     'payment_log' => 'Historia płatności',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
+    'payment_rejected' => 'Płatność odrzucona',
     'payment_sms' => 'Płatność SMS',
+    'payment_success' => 'Płatność zaakceptowana',
     'payment_transfer' => 'Płatność przelew',
     'payment_wallet' => 'Płatność portfel',
     'price' => 'Cena',
@@ -162,7 +164,7 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'wrong_id' => 'Błędne ID',
     'wrong_payment_method' => 'Wybrano błędny sposób zapłaty.',
     'wrong_reset_key' => 'Kod resetowania hasła jest błędny.<br />
-Skontaktuj się z administratorem serwisu w celu uzyskania dodatkowych informacji.',
+<a href="{1}">Skontaktuj się</a> z nami w celu uzyskania dodatkowych informacji.',
     'wrong_sender_email' =>
         'E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.',
 ];

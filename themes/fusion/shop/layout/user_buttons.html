@@ -3,17 +3,17 @@
         <span class="icon">
             <i class="fas fa-dollar-sign"></i>
         </span>
-        <span>88.88</span>
+        <span>{{ $balance }}</span>
     </a>
 
     <div class="navbar-dropdown is-right">
-        <a class="navbar-item" href="{{ $url->to('/page/payment_log') }}">
+        <a class="navbar-item" href="{{ url('/page/payment_log') }}">
             <span class="icon">
                 <i class="fas fa-database"></i>
             </span>
             <span>{{ __('payment_log') }}</span>
         </a>
-        {$chargeWalletButton}
+        {!! $chargeWalletButton !!}
     </div>
 </div>
 
@@ -26,26 +26,26 @@
     </a>
 
     <div class="navbar-dropdown is-right">
-        {$acpButton}
-        <a class="navbar-item" href="{{ $url->to('/page/profile') }}">
+        {!! $acpButton !!}
+        <a class="navbar-item" href="{{ url('/page/profile') }}">
             <span class="icon">
                 <i class="fas fa-user-circle"></i>
             </span>
             <span>{{ __('profile') }}</span>
         </a>
-        <a class="navbar-item" href="{{ $url->to('/page/user_own_services') }}">
+        <a class="navbar-item" href="{{ url('/page/user_own_services') }}">
             <span class="icon">
                 <i class="fas fa-list"></i>
             </span>
             <span>{{ __('my_services') }}</span>
         </a>
-        <a class="navbar-item" href="{{ $url->to('/page/service_take_over') }}">
+        <a class="navbar-item" href="{{ url('/page/service_take_over') }}">
             <span class="icon">
                 <i class="fas fa-exchange-alt"></i>
             </span>
             <span>{{ __('service_takeover') }}</span>
         </a>
-        <a class="navbar-item" href="{{ $url->to('/page/change_password') }}">
+        <a class="navbar-item" href="{{ url('/page/change_password') }}">
             <span class="icon">
                 <i class="fas fa-key"></i>
             </span>

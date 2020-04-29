@@ -713,6 +713,17 @@ function url($path, array $query = [])
     return $url->to($path, $query);
 }
 
+/**
+ * @param string $path
+ * @return string
+ */
+function versioned($path)
+{
+    /** @var UrlGenerator $url */
+    $url = app()->make(UrlGenerator::class);
+    return $url->versioned($path);
+}
+
 function dd(...$vars)
 {
     foreach ($vars as $v) {
