@@ -13,51 +13,47 @@
                 </span>
             </div>
 
-            <div id="sms_details">
-                <br />
-                <table>
-                    <tr>
-                        <td
-                            colspan="3"
-                            style="font-weight: bold; padding-bottom: 5px; font-size: 18px;"
-                        >
-                            {$lang->t('sms_send_sms')}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="has-text-right">{$lang->t('sms_text')}</td>
-                        <td style="width: 20px;"></td>
-                        <td class="has-text-left is-family-monospace">{{ $smsCode }}</td>
-                    </tr>
-                    <tr>
-                        <td class="has-text-right">{$lang->t('sms_number')}</td>
-                        <td></td>
-                        <td class="has-text-left is-family-monospace">
-                            {{ $smsNumber }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td class="has-text-right">
-                            <label for="sms_code">{$lang->t('sms_return_code')}</label>
-                        </td>
-                        <td></td>
-                        <td class="has-text-left">
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        type="text"
-                                        id="sms_code"
-                                        name="sms_code"
-                                        class="input is-small is-family-monospace"
-                                        maxlength="16"
-                                    />
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+            <div id="sms_details" class="has-text-left is-hidden">
+                <h1 class="title is-5">{{ __('sms_send_sms') }}</h1>
 
-                <br class="clear" />
+                <div class="field is-horizontal">
+                    <div class="field-label">
+                        <label class="label">{{ __('sms_text') }}</label>
+                    </div>
+                    <div class="field-body">
+                        <span class="is-family-monospace">{{ $smsCode }}</span>
+                    </div>
+                </div>
+
+                <div class="field is-horizontal">
+                    <div class="field-label">
+                        <label class="label">{{ __('sms_number') }}</label>
+                    </div>
+                    <div class="field-body">
+                        <span class="is-family-monospace">{{ $smsNumber }}</span>
+                    </div>
+                </div>
+
+                <div class="field is-horizontal">
+                    <div class="field-label">
+                        <label class="label required" for="sms_code"
+                            >{{ __('sms_return_code') }}</label
+                        >
+                    </div>
+                    <div class="field-body">
+                        <div class="field">
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="sms_code"
+                                    name="sms_code"
+                                    class="input is-small is-family-monospace"
+                                    maxlength="16"
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <footer class="card-footer">

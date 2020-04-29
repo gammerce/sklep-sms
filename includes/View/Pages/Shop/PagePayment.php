@@ -69,7 +69,7 @@ class PagePayment extends Page
             })
             ->join();
 
-        return $this->template->render("shop/payment/payment_form", [
+        return $this->template->render("shop/pages/payment", [
             "orderDetails" => $orderDetails,
             "paymentMethods" => $paymentMethods,
         ]);

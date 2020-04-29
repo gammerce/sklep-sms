@@ -83,6 +83,10 @@ export const show = function(node) {
     node.removeClass("is-hidden");
 };
 
+export const isShown = function(node) {
+    return !node.hasClass("is-hidden");
+};
+
 export const showWarnings = function(form, warnings) {
     $.each(warnings, function(name, element) {
         const inputElement = form.find('[name="' + name + '"]');
