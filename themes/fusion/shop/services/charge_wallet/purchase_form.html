@@ -1,0 +1,23 @@
+<form id="form_purchase" class="module-charge-wallet">
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label class="label required">{{ __('choose_charge_method') }}</label>
+                <ul>
+                    {!! $paymentMethodOptions !!}
+                </ul>
+            </div>
+        </div>
+
+        <div class="column">
+            {!! $paymentMethodBodies !!}
+        </div>
+    </div>
+
+    <div class="form-footer is-hidden">
+        <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+        <button type="submit" class="button is-success purchase-button">
+            {{ __('go_to_payment') }}
+        </button>
+    </div>
+</form>

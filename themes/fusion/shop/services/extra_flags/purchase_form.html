@@ -9,7 +9,7 @@
                     </ul>
                 </div>
 
-                <div id="type_nick" class="column is-full field is-hidden">
+                <fieldset id="type_nick" class="column is-full field is-hidden" disabled>
                     <label for="nick" class="label required">{{ __('nick') }}</label>
                     <div class="control">
                         <input
@@ -20,12 +20,11 @@
                             maxlength="32"
                             autocomplete="off"
                             required
-                            disabled
                         />
                     </div>
-                </div>
+                </fieldset>
 
-                <div id="type_ip" class="column is-full field is-hidden">
+                <fieldset id="type_ip" class="column is-full field is-hidden" disabled>
                     <label for="ip" class="label required">{{ __('ip') }}</label>
                     <div class="control">
                         <input
@@ -37,12 +36,11 @@
                             maxlength="16"
                             autocomplete="off"
                             required
-                            disabled
                         />
                     </div>
-                </div>
+                </fieldset>
 
-                <div id="type_sid" class="column is-full field is-hidden">
+                <fieldset id="type_sid" class="column is-full field is-hidden" disabled>
                     <label for="sid" class="label required">{{ __('sid') }}</label>
                     <div class="control">
                         <input
@@ -54,12 +52,11 @@
                             maxlength="16"
                             autocomplete="off"
                             required
-                            disabled
                         />
                     </div>
-                </div>
+                </fieldset>
 
-                <div id="type_password" class="column columns is-hidden">
+                <fieldset id="type_password" class="column columns is-hidden" disabled>
                     <div class="column is-half field">
                         <label for="password" class="label required">{{ __('password') }}</label>
                         <div class="control">
@@ -71,7 +68,6 @@
                                 maxlength="32"
                                 autocomplete="off"
                                 required
-                                disabled
                             />
                         </div>
                     </div>
@@ -93,7 +89,7 @@
                             />
                         </div>
                     </div>
-                </div>
+                </fieldset>
 
                 <div class="column is-full field">
                     <label for="email" class="label required">{{ __('email') }}</label>
@@ -163,7 +159,7 @@
         </div>
     </div>
 
-    <div class="has-text-centered">
+    <div class="form-footer">
         <button type="submit" class="button is-success">
             {{ __('go_to_payment') }}
         </button>

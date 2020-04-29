@@ -40,6 +40,7 @@ $input-color: $scheme-invert;
 $button-border-color: #000;
 $button-color: $scheme-invert;
 $button-hover-color: #fff;
+$button-static-border-color: $scheme-main;
 
 @import "src/stylesheets/general/vendors";
 @import "~@fortawesome/fontawesome-free/css/all.css";
@@ -143,6 +144,11 @@ body {
     .card.gapped {
         margin-right: 1rem;
     }
+}
+
+.form-footer {
+    margin-top: 2rem;
+    text-align: center;
 }
 
 // Pages
@@ -273,12 +279,12 @@ body {
         }
     }
 
-    .order_details {
+    .order-details {
         border: 2px solid $danger;
         padding: 1rem;
     }
 
-    .order_details legend {
+    .order-details legend {
         color: $danger;
         text-transform: uppercase;
         font-size: 1.1rem;

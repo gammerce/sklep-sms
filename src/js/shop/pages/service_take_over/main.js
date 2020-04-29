@@ -3,9 +3,11 @@ import { loader } from "../../../general/loader";
 import {
     buildUrl,
     hide,
+    hideAndDisable,
     removeFormWarnings,
     restRequest,
     show,
+    showAndEnable,
     showWarnings,
 } from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -16,13 +18,11 @@ $(document).delegate("#form_service_take_over [name=service_id]", "change", func
 
     if (serviceId == "") {
         form.find(".extra_data").html("");
-        hide(form.find(".take_over"));
-        form.find("[type=submit]").prop("disabled", true);
+        hideAndDisable(form.find(".form-footer"));
     } else {
         restRequest("GET", `/api/services/${serviceId}/take_over/create_form`, {}, function(html) {
             form.find(".extra_data").html(html);
-            show(form.find(".take_over"));
-            form.find("[type=submit]").prop("disabled", false);
+            showAndEnable(form.find(".form-footer"));
         });
     }
 });

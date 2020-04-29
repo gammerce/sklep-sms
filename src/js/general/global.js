@@ -67,11 +67,13 @@ export const changeUrl = function(data) {
 
 export const hideAndDisable = function(node) {
     hide(node);
+    node.prop("disabled", true);
     node.find("input").prop("disabled", true);
 };
 
 export const showAndEnable = function(node) {
     show(node);
+    node.prop("disabled", false);
     node.find("input").prop("disabled", false);
 };
 
