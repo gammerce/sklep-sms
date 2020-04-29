@@ -112,7 +112,7 @@ At the next step, an e-mail with a link to restore password will be send to you.
     'service_taken_over' => 'Service has been taken over.',
     'service_was_bought' => 'Service {1} was purchased on server {2}',
     'services_subtitle' => 'Choose one from the following services to go to the purchase form.',
-    'show_more' => 'Show more...',
+    'show_more' => 'Show more',
     'sign_in_subtitle' => 'Log in to your account.',
     'sign_up_info' => 'Your account has been registered successfully, e-mail: {1}.<br/>
 You can now profit from many add-ons.',

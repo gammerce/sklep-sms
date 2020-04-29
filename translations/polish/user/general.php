@@ -115,7 +115,7 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
     'service_taken_over' => 'Usługa została przejęta.',
     'service_was_bought' => 'Zakupiono usługę {1} na serwerze {2}',
     'services_subtitle' => 'Wybierz jedną z poniższych usług, aby przejść do formularza zakupu.',
-    'show_more' => 'Pokaż więcej...',
+    'show_more' => 'Pokaż więcej',
     'sign_in_subtitle' => 'Zaloguj się na swoje konto.',
     'sign_up_info' => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
 Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',

@@ -12,6 +12,8 @@ $scheme-invert-ter: hsl(0, 0%, 86%);
 $background: $scheme-invert-bis;
 $body-background-color: $background;
 
+$link: $danger;
+$link-focus-border: $link;
 $text-strong: inherit;
 $footer-color: $scheme-invert;
 $navbar-item-color: $scheme-invert;
@@ -94,6 +96,18 @@ body {
 }
 
 // Utils
+
+.button.is-show-more {
+    color: $scheme-main-bis;
+    background: transparent;
+    border-color: $danger;
+    border-width: 2px;
+
+    &:hover {
+        background: $danger;
+        color: $scheme-invert;
+    }
+}
 
 .card {
     background: rgba($black, 0.8);
