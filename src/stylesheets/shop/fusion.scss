@@ -46,7 +46,7 @@ $button-hover-color: #fff;
 @import "src/stylesheets/general/partials/infobox";
 @import "src/stylesheets/general/partials/loader";
 @import "src/stylesheets/general/partials/helpers";
-@import "src/stylesheets/general/services/extra_flags";
+@import "src/stylesheets/general/partials/window_info";
 
 // Layout
 
@@ -57,7 +57,7 @@ body {
 
 .section {
     @include mobile {
-        padding: 3rem 0.5rem;
+        padding: 3rem 0.75rem;
     }
 }
 
@@ -220,5 +220,12 @@ body {
     .card.is-active {
         border: 1px solid $danger;
         box-shadow: 0 0 2px $danger;
+    }
+}
+
+#form_purchase {
+    .discount {
+        color: $danger;
+        font-size: $size-7;
     }
 }

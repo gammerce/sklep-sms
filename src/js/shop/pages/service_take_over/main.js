@@ -1,6 +1,13 @@
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import {
+    buildUrl,
+    hide,
+    removeFormWarnings,
+    restRequest,
+    show,
+    showWarnings,
+} from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#form_service_take_over [name=service_id]", "change", function() {
@@ -9,12 +16,12 @@ $(document).delegate("#form_service_take_over [name=service_id]", "change", func
 
     if (serviceId == "") {
         form.find(".extra_data").html("");
-        form.find(".take_over").hide();
+        hide(form.find(".take_over"));
         form.find("[type=submit]").prop("disabled", true);
     } else {
         restRequest("GET", `/api/services/${serviceId}/take_over/create_form`, {}, function(html) {
             form.find(".extra_data").html(html);
-            form.find(".take_over").show();
+            show(form.find(".take_over"));
             form.find("[type=submit]").prop("disabled", false);
         });
     }

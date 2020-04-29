@@ -66,13 +66,21 @@ export const changeUrl = function(data) {
 };
 
 export const hideAndDisable = function(node) {
-    node.hide();
+    hide(node);
     node.find("input").prop("disabled", true);
 };
 
 export const showAndEnable = function(node) {
-    node.show();
+    show(node);
     node.find("input").prop("disabled", false);
+};
+
+export const hide = function(node) {
+    node.addClass("is-hidden");
+};
+
+export const show = function(node) {
+    node.removeClass("is-hidden");
 };
 
 export const showWarnings = function(form, warnings) {

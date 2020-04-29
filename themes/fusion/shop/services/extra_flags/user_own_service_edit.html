@@ -16,7 +16,7 @@ $serviceInfo['service'] }}<br />
         </div>
     </div>
 
-    <div class="field type_nick" style="{{ $styles['nick'] }}">
+    <div class="field type_nick {{ $classes['nick'] }}">
         <label for="nick" class="label required">{{ __('nick') }}</label>
         <div class="control">
             <input type="text" id="nick" name="auth_data" class="input" maxlength="32" value="{{
@@ -24,7 +24,7 @@ $serviceInfo['service'] }}<br />
         </div>
     </div>
 
-    <div class="field type_ip" style="{{ $styles['ip'] }}">
+    <div class="field type_ip {{ $classes['ip'] }}">
         <label for="ip" class="label required">{{ __('ip') }}</label>
         <div class="control">
             <input type="text" id="ip" name="auth_data" class="input" maxlength="21" value="{{
@@ -32,7 +32,7 @@ $serviceInfo['service'] }}<br />
         </div>
     </div>
 
-    <div class="field type_sid" style="{{ $styles['sid'] }}">
+    <div class="field type_sid {{ $classes['sid'] }}">
         <label for="sid" class="label required">{{ __('sid') }}</label>
         <div class="control">
             <input type="text" id="sid" name="auth_data" class="input" maxlength="32" value="{{
@@ -40,7 +40,7 @@ $serviceInfo['service'] }}<br />
         </div>
     </div>
 
-    <div class="field type_password" style="{{ $styles['password'] }}">
+    <div class="field type_password {{ $classes['password'] }}">
         <label for="password" class="label required">{{ __('password') }}</label>
         <div class="control">
             <input type="password" id="password" name="password" class="input" maxlength="32"

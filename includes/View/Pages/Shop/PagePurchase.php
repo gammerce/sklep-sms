@@ -107,12 +107,12 @@ class PagePurchase extends Page
         }
 
         if (strlen($serviceModule->descriptionLongGet())) {
-            $showMore = $this->template->render("shop/services/show_more");
+            $showMore = $this->template->render("shop/components/purchase/show_more");
         } else {
             $showMore = "";
         }
 
-        $description = $this->template->render("shop/services/short_description", [
+        $description = $this->template->render("shop/components/purchase/short_description", [
             "shortDescription" => $serviceModule->descriptionShortGet(),
             "showMore" => $showMore,
         ]);

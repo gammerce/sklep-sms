@@ -2,6 +2,7 @@
 @import "partials/infobox";
 @import "partials/loader";
 @import "partials/helpers";
+@import "partials/window_info";
 
 html {
     overflow-y: auto;
@@ -37,15 +38,6 @@ hr,
 
 .vcenter {
     vertical-align: middle;
-}
-
-.centered {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto auto;
 }
 
 .flex-center {
@@ -90,45 +82,6 @@ hr,
     box-shadow: 0 0 10px #000;
     line-height: 1.4;
     color: #bbb;
-}
-
-/* Okno wyświetlające różne informacje */
-.window_info {
-    z-index: 4;
-    background: rgba(0, 0, 0, 0.95);
-    border: 2px solid #000;
-    box-shadow: 0 0 20px #000;
-    border-radius: 5px;
-    color: #ccc;
-    font-size: 18px;
-
-    padding: 18px;
-
-    .delete {
-        position: absolute;
-        top: 0.25rem;
-        right: 0.25rem;
-        padding: 0 2px;
-
-        &:after,
-        &:before {
-            background-color: $danger;
-        }
-    }
-
-    .description_content {
-        overflow: auto;
-        height: calc(100% - 100px);
-    }
-}
-
-/*.window_info */
-.description_title {
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    font-size: 22px;
-    margin-bottom: 20px;
 }
 
 .button.edit_row {

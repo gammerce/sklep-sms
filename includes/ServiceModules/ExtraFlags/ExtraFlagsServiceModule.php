@@ -696,11 +696,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $types = $this->getTypeOptions($this->service->getTypes(), $userService->getType());
 
-        $styles = [
-            "nick" => "",
-            "ip" => "",
-            "sid" => "",
-            "password" => "",
+        $classes = [
+            "nick" => "is-hidden",
+            "ip" => "is-hidden",
+            "sid" => "is-hidden",
+            "password" => "is-hidden",
         ];
 
         $disabled = [
@@ -717,15 +717,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
-            $styles["nick"] = $styles["password"] = "display: table-row-group";
+            $classes["nick"] = $classes["password"] = "";
             $disabled["nick"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_IP) {
             $ip = $userService->getAuthData();
-            $styles["ip"] = $styles["password"] = "display: table-row-group";
+            $classes["ip"] = $classes["password"] = "";
             $disabled["ip"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_SID) {
             $sid = $userService->getAuthData();
-            $styles["sid"] = "display: table-row-group";
+            $classes["sid"] = "";
             $disabled["sid"] = "";
         }
 
@@ -749,7 +749,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "shop/services/extra_flags/user_service_admin_edit",
             compact(
                 "types",
-                "styles",
+                "classes",
                 "nick",
                 "ip",
                 "sid",
@@ -850,11 +850,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "player_sid" => "",
             "password" => "",
         ];
-        $styles = [
-            "nick" => "display: none",
-            "ip" => "display: none",
-            "sid" => "display: none",
-            "password" => "display: none",
+        $classes = [
+            "nick" => "is-hidden",
+            "ip" => "is-hidden",
+            "sid" => "is-hidden",
+            "password" => "is-hidden",
         ];
         $disabled = [
             "nick" => "disabled",
@@ -883,19 +883,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo["player_nick"] = $userService->getAuthData();
-                        $styles["nick"] = $styles["password"] = "display: block";
+                        $classes["nick"] = $classes["password"] = "";
                         $disabled["nick"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
                         $serviceInfo["player_ip"] = $userService->getAuthData();
-                        $styles["ip"] = $styles["password"] = "display: block";
+                        $classes["ip"] = $classes["password"] = "";
                         $disabled["ip"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
                         $serviceInfo["player_sid"] = $userService->getAuthData();
-                        $styles["sid"] = "display: block";
+                        $classes["sid"] = "";
                         $disabled["sid"] = "";
                         break;
                 }
@@ -913,7 +913,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         return $this->template->render(
             "shop/services/extra_flags/user_own_service_edit",
-            compact("serviceInfo", "disabled", "styles")
+            compact("serviceInfo", "disabled", "classes")
         );
     }
 
