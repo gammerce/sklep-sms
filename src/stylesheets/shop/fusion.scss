@@ -12,16 +12,34 @@ $scheme-invert-ter: hsl(0, 0%, 86%);
 $background: $scheme-invert-bis;
 $body-background-color: $background;
 
-$link: $danger;
-$link-focus-border: $link;
 $text-strong: inherit;
 $footer-color: $scheme-invert;
 $navbar-item-color: $scheme-invert;
 $navbar-dropdown-item-hover-color: $scheme-main;
 $card-color: $scheme-invert;
+$hr-background-color: $scheme-main;
+
+// Link
+$link: $danger;
+
+$link-hover: $scheme-invert;
+$link-hover-border: $link;
+
+$link-focus: $scheme-invert;
+$link-focus-border: darken($link, 20%);
+
+$link-active: $scheme-invert;
+$link-active-border: darken($link, 20%);
+
+// Input
+$input-border-color: #000;
+$input-hover-border-color: $primary;
+$input-color: $scheme-invert;
+
+// Button
+$button-border-color: #000;
 $button-color: $scheme-invert;
 $button-hover-color: #fff;
-$input-color: $scheme-invert;
 
 @import "src/stylesheets/general/vendors";
 @import "~@fortawesome/fontawesome-free/css/all.css";
@@ -201,6 +219,6 @@ body {
 
     .card.is-active {
         border: 1px solid $danger;
-        box-shadow: 0 0 4px $danger;
+        box-shadow: 0 0 2px $danger;
     }
 }

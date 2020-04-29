@@ -140,10 +140,9 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     $this->settings["user_edit_service"] &&
                     $serviceModule instanceof IServiceUserOwnServicesEdit
                 ) {
-                    $buttonEdit = create_dom_element("button", $this->lang->t("edit"), [
-                        "class" => "button is-small edit_row",
-                        "type" => "button",
-                    ]);
+                    $buttonEdit = $this->template->render(
+                        "shop/components/user_own_services/edit_button"
+                    );
                 } else {
                     $buttonEdit = "";
                 }

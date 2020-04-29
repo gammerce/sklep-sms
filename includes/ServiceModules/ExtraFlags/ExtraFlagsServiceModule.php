@@ -883,19 +883,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo["player_nick"] = $userService->getAuthData();
-                        $styles["nick"] = $styles["password"] = "display: table-row";
+                        $styles["nick"] = $styles["password"] = "display: block";
                         $disabled["nick"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
                         $serviceInfo["player_ip"] = $userService->getAuthData();
-                        $styles["ip"] = $styles["password"] = "display: table-row";
+                        $styles["ip"] = $styles["password"] = "display: block";
                         $disabled["ip"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
                         $serviceInfo["player_sid"] = $userService->getAuthData();
-                        $styles["sid"] = "display: table-row";
+                        $styles["sid"] = "display: block";
                         $disabled["sid"] = "";
                         break;
                 }

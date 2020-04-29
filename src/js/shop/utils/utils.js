@@ -11,13 +11,13 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
 
     $.ajax({
         type: "GET",
-        url: buildUrl("/api/templates/" + template),
-        data: data,
+        url: buildUrl(`/api/templates/${template}`),
+        data,
         complete: function() {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;
             }
@@ -43,25 +43,22 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
     onSuccessFunction =
         typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
-    var splittedUrl = document.URL.split("?");
-    var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
-
     $.ajax({
         type: "GET",
-        url: buildUrl("/api/bricks/" + bricks),
-        data: query,
+        url: buildUrl(`/api/bricks/${bricks}`),
         complete: function() {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;
             }
 
             $.each(jsonObj, function(brick_id, brick) {
-                $("#" + brick_id).html(brick.content);
-                $("#" + brick_id).attr("class", brick.class);
+                const brickNode = $(`#${brick_id}`);
+                brickNode.html(brick.content);
+                brickNode.attr("class", brick.class);
             });
 
             onSuccessFunction(content);

@@ -52,7 +52,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings(that, jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
-                refreshBlocks("content");
+                refreshBlocks(`content:${currentPage}`);
             } else if (jsonObj.return_id === "payment") {
                 goToPayment(jsonObj.transaction_id);
             }

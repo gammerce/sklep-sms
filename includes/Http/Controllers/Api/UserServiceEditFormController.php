@@ -44,7 +44,7 @@ class UserServiceEditFormController
             return new PlainResponse($lang->t('service_cant_be_modified'));
         }
 
-        $buttons = $template->render("shop/services/my_services_savencancel");
+        $buttons = $template->render("shop/components/user_own_services/savencancel");
 
         return new HtmlResponse($buttons . $serviceModule->userOwnServiceEditFormGet($userService));
     }
