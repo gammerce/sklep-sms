@@ -96,6 +96,8 @@ body {
 // Utils
 
 .card {
+    background: rgba($black, 0.8);
+
     .subtitle {
         color: $scheme-invert-ter;
     }
@@ -122,18 +124,8 @@ body {
         align-items: center;
         height: 100%;
 
-        .card-group {
+        .services-group {
             justify-content: center;
-        }
-
-        .product-card {
-            border-radius: 30px;
-            text-align: center;
-        }
-
-        .shop-icon {
-            margin: 1rem 1rem 3rem;
-            color: $primary;
         }
     }
 }
@@ -147,7 +139,6 @@ body {
 
         width: calc(50% - 3rem);
         color: $scheme-invert;
-        background: rgba(0, 0, 0, 0.8);
 
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12),
             0 1px 5px 0 rgba(0, 0, 0, 0.2);
@@ -188,5 +179,14 @@ body {
         &:hover {
             background-color: $danger;
         }
+    }
+}
+
+#user_own_services {
+    margin-bottom: 2rem;
+
+    .card.is-active {
+        border: 1px solid $danger;
+        box-shadow: 0 0 4px $danger;
     }
 }

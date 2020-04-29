@@ -6,22 +6,20 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 
 // Click on edit service
 $(document).delegate("#user_own_services .edit_row", "click", function() {
-    var row = $(this).closest("form");
-    var card = row.closest(".card");
-    var userServiceId = row.data("row");
+    const row = $(this).closest("form");
+    const card = row.closest(".card");
+    const userServiceId = row.data("row");
 
-    restRequest("GET", "/api/user_services/" + userServiceId + "/edit_form", {}, function(html) {
+    restRequest("GET", `/api/user_services/${userServiceId}/edit_form`, {}, function(html) {
         row.html(html);
-        card.addClass("active");
+        card.addClass("is-active");
 
         row.find(".cancel").click(function() {
-            var userServiceId = row.data("row");
+            const userServiceId = row.data("row");
 
-            restRequest("GET", "/api/user_services/" + userServiceId + "/brick", {}, function(
-                html
-            ) {
+            restRequest("GET", `/api/user_services/${userServiceId}/brick`, {}, function(html) {
                 row.html(html);
-                card.removeClass("active");
+                card.removeClass("is-active");
             });
         });
     });
@@ -31,14 +29,14 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
 $(document).delegate("#user_own_services .row", "submit", function(e) {
     e.preventDefault();
 
-    var that = $(this);
-    var userServiceId = that.data("row");
+    const that = $(this);
+    const userServiceId = that.data("row");
 
     loader.show();
 
     $.ajax({
         type: "PUT",
-        url: buildUrl("/api/user_services/" + userServiceId),
+        url: buildUrl(`/api/user_services/${userServiceId}`),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();
@@ -46,12 +44,8 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            const jsonObj = json_parse(content);
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 

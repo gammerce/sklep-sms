@@ -2,6 +2,7 @@
 namespace App\View\Pages\Shop;
 
 use App\Managers\ServiceModuleManager;
+use App\Models\UserService;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
@@ -19,7 +20,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
 {
-    const PAGE_ID = 'user_own_services';
+    const PAGE_ID = "user_own_services";
 
     /** @var UserServiceService */
     private $userServiceService;
@@ -66,7 +67,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t('user_own_services');
+        return $this->lang->t("user_own_services");
     }
 
     public function getContent(Request $request)
@@ -115,7 +116,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
             $userServiceIds = collect($statement)
                 ->map(function (array $row) {
-                    return $row['id'];
+                    return $row["id"];
                 })
                 ->join(", ");
 
@@ -126,34 +127,38 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             }
         }
 
-        $userOwnServices = '';
-        foreach ($usersServices as $userService) {
-            $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
+        $userOwnServices = collect($usersServices)
+            ->filter(function (UserService $userService) {
+                $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
+                return $serviceModule instanceof IServiceUserOwnServices;
+            })
+            ->map(function (UserService $userService) {
+                /** @var IServiceUserOwnServices $serviceModule */
+                $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
 
-            if (!($serviceModule instanceof IServiceUserOwnServices)) {
-                continue;
-            }
+                if (
+                    $this->settings["user_edit_service"] &&
+                    $serviceModule instanceof IServiceUserOwnServicesEdit
+                ) {
+                    $buttonEdit = create_dom_element("button", $this->lang->t("edit"), [
+                        "class" => "button is-small edit_row",
+                        "type" => "button",
+                    ]);
+                } else {
+                    $buttonEdit = "";
+                }
 
-            if (
-                $this->settings['user_edit_service'] &&
-                $serviceModule instanceof IServiceUserOwnServicesEdit
-            ) {
-                $buttonEdit = create_dom_element("button", $this->lang->t('edit'), [
-                    'class' => "button is-small edit_row",
-                    'type' => 'button',
-                ]);
-            }
+                $content = $serviceModule->userOwnServiceInfoGet($userService, $buttonEdit);
 
-            $userOwnServices .= $this->template->render("admin/brick_card", [
-                'content' => $serviceModule->userOwnServiceInfoGet(
-                    $userService,
-                    isset($buttonEdit) ? $buttonEdit : ''
-                ),
-            ]);
-        }
+                return $this->template->render(
+                    "shop/components/user_own_services/card",
+                    compact("content")
+                );
+            })
+            ->join();
 
         if (!strlen($userOwnServices)) {
-            $userOwnServices = $this->lang->t('no_data');
+            $userOwnServices = $this->lang->t("no_data");
         }
 
         $paginationContent = $this->paginationService->createPagination(
@@ -167,7 +172,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         return $this->template->render(
             "shop/pages/user_own_services",
-            compact('userOwnServices', 'paginationClass', 'paginationContent')
+            compact("userOwnServices", "paginationClass", "paginationContent")
         );
     }
 }
