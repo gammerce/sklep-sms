@@ -58,7 +58,7 @@ class PurchaseDataService
      */
     public function restorePurchase($fileName)
     {
-//        $fileName = escape_filename($fileName);
+        $fileName = escape_filename($fileName);
         if (!$fileName || !$this->fileSystem->exists($this->path->to("data/transfers/$fileName"))) {
             return null;
         }

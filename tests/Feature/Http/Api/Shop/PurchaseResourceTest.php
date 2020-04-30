@@ -21,7 +21,7 @@ class PurchaseResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertStringMatchesFormat(
             <<<EOF
-Zakupiono prawidłowo usługę: VIP<br />
+Zakupiono prawidłowo usługę: <strong>VIP</strong><br />
 <strong>Cena</strong>: 1.23 PLN
 <hr />
 <strong>Serwer</strong>: %s<br />
