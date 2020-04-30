@@ -651,7 +651,7 @@ INSERT INTO `ss_settings` (`key`, `value`) VALUES
   ('shop_url', ''),
   ('signature', ''),
   ('sms_service', ''),
-  ('theme', 'default'),
+  ('theme', 'fusion'),
   ('timezone', 'Europe/Warsaw'),
   ('transfer_service', ''),
   ('user_edit_service', '1'),

@@ -28,7 +28,7 @@ class Settings implements ArrayAccess
         $this->data = [
             "date_format" => "Y-m-d H:i",
             "shop_url" => "",
-            "theme" => "default",
+            "theme" => "fusion",
             "timezone" => "Europe/Warsaw",
         ];
         $this->fileSystem = $fileSystem;
@@ -70,9 +70,9 @@ class Settings implements ArrayAccess
             $this->data["shop_url"] = $this->formatShopUrl($this->data["shop_url"]);
         }
 
-        // Fallback to default theme if selected does not exist
+        // Fallback to fusion theme if selected does not exist
         if (!$this->fileSystem->exists($this->path->to("themes/{$this->data["theme"]}"))) {
-            $this->data["theme"] = "default";
+            $this->data["theme"] = "fusion";
         }
 
         date_default_timezone_set($this->data["timezone"]);
