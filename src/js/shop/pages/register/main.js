@@ -1,4 +1,4 @@
-import { getAndSetTemplate } from "../../utils/utils";
+import { getAndSetTemplate, refreshBlocks } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -32,7 +32,7 @@ $(document).delegate("#register", "submit", function(e) {
                     email: email,
                 });
 
-                window.location.href = buildUrl("/");
+                refreshBlocks("logged_info,wallet,user_buttons,services_buttons");
             } else {
                 if (jsonObj.return_id === "warnings") {
                     showWarnings($("#register"), jsonObj.warnings);

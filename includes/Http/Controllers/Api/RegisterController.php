@@ -33,33 +33,33 @@ class RegisterController
         $session = $request->getSession();
         $lang = $translationManager->user();
 
-        $antispamQuestionId = $request->request->get('as_id');
+        $antispamQuestionId = $request->request->get("as_id");
 
         // Get new antispam question
         $data = [];
         $antispamQuestion = $antiSpamQuestionRepository->findRandom();
-        $data['antispam']['question'] = $antispamQuestion->getQuestion();
-        $data['antispam']['id'] = $antispamQuestion->getId();
+        $data["antispam"]["question"] = $antispamQuestion->getQuestion();
+        $data["antispam"]["id"] = $antispamQuestion->getId();
 
         // Is antispam question correct
         if (!$session->has("asid") || $antispamQuestionId != $session->get("asid")) {
-            return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0, $data);
+            return new ApiResponse("wrong_sign", $lang->t("wrong_sign"), 0, $data);
         }
 
-        // Let's store antispam question id in session
+        // Let"s store antispam question id in session
         $session->set("asid", $antispamQuestion->getId());
 
         $validator = new Validator(
             [
-                "username" => trim($request->request->get('username')),
-                "password" => $request->request->get('password'),
-                "password_repeat" => $request->request->get('password_repeat'),
-                "email" => trim($request->request->get('email')),
-                "email_repeat" => trim($request->request->get('email_repeat')),
-                "forename" => trim($request->request->get('forename')),
-                "surname" => trim($request->request->get('surname')),
-                "steam_id" => trim($request->request->get('steam_id')),
-                "as_answer" => $request->request->get('as_answer'),
+                "username" => trim($request->request->get("username")),
+                "password" => $request->request->get("password"),
+                "password_repeat" => $request->request->get("password_repeat"),
+                "email" => trim($request->request->get("email")),
+                "email_repeat" => trim($request->request->get("email_repeat")),
+                "forename" => trim($request->request->get("forename")),
+                "surname" => trim($request->request->get("surname")),
+                "steam_id" => trim($request->request->get("steam_id")),
+                "as_answer" => $request->request->get("as_answer"),
                 "as_id" => $antispamQuestionId,
             ],
             [
@@ -81,26 +81,26 @@ class RegisterController
         $validated = $validator->validateOrFailWith($data);
 
         $createdUser = $userRepository->create(
-            $validated['username'],
-            $validated['password'],
-            $validated['email'],
-            $validated['forename'],
-            $validated['surname'],
-            $validated['steam_id'],
+            $validated["username"],
+            $validated["password"],
+            $validated["email"],
+            $validated["forename"],
+            $validated["surname"],
+            $validated["steam_id"],
             get_ip($request),
-            '1',
+            "1",
             0
         );
 
         $auth->loginUser($request, $createdUser);
 
         $logger->log(
-            'log_new_account',
+            "log_new_account",
             $createdUser->getUid(),
             $createdUser->getUsername(),
             $createdUser->getRegIp()
         );
 
-        return new ApiResponse("registered", $lang->t('register_success'), 1, $data);
+        return new ApiResponse("registered", $lang->t("register_success"), 1, $data);
     }
 }
