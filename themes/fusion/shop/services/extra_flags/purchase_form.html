@@ -56,37 +56,41 @@
                     </div>
                 </fieldset>
 
-                <fieldset id="type_password" class="column columns is-hidden" disabled>
-                    <div class="column is-half field">
-                        <label for="password" class="label required">{{ __('password') }}</label>
-                        <div class="control">
-                            <input
-                                type="password"
-                                id="password"
-                                name="password"
-                                class="input"
-                                maxlength="32"
-                                autocomplete="off"
-                                required
-                            />
+                <fieldset id="type_password" class="column is-hidden" disabled>
+                    <div class="columns">
+                        <div class="column is-half field">
+                            <label for="password" class="label required"
+                                >{{ __('password') }}</label
+                            >
+                            <div class="control">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="input"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="column is-half field">
-                        <label for="password_repeat" class="label required">
-                            {{ __('password_repeat') }}
-                        </label>
-                        <div class="control">
-                            <input
-                                type="password"
-                                id="password_repeat"
-                                name="password_repeat"
-                                class="input"
-                                maxlength="32"
-                                autocomplete="off"
-                                required
-                                disabled
-                            />
+                        <div class="column is-half field">
+                            <label for="password_repeat" class="label required">
+                                {{ __('password_repeat') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="password"
+                                    id="password_repeat"
+                                    name="password_repeat"
+                                    class="input"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                    required
+                                    disabled
+                                />
+                            </div>
                         </div>
                     </div>
                 </fieldset>

@@ -185,7 +185,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->renderNoComments(
-            "shop/services/extra_flags/extra_fields",
+            "admin/services/extra_flags/extra_fields",
             compact("webSelNo", "webSelYes", "types", "flags") + [
                 "moduleId" => $this->getModuleId(),
             ]
@@ -620,7 +620,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $servers = $this->getServerOptions();
 
         return $this->template->renderNoComments(
-            "shop/services/extra_flags/user_service_admin_add",
+            "admin/services/extra_flags/user_service_admin_add",
             compact("types", "servers") + ["moduleId" => $this->getModuleId()]
         );
     }
@@ -746,7 +746,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "shop/services/extra_flags/user_service_admin_edit",
+            "admin/services/extra_flags/user_service_admin_edit",
             compact(
                 "types",
                 "classes",

@@ -115,14 +115,15 @@ class PagePurchase extends Page
         }
 
         $description = $this->template->render("shop/components/purchase/short_description", [
-            "shortDescription" => $serviceModule->descriptionShortGet(),
+            "shortDescription" =>
+                $serviceModule->descriptionShortGet() ?: $serviceModule->service->getName(),
             "showMore" => $showMore,
         ]);
         $purchaseForm = $serviceModule->purchaseFormGet($request->query->all());
 
         return $this->template->render(
             "shop/pages/purchase",
-            compact("description", "purchaseForm")
+            compact("title", "description", "purchaseForm")
         );
     }
 

@@ -179,7 +179,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "shop/services/mybb_extra_groups/extra_fields",
+            "admin/services/mybb_extra_groups/extra_fields",
             compact(
                 'webSelNo',
                 'webSelYes',
@@ -574,29 +574,29 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
-            "shop/services/mybb_extra_groups/user_service_admin_add",
-            ['moduleId' => $this->getModuleId()]
+            "admin/services/mybb_extra_groups/user_service_admin_add",
+            ["moduleId" => $this->getModuleId()]
         );
     }
 
     public function userServiceAdminAdd(array $body)
     {
         $user = $this->auth->user();
-        $forever = (bool) array_get($body, 'forever');
+        $forever = (bool) array_get($body, "forever");
 
         $this->connectMybb();
 
         $validator = new Validator(
             array_merge($body, [
-                'quantity' => as_int(array_get($body, 'quantity')),
+                "quantity" => as_int(array_get($body, "quantity")),
             ]),
             [
-                'quantity' => $forever
+                "quantity" => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
-                'uid' => [new UserExistsRule()],
-                'mybb_username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
-                'email' => [new EmailRule()],
+                "uid" => [new UserExistsRule()],
+                "mybb_username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                "email" => [new EmailRule()],
             ]
         );
 
@@ -605,21 +605,21 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->heart->getUser($validated['uid']));
+        $purchase = new Purchase($this->heart->getUser($validated["uid"]));
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            'username' => $validated['mybb_username'],
-            Purchase::ORDER_QUANTITY => $forever ? null : $validated['quantity'],
+            "username" => $validated["mybb_username"],
+            Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
         ]);
-        $purchase->setEmail($validated['email']);
+        $purchase->setEmail($validated["email"]);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(
-            'log_user_service_added',
+            "log_user_service_added",
             $user->getUsername(),
             $user->getUid(),
             $boughtServiceId
@@ -645,10 +645,10 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         return $this->template->render(
             "shop/services/mybb_extra_groups/user_own_service",
-            compact('mybbUid', 'expire') + [
-                'moduleId' => $this->getModuleId(),
-                'serviceName' => $this->service->getName(),
-                'userServiceId' => $userService->getId(),
+            compact("mybbUid", "expire") + [
+                "moduleId" => $this->getModuleId(),
+                "serviceName" => $this->service->getName(),
+                "userServiceId" => $userService->getId(),
             ]
         );
     }
@@ -682,15 +682,15 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $rowMybb = $statement->fetch();
 
-        $mybbUser = new MybbUser($rowMybb['uid'], $rowMybb['usergroup']);
-        $mybbUser->setMybbAddGroups(explode(",", $rowMybb['additionalgroups']));
-        $mybbUser->setMybbDisplayGroup($rowMybb['displaygroup']);
+        $mybbUser = new MybbUser($rowMybb["uid"], $rowMybb["usergroup"]);
+        $mybbUser->setMybbAddGroups(explode(",", $rowMybb["additionalgroups"]));
+        $mybbUser->setMybbDisplayGroup($rowMybb["displaygroup"]);
 
         $statement = $this->db->statement(
             "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
                 "WHERE `uid` = ?"
         );
-        $statement->execute([$rowMybb['uid']]);
+        $statement->execute([$rowMybb["uid"]]);
 
         foreach ($statement as $row) {
             $mybbUser->setShopGroup($row['gid'], [
