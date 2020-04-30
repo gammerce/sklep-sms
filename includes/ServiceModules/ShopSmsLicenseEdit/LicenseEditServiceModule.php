@@ -79,15 +79,20 @@ class LicenseEditServiceModule extends ServiceModule implements
         $statement->execute([$purchase->getOrder('user_service_id')]);
         $identifier = $statement->fetchColumn();
 
-        return $this->template->renderNoComments("services/shopsms_license_edit/order_details", [
-            'costMonthly' => $this->priceTextService->getPriceText(
-                $purchase->getOrder('cost_daily') * 30
-            ),
-            'email' => $purchase->getEmail() ?: $this->lang->t('none'),
-            'engines' => $this->engineService->formatOrderEngines($purchase->getOrder('engines')),
-            'identifier' => $identifier,
-            'serviceName' => $this->service->getName(),
-        ]);
+        return $this->template->renderNoComments(
+            "shop/services/shopsms_license_edit/order_details",
+            [
+                'costMonthly' => $this->priceTextService->getPriceText(
+                    $purchase->getOrder('cost_daily') * 30
+                ),
+                'email' => $purchase->getEmail() ?: $this->lang->t('none'),
+                'engines' => $this->engineService->formatOrderEngines(
+                    $purchase->getOrder('engines')
+                ),
+                'identifier' => $identifier,
+                'serviceName' => $this->service->getName(),
+            ]
+        );
     }
 
     public function purchase(Purchase $purchase)
@@ -137,7 +142,7 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/shopsms_license_edit/purchase_info_email",
+                "shop/services/shopsms_license_edit/purchase_info_email",
                 [
                     'authData' => $transaction->getAuthData(),
                     'engines' => $engines,
@@ -147,7 +152,7 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/shopsms_license_edit/purchase_info_web",
+                "shop/services/shopsms_license_edit/purchase_info_web",
                 [
                     'authData' => $transaction->getAuthData(),
                     'email' => $transaction->getEmail(),

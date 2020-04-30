@@ -91,7 +91,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         /** @var Request $request */
         $request = $this->app->make(Request::class);
 
-        return $this->template->render("services/shopsms_license_prolong/purchase_form", [
+        return $this->template->render("shop/services/shopsms_license_prolong/purchase_form", [
             'identifier' => $request->query->get("identifier", ""),
             'serviceId' => $this->service->getId(),
             'serviceTag' => $this->service->getTag(),
@@ -124,7 +124,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
     public function orderDetails(Purchase $purchase)
     {
         return $this->template->renderNoComments(
-            "services/shopsms_license_prolong/order_details",
+            "shop/services/shopsms_license_prolong/order_details",
             compact('identifier') + [
                 'identifier' => $purchase->getOrder('identifier'),
                 'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
@@ -181,7 +181,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/shopsms_license_prolong/purchase_info_email",
+                "shop/services/shopsms_license_prolong/purchase_info_email",
                 [
                     'expire' => $transaction->getExtraDatum('expire'),
                     'identifier' => $identifier,
@@ -191,7 +191,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/shopsms_license_prolong/purchase_info_web",
+                "shop/services/shopsms_license_prolong/purchase_info_web",
                 [
                     'expire' => $transaction->getExtraDatum('expire'),
                     'identifier' => $identifier,
@@ -217,7 +217,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
-            "services/shopsms_license_prolong/user_service_admin_add",
+            "admin/services/shopsms_license_prolong/user_service_admin_add",
             [
                 'moduleId' => $this->getModuleId(),
             ]

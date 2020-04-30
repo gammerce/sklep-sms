@@ -1,15 +1,15 @@
 <?php
 namespace App\Providers;
 
-use App\Services\LicenseServerService;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Requesting\Requester;
 use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
 use App\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
 use App\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
-use App\System\Application;
-use App\System\Heart;
+use App\Services\LicenseServerService;
 use App\Support\Mailer;
+use App\System\Application;
 use App\System\Settings;
 
 class LicenseServiceProvider
@@ -34,26 +34,22 @@ class LicenseServiceProvider
             return new LicenseServerService($url, $licenseSecret, $app->make(Requester::class));
         });
 
-        $app->extend(Heart::class, function (Heart $heart) {
-            $heart->registerServiceModule(
-                LicenseServiceModule::MODULE_ID,
-                "Licencja Sklep-SMS",
-                LicenseServiceModule::class
+        $app->extend(ServiceModuleManager::class, function (
+            ServiceModuleManager $serviceModuleManager
+        ) {
+            $serviceModuleManager->register(LicenseServiceModule::class, "Licencja Sklep-SMS");
+
+            $serviceModuleManager->register(
+                LicenseEditServiceModule::class,
+                "Edycja Licencji Sklep-SMS"
             );
 
-            $heart->registerServiceModule(
-                LicenseEditServiceModule::MODULE_ID,
-                "Edycja Licencji Sklep-SMS",
-                LicenseEditServiceModule::class
+            $serviceModuleManager->register(
+                LicenseProlongServiceModule::class,
+                "Przedłużenie Licencji Sklep-SMS"
             );
 
-            $heart->registerServiceModule(
-                LicenseProlongServiceModule::MODULE_ID,
-                "Przedłużenie Licencji Sklep-SMS",
-                LicenseProlongServiceModule::class
-            );
-
-            return $heart;
+            return $serviceModuleManager;
         });
     }
 }

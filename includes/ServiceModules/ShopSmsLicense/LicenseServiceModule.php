@@ -231,7 +231,7 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        return $this->template->render("services/shopsms_license/purchase_form", [
+        return $this->template->render("shop/services/shopsms_license/purchase_form", [
             'user' => $this->auth->user(),
             'serviceId' => $this->service->getId(),
             'serviceTag' => $this->service->getTag(),
@@ -274,7 +274,7 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        return $this->template->renderNoComments("services/shopsms_license/order_details", [
+        return $this->template->renderNoComments("shop/services/shopsms_license/order_details", [
             'costMonthly' => $this->priceTextService->getPriceText(
                 $purchase->getOrder('cost_daily') * 30
             ),
@@ -357,7 +357,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/shopsms_license/purchase_info_email",
+                "shop/services/shopsms_license/purchase_info_email",
                 [
                     'engines' => $engines,
                     'expire' => $transaction->getExtraDatum("expire"),
@@ -368,14 +368,17 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         if ($action === "web") {
-            return $this->template->renderNoComments("services/shopsms_license/purchase_info_web", [
-                'email' => $transaction->getEmail(),
-                'engines' => $engines,
-                'expire' => $transaction->getExtraDatum("expire"),
-                'identifier' => $transaction->getExtraDatum("identifier"),
-                'token' => $transaction->getExtraDatum("token"),
-                'serviceName' => $this->service->getName(),
-            ]);
+            return $this->template->renderNoComments(
+                "shop/services/shopsms_license/purchase_info_web",
+                [
+                    'email' => $transaction->getEmail(),
+                    'engines' => $engines,
+                    'expire' => $transaction->getExtraDatum("expire"),
+                    'identifier' => $transaction->getExtraDatum("identifier"),
+                    'token' => $transaction->getExtraDatum("token"),
+                    'serviceName' => $this->service->getName(),
+                ]
+            );
         }
 
         if ($action === "payment_log") {
@@ -391,7 +394,7 @@ class LicenseServiceModule extends ServiceModule implements
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
-            "services/shopsms_license/user_service_admin_add",
+            "admin/services/shopsms_license/user_service_admin_add",
             [
                 'moduleId' => $this->getModuleId(),
             ]
@@ -423,7 +426,7 @@ class LicenseServiceModule extends ServiceModule implements
             $engines[] = "SOURCEMOD";
         }
 
-        return $this->template->render("services/shopsms_license/user_own_service", [
+        return $this->template->render("shop/services/shopsms_license/user_own_service", [
             'buttonEdit' => $buttonEdit,
             'costMonthly' => $this->priceTextService->getPriceText(
                 $userService->getCostDaily() * 30
@@ -455,7 +458,7 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ];
 
-        return $this->template->render("services/shopsms_license/user_own_service_edit", [
+        return $this->template->render("shop/services/shopsms_license/user_own_service_edit", [
             'costMonthly' => $this->priceTextService->getPriceText(
                 $userService->getCostDaily() * 30
             ),
@@ -526,7 +529,7 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function serviceTakeOverFormGet()
     {
-        return $this->template->render("services/shopsms_license/service_take_over");
+        return $this->template->render("shop/services/shopsms_license/service_take_over");
     }
 
     public function serviceTakeOver(array $body)
