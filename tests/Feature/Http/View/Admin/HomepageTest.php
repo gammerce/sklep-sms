@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\View\Admin;
 
 use App\Exceptions\LicenseRequestException;
 use App\System\License;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -56,7 +57,7 @@ class HomepageTest extends HttpTestCase
         $response = $this->get('/admin');
 
         // then
-        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
         $this->assertStringEndsWith("/admin/login", $response->headers->get("Location"));
     }
 }

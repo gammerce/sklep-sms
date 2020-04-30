@@ -6,6 +6,7 @@ use App\Routing\UrlGenerator;
 use App\Services\IntendedUrlService;
 use App\Support\Template;
 use App\System\Auth;
+use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -50,22 +51,27 @@ class AdminAuthController
         Request $request,
         Auth $auth,
         UrlGenerator $url,
+        Heart $heart,
         IntendedUrlService $intendedUrlService
     ) {
         if ($request->request->get("action") === "logout") {
-            $auth->logoutAdmin();
+            $auth->logout($request);
             return new RedirectResponse($url->to("/admin/login"));
         }
 
         // Let's try to login to ACP
         if ($request->request->has("username") && $request->request->has("password")) {
-            $user = $auth->loginAdminUsingCredentials(
+            $user = $heart->getUserByLogin(
                 $request->request->get("username"),
                 $request->request->get("password")
             );
 
-            if ($user->exists() && $intendedUrlService->exists($request)) {
-                return $intendedUrlService->redirect($request);
+            if ($user) {
+                $auth->loginAdmin($request, $user);
+
+                if ($intendedUrlService->exists($request)) {
+                    return $intendedUrlService->redirect($request);
+                }
             }
         }
 

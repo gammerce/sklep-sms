@@ -81,7 +81,7 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
  * @param {string} boxId
  * @param {object} data
  */
-export const showActionBox = function(pageId, boxId, data) {
+export const showActionBox = function(pageId, boxId, data = undefined) {
     restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
         const jsonObj = json_parse(content);
         if (!jsonObj) {

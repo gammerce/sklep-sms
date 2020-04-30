@@ -108,8 +108,8 @@ function purchaseService(method) {
                 showWarnings($("#payment"), jsonObj.warnings);
             } else if (jsonObj.return_id === "purchased") {
                 // Update content window with purchase details
-                restRequest("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
-                    $("#content").html(message);
+                restRequest("GET", `/api/purchases/${jsonObj.bsid}`, {}, function(message) {
+                    $("#page-content").html(message);
                 });
 
                 // Refresh wallet

@@ -55,7 +55,7 @@ class BlockUserButtons extends Block
 
     public function getContentId()
     {
-        return "user-buttons";
+        return "user_buttons";
     }
 
     protected function content(Request $request, array $params)

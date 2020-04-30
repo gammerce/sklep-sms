@@ -25,15 +25,6 @@ class PurchaseSerializer
     }
 
     /**
-     * @param Purchase $purchase
-     * @return string
-     */
-    public function serializeAndEncode(Purchase $purchase)
-    {
-        return base64_encode(serialize($purchase));
-    }
-
-    /**
      * @param $content
      * @return Purchase|null
      */
@@ -43,19 +34,10 @@ class PurchaseSerializer
     }
 
     /**
-     * @param $content
+     * @param mixed $purchase
      * @return Purchase|null
      */
-    public function deserializeAndDecode($content)
-    {
-        return $this->enhancePurchase(unserialize(base64_decode($content)));
-    }
-
-    /**
-     * @param Purchase $purchase
-     * @return Purchase|null
-     */
-    private function enhancePurchase(Purchase $purchase)
+    private function enhancePurchase($purchase)
     {
         if ($purchase instanceof Purchase) {
             // Fix: Refresh user to avoid bugs linked with user wallet

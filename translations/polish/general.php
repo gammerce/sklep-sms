@@ -30,7 +30,6 @@ return [
     'edit' => 'Edytuj',
     'edited_user_service' => 'Prawidłowo wyedytowano usługę.',
     'email' => 'Adres e-mail',
-    'error_occurred' => 'Wystąpił błąd.',
     'external_id' => 'Zewnętrzne ID',
     'february' => 'Luty',
     'field_length_max_warn' => 'Pole może się składać z co najwyżej {1} znaków.',

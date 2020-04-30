@@ -182,9 +182,17 @@ class Heart
     }
 
     /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->users[$user->getUid()] = $user;
+    }
+
+    /**
      * @param string $login
      * @param string $password
-     * @return User
+     * @return User|null
      */
     public function getUserByLogin($login, $password)
     {
@@ -195,7 +203,7 @@ class Heart
             return $user;
         }
 
-        return new User();
+        return null;
     }
 
     /**

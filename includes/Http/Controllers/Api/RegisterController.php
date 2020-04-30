@@ -16,6 +16,7 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\AntiSpamQuestionRepository;
 use App\Repositories\UserRepository;
+use App\System\Auth;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,6 +27,7 @@ class RegisterController
         TranslationManager $translationManager,
         UserRepository $userRepository,
         AntiSpamQuestionRepository $antiSpamQuestionRepository,
+        Auth $auth,
         DatabaseLogger $logger
     ) {
         $session = $request->getSession();
@@ -89,6 +91,8 @@ class RegisterController
             '1',
             0
         );
+
+        $auth->loginUser($request, $createdUser);
 
         $logger->log(
             'log_new_account',

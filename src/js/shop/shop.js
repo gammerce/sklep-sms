@@ -11,15 +11,6 @@ $(document).ready(function() {
     }
 
     $("#language_" + language).addClass("is-active");
-
-    setTimeout(function() {
-        refreshBlocks("wallet", function() {
-            const wallet = $("#wallet");
-            if (wallet.effect) {
-                wallet.effect("highlight", "slow");
-            }
-        });
-    }, 6000);
 });
 
 // Login
@@ -45,12 +36,9 @@ $(document).delegate("#form_login", "submit", function(e) {
                 if (window.location.pathname.endsWith("/page/login")) {
                     window.location.href = buildUrl("/");
                 } else {
-                    $("#user-buttons").css({ overflow: "hidden" }); // Hide login area
+                    $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
                     refreshBlocks(
-                        "logged_info,wallet,user_buttons,services_buttons" +
-                            ($("#form_login_reload_content").val() == "0"
-                                ? ""
-                                : `,content:${currentPage}`)
+                        `logged_info,wallet,user_buttons,services_buttons,content:${currentPage}`
                     );
                 }
             }
@@ -108,7 +96,7 @@ $(document).delegate("#loginarea_roll_button", "click", function() {
             },
             500,
             function() {
-                $("#user-buttons").css({
+                $("#user_buttons").css({
                     overflow: area.css("overflow") != "hidden" ? "hidden" : "visible",
                 });
                 $(".loginarea table")

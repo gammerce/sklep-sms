@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Managers\ServiceModuleManager;
 use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
@@ -48,8 +49,8 @@ class PagePayment extends Page
         $transactionId = $request->query->get("tid");
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchase) {
-            return $this->lang->t("error_occurred");
+        if (!$purchase || $purchase->isAttempted()) {
+            throw new EntityNotFoundException();
         }
 
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());

@@ -18,31 +18,21 @@ $(document).delegate("#register", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            const jsonObj = json_parse(content);
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 
             if (jsonObj.return_id === "registered") {
-                var username = $("#register [name=username]").val();
-                var password = $("#register [name=password]").val();
-                var email = $("#register [name=email]").val();
-                // Wyświetl informacje o rejestracji
-                getAndSetTemplate($("#content"), "register_registered", {
+                const username = $("#register [name=username]").val();
+                const email = $("#register [name=email]").val();
+
+                getAndSetTemplate($("#page-content"), "register_registered", {
                     username: username,
                     email: email,
                 });
-                setTimeout(function() {
-                    // Logowanie
-                    $("#form_login [name=username]").val(username);
-                    $("#form_login [name=password]").val(password);
-                    $("#form_login_reload_content").val("0");
-                    $("#form_login").trigger("submit");
-                }, 3000);
+
+                window.location.href = buildUrl("/");
             } else {
                 if (jsonObj.return_id === "warnings") {
                     showWarnings($("#register"), jsonObj.warnings);

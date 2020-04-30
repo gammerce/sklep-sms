@@ -30,7 +30,6 @@ return [
     'edit' => 'Edit',
     'edited_user_service' => 'Service edited correctly.',
     'email' => 'E-mail',
-    'error_occurred' => 'Error occurred.',
     'external_id' => 'External ID',
     'february' => 'February',
     'field_length_max_warn' => 'Field must consist of max. {1} chars.',

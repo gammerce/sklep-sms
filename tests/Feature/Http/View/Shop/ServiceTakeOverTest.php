@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServiceTakeOverTest extends HttpTestCase
@@ -17,7 +18,7 @@ class ServiceTakeOverTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Przejmij usługę", $response->getContent());
+        $this->assertContains("Przejęcie usługi", $response->getContent());
     }
 
     /** @test */
@@ -27,10 +28,7 @@ class ServiceTakeOverTest extends HttpTestCase
         $response = $this->get("/page/service_take_over");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains(
-            "Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.",
-            $response->getContent()
-        );
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+        $this->assertStringEndsWith("/login", $response->headers->get("Location"));
     }
 }

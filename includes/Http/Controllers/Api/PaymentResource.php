@@ -18,7 +18,7 @@ class PaymentResource
     ) {
         $purchase = $purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchaseDataService) {
+        if (!$purchase || $purchase->isAttempted()) {
             throw new EntityNotFoundException();
         }
 
