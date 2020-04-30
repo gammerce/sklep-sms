@@ -184,7 +184,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                         "selected" => $isLinked ? "selected" : "",
                     ]),
                 ];
-                return $this->template->render("shop/components/general/tr_text_select", [
+                return $this->template->render("admin/tr_text_select", [
                     "name" => $service->getId(),
                     "text" => "{$service->getName()} ( {$service->getId()} )",
                     "values" => implode("", $options),

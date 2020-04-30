@@ -128,7 +128,7 @@ class BodyRow extends Row
 
         return new Cell(
             new RawText(
-                $template->render("shop/components/general/more_actions", compact("actions"))
+                $template->render("admin/more_actions", compact("actions"))
             )
         );
     }

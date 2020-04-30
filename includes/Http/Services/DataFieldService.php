@@ -36,7 +36,7 @@ class DataFieldService
             $text = $dataField->getName() ?: $this->getCustomDataText($dataField->getId());
             $value = array_get($data, $dataField->getId());
 
-            $dataFieldOptions[] = $this->template->render("shop/components/general/tr_name_input", [
+            $dataFieldOptions[] = $this->template->render("admin/tr_name_input", [
                 "name" => "data[{$dataField->getId()}]",
                 "value" => $value,
                 "text" => $text,

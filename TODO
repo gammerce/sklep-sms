@@ -1,2 +1,6 @@
 Usunac steamid placeholder z profilu i rejestracji
 Tłumacz nazwy usług
+Przerobic wszystkie $lang->t i $url->to
+Przenies szablony admina do folderu admin
+Przyjrzec sie class="row"
+Dokonczyc extra_flags i myb_extra_groups
