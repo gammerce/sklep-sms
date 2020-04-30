@@ -23,7 +23,7 @@ class BrickResourceTest extends HttpTestCase
         $this->assertContains("Witaj w Sklepie SMS!", $json["content"]["content"]);
         $this->assertContains($user->getUsername(), $json["logged_info"]["content"]);
         $this->assertContains("VIP PRO", $json["services_buttons"]["content"]);
-        $this->assertContains("Doładuj portfel", $json["user_buttons"]["content"]);
-        $this->assertContains("0.00 PLN", $json["wallet"]["content"]);
+        $this->assertContains("Moje usługi", $json["user_buttons"]["content"]);
+        $this->assertContains("0.00", $json["wallet"]["content"]);
     }
 }
