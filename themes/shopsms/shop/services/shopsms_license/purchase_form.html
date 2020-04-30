@@ -1,16 +1,16 @@
 <form id="form_purchase" class="shopsms_license_purchase">
     <div class="columns is-multiline">
         <div class="column is-half">
-            <div class="header1">
-                <b>{$lang->t('engines_for_shop')}</b><br />
-                <span class="hint">{$lang->t('price_per_option')}</span>
+            <div class="field">
+                <label class="label required">{{ __('engines_for_shop') }}</label>
+                <span class="help">{!! __('price_per_option') !!}</span>
             </div>
+
             <div class="engines" name="engines">
                 <input type="hidden" name="platform_amxmodx" />
-
-                <div class="engine amxx" title="Counter Strike 1.6, etc.">AMX Mod X</div>
                 <input type="hidden" name="platform_sourcemod" />
 
+                <div class="engine amxx" title="Counter Strike 1.6, etc.">AMX Mod X</div>
                 <div
                     class="engine sm"
                     title="Counter Strike: Global Offensive, Team Fortress 2, etc."
@@ -21,37 +21,45 @@
         </div>
 
         <div class="column is-half">
-            <div class="header1">
-                <label for="amount">{$lang->t('license_duration')}</label><br />
-                <span class="hint">{$lang->t('license_price')}</span>
-            </div>
             <div class="field">
+                <label for="amount" class="label required">
+                    {{ __('license_duration') }}
+                </label>
                 <div class="control">
-                    <input
-                        type="number"
-                        id="amount"
-                        name="amount"
-                        min="0"
-                        class="input is-small"
-                        style="width: 100px"
-                        value="{{ $days }}"
-                    />&nbsp;{{ $serviceTag }}
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                min="0"
+                                class="input"
+                                value="{{ $days }}"
+                                required
+                            />
+                        </div>
+                        <div class="control">
+                            <a class="button is-static">
+                                {{ $serviceTag }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
+                <span class="help">{!! __('license_price') !!}</span>
             </div>
         </div>
 
-        <div class="column is-full">
-            <div class="header1">
-                <label for="email">{$lang->t('give_email')}</label>
-            </div>
+        <div class="column is-half">
             <div class="field">
+                <label for="email" class="label required">{{ __('give_email') }}</label>
                 <div class="control">
                     <input
                         type="email"
                         id="email"
                         name="email"
-                        class="input is-small"
-                        value="{$user->getEmail()}"
+                        class="input"
+                        value="{{ $user->getEmail() }}"
+                        required
                     />
                 </div>
             </div>
@@ -61,22 +69,22 @@
             <div class="column_bottom">
                 <div class="has-text-centered">
                     <img
-                        src="{{ $url->to('build/images/reload.png') }}"
+                        src="{{ url('build/images/reload.png') }}"
                         id="cost_reload"
-                        title="{$lang->t('reload')}"
+                        title="{{ __('reload') }}"
                         alt="reload"
                     />
-                    <span style="text-transform: uppercase;">{$lang->t('price')}:</span>
-                    <span id="cost">{$lang->t('none')}</span><br />
+                    <span style="text-transform: uppercase;">{{ __('price') }}:</span>
+                    <span id="cost">{{ __('none') }}</span><br />
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="column is-full has-text-centered">
-            <button type="submit" class="button is-success purchase-button">
-                {{ $lang->t('go_to_payment') }}
-            </button>
-        </div>
+    <div class="form-footer">
+        <button type="submit" class="button is-success">
+            {{ __('go_to_payment') }}
+        </button>
     </div>
 
     <input type="hidden" name="service_id" value="{{ $serviceId }}" />
