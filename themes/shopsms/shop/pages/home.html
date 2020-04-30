@@ -1,14 +1,52 @@
-<div style="font-size: 17px;">
-    <div class="short_description has-text-centered" style="font-size: 20px;">
-        Witaj w sklepie SMS!
-    </div>
+<div class="homepage-box">
+    <div class="container home-container">
+        <div class="columns is-multiline is-vcentered is-gapless">
+            <div class="column">
+                <div class="section has-text-centered">
+                    <h1 class="title is-2">{{ __('welcome_title') }}</h1>
+                    <h2 class="subtitle is-4">{{ __('welcome_subtitle') }}</h2>
 
-    <div style="margin-top: 12px;">
-        Przed zakupem licencji <strong>zarejestruj się</strong>!<br />
-        Uzyskasz w ten sposób dostęp do zarządzania nią.<br />
-        <br />
-        Po zakupie licencji postępuj zgodnie z
-        <a href="https://sklep-sms.pl/config">instrukcją instalacji</a>. Umożliwi Ci ona
-        bezproblemową instalację sklepu na swojej stronie WWW jak i serwerze gry.
+                    <div class="section">
+                        <p class="content is-size-5">
+                            Przed zakupem licencji
+                            <a class="has-text-weight-bold" href="{{ url('/page/register') }}"
+                                >zarejestruj się</a
+                            >!<br />
+                            Uzyskasz w ten sposób dostęp do panelu zarządzania licencją.<br />
+                            <br />
+                            Po zakupie licencji postępuj zgodnie z
+                            <a class="has-text-weight-bold" href="https://sklep-sms.pl/config"
+                                >instrukcją instalacji</a
+                            >. Umożliwi Ci ona bezproblemową instalację sklepu na swojej stronie WWW
+                            jak i serwerze gry.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="section has-text-centered">
+                    <div class="title is-3" style="margin-bottom: 2.5rem;">
+                        {{ __('available_services') }}
+                    </div>
+
+                    <div class="buttons services-group">
+                        {!! $services !!}
+                    </div>
+
+                    <div>
+                        <a
+                            class="button is-show-more is-rounded"
+                            href="{{ url('/page/services') }}"
+                        >
+                            <span class="icon">
+                                <i class="fa fa-angle-double-right"></i>
+                            </span>
+                            <strong>{{ __('show_more') }}</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

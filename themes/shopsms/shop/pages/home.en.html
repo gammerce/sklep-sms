@@ -1,14 +1,52 @@
-<div style="font-size: 17px;">
-    <div class="short_description has-text-centered" style="font-size: 20px;">
-        Welcome to the Shop SMS!
-    </div>
+<div class="homepage-box">
+    <div class="container home-container">
+        <div class="columns is-multiline is-vcentered is-gapless">
+            <div class="column">
+                <div class="section has-text-centered">
+                    <h1 class="title is-2">{{ __('welcome_title') }}</h1>
+                    <h2 class="subtitle is-4">{{ __('welcome_subtitle') }}</h2>
 
-    <div style="margin-top: 12px;">
-        <strong>Sign up</strong> before purchasing a license! That will give you access to your
-        license management panel.<br />
-        <br />
-        After purchasing the license, follow the
-        <a href="https://sklep-sms.pl/config">installation instructions</a>. It will allow you to
-        easily install the store on your website and game server.
+                    <div class="section">
+                        <p class="content is-size-5">
+                            <a class="has-text-weight-bold" href="{{ url('/page/register') }}"
+                                >Sign up</a
+                            >
+                            before purchasing a license! That will give you access to your license
+                            management panel.<br />
+                            <br />
+                            After purchasing the license, follow the
+                            <a class="has-text-weight-bold" href="https://sklep-sms.pl/config"
+                                >installation instructions</a
+                            >. It will allow you to easily install the store on your website and
+                            game server.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="section has-text-centered">
+                    <div class="title is-3" style="margin-bottom: 2.5rem;">
+                        {{ __('available_services') }}
+                    </div>
+
+                    <div class="buttons services-group">
+                        {!! $services !!}
+                    </div>
+
+                    <div>
+                        <a
+                            class="button is-show-more is-rounded"
+                            href="{{ url('/page/services') }}"
+                        >
+                            <span class="icon">
+                                <i class="fa fa-angle-double-right"></i>
+                            </span>
+                            <strong>{{ __('show_more') }}</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
