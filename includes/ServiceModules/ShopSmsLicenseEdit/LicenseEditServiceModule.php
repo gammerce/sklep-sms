@@ -76,29 +76,29 @@ class LicenseEditServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT `identifier` FROM `{$this->getUserServiceTable()}` WHERE `us_id` = ?"
         );
-        $statement->execute([$purchase->getOrder('user_service_id')]);
+        $statement->execute([$purchase->getOrder("user_service_id")]);
         $identifier = $statement->fetchColumn();
 
         return $this->template->renderNoComments(
             "shop/services/shopsms_license_edit/order_details",
             [
-                'costMonthly' => $this->priceTextService->getPriceText(
-                    $purchase->getOrder('cost_daily') * 30
+                "costMonthly" => $this->priceTextService->getPriceText(
+                    $purchase->getOrder("cost_daily") * 30
                 ),
-                'email' => $purchase->getEmail() ?: $this->lang->t('none'),
-                'engines' => $this->engineService->formatOrderEngines(
-                    $purchase->getOrder('engines')
+                "email" => $purchase->getEmail() ?: $this->lang->t("none"),
+                "engines" => $this->engineService->formatOrderEngines(
+                    $purchase->getOrder("engines")
                 ),
-                'identifier' => $identifier,
-                'serviceName' => $this->service->getName(),
+                "identifier" => $identifier,
+                "serviceName" => $this->service->getName(),
             ]
         );
     }
 
     public function purchase(Purchase $purchase)
     {
-        $userService = $this->userServiceService->findOne($purchase->getOrder('user_service_id'));
-        $engines = $purchase->getOrder('engines');
+        $userService = $this->userServiceService->findOne($purchase->getOrder("user_service_id"));
+        $engines = $purchase->getOrder("engines");
 
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -106,18 +106,18 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         $this->licenseServerService->updatePlatforms(
             $userService->getExternalLicenseId(),
-            $engines['amxx'],
-            $engines['sm']
+            $engines["amxx"],
+            $engines["sm"]
         );
 
         $this->userServiceRepository->updateWithModule(
             $this,
-            $purchase->getOrder('user_service_id'),
+            $purchase->getOrder("user_service_id"),
             [
-                'cost_daily' => $purchase->getOrder('cost_daily'),
-                'email' => $purchase->getEmail(),
-                'platform_amxmodx' => $engines['amxx'],
-                'platform_sourcemod' => $engines['sm'],
+                "cost_daily" => $purchase->getOrder("cost_daily"),
+                "email" => $purchase->getEmail(),
+                "platform_amxmodx" => $engines["amxx"],
+                "platform_sourcemod" => $engines["sm"],
             ]
         );
 
@@ -132,20 +132,20 @@ class LicenseEditServiceModule extends ServiceModule implements
             0,
             $userService->getIdentifier(),
             $purchase->getEmail(),
-            ['engines' => $this->engineService->formatOrderEngines($engines)]
+            ["engines" => $this->engineService->formatOrderEngines($engines)]
         );
     }
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $engines = $transaction->getExtraDatum('engines');
+        $engines = $transaction->getExtraDatum("engines");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license_edit/purchase_info_email",
                 [
-                    'authData' => $transaction->getAuthData(),
-                    'engines' => $engines,
+                    "authData" => $transaction->getAuthData(),
+                    "engines" => $engines,
                 ]
             );
         }
@@ -154,17 +154,17 @@ class LicenseEditServiceModule extends ServiceModule implements
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license_edit/purchase_info_web",
                 [
-                    'authData' => $transaction->getAuthData(),
-                    'email' => $transaction->getEmail(),
-                    'engines' => $engines,
+                    "authData" => $transaction->getAuthData(),
+                    "email" => $transaction->getEmail(),
+                    "engines" => $engines,
                 ]
             );
         }
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('license_edited', $transaction->getAuthData()),
-                'class' => "outcome",
+                "text" => $this->lang->t("license_edited", $transaction->getAuthData()),
+                "class" => "outcome",
             ];
         }
 

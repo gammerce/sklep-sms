@@ -18,11 +18,11 @@ class EngineService
     {
         $output = [];
 
-        if (array_get($engines, 'amxx')) {
+        if (array_get($engines, "amxx")) {
             $output[] = "AMX Mod X";
         }
 
-        if (array_get($engines, 'sm')) {
+        if (array_get($engines, "sm")) {
             $output[] = "SOURCEMOD";
         }
 
@@ -35,6 +35,6 @@ class EngineService
             return implode(", ", $engines);
         }
 
-        return $this->lang->t('none');
+        return $this->lang->t("none");
     }
 }
