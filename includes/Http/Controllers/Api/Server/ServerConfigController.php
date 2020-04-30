@@ -5,6 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\AssocResponse;
 use App\Http\Responses\JsonResponse;
+use App\Managers\PaymentModuleManager;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
@@ -14,7 +15,6 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
 use App\Services\UserServiceAccessService;
-use App\System\Heart;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -29,7 +29,7 @@ class ServerConfigController
         UserRepository $userRepository,
         ServerRepository $serverRepository,
         ServerDataService $serverDataService,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         Settings $settings,
         ServerAuth $serverAuth,
         UserServiceAccessService $userServiceAccessService
@@ -44,11 +44,11 @@ class ServerConfigController
         }
 
         if (!$this->isVersionAcceptable($platform, $version)) {
-            return new Response("", 402);
+            return new Response("", Response::HTTP_PAYMENT_REQUIRED);
         }
 
         $smsPlatformId = $server->getSmsPlatformId() ?: $settings->getSmsPlatformId();
-        $smsModule = $heart->getPaymentModuleByPlatformId($smsPlatformId);
+        $smsModule = $paymentModuleManager->getByPlatformId($smsPlatformId);
 
         if (!($smsModule instanceof SupportSms)) {
             throw new InvalidConfigException(
@@ -72,7 +72,7 @@ class ServerConfigController
         $serviceItems = $services->map(function (Service $service) {
             return [
                 "i" => $service->getId(),
-                "n" => $service->getName(),
+                "n" => $service->getNameI18n(),
                 "d" => $service->getShortDescription(),
                 "ta" => $service->getTag(),
                 "f" => $service->getFlags(),

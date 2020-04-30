@@ -1,0 +1,32 @@
+<form id="form_purchase" class="module-charge-wallet">
+    <table id="charge_table">
+        <thead>
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+            <tr>
+                <td><span>{$lang->t('choose_charge_method')}</span></td>
+                <td>
+                    {$paymentMethodOptions}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+        </thead>
+        {$paymentMethodBodies}
+        <tfoot class="form-footer is-hidden">
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <button type="submit" class="button is-success purchase-button">
+                        {{ $lang->t('go_to_payment') }}
+                    </button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+</form>

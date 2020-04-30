@@ -2,10 +2,10 @@
 namespace App\Verification\PaymentModules;
 
 use App\Loggers\FileLogger;
+use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
-use App\Models\FinalizedPayment;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;

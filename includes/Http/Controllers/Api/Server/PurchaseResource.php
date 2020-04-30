@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
-use App\System\Heart;
 use App\System\ServerAuth;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
@@ -15,7 +15,7 @@ class PurchaseResource
 {
     public function post(
         Request $request,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         TranslationManager $translationManager,
         PurchaseService $purchaseService,
         ServerResponseFactory $responseFactory,
@@ -34,7 +34,7 @@ class PurchaseResource
             );
         }
 
-        $serviceModule = $heart->getServiceModule($request->request->get('service_id'));
+        $serviceModule = $serviceModuleManager->get($request->request->get('service_id'));
 
         if (!($serviceModule instanceof IServicePurchaseExternal)) {
             return $responseFactory->create(

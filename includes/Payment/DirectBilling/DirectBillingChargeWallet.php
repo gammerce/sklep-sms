@@ -4,12 +4,12 @@ namespace App\Payment\DirectBilling;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
-use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportDirectBilling;
 use UnexpectedValueException;
@@ -25,35 +25,35 @@ class DirectBillingChargeWallet implements IChargeWallet
     /** @var Settings */
     private $settings;
 
-    /** @var Heart */
-    private $heart;
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
 
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
         Settings $settings,
-        Heart $heart
+        PaymentModuleManager $paymentModuleManager
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->settings = $settings;
-        $this->heart = $heart;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function setup(Purchase $purchase, array $body)
     {
         $validator = new Validator(
             [
-                'direct_billing_price' => price_to_int(array_get($body, 'direct_billing_price')),
+                "direct_billing_price" => price_to_int(array_get($body, "direct_billing_price")),
             ],
             [
-                'direct_billing_price' => [new RequiredRule(), new NumberRule()],
+                "direct_billing_price" => [new RequiredRule(), new NumberRule()],
             ]
         );
         $validated = $validator->validateOrFail();
         $price = $validated["direct_billing_price"];
 
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
 
@@ -71,8 +71,8 @@ class DirectBillingChargeWallet implements IChargeWallet
     {
         $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
         return $this->template->renderNoComments(
-            "services/charge_wallet/web_purchase_info_transfer",
-            compact('quantity')
+            "shop/services/charge_wallet/web_purchase_info_transfer",
+            compact("quantity")
         );
     }
 
@@ -82,11 +82,11 @@ class DirectBillingChargeWallet implements IChargeWallet
             return null;
         }
 
-        $option = $this->template->render("services/charge_wallet/option", [
-            'value' => Purchase::METHOD_DIRECT_BILLING,
-            'text' => "Direct Billing",
+        $option = $this->template->render("shop/services/charge_wallet/option", [
+            "value" => Purchase::METHOD_DIRECT_BILLING,
+            "text" => "Direct Billing",
         ]);
-        $body = $this->template->render("services/charge_wallet/direct_billing_body", [
+        $body = $this->template->render("shop/services/charge_wallet/direct_billing_body", [
             "type" => Purchase::METHOD_DIRECT_BILLING,
         ]);
 

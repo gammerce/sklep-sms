@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Transfer;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -25,9 +26,6 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var Heart */
     private $heart;
 
-    /** @var TransferPaymentService */
-    private $transferPaymentService;
-
     /** @var Translator */
     private $lang;
 
@@ -37,22 +35,25 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Heart $heart,
         Template $template,
         PriceTextService $priceTextService,
-        TransferPaymentService $transferPaymentService,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager,
+        PaymentModuleManager $paymentModuleManager,
         Settings $settings
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->heart = $heart;
-        $this->transferPaymentService = $transferPaymentService;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
         $this->purchaseDataService = $purchaseDataService;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function render(Purchase $purchase)
@@ -61,7 +62,7 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment/payment_method_transfer", compact('price'));
+        return $this->template->render("shop/payment/payment_method_transfer", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)
@@ -74,7 +75,7 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
         );
 
@@ -103,7 +104,7 @@ class TransferPaymentMethod implements IPaymentMethod
         }
 
         $service = $this->heart->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t('payment_for_service', $service->getName()));
+        $purchase->setDesc($this->lang->t('payment_for_service', $service->getNameI18n()));
 
         $fileName = $this->purchaseDataService->storePurchase($purchase);
 

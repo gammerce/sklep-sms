@@ -1,0 +1,11 @@
+<fieldset class="field is-hidden" data-type="{{ $type }}" disabled>
+    <label for="sms_price" class="label required">{{ __('choose_sms_value') }}</label>
+    <div class="control">
+        <div class="select">
+            <select id="sms_price" name="sms_price" required>
+                <option value="">{{ __('choose_option') }}</option>
+                {$smsList}
+            </select>
+        </div>
+    </div>
+</fieldset>

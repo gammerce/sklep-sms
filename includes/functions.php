@@ -14,6 +14,7 @@ use App\Translation\TranslationManager;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\VarDumper\VarDumper;
 
 /**
  * Get the available container instance.
@@ -402,11 +403,21 @@ function ip_in_range($ip, $range)
     }
 }
 
+/**
+ * @param string $string
+ * @param string $end
+ * @return bool
+ */
 function ends_at($string, $end)
 {
     return substr($string, -strlen($end)) == $end;
 }
 
+/**
+ * @param string $haystack
+ * @param string $needle
+ * @return bool
+ */
 function starts_with($haystack, $needle)
 {
     return substr($haystack, 0, strlen($needle)) === (string) $needle;
@@ -710,4 +721,24 @@ function url($path, array $query = [])
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
     return $url->to($path, $query);
+}
+
+/**
+ * @param string $path
+ * @return string
+ */
+function versioned($path)
+{
+    /** @var UrlGenerator $url */
+    $url = app()->make(UrlGenerator::class);
+    return $url->versioned($path);
+}
+
+function dd(...$vars)
+{
+    foreach ($vars as $v) {
+        VarDumper::dump($v);
+    }
+
+    exit(1);
 }

@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Api;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,7 +18,7 @@ class UserServiceResource
         $userServiceId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         Auth $auth,
         Settings $settings,
         UserServiceService $userServiceService
@@ -35,7 +35,7 @@ class UserServiceResource
             throw new EntityNotFoundException();
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!$serviceModule) {
             throw new InvalidServiceModuleException();
         }

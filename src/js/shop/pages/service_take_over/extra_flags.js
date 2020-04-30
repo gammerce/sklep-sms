@@ -1,6 +1,6 @@
 import { service_module_act_can } from "../../../general/stocks";
 import { get_type_name } from "../../../general/extra_flags";
-import { hideAndDisable, showAndEnable } from "../../../general/global";
+import { hide, hideAndDisable, show, showAndEnable } from "../../../general/global";
 
 $(document).delegate("#form_service_take_over [name=type]", "change", function() {
     var module = service_module_act_can("extra_flags", $(this));
@@ -27,8 +27,8 @@ $(document).delegate("#form_service_take_over [name=payment_method]", "change", 
 
     // TODO Allow other payment methods
 
-    module.find("[data-name='payment_id']").hide();
+    hide(module.find("[data-name='payment_id']"));
     if ($(this).val() == "sms" || $(this).val() == "transfer") {
-        module.find("[data-name='payment_id']").show();
+        show(module.find("[data-name='payment_id']"));
     }
 });

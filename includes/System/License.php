@@ -67,9 +67,9 @@ class License
             throw $e;
         }
 
-        $this->externalLicenseId = array_get($response, 'id');
-        $this->expiresAt = array_get($response, 'expires_at');
-        $this->footer = array_get($response, 'f');
+        $this->externalLicenseId = array_get($response, "id");
+        $this->expiresAt = array_get($response, "expires_at");
+        $this->footer = array_get($response, "f");
     }
 
     public function isValid()
@@ -85,7 +85,7 @@ class License
     public function getExpires()
     {
         if ($this->isForever()) {
-            return $this->langShop->t('never');
+            return $this->langShop->t("never");
         }
 
         return convert_date($this->expiresAt);
@@ -134,16 +134,16 @@ class License
         $shopUrl = $this->urlGenerator->getShopUrl();
 
         $response = $this->requester->post(
-            'https://license.sklep-sms.pl/v1/authorization/web',
+            "https://license.sklep-sms.pl/v1/authorization/web",
             [
-                'url' => $shopUrl,
-                'name' => $this->settings['shop_name'] ?: $shopUrl,
-                'version' => app()->version(),
-                'language' => $this->langShop->getCurrentLanguage(),
-                'php_version' => PHP_VERSION,
+                "url" => $shopUrl,
+                "name" => $this->settings["shop_name"] ?: $shopUrl,
+                "version" => app()->version(),
+                "language" => $this->langShop->getCurrentLanguage(),
+                "php_version" => PHP_VERSION,
             ],
             [
-                'Authorization' => $this->settings->getLicenseToken(),
+                "Authorization" => $this->settings->getLicenseToken(),
             ]
         );
 

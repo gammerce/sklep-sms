@@ -1,29 +1,36 @@
 <?php
 namespace App\View\Blocks;
 
-use App\System\Heart;
+use App\Exceptions\AccessProhibitedException;
+use App\Exceptions\UnauthorizedException;
+use App\Managers\PageManager;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
+use App\View\Pages\Page;
+use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class BlockContent extends Block
 {
-    /** @var Heart */
-    private $heart;
+    const BLOCK_ID = "content";
 
     /** @var Translator */
     private $lang;
 
-    public function __construct(Heart $heart, TranslationManager $translationManager)
+    /** @var PageManager */
+    private $pageManager;
+
+    public function __construct(PageManager $pageManager, TranslationManager $translationManager)
     {
-        $this->heart = $heart;
         $this->lang = $translationManager->user();
+        $this->pageManager = $pageManager;
     }
 
     public function getContentClass()
     {
-        return "custom-content";
+        return "site-content";
     }
 
     public function getContentId()
@@ -31,23 +38,26 @@ class BlockContent extends Block
         return "content";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
-        $pageId = $params[0];
-        $page = $this->heart->getPage($pageId);
+        $page = $params[0];
+
+        if (!($page instanceof Page)) {
+            $page = $this->pageManager->getUser($page);
+        }
 
         if (!$page) {
-            return null;
+            throw new UnexpectedValueException("No page provided");
         }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {
-            return $this->lang->t('must_be_logged_in');
+            throw new UnauthorizedException();
         }
 
         if ($page instanceof IBeLoggedCannot && is_logged()) {
-            return $this->lang->t('must_be_logged_out');
+            throw new AccessProhibitedException();
         }
 
-        return $page->getContent($query, $body);
+        return $page->getContent($request);
     }
 }

@@ -66,21 +66,41 @@ export const changeUrl = function(data) {
 };
 
 export const hideAndDisable = function(node) {
-    node.hide();
+    hide(node);
+    node.prop("disabled", true);
     node.find("input").prop("disabled", true);
 };
 
 export const showAndEnable = function(node) {
-    node.show();
+    show(node);
+    node.prop("disabled", false);
     node.find("input").prop("disabled", false);
+};
+
+export const hide = function(node) {
+    node.addClass("is-hidden");
+};
+
+export const show = function(node) {
+    node.removeClass("is-hidden");
+};
+
+export const isShown = function(node) {
+    return !node.hasClass("is-hidden");
 };
 
 export const showWarnings = function(form, warnings) {
     $.each(warnings, function(name, element) {
-        var inputElement = form.find('[name="' + name + '"]');
-        var appendedElement = Array.isArray(element) ? element.join("<br />") : element;
-        inputElement.closest(".field").append(appendedElement);
-        inputElement.effect("highlight", 1000);
+        const inputElement = form.find('[name="' + name + '"]');
+        const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
+        const field = inputElement.closest(".field");
+
+        inputElement.addClass("is-danger");
+        field.append(appendedElement);
+
+        if (inputElement.effect) {
+            inputElement.effect("highlight", 1000);
+        }
     });
 };
 

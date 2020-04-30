@@ -2,14 +2,19 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
+use App\Managers\ServiceModuleManager;
 use App\Support\Template;
 use App\System\Heart;
 
 class ServiceCodeAddFormController
 {
-    public function get($serviceId, Heart $heart, Template $template)
-    {
-        $serviceModule = $heart->getServiceModule($serviceId);
+    public function get(
+        $serviceId,
+        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
+        Template $template
+    ) {
+        $serviceModule = $serviceModuleManager->get($serviceId);
 
         $servers = [];
         foreach ($heart->getServers() as $id => $server) {

@@ -14,7 +14,7 @@ class XmlResponse extends Response
             ->join();
 
         parent::__construct($output, $status, [
-            "Content-type" => 'application/xml',
+            "Content-type" => "application/xml",
         ]);
     }
 }

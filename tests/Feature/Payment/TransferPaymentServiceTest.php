@@ -9,9 +9,10 @@ use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -29,19 +30,22 @@ class TransferPaymentServiceTest extends TestCase
         /** @var PaymentTransferRepository $paymentTransferRepository */
         $paymentTransferRepository = $this->app->make(PaymentTransferRepository::class);
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var PaymentModuleManager $paymentModuleManager */
+        $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
+
+        /** @var ServiceModuleManager $serviceModuleManager */
+        $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,
         ]);
 
         /** @var SupportTransfer $paymentModule */
-        $paymentModule = $heart->getPaymentModule($paymentPlatform);
+        $paymentModule = $paymentModuleManager->get($paymentPlatform);
 
         $serviceId = "vip";
         /** @var IServicePurchase|ServiceModule $serviceModule */
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
             'service_id' => $serviceId,

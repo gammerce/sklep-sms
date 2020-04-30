@@ -34,7 +34,7 @@ class PurchaseDataService
     {
         $serialized = $this->purchaseSerializer->serialize($purchase);
         $fileName = $this->generateIdentifier($serialized);
-        $path = $this->path->to('data/transfers/' . $fileName);
+        $path = $this->path->to("data/transfers/$fileName");
         $this->fileSystem->put($path, $serialized);
 
         return $fileName;
@@ -46,8 +46,9 @@ class PurchaseDataService
      */
     public function updatePurchase($fileName, Purchase $purchase)
     {
+        $fileName = escape_filename($fileName);
         $serialized = $this->purchaseSerializer->serialize($purchase);
-        $path = $this->path->to('data/transfers/' . $fileName);
+        $path = $this->path->to("data/transfers/$fileName");
         $this->fileSystem->put($path, $serialized);
     }
 
@@ -57,6 +58,7 @@ class PurchaseDataService
      */
     public function restorePurchase($fileName)
     {
+        $fileName = escape_filename($fileName);
         if (!$fileName || !$this->fileSystem->exists($this->path->to("data/transfers/$fileName"))) {
             return null;
         }
@@ -71,6 +73,7 @@ class PurchaseDataService
      */
     public function deletePurchase($fileName)
     {
+        $fileName = escape_filename($fileName);
         $this->fileSystem->delete($this->path->to("data/transfers/$fileName"));
     }
 

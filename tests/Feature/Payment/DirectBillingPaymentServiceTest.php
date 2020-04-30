@@ -5,19 +5,15 @@ use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
-use App\Payment\Transfer\TransferPaymentMethod;
-use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentDirectBillingRepository;
-use App\Repositories\PaymentTransferRepository;
 use App\Requesting\Response;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportDirectBilling;
-use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\SimPay;
-use App\Verification\PaymentModules\TPay;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use Mockery;
 use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
@@ -55,19 +51,22 @@ class DirectBillingPaymentServiceTest extends TestCase
         /** @var PaymentDirectBillingRepository $paymentDirectBillingRepository */
         $paymentDirectBillingRepository = $this->app->make(PaymentDirectBillingRepository::class);
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var PaymentModuleManager $paymentModuleManager */
+        $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
+
+        /** @var ServiceModuleManager $serviceModuleManager */
+        $serviceModuleManager = $this->app->make(ServiceModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => SimPay::MODULE_ID,
         ]);
 
         /** @var SupportDirectBilling $paymentModule */
-        $paymentModule = $heart->getPaymentModule($paymentPlatform);
+        $paymentModule = $paymentModuleManager->get($paymentPlatform);
 
         $serviceId = "vip";
         /** @var IServicePurchase|ServiceModule $serviceModule */
-        $serviceModule = $heart->getServiceModule($serviceId);
+        $serviceModule = $serviceModuleManager->get($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
             "service_id" => $serviceId,

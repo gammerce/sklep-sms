@@ -6,6 +6,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SupportSmsRule;
 use App\Http\Validation\Rules\SupportTransferRule;
 use App\Http\Validation\Validator;
+use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
@@ -19,27 +20,34 @@ class ServerService
     /** @var ServerServiceService */
     private $serverServiceService;
 
-    public function __construct(Heart $heart, ServerServiceService $serverServiceService)
-    {
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
+    public function __construct(
+        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
+        ServerServiceService $serverServiceService
+    ) {
         $this->heart = $heart;
         $this->serverServiceService = $serverServiceService;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     public function createValidator(array $body)
     {
         return new Validator(
             array_merge($body, [
-                'ip' => trim(array_get($body, 'ip')),
-                'port' => trim(array_get($body, 'port')),
-                'sms_platform' => as_int(array_get($body, 'sms_platform')),
-                'transfer_platform' => as_int(array_get($body, 'transfer_platform')),
+                "ip" => trim(array_get($body, "ip")),
+                "port" => trim(array_get($body, "port")),
+                "sms_platform" => as_int(array_get($body, "sms_platform")),
+                "transfer_platform" => as_int(array_get($body, "transfer_platform")),
             ]),
             [
-                'name' => [new RequiredRule()],
-                'ip' => [new RequiredRule()],
-                'port' => [new RequiredRule()],
-                'sms_platform' => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
-                'transfer_platform' => [new SupportTransferRule()],
+                "name" => [new RequiredRule()],
+                "ip" => [new RequiredRule()],
+                "port" => [new RequiredRule()],
+                "sms_platform" => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
+                "transfer_platform" => [new SupportTransferRule()],
             ]
         );
     }
@@ -48,14 +56,14 @@ class ServerService
     {
         $serversServices = collect($this->heart->getServices())
             ->filter(function (Service $service) {
-                return $this->heart->getServiceModule($service->getId()) instanceof
+                return $this->serviceModuleManager->get($service->getId()) instanceof
                     IServicePurchaseExternal;
             })
             ->map(function (Service $service) use ($serverId, $body) {
                 return [
-                    'service_id' => $service->getId(),
-                    'server_id' => $serverId,
-                    'connect' => (bool) array_get($body, $service->getId()),
+                    "service_id" => $service->getId(),
+                    "server_id" => $serverId,
+                    "connect" => (bool) array_get($body, $service->getId()),
                 ];
             })
             ->all();

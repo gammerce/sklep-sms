@@ -1,33 +1,33 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use InvalidArgumentException;
 
 class PaymentService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var Translator */
     private $lang;
 
     /** @var PaymentMethodFactory */
     private $paymentMethodFactory;
 
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
+
     public function __construct(
-        Heart $heart,
         TranslationManager $translationManager,
-        PaymentMethodFactory $paymentMethodFactory
+        PaymentMethodFactory $paymentMethodFactory,
+        ServiceModuleManager $serviceModuleManager
     ) {
-        $this->heart = $heart;
         $this->lang = $translationManager->user();
         $this->paymentMethodFactory = $paymentMethodFactory;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     /**
@@ -36,7 +36,7 @@ class PaymentService
      */
     public function makePayment(Purchase $purchase)
     {
-        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
+        $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
 
         if (!($serviceModule instanceof IServicePurchase)) {
             return new Result("wrong_module", $this->lang->t('bad_module'), false);

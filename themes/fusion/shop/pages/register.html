@@ -1,0 +1,177 @@
+<header class="section">
+    <div class="container">
+        <h1 class="title">{{ __('sign_up') }}</h1>
+        <h2 class="subtitle">{{ __('sign_up_subtitle') }}</h2>
+    </div>
+</header>
+
+<main class="section section-body">
+    <div id="page-content" class="container">
+        <form id="register">
+            <div class="columns is-multiline">
+                <div class="column is-full">
+                    <div class="field">
+                        <label for="username" class="label required">
+                            {{ __('username') }}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                class="input"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="password" class="label required">
+                            {{ __('password') }}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                class="input"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="password_repeat" class="label required">
+                            {{ __('password_repeat') }}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="password_repeat"
+                                name="password_repeat"
+                                type="password"
+                                class="input"
+                                autocomplete="off"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="email" class="label required">E-mail</label>
+                        <div class="control">
+                            <input id="email" name="email" type="email" class="input" required />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="email_repeat" class="label required">
+                            {{ __('email_repeat') }}
+                        </label>
+                        <div class="control">
+                            <input
+                                id="email_repeat"
+                                name="email_repeat"
+                                type="email"
+                                class="input"
+                                required
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="columns is-multiline">
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="forename" class="label">{{ __('firstname') }}</label>
+
+                        <div class="control">
+                            <input
+                                id="forename"
+                                name="forename"
+                                type="text"
+                                class="input"
+                                maxlength="32"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half">
+                    <div class="field">
+                        <label for="surname" class="label">{{ __('surname') }}</label>
+
+                        <div class="control">
+                            <input
+                                id="surname"
+                                name="surname"
+                                type="text"
+                                class="input"
+                                maxlength="64"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-full">
+                    <div class="field">
+                        <label for="steam_id" class="label">{{ __('sid') }}</label>
+
+                        <div class="control">
+                            <input
+                                id="steam_id"
+                                name="steam_id"
+                                type="text"
+                                class="input"
+                                maxlength="32"
+                                placeholder="{{ __('steam_id_hint') }}"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-full">
+                    <div class="field">
+                        <label for="as_answer" class="label required" headers="as_question">
+                            {!! $antispamQuestion['question'] !!}
+                        </label>
+
+                        <div class="control">
+                            <input
+                                id="as_answer"
+                                name="as_answer"
+                                type="text"
+                                class="input"
+                                maxlength="64"
+                                required
+                            />
+                            <input
+                                name="as_id"
+                                type="hidden"
+                                value="{{ $antispamQuestion['id'] }}"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="reset" value="{{ __('clear') }}" class="button" />
+
+            <button class="button is-success" type="submit">
+                <span class="icon">
+                    <i class="fas fa-user-plus"></i>
+                </span>
+                <span>{{ __('create_account') }}</span>
+            </button>
+        </form>
+    </div>
+</main>

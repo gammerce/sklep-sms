@@ -1,6 +1,8 @@
 @import "partials/action_box";
 @import "partials/infobox";
 @import "partials/loader";
+@import "partials/helpers";
+@import "partials/window_info";
 
 html {
     overflow-y: auto;
@@ -24,12 +26,6 @@ table {
     border-collapse: initial;
 }
 
-a {
-    cursor: pointer;
-    color: #147abb;
-    text-decoration: none;
-}
-
 a:hover {
     text-decoration: underline;
 }
@@ -44,31 +40,10 @@ hr,
     vertical-align: middle;
 }
 
-.fright {
-    float: right;
-}
-
-.centered {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    margin: auto auto;
-}
-
 .flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.w100 {
-    width: 100%;
-}
-
-.h100 {
-    height: 100%;
 }
 
 .display_none {
@@ -107,45 +82,6 @@ hr,
     box-shadow: 0 0 10px #000;
     line-height: 1.4;
     color: #bbb;
-}
-
-/* Okno wyświetlające różne informacje */
-.window_info {
-    z-index: 4;
-    background: rgba(0, 0, 0, 0.95);
-    border: 2px solid #000;
-    box-shadow: 0 0 20px #000;
-    border-radius: 5px;
-    color: #ccc;
-    font-size: 18px;
-
-    padding: 18px;
-
-    .delete {
-        position: absolute;
-        top: 0.25rem;
-        right: 0.25rem;
-        padding: 0 2px;
-
-        &:after,
-        &:before {
-            background-color: $danger;
-        }
-    }
-
-    .description_content {
-        overflow: auto;
-        height: calc(100% - 100px);
-    }
-}
-
-/*.window_info */
-.description_title {
-    text-align: center;
-    font-weight: bold;
-    color: #fff;
-    font-size: 22px;
-    margin-bottom: 20px;
 }
 
 .button.edit_row {
@@ -191,33 +127,6 @@ hr,
     text-transform: uppercase;
 }
 
-.clickable {
-    cursor: pointer;
-}
-
 .action-buttons {
     margin-top: 2rem;
-}
-
-.no-decoration {
-    text-decoration: none !important;
-}
-
-.card {
-    &.gapped {
-        margin-bottom: 1rem;
-    }
-
-    &.clickable:hover {
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12),
-            0 1px 5px 0 rgba(0, 0, 0, 0.2);
-    }
-}
-
-.required {
-    &:after {
-        content: "*";
-        color: $danger;
-        margin-left: 4px;
-    }
 }

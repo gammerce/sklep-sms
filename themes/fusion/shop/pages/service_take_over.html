@@ -1,0 +1,35 @@
+<header class="section">
+    <div class="container">
+        <h1 class="title">{{ __('service_takeover') }}</h1>
+        <h2 class="subtitle">{{ __('service_takeover_subtitle') }}</h2>
+    </div>
+</header>
+
+<main class="section section-body">
+    <div class="container">
+        <form id="form_service_take_over">
+            <div class="field">
+                <label for="service_id" class="label required">{{ __('service') }}</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="service_id" name="service_id" required>
+                            <option value="">{{ __('choose_service') }}</option>
+                            {!! $servicesOptions !!}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+
+            <div class="extra_data"></div>
+
+            <fieldset class="form-footer is-hidden" disabled>
+                <hr />
+                <button type="submit" class="button is-success">
+                    {{ __('take_over') }}
+                </button>
+            </fieldset>
+        </form>
+    </div>
+</main>

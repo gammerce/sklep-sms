@@ -2,12 +2,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\PlainResponse;
-use App\System\Heart;
+use App\Managers\BlockManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BrickResource
 {
-    public function get($bricks, Request $request, Heart $heart)
+    public function get($bricks, Request $request, BlockManager $blockManager)
     {
         $brickList = explode(",", $bricks);
 
@@ -16,15 +16,11 @@ class BrickResource
         foreach ($brickList as $brick) {
             $fragments = explode(":", $brick);
             $brickName = $fragments[0];
-            $block = $heart->getBlock($brickName);
+            $block = $blockManager->get($brickName);
 
             if ($block) {
                 $contentId = $block->getContentId();
-                $content = $block->getContent(
-                    $request->query->all(),
-                    $request->request->all(),
-                    array_slice($fragments, 1)
-                );
+                $content = $block->getContent($request, array_slice($fragments, 1));
                 $data[$contentId]['content'] = $content !== null ? strval($content) : null;
                 $data[$contentId]['class'] = $content ? $block->getContentClass() : "";
             }

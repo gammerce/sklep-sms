@@ -1,13 +1,13 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Price;
 use App\Models\QuantityPrice;
 use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Repositories\PriceRepository;
-use App\System\Heart;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 
@@ -16,17 +16,20 @@ class PurchasePriceService
     /** @var Settings */
     private $settings;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var PriceRepository */
     private $priceRepository;
 
-    public function __construct(Settings $settings, Heart $heart, PriceRepository $priceRepository)
-    {
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
+    public function __construct(
+        Settings $settings,
+        PriceRepository $priceRepository,
+        PaymentModuleManager $paymentModuleManager
+    ) {
         $this->settings = $settings;
-        $this->heart = $heart;
         $this->priceRepository = $priceRepository;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     /**
@@ -94,7 +97,7 @@ class PurchasePriceService
             $smsPlatformId = $this->settings->getSmsPlatformId();
         }
 
-        $smsModule = $this->heart->getPaymentModuleByPlatformId($smsPlatformId);
+        $smsModule = $this->paymentModuleManager->getByPlatformId($smsPlatformId);
 
         if ($smsModule instanceof SupportSms) {
             return collect($smsModule::getSmsNumbers())->some(function (SmsNumber $smsNumber) use (

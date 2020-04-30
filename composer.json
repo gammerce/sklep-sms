@@ -32,7 +32,8 @@
     "mockery/mockery": "^1.0",
     "fzaninotto/faker": "^1.7",
     "phpmailer/phpmailer": "^6.0",
-    "php-coveralls/php-coveralls": "^2.1"
+    "php-coveralls/php-coveralls": "^2.1",
+    "symfony/var-dumper": "^3.4"
   },
   "autoload": {
     "files": [

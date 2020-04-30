@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\DirectBilling;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -8,7 +9,6 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
@@ -21,27 +21,27 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /** @var PriceTextService */
     private $priceTextService;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var Translator */
     private $lang;
 
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
-        $this->heart = $heart;
         $this->lang = $translationManager->user();
         $this->purchaseDataService = $purchaseDataService;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function render(Purchase $purchase)
@@ -49,7 +49,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
-        return $this->template->render("payment/payment_method_direct_billing", compact("price"));
+        return $this->template->render(
+            "shop/payment/payment_method_direct_billing",
+            compact("price")
+        );
     }
 
     /**
@@ -70,7 +73,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
 

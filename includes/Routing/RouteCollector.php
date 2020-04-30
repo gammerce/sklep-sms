@@ -3,6 +3,7 @@ namespace App\Routing;
 
 use FastRoute\RouteCollector as BaseRouteCollector;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 class RouteCollector extends BaseRouteCollector
 {
@@ -51,7 +52,7 @@ class RouteCollector extends BaseRouteCollector
         parent::addRoute($httpMethod, $route, $handler);
     }
 
-    public function redirect($from, $to, $status = 302)
+    public function redirect($from, $to, $status = Response::HTTP_FOUND)
     {
         $this->get($from, [
             'uses' => function () use ($to, $status) {
@@ -64,6 +65,6 @@ class RouteCollector extends BaseRouteCollector
 
     public function redirectPermanent($from, $to)
     {
-        $this->redirect($from, $to, 301);
+        $this->redirect($from, $to, Response::HTTP_MOVED_PERMANENTLY);
     }
 }

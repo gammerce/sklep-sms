@@ -3,3 +3,10 @@
         opacity: 0;
     }
 }
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translate(0px, -40px);
+    }
+}

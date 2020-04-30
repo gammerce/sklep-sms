@@ -25,7 +25,7 @@ class RequireUnauthorized implements MiddlewareContract
     public function handle(Request $request, $args, Closure $next)
     {
         if ($this->auth->check()) {
-            return new ApiResponse("logged_in", $this->lang->t('logged'), 0);
+            return new ApiResponse("logged_in", $this->lang->t("logged"), 0);
         }
 
         return $next($request);

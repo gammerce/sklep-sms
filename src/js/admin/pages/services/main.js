@@ -33,7 +33,7 @@ $(document).delegate(".action_box [name=module]", "change", function() {
 
     restRequest(
         "GET",
-        "/api/admin/services/" + serviceId + "/modules/" + moduleId + "/extra_fields",
+        `/api/admin/services/${serviceId}/modules/${moduleId}/extra_fields`,
         {},
         function(content) {
             if (serviceExtraFlags) {

@@ -1,4 +1,4 @@
-import { getAndSetTemplate } from "../../utils/utils";
+import { getAndSetTemplate, refreshBlocks } from "../../utils/utils";
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -18,41 +18,29 @@ $(document).delegate("#register", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            const jsonObj = json_parse(content);
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 
             if (jsonObj.return_id === "registered") {
-                var username = $("#register [name=username]").val();
-                var password = $("#register [name=password]").val();
-                var email = $("#register [name=email]").val();
-                // Wyświetl informacje o rejestracji
-                getAndSetTemplate($("#content"), "register_registered", {
+                const username = $("#register [name=username]").val();
+                const email = $("#register [name=email]").val();
+
+                getAndSetTemplate($("#page-content"), "register_registered", {
                     username: username,
                     email: email,
                 });
-                setTimeout(function() {
-                    // Logowanie
-                    $("#form_login [name=username]").val(username);
-                    $("#form_login [name=password]").val(password);
-                    $("#form_login_reload_content").val("0");
-                    $("#form_login").trigger("submit");
-                }, 3000);
+
+                refreshBlocks("logged_info,wallet,user_buttons,services_buttons");
             } else {
                 if (jsonObj.return_id === "warnings") {
                     showWarnings($("#register"), jsonObj.warnings);
                 }
 
-                $("#register .register_antispam [headers=as_question]").html(
-                    jsonObj.antispam.question
-                );
-                $("#register .register_antispam [name=as_id]").val(jsonObj.antispam.id);
-                $("#register .register_antispam [name=as_answer]").val("");
+                $("#register [headers=as_question]").html(jsonObj.antispam.question);
+                $("#register [name=as_id]").val(jsonObj.antispam.id);
+                $("#register [name=as_answer]").val("");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

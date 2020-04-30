@@ -3,11 +3,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 
@@ -18,7 +18,7 @@ class UserServiceEditFormController
         TranslationManager $translationManager,
         Settings $settings,
         Auth $auth,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         Template $template,
         UserServiceService $userServiceService
     ) {
@@ -39,12 +39,12 @@ class UserServiceEditFormController
             return new PlainResponse($lang->t('dont_play_games'));
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServicesEdit)) {
             return new PlainResponse($lang->t('service_cant_be_modified'));
         }
 
-        $buttons = $template->render("services/my_services_savencancel");
+        $buttons = $template->render("shop/components/user_own_services/savencancel");
 
         return new HtmlResponse($buttons . $serviceModule->userOwnServiceEditFormGet($userService));
     }

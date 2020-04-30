@@ -1,0 +1,36 @@
+<form id="form_reset_password" method="POST">
+    <div class="columns is-multiline">
+        <div class="column is-half">
+            <div class="field">
+                <label for="pass" class="label required">
+                    {{ __('password') }}
+                </label>
+                <div class="control">
+                    <input id="pass" name="pass" type="password" class="input" required />
+                </div>
+            </div>
+        </div>
+
+        <div class="column is-half">
+            <div class="field">
+                <label for="pass_repeat" class="label required">
+                    {{ __('password_repeat') }}
+                </label>
+                <div class="control">
+                    <input
+                        id="pass_repeat"
+                        name="pass_repeat"
+                        type="password"
+                        class="input"
+                        required
+                    />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="code" value="{{ $code }}" />
+    <button class="button is-success" type="submit">
+        {{ __('send') }}
+    </button>
+</form>

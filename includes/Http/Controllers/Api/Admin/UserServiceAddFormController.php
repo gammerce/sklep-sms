@@ -2,14 +2,17 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
-use App\System\Heart;
+use App\Managers\ServiceModuleManager;
+use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 
 class UserServiceAddFormController
 {
-    public function get($serviceId, Heart $heart)
+    public function get($serviceId, ServiceModuleManager $serviceModuleManager)
     {
+        $serviceModule = $serviceModuleManager->get($serviceId);
+
         $output = "";
-        if (($serviceModule = $heart->getServiceModule($serviceId)) !== null) {
+        if ($serviceModule instanceof IServiceUserServiceAdminAdd) {
             $output = $serviceModule->userServiceAdminAddFormGet();
         }
 

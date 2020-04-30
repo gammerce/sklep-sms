@@ -1,0 +1,173 @@
+<form id="form_purchase" class="module-extra-flags">
+    <div class="columns">
+        <div class="column">
+            <div class="columns is-multiline">
+                <div class="column is-full field">
+                    <label class="label required">{{ __('choose_type') }}</label>
+                    <ul name="type">
+                        {!! $types !!}
+                    </ul>
+                </div>
+
+                <fieldset id="type_nick" class="column is-full field is-hidden" disabled>
+                    <label for="nick" class="label required">{{ __('nick') }}</label>
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="nick"
+                            name="auth_data"
+                            class="input"
+                            maxlength="32"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+                </fieldset>
+
+                <fieldset id="type_ip" class="column is-full field is-hidden" disabled>
+                    <label for="ip" class="label required">{{ __('ip') }}</label>
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="ip"
+                            name="auth_data"
+                            value="{{ $user->getLastIp() }}"
+                            class="input"
+                            maxlength="16"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+                </fieldset>
+
+                <fieldset id="type_sid" class="column is-full field is-hidden" disabled>
+                    <label for="sid" class="label required">{{ __('sid') }}</label>
+                    <div class="control">
+                        <input
+                            type="text"
+                            id="sid"
+                            name="auth_data"
+                            value="{{ $user->getSteamId() }}"
+                            class="input"
+                            maxlength="32"
+                            autocomplete="off"
+                            required
+                        />
+                    </div>
+                </fieldset>
+
+                <fieldset id="type_password" class="column is-hidden" disabled>
+                    <div class="columns">
+                        <div class="column is-half field">
+                            <label for="password" class="label required"
+                                >{{ __('password') }}</label
+                            >
+                            <div class="control">
+                                <input
+                                    type="password"
+                                    id="password"
+                                    name="password"
+                                    class="input"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div class="column is-half field">
+                            <label for="password_repeat" class="label required">
+                                {{ __('password_repeat') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="password"
+                                    id="password_repeat"
+                                    name="password_repeat"
+                                    class="input"
+                                    maxlength="32"
+                                    autocomplete="off"
+                                    required
+                                    disabled
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="column is-full field">
+                    <label for="email" class="label required">{{ __('email') }}</label>
+                    <div class="control">
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="input"
+                            value="{{ $user->getEmail() }}"
+                            required
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="columns is-multiline">
+                <div class="column is-half field">
+                    <label for="server_id" class="label required">{{ __('server') }}</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="server_id" name="server_id" required>
+                                <option value="">
+                                    {{ __('choose_server') }}
+                                </option>
+                                {!! $servers !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="column is-half field">
+                    <label for="quantity" class="label required">{{ __('quantity') }}</label>
+                    <div class="control">
+                        <div class="select">
+                            <select id="quantity" name="quantity" required>
+                                <option value="">
+                                    {{ __('choose_quantity') }}
+                                </option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="cost_wrapper" class="column is-full has-text-centered is-hidden">
+                    <div>
+                        <strong>{{ __('transfer_price') }}</strong>:
+                        <span id="cost_transfer"></span>
+                        <sup class="discount"></sup>
+                    </div>
+
+                    <div>
+                        <strong>{{ __('sms_price') }}</strong>:
+                        <span id="cost_sms"></span>
+                        <sup class="discount"></sup>
+                    </div>
+
+                    <div>
+                        <strong>{{ __('direct_billing_price') }}</strong>:
+                        <span id="cost_direct_billing"></span>
+                        <sup class="discount"></sup>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-footer">
+        <button type="submit" class="button is-success">
+            {{ __('go_to_payment') }}
+        </button>
+    </div>
+
+    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+</form>

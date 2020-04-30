@@ -4,6 +4,7 @@ namespace App\Payment\Sms;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -11,7 +12,6 @@ use App\Services\PriceTextService;
 use App\Services\SmsPriceService;
 use App\Support\Result;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
@@ -19,9 +19,6 @@ use App\Verification\Exceptions\SmsPaymentException;
 
 class SmsPaymentMethod implements IPaymentMethod
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var SmsPriceService */
     private $smsPriceService;
 
@@ -37,25 +34,28 @@ class SmsPaymentMethod implements IPaymentMethod
     /** @var Translator */
     private $lang;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
-        Heart $heart,
         SmsPriceService $smsPriceService,
         Template $template,
         PriceTextService $priceTextService,
         SmsPaymentService $smsPaymentService,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        PaymentModuleManager $paymentModuleManager
     ) {
-        $this->heart = $heart;
         $this->smsPriceService = $smsPriceService;
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->smsPaymentService = $smsPaymentService;
         $this->lang = $translationManager->user();
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function render(Purchase $purchase)
     {
-        $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 
@@ -68,7 +68,7 @@ class SmsPaymentMethod implements IPaymentMethod
             $smsPaymentModule
         );
 
-        return $this->template->render("payment/payment_method_sms", [
+        return $this->template->render("shop/payment/payment_method_sms", [
             'priceGross' => $this->priceTextService->getPriceGrossText(
                 $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
             ),
@@ -87,7 +87,7 @@ class SmsPaymentMethod implements IPaymentMethod
             return false;
         }
 
-        $smsPaymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 
@@ -100,7 +100,7 @@ class SmsPaymentMethod implements IPaymentMethod
 
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
-        $paymentModule = $this->heart->getPaymentModuleByPlatformId(
+        $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
         );
 

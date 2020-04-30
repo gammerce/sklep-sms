@@ -16,7 +16,7 @@ class LogOutController
             return new ApiResponse("already_logged_out");
         }
 
-        $request->getSession()->invalidate();
+        $auth->logout($request);
 
         return new ApiResponse("logged_out", $lang->t('logout_success'), 1);
     }

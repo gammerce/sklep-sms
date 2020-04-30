@@ -30,7 +30,7 @@ class SetupController
         Path $path
     ) {
         if ($oldShop->hasConfigFile()) {
-            return new HtmlResponse($this->template->render('setup/missing_env'));
+            return new HtmlResponse($this->template->render("setup/missing_env"));
         }
 
         if (!$shopState->isInstalled()) {
@@ -52,7 +52,7 @@ class SetupController
         $modules = $requirementsStore->getModules();
         $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
 
-        $filesPrivileges = '';
+        $filesPrivileges = "";
         foreach ($filesWithWritePermission as $file) {
             if ($file == "") {
                 continue;
@@ -65,27 +65,27 @@ class SetupController
             }
 
             $filesPrivileges .= $this->template->render(
-                'setup/install/file_privileges',
-                compact('file', 'privilege')
+                "setup/install/file_privileges",
+                compact("file", "privilege")
             );
         }
 
-        $serverModules = '';
+        $serverModules = "";
         foreach ($modules as $module) {
-            $status = $module['value'] ? "ok" : "bad";
-            $title = $module['text'];
+            $status = $module["value"] ? "ok" : "bad";
+            $title = $module["text"];
 
             $serverModules .= $this->template->render(
-                'setup/install/module',
-                compact('title', 'status')
+                "setup/install/module",
+                compact("title", "status")
             );
         }
 
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         $output = $this->template->render(
-            'setup/install/index',
-            compact('notifyHttpServer', 'filesPrivileges', 'serverModules')
+            "setup/install/index",
+            compact("notifyHttpServer", "filesPrivileges", "serverModules")
         );
 
         return new Response($output);
@@ -110,8 +110,8 @@ class SetupController
         $notifyHttpServer = $this->generateHttpServerNotification();
 
         $output = $this->template->render(
-            'setup/update/index',
-            compact('notifyHttpServer', 'filesModulesStatus', 'class')
+            "setup/update/index",
+            compact("notifyHttpServer", "filesModulesStatus", "class")
         );
 
         return new Response($output);
@@ -119,10 +119,10 @@ class SetupController
 
     protected function generateHttpServerNotification()
     {
-        if (str_contains(strtolower(array_get($_SERVER, "SERVER_SOFTWARE")), 'apache')) {
-            return '';
+        if (str_contains(strtolower(array_get($_SERVER, "SERVER_SOFTWARE")), "apache")) {
+            return "";
         }
 
-        return $this->template->render('setup/http_server_notification');
+        return $this->template->render("setup/http_server_notification");
     }
 }

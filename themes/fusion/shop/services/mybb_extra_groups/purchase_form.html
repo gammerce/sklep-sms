@@ -1,0 +1,68 @@
+<form id="form_purchase" class="module-mybb-extra-groups">
+    <div class="columns">
+        <div class="column">
+            <div class="field">
+                <label for="username" class="label required">{{ __('username') }}</label>
+                <div class="control">
+                    <input type="text" id="username" name="username" class="input" required />
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="email" class="label required">{{ __('email') }}</label>
+                <div class="control">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value="{{ $user->getEmail() }}"
+                        class="input"
+                        required
+                    />
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <div class="field">
+                <label for="quantity" class="label required">{{ __('quantity') }}</label>
+                <div class="control">
+                    <div class="select">
+                        <select id="quantity" name="quantity" required>
+                            <option value="">{{ __('choose_quantity') }}</option>
+                            {$quantities}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="cost_wrapper" class="has-text-centered is-hidden">
+                <div>
+                    <strong>{{ __('transfer_price') }}</strong>:
+                    <span id="cost_transfer"></span>
+                    <sup class="discount"></sup>
+                </div>
+
+                <div>
+                    <strong>{{ __('sms_price') }}</strong>:
+                    <span id="cost_sms"></span>
+                    <sup class="discount"></sup>
+                </div>
+
+                <div>
+                    <strong>{{ __('direct_billing_price') }}</strong>:
+                    <span id="cost_direct_billing"></span>
+                    <sup class="discount"></sup>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-footer">
+        <button type="submit" class="button is-success">
+            {{ __('go_to_payment') }}
+        </button>
+    </div>
+
+    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+</form>

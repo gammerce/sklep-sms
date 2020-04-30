@@ -20,7 +20,7 @@ class SetupAvailable implements MiddlewareContract
     {
         if ($this->setupManager->hasFailed()) {
             return new PlainResponse(
-                'Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log'
+                "Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log"
             );
         }
 

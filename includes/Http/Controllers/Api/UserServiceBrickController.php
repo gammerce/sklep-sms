@@ -3,11 +3,12 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
+use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 
@@ -18,8 +19,9 @@ class UserServiceBrickController
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
-        Heart $heart,
-        UserServiceService $userServiceService
+        ServiceModuleManager $serviceModuleManager,
+        UserServiceService $userServiceService,
+        Template $template
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -34,20 +36,18 @@ class UserServiceBrickController
             return new PlainResponse($lang->t('dont_play_games'));
         }
 
-        $serviceModule = $heart->getServiceModule($userService->getServiceId());
+        $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServices)) {
             return new PlainResponse($lang->t('service_not_displayed'));
         }
 
-        $buttonEdit = "";
         if (
             $settings['user_edit_service'] &&
             $serviceModule instanceof IServiceUserOwnServicesEdit
         ) {
-            $buttonEdit = create_dom_element("button", $lang->t('edit'), [
-                'class' => "button is-small edit_row",
-                'type' => 'button',
-            ]);
+            $buttonEdit = $template->render("shop/components/user_own_services/edit_button");
+        } else {
+            $buttonEdit = "";
         }
 
         return new HtmlResponse($serviceModule->userOwnServiceInfoGet($userService, $buttonEdit));

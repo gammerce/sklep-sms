@@ -43,7 +43,7 @@ class AuthorizeServer implements MiddlewareContract
         $server = $this->serverRepository->findByToken($token);
 
         if (!$server) {
-            return new Response("Server unauthorized", 400);
+            return new Response("Server unauthorized", Response::HTTP_BAD_REQUEST);
         }
 
         $this->serverAuth->setServer($server);

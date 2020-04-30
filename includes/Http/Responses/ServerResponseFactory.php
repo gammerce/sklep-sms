@@ -17,8 +17,8 @@ class ServerResponseFactory
             return new JsonResponse(
                 array_merge(
                     [
-                        'status' => $status,
-                        'text' => $text,
+                        "status" => $status,
+                        "text" => $text,
                     ],
                     $data
                 ),
@@ -30,8 +30,8 @@ class ServerResponseFactory
             return new AssocResponse(
                 array_merge(
                     [
-                        'status' => $status,
-                        'text' => $text,
+                        "status" => $status,
+                        "text" => $text,
                     ],
                     $data
                 ),
@@ -42,9 +42,9 @@ class ServerResponseFactory
         return new XmlResponse(
             array_merge(
                 [
-                    'return_value' => $status,
-                    'text' => $text,
-                    'positive' => $positive ? 1 : 0,
+                    "return_value" => $status,
+                    "text" => $text,
+                    "positive" => $positive ? 1 : 0,
                 ],
                 $data
             ),

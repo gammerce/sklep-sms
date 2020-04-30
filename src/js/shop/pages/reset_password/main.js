@@ -30,8 +30,7 @@ $(document).delegate("#form_reset_password", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_reset_password"), jsonObj.warnings);
             } else if (jsonObj.return_id === "password_changed") {
-                // Wyświetl informacje o zmianie hasła
-                getAndSetTemplate($("#content"), "reset_password_changed");
+                getAndSetTemplate($("#page-content"), "reset_password_changed");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

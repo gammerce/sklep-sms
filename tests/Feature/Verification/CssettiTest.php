@@ -2,9 +2,13 @@
 namespace Tests\Feature\Verification;
 
 use App\Requesting\Response;
-use App\System\Heart;
+use App\Verification\Exceptions\BadCodeException;
+use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\ServerErrorException;
+use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\Results\SmsSuccessResult;
+use App\Managers\PaymentModuleManager;
 use Mockery;
 use Tests\Psr4\Concerns\FixtureConcern;
 use Tests\Psr4\Concerns\RequesterConcern;
@@ -24,14 +28,14 @@ class CssettiTest extends TestCase
 
         $this->mockRequester();
 
-        /** @var Heart $heart */
-        $heart = $this->app->make(Heart::class);
+        /** @var PaymentModuleManager $paymentModuleManager */
+        $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
             'module' => Cssetti::MODULE_ID,
         ]);
 
-        $this->cssetti = $heart->getPaymentModule($paymentPlatform);
+        $this->cssetti = $paymentModuleManager->get($paymentPlatform);
 
         $smsDataResponse = $this->loadFixture("cssetti_sms_api_v2_get_data");
         $this->requesterMock
@@ -59,11 +63,12 @@ class CssettiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \App\Verification\Exceptions\BadCodeException
      */
     public function throw_exception_on_bad_code()
     {
         // given
+        $this->expectException(BadCodeException::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
@@ -75,11 +80,12 @@ class CssettiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \App\Verification\Exceptions\WrongCredentialsException
      */
     public function throw_exception_on_wrong_credentials()
     {
         // given
+        $this->expectException(WrongCredentialsException::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
@@ -91,11 +97,12 @@ class CssettiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \App\Verification\Exceptions\ServerErrorException
      */
     public function throw_server_error_on_unexpected_response()
     {
         // given
+        $this->expectException(ServerErrorException::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
@@ -107,11 +114,12 @@ class CssettiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \App\Verification\Exceptions\BadNumberException
      */
     public function throw_bad_number_on_not_existing_amount_in_the_response()
     {
         // given
+        $this->expectException(BadNumberException::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
@@ -123,11 +131,12 @@ class CssettiTest extends TestCase
 
     /**
      * @test
-     * @expectedException \App\Verification\Exceptions\BadNumberException
      */
     public function throw_bad_number_on_invalid_amount_in_the_response()
     {
         // given
+        $this->expectException(BadNumberException::class);
+
         $this->requesterMock
             ->shouldReceive('get')
             ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])

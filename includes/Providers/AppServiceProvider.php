@@ -2,6 +2,11 @@
 namespace App\Providers;
 
 use App\Cache\FileCache;
+use App\Managers\BlockManager;
+use App\Managers\PageManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Support\Database;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
@@ -36,6 +41,11 @@ class AppServiceProvider
         $app->singleton(License::class);
         $app->singleton(TranslationManager::class);
         $app->singleton(ExternalConfigProvider::class);
+        $app->singleton(WebsiteHeader::class);
+        $app->singleton(PageManager::class);
+        $app->singleton(BlockManager::class);
+        $app->singleton(ServiceModuleManager::class);
+        $app->singleton(PaymentModuleManager::class);
     }
 
     private function registerDatabase(Application $app)

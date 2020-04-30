@@ -42,7 +42,7 @@ class WalletPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment/payment_method_wallet", compact('price'));
+        return $this->template->render("shop/payment/payment_method_wallet", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)

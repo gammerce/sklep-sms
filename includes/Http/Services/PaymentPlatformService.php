@@ -1,22 +1,22 @@
 <?php
 namespace App\Http\Services;
 
-use App\System\Heart;
+use App\Managers\PaymentModuleManager;
 
 class PaymentPlatformService
 {
-    /** @var Heart */
-    private $heart;
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
 
-    public function __construct(Heart $heart)
+    public function __construct(PaymentModuleManager $paymentModuleManager)
     {
-        $this->heart = $heart;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function getValidatedData($moduleId, array $data)
     {
         $filteredData = [];
-        $dataFields = $this->heart->getPaymentModuleDataFields($moduleId);
+        $dataFields = $this->paymentModuleManager->dataFields($moduleId);
 
         foreach ($dataFields as $dataField) {
             $filteredData[$dataField->getId()] = array_get($data, $dataField->getId());

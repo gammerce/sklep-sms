@@ -1,19 +1,20 @@
 <?php
 namespace App\View\Renders;
 
+use App\Managers\WebsiteHeader;
 use App\Support\Template;
-use App\System\Heart;
 use App\System\License;
 use App\System\Settings;
+use App\View\Blocks\BlockLoggedInfo;
+use App\View\Blocks\BlockServicesButtons;
+use App\View\Blocks\BlockUserButtons;
+use App\View\Blocks\BlockWallet;
 use Symfony\Component\HttpFoundation\Request;
 
 class ShopRenderer
 {
     /** @var Template */
     private $template;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var License */
     private $license;
@@ -24,42 +25,54 @@ class ShopRenderer
     /** @var Settings */
     private $settings;
 
+    /** @var WebsiteHeader */
+    private $websiteHeader;
+
     public function __construct(
         Template $template,
-        Heart $heart,
         License $license,
         BlockRenderer $blockRenderer,
-        Settings $settings
+        Settings $settings,
+        WebsiteHeader $websiteHeader
     ) {
         $this->template = $template;
-        $this->heart = $heart;
         $this->license = $license;
         $this->blockRenderer = $blockRenderer;
         $this->settings = $settings;
+        $this->websiteHeader = $websiteHeader;
     }
 
     public function render($content, $pageId, $pageTitle, Request $request)
     {
-        $header = $this->template->render("header", [
-            'currentPageId' => $pageId,
-            'footer' => $this->license->getFooter(),
-            'pageTitle' => $pageTitle,
-            'scripts' => $this->heart->getScripts(),
-            'styles' => $this->heart->getStyles(),
+        $header = $this->template->render("shop/layout/header", [
+            "currentPageId" => $pageId,
+            "footer" => $this->license->getFooter(),
+            "pageTitle" => $pageTitle,
+            "scripts" => $this->websiteHeader->getScripts(),
+            "styles" => $this->websiteHeader->getStyles(),
         ]);
-        $loggedInfo = $this->blockRenderer->render("logged_info", $request);
-        $wallet = $this->blockRenderer->render("wallet", $request);
-        $servicesButtons = $this->blockRenderer->render("services_buttons", $request);
-        $userButtons = $this->blockRenderer->render("user_buttons", $request);
+        $loggedInfo = $this->blockRenderer->render(BlockLoggedInfo::BLOCK_ID, $request);
+        $wallet = $this->blockRenderer->render(BlockWallet::BLOCK_ID, $request);
+        $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
+        $userButtons = $this->blockRenderer->render(BlockUserButtons::BLOCK_ID, $request);
         $googleAnalytics = $this->getGoogleAnalytics();
+        $contact = $this->settings->getContact();
+
+        $navbar = $this->template->render(
+            "shop/layout/navbar",
+            compact("servicesButtons", "userButtons", "wallet")
+        );
+        $footer = $this->template->render("shop/layout/footer", compact("contact"));
 
         return $this->template->render(
-            "index",
+            "shop/index",
             compact(
                 "content",
+                "footer",
                 "googleAnalytics",
                 "header",
                 "loggedInfo",
+                "navbar",
                 "pageTitle",
                 "servicesButtons",
                 "userButtons",
@@ -70,8 +83,8 @@ class ShopRenderer
 
     private function getGoogleAnalytics()
     {
-        return strlen($this->settings['google_analytics'])
-            ? $this->template->render('google_analytics')
-            : '';
+        return strlen($this->settings["google_analytics"])
+            ? $this->template->render("shop/layout/google_analytics")
+            : "";
     }
 }

@@ -8,9 +8,12 @@ use App\System\Auth;
 use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use Symfony\Component\HttpFoundation\Request;
 
 class BlockUserButtons extends Block
 {
+    const BLOCK_ID = "user_buttons";
+
     /** @var Auth */
     private $auth;
 
@@ -47,7 +50,7 @@ class BlockUserButtons extends Block
 
     public function getContentClass()
     {
-        return is_logged() ? "user_buttons" : "loginarea";
+        return is_logged() ? "user-buttons" : "loginarea";
     }
 
     public function getContentId()
@@ -55,39 +58,48 @@ class BlockUserButtons extends Block
         return "user_buttons";
     }
 
-    protected function content(array $query, array $body, array $params)
+    protected function content(Request $request, array $params)
     {
         if (!$this->auth->check()) {
-            return $this->template->render("loginarea");
+            return $this->template->render("shop/layout/loginarea");
         }
 
         $user = $this->auth->user();
-        $acpButton = "";
 
-        // Panel Admina
         if (has_privileges("acp", $user)) {
-            $acpButton = create_dom_element(
-                "li",
-                create_dom_element("a", $this->lang->t('acp'), [
-                    'href' => $this->url->to("/admin"),
-                ])
-            );
+            $acpButton = $this->template->render("shop/components/navbar/navigation_item_icon", [
+                "icon" => "fa-user-shield",
+                "link" => $this->url->to("/admin"),
+                "text" => $this->lang->t("acp"),
+            ]);
+        } else {
+            $acpButton = "";
         }
 
+        // TODO Remove along with retro theme
         if (
             $this->userServiceAccessService->canUserUseService(
                 $this->heart->getService("charge_wallet"),
                 $user
             )
         ) {
-            $chargeWalletButton = create_dom_element(
-                "li",
-                create_dom_element("a", $this->lang->t('charge_wallet'), [
-                    'href' => $this->url->to("/page/purchase?service=charge_wallet"),
-                ])
+            $chargeWalletButton = $this->template->render(
+                "shop/components/navbar/navigation_item_icon",
+                [
+                    "icon" => "fa-wallet",
+                    "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
+                    "text" => $this->lang->t("charge_wallet"),
+                ]
             );
+        } else {
+            $chargeWalletButton = "";
         }
 
-        return $this->template->render("user_buttons", compact('acpButton', 'chargeWalletButton'));
+        return $this->template->render("shop/layout/user_buttons", [
+            "acpButton" => $acpButton,
+            "chargeWalletButton" => $chargeWalletButton,
+            "username" => $user->getUsername(),
+            "userId" => $user->getUid(),
+        ]);
     }
 }

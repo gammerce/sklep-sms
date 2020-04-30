@@ -48,6 +48,6 @@ class ServiceDescriptionService
     public function getTemplatePath($serviceId)
     {
         $escapedName = escape_filename($serviceId);
-        return "/services/{$escapedName}_desc.html";
+        return "/shop/services/{$escapedName}_desc.html";
     }
 }

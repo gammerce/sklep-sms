@@ -3,6 +3,7 @@ namespace App\Payment\Transfer;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
@@ -11,7 +12,6 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\System\Heart;
 
 class TransferPaymentService
 {
@@ -24,24 +24,24 @@ class TransferPaymentService
     /** @var DatabaseLogger */
     private $logger;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var PurchaseDataService */
     private $purchaseDataService;
+
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
         ExternalPaymentService $externalPaymentService,
-        Heart $heart,
+        ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
         DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->externalPaymentService = $externalPaymentService;
-        $this->heart = $heart;
         $this->logger = $logger;
         $this->purchaseDataService = $purchaseDataService;
+        $this->serviceModuleManager = $serviceModuleManager;
     }
 
     /**
@@ -63,7 +63,7 @@ class TransferPaymentService
             throw new InvalidPaidAmountException();
         }
 
-        $serviceModule = $this->heart->getServiceModule($purchase->getServiceId());
+        $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchase)) {
             throw new InvalidServiceModuleException();
         }

@@ -1,0 +1,134 @@
+#cost_reload {
+  vertical-align: top;
+  margin-right: 12px;
+  cursor: pointer;
+}
+
+.shopsms_license_purchase {
+  padding: 1rem;
+
+  .column_bottom {
+    margin-top: 24px;
+    padding: 12px;
+    border: 1px inset #5f5f5f !important;
+    background: rgba(0, 0, 0, 0.1);
+    color: #fff;
+  }
+
+  .piece {
+    margin-top: 24px;
+  }
+
+  .header1 {
+    margin-bottom: 12px;
+    font-size: 16px;
+    text-shadow: 1px 1px 1px #000;
+  }
+}
+
+.shopsms_license_purchase,
+.shopsms_user_edit {
+  .engines {
+    margin: 8px;
+  }
+
+  .engine {
+    display: inline-block;
+    padding: 8px;
+    margin: 6px;
+
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #fff;
+    text-shadow: 1px 1px 1px #000;
+
+    cursor: pointer;
+
+    .tick {
+      margin-left: 8px;
+      vertical-align: top;
+    }
+
+    &.amxx {
+      background: rgba(2, 64, 121, 0.5);
+
+      &:not(.active):hover {
+        background: rgba(2, 64, 121, 0.8);
+      }
+
+      &.active {
+        background: rgb(2, 64, 121);
+      }
+    }
+
+    &.sm {
+      background: rgba(246, 158, 29, 0.5);
+
+      &:not(.active):hover {
+        background: rgba(246, 158, 29, 0.8);
+      }
+
+      &.active {
+        background: rgb(246, 158, 29);
+      }
+    }
+
+    &.active:after {
+      content: url("../../images/tick.png");
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+  }
+}
+
+.button {
+  &.regenerate_token {
+    background: #b71c1c;
+  }
+
+  &.prolong_license {
+    background: #5b9931;
+    font-weight: bold;
+  }
+}
+
+.brick {
+  &.regenerated_token_box {
+    display: none;
+    border: 2px solid #1b5e20;
+    color: #ffffff;
+
+    &.is-active {
+      display: block;
+    }
+  }
+}
+
+.shopsms_license_prolong_purchase {
+  padding: 1rem;
+}
+
+.shopsms_license_prolong_purchase .column_bottom {
+  margin-top: 24px;
+  padding: 12px;
+  border: 1px inset #5f5f5f !important;
+  background: rgba(0, 0, 0, 0.1);
+  color: #fff;
+}
+
+.shopsms_license_prolong_purchase .piece {
+  margin-top: 24px;
+}
+
+.shopsms_license_prolong_purchase .header1 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  text-shadow: 1px 1px 1px #000;
+}
+
+.shopsms_license_prolong_purchase #cost_reload {
+  vertical-align: top;
+  margin-right: 12px;
+  cursor: pointer;
+}

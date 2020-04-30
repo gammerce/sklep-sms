@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MaxLengthRule;
-use App\Http\Validation\Rules\PriceExistsRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\UserExistsRule;

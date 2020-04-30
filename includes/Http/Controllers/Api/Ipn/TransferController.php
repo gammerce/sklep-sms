@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Ipn;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
@@ -19,12 +20,12 @@ class TransferController
     public function action(
         $paymentPlatform,
         Request $request,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         ExternalPaymentService $externalPaymentService,
         TransferPaymentService $transferPaymentService,
         DatabaseLogger $logger
     ) {
-        $paymentModule = $heart->getPaymentModuleByPlatformId($paymentPlatform);
+        $paymentModule = $paymentModuleManager->getByPlatformId($paymentPlatform);
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new PlainResponse(

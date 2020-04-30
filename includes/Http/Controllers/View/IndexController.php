@@ -2,7 +2,12 @@
 namespace App\Http\Controllers\View;
 
 use App\Exceptions\EntityNotFoundException;
-use App\System\Heart;
+use App\Managers\PageManager;
+use App\Managers\WebsiteHeader;
+use App\Routing\UrlGenerator;
+use App\Support\FileSystem;
+use App\Support\Path;
+use App\View\Blocks\BlockContent;
 use App\View\Renders\BlockRenderer;
 use App\View\Renders\ShopRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,16 +18,36 @@ class IndexController
     public function action(
         $pageId = 'home',
         Request $request,
-        Heart $heart,
+        PageManager $pageManager,
         ShopRenderer $shopRenderer,
-        BlockRenderer $blockRenderer
+        FileSystem $fileSystem,
+        Path $path,
+        UrlGenerator $url,
+        BlockRenderer $blockRenderer,
+        WebsiteHeader $websiteHeader
     ) {
-        if (!$heart->pageExists($pageId, "user")) {
+        $page = $pageManager->getUser($pageId);
+
+        if (!$page) {
             throw new EntityNotFoundException();
         }
 
-        $content = $blockRenderer->render("content", $request, [$pageId]);
-        $output = $shopRenderer->render($content, $pageId, $heart->pageTitle, $request);
+        $scriptPath = "build/js/shop/pages/{$page->getId()}/";
+        if ($fileSystem->exists($path->to($scriptPath))) {
+            foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
+                if (ends_at($file, ".js")) {
+                    $websiteHeader->addScript($url->versioned($scriptPath . $file));
+                }
+            }
+        }
+
+        $content = $blockRenderer->render(BlockContent::BLOCK_ID, $request, [$page]);
+        $output = $shopRenderer->render(
+            $content,
+            $page->getId(),
+            $page->getTitle($request),
+            $request
+        );
 
         return new Response($output);
     }
