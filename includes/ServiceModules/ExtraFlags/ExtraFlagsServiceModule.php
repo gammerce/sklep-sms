@@ -185,7 +185,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->renderNoComments(
-            "services/extra_flags/extra_fields",
+            "admin/services/extra_flags/extra_fields",
             compact("webSelNo", "webSelYes", "types", "flags") + [
                 "moduleId" => $this->getModuleId(),
             ]
@@ -308,7 +308,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 return $this->service->getTypes() & $type;
             })
             ->map(function ($value) {
-                return $this->template->render("services/extra_flags/service_type", [
+                return $this->template->render("shop/services/extra_flags/service_type", [
                     "type" => ExtraFlagType::getTypeName($value),
                     "value" => $value,
                 ]);
@@ -317,7 +317,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $servers = $this->getServerOptions();
 
-        return $this->template->render("services/extra_flags/purchase_form", [
+        return $this->template->render("shop/services/extra_flags/purchase_form", [
             "servers" => $servers,
             "serviceId" => $this->service->getId(),
             "types" => $types,
@@ -435,7 +435,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $email = $purchase->getEmail() ?: $this->lang->t("none");
         $authData = $purchase->getOrder("auth_data");
-        $serviceName = $this->service->getName();
+        $serviceName = $this->service->getNameI18n();
         $serverName = $server->getName();
         $quantity =
             $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
@@ -443,7 +443,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
-            "services/extra_flags/order_details",
+            "shop/services/extra_flags/order_details",
             compact(
                 "quantity",
                 "typeName",
@@ -574,11 +574,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/extra_flags/purchase_info_email",
+                "shop/services/extra_flags/purchase_info_email",
                 compact("quantity", "password", "setinfo") + [
                     "authData" => $transaction->getAuthData(),
                     "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
-                    "serviceName" => $this->service->getName(),
+                    "serviceName" => $this->service->getNameI18n(),
                     "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
@@ -586,12 +586,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/extra_flags/purchase_info_web",
+                "shop/services/extra_flags/purchase_info_web",
                 compact("cost", "quantity", "password", "setinfo") + [
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
                     "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
-                    "serviceName" => $this->service->getName(),
+                    "serviceName" => $this->service->getNameI18n(),
                     "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
@@ -601,7 +601,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             return [
                 "text" => $this->lang->t(
                     "service_was_bought",
-                    $this->service->getName(),
+                    $this->service->getNameI18n(),
                     $server->getName()
                 ),
                 "class" => "outcome",
@@ -620,7 +620,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $servers = $this->getServerOptions();
 
         return $this->template->renderNoComments(
-            "services/extra_flags/user_service_admin_add",
+            "admin/services/extra_flags/user_service_admin_add",
             compact("types", "servers") + ["moduleId" => $this->getModuleId()]
         );
     }
@@ -686,7 +686,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
             ->map(function (Service $service) use ($userService) {
-                return create_dom_element("option", $service->getName(), [
+                return create_dom_element("option", $service->getNameI18n(), [
                     "value" => $service->getId(),
                     "selected" =>
                         $userService->getServiceId() === $service->getId() ? "selected" : "",
@@ -696,11 +696,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $types = $this->getTypeOptions($this->service->getTypes(), $userService->getType());
 
-        $styles = [
-            "nick" => "",
-            "ip" => "",
-            "sid" => "",
-            "password" => "",
+        $classes = [
+            "nick" => "is-hidden",
+            "ip" => "is-hidden",
+            "sid" => "is-hidden",
+            "password" => "is-hidden",
         ];
 
         $disabled = [
@@ -717,15 +717,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
-            $styles["nick"] = $styles["password"] = "display: table-row-group";
+            $classes["nick"] = $classes["password"] = "";
             $disabled["nick"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_IP) {
             $ip = $userService->getAuthData();
-            $styles["ip"] = $styles["password"] = "display: table-row-group";
+            $classes["ip"] = $classes["password"] = "";
             $disabled["ip"] = $disabled["password"] = "";
         } elseif ($userService->getType() == ExtraFlagType::TYPE_SID) {
             $sid = $userService->getAuthData();
-            $styles["sid"] = "display: table-row-group";
+            $classes["sid"] = "";
             $disabled["sid"] = "";
         }
 
@@ -746,10 +746,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "services/extra_flags/user_service_admin_edit",
+            "admin/services/extra_flags/user_service_admin_edit",
             compact(
                 "types",
-                "styles",
+                "classes",
                 "nick",
                 "ip",
                 "sid",
@@ -850,11 +850,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "player_sid" => "",
             "password" => "",
         ];
-        $styles = [
-            "nick" => "display: none",
-            "ip" => "display: none",
-            "sid" => "display: none",
-            "password" => "display: none",
+        $classes = [
+            "nick" => "is-hidden",
+            "ip" => "is-hidden",
+            "sid" => "is-hidden",
+            "password" => "is-hidden",
         ];
         $disabled = [
             "nick" => "disabled",
@@ -883,19 +883,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 switch ($optionId) {
                     case ExtraFlagType::TYPE_NICK:
                         $serviceInfo["player_nick"] = $userService->getAuthData();
-                        $styles["nick"] = $styles["password"] = "display: table-row";
+                        $classes["nick"] = $classes["password"] = "";
                         $disabled["nick"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_IP:
                         $serviceInfo["player_ip"] = $userService->getAuthData();
-                        $styles["ip"] = $styles["password"] = "display: table-row";
+                        $classes["ip"] = $classes["password"] = "";
                         $disabled["ip"] = $disabled["password"] = "";
                         break;
 
                     case ExtraFlagType::TYPE_SID:
                         $serviceInfo["player_sid"] = $userService->getAuthData();
-                        $styles["sid"] = "display: table-row";
+                        $classes["sid"] = "";
                         $disabled["sid"] = "";
                         break;
                 }
@@ -909,11 +909,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->heart->getServer($userService->getServerId());
         $serviceInfo["server"] = $server->getName();
         $serviceInfo["expire"] = convert_expire($userService->getExpire());
-        $serviceInfo["service"] = $this->service->getName();
+        $serviceInfo["service"] = $this->service->getNameI18n();
 
         return $this->template->render(
-            "services/extra_flags/user_own_service_edit",
-            compact("serviceInfo", "disabled", "styles")
+            "shop/services/extra_flags/user_own_service_edit",
+            compact("serviceInfo", "disabled", "classes")
         );
     }
 
@@ -925,14 +925,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->heart->getServer($userService->getServerId());
 
-        return $this->template->render("services/extra_flags/user_own_service", [
+        return $this->template->render("shop/services/extra_flags/user_own_service", [
             "buttonEdit" => $buttonEdit,
             "authData" => $userService->getAuthData(),
             "userServiceId" => $userService->getId(),
             "expire" => convert_expire($userService->getExpire()),
             "moduleId" => $this->getModuleId(),
             "serverName" => $server->getName(),
-            "serviceName" => $this->service->getName(),
+            "serviceName" => $this->service->getNameI18n(),
             "type" => $this->getTypeName($userService->getType()),
         ]);
     }
@@ -1099,7 +1099,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $servers = $this->getServerOptions();
 
         return $this->template->render(
-            "services/extra_flags/service_take_over",
+            "shop/services/extra_flags/service_take_over",
             compact("servers", "types") + ["moduleId" => $this->getModuleId()]
         );
     }
@@ -1233,7 +1233,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->join();
 
         return $this->template->render(
-            "services/extra_flags/prices_for_server",
+            "shop/services/extra_flags/prices_for_server",
             compact("quantities")
         );
     }

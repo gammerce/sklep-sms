@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Transfer;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -13,7 +14,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;
-use App\Managers\PaymentModuleManager;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
@@ -62,7 +62,7 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("payment/payment_method_transfer", compact('price'));
+        return $this->template->render("shop/payment/payment_method_transfer", compact('price'));
     }
 
     public function isAvailable(Purchase $purchase)
@@ -104,7 +104,7 @@ class TransferPaymentMethod implements IPaymentMethod
         }
 
         $service = $this->heart->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t('payment_for_service', $service->getName()));
+        $purchase->setDesc($this->lang->t('payment_for_service', $service->getNameI18n()));
 
         $fileName = $this->purchaseDataService->storePurchase($purchase);
 

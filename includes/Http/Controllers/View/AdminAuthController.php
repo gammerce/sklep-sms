@@ -1,19 +1,19 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
+use App\Services\IntendedUrlService;
 use App\Support\Template;
 use App\System\Auth;
+use App\System\Heart;
 use App\Translation\TranslationManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AdminAuthController
 {
-    const URL_INTENDED_KEY = "url.intended";
-
     public function get(
         Request $request,
         Template $template,
@@ -47,26 +47,31 @@ class AdminAuthController
         );
     }
 
-    public function post(Request $request, Auth $auth, UrlGenerator $url)
-    {
-        $session = $request->getSession();
-
+    public function post(
+        Request $request,
+        Auth $auth,
+        UrlGenerator $url,
+        Heart $heart,
+        IntendedUrlService $intendedUrlService
+    ) {
         if ($request->request->get("action") === "logout") {
-            $auth->logoutAdmin();
+            $auth->logout($request);
             return new RedirectResponse($url->to("/admin/login"));
         }
 
         // Let's try to login to ACP
         if ($request->request->has("username") && $request->request->has("password")) {
-            $user = $auth->loginAdminUsingCredentials(
+            $user = $heart->getUserByLogin(
                 $request->request->get("username"),
                 $request->request->get("password")
             );
 
-            if ($user->exists() && $session->has(static::URL_INTENDED_KEY)) {
-                $intendedUrl = $session->get(static::URL_INTENDED_KEY);
-                $session->remove(static::URL_INTENDED_KEY);
-                return new RedirectResponse($intendedUrl);
+            if ($user) {
+                $auth->loginAdmin($request, $user);
+
+                if ($intendedUrlService->exists($request)) {
+                    return $intendedUrlService->redirect($request);
+                }
             }
         }
 

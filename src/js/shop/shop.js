@@ -26,24 +26,21 @@ $(document).delegate("#form_login", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
 
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 
             if (jsonObj.return_id === "logged_in") {
-                $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
-                refreshBlocks(
-                    "logged_info,wallet,user_buttons,services_buttons" +
-                        ($("#form_login_reload_content").val() == "0"
-                            ? ""
-                            : `,content:${currentPage}`)
-                );
+                if (window.location.pathname.endsWith("/page/login")) {
+                    window.location.href = buildUrl("/");
+                } else {
+                    $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
+                    refreshBlocks(
+                        `logged_info,wallet,user_buttons,services_buttons,content:${currentPage}`
+                    );
+                }
             }
 
             if (jsonObj.return_id === "already_logged_in") {
@@ -67,12 +64,9 @@ $(document).delegate("#logout", "click", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
+            const jsonObj = json_parse(content);
 
-            if (!jsonObj.return_id) {
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 
@@ -126,4 +120,9 @@ $(document).delegate(".language-item", "click", function() {
     restRequest("PUT", "/api/session/language", { language: langClicked }, function() {
         location.reload();
     });
+});
+
+$(document).delegate(".navbar-burger", "click", function() {
+    $(this).toggleClass("is-active");
+    $(".navbar-menu").toggleClass("is-active");
 });

@@ -19,29 +19,29 @@ class SettingsControllerTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $directBillingPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => SimPay::MODULE_ID,
+            "module" => SimPay::MODULE_ID,
         ]);
         $smsPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => MicroSMS::MODULE_ID,
+            "module" => MicroSMS::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => TPay::MODULE_ID,
+            "module" => TPay::MODULE_ID,
         ]);
 
         // when
         $response = $this->put("/api/admin/settings", [
-            'cron' => 1,
-            'delete_logs' => 1,
-            'direct_billing_platform' => $directBillingPaymentPlatform->getId(),
-            'language' => 'polish',
-            'license_token' => "abc123",
-            'row_limit' => 20,
-            'shop_url' => "https://example.com",
-            'sms_platform' => $smsPaymentPlatform->getId(),
-            'theme' => 'default',
-            'transfer_platform' => $transferPaymentPlatform->getId(),
-            'user_edit_service' => 1,
-            'vat' => 1.23,
+            "cron" => 1,
+            "delete_logs" => 1,
+            "direct_billing_platform" => $directBillingPaymentPlatform->getId(),
+            "language" => "polish",
+            "license_token" => "abc123",
+            "row_limit" => 20,
+            "shop_url" => "https://example.com",
+            "sms_platform" => $smsPaymentPlatform->getId(),
+            "theme" => "fusion",
+            "transfer_platform" => $transferPaymentPlatform->getId(),
+            "user_edit_service" => 1,
+            "vat" => 1.23,
         ]);
 
         // then
@@ -56,7 +56,7 @@ class SettingsControllerTest extends HttpTestCase
         $this->assertSame("1", $settings["delete_logs"]);
         $this->assertSame("1", $settings["cron_each_visit"]);
         $this->assertSame("1", $settings["user_edit_service"]);
-        $this->assertSame("default", $settings->getTheme());
+        $this->assertSame("fusion", $settings->getTheme());
         $this->assertSame("polish", $settings->getLanguage());
         $this->assertSame($smsPaymentPlatform->getId(), $settings->getSmsPlatformId());
         $this->assertSame(

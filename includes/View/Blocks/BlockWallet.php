@@ -2,9 +2,12 @@
 namespace App\View\Blocks;
 
 use App\Routing\UrlGenerator;
+use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
-use App\View\Html\RawText;
+use App\System\Heart;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -21,16 +24,34 @@ class BlockWallet extends Block implements IBeLoggedMust
     /** @var UrlGenerator */
     private $url;
 
-    public function __construct(Auth $auth, Template $template, UrlGenerator $url)
-    {
+    /** @var UserServiceAccessService */
+    private $userServiceAccessService;
+
+    /** @var Heart */
+    private $heart;
+
+    /** @var Translator */
+    private $lang;
+
+    public function __construct(
+        Auth $auth,
+        Template $template,
+        UrlGenerator $url,
+        UserServiceAccessService $userServiceAccessService,
+        Heart $heart,
+        TranslationManager $translationManager
+    ) {
         $this->auth = $auth;
         $this->template = $template;
         $this->url = $url;
+        $this->userServiceAccessService = $userServiceAccessService;
+        $this->heart = $heart;
+        $this->lang = $translationManager->user();
     }
 
     public function getContentClass()
     {
-        return "wallet_status";
+        return "wallet-status";
     }
 
     public function getContentId()
@@ -41,19 +62,29 @@ class BlockWallet extends Block implements IBeLoggedMust
     protected function content(Request $request, array $params)
     {
         $user = $this->auth->user();
-        $amount = number_format($user->getWallet() / 100, 2);
+        $balance = number_format($user->getWallet() / 100, 2);
 
-        return $this->template->render("wallet", compact("amount"));
-    }
+        if (
+            $this->userServiceAccessService->canUserUseService(
+                $this->heart->getService("charge_wallet"),
+                $user
+            )
+        ) {
+            $chargeWalletButton = $this->template->render(
+                "shop/components/navbar/navigation_item_icon",
+                [
+                    "icon" => "fa-wallet",
+                    "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
+                    "text" => $this->lang->t("charge_wallet"),
+                ]
+            );
+        } else {
+            $chargeWalletButton = "";
+        }
 
-    public function getContentEnveloped(Request $request, array $params)
-    {
-        $content = $this->getContent($request, $params);
-
-        return create_dom_element("a", new RawText($content), [
-            "id" => $this->getContentId(),
-            "class" => $content !== null ? $this->getContentClass() : "",
-            "href" => $this->url->to("/page/payment_log"),
+        return $this->template->render("shop/layout/wallet", [
+            "chargeWalletButton" => $chargeWalletButton,
+            "balance" => $balance,
         ]);
     }
 }

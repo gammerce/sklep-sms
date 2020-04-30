@@ -1,6 +1,10 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\UnauthorizedException;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\UserServiceAccessService;
@@ -11,8 +15,6 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\Managers\ServiceModuleManager;
-use App\Managers\WebsiteHeader;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePurchase extends Page
@@ -65,13 +67,13 @@ class PagePurchase extends Page
     public function getTitle(Request $request)
     {
         $serviceModule = $this->getServiceModule($request);
-        $title = $this->lang->t("purchase");
+        $title = "";
 
         if ($serviceModule) {
-            $title .= " - " . $serviceModule->service->getName();
+            $title .= $serviceModule->service->getNameI18n() . " - ";
         }
 
-        return $title;
+        return $title . $this->lang->t("purchase");
     }
 
     public function getContent(Request $request)
@@ -79,7 +81,7 @@ class PagePurchase extends Page
         $serviceModule = $this->getServiceModule($request);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return $this->lang->t("site_not_exists");
+            throw new EntityNotFoundException();
         }
 
         $path = "build/js/shop/pages/{$this->getId()}/";
@@ -94,7 +96,7 @@ class PagePurchase extends Page
         }
 
         if ($serviceModule instanceof IBeLoggedMust && !$this->auth->check()) {
-            return $this->lang->t("must_be_logged_in");
+            throw new UnauthorizedException();
         }
 
         if (
@@ -107,17 +109,22 @@ class PagePurchase extends Page
         }
 
         if (strlen($serviceModule->descriptionLongGet())) {
-            $showMore = $this->template->render("services/show_more");
+            $showMore = $this->template->render("shop/components/purchase/show_more");
         } else {
             $showMore = "";
         }
 
-        $output = $this->template->render("services/short_description", [
-            "shortDescription" => $serviceModule->descriptionShortGet(),
+        $description = $this->template->render("shop/components/purchase/short_description", [
+            "shortDescription" =>
+                $serviceModule->descriptionShortGet() ?: $serviceModule->service->getNameI18n(),
             "showMore" => $showMore,
         ]);
+        $purchaseForm = $serviceModule->purchaseFormGet($request->query->all());
 
-        return $output . $serviceModule->purchaseFormGet($request->query->all());
+        return $this->template->render(
+            "shop/pages/purchase",
+            compact("description", "purchaseForm")
+        );
     }
 
     private function getServiceModule(Request $request)

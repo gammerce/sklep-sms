@@ -10,15 +10,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentError extends Page
 {
-    const PAGE_ID = 'payment_error';
+    const PAGE_ID = "payment_error";
 
     public function getTitle(Request $request)
     {
-        return "Płatność Odrzucona";
+        return $this->lang->t("payment_rejected");
     }
 
     public function getContent(Request $request)
     {
-        return $this->template->render("payment/payment_error");
+        return $this->template->render("shop/pages/payment_error");
     }
 }

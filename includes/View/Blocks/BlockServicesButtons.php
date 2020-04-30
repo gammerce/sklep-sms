@@ -1,13 +1,14 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
+use App\Services\ServiceListService;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\System\Heart;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockServicesButtons extends Block
@@ -32,13 +33,17 @@ class BlockServicesButtons extends Block
     /** @var Heart */
     private $heart;
 
+    /** @var ServiceListService */
+    private $serviceListService;
+
     public function __construct(
         Auth $auth,
         Template $template,
         Heart $heart,
         ServiceModuleManager $serviceModuleManager,
         UrlGenerator $url,
-        UserServiceAccessService $userServiceAccessService
+        UserServiceAccessService $userServiceAccessService,
+        ServiceListService $serviceListService
     ) {
         $this->auth = $auth;
         $this->template = $template;
@@ -46,11 +51,12 @@ class BlockServicesButtons extends Block
         $this->userServiceAccessService = $userServiceAccessService;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->heart = $heart;
+        $this->serviceListService = $serviceListService;
     }
 
     public function getContentClass()
     {
-        return "services_buttons";
+        return "services-buttons";
     }
 
     public function getContentId()
@@ -60,27 +66,15 @@ class BlockServicesButtons extends Block
 
     protected function content(Request $request, array $params)
     {
-        $user = $this->auth->user();
-
-        $services = collect($this->heart->getServices())
-            ->filter(function (Service $service) use ($user) {
-                $serviceModule = $this->serviceModuleManager->get($service->getId());
-                return $serviceModule &&
-                    $serviceModule->showOnWeb() &&
-                    $this->userServiceAccessService->canUserUseService($service, $user);
-            })
+        $services = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(function (Service $service) {
-                return create_dom_element(
-                    "li",
-                    create_dom_element("a", $service->getName(), [
-                        'href' => $this->url->to(
-                            "/page/purchase?service=" . urlencode($service->getId())
-                        ),
-                    ])
-                );
+                return $this->template->render("shop/components/navbar/navigation_item", [
+                    "text" => $service->getNameI18n(),
+                    "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
+                ]);
             })
             ->join();
 
-        return $this->template->render("services_buttons", compact('services'));
+        return $this->template->render("shop/layout/services_buttons", compact('services'));
     }
 }

@@ -39,7 +39,7 @@ class PageProfile extends Page implements IBeLoggedMust
         $steamId = $user->getSteamId();
 
         return $this->template->render(
-            "profile",
+            "shop/pages/profile",
             compact("email", "username", "forename", "surname", "steamId")
         );
     }

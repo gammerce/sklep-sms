@@ -9,9 +9,9 @@
     margin: 15px auto;
     text-align: center;
     word-wrap: break-word;
-}
 
-.infobox:hover {
-    opacity: 0.5;
-    cursor: pointer;
+    &:hover {
+        opacity: 0.5;
+        cursor: pointer;
+    }
 }

@@ -81,6 +81,14 @@ class Service
     /**
      * @return string
      */
+    public function getNameI18n()
+    {
+        return __($this->name);
+    }
+
+    /**
+     * @return string
+     */
     public function getShortDescription()
     {
         return $this->shortDescription;

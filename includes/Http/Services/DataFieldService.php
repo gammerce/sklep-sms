@@ -1,10 +1,10 @@
 <?php
 namespace App\Http\Services;
 
+use App\Managers\PaymentModuleManager;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\Managers\PaymentModuleManager;
 
 class DataFieldService
 {
@@ -36,7 +36,7 @@ class DataFieldService
             $text = $dataField->getName() ?: $this->getCustomDataText($dataField->getId());
             $value = array_get($data, $dataField->getId());
 
-            $dataFieldOptions[] = $this->template->render("tr_name_input", [
+            $dataFieldOptions[] = $this->template->render("admin/tr_name_input", [
                 "name" => "data[{$dataField->getId()}]",
                 "value" => $value,
                 "text" => $text,

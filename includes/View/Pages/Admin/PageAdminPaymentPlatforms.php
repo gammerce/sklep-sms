@@ -3,6 +3,7 @@ namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
+use App\Managers\PaymentModuleManager;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\Database;
@@ -17,7 +18,6 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox

@@ -1,0 +1,24 @@
+<title>{{ $pageTitle }} - {{ __('shop_sms') }}</title>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+
+<script
+    type="text/javascript"
+    src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"
+></script>
+<script type="text/javascript" src="{{ versioned('build/js/vendors.js') }}"></script>
+<script type="text/javascript" src="{{ versioned('build/js/shop.js') }}"></script>
+<script type="text/javascript" src="{{ versioned('lang.js') }}"></script>
+<script type="text/javascript">
+    var f = "{!! $footer !!}";
+    var language = "{{ $lang->getCurrentLanguage() }}";
+    var baseUrl = "{{ url('/') }}";
+    var currentPage = "{{ $currentPageId }}";
+</script>
+{!! $scripts !!}
+
+<link href="{{ versioned('build/css/shop_fusion.css') }}" rel="stylesheet" />
+<link rel="shortcut icon" href="{{ url('favicon.png') }}" />
+{!! $styles !!}

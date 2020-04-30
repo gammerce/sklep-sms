@@ -89,14 +89,14 @@ class Template
         if (strlen($language)) {
             $paths[] = "themes/$theme/$title.$language";
             $paths[] = "themes/$theme/$title.$language.html";
-            $paths[] = "themes/default/$title.$language";
-            $paths[] = "themes/default/$title.$language.html";
+            $paths[] = "themes/fusion/$title.$language";
+            $paths[] = "themes/fusion/$title.$language.html";
         }
 
         $paths[] = "themes/$theme/$title";
         $paths[] = "themes/$theme/$title.html";
-        $paths[] = "themes/default/$title";
-        $paths[] = "themes/default/$title.html";
+        $paths[] = "themes/fusion/$title";
+        $paths[] = "themes/fusion/$title.html";
 
         return $paths;
     }
@@ -130,11 +130,15 @@ class Template
             return htmlspecialchars($value);
         };
 
+        $v = function ($value) {
+            return $value;
+        };
+
         $addSlashes = function ($value) {
             return addslashes($value);
         };
 
-        return eval('return "' . $__content . '";');
+        return eval("return \"$__content\";");
     }
 
     private function addDefaultVariables(array $data)
@@ -158,7 +162,7 @@ class Template
     {
         return preg_replace(
             ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
-            ['{$e(', ')}', '{', '}'],
+            ['{$e(', ')}', '{$v(', ')}'],
             $template
         );
     }

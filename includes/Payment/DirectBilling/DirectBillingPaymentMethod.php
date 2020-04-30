@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\DirectBilling;
 
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -11,7 +12,6 @@ use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
-use App\Managers\PaymentModuleManager;
 
 class DirectBillingPaymentMethod implements IPaymentMethod
 {
@@ -49,7 +49,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
-        return $this->template->render("payment/payment_method_direct_billing", compact("price"));
+        return $this->template->render(
+            "shop/payment/payment_method_direct_billing",
+            compact("price")
+        );
     }
 
     /**

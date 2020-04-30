@@ -2,6 +2,11 @@
 namespace App\Providers;
 
 use App\Cache\FileCache;
+use App\Managers\BlockManager;
+use App\Managers\PageManager;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
+use App\Managers\WebsiteHeader;
 use App\Support\Database;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
@@ -14,12 +19,7 @@ use App\System\License;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Managers\BlockManager;
 use App\View\CurrentPage;
-use App\Managers\PageManager;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
-use App\Managers\WebsiteHeader;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 

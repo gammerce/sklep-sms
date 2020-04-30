@@ -1,6 +1,7 @@
 <?php
 namespace App\System;
 
+use App\Exceptions\AccessProhibitedException;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidServiceModuleException;
@@ -8,7 +9,6 @@ use App\Exceptions\LicenseException;
 use App\Exceptions\LicenseRequestException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
-use App\Http\Controllers\View\AdminAuthController;
 use App\Http\RequestHelper;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\HtmlResponse;
@@ -16,6 +16,7 @@ use App\Http\Responses\PlainResponse;
 use App\Http\Responses\ServerResponseFactory;
 use App\Loggers\FileLogger;
 use App\Routing\UrlGenerator;
+use App\Services\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Html\Li;
@@ -49,6 +50,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var UrlGenerator */
     private $url;
 
+    /** @var IntendedUrlService */
+    private $intendedUrlService;
+
     private $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
@@ -63,7 +67,8 @@ class ExceptionHandler implements ExceptionHandlerContract
         FileLogger $logger,
         ErrorRenderer $errorRenderer,
         ServerResponseFactory $serverResponseFactory,
-        UrlGenerator $url
+        UrlGenerator $url,
+        IntendedUrlService $intendedUrlService
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
@@ -71,6 +76,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         $this->errorRenderer = $errorRenderer;
         $this->serverResponseFactory = $serverResponseFactory;
         $this->url = $url;
+        $this->intendedUrlService = $intendedUrlService;
     }
 
     public function render(Request $request, Exception $e)
@@ -80,17 +86,21 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof UnauthorizedException) {
-            return $this->renderUnauthorizedError($request);
+            return $this->renderUnauthorizedException($request);
+        }
+
+        if ($e instanceof AccessProhibitedException) {
+            return $this->renderAccessProhibitedException($request);
         }
 
         if ($e instanceof InvalidServiceModuleException) {
-            return new ApiResponse("wrong_module", $this->lang->t('bad_module'), false);
+            return new ApiResponse("wrong_module", $this->lang->t("bad_module"), false);
         }
 
         if ($e instanceof ValidationException) {
             return new ApiResponse(
                 "warnings",
-                $this->lang->t('form_wrong_filled'),
+                $this->lang->t("form_wrong_filled"),
                 false,
                 array_merge(
                     [
@@ -104,13 +114,13 @@ class ExceptionHandler implements ExceptionHandlerContract
         if (is_debug()) {
             $exceptionDetails = $this->getExceptionDetails($e);
             return new JsonResponse([
-                'return_id' => 'stack_trace',
-                'stack_trace' => $exceptionDetails,
+                "return_id" => "stack_trace",
+                "stack_trace" => $exceptionDetails,
             ]);
         }
 
         if ($e instanceof LicenseException) {
-            return new PlainResponse($this->lang->t('verification_error'));
+            return new PlainResponse($this->lang->t("verification_error"));
         }
 
         if ($e instanceof LicenseRequestException) {
@@ -148,11 +158,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     private function getExceptionDetails(Exception $e)
     {
         return [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'code' => $e->getCode(),
-            'trace' => $e->getTrace(),
+            "message" => $e->getMessage(),
+            "file" => $e->getFile(),
+            "line" => $e->getLine(),
+            "code" => $e->getCode(),
+            "trace" => $e->getTrace(),
         ];
     }
 
@@ -172,10 +182,10 @@ class ExceptionHandler implements ExceptionHandlerContract
         $requestHelper = new RequestHelper($request);
 
         if ($requestHelper->isFromServer()) {
-            $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+            $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
             return $this->serverResponseFactory->create(
                 $acceptHeader,
-                'error',
+                "error",
                 $e->getMessage(),
                 false,
                 [],
@@ -184,7 +194,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($requestHelper->expectsJson()) {
-            return new ApiResponse('error', $e->getMessage(), false, [], $status);
+            return new ApiResponse("error", $e->getMessage(), false, [], $status);
         }
 
         $output = $this->errorRenderer->render("$status", $request);
@@ -212,19 +222,31 @@ class ExceptionHandler implements ExceptionHandlerContract
         return $output;
     }
 
-    private function renderUnauthorizedError(Request $request)
+    private function renderUnauthorizedException(Request $request)
     {
         $requestHelper = new RequestHelper($request);
 
         if ($requestHelper->expectsJson()) {
-            return new ApiResponse("no_access", $this->lang->t('not_logged_or_no_perm'), false);
+            return new ApiResponse("no_access", $this->lang->t("not_logged_or_no_perm"), false);
         }
 
-        $session = $request->getSession();
-        if ($session) {
-            $session->set(AdminAuthController::URL_INTENDED_KEY, $request->getRequestUri());
+        $this->intendedUrlService->set($request);
+
+        if ($requestHelper->isAdminSession()) {
+            return new RedirectResponse($this->url->to("/admin/login"));
         }
 
-        return new RedirectResponse($this->url->to("/admin/login"));
+        return new RedirectResponse($this->url->to("/login"));
+    }
+
+    private function renderAccessProhibitedException(Request $request)
+    {
+        $requestHelper = new RequestHelper($request);
+
+        if ($requestHelper->isAdminSession()) {
+            return new RedirectResponse($this->url->to("/admin"));
+        }
+
+        return new RedirectResponse($this->url->to("/"));
     }
 }

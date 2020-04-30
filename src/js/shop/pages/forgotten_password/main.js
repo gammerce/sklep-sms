@@ -17,7 +17,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;
             }
@@ -29,8 +29,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_forgotten_password"), jsonObj.warnings);
             } else if (jsonObj.return_id === "sent") {
-                // Wyświetl informacje o wysłaniu maila
-                getAndSetTemplate($("#content"), "forgotten_password_sent");
+                getAndSetTemplate($("#page-content"), "forgotten_password_sent");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

@@ -1,9 +1,9 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
-use App\Models\FinalizedPayment;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;

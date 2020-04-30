@@ -3,6 +3,7 @@ namespace App\Payment\DirectBilling;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
@@ -11,7 +12,6 @@ use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Managers\ServiceModuleManager;
 
 class DirectBillingPaymentService
 {

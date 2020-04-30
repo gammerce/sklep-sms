@@ -1,8 +1,8 @@
 <?php
 namespace App\Verification\Abstracts;
 
-use App\Models\Purchase;
 use App\Models\FinalizedPayment;
+use App\Models\Purchase;
 
 interface SupportTransfer
 {

@@ -2,6 +2,8 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\Service;
@@ -20,8 +22,6 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServers extends PageAdmin implements IPageAdminActionBox
@@ -184,7 +184,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                         "selected" => $isLinked ? "selected" : "",
                     ]),
                 ];
-                return $this->template->render("tr_text_select", [
+                return $this->template->render("admin/tr_text_select", [
                     "name" => $service->getId(),
                     "text" => "{$service->getName()} ( {$service->getId()} )",
                     "values" => implode("", $options),

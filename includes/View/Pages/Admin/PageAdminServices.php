@@ -2,6 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\ServiceModuleManager;
 use App\Models\Group;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
@@ -18,7 +19,6 @@ use App\View\Html\RawText;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminServices extends PageAdmin implements IPageAdminActionBox

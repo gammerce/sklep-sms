@@ -135,7 +135,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 ]
             );
 
-            $privileges .= $this->template->render("tr_text_select", [
+            $privileges .= $this->template->render("admin/tr_text_select", [
                 "name" => $fieldName,
                 "text" => $this->lang->t("privilege_" . $fieldName),
                 "values" => $values,

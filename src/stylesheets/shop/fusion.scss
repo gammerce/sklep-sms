@@ -1,4 +1,5 @@
 $primary: #fc443c;
+$danger: $primary;
 
 $scheme-main: hsl(0, 0%, 14%);
 $scheme-main-bis: hsl(0, 0%, 21%);
@@ -8,28 +9,81 @@ $scheme-invert: hsl(0, 0%, 96%);
 $scheme-invert-bis: hsl(0, 0%, 93%);
 $scheme-invert-ter: hsl(0, 0%, 86%);
 
+$background: $scheme-invert-bis;
+$body-background-color: $background;
+
 $text-strong: inherit;
 $footer-color: $scheme-invert;
 $navbar-item-color: $scheme-invert;
+$navbar-dropdown-item-hover-color: $scheme-main;
 $card-color: $scheme-invert;
+$hr-background-color: $scheme-main;
+
+// Link
+$link: $danger;
+
+$link-hover: $scheme-main-ter;
+$link-hover-border: $link;
+
+$link-focus: $scheme-main-ter;
+$link-focus-border: darken($link, 20%);
+
+$link-active: $scheme-main-ter;
+$link-active-border: darken($link, 20%);
+
+// Input
+$input-border-color: #000;
+$input-hover-border-color: $primary;
+$input-color: $scheme-invert;
+
+// Button
+$button-border-color: #000;
+$button-color: $scheme-invert;
+$button-hover-color: #fff;
+$button-static-border-color: $scheme-main;
 
 @import "src/stylesheets/general/vendors";
+@import "~@fortawesome/fontawesome-free/css/all.css";
+@import "src/stylesheets/general/partials/animations";
+@import "src/stylesheets/general/partials/infobox";
+@import "src/stylesheets/general/partials/loader";
+@import "src/stylesheets/general/partials/helpers";
+@import "src/stylesheets/general/partials/window_info";
+
+// Layout
 
 html,
 body {
     min-height: 100vh;
-    display: grid;
-    grid-template-rows: min-content auto min-content;
 }
 
 .section {
     @include mobile {
-        padding: 3rem 0.5rem;
+        padding: 3rem 0.75rem;
     }
+}
+
+.section-body {
+    background: rgba(255, 255, 255, 0.8);
+    width: 100%;
 }
 
 .site-content {
     background: url("../../images/background.jpg") no-repeat fixed;
+    min-height: calc(100vh - #{$navbar-height});
+    padding-bottom: 5rem;
+}
+
+.user-buttons {
+    display: contents;
+}
+
+.services-buttons {
+    display: contents;
+}
+
+.wallet-status {
+    display: contents;
 }
 
 .footer {
@@ -69,13 +123,190 @@ body {
     }
 }
 
-.product-card {
-    border-radius: 30px;
-    text-align: center;
-    margin: 0 auto 1rem;
-    display: inline-block;
+// Utils
+
+.button.is-show-more {
+    color: $scheme-main-bis;
+    background: transparent;
+    border-color: $danger;
+    border-width: 2px;
+
+    &:hover {
+        background: $danger;
+        color: $scheme-invert;
+    }
 }
 
-.is-fullheight {
-    height: 100%;
+.card {
+    background: rgba($black, 0.8);
+
+    .subtitle {
+        color: $scheme-invert-ter;
+    }
+}
+
+.card-group {
+    display: flex;
+    flex-wrap: wrap;
+
+    .card.gapped {
+        margin-right: 1rem;
+    }
+}
+
+.form-footer {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+// Pages
+
+.homepage-box {
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - #{$navbar-height});
+
+    .home-container {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        .services-group {
+            justify-content: center;
+        }
+    }
+}
+
+.services-container {
+    .service-card {
+        display: grid;
+        grid-template-rows: min-content auto min-content;
+        width: calc(50% - 4rem);
+        margin: 2rem;
+
+        color: $scheme-invert;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12),
+            0 1px 5px 0 rgba(0, 0, 0, 0.2);
+
+        @include mobile {
+            margin-top: 0;
+            margin-right: 0;
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .card-header-icon {
+            color: $primary;
+            font-weight: 600;
+
+            .icon {
+                text-shadow: 0 0 2px black;
+            }
+        }
+    }
+}
+
+.payment-log-box {
+    margin-bottom: 2rem;
+
+    .card-content {
+        color: $scheme-main-bis;
+    }
+
+    .income {
+        background-color: rgba($success, 0.8);
+
+        &:hover {
+            background-color: $success;
+        }
+    }
+
+    .outcome {
+        background-color: rgba($danger, 0.8);
+
+        &:hover {
+            background-color: $danger;
+        }
+    }
+}
+
+#user_own_services {
+    margin-bottom: 2rem;
+
+    .card.is-active {
+        border: 1px solid $danger;
+        box-shadow: 0 0 2px $danger;
+    }
+}
+
+#form_purchase {
+    .discount {
+        color: $danger;
+        font-size: $size-7;
+    }
+}
+
+#payment {
+    .payment-methods-box {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 5rem;
+    }
+
+    .payment-type-wrapper {
+        margin-right: 1rem;
+        margin-bottom: 1rem;
+
+        @include mobile {
+            margin-right: 0;
+            flex-grow: 1;
+        }
+
+        .card {
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.12),
+                0 1px 5px 0 rgba(0, 0, 0, 0.2);
+        }
+
+        .card-content {
+            text-align: center;
+        }
+
+        .card-header .card-header-title {
+            justify-content: center;
+            text-transform: uppercase;
+            box-shadow: 0 0 2px $scheme-invert;
+            color: $scheme-invert;
+            text-shadow: 1px 1px 1px $scheme-main;
+            font-weight: bold;
+        }
+
+        .card-footer {
+            border-top: none;
+            background-color: $scheme-main;
+            font-weight: bold;
+        }
+    }
+
+    .order-details {
+        border: 2px solid $danger;
+        padding: 1rem;
+    }
+
+    .order-details legend {
+        color: $danger;
+        text-transform: uppercase;
+        font-size: 1.1rem;
+        padding: 0 1rem;
+    }
+
+    #sms_details {
+        animation: slideUp 0.6s;
+        margin-top: 2rem;
+
+        .field-label {
+            white-space: nowrap;
+            flex-grow: 3;
+        }
+    }
 }

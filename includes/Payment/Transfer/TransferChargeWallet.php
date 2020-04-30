@@ -44,10 +44,10 @@ class TransferChargeWallet implements IChargeWallet
     {
         $validator = new Validator(
             [
-                'transfer_price' => array_get($body, 'transfer_price'),
+                "transfer_price" => array_get($body, "transfer_price"),
             ],
             [
-                'transfer_price' => [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)],
+                "transfer_price" => [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)],
             ]
         );
         $validated = $validator->validateOrFail();
@@ -66,8 +66,8 @@ class TransferChargeWallet implements IChargeWallet
     {
         $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
         return $this->template->renderNoComments(
-            "services/charge_wallet/web_purchase_info_transfer",
-            compact('quantity')
+            "shop/services/charge_wallet/web_purchase_info_transfer",
+            compact("quantity")
         );
     }
 
@@ -77,12 +77,12 @@ class TransferChargeWallet implements IChargeWallet
             return null;
         }
 
-        $option = $this->template->render("services/charge_wallet/option", [
-            'value' => Purchase::METHOD_TRANSFER,
-            'text' => $this->lang->t('transfer_transfer'),
+        $option = $this->template->render("shop/services/charge_wallet/option", [
+            "value" => Purchase::METHOD_TRANSFER,
+            "text" => $this->lang->t("transfer_transfer"),
         ]);
-        $body = $this->template->render("services/charge_wallet/transfer_body", [
-            'type' => Purchase::METHOD_TRANSFER,
+        $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
+            "type" => Purchase::METHOD_TRANSFER,
         ]);
 
         return [$option, $body];

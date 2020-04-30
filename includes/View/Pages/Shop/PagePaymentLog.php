@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceModuleManager;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\PriceTextService;
@@ -13,7 +14,6 @@ use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
@@ -104,14 +104,14 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $server = $this->heart->getServer($transaction->getServerId());
                 $desc = $this->lang->t(
                     "service_was_bought",
-                    $service ? $service->getName() : "",
+                    $service ? $service->getNameI18n() : "",
                     $server ? $server->getName() : ""
                 );
                 $class = "outcome";
             }
 
             $paymentLogs .= $this->template->render(
-                "payment_log_brick",
+                "shop/components/payment_log/payment_log_brick",
                 compact("class", "date", "cost", "desc")
             );
         }
@@ -126,7 +126,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $paginationClass = $paginationContent ? "" : "display_none";
 
         return $this->template->render(
-            "payment_log",
+            "shop/pages/payment_log",
             compact("paymentLogs", "paginationClass", "paginationContent")
         );
     }

@@ -4,6 +4,7 @@ namespace App\Payment\Sms;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SmsPriceExistsRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Models\Transaction;
@@ -15,7 +16,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
-use App\Managers\PaymentModuleManager;
 
 class SmsChargeWallet implements IChargeWallet
 {
@@ -91,13 +91,16 @@ class SmsChargeWallet implements IChargeWallet
         $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
         $desc = $this->lang->t("wallet_was_charged", $quantity);
 
-        return $this->template->renderNoComments("services/charge_wallet/web_purchase_info_sms", [
-            "desc" => $desc,
-            "smsNumber" => $transaction->getSmsNumber(),
-            "smsText" => $transaction->getSmsText(),
-            "smsCode" => $transaction->getSmsCode(),
-            "cost" => $this->priceTextService->getPriceText($transaction->getCost() ?: 0),
-        ]);
+        return $this->template->renderNoComments(
+            "shop/services/charge_wallet/web_purchase_info_sms",
+            [
+                "desc" => $desc,
+                "smsNumber" => $transaction->getSmsNumber(),
+                "smsText" => $transaction->getSmsText(),
+                "smsCode" => $transaction->getSmsCode(),
+                "cost" => $this->priceTextService->getPriceText($transaction->getCost() ?: 0),
+            ]
+        );
     }
 
     public function getOptionView()
@@ -110,7 +113,7 @@ class SmsChargeWallet implements IChargeWallet
             return null;
         }
 
-        $option = $this->template->render("services/charge_wallet/option", [
+        $option = $this->template->render("shop/services/charge_wallet/option", [
             "value" => Purchase::METHOD_SMS,
             "text" => "SMS",
         ]);
@@ -131,7 +134,7 @@ class SmsChargeWallet implements IChargeWallet
             })
             ->join();
 
-        $body = $this->template->render("services/charge_wallet/sms_body", [
+        $body = $this->template->render("shop/services/charge_wallet/sms_body", [
             "smsList" => $smsList,
             "type" => Purchase::METHOD_SMS,
         ]);

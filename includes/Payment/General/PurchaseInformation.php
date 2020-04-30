@@ -1,11 +1,11 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\ServiceModuleManager;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\Managers\ServiceModuleManager;
 
 class PurchaseInformation
 {
@@ -59,7 +59,7 @@ class PurchaseInformation
         $statement->execute($queryParticle->params());
 
         if (!$statement->rowCount()) {
-            return "Brak zakupu w bazie.";
+            return "";
         }
 
         $transaction = $this->transactionRepository->mapToModel($statement->fetch());

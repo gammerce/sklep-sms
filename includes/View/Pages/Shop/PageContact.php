@@ -15,6 +15,6 @@ class PageContact extends Page
 
     public function getContent(Request $request)
     {
-        return $this->template->render("contact");
+        return $this->template->render("shop/pages/contact");
     }
 }

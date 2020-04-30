@@ -2,6 +2,7 @@
 namespace App\View\Pages\Shop;
 
 use App\Exceptions\InvalidConfigException;
+use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseInformation;
 use App\Support\Template;
@@ -9,7 +10,6 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Verification\PaymentModules\Cashbill;
 use App\View\Pages\Page;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageCashbillTransferFinalized extends Page
@@ -62,21 +62,32 @@ class PageCashbillTransferFinalized extends Page
         $orderId = $request->query->get("orderid");
 
         if (
-            $paymentModule->checkSign($request->query->all(), $paymentModule->getKey(), $sign) &&
+            !$paymentModule->checkSign($request->query->all(), $paymentModule->getKey(), $sign) ||
             $service != $paymentModule->getService()
         ) {
-            return $this->lang->t("transfer_unverified");
+            return $this->template->render("shop/components/general/header", [
+                "title" => $this->getTitle($request),
+                "subtitle" => $this->lang->t("transfer_unverified"),
+            ]);
         }
 
-        // prawidlowa sygnatura, w zaleznosci od statusu odpowiednia informacja dla klienta
         if (strtoupper($status) != "OK") {
-            return $this->lang->t("transfer_error");
+            return $this->template->render("shop/components/general/header", [
+                "title" => $this->getTitle($request),
+                "subtitle" => $this->lang->t("transfer_error"),
+            ]);
         }
 
-        return $this->purchaseInformation->get([
+        $content = $this->purchaseInformation->get([
             "payment" => Purchase::METHOD_TRANSFER,
             "payment_id" => $orderId,
             "action" => "web",
+        ]);
+
+        return $this->template->render("shop/pages/transfer_finalized", [
+            "title" => $this->getTitle($request),
+            "subtitle" => $this->lang->t("transfer_error"),
+            "content" => $content,
         ]);
     }
 }

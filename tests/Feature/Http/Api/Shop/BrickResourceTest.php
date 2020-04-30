@@ -20,10 +20,10 @@ class BrickResourceTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertContains("Witaj w sklepie internetowym!", $json["content"]["content"]);
+        $this->assertContains("Witaj w Sklepie SMS!", $json["content"]["content"]);
         $this->assertContains($user->getUsername(), $json["logged_info"]["content"]);
         $this->assertContains("VIP PRO", $json["services_buttons"]["content"]);
-        $this->assertContains("Doładowanie Portfela", $json["user_buttons"]["content"]);
-        $this->assertContains("0.00 PLN", $json["wallet"]["content"]);
+        $this->assertContains("Moje usługi", $json["user_buttons"]["content"]);
+        $this->assertContains("0.00", $json["wallet"]["content"]);
     }
 }

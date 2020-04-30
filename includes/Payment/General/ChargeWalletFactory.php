@@ -2,8 +2,8 @@
 namespace App\Payment\General;
 
 use App\Models\Purchase;
-use App\Payment\Interfaces\IChargeWallet;
 use App\Payment\DirectBilling\DirectBillingChargeWallet;
+use App\Payment\Interfaces\IChargeWallet;
 use App\Payment\Sms\SmsChargeWallet;
 use App\Payment\Transfer\TransferChargeWallet;
 use App\System\Application;

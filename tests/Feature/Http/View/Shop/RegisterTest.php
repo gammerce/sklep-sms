@@ -9,10 +9,10 @@ class RegisterTest extends HttpTestCase
     public function it_loads()
     {
         // when
-        $response = $this->get('/page/register');
+        $response = $this->get("/page/register");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Rejestracja', $response->getContent());
+        $this->assertContains("Zarejestruj się", $response->getContent());
     }
 }

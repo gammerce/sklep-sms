@@ -5,6 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\AssocResponse;
 use App\Http\Responses\JsonResponse;
+use App\Managers\PaymentModuleManager;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
@@ -17,7 +18,6 @@ use App\Services\UserServiceAccessService;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
-use App\Managers\PaymentModuleManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -72,7 +72,7 @@ class ServerConfigController
         $serviceItems = $services->map(function (Service $service) {
             return [
                 "i" => $service->getId(),
-                "n" => $service->getName(),
+                "n" => $service->getNameI18n(),
                 "d" => $service->getShortDescription(),
                 "ta" => $service->getTag(),
                 "f" => $service->getFlags(),

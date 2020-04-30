@@ -1,11 +1,14 @@
 <?php
 namespace App\View\Renders;
 
+use App\Managers\WebsiteHeader;
 use App\Support\Template;
 use App\System\License;
 use App\System\Settings;
+use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
-use App\Managers\WebsiteHeader;
+use App\View\Blocks\BlockUserButtons;
+use App\View\Blocks\BlockWallet;
 use Symfony\Component\HttpFoundation\Request;
 
 class ShopRenderer
@@ -41,24 +44,28 @@ class ShopRenderer
 
     public function render($content, $pageId, $pageTitle, Request $request)
     {
-        $header = $this->template->render("header", [
+        $header = $this->template->render("shop/layout/header", [
             "currentPageId" => $pageId,
             "footer" => $this->license->getFooter(),
             "pageTitle" => $pageTitle,
             "scripts" => $this->websiteHeader->getScripts(),
             "styles" => $this->websiteHeader->getStyles(),
         ]);
-        $loggedInfo = $this->blockRenderer->render("logged_info", $request);
-        $wallet = $this->blockRenderer->render("wallet", $request);
+        $loggedInfo = $this->blockRenderer->render(BlockLoggedInfo::BLOCK_ID, $request);
+        $wallet = $this->blockRenderer->render(BlockWallet::BLOCK_ID, $request);
         $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
-        $userButtons = $this->blockRenderer->render("user_buttons", $request);
+        $userButtons = $this->blockRenderer->render(BlockUserButtons::BLOCK_ID, $request);
         $googleAnalytics = $this->getGoogleAnalytics();
+        $contact = $this->settings->getContact();
 
-        $navbar = $this->template->render("navbar", compact("userButtons"));
-        $footer = $this->template->render("footer");
+        $navbar = $this->template->render(
+            "shop/layout/navbar",
+            compact("servicesButtons", "userButtons", "wallet")
+        );
+        $footer = $this->template->render("shop/layout/footer", compact("contact"));
 
         return $this->template->render(
-            "index",
+            "shop/index",
             compact(
                 "content",
                 "footer",
@@ -77,7 +84,7 @@ class ShopRenderer
     private function getGoogleAnalytics()
     {
         return strlen($this->settings["google_analytics"])
-            ? $this->template->render("google_analytics")
+            ? $this->template->render("shop/layout/google_analytics")
             : "";
     }
 }

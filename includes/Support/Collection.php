@@ -8,7 +8,7 @@ use Illuminate\Contracts\Support\Arrayable;
 use IteratorAggregate;
 use Traversable;
 
-class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
+final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
 {
     /** @var array */
     private $items;
@@ -169,6 +169,15 @@ class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
     {
         $this->items = array_merge($this->items, to_array($data));
         return $this;
+    }
+
+    /**
+     * @param int $limit
+     * @return Collection
+     */
+    public function limit($limit)
+    {
+        return new Collection(array_slice($this->items, 0, $limit));
     }
 
     /**

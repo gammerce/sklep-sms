@@ -1,0 +1,49 @@
+<div class="homepage-box">
+    <div class="container home-container">
+        <div class="columns is-multiline is-vcentered is-gapless">
+            <div class="column">
+                <div class="section has-text-centered">
+                    <h1 class="title is-2">{{ __('welcome_title') }}</h1>
+                    <h2 class="subtitle is-4">{{ __('welcome_subtitle') }}</h2>
+
+                    <div class="section">
+                        <p class="content is-size-5">
+                            {!! __('welcome_message') !!}
+                        </p>
+
+                        <a class="button is-primary is-medium" href="{{ url('/page/contact') }}">
+                            <span class="icon">
+                                <i class="fas fa-address-book"></i>
+                            </span>
+                            <span>{{ __('contact') }}</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="section has-text-centered">
+                    <div class="title is-3" style="margin-bottom: 2.5rem;">
+                        {{ __('available_services') }}
+                    </div>
+
+                    <div class="buttons services-group">
+                        {!! $services !!}
+                    </div>
+
+                    <div>
+                        <a
+                            class="button is-show-more is-rounded"
+                            href="{{ url('/page/services') }}"
+                        >
+                            <span class="icon">
+                                <i class="fa fa-angle-double-right"></i>
+                            </span>
+                            <strong>{{ __('show_more') }}</strong>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

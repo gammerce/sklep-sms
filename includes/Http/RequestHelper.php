@@ -47,6 +47,15 @@ class RequestHelper
         );
     }
 
+    /**
+     * @return bool
+     */
+    public function isAdminSession()
+    {
+        $session = $this->request->getSession();
+        return $session && $session->getName() === "admin";
+    }
+
     private function wantsJson()
     {
         $acceptable = $this->getAcceptableContentTypes();

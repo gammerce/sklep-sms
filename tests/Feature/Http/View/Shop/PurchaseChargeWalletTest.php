@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseChargeWalletTest extends HttpTestCase
@@ -13,24 +14,21 @@ class PurchaseChargeWalletTest extends HttpTestCase
         $this->actingAs($user);
 
         // when
-        $response = $this->get('/page/purchase', ['service' => 'charge_wallet']);
+        $response = $this->get("/page/purchase", ["service" => "charge_wallet"]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Zakup usługi - Doładowanie Portfela', $response->getContent());
+        $this->assertContains("Doładowanie Portfela - Zakup usługi", $response->getContent());
     }
 
     /** @test */
     public function requires_being_logged()
     {
         // when
-        $response = $this->get('/page/purchase', ['service' => 'charge_wallet']);
+        $response = $this->get("/page/purchase", ["service" => "charge_wallet"]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains(
-            'Nie możesz przeglądać tej strony. Nie jesteś zalogowany/a.',
-            $response->getContent()
-        );
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+        $this->assertStringEndsWith("/login", $response->headers->get("Location"));
     }
 }

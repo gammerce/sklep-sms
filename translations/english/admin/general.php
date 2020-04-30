@@ -266,7 +266,6 @@ return [
     'vat' => 'VAT',
     'version' => 'Version',
     'versions' => 'Versions',
-    'wallet_charge' => 'Wallet charge',
     'web_update_instruction' =>
         'We need to visit <a href="https://github.com/gammerce/sklep-sms/releases/latest" target="_blank">shop\'s repository</a> and download the file <strong>build.zip</strong>',
     'wrong_group' => 'Wrong group was chosen.',

@@ -68,7 +68,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             }
         }
 
-        return $this->template->render("services/charge_wallet/purchase_form", [
+        return $this->template->render("shop/services/charge_wallet/purchase_form", [
             'paymentMethodBodies' => implode("", $paymentMethodBodies),
             'paymentMethodOptions' => implode("<br />", $paymentMethodOptions),
             'serviceId' => $this->service->getId(),
@@ -114,7 +114,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $quantity = $paymentMethod->getQuantity($purchase);
 
         return $this->template->renderNoComments(
-            "services/charge_wallet/order_details",
+            "shop/services/charge_wallet/order_details",
             compact("price", "quantity")
         );
     }

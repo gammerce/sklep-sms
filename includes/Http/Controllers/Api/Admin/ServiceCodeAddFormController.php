@@ -2,9 +2,9 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\PlainResponse;
+use App\Managers\ServiceModuleManager;
 use App\Support\Template;
 use App\System\Heart;
-use App\Managers\ServiceModuleManager;
 
 class ServiceCodeAddFormController
 {

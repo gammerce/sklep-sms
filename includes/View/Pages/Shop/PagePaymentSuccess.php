@@ -10,11 +10,11 @@ class PagePaymentSuccess extends Page
 
     public function getTitle(Request $request)
     {
-        return "Płatność Zaakceptowana";
+        return $this->lang->t("payment_success");
     }
 
     public function getContent(Request $request)
     {
-        return $this->template->render("payment/payment_success");
+        return $this->template->render("shop/pages/payment_success");
     }
 }

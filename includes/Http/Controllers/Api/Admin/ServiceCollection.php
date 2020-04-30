@@ -9,10 +9,10 @@ use App\Http\Validation\Rules\ServiceModuleExistsRule;
 use App\Http\Validation\Rules\ServiceNotExistsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServiceModuleManager;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceCollection

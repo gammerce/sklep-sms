@@ -179,7 +179,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
 
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/extra_fields",
+            "admin/services/mybb_extra_groups/extra_fields",
             compact(
                 'webSelNo',
                 'webSelYes',
@@ -311,7 +311,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             })
             ->join();
 
-        return $this->template->render("services/mybb_extra_groups/purchase_form", [
+        return $this->template->render("shop/services/mybb_extra_groups/purchase_form", [
             "quantities" => $quantities,
             "serviceId" => $this->service->getId(),
             "user" => $this->auth->user(),
@@ -358,28 +358,28 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $email = $purchase->getEmail() ?: $this->lang->t('none');
-        $username = $purchase->getOrder('username');
-        $serviceName = $this->service->getName();
+        $email = $purchase->getEmail() ?: $this->lang->t("none");
+        $username = $purchase->getOrder("username");
+        $serviceName = $this->service->getNameI18n();
         $quantity =
             $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
-                ? $this->lang->t('forever')
+                ? $this->lang->t("forever")
                 : $purchase->getOrder(Purchase::ORDER_QUANTITY) . " " . $this->service->getTag();
 
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/order_details",
-            compact('quantity', 'username', 'email', 'serviceName')
+            "shop/services/mybb_extra_groups/order_details",
+            compact("quantity", "username", "email", "serviceName")
         );
     }
 
     public function purchase(Purchase $purchase)
     {
-        $mybbUser = $this->findMybbUser($purchase->getOrder('username'));
+        $mybbUser = $this->findMybbUser($purchase->getOrder("username"));
 
         // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (!$mybbUser) {
             $this->logger->log(
-                'log_mybb_purchase_no_user',
+                "log_mybb_purchase_no_user",
                 json_encode($purchase->getPaymentList())
             );
             die("Critical error occurred");
@@ -407,11 +407,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $this->service->getId(),
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder('username') . " ({$mybbUser->getUid()})",
+            $purchase->getOrder("username") . " ({$mybbUser->getUid()})",
             $purchase->getEmail(),
             [
-                'uid' => $mybbUser->getUid(),
-                'groups' => implode(',', $this->groups),
+                "uid" => $mybbUser->getUid(),
+                "groups" => implode("", "", $this->groups),
             ]
         );
     }
@@ -422,38 +422,42 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $quantity =
             $transaction->getQuantity() != -1
                 ? $transaction->getQuantity() . " " . $this->service->getTag()
-                : $this->lang->t('forever');
+                : $this->lang->t("forever");
         $cost = $transaction->getCost()
             ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t('none');
+            : $this->lang->t("none");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
-                "services/mybb_extra_groups/purchase_info_email",
-                compact('username', 'quantity', 'cost') + [
-                    'serviceName' => $this->service->getName(),
+                "shop/services/mybb_extra_groups/purchase_info_email",
+                compact("username", "quantity", "cost") + [
+                    "serviceName" => $this->service->getNameI18n(),
                 ]
             );
         }
 
         if ($action === "web") {
             return $this->template->renderNoComments(
-                "services/mybb_extra_groups/purchase_info_web",
-                compact('cost', 'username', 'quantity') + [
-                    'email' => $transaction->getEmail(),
-                    'serviceName' => $this->service->getName(),
+                "shop/services/mybb_extra_groups/purchase_info_web",
+                compact("cost", "username", "quantity") + [
+                    "email" => $transaction->getEmail(),
+                    "serviceName" => $this->service->getNameI18n(),
                 ]
             );
         }
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('mybb_group_bought', $this->service->getName(), $username),
-                'class' => "outcome",
+                "text" => $this->lang->t(
+                    "mybb_group_bought",
+                    $this->service->getNameI18n(),
+                    $username
+                ),
+                "class" => "outcome",
             ];
         }
 
-        return '';
+        return "";
     }
 
     public function userServiceDelete(UserService $userService, $who)
@@ -461,7 +465,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         try {
             $this->connectMybb();
         } catch (PDOException $e) {
-            if ($who === 'admin') {
+            if ($who === "admin") {
                 throw new InvalidConfigException($e->getMessage());
             }
 
@@ -481,7 +485,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         // Usuwamy wszystkie shopGroups oraz z mybbGroups te grupy, które maja was_before = false
         foreach ($mybbUser->getShopGroup() as $gid => $groupData) {
-            if (!$groupData['was_before']) {
+            if (!$groupData["was_before"]) {
                 $mybbUser->removeMybbAddGroup($gid);
             }
         }
@@ -497,9 +501,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement->execute([$userService->getMybbUid()]);
 
         foreach ($statement as $row) {
-            $row['extra_data'] = json_decode($row['extra_data'], true);
-            foreach (explode(',', $row['extra_data']['mybb_groups']) as $groupId) {
-                $mybbUser->prolongShopGroup($groupId, $row['expire']);
+            $row["extra_data"] = json_decode($row["extra_data"], true);
+            foreach (explode("", "", $row["extra_data"]["mybb_groups"]) as $groupId) {
+                $mybbUser->prolongShopGroup($groupId, $row["expire"]);
             }
         }
 
@@ -542,13 +546,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if ($statement->rowCount()) {
             $row = $statement->fetch();
-            $userServiceId = $row['us_id'];
+            $userServiceId = $row["us_id"];
             $seconds = $days * 24 * 60 * 60;
 
             $this->userServiceRepository->updateWithModule($this, $userServiceId, [
-                'uid' => $uid,
-                'mybb_uid' => $mybbUid,
-                'expire' => $forever ? null : new Expression("`expire` + $seconds"),
+                "uid" => $uid,
+                "mybb_uid" => $mybbUid,
+                "expire" => $forever ? null : new Expression("`expire` + $seconds"),
             ]);
         } else {
             $userServiceId = $this->userServiceRepository->create(
@@ -574,29 +578,29 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function userServiceAdminAddFormGet()
     {
         return $this->template->renderNoComments(
-            "services/mybb_extra_groups/user_service_admin_add",
-            ['moduleId' => $this->getModuleId()]
+            "admin/services/mybb_extra_groups/user_service_admin_add",
+            ["moduleId" => $this->getModuleId()]
         );
     }
 
     public function userServiceAdminAdd(array $body)
     {
         $user = $this->auth->user();
-        $forever = (bool) array_get($body, 'forever');
+        $forever = (bool) array_get($body, "forever");
 
         $this->connectMybb();
 
         $validator = new Validator(
             array_merge($body, [
-                'quantity' => as_int(array_get($body, 'quantity')),
+                "quantity" => as_int(array_get($body, "quantity")),
             ]),
             [
-                'quantity' => $forever
+                "quantity" => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
-                'uid' => [new UserExistsRule()],
-                'mybb_username' => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
-                'email' => [new EmailRule()],
+                "uid" => [new UserExistsRule()],
+                "mybb_username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                "email" => [new EmailRule()],
             ]
         );
 
@@ -605,21 +609,21 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->heart->getUser($validated['uid']));
+        $purchase = new Purchase($this->heart->getUser($validated["uid"]));
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
         $purchase->setOrder([
-            'username' => $validated['mybb_username'],
-            Purchase::ORDER_QUANTITY => $forever ? null : $validated['quantity'],
+            "username" => $validated["mybb_username"],
+            Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
         ]);
-        $purchase->setEmail($validated['email']);
+        $purchase->setEmail($validated["email"]);
         $boughtServiceId = $this->purchase($purchase);
 
         $this->logger->logWithActor(
-            'log_user_service_added',
+            "log_user_service_added",
             $user->getUsername(),
             $user->getUid(),
             $boughtServiceId
@@ -644,11 +648,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $mybbUid = "$username ({$userService->getMybbUid()})";
 
         return $this->template->render(
-            "services/mybb_extra_groups/user_own_service",
-            compact('mybbUid', 'expire') + [
-                'moduleId' => $this->getModuleId(),
-                'serviceName' => $this->service->getName(),
-                'userServiceId' => $userService->getId(),
+            "shop/services/mybb_extra_groups/user_own_service",
+            compact("mybbUid", "expire") + [
+                "moduleId" => $this->getModuleId(),
+                "serviceName" => $this->service->getNameI18n(),
+                "userServiceId" => $userService->getId(),
             ]
         );
     }
@@ -682,18 +686,18 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $rowMybb = $statement->fetch();
 
-        $mybbUser = new MybbUser($rowMybb['uid'], $rowMybb['usergroup']);
-        $mybbUser->setMybbAddGroups(explode(",", $rowMybb['additionalgroups']));
-        $mybbUser->setMybbDisplayGroup($rowMybb['displaygroup']);
+        $mybbUser = new MybbUser($rowMybb["uid"], $rowMybb["usergroup"]);
+        $mybbUser->setMybbAddGroups(explode(",", $rowMybb["additionalgroups"]));
+        $mybbUser->setMybbDisplayGroup($rowMybb["displaygroup"]);
 
         $statement = $this->db->statement(
             "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
                 "WHERE `uid` = ?"
         );
-        $statement->execute([$rowMybb['uid']]);
+        $statement->execute([$rowMybb["uid"]]);
 
         foreach ($statement as $row) {
-            $mybbUser->setShopGroup($row['gid'], [
+            $mybbUser->setShopGroup($row["gid"], [
                 'expire' => $row['expire'],
                 'was_before' => $row['was_before'],
             ]);

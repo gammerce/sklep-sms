@@ -1,6 +1,8 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Exceptions\EntityNotFoundException;
+use App\Managers\ServiceModuleManager;
 use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -8,7 +10,6 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
-use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePayment extends Page
@@ -48,8 +49,8 @@ class PagePayment extends Page
         $transactionId = $request->query->get("tid");
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchase) {
-            return $this->lang->t("error_occurred");
+        if (!$purchase || $purchase->isAttempted()) {
+            throw new EntityNotFoundException();
         }
 
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
@@ -69,7 +70,7 @@ class PagePayment extends Page
             })
             ->join();
 
-        return $this->template->render("payment/payment_form", [
+        return $this->template->render("shop/pages/payment", [
             "orderDetails" => $orderDetails,
             "paymentMethods" => $paymentMethods,
         ]);

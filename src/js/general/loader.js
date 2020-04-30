@@ -13,7 +13,7 @@ export const loader = {
 
         loader.show_task = setTimeout(function() {
             loader.element = $("<div>", {
-                class: "loader_wrapper",
+                class: "loader-wrapper",
             }).hide();
 
             loader.element.prepend(

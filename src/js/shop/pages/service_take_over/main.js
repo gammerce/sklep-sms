@@ -1,24 +1,30 @@
 import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import {
+    buildUrl,
+    hide,
+    hideAndDisable,
+    removeFormWarnings,
+    restRequest,
+    show,
+    showAndEnable,
+    showWarnings,
+} from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#form_service_take_over [name=service_id]", "change", function() {
-    if ($(this).val() == "") {
-        $("#form_service_take_over")
-            .find(".extra_data")
-            .html("");
-        $("#form_service_take_over")
-            .find(".take_over")
-            .hide();
-        return;
-    }
+    const form = $("#form_service_take_over");
+    const serviceId = $(this).val();
 
-    var serviceId = $(this).val();
-    restRequest("GET", "/api/services/" + serviceId + "/take_over/create_form", {}, function(html) {
-        $("#form_service_take_over .extra_data").html(html);
-        $("#form_service_take_over .take_over").show();
-    });
+    if (serviceId == "") {
+        form.find(".extra_data").html("");
+        hideAndDisable(form.find(".form-footer"));
+    } else {
+        restRequest("GET", `/api/services/${serviceId}/take_over/create_form`, {}, function(html) {
+            form.find(".extra_data").html(html);
+            showAndEnable(form.find(".form-footer"));
+        });
+    }
 });
 
 $(document).delegate("#form_service_take_over", "submit", function(e) {

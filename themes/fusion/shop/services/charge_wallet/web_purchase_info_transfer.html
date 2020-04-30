@@ -1,0 +1,12 @@
+{$lang->t('wallet_charged')}<br />
+<strong>{$lang->t('price')}</strong>: {{ $quantity }}
+<script type="text/javascript">
+    jQuery(document).ready(function($) {
+        setTimeout(function() {
+            var wallet = $("#wallet");
+            if (wallet) {
+                wallet.effect("highlight", "slow");
+            }
+        }, 500);
+    });
+</script>

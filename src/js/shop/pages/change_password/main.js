@@ -29,7 +29,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
             if (jsonObj.return_id === "warnings") {
                 showWarnings($("#form_change_password"), jsonObj.warnings);
             } else if (jsonObj.return_id === "password_changed") {
-                getAndSetTemplate($("#content"), "reset_password_changed");
+                getAndSetTemplate($("#page-content"), "reset_password_changed");
             }
 
             infobox.show_info(jsonObj.text, jsonObj.positive);

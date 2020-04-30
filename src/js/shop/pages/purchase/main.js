@@ -3,7 +3,7 @@ import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { window_info } from "../../../general/window";
-import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
+import { buildUrl, hide, removeFormWarnings, show, showWarnings } from "../../../general/global";
 
 // Send purchase form
 $(document).delegate("#form_purchase", "submit", function(e) {
@@ -68,22 +68,22 @@ $(document).delegate("#show_service_desc", "click", function() {
 });
 
 $(document).delegate("#form_purchase [name=quantity]", "change", function() {
-    var form = $(this).closest("form");
+    const form = $(this).closest("form");
 
     if ($(this).val().length) {
-        form.find("#cost_wrapper").slideDown("slow");
+        show(form.find("#cost_wrapper"));
     } else {
-        form.find("#cost_wrapper").slideUp("slow");
+        hide(form.find("#cost_wrapper"));
         return;
     }
 
-    var option = $(this).find("option:selected");
-    var directBillingDiscount = option.data("direct-billing-discount");
-    var directBillingPrice = option.data("direct-billing-price");
-    var transferDiscount = option.data("transfer-discount");
-    var transferPrice = option.data("transfer-price");
-    var smsDiscount = option.data("sms-discount");
-    var smsPrice = option.data("sms-price");
+    const option = $(this).find("option:selected");
+    const directBillingDiscount = option.data("direct-billing-discount");
+    const directBillingPrice = option.data("direct-billing-price");
+    const transferDiscount = option.data("transfer-discount");
+    const transferPrice = option.data("transfer-price");
+    const smsDiscount = option.data("sms-discount");
+    const smsPrice = option.data("sms-price");
 
     toggleCost(form.find("#cost_direct_billing"), directBillingPrice, directBillingDiscount);
     toggleCost(form.find("#cost_sms"), smsPrice, smsDiscount);
@@ -95,7 +95,6 @@ function toggleCost(node, price, discount) {
     node.parent()
         .find(".discount")
         .text("");
-    node.parent().hide();
 
     if (price) {
         node.text(price);
@@ -106,6 +105,8 @@ function toggleCost(node, price, discount) {
                 .text(`-${discount}%`);
         }
 
-        node.parent().show();
+        show(node.parent());
+    } else {
+        hide(node.parent());
     }
 }

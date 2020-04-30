@@ -1,6 +1,14 @@
 import { refreshBlocks } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import {
+    buildUrl,
+    hide,
+    isShown,
+    removeFormWarnings,
+    restRequest,
+    show,
+    showWarnings,
+} from "../../../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { json_parse } from "../../../general/stocks";
 
@@ -17,15 +25,18 @@ $(document).delegate("#pay_direct_billing", "click", function() {
 });
 
 $(document).delegate("#pay_sms", "click", function() {
-    if ($("#sms_details").css("display") === "none") {
-        $("#sms_details").slideDown("slow");
+    const smsDetails = $("#sms_details");
+
+    if (!isShown(smsDetails)) {
+        show(smsDetails);
     } else {
         purchaseService("sms");
     }
 });
 
 $(document).delegate("#pay_service_code", "click", function() {
-    $("#sms_details").slideUp();
+    const smsDetails = $("#sms_details");
+    hide(smsDetails);
     purchaseService("service_code");
 });
 
@@ -97,13 +108,16 @@ function purchaseService(method) {
                 showWarnings($("#payment"), jsonObj.warnings);
             } else if (jsonObj.return_id === "purchased") {
                 // Update content window with purchase details
-                restRequest("GET", "/api/purchases/" + jsonObj.bsid, {}, function(message) {
-                    $("#content").html(message);
+                restRequest("GET", `/api/purchases/${jsonObj.bsid}`, {}, function(message) {
+                    $("#page-content").html(message);
                 });
 
                 // Refresh wallet
                 refreshBlocks("wallet", function() {
-                    $("#wallet").effect("highlight", "slow");
+                    const wallet = $("#wallet");
+                    if (wallet.effect) {
+                        wallet.effect("highlight", "slow");
+                    }
                 });
             } else if (jsonObj.return_id === "external") {
                 const method = jsonObj.data.method;

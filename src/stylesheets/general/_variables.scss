@@ -1,5 +1,5 @@
 $green: #5b9931;
-$primary: #fc443c;
+$primary: darken(#fc443c, 10%);
 
 @import "~bulma/sass/utilities/all";
 
@@ -56,7 +56,7 @@ $link-hover: darken($link, 10%);
 $link-hover-border: $grey-light;
 
 $link-focus: darken($link, 10%);
-$link-focus-border: $blue;
+$link-focus-border: $link;
 
 $link-active: darken($link, 10%);
 $link-active-border: $grey-dark;

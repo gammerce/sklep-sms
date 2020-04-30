@@ -2,6 +2,7 @@
 namespace App\View\Pages\Shop;
 
 use App\Repositories\UserRepository;
+use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
@@ -15,14 +16,19 @@ class PageResetPassword extends Page implements IBeLoggedCannot
     /** @var UserRepository */
     private $userRepository;
 
+    /** @var UrlGenerator */
+    private $url;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        UserRepository $userRepository
+        UserRepository $userRepository,
+        UrlGenerator $url
     ) {
         parent::__construct($template, $translationManager);
 
         $this->userRepository = $userRepository;
+        $this->url = $url;
     }
 
     public function getTitle(Request $request)
@@ -35,14 +41,22 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         $resetKey = array_get($request->query->all(), "code");
 
         if (!strlen($resetKey)) {
-            return $this->lang->t("no_reset_key");
+            return $this->template->render("shop/pages/reset_password", [
+                "content" => $this->lang->t("no_reset_key"),
+            ]);
         }
 
         $user = $this->userRepository->findByResetKey($resetKey);
         if (!$user) {
-            return $this->lang->t("wrong_reset_key");
+            return $this->template->render("shop/pages/reset_password", [
+                "content" => $this->lang->t("wrong_reset_key", $this->url->to("/page/contact")),
+            ]);
         }
 
-        return $this->template->render("reset_password", ["code" => $resetKey]);
+        $content = $this->template->render("shop/components/reset_password/form", [
+            "code" => $resetKey,
+        ]);
+
+        return $this->template->render("shop/pages/reset_password", compact("content"));
     }
 }

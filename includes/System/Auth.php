@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class Auth
 {
@@ -29,45 +30,58 @@ class Auth
         return $this->user;
     }
 
-    public function setUser(User $user)
-    {
-        $this->user = $user;
-    }
-
     public function check()
     {
         return $this->user !== null && $this->user->exists();
     }
 
-    public function loginUserUsingId($uid)
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    public function setUserById($uid)
     {
         $this->user = $this->heart->getUser($uid);
     }
 
-    public function loginAdminUsingCredentials($username, $password)
+    /**
+     * @param Request $request
+     * @param User $user
+     */
+    public function loginUser(Request $request, User $user)
     {
-        $user = $this->heart->getUserByLogin($username, $password);
-
-        if ($user->exists() && has_privileges("acp", $user)) {
-            $this->getSession()->set("uid", $user->getUid());
-        } else {
-            $this->getSession()->set("info", "wrong_data");
+        if (!$user->exists()) {
+            throw new UnexpectedValueException("Given user is not logged in");
         }
 
+        $this->heart->setUser($user);
+        $request->getSession()->set("uid", $user->getUid());
         $this->user = $user;
-
-        return $user;
     }
 
-    public function logoutAdmin()
+    /**
+     * @param Request $request
+     * @param User $user
+     */
+    public function loginAdmin(Request $request, User $user)
     {
-        $this->getSession()->invalidate();
+        if (!$user->exists()) {
+            throw new UnexpectedValueException("Given user is not logged in");
+        }
+
+        $session = $request->getSession();
+
+        if ($user && has_privileges("acp", $user)) {
+            $session->set("uid", $user->getUid());
+            $this->user = $user;
+        } else {
+            $session->set("info", "wrong_data");
+        }
     }
 
-    private function getSession()
+    public function logout(Request $request)
     {
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-        return $request->getSession();
+        $request->getSession()->invalidate();
     }
 }

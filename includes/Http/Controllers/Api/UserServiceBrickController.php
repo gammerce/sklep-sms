@@ -3,13 +3,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
+use App\Managers\ServiceModuleManager;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\Services\UserServiceService;
+use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Managers\ServiceModuleManager;
 
 class UserServiceBrickController
 {
@@ -19,7 +20,8 @@ class UserServiceBrickController
         Auth $auth,
         Settings $settings,
         ServiceModuleManager $serviceModuleManager,
-        UserServiceService $userServiceService
+        UserServiceService $userServiceService,
+        Template $template
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -39,15 +41,13 @@ class UserServiceBrickController
             return new PlainResponse($lang->t('service_not_displayed'));
         }
 
-        $buttonEdit = "";
         if (
             $settings['user_edit_service'] &&
             $serviceModule instanceof IServiceUserOwnServicesEdit
         ) {
-            $buttonEdit = create_dom_element("button", $lang->t('edit'), [
-                'class' => "button is-small edit_row",
-                'type' => 'button',
-            ]);
+            $buttonEdit = $template->render("shop/components/user_own_services/edit_button");
+        } else {
+            $buttonEdit = "";
         }
 
         return new HtmlResponse($serviceModule->userOwnServiceInfoGet($userService, $buttonEdit));
