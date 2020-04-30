@@ -69,7 +69,7 @@ class BlockServicesButtons extends Block
         $services = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(function (Service $service) {
                 return $this->template->render("shop/components/navbar/navigation_item", [
-                    "text" => $service->getName(),
+                    "text" => $service->getNameI18n(),
                     "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
                 ]);
             })

@@ -435,7 +435,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $email = $purchase->getEmail() ?: $this->lang->t("none");
         $authData = $purchase->getOrder("auth_data");
-        $serviceName = $this->service->getName();
+        $serviceName = $this->service->getNameI18n();
         $serverName = $server->getName();
         $quantity =
             $purchase->getOrder(Purchase::ORDER_QUANTITY) === null
@@ -578,7 +578,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 compact("quantity", "password", "setinfo") + [
                     "authData" => $transaction->getAuthData(),
                     "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
-                    "serviceName" => $this->service->getName(),
+                    "serviceName" => $this->service->getNameI18n(),
                     "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
@@ -591,7 +591,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
                     "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
-                    "serviceName" => $this->service->getName(),
+                    "serviceName" => $this->service->getNameI18n(),
                     "serverName" => $server ? $server->getName() : "n/a",
                 ]
             );
@@ -601,7 +601,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             return [
                 "text" => $this->lang->t(
                     "service_was_bought",
-                    $this->service->getName(),
+                    $this->service->getNameI18n(),
                     $server->getName()
                 ),
                 "class" => "outcome",
@@ -686,7 +686,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
             ->map(function (Service $service) use ($userService) {
-                return create_dom_element("option", $service->getName(), [
+                return create_dom_element("option", $service->getNameI18n(), [
                     "value" => $service->getId(),
                     "selected" =>
                         $userService->getServiceId() === $service->getId() ? "selected" : "",
@@ -909,7 +909,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->heart->getServer($userService->getServerId());
         $serviceInfo["server"] = $server->getName();
         $serviceInfo["expire"] = convert_expire($userService->getExpire());
-        $serviceInfo["service"] = $this->service->getName();
+        $serviceInfo["service"] = $this->service->getNameI18n();
 
         return $this->template->render(
             "shop/services/extra_flags/user_own_service_edit",
@@ -932,7 +932,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "expire" => convert_expire($userService->getExpire()),
             "moduleId" => $this->getModuleId(),
             "serverName" => $server->getName(),
-            "serviceName" => $this->service->getName(),
+            "serviceName" => $this->service->getNameI18n(),
             "type" => $this->getTypeName($userService->getType()),
         ]);
     }

@@ -48,7 +48,7 @@ class PageServices extends Page
                 return $this->template->render("shop/components/services/service_card", [
                     "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
                     "description" => $service->getDescription(),
-                    "name" => $service->getName(),
+                    "name" => $service->getNameI18n(),
                 ]);
             })
             ->join();

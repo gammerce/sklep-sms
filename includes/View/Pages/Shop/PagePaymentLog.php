@@ -104,7 +104,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $server = $this->heart->getServer($transaction->getServerId());
                 $desc = $this->lang->t(
                     "service_was_bought",
-                    $service ? $service->getName() : "",
+                    $service ? $service->getNameI18n() : "",
                     $server ? $server->getName() : ""
                 );
                 $class = "outcome";

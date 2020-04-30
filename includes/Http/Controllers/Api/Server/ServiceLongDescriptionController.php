@@ -43,7 +43,7 @@ class ServiceLongDescriptionController
         $serviceModule = $serviceModuleManager->get($serviceId);
         if ($serviceModule) {
             $body = $serviceModule->descriptionLongGet();
-            $pageTitle .= $serviceModule->service->getName();
+            $pageTitle .= $serviceModule->service->getNameI18n();
         }
 
         $header = $template->render("shop/layout/header", [

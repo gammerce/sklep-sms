@@ -46,7 +46,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
                 return $serviceModule instanceof IServiceTakeOver;
             })
             ->map(function (Service $service) {
-                return create_dom_element("option", $service->getName(), [
+                return create_dom_element("option", $service->getNameI18n(), [
                     "value" => $service->getId(),
                 ]);
             })

@@ -104,7 +104,7 @@ class TransferPaymentMethod implements IPaymentMethod
         }
 
         $service = $this->heart->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t('payment_for_service', $service->getName()));
+        $purchase->setDesc($this->lang->t('payment_for_service', $service->getNameI18n()));
 
         $fileName = $this->purchaseDataService->storePurchase($purchase);
 

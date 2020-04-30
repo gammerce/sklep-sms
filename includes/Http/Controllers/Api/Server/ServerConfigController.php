@@ -72,7 +72,7 @@ class ServerConfigController
         $serviceItems = $services->map(function (Service $service) {
             return [
                 "i" => $service->getId(),
-                "n" => $service->getName(),
+                "n" => $service->getNameI18n(),
                 "d" => $service->getShortDescription(),
                 "ta" => $service->getTag(),
                 "f" => $service->getFlags(),

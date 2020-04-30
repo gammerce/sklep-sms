@@ -70,7 +70,7 @@ class PageMain extends Page
             ->map(function (Service $service) {
                 return $this->template->render("shop/components/home/service_tile", [
                     "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
-                    "name" => $service->getName(),
+                    "name" => $service->getNameI18n(),
                 ]);
             })
             ->join();

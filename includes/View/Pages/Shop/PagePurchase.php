@@ -70,7 +70,7 @@ class PagePurchase extends Page
         $title = "";
 
         if ($serviceModule) {
-            $title .= $serviceModule->service->getName() . " - ";
+            $title .= $serviceModule->service->getNameI18n() . " - ";
         }
 
         return $title . $this->lang->t("purchase");
@@ -116,14 +116,14 @@ class PagePurchase extends Page
 
         $description = $this->template->render("shop/components/purchase/short_description", [
             "shortDescription" =>
-                $serviceModule->descriptionShortGet() ?: $serviceModule->service->getName(),
+                $serviceModule->descriptionShortGet() ?: $serviceModule->service->getNameI18n(),
             "showMore" => $showMore,
         ]);
         $purchaseForm = $serviceModule->purchaseFormGet($request->query->all());
 
         return $this->template->render(
             "shop/pages/purchase",
-            compact("title", "description", "purchaseForm")
+            compact("description", "purchaseForm")
         );
     }
 
