@@ -5,9 +5,9 @@ use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageSignIn extends Page implements IBeLoggedCannot
+class PageLogin extends Page implements IBeLoggedCannot
 {
-    const PAGE_ID = "signin";
+    const PAGE_ID = "login";
 
     public function getTitle(Request $request)
     {
@@ -16,6 +16,6 @@ class PageSignIn extends Page implements IBeLoggedCannot
 
     public function getContent(Request $request)
     {
-        return $this->template->render("shop/pages/sign_in");
+        return $this->template->render("shop/pages/login");
     }
 }

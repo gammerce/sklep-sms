@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Exceptions\UnauthorizedException;
 use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
@@ -94,7 +95,7 @@ class PagePurchase extends Page
         }
 
         if ($serviceModule instanceof IBeLoggedMust && !$this->auth->check()) {
-            return $this->lang->t("must_be_logged_in");
+            throw new UnauthorizedException();
         }
 
         if (

@@ -76,10 +76,10 @@ use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireUnauthorized;
 use App\Http\Middlewares\RunCron;
-use App\Http\Middlewares\SetAdminSession;
+use App\Http\Middlewares\StartAdminSession;
 use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetupAvailable;
-use App\Http\Middlewares\SetUserSession;
+use App\Http\Middlewares\StartUserSession;
 use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
 use App\Install\ShopState;
@@ -177,7 +177,11 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [SetUserSession::class, SetLanguage::class, AuthorizeUser::class],
+                "middlewares" => [
+                    StartUserSession::class,
+                    SetLanguage::class,
+                    AuthorizeUser::class,
+                ],
             ],
             function (RouteCollector $r) {
                 /**
@@ -314,7 +318,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [SetAdminSession::class, SetLanguage::class],
+                "middlewares" => [StartAdminSession::class, SetLanguage::class],
             ],
             function (RouteCollector $r) {
                 $r->get('/admin/login', [
@@ -330,7 +334,7 @@ class RoutesManager
         $r->addGroup(
             [
                 "middlewares" => [
-                    SetAdminSession::class,
+                    StartAdminSession::class,
                     SetLanguage::class,
                     AuthorizeUser::class,
                     [RequireAuthorized::class, "acp"],

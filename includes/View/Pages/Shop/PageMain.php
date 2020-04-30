@@ -75,6 +75,9 @@ class PageMain extends Page
             })
             ->join();
 
-        return $this->template->render("shop/pages/home", compact("services"));
+        return $this->template->render("shop/pages/home", [
+            "services" => $services,
+            "signUpSectionClass" => $this->auth->check() ? "is-hidden" : "",
+        ]);
     }
 }

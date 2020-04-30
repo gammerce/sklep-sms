@@ -4,7 +4,7 @@ namespace App\Http\Middlewares;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
 
-class SetAdminSession implements MiddlewareContract
+class StartAdminSession implements MiddlewareContract
 {
     public function handle(Request $request, $args, Closure $next)
     {

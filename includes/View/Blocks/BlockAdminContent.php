@@ -4,11 +4,12 @@ namespace App\View\Blocks;
 use App\Managers\PageManager;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Admin\PageAdmin;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
-class BlockAdminContent extends Block
+class BlockAdminContent extends Block implements IBeLoggedMust
 {
     const BLOCK_ID = "admincontent";
 
@@ -36,11 +37,6 @@ class BlockAdminContent extends Block
 
     protected function content(Request $request, array $params)
     {
-        // TODO Maybe redirect to homepage?
-        if (!is_logged()) {
-            return $this->lang->t('must_be_logged_in');
-        }
-
         $page = $params[0];
 
         if (!($page instanceof PageAdmin)) {

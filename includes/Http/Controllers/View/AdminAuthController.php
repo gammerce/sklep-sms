@@ -3,6 +3,7 @@ namespace App\Http\Controllers\View;
 
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
+use App\Services\IntendedUrlService;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -12,8 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminAuthController
 {
-    const URL_INTENDED_KEY = "url.intended";
-
     public function get(
         Request $request,
         Template $template,
@@ -47,10 +46,12 @@ class AdminAuthController
         );
     }
 
-    public function post(Request $request, Auth $auth, UrlGenerator $url)
-    {
-        $session = $request->getSession();
-
+    public function post(
+        Request $request,
+        Auth $auth,
+        UrlGenerator $url,
+        IntendedUrlService $intendedUrlService
+    ) {
         if ($request->request->get("action") === "logout") {
             $auth->logoutAdmin();
             return new RedirectResponse($url->to("/admin/login"));
@@ -63,10 +64,8 @@ class AdminAuthController
                 $request->request->get("password")
             );
 
-            if ($user->exists() && $session->has(static::URL_INTENDED_KEY)) {
-                $intendedUrl = $session->get(static::URL_INTENDED_KEY);
-                $session->remove(static::URL_INTENDED_KEY);
-                return new RedirectResponse($intendedUrl);
+            if ($user->exists() && $intendedUrlService->exists($request)) {
+                return $intendedUrlService->redirect($request);
             }
         }
 

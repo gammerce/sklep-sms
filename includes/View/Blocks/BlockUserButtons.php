@@ -65,14 +65,15 @@ class BlockUserButtons extends Block
         }
 
         $user = $this->auth->user();
-        $acpButton = "";
 
         if (has_privileges("acp", $user)) {
-            $acpButton = $this->template->render("shop/components/navbar/navigation_item", [
+            $acpButton = $this->template->render("shop/components/navbar/navigation_item_icon", [
                 "icon" => "fa-user-shield",
                 "link" => $this->url->to("/admin"),
                 "text" => $this->lang->t("acp"),
             ]);
+        } else {
+            $acpButton = "";
         }
 
         if (
@@ -82,22 +83,23 @@ class BlockUserButtons extends Block
             )
         ) {
             $chargeWalletButton = $this->template->render(
-                "shop/components/navbar/navigation_item",
+                "shop/components/navbar/navigation_item_icon",
                 [
                     "icon" => "fa-wallet",
                     "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
                     "text" => $this->lang->t("charge_wallet"),
                 ]
             );
+        } else {
+            $chargeWalletButton = "";
         }
 
-        return $this->template->render(
-            "shop/layout/user_buttons",
-            compact("acpButton", "chargeWalletButton") + [
-                "balance" => number_format($user->getWallet() / 100, 2),
-                "username" => $user->getUsername(),
-                "userId" => $user->getUid(),
-            ]
-        );
+        return $this->template->render("shop/layout/user_buttons", [
+            "acpButton" => $acpButton,
+            "chargeWalletButton" => $chargeWalletButton,
+            "balance" => number_format($user->getWallet() / 100, 2),
+            "username" => $user->getUsername(),
+            "userId" => $user->getUid(),
+        ]);
     }
 }

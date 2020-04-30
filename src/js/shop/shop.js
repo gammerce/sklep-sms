@@ -33,7 +33,7 @@ $(document).delegate("#form_login", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "logged_in") {
-                if (window.location.pathname.endsWith("/page/signin")) {
+                if (window.location.pathname.endsWith("/page/login")) {
                     window.location.href = buildUrl("/");
                 } else {
                     $("#user-buttons").css({ overflow: "hidden" }); // Hide login area

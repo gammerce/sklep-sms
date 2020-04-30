@@ -1,13 +1,11 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
-use App\Services\UserServiceAccessService;
+use App\Services\ServiceListService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,36 +14,26 @@ class PageServices extends Page
 {
     const PAGE_ID = "services";
 
-    /** @var Heart */
-    private $heart;
-
     /** @var Auth */
     private $auth;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
 
     /** @var UrlGenerator */
     private $url;
 
+    /** @var ServiceListService */
+    private $serviceListService;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        Heart $heart,
         Auth $auth,
         UrlGenerator $url,
-        ServiceModuleManager $serviceModuleManager,
-        UserServiceAccessService $userServiceAccessService
+        ServiceListService $serviceListService
     ) {
         parent::__construct($template, $translationManager);
-        $this->heart = $heart;
         $this->auth = $auth;
-        $this->serviceModuleManager = $serviceModuleManager;
-        $this->userServiceAccessService = $userServiceAccessService;
         $this->url = $url;
+        $this->serviceListService = $serviceListService;
     }
 
     public function getTitle(Request $request)
@@ -55,16 +43,7 @@ class PageServices extends Page
 
     public function getContent(Request $request)
     {
-        $cards = collect($this->heart->getServices())
-            ->filter(function (Service $service) {
-                $serviceModule = $this->serviceModuleManager->get($service->getId());
-                return $serviceModule &&
-                    $serviceModule->showOnWeb() &&
-                    $this->userServiceAccessService->canUserUseService(
-                        $service,
-                        $this->auth->user()
-                    );
-            })
+        $cards = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(function (Service $service) {
                 return $this->template->render("shop/components/services/service_card", [
                     "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),

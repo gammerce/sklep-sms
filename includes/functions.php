@@ -403,11 +403,21 @@ function ip_in_range($ip, $range)
     }
 }
 
+/**
+ * @param string $string
+ * @param string $end
+ * @return bool
+ */
 function ends_at($string, $end)
 {
     return substr($string, -strlen($end)) == $end;
 }
 
+/**
+ * @param string $haystack
+ * @param string $needle
+ * @return bool
+ */
 function starts_with($haystack, $needle)
 {
     return substr($haystack, 0, strlen($needle)) === (string) $needle;

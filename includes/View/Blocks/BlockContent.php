@@ -1,6 +1,8 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Exceptions\AccessProhibitedException;
+use App\Exceptions\UnauthorizedException;
 use App\Managers\PageManager;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -49,11 +51,11 @@ class BlockContent extends Block
         }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {
-            return $this->lang->t('must_be_logged_in');
+            throw new UnauthorizedException();
         }
 
         if ($page instanceof IBeLoggedCannot && is_logged()) {
-            return $this->lang->t('must_be_logged_out');
+            throw new AccessProhibitedException();
         }
 
         return $page->getContent($request);

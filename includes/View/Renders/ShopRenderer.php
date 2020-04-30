@@ -58,7 +58,10 @@ class ShopRenderer
         $googleAnalytics = $this->getGoogleAnalytics();
         $contact = $this->settings->getContact();
 
-        $navbar = $this->template->render("shop/layout/navbar", compact("userButtons"));
+        $navbar = $this->template->render(
+            "shop/layout/navbar",
+            compact("servicesButtons", "userButtons")
+        );
         $footer = $this->template->render("shop/layout/footer", compact("contact"));
 
         return $this->template->render(

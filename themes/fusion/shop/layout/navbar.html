@@ -1,5 +1,5 @@
 <nav class="navbar" role="navigation" aria-label="main navigation">
-    <div class="navbar-brand" style="justify-content: space-between">
+    <div class="navbar-brand">
         <a class="navbar-item" href="{{ url('/') }}">
             <img
                 src="https://sklep-sms.pl/images/logo_simple.svg"
@@ -18,7 +18,7 @@
 
     <div class="navbar-menu">
         <div class="navbar-end">
-            {!! $userButtons !!}
+            {!! $servicesButtons !!} {!! $userButtons !!}
         </div>
     </div>
 </nav>
