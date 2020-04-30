@@ -60,7 +60,7 @@ class ShopRenderer
 
         $navbar = $this->template->render(
             "shop/layout/navbar",
-            compact("servicesButtons", "userButtons")
+            compact("servicesButtons", "userButtons", "wallet")
         );
         $footer = $this->template->render("shop/layout/footer", compact("contact"));
 

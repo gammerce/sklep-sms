@@ -76,6 +76,7 @@ class BlockUserButtons extends Block
             $acpButton = "";
         }
 
+        // TODO Remove along with retro theme
         if (
             $this->userServiceAccessService->canUserUseService(
                 $this->heart->getService("charge_wallet"),
@@ -97,7 +98,6 @@ class BlockUserButtons extends Block
         return $this->template->render("shop/layout/user_buttons", [
             "acpButton" => $acpButton,
             "chargeWalletButton" => $chargeWalletButton,
-            "balance" => number_format($user->getWallet() / 100, 2),
             "username" => $user->getUsername(),
             "userId" => $user->getUid(),
         ]);

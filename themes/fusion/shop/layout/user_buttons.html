@@ -1,25 +1,6 @@
 <div class="navbar-item has-dropdown is-hoverable">
     <a class="navbar-link">
         <span class="icon">
-            <i class="fas fa-dollar-sign"></i>
-        </span>
-        <span>{{ $balance }}</span>
-    </a>
-
-    <div class="navbar-dropdown is-right">
-        <a class="navbar-item" href="{{ url('/page/payment_log') }}">
-            <span class="icon">
-                <i class="fas fa-database"></i>
-            </span>
-            <span>{{ __('payment_log') }}</span>
-        </a>
-        {!! $chargeWalletButton !!}
-    </div>
-</div>
-
-<div class="navbar-item has-dropdown is-hoverable">
-    <a class="navbar-link">
-        <span class="icon">
             <i class="fas fa-user"></i>
         </span>
         <span>{{ $username }} ({{ $userId }})</span>

@@ -115,7 +115,6 @@ At the next step, an e-mail with a link to restore password will be send to you.
     'sign_up_info' => 'Your account has been registered successfully, e-mail: {1}.<br/>
 You can now profit from many add-ons.',
     'sign_up_subtitle' => 'Create an account to enjoy additional benefits.',
-    'site_not_exists' => 'Site doesn\'t exist.',
     'sms_info_bad_code' => 'Given return code is incorrect.',
     'sms_info_bad_number' =>
         'Code is OK, but unfortunately obtained by sending SMS on different number.',

@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
@@ -80,7 +81,7 @@ class PagePurchase extends Page
         $serviceModule = $this->getServiceModule($request);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
-            return $this->lang->t("site_not_exists");
+            throw new EntityNotFoundException();
         }
 
         $path = "build/js/shop/pages/{$this->getId()}/";

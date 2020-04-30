@@ -49,6 +49,7 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
     $.ajax({
         type: "GET",
         url: buildUrl(`/api/admin/bricks/${bricks}`),
+        data: window.location.search,
         complete() {
             loader.hide();
         },

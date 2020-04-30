@@ -36,7 +36,7 @@ body {
     vertical-align: bottom;
 }
 
-.wallet_status,
+.wallet-status,
 .logged_info {
     float: left;
     margin-top: -1px;
@@ -46,13 +46,17 @@ body {
     background-repeat: no-repeat !important;
 }
 
-.wallet_status {
+.wallet-status {
     padding-left: 55px;
     background-image: url("../../images/wallet.png") !important;
     background-color: #ae0a0e;
     background-position: 10px center !important;
     text-align: right;
     font-weight: bold;
+
+    a {
+        color: inherit;
+    }
 }
 
 /* Informacje o koncie po zalogowaniu */
@@ -103,31 +107,31 @@ body {
 }
 
 /* Przyciski z usługami (lewa część strony) */
-.services_buttons_td {
+.services-buttons-td {
     vertical-align: top;
     width: 200px;
 }
 
-.services_buttons {
+.services-buttons {
     margin: 0;
     white-space: nowrap;
     text-align: right;
 }
 
-.services_buttons ul {
+.services-buttons ul {
     text-align: right;
 }
 
-.services_buttons li a {
+.services-buttons li a {
     background-color: #3d0001;
     box-shadow: -4px 2px 11px 0 rgba(53, 53, 50, 0.61);
 }
 
-.services_buttons li:nth-child(2n) a {
+.services-buttons li:nth-child(2n) a {
     background: #990000;
 }
 
-.services_buttons li a:hover {
+.services-buttons li a:hover {
     color: #d62226;
 }
 
@@ -166,14 +170,14 @@ body {
 }
 
 /* Wspólne klasy dla przycisków po lewej i po prawej stronie */
-.services_buttons ul,
+.services-buttons ul,
 .user-buttons ul {
     list-style-type: none;
     margin: 0;
     padding: 0;
 }
 
-.services_buttons li a,
+.services-buttons li a,
 .user-buttons li a,
 #loginarea_roll_button,
 #register_redirect_button,
@@ -188,7 +192,7 @@ body {
     cursor: pointer;
 }
 
-.services_buttons li a:hover {
+.services-buttons li a:hover {
     background: #fff;
 }
 

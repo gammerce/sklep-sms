@@ -56,7 +56,7 @@ class BlockServicesButtons extends Block
 
     public function getContentClass()
     {
-        return "services_buttons";
+        return "services-buttons";
     }
 
     public function getContentId()

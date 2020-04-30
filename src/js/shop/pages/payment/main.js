@@ -114,7 +114,10 @@ function purchaseService(method) {
 
                 // Refresh wallet
                 refreshBlocks("wallet", function() {
-                    $("#wallet").effect("highlight", "slow");
+                    const wallet = $("#wallet");
+                    if (wallet.effect) {
+                        wallet.effect("highlight", "slow");
+                    }
                 });
             } else if (jsonObj.return_id === "external") {
                 const method = jsonObj.data.method;

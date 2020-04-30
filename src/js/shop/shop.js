@@ -11,6 +11,15 @@ $(document).ready(function() {
     }
 
     $("#language_" + language).addClass("is-active");
+
+    setTimeout(function() {
+        refreshBlocks("wallet", function() {
+            const wallet = $("#wallet");
+            if (wallet.effect) {
+                wallet.effect("highlight", "slow");
+            }
+        });
+    }, 6000);
 });
 
 // Login
