@@ -610,7 +610,7 @@ class LicenseServiceModule extends ServiceModule implements
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
 
-            $output = number_format($cost / 100, 2);
+            $output = $this->priceTextService->getPlainPrice($cost);
             if ($bargainPercentage) {
                 $output .= "&nbsp;";
                 $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");
@@ -627,7 +627,7 @@ class LicenseServiceModule extends ServiceModule implements
             }
 
             $costData = $this->getCostUserEdit($body, $userService);
-            $costData['surcharge'] = $this->priceTextService->getPriceText(
+            $costData['surcharge'] = $this->priceTextService->getPlainPrice(
                 $costData['surcharge'] * $costData['bargain']
             );
             $costData['cost_monthly'] = $this->priceTextService->getPriceText(
