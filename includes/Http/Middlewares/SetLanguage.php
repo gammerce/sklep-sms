@@ -45,7 +45,7 @@ class SetLanguage implements MiddlewareContract
         /** @var Response $response */
         $response = $next($request);
 
-        if (!$this->localeCookieService->getLocale($request)) {
+        if ($this->localeCookieService->getLocale($request) !== $locale) {
             $this->localeCookieService->setLocale($response, $locale);
         }
 
