@@ -84,17 +84,6 @@ class PagePurchase extends Page
             throw new EntityNotFoundException();
         }
 
-        $path = "build/js/shop/pages/{$this->getId()}/";
-        $pathFile = $path . "main.js";
-        if ($this->fileSystem->exists($this->path->to($pathFile))) {
-            $this->websiteHeader->addScript($this->url->versioned($pathFile));
-        }
-
-        $pathFile = $path . $serviceModule->getModuleId() . ".js";
-        if ($this->fileSystem->exists($this->path->to($pathFile))) {
-            $this->websiteHeader->addScript($this->url->versioned($pathFile));
-        }
-
         if ($serviceModule instanceof IBeLoggedMust && !$this->auth->check()) {
             throw new UnauthorizedException();
         }
@@ -125,6 +114,21 @@ class PagePurchase extends Page
             "shop/pages/purchase",
             compact("description", "purchaseForm")
         );
+    }
+
+    public function addScripts(Request $request)
+    {
+        $path = "build/js/shop/pages/{$this->getId()}/";
+        $pathFile = $path . "main.js";
+        if ($this->fileSystem->exists($this->path->to($pathFile))) {
+            $this->websiteHeader->addScript($this->url->versioned($pathFile));
+        }
+
+        $moduleId = $this->getServiceModule($request)->getModuleId();
+        $pathFile = $path . $moduleId . ".js";
+        if ($this->fileSystem->exists($this->path->to($pathFile))) {
+            $this->websiteHeader->addScript($this->url->versioned($pathFile));
+        }
     }
 
     private function getServiceModule(Request $request)

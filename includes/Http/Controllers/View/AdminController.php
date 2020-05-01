@@ -7,8 +7,6 @@ use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
-use App\Support\FileSystem;
-use App\Support\Path;
 use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
@@ -33,9 +31,7 @@ class AdminController
         UrlGenerator $url,
         PageManager $pageManager,
         WebsiteHeader $websiteHeader,
-        FileSystem $fileSystem,
-        ServiceModuleManager $serviceModuleManager,
-        Path $path
+        ServiceModuleManager $serviceModuleManager
     ) {
         $page = $pageManager->getAdmin($pageId);
 
@@ -46,15 +42,7 @@ class AdminController
         $user = $auth->user();
         $lang = $translationManager->user();
 
-        // Add page scripts
-        $scriptPath = "build/js/admin/pages/{$page->getId()}/";
-        if ($fileSystem->exists($path->to($scriptPath))) {
-            foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
-                if (ends_at($file, ".js")) {
-                    $websiteHeader->addScript($url->versioned($scriptPath . $file));
-                }
-            }
-        }
+        $page->addScripts($request);
 
         $content = $blockRenderer->render(BlockAdminContent::BLOCK_ID, $request, [$page]);
 
