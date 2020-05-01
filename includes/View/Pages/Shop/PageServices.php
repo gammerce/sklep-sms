@@ -47,7 +47,7 @@ class PageServices extends Page
             ->map(function (Service $service) {
                 return $this->template->render("shop/components/services/service_card", [
                     "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
-                    "description" => $service->getDescription(),
+                    "description" => $service->getDescriptionI18n(),
                     "name" => $service->getNameI18n(),
                 ]);
             })

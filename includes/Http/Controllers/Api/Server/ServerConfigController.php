@@ -73,7 +73,7 @@ class ServerConfigController
             return [
                 "i" => $service->getId(),
                 "n" => $service->getNameI18n(),
-                "d" => $service->getShortDescription(),
+                "d" => $service->getShortDescriptionI18n(),
                 "ta" => $service->getTag(),
                 "f" => $service->getFlags(),
                 "ty" => $service->getTypes(),
