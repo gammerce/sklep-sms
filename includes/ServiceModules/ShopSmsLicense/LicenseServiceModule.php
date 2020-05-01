@@ -31,6 +31,7 @@ use App\Services\PriceTextService;
 use App\Services\UserServiceService;
 use App\Support\QueryParticle;
 use App\System\Auth;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -121,6 +122,9 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var EngineService */
     private $engineService;
 
+    /** @var Settings */
+    private $settings;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -138,6 +142,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->engineService = $this->app->make(EngineService::class);
+        $this->settings = $this->app->make(Settings::class);
     }
 
     /**
@@ -510,11 +515,13 @@ class LicenseServiceModule extends ServiceModule implements
             ],
         ]);
         $purchase->setPayment([
+            Purchase::PAYMENT_PLATFORM_TRANSFER => $this->settings->getTransferPlatformId(),
             Purchase::PAYMENT_PRICE_TRANSFER => intval(
                 $costData["surcharge"] * $costData["bargain"]
             ),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
+
         $purchase->setEmail($validated["email"]);
 
         $transactionId = $this->purchaseDataService->storePurchase($purchase);
