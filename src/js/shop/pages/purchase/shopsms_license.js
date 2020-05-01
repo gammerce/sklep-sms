@@ -1,4 +1,4 @@
-import { restRequest } from "../../../general/global";
+import {restRequest, showWarnings} from "../../../general/global";
 
 function engine_toggle(element) {
     if (element.val() == "1") {
@@ -50,11 +50,10 @@ $(document).delegate(".shopsms_license_purchase .engine", "click", function() {
         toggle_value = engine_toggle(form.find("[name=platform_sourcemod]"));
     }
 
-    // Usuwamy / dodajemy klase active
     if (toggle_value) {
-        $(this).addClass("active");
+        $(this).addClass("is-active");
     } else {
-        $(this).removeClass("active");
+        $(this).removeClass("is-active");
     }
 });
 

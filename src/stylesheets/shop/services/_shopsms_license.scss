@@ -1,55 +1,43 @@
+$amxx-color: #024079;
+$sm-color: #f69e1d;
+
 .shopsms_license_purchase,
 .shopsms_user_edit {
-    .engines {
-        margin: 8px;
-    }
-
     .engine {
-        display: inline-block;
-        padding: 8px;
-        margin: 6px;
+        color: $white;
 
-        border: 1px solid transparent;
-        border-radius: 4px;
-        font-size: 14px;
-        color: #fff;
-        text-shadow: 1px 1px 1px #000;
-
-        cursor: pointer;
-
-        .tick {
-            margin-left: 8px;
-            vertical-align: top;
+        &:not(.is-active) {
+            border: none;
         }
 
         &.amxx {
-            background: rgba(2, 64, 121, 0.5);
+            background: rgba($amxx-color, 0.8);
 
-            &:not(.active):hover {
-                background: rgba(2, 64, 121, 0.8);
+            &:hover {
+                background: $amxx-color;
             }
 
-            &.active {
-                background: rgb(2, 64, 121);
+            &.is-active {
+                background: $amxx-color;
             }
         }
 
         &.sm {
-            background: rgba(246, 158, 29, 0.5);
+            background: rgba($sm-color, 0.8);
 
-            &:not(.active):hover {
-                background: rgba(246, 158, 29, 0.8);
+            &:hover {
+                background: $sm-color;
             }
 
-            &.active {
-                background: rgb(246, 158, 29);
+            &.is-active {
+                background: $sm-color;
             }
         }
 
-        &.active:after {
-            content: url("../../images/tick.png");
-            margin-left: 8px;
-            vertical-align: middle;
+        &.is-active:after {
+            content: "\f00c";
+            margin-left: 0.5rem;
+            color: $success;
         }
     }
 }

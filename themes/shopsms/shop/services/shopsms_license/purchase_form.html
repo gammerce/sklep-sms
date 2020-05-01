@@ -3,20 +3,23 @@
         <div class="column is-half">
             <div class="field">
                 <label class="label required">{{ __('engines_for_shop') }}</label>
-                <span class="help">{!! __('price_per_option') !!}</span>
-            </div>
+                <div class="control">
+                    <div class="buttons" name="engines">
+                        <input type="hidden" name="platform_amxmodx" />
+                        <input type="hidden" name="platform_sourcemod" />
 
-            <div class="engines" name="engines">
-                <input type="hidden" name="platform_amxmodx" />
-                <input type="hidden" name="platform_sourcemod" />
-
-                <div class="engine amxx" title="Counter Strike 1.6, etc.">AMX Mod X</div>
-                <div
-                    class="engine sm"
-                    title="Counter Strike: Global Offensive, Team Fortress 2, etc."
-                >
-                    SOURCEMOD
+                        <div class="button engine amxx fas" title="Counter Strike 1.6, etc.">
+                            AMX Mod X
+                        </div>
+                        <div
+                            class="button engine sm fas"
+                            title="Counter Strike: Global Offensive, Team Fortress 2, etc."
+                        >
+                            SOURCEMOD
+                        </div>
+                    </div>
                 </div>
+                <div class="help">{!! __('price_per_option') !!}</div>
             </div>
         </div>
 
