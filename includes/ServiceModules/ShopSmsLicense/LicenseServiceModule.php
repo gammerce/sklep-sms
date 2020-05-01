@@ -608,7 +608,7 @@ class LicenseServiceModule extends ServiceModule implements
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
 
-            $output = $this->priceTextService->getPriceText($cost);
+            $output = number_format($cost / 100, 2);
             if ($bargainPercentage) {
                 $output .= "&nbsp;";
                 $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");

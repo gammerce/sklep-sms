@@ -42,12 +42,9 @@
         <div class="column is-full">
             <div class="column_bottom">
                 <div class="has-text-centered">
-                    <img
-                        src="{{ $url->to('build/images/reload.png') }}"
-                        id="cost_reload"
-                        title="{$lang->t('reload')}"
-                        alt="reload"
-                    />
+                    <span id="cost-reload" class="icon">
+                        <i class="fas fa-sync"></i>
+                    </span>
                     <span style="text-transform: uppercase;">{$lang->t('price')}:</span>
                     <span id="cost">{$lang->t('none')}</span><br />
                 </div>

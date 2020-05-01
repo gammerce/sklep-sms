@@ -1,25 +1,23 @@
 import { restRequest } from "../../../general/global";
 
 function ss_prolong_set_cost() {
-    if (
-        $(".shopsms_license_prolong_purchase [name=amount]").val() == "" ||
-        $(".shopsms_license_prolong_purchase [name=identifier]").val() == ""
-    ) {
-        $(".shopsms_license_prolong_purchase #cost").html(lang["none"]);
+    const form = $(".shopsms_license_prolong_purchase");
+
+    if (form.find("[name=amount]").val() == "" || form.find("[name=identifier]").val() == "") {
+        $("#cost .price").html("0.00");
         return;
     }
 
-    var tmp_data = $("#form_purchase").serializeArray();
-    var data = {};
-    $.each(tmp_data, function(index, element) {
-        data[element.name] = element.value;
-    });
+    const serviceId = form.find("[name=service_id]").val();
 
-    var serviceId = $("#form_purchase [name=service_id]").val();
-
-    restRequest("POST", "/api/services/" + serviceId + "/actions/get_cost", data, function(html) {
-        $(".shopsms_license_prolong_purchase #cost").html(html);
-    });
+    restRequest(
+        "POST",
+        `/api/services/${serviceId}/actions/get_cost`,
+        $(form).serialize(),
+        function(html) {
+            $("#cost .price").html(html);
+        }
+    );
 }
 
 // Zmiana ilosci dni
@@ -33,9 +31,6 @@ $(document).delegate(".shopsms_license_prolong_purchase [name=identifier]", "cha
 });
 
 // Kliknięcie przeładowania
-$(document).delegate(".shopsms_license_prolong_purchase #cost_reload", "click", function() {
-    $(this)
-        .closest("#cost")
-        .html("...");
+$(document).delegate(".shopsms_license_prolong_purchase #cost .reload", "click", function() {
     ss_prolong_set_cost();
 });

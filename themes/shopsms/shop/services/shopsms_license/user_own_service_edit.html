@@ -66,11 +66,9 @@
 
     <hr />
     <div class="has-text-centered">
-        <img
-            src="{{ $url->to('build/images/reload.png') }}"
-            id="cost_reload"
-            title="{$lang->t('reload')}"
-        />
+        <span id="cost-reload" class="icon">
+            <i class="fas fa-sync"></i>
+        </span>
         <span style="text-transform: uppercase;">{$lang->t('surcharge')}:</span>
         <span id="cost">0.00 {{ $settings['currency'] }}</span>
     </div>

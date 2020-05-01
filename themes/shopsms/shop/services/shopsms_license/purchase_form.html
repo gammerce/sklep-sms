@@ -65,19 +65,9 @@
             </div>
         </div>
 
-        <div class="column is-full">
-            <div class="column_bottom">
-                <div class="has-text-centered">
-                    <img
-                        src="{{ url('build/images/reload.png') }}"
-                        id="cost_reload"
-                        title="{{ __('reload') }}"
-                        alt="reload"
-                    />
-                    <span style="text-transform: uppercase;">{{ __('price') }}:</span>
-                    <span id="cost">{{ __('none') }}</span><br />
-                </div>
-            </div>
+        <div id="cost" class="column is-full has-text-centered">
+            <sup class="currency">{{ $settings->getCurrency() }}</sup>
+            <span class="price">0.00</span>
         </div>
     </div>
 

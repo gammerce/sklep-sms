@@ -35,7 +35,7 @@ $(document).delegate(".regenerate_token", "click", function() {
 });
 
 // Kliknięcie przeładowania
-$(document).delegate(".shopsms_user_edit #cost_reload", "click", function() {
+$(document).delegate("#cost-reload", "click", function() {
     $(this)
         .closest("#cost")
         .html("...");
