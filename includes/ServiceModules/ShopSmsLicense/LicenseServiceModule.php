@@ -263,7 +263,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $validated = $validator->validateOrFail();
 
-        $costDaily = $this->getDailyCost($validated);
+        $costDaily = $this->getDailyCost($validated['platform_amxmodx'], $validated['platform_sourcemod']);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $validated['amount'],
             'engines' => [
@@ -504,6 +504,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $purchase = new Purchase($this->auth->user());
         $purchase->setServiceId("ss_license_edit");
+        $purchase->setEmail($validated["email"]);
         $purchase->setOrder([
             "user_service_id" => $validated["id"],
             "cost_daily" => $costData["cost_daily"],
@@ -521,8 +522,6 @@ class LicenseServiceModule extends ServiceModule implements
             ),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
-
-        $purchase->setEmail($validated["email"]);
 
         $transactionId = $this->purchaseDataService->storePurchase($purchase);
 
@@ -612,7 +611,7 @@ class LicenseServiceModule extends ServiceModule implements
                 return "0.00";
             }
 
-            $dailyCost = $this->getDailyCost($body);
+            $dailyCost = $this->getDailyCost($body['platform_amxmodx'], $body['platform_sourcemod']);
             $bargainPercentage = $this->getBargainPercentage($daysAmount);
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
@@ -689,24 +688,23 @@ class LicenseServiceModule extends ServiceModule implements
     /**
      * Zwraca koszt zakupu licencji
      *
-     * @param array $body
-     * @return int|null
+     * @param $platformAmxmodx
+     * @param $platformSourcemod
+     * @return int
      */
-    private function getDailyCost(array $body)
+    private function getDailyCost($platformAmxmodx, $platformSourcemod)
     {
-        $cost = $this::COST_SHOP_PER_DAY;
-        $costEngines = 0;
-        if ($body['platform_amxmodx']) {
+        // -COST_ENGINE_PER_DAY, bo pierwsza gra jest darmowa
+        $costEngines = -$this::COST_ENGINE_PER_DAY;
+
+        if ($platformAmxmodx) {
             $costEngines += $this::COST_ENGINE_PER_DAY;
         }
-        if ($body['platform_sourcemod']) {
+        if ($platformSourcemod) {
             $costEngines += $this::COST_ENGINE_PER_DAY;
         }
 
-        // Dodajemy koszt za kolejne silniki
-        $cost += max(0, $costEngines - $this::COST_ENGINE_PER_DAY); // -5, bo pierwsza gra jest darmowa
-
-        return (int) ceil($cost);
+        return (int) ceil($this::COST_SHOP_PER_DAY + max(0, $costEngines));
     }
 
     /**
@@ -716,11 +714,7 @@ class LicenseServiceModule extends ServiceModule implements
      */
     private function getCostUserEdit(array $body, LicenseUserService $userService)
     {
-        if (!$userService) {
-            return null;
-        }
-
-        $daysLeft = ($userService->getExpire() - time()) / (24 * 60 * 60);
+        $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));
 
         $engines = [
             'amxx' => [
@@ -738,8 +732,7 @@ class LicenseServiceModule extends ServiceModule implements
             // Jezeli anulujemy wsparcie dla jakiegos silnika, to tracimy wszelkie znizki
             // i przeliczamy normalnie koszt jaki wychodzi
             if ($engineData['old'] && !$engineData['new']) {
-                $body['amount'] = $daysLeft; // Tworzymy tak jakby zapytanie z formularza zakupu
-                $costDaily = $this->getDailyCost($body);
+                $costDaily = $this->getDailyCost($body['platform_amxmodx'], $body['platform_sourcemod']);
                 break;
             }
 
