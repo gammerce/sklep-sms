@@ -452,24 +452,24 @@ class LicenseServiceModule extends ServiceModule implements
         $engines = [
             'amxx' => [
                 'input' => $userService->hasPlatformAmxModX() ? "1" : "0",
-                'div' => $userService->hasPlatformAmxModX() ? "active" : "",
+                'div' => $userService->hasPlatformAmxModX() ? "is-active" : "",
             ],
             'sm' => [
                 'input' => $userService->hasPlatformSourceMod() ? "1" : "0",
-                'div' => $userService->hasPlatformSourceMod() ? "active" : "",
+                'div' => $userService->hasPlatformSourceMod() ? "is-active" : "",
             ],
         ];
 
         return $this->template->render("shop/services/shopsms_license/user_own_service_edit", [
-            'costMonthly' => $this->priceTextService->getPriceText(
+            "costMonthly" => $this->priceTextService->getPriceText(
                 $userService->getCostDaily() * 30
             ),
-            'email' => $userService->getEmail(),
-            'engines' => $engines,
-            'expire' => convert_expire($userService->getExpire()),
-            'identifier' => $userService->getIdentifier(),
-            'serviceId' => $this->service->getId(),
-            'serviceName' => $this->service->getName(),
+            "email" => $userService->getEmail(),
+            "engines" => $engines,
+            "expire" => convert_expire($userService->getExpire()),
+            "identifier" => $userService->getIdentifier(),
+            "serviceId" => $this->service->getId(),
+            "serviceName" => $this->service->getName(),
         ]);
     }
 
@@ -481,15 +481,15 @@ class LicenseServiceModule extends ServiceModule implements
 
         $validator = new Validator(
             array_merge($body, [
-                'email' => array_get($body, 'email'),
+                "email" => array_get($body, "email"),
             ]),
             [
-                'id' => [],
-                'email' => [new RequiredRule(), new EmailRule()],
-                'engines' => [new LicenseEnginesRule()],
-                'password' => [new PasswordRule()],
-                'platform_amxmodx' => [],
-                'platform_sourcemod' => [],
+                "id" => [],
+                "email" => [new RequiredRule(), new EmailRule()],
+                "engines" => [new LicenseEnginesRule()],
+                "password" => [new PasswordRule()],
+                "platform_amxmodx" => [],
+                "platform_sourcemod" => [],
             ]
         );
 
@@ -498,33 +498,33 @@ class LicenseServiceModule extends ServiceModule implements
         $costData = $this->getCostUserEdit($validated, $userService);
 
         $purchase = new Purchase($this->auth->user());
-        $purchase->setServiceId('ss_license_edit');
+        $purchase->setServiceId("ss_license_edit");
         $purchase->setOrder([
-            'user_service_id' => $validated['id'],
-            'cost_daily' => $costData['cost_daily'],
-            'bargain' => $costData['bargain'],
-            'password' => $validated['password'],
-            'engines' => [
-                'amxx' => $validated['platform_amxmodx'],
-                'sm' => $validated['platform_sourcemod'],
+            "user_service_id" => $validated["id"],
+            "cost_daily" => $costData["cost_daily"],
+            "bargain" => $costData["bargain"],
+            "password" => $validated["password"],
+            "engines" => [
+                "amxx" => $validated["platform_amxmodx"],
+                "sm" => $validated["platform_sourcemod"],
             ],
         ]);
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => intval(
-                $costData['surcharge'] * $costData['bargain']
+                $costData["surcharge"] * $costData["bargain"]
             ),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
-        $purchase->setEmail($validated['email']);
+        $purchase->setEmail($validated["email"]);
 
         $transactionId = $this->purchaseDataService->storePurchase($purchase);
 
         return [
-            'status' => "payment",
-            'text' => $this->lang->t('purchase_form_validated'),
-            'positive' => true,
-            'data' => [
-                'transaction_id' => $transactionId,
+            "status" => "payment",
+            "text" => $this->lang->t("purchase_form_validated"),
+            "positive" => true,
+            "data" => [
+                "transaction_id" => $transactionId,
             ],
         ];
     }
@@ -537,29 +537,29 @@ class LicenseServiceModule extends ServiceModule implements
     public function serviceTakeOver(array $body)
     {
         $validator = new Validator($body, [
-            'service_id' => [new RequiredRule()],
-            'token' => [new RequiredRule()],
+            "service_id" => [new RequiredRule()],
+            "token" => [new RequiredRule()],
         ]);
 
         $validated = $validator->validateOrFail();
 
         try {
-            $response = $this->licenseServerService->getByToken($validated['token']);
+            $response = $this->licenseServerService->getByToken($validated["token"]);
         } catch (Exception $e) {
             return [
-                'status' => "no_service",
-                'text' => $this->lang->t('no_user_service'),
-                'positive' => false,
+                "status" => "no_service",
+                "text" => $this->lang->t("no_user_service"),
+                "positive" => false,
             ];
         }
 
         $statement = $this->db->statement(
             "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service` = ? AND `external_license_id` = ?"
         );
-        $statement->execute([$validated['service_id'], $response['id']]);
+        $statement->execute([$validated["service_id"], $response["id"]]);
 
         $row = $statement->fetch();
-        $userServiceId = $row['us_id'];
+        $userServiceId = $row["us_id"];
 
         $user = $this->auth->user();
         $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
@@ -567,16 +567,16 @@ class LicenseServiceModule extends ServiceModule implements
 
         if (!$statement->rowCount()) {
             return [
-                'status' => "service_not_taken_over",
-                'text' => $this->lang->t('service_not_taken_over'),
-                'positive' => false,
+                "status" => "service_not_taken_over",
+                "text" => $this->lang->t("service_not_taken_over"),
+                "positive" => false,
             ];
         }
 
         return [
-            'status' => "ok",
-            'text' => $this->lang->t('service_taken_over'),
-            'positive' => true,
+            "status" => "ok",
+            "text" => $this->lang->t("service_taken_over"),
+            "positive" => true,
         ];
     }
 
