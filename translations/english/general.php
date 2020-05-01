@@ -55,7 +55,7 @@ return [
         'Code was removed from the list of codes to be used. Code: [{1}] SMS price: [{2}]',
     'logged' => 'You are logged in',
     'logout' => 'Log out',
-    'main_page' => 'Main page',
+    'main_page' => 'Homepage',
     'march' => 'March',
     'may' => 'May',
     'max_value' => 'Value has to be lesser or equal {1}.',

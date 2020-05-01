@@ -41,6 +41,7 @@ $button-border-color: #000;
 $button-color: $scheme-invert;
 $button-hover-color: #fff;
 $button-static-border-color: $scheme-main;
+$button-static-color: $scheme-invert;
 
 @import "src/stylesheets/general/vendors";
 @import "~@fortawesome/fontawesome-free/css/all.css";

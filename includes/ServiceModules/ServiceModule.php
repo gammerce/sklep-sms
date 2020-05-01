@@ -118,7 +118,7 @@ abstract class ServiceModule
 
     public function descriptionShortGet()
     {
-        return $this->service->getDescription();
+        return $this->service->getDescriptionI18n();
     }
 
     public function getModuleId()

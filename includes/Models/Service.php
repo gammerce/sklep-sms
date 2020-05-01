@@ -97,9 +97,25 @@ class Service
     /**
      * @return string
      */
+    public function getShortDescriptionI18n()
+    {
+        return __($this->shortDescription);
+    }
+
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         return $this->description;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescriptionI18n()
+    {
+        return __($this->description);
     }
 
     /**
