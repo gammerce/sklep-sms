@@ -40,12 +40,13 @@ function regenerate_token(identifier, button) {
                 const box = $(button)
                     .closest(".row")
                     .find(".regenerated-token-box");
+
                 show(box);
                 box.find(".token-value").text(response.token);
 
                 infobox.show_info("Token został zregenerowany", true);
             },
-            error: function(error) {
+            error: function() {
                 handleErrorResponse();
                 location.reload();
             },
@@ -54,38 +55,35 @@ function regenerate_token(identifier, button) {
 }
 
 function ss_user_edit_set_cost(form) {
-    var tmpData = form.serializeArray();
-    var data = {};
+    const tmpData = form.serializeArray();
+    const data = {};
     $.each(tmpData, function(index, element) {
         data[element.name] = element.value;
     });
     data["user_service_id"] = form.data("row");
 
-    var serviceId = form.find("[name=service_id]").val();
+    const serviceId = form.find("[name=service_id]").val();
 
-    restRequest(
-        "POST",
-        "/api/services/" + serviceId + "/actions/get_cost_user_edit",
-        data,
-        function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            const cost = form.find("#cost");
-            const costMonthly = form.find("#cost-monthly");
-
-            if (cost.html() != jsonObj.surcharge) {
-                // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
-                cost.html(jsonObj.surcharge).effect("highlight", 1000);
-            }
-
-            if (costMonthly.html() != jsonObj.cost_monthly) {
-                costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
-            }
+    restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function(
+        content
+    ) {
+        const jsonObj = json_parse(content);
+        if (!jsonObj) {
+            return;
         }
-    );
+
+        const cost = form.find("#cost");
+        const costMonthly = form.find("#cost-monthly");
+
+        if (cost.html() != jsonObj.surcharge) {
+            // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
+            cost.html(jsonObj.surcharge).effect("highlight", 1000);
+        }
+
+        if (costMonthly.html() != jsonObj.cost_monthly) {
+            costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
+        }
+    });
 }
 
 // Zaznaczamy jakas gre
