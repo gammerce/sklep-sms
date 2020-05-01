@@ -1,60 +1,61 @@
 <form id="form_purchase" class="shopsms_license_prolong_purchase">
-    <input type="password" style="display: none;" />
+    <input type="password" class="is-hidden" />
     <input type="hidden" name="service_id" value="{{ $serviceId }}" />
 
     <div class="columns is-multiline">
         <div class="column is-half">
-            <div class="header1">
-                <label for="amount">{$lang->t('identifier')}</label>
-            </div>
             <div class="field">
+                <label for="identifier" class="label required">{{ __('identifier') }}</label>
                 <div class="control">
                     <input
                         type="text"
                         id="identifier"
                         name="identifier"
                         value="{{ $identifier }}"
-                        class="input is-small"
+                        class="input"
                     />
                 </div>
             </div>
         </div>
 
         <div class="column is-half">
-            <div class="header1">
-                <label for="amount">{$lang->t('license_prolong_time')}</label><br />
-                <span class="hint">{$lang->t('license_price')}</span>
-            </div>
             <div class="field">
+                <label for="amount" class="label required">{{ __('license_prolong_time') }}</label>
                 <div class="control">
-                    <input
-                        type="number"
-                        min="0"
-                        id="amount"
-                        name="amount"
-                        class="input is-small"
-                        style="width: 100px"
-                    />&nbsp;{{ $serviceTag }}
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input
+                                type="number"
+                                id="amount"
+                                name="amount"
+                                min="0"
+                                class="input"
+                                required
+                            />
+                        </div>
+                        <div class="control">
+                            <a class="button is-static">
+                                {{ $serviceTag }}
+                            </a>
+                        </div>
+                    </div>
                 </div>
+                <div class="help">{!! __('license_price') !!}</div>
             </div>
         </div>
 
-        <div class="column is-full">
-            <div class="column_bottom">
-                <div class="has-text-centered">
-                    <span id="cost-reload" class="icon">
-                        <i class="fas fa-sync"></i>
-                    </span>
-                    <span style="text-transform: uppercase;">{$lang->t('price')}:</span>
-                    <span id="cost">{$lang->t('none')}</span><br />
-                </div>
-            </div>
+        <div id="cost" class="column is-full has-text-centered">
+            <sup class="currency">{{ $settings->getCurrency() }}</sup>
+            <span class="price">0.00</span>
         </div>
+    </div>
 
-        <div class="column is-full has-text-centered">
-            <button type="submit" class="button is-success purchase-button">
-                {{ $lang->t('go_to_payment') }}
-            </button>
-        </div>
+    <div class="form-footer">
+        <button type="submit" class="button is-success">
+            <span class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </span>
+            <span>{{ __('go_to_payment') }}</span>
+        </button>
     </div>
 </form>

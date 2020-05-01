@@ -14,6 +14,7 @@ use App\Models\Transaction;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
+use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
@@ -32,7 +33,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     IServicePurchase,
     IServicePurchaseWeb,
     IServiceActionExecute,
-    IServiceUserServiceAdminAdd
+    IServiceUserServiceAdminAdd,
+    IServiceCreate
 {
     const MODULE_ID = "shopsms_license_prolong";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";

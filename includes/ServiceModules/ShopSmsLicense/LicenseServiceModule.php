@@ -16,6 +16,7 @@ use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
+use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
@@ -78,7 +79,8 @@ class LicenseServiceModule extends ServiceModule implements
     IServiceTakeOver,
     IServiceUserOwnServices,
     IServiceUserOwnServicesEdit,
-    IServiceUserServiceAdminAdd
+    IServiceUserServiceAdminAdd,
+    IServiceCreate
 {
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";

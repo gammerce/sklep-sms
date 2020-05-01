@@ -42,7 +42,7 @@ you have just purchased SMS Shop License. Great choice! ;)',
     'license_edit_success' => 'Hello,<br/>
 Shop SMS licence with ID: <b>{1}</b> was edited successfully.',
     'license_edit_success1' => 'License: {1} edited successfully',
-    'license_prolong_time' => 'Give the license prolongation period that you want to purchase.',
+    'license_prolong_time' => 'Enter for what period you want to extend the license.',
     'license_prolong_success' => 'Hello,<br/>
 Shop SMS license with ID: <b>{1}</b> was prolonged successfully.',
     'new_expiration_date' => 'New expiration date',

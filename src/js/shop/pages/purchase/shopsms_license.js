@@ -1,4 +1,4 @@
-import {restRequest, showWarnings} from "../../../general/global";
+import { restRequest, showWarnings } from "../../../general/global";
 
 function engine_toggle(element) {
     if (element.val() == "1") {

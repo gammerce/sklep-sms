@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Repositories\UserServiceRepository;
+use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
@@ -20,7 +21,8 @@ use UnexpectedValueException;
 
 class LicenseEditServiceModule extends ServiceModule implements
     IServicePurchase,
-    IServicePurchaseWeb
+    IServicePurchaseWeb,
+    IServiceCreate
 {
     const MODULE_ID = "shopsms_license_edit";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
