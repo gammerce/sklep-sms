@@ -4,6 +4,7 @@ namespace App\View\Pages\Admin;
 use App\Http\Services\IncomeService;
 use App\Managers\WebsiteHeader;
 use App\Models\Server;
+use App\Services\PriceTextService;
 use App\Support\Template;
 use App\System\Heart;
 use App\Translation\TranslationManager;
@@ -39,11 +40,15 @@ class PageAdminIncome extends PageAdmin
     /** @var Heart */
     private $heart;
 
+    /** @var PriceTextService */
+    private $priceTextService;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         IncomeService $incomeService,
         WebsiteHeader $websiteHeader,
+        PriceTextService $priceTextService,
         Heart $heart
     ) {
         parent::__construct($template, $translationManager);
@@ -51,6 +56,7 @@ class PageAdminIncome extends PageAdmin
         $this->incomeService = $incomeService;
         $this->websiteHeader = $websiteHeader;
         $this->heart = $heart;
+        $this->priceTextService = $priceTextService;
     }
 
     public function getPrivilege()
@@ -133,7 +139,7 @@ class PageAdminIncome extends PageAdmin
         foreach ($labels as $label) {
             foreach (array_keys($dataset) as $serverId) {
                 $income = array_get(array_get($data, $label), $serverId, 0);
-                $dataset[$serverId]["data"][] = number_format($income / 100.0, 2);
+                $dataset[$serverId]["data"][] = $this->priceTextService->getPlainPrice($income);
             }
         }
 
@@ -206,10 +212,13 @@ class PageAdminIncome extends PageAdmin
         foreach ($this->getServersIds() as $serverId) {
             $income = array_get($incomes, $serverId, 0);
             $dayIncome += $income;
-            $tableRows[] = create_dom_element("td", number_format($income / 100.0, 2));
+            $tableRows[] = create_dom_element(
+                "td",
+                $this->priceTextService->getPlainPrice($income)
+            );
         }
 
-        $dayIncome = number_format($dayIncome / 100.0, 2);
+        $dayIncome = $this->priceTextService->getPlainPrice($dayIncome);
         $tableRow = implode("", $tableRows);
 
         return $this->template->render(
@@ -233,12 +242,12 @@ class PageAdminIncome extends PageAdmin
 
         foreach ($this->getServersIds() as $serverId) {
             $serverIncome = array_get($serversIncomes, $serverId, 0);
-            $serverIncomeText = number_format($serverIncome / 100.0, 2);
+            $serverIncomeText = $this->priceTextService->getPlainPrice($serverIncome);
             $totalIncome += $serverIncome;
             $tableRows[] = create_dom_element("td", $serverIncomeText);
         }
 
-        $totalIncome = number_format($totalIncome / 100.0, 2);
+        $totalIncome = $this->priceTextService->getPlainPrice($totalIncome);
         $tableRow = implode("", $tableRows);
 
         return $this->template->render("admin/income_trow2", compact("tableRow", "totalIncome"));

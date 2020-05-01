@@ -212,7 +212,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "forename" => $user->getForename(),
                     "steamId" => $user->getSteamId(),
                     "uid" => $user->getUid(),
-                    "wallet" => number_format($user->getWallet() / 100.0, 2),
+                    "wallet" => $this->priceTextService->getPlainPrice($user->getWallet()),
                     "groups" => $groups,
                 ]);
                 break;

@@ -45,6 +45,15 @@ class PriceTextService
     }
 
     /**
+     * @param int|null $price
+     * @return string
+     */
+    public function getPlainPrice($price)
+    {
+        return $price !== null ? number_format($price / 100.0, 2) : null;
+    }
+
+    /**
      * @param int|null $quantity
      * @param Service $service
      * @return string

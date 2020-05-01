@@ -12,6 +12,7 @@ use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
+use App\Services\PriceTextService;
 use App\System\Auth;
 use App\System\Heart;
 use App\System\Settings;
@@ -29,7 +30,8 @@ class WalletChargeCollection
         Settings $settings,
         DatabaseLogger $logger,
         ServiceModuleManager $serviceModuleManager,
-        AdminPaymentService $adminPaymentService
+        AdminPaymentService $adminPaymentService,
+        PriceTextService $priceTextService
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -77,7 +79,7 @@ class WalletChargeCollection
             'log_account_charged',
             $editedUser->getUsername(),
             $editedUser->getUid(),
-            number_format($quantity / 100.0, 2),
+            $priceTextService->getPlainPrice($quantity),
             $settings->getCurrency()
         );
 
@@ -86,7 +88,7 @@ class WalletChargeCollection
             $lang->t(
                 'account_charge_success',
                 $editedUser->getUsername(),
-                number_format($quantity / 100.0, 2),
+                $priceTextService->getPlainPrice($quantity),
                 $settings->getCurrency()
             ),
             1
