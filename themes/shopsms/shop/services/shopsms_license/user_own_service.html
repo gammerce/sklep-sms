@@ -3,19 +3,17 @@
         Token: <strong class="token-value"></strong>
     </div>
 
-    <div class="fright">
+    <div class="fright buttons">
         <a
             class="button prolong_license"
             href="{{ url('/page/purchase?service=ss_license_plong&identifier=' . $identifier) }}"
         >
             {{ __('prolong_license') }}
         </a>
-        <br />
 
         <button class="button regenerate-token" type="button" data-identifier="{{ $identifier }}">
             {{ __('regenerate_token') }}
         </button>
-        <br />
 
         {!! $buttonEdit !!}
     </div>

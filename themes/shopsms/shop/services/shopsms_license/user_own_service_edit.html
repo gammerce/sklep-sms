@@ -4,49 +4,63 @@
 <hr />
 
 <div class="shopsms_user_edit">
-    <div class="field">
-        <label for="email" class="label required">{{ __('email') }}</label>
-        <div class="control">
-            <input type="email" id="email" name="email" class="input" value="{{ $email }}" />
-        </div>
-    </div>
-
-    <div class="field">
-        <label class="label required">{{ __('engines') }}</label>
-        <div class="control">
-            <div class="buttons" name="engines">
-                <input
-                    type="hidden"
-                    name="platform_amxmodx"
-                    value="{{ $engines['amxx']['input'] }}"
-                />
-                <input
-                    type="hidden"
-                    name="platform_sourcemod"
-                    value="{{ $engines['sm']['input'] }}"
-                />
-
-                <div
-                    class="button engine amxx fas {{ $engines['amxx']['div'] }}"
-                    title="Counter Strike 1.6, etc."
-                >
-                    AMX Mod X
-                </div>
-                <div
-                    class="button engine sm fas {{ $engines['sm']['div'] }}"
-                    title="Counter Strike: Global Offensive, Team Fortress 2, etc."
-                >
-                    SOURCEMOD
+    <div class="columns is-multiline">
+        <div class="column is-full">
+            <div class="field">
+                <label for="email" class="label required">{{ __('email') }}</label>
+                <div class="control">
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        class="input"
+                        value="{{ $email }}"
+                    />
                 </div>
             </div>
         </div>
-        <div class="help">{!! __('price_per_option') !!}</div>
-    </div>
 
-    <div class="field">
-        <label for="email" class="label">{{ __('price_monthly') }}</label>
-        <div id="cost-monthly" class="control">
-            {{ $costMonthly }}
+        <div class="column is-full">
+            <div class="field">
+                <label class="label required">{{ __('engines') }}</label>
+                <div class="control">
+                    <div class="buttons" name="engines">
+                        <input
+                            type="hidden"
+                            name="platform_amxmodx"
+                            value="{{ $engines['amxx']['input'] }}"
+                        />
+                        <input
+                            type="hidden"
+                            name="platform_sourcemod"
+                            value="{{ $engines['sm']['input'] }}"
+                        />
+
+                        <button
+                            class="button engine amxx fas {{ $engines['amxx']['div'] }}"
+                            title="Counter Strike 1.6, etc."
+                        >
+                            AMX Mod X
+                        </button>
+                        <button
+                            class="button engine sm fas {{ $engines['sm']['div'] }}"
+                            title="Counter Strike: Global Offensive, Team Fortress 2, etc."
+                        >
+                            SOURCEMOD
+                        </button>
+                    </div>
+                </div>
+                <div class="help">{!! __('price_per_option') !!}</div>
+            </div>
+        </div>
+
+        <div class="column is-full">
+            <div class="field">
+                <label for="email" class="label">{{ __('price_monthly') }}</label>
+                <div id="cost-monthly" class="control">
+                    {{ $costMonthly }}
+                </div>
+            </div>
         </div>
     </div>
 

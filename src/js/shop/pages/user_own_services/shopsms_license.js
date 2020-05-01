@@ -76,12 +76,11 @@ function ss_user_edit_set_cost(form) {
         const costMonthly = form.find("#cost-monthly");
 
         if (cost.html() != jsonObj.surcharge) {
-            // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
-            cost.html(jsonObj.surcharge).effect("highlight", 1000);
+            cost.html(jsonObj.surcharge);
         }
 
         if (costMonthly.html() != jsonObj.cost_monthly) {
-            costMonthly.html(jsonObj.cost_monthly).effect("highlight", 1000);
+            costMonthly.html(jsonObj.cost_monthly);
         }
     });
 }
