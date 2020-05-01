@@ -602,7 +602,7 @@ class LicenseServiceModule extends ServiceModule implements
             $daysAmount = (int) $body['amount'];
 
             if ($daysAmount < 30) {
-                return $this->lang->t('none');
+                return "0.00";
             }
 
             $dailyCost = $this->getDailyCost($body);

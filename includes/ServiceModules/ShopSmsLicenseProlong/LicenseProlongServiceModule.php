@@ -26,6 +26,7 @@ use App\Services\PriceTextService;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Html\DOMElement;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -262,11 +263,19 @@ class LicenseProlongServiceModule extends ServiceModule implements
     public function actionExecute($action, array $body)
     {
         if ($action === "get_cost") {
-            $amount = array_get($body, "amount");
+            $daysAmount = array_get($body, "amount");
             $identifier = array_get($body, "identifier");
-            $cost = $this->getCost($identifier, $amount) * $amount;
 
-            return $this->priceTextService->getPriceText($cost) ?: $this->lang->t("none");
+            $cost = $this->getCost($identifier, $daysAmount) * $daysAmount;
+            $bargainPercentage = $this->getBargainPercentage($daysAmount);
+
+            $output = $this->priceTextService->getPlainPrice($cost);
+            if ($bargainPercentage) {
+                $output .= "&nbsp;";
+                $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");
+            }
+
+            return $output;
         }
 
         throw new UnexpectedValueException();
@@ -298,13 +307,18 @@ class LicenseProlongServiceModule extends ServiceModule implements
         return (int) ceil($costDaily * $this->getBargain($amount));
     }
 
-    private function getBargain($daysAmount)
+    private function getBargainPercentage($daysCount)
     {
-        if ($daysAmount >= 365) {
-            return 0.8;
+        if ($daysCount >= 365) {
+            return 20;
         }
 
-        return 1.0;
+        return 0;
+    }
+
+    private function getBargain($daysCount)
+    {
+        return (100 - $this->getBargainPercentage($daysCount)) / 100;
     }
 
     public function showOnWeb()
