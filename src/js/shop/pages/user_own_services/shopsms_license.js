@@ -72,16 +72,11 @@ function ss_user_edit_set_cost(form) {
             return;
         }
 
-        const cost = form.find("#cost");
+        const cost = form.find("#cost .price");
         const costMonthly = form.find("#cost-monthly");
 
-        if (cost.html() != jsonObj.surcharge) {
-            cost.html(jsonObj.surcharge);
-        }
-
-        if (costMonthly.html() != jsonObj.cost_monthly) {
-            costMonthly.html(jsonObj.cost_monthly);
-        }
+        cost.html(jsonObj.surcharge);
+        costMonthly.html(jsonObj.cost_monthly);
     });
 }
 
