@@ -1,6 +1,10 @@
 <?php
 namespace App\View\Pages;
 
+use App\Managers\WebsiteHeader;
+use App\Routing\UrlGenerator;
+use App\Support\FileSystem;
+use App\Support\Path;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -45,5 +49,29 @@ abstract class Page
     public function getPagePath()
     {
         return "/page/{$this->getId()}";
+    }
+
+    public function addScripts(Request $request)
+    {
+        /** @var FileSystem $fileSystem */
+        $fileSystem = app()->make(FileSystem::class);
+
+        /** @var Path $path */
+        $path = app()->make(Path::class);
+
+        /** @var UrlGenerator $url */
+        $url = app()->make(UrlGenerator::class);
+
+        /** @var WebsiteHeader $websiteHeader */
+        $websiteHeader = app()->make(WebsiteHeader::class);
+
+        $scriptPath = "build/js/shop/pages/{$this->getId()}/";
+        if ($fileSystem->exists($path->to($scriptPath))) {
+            foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
+                if (ends_at($file, ".js")) {
+                    $websiteHeader->addScript($url->versioned($scriptPath . $file));
+                }
+            }
+        }
     }
 }
