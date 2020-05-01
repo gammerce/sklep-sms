@@ -4,73 +4,57 @@
 <hr />
 
 <div class="shopsms_user_edit">
-    <div class="table_form">
-        <div class="row">
-            <div class="cell">
-                <label for="email">{$lang->t('email')}</label>
-            </div>
-            <div class="cell">
-                <div class="field">
-                    <div class="control">
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            class="input is-small"
-                            value="{{ $email }}"
-                        />
-                    </div>
+    <div class="field">
+        <label for="email" class="label required">{{ __('email') }}</label>
+        <div class="control">
+            <input type="email" id="email" name="email" class="input" value="{{ $email }}" />
+        </div>
+    </div>
+
+    <div class="field">
+        <label class="label required">{{ __('engines') }}</label>
+        <div class="control">
+            <div class="buttons" name="engines">
+                <input
+                    type="hidden"
+                    name="platform_amxmodx"
+                    value="{{ $engines['amxx']['input'] }}"
+                />
+                <input
+                    type="hidden"
+                    name="platform_sourcemod"
+                    value="{{ $engines['sm']['input'] }}"
+                />
+
+                <div
+                    class="button engine amxx fas {{ $engines['amxx']['div'] }}"
+                    title="Counter Strike 1.6, etc."
+                >
+                    AMX Mod X
+                </div>
+                <div
+                    class="button engine sm fas {{ $engines['sm']['div'] }}"
+                    title="Counter Strike: Global Offensive, Team Fortress 2, etc."
+                >
+                    SOURCEMOD
                 </div>
             </div>
         </div>
+        <div class="help">{!! __('price_per_option') !!}</div>
+    </div>
 
-        <div class="row">
-            <div class="cell">{$lang->t('engines')}</div>
-            <div class="cell">
-                <div class="engines" name="engines">
-                    <input
-                        type="hidden"
-                        name="platform_amxmodx"
-                        value="{{ $engines['amxx']['input'] }}"
-                    />
-
-                    <div
-                        class="engine amxx {{ $engines['amxx']['div'] }}"
-                        title="Counter Strike 1.6, etc."
-                    >
-                        AMX Mod X
-                    </div>
-                    <input
-                        type="hidden"
-                        name="platform_sourcemod"
-                        value="{{ $engines['sm']['input'] }}"
-                    />
-
-                    <div
-                        class="engine sm {{ $engines['sm']['div'] }}"
-                        title="Counter Strike: Global Offensive, Team Fortress 2, etc."
-                    >
-                        SOURCEMOD
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="cell">{$lang->t('price_monthly')}</div>
-            <div class="cell">
-                <span id="cost_monthly">{{ $costMonthly }}</span>
-            </div>
+    <div class="field">
+        <label for="email" class="label">{{ __('price_monthly') }}</label>
+        <div id="cost-monthly" class="control">
+            {{ $costMonthly }}
         </div>
     </div>
 
     <hr />
-    <div class="has-text-centered">
-        <span id="cost-reload" class="icon">
-            <i class="fas fa-sync"></i>
-        </span>
-        <span style="text-transform: uppercase;">{$lang->t('surcharge')}:</span>
-        <span id="cost">0.00 {{ $settings['currency'] }}</span>
+
+    <div id="cost" class="column is-full has-text-centered">
+        <sup class="currency">{{ $settings->getCurrency() }}</sup>
+        <span class="price">0.00</span>
     </div>
 </div>
 

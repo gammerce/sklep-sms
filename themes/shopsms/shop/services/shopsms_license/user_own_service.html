@@ -1,34 +1,30 @@
 <form class="row" data-module="{{ $moduleId }}" data-row="{{ $userServiceId }}">
-    <div class="brick regenerated_token_box">Nowy token: <strong class="token_value"></strong></div>
+    <div class="notification regenerated-token-box is-success is-hidden">
+        Token: <strong class="token-value"></strong>
+    </div>
 
     <div class="fright">
         <a
-            href="{{ $url->to('/page/purchase?service=ss_license_plong&identifier=' . $identifier) }}"
-            style="text-decoration: none;"
+            class="button prolong_license"
+            href="{{ url('/page/purchase?service=ss_license_plong&identifier=' . $identifier) }}"
         >
-            <button class="button is-small prolong_license" type="button">
-                {$lang->t('prolong_license')}
-            </button>
+            {{ __('prolong_license') }}
         </a>
         <br />
 
-        <button
-            class="button is-small regenerate_token"
-            type="button"
-            data-identifier="{{ $identifier }}"
-        >
-            {$lang->t('regenerate_token')}
+        <button class="button regenerate-token" type="button" data-identifier="{{ $identifier }}">
+            {{ __('regenerate_token') }}
         </button>
         <br />
 
-        {$buttonEdit}
+        {!! $buttonEdit !!}
     </div>
 
-    <b>{$lang->t('service')}</b>: {{ $serviceName }}<br />
-    <b>{$lang->t('identifier')}</b>: {{ $identifier }}<br />
-    <b>{$lang->t('engines')}</b>: {{ $engines }}<br />
-    <b>{$lang->t('email')}</b>: {{ $email }}<br />
+    <b>{{ __('service') }}</b>: {{ $serviceName }}<br />
+    <b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
+    <b>{{ __('engines') }}</b>: {{ $engines }}<br />
+    <b>{{ __('email') }}</b>: {{ $email }}<br />
     <br />
-    <b>{$lang->t('expire')}</b>: {{ $expire }}<br />
-    <b>{$lang->t('price_monthly')}</b>: {{ $costMonthly }}
+    <b>{{ __('expire') }}</b>: {{ $expire }}<br />
+    <b>{{ __('price_monthly') }}</b>: {{ $costMonthly }}
 </form>

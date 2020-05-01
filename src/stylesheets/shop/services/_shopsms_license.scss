@@ -43,25 +43,13 @@ $sm-color: #f69e1d;
 }
 
 .button {
-    &.regenerate_token {
+    &.regenerate-token {
         background: #b71c1c;
     }
 
     &.prolong_license {
         background: #5b9931;
         font-weight: bold;
-    }
-}
-
-.brick {
-    &.regenerated_token_box {
-        display: none;
-        border: 2px solid #1b5e20;
-        color: #ffffff;
-
-        &.is-active {
-            display: block;
-        }
     }
 }
 

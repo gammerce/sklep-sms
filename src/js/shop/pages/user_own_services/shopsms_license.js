@@ -1,46 +1,7 @@
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox } from "../../../general/infobox";
 import { json_parse } from "../../../general/stocks";
-import { buildUrl, restRequest } from "../../../general/global";
-
-// Zaznaczamy jakas gre
-$(document).delegate(".shopsms_user_edit .engine", "click", function() {
-    var toggle_value = false;
-    if ($(this).hasClass("amxx"))
-        toggle_value = engine_toggle(
-            $(this)
-                .parent()
-                .find("input[name=platform_amxmodx]")
-        );
-    else if ($(this).hasClass("sm"))
-        toggle_value = engine_toggle(
-            $(this)
-                .parent()
-                .find("input[name=platform_sourcemod]")
-        );
-
-    ss_user_edit_set_cost($(this).closest("form"));
-
-    // Usuwamy / dodajemy klase active
-    if (toggle_value) {
-        $(this).addClass("active");
-    } else {
-        $(this).removeClass("active");
-    }
-});
-
-$(document).delegate(".regenerate_token", "click", function() {
-    const identifier = $(this).data("identifier");
-    regenerate_token(identifier, this);
-});
-
-// Kliknięcie przeładowania
-$(document).delegate("#cost-reload", "click", function() {
-    $(this)
-        .closest("#cost")
-        .html("...");
-    ss_user_edit_set_cost($(this).parents("form"));
-});
+import { buildUrl, restRequest, show } from "../../../general/global";
 
 function engine_toggle(element) {
     if (element.val() == "1") {
@@ -53,8 +14,8 @@ function engine_toggle(element) {
 }
 
 function regenerate_token(identifier, button) {
-    var confirmed = confirm(
-        "Czy na pewno chcesz ponownie wygenerować token dla licencji: " + identifier + "?"
+    const confirmed = confirm(
+        `Czy na pewno chcesz ponownie wygenerować token dla licencji: ${identifier} ?`
     );
 
     if (confirmed) {
@@ -70,17 +31,17 @@ function regenerate_token(identifier, button) {
                 loader.hide();
             },
             success: function(content) {
-                var response;
+                const response = json_parse(content);
 
-                if (!(response = json_parse(content))) {
+                if (!response) {
                     return;
                 }
 
-                var box = $(button)
+                const box = $(button)
                     .closest(".row")
-                    .find(".regenerated_token_box");
-                box.addClass("is-active");
-                box.find(".token_value").text(response.token);
+                    .find(".regenerated-token-box");
+                show(box);
+                box.find(".token-value").text(response.token);
 
                 infobox.show_info("Token został zregenerowany", true);
             },
@@ -112,8 +73,8 @@ function ss_user_edit_set_cost(form) {
                 return;
             }
 
-            var cost = form.find("#cost");
-            var costMonthly = form.find("#cost_monthly");
+            const cost = form.find("#cost");
+            const costMonthly = form.find("#cost-monthly");
 
             if (cost.html() != jsonObj.surcharge) {
                 // podswietlamy i zmieniamy zawartosc, gdy ta sie rzeczywiscie zmienila
@@ -126,3 +87,34 @@ function ss_user_edit_set_cost(form) {
         }
     );
 }
+
+// Zaznaczamy jakas gre
+$(document).delegate(".shopsms_user_edit .engine", "click", function() {
+    let toggle_value = false;
+    if ($(this).hasClass("amxx")) {
+        toggle_value = engine_toggle(
+            $(this)
+                .parent()
+                .find("[name=platform_amxmodx]")
+        );
+    } else if ($(this).hasClass("sm")) {
+        toggle_value = engine_toggle(
+            $(this)
+                .parent()
+                .find("[name=platform_sourcemod]")
+        );
+    }
+
+    ss_user_edit_set_cost($(this).closest("form"));
+
+    if (toggle_value) {
+        $(this).addClass("is-active");
+    } else {
+        $(this).removeClass("is-active");
+    }
+});
+
+$(document).delegate(".regenerate-token", "click", function() {
+    const identifier = $(this).data("identifier");
+    regenerate_token(identifier, this);
+});

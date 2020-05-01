@@ -48,7 +48,6 @@ licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo wyedytowana.',
 licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo przedłużona.',
     'new_expiration_date' => 'Nowa data ważności',
 
-    'regenerate_token' => 'Wygeneruj nowy token',
     'prolong_license' => 'Przedłuż licencję',
     'external_license_id' => 'Zew. ID licencji',
     'cost_daily' => 'Dzienny koszt',

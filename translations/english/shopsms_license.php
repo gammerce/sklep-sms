@@ -51,6 +51,7 @@ Shop SMS license with ID: <b>{1}</b> was prolonged successfully.',
     'cost_daily' => 'Daily cost',
     'token' => 'Token',
     'identifier' => 'Identifier',
+    'prolong_license' => 'Prolong license',
 
     'Licencja Sklep SMS' => 'Sklep SMS license',
     'Przedłużenie licencji' => 'License renewal',
