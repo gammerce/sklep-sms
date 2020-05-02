@@ -1,11 +1,11 @@
-{$lang->t('service_bought')}: <strong>{{ $serviceName }}</strong><br />
-<strong>{$lang->t('price')}</strong>: {{ $cost }}
+{{ __('service_bought') }}: <strong>{{ $serviceName }}</strong><br />
+<strong>{{ __('price') }}</strong>: {{ $cost }}
 <hr />
-<strong>{$lang->t('server')}</strong>: {{ $serverName }}<br />
-<strong>{$lang->t('quantity')}</strong>: {{ $quantity }}<br />
+<strong>{{ __('server') }}</strong>: {{ $serverName }}<br />
+<strong>{{ __('quantity') }}</strong>: {{ $quantity }}<br />
 <strong>{{ $typeName }}</strong>: {{ $authData }}<br />
-{$password}
+{!! $password !!}
 <hr />
-<strong>{$lang->t('email')}</strong>: {{ $email }}
+<strong>{{ __('email') }}</strong>: {{ $email }}
 <hr />
 {{ $setinfo }}

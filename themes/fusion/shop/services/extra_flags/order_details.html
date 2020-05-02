@@ -1,7 +1,7 @@
-<strong>{$lang->t('service')}:</strong> {{ $serviceName }}<br />
-<strong>{$lang->t('server')}:</strong> {{ $serverName }}<br />
-<strong>{$lang->t('amount')}:</strong> {{ $quantity }}<br />
+<strong>{{ __('service') }}</strong>: {{ $serviceName }}<br />
+<strong>{{ __('server') }}</strong>: {{ $serverName }}<br />
+<strong>{{ __('amount') }}</strong>: {{ $quantity }}<br />
 <br />
 <strong>{{ $typeName }}</strong>: {{ $authData }}<br />
-{$password}
-<strong>{$lang->t('email')}</strong>: {{ $email }}
+{!! $password !!}
+<strong>{{ __('email') }}</strong>: {{ $email }}

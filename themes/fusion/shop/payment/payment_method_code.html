@@ -2,7 +2,7 @@
     <div class="card">
         <header class="card-header">
             <p class="card-header-title">
-                <label for="service_code">{$lang->t('got_code')}</label>
+                <label for="service_code">{{ __('got_code') }}</label>
             </p>
         </header>
         <div class="card-content">
@@ -14,14 +14,14 @@
                         name="service_code"
                         class="input is-small"
                         maxlength="16"
-                        placeholder="{$lang->t('type_code')}"
+                        placeholder="{{ __('type_code') }}"
                     />
                 </div>
             </div>
         </div>
         <footer class="card-footer">
             <a id="pay_service_code" class="card-footer-item">
-                {$lang->t('got_code')}
+                {{ __('got_code') }}
             </a>
         </footer>
     </div>

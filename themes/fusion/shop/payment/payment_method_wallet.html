@@ -2,15 +2,15 @@
     <div class="card">
         <header class="card-header">
             <p class="card-header-title">
-                {$lang->t('payment_wallet')}
+                {{ __('payment_wallet') }}
             </p>
         </header>
         <div class="card-content">
-            <div class="content"><strong>{$lang->t('price')}</strong>: {{ $price }}<br /></div>
+            <div class="content"><strong>{{ __('price') }}</strong>: {{ $price }}<br /></div>
         </div>
         <footer class="card-footer">
             <a id="pay_wallet" class="card-footer-item">
-                {$lang->t('pay_wallet')}
+                {{ __('pay_wallet') }}
             </a>
         </footer>
     </div>
