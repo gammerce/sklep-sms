@@ -1,13 +1,13 @@
-{{ $lang->t('just_purchased', $e($authData)) }}<br />
+{!! __('just_purchased', $e($authData)) !!}<br />
 <br />
-<strong>{$lang->t('service')}:</strong> {{ $serviceName }}<br />
-<strong>{$lang->t('quantity')}:</strong> {{ $quantity }}<br />
-<strong>{$lang->t('server')}:</strong> {{ $serverName }}<br />
+<strong>{{ __('service') }}:</strong> {{ $serviceName }}<br />
+<strong>{{ __('quantity') }}:</strong> {{ $quantity }}<br />
+<strong>{{ __('server') }}:</strong> {{ $serverName }}<br />
 <br />
 <strong>{{ $typeName }}:</strong> {{ $authData }}<br />
-{$password}
+{!! $password !!}
 <br />
 {{ $setinfo }}<br />
 <br />
-{{ $lang->t('regards') }},<br />
-{{ $settings['signature'] }}
+{{ __('regards') }},<br />
+{!! $settings['signature'] !!}

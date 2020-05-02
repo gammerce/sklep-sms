@@ -2,12 +2,12 @@
     <div class="card">
         <header class="card-header">
             <p class="card-header-title">
-                {$lang->t('payment_sms')}
+                {{ __('payment_sms') }}
             </p>
         </header>
         <div class="card-content">
             <div>
-                <strong>{$lang->t('price')}</strong>:
+                <strong>{{ __('price') }}</strong>:
                 <span class="is-family-monospace">
                     {{ $priceGross }}
                 </span>
@@ -58,7 +58,7 @@
         </div>
         <footer class="card-footer">
             <a id="pay_sms" class="card-footer-item">
-                {$lang->t('pay_sms')}
+                {{ __('pay_sms') }}
             </a>
         </footer>
     </div>

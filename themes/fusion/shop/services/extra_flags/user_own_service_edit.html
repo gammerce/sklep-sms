@@ -10,7 +10,7 @@ $serviceInfo['service'] }}<br />
         <div class="control">
             <div class="select">
                 <select id="type" name="type" required>
-                    {$serviceInfo['types']}
+                    {!! $serviceInfo['types'] !!}
                 </select>
             </div>
         </div>
@@ -20,7 +20,7 @@ $serviceInfo['service'] }}<br />
         <label for="nick" class="label required">{{ __('nick') }}</label>
         <div class="control">
             <input type="text" id="nick" name="auth_data" class="input" maxlength="32" value="{{
-            $serviceInfo['player_nick'] }}" {$disabled['nick']} />
+            $serviceInfo['player_nick'] }}" {!! $disabled['nick'] !!} />
         </div>
     </div>
 
@@ -28,7 +28,7 @@ $serviceInfo['service'] }}<br />
         <label for="ip" class="label required">{{ __('ip') }}</label>
         <div class="control">
             <input type="text" id="ip" name="auth_data" class="input" maxlength="21" value="{{
-            $serviceInfo['player_ip'] }}" {$disabled['ip']} />
+            $serviceInfo['player_ip'] }}" {!! $disabled['ip'] !!} />
         </div>
     </div>
 
@@ -36,7 +36,7 @@ $serviceInfo['service'] }}<br />
         <label for="sid" class="label required">{{ __('sid') }}</label>
         <div class="control">
             <input type="text" id="sid" name="auth_data" class="input" maxlength="32" value="{{
-            $serviceInfo['player_sid'] }}" {$disabled['sid']} />
+            $serviceInfo['player_sid'] }}" {!! $disabled['sid'] !!} />
         </div>
     </div>
 
@@ -44,7 +44,7 @@ $serviceInfo['service'] }}<br />
         <label for="password" class="label required">{{ __('password') }}</label>
         <div class="control">
             <input type="password" id="password" name="password" class="input" maxlength="32"
-            placeholder="{{ $serviceInfo['password'] }}" {$disabled['password']} />
+            placeholder="{{ $serviceInfo['password'] }}" {!! $disabled['password'] !!} />
         </div>
     </div>
 </div>
