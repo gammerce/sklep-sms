@@ -58,6 +58,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         InvalidConfigException::class,
         LicenseException::class,
         UnauthorizedException::class,
+        AccessProhibitedException::class,
         ValidationException::class,
     ];
 
