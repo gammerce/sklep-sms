@@ -102,6 +102,7 @@ class BoughtServiceService
             $quantity,
             $server ? $server->getName() : '',
             $paymentId,
+            $email,
             $returnMessage,
             $userName,
             $uid,
