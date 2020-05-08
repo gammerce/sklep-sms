@@ -1,13 +1,13 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,9 +16,6 @@ class PageMain extends Page
 {
     const PAGE_ID = "home";
     const SERVICE_LIMIT = 5;
-
-    /** @var Heart */
-    private $heart;
 
     /** @var Auth */
     private $auth;
@@ -32,21 +29,24 @@ class PageMain extends Page
     /** @var UrlGenerator */
     private $url;
 
+    /** @var ServiceManager */
+    private $serviceManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        Heart $heart,
         Auth $auth,
         ServiceModuleManager $serviceModuleManager,
+        ServiceManager $serviceManager,
         UserServiceAccessService $userServiceAccessService,
         UrlGenerator $url
     ) {
         parent::__construct($template, $translationManager);
-        $this->heart = $heart;
         $this->auth = $auth;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->userServiceAccessService = $userServiceAccessService;
         $this->url = $url;
+        $this->serviceManager = $serviceManager;
     }
 
     public function getTitle(Request $request)
@@ -56,7 +56,7 @@ class PageMain extends Page
 
     public function getContent(Request $request)
     {
-        $services = collect($this->heart->getServices())
+        $services = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&

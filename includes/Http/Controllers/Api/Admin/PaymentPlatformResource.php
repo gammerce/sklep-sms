@@ -5,9 +5,9 @@ use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PaymentPlatformService;
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServerManager;
 use App\Models\Server;
 use App\Repositories\PaymentPlatformRepository;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,7 +43,7 @@ class PaymentPlatformResource
         TranslationManager $translationManager,
         PaymentPlatformRepository $paymentPlatformRepository,
         Settings $settings,
-        Heart $heart,
+        ServerManager $serverManager,
         DatabaseLogger $databaseLogger
     ) {
         $paymentPlatform = $paymentPlatformRepository->getOrFail($paymentPlatformId);
@@ -58,7 +58,7 @@ class PaymentPlatformResource
             return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
         }
 
-        $occupiedPlatforms = collect($heart->getServers())->flatMap(function (Server $server) {
+        $occupiedPlatforms = collect($serverManager->getServers())->flatMap(function (Server $server) {
             return [$server->getSmsPlatformId(), $server->getTransferPlatformId()];
         });
 

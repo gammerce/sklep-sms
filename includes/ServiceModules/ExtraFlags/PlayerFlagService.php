@@ -1,8 +1,8 @@
 <?php
 namespace App\ServiceModules\ExtraFlags;
 
+use App\Managers\ServiceManager;
 use App\Support\Database;
-use App\System\Heart;
 
 class PlayerFlagService
 {
@@ -12,17 +12,17 @@ class PlayerFlagService
     /** @var Database */
     private $db;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     public function __construct(
         PlayerFlagRepository $playerFlagRepository,
         Database $db,
-        Heart $heart
+        ServiceManager $serviceManager
     ) {
         $this->playerFlagRepository = $playerFlagRepository;
         $this->db = $db;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
     }
 
     public function recalculatePlayerFlags($serverId, $type, $authData)
@@ -52,7 +52,7 @@ class PlayerFlagService
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $row['password'];
 
-            $service = $this->heart->getService($row['service']);
+            $service = $this->serviceManager->getService($row['service']);
             $serviceFlags = $service->getFlags();
             foreach (str_split($serviceFlags) as $flag) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.

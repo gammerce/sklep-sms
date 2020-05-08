@@ -2,6 +2,8 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Models\Price;
 use App\Models\Server;
 use App\Models\Service;
@@ -10,7 +12,6 @@ use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -37,22 +38,26 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     /** @var PriceTextService */
     private $priceTextService;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var CurrentPage */
     private $currentPage;
 
     /** @var Database */
     private $db;
 
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    /** @var ServerManager */
+    private $serverManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
+        ServiceManager $serviceManager,
+        ServerManager $serverManager,
         PriceRepository $priceRepository,
         SmsPriceRepository $smsPriceRepository,
         PriceTextService $priceTextService,
-        Heart $heart,
         CurrentPage $currentPage,
         Database $db
     ) {
@@ -61,9 +66,10 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $this->priceRepository = $priceRepository;
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
-        $this->heart = $heart;
         $this->currentPage = $currentPage;
         $this->db = $db;
+        $this->serviceManager = $serviceManager;
+        $this->serverManager = $serverManager;
     }
 
     public function getPrivilege()
@@ -95,13 +101,13 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                 if ($price->isForEveryServer()) {
                     $serverEntry = $this->lang->t("all_servers");
                 } else {
-                    $server = $this->heart->getServer($price->getServerId());
+                    $server = $this->serverManager->getServer($price->getServerId());
                     $serverEntry = $server
                         ? new ServerRef($server->getId(), $server->getName())
                         : "n/a";
                 }
 
-                $service = $this->heart->getService($price->getServiceId());
+                $service = $this->serviceManager->getService($price->getServiceId());
                 $serviceEntry = $service
                     ? new ServiceRef($service->getId(), $service->getName())
                     : "n/a";
@@ -168,7 +174,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             $price = $this->priceRepository->getOrFail($query["id"]);
         }
 
-        $services = collect($this->heart->getServices())
+        $services = collect($this->serviceManager->getServices())
             ->map(function (Service $service) use ($price) {
                 return create_dom_element(
                     "option",
@@ -184,7 +190,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             })
             ->join();
 
-        $servers = collect($this->heart->getServers())
+        $servers = collect($this->serverManager->getServers())
             ->map(function (Server $server) use ($price) {
                 return create_dom_element("option", $server->getName(), [
                     "value" => $server->getId(),

@@ -1,13 +1,14 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -35,8 +36,11 @@ class PageAdminBoughtServices extends PageAdmin
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct(
         Template $template,
@@ -44,14 +48,16 @@ class PageAdminBoughtServices extends PageAdmin
         TransactionRepository $transactionRepository,
         Database $db,
         CurrentPage $currentPage,
-        Heart $heart
+        ServiceManager $serviceManager,
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
+        $this->serverManager = $serverManager;
     }
 
     public function getTitle(Request $request)
@@ -105,8 +111,8 @@ class PageAdminBoughtServices extends PageAdmin
                 return $this->transactionRepository->mapToModel($row);
             })
             ->map(function (Transaction $transaction) {
-                $service = $this->heart->getService($transaction->getServiceId());
-                $server = $this->heart->getServer($transaction->getServerId());
+                $service = $this->serviceManager->getService($transaction->getServiceId());
+                $server = $this->serverManager->getServer($transaction->getServerId());
 
                 $userEntry = $transaction->getUserId()
                     ? new UserRef($transaction->getUserId(), $transaction->getUserName())

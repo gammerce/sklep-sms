@@ -6,31 +6,31 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SupportSmsRule;
 use App\Http\Validation\Rules\SupportTransferRule;
 use App\Http\Validation\Validator;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
-use App\System\Heart;
 
 class ServerService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var ServerServiceService */
     private $serverServiceService;
 
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
+    /** @var ServiceManager */
+    private $serviceManager;
+
     public function __construct(
-        Heart $heart,
+        ServiceManager $serviceManager,
         ServiceModuleManager $serviceModuleManager,
         ServerServiceService $serverServiceService
     ) {
-        $this->heart = $heart;
         $this->serverServiceService = $serverServiceService;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->serviceManager = $serviceManager;
     }
 
     public function createValidator(array $body)
@@ -54,7 +54,7 @@ class ServerService
 
     public function updateServerServiceAffiliations($serverId, array $body)
     {
-        $serversServices = collect($this->heart->getServices())
+        $serversServices = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
                 return $this->serviceModuleManager->get($service->getId()) instanceof
                     IServicePurchaseExternal;

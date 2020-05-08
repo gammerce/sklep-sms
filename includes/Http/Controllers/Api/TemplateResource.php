@@ -3,9 +3,9 @@ namespace App\Http\Controllers\Api;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Responses\PlainResponse;
+use App\Managers\UserManager;
 use App\Services\PriceTextService;
 use App\Support\Template;
-use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource
@@ -13,19 +13,19 @@ class TemplateResource
     /** @var Template */
     private $template;
 
-    /** @var Heart */
-    private $heart;
+    /** @var UserManager */
+    private $userManager;
 
     /** @var PriceTextService */
     private $priceTextService;
 
     public function __construct(
         Template $template,
-        Heart $heart,
+        UserManager $userManager,
         PriceTextService $priceTextService
     ) {
         $this->template = $template;
-        $this->heart = $heart;
+        $this->userManager = $userManager;
         $this->priceTextService = $priceTextService;
     }
 
@@ -45,7 +45,7 @@ class TemplateResource
                 throw new UnauthorizedException();
             }
 
-            $user = $this->heart->getUser($request->query->get('uid'));
+            $user = $this->userManager->getUser($request->query->get('uid'));
             $wallet = $user ? $this->priceTextService->getPriceText($user->getWallet()) : null;
 
             return [

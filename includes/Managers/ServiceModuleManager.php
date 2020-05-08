@@ -4,22 +4,21 @@ namespace App\Managers;
 use App\Exceptions\InvalidConfigException;
 use App\ServiceModules\ServiceModule;
 use App\System\Application;
-use App\System\Heart;
 
 class ServiceModuleManager
 {
     /** @var Application */
     private $app;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     private $classes = [];
 
-    public function __construct(Application $app, Heart $heart)
+    public function __construct(Application $app, ServiceManager $serviceManager)
     {
         $this->app = $app;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
     }
 
     /**
@@ -49,7 +48,7 @@ class ServiceModuleManager
      */
     public function get($serviceId)
     {
-        $service = $this->heart->getService($serviceId);
+        $service = $this->serviceManager->getService($serviceId);
 
         if (!$service) {
             return null;

@@ -1,30 +1,30 @@
 <?php
 namespace App\Services;
 
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Models\User;
-use App\System\Heart;
 
 class ServiceListService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
     /** @var UserServiceAccessService */
     private $userServiceAccessService;
 
+    /** @var ServiceManager */
+    private $serviceManager;
+
     public function __construct(
-        Heart $heart,
+        ServiceManager $serviceManager,
         ServiceModuleManager $serviceModuleManager,
         UserServiceAccessService $userServiceAccessService
     ) {
-        $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->userServiceAccessService = $userServiceAccessService;
+        $this->serviceManager = $serviceManager;
     }
 
     /**
@@ -33,7 +33,7 @@ class ServiceListService
      */
     public function getWebSupportedForUser(User $user)
     {
-        return collect($this->heart->getServices())
+        return collect($this->serviceManager->getServices())
             ->filter(function (Service $service) use ($user) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&

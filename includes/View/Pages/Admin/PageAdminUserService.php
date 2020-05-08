@@ -2,6 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
@@ -10,7 +11,6 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\UserServiceService;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\Div;
 use App\View\Html\Input;
@@ -27,8 +27,8 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
     /** @var UserServiceService */
     private $userServiceService;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
@@ -38,11 +38,11 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         TranslationManager $translationManager,
         UserServiceService $userServiceService,
         ServiceModuleManager $serviceModuleManager,
-        Heart $heart
+        ServiceManager $serviceManager
     ) {
         parent::__construct($template, $translationManager);
         $this->userServiceService = $userServiceService;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
@@ -105,7 +105,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "user_service_add":
-                $services = collect($this->heart->getServices())
+                $services = collect($this->serviceManager->getServices())
                     ->filter(function (Service $service) {
                         $serviceModule = $this->serviceModuleManager->get($service->getId());
                         return $serviceModule instanceof IServiceUserServiceAdminAdd;
