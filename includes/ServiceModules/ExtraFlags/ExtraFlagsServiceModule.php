@@ -1199,7 +1199,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         return collect($this->serverManager->getServers())
             ->filter(function (Server $server) {
-                return $this->serverServiceManager->serverServiceLinked($server->getId(), $this->service->getId());
+                return $this->serverServiceManager->serverServiceLinked(
+                    $server->getId(),
+                    $this->service->getId()
+                );
             })
             ->map(function (Server $server) use ($selectedServerId) {
                 return create_dom_element("option", $server->getName(), [

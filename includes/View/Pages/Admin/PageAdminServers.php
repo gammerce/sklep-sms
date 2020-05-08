@@ -185,7 +185,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ->map(function (Service $service) use ($server) {
                 $isLinked =
                     $server &&
-                    $this->serverServiceManager->serverServiceLinked($server->getId(), $service->getId());
+                    $this->serverServiceManager->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    );
                 $options = [
                     create_dom_element("option", $this->lang->strtoupper($this->lang->t("no")), [
                         "value" => 0,

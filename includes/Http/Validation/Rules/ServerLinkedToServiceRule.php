@@ -31,7 +31,10 @@ class ServerLinkedToServiceRule extends BaseRule
 
         if (
             !$server ||
-            !$this->serverServiceManager->serverServiceLinked($server->getId(), $this->service->getId())
+            !$this->serverServiceManager->serverServiceLinked(
+                $server->getId(),
+                $this->service->getId()
+            )
         ) {
             return [$this->lang->t('chosen_incorrect_server')];
         }

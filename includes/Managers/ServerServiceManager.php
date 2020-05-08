@@ -39,7 +39,7 @@ class ServerServiceManager
     {
         foreach ($this->serverServiceRepository->all() as $serverService) {
             $this->serversServices[$serverService->getServerId()][
-            $serverService->getServiceId()
+                $serverService->getServiceId()
             ] = true;
         }
 
