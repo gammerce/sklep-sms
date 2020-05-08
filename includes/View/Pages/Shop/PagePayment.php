@@ -12,6 +12,8 @@ use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
+// TODO Handle applying promo code
+
 class PagePayment extends Page
 {
     const PAGE_ID = "payment";

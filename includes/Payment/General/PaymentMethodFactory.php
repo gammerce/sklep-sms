@@ -4,7 +4,6 @@ namespace App\Payment\General;
 use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\Payment\ServiceCode\ServiceCodePaymentMethod;
 use App\Payment\Sms\SmsPaymentMethod;
 use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Wallet\WalletPaymentMethod;
@@ -21,7 +20,6 @@ class PaymentMethodFactory
         Purchase::METHOD_DIRECT_BILLING => DirectBillingPaymentMethod::class,
         Purchase::METHOD_TRANSFER => TransferPaymentMethod::class,
         Purchase::METHOD_WALLET => WalletPaymentMethod::class,
-        Purchase::METHOD_SERVICE_CODE => ServiceCodePaymentMethod::class,
     ];
 
     public function __construct(Application $app)

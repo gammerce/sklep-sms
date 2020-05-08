@@ -252,10 +252,10 @@ body {
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        margin-top: 5rem;
     }
 
     .payment-type-wrapper {
+        width: 250px;
         margin-right: 1rem;
         margin-bottom: 1rem;
 
@@ -292,13 +292,19 @@ body {
     .order-details {
         border: 2px solid $danger;
         padding: 1rem;
+        margin-bottom: 3rem;
+
+        legend {
+            color: $danger;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+            padding: 0 1rem;
+        }
     }
 
-    .order-details legend {
-        color: $danger;
-        text-transform: uppercase;
-        font-size: 1.1rem;
-        padding: 0 1rem;
+    .promo-code-box {
+        display: flex;
+        justify-content: center;
     }
 
     #sms_details {

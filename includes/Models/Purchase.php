@@ -5,13 +5,11 @@ class Purchase
 {
     const METHOD_ADMIN = "admin";
     const METHOD_DIRECT_BILLING = "direct_billing";
-    const METHOD_SERVICE_CODE = "service_code";
     const METHOD_SMS = "sms";
     const METHOD_TRANSFER = "transfer";
     const METHOD_WALLET = "wallet";
 
     const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
-    const PAYMENT_DISABLED_SERVICE_CODE = "no_code";
     const PAYMENT_DISABLED_SMS = "no_sms";
     const PAYMENT_DISABLED_TRANSFER = "no_transfer";
     const PAYMENT_DISABLED_WALLET = "no_wallet";
@@ -23,7 +21,6 @@ class Purchase
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
-    const PAYMENT_SERVICE_CODE = "service_code";
     const PAYMENT_SMS_CODE = "sms_code";
 
     const ORDER_QUANTITY = "quantity";

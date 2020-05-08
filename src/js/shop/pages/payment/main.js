@@ -34,12 +34,6 @@ $(document).delegate("#pay_sms", "click", function() {
     }
 });
 
-$(document).delegate("#pay_service_code", "click", function() {
-    const smsDetails = $("#sms_details");
-    hide(smsDetails);
-    purchaseService("service_code");
-});
-
 function redirectToExternalWithPost(jsonObj) {
     const form = $("<form>", {
         action: jsonObj.data.url,
@@ -87,7 +81,6 @@ function purchaseService(method) {
         data: {
             method: method,
             sms_code: $("#sms_code").val(),
-            service_code: $("#service_code").val(),
         },
         complete() {
             loader.hide();

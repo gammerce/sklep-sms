@@ -95,7 +95,6 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
-            Purchase::PAYMENT_DISABLED_SERVICE_CODE => true,
             Purchase::PAYMENT_DISABLED_SMS => true,
             Purchase::PAYMENT_DISABLED_TRANSFER => true,
             Purchase::PAYMENT_DISABLED_WALLET => true,
