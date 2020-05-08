@@ -146,7 +146,7 @@ class Translator
         $numArgs = count($argList);
 
         for ($i = 1; $i < $numArgs; $i++) {
-            $string = str_replace("{$i}", $argList[$i], $string);
+            $string = str_replace("{{$i}}", $argList[$i], $string);
         }
 
         return $string;
