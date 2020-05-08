@@ -13,8 +13,8 @@ use App\Http\Validation\Rules\UserGroupsRule;
 use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\UserManager;
 use App\Repositories\UserRepository;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,12 +24,12 @@ class UserResource
         $userId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
+        UserManager $userManager,
         UserRepository $userRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $editedUser = $heart->getUser($userId);
+        $editedUser = $userManager->getUser($userId);
 
         $validator = new Validator(
             array_merge($request->request->all(), [

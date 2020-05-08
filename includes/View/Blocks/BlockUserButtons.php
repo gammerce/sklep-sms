@@ -1,11 +1,11 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Managers\ServiceManager;
 use App\Routing\UrlGenerator;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,8 +20,8 @@ class BlockUserButtons extends Block
     /** @var Template */
     private $template;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     /** @var UrlGenerator */
     private $url;
@@ -36,13 +36,13 @@ class BlockUserButtons extends Block
         Auth $auth,
         Template $template,
         TranslationManager $translationManager,
-        Heart $heart,
+        ServiceManager $serviceManager,
         UrlGenerator $url,
         UserServiceAccessService $userServiceAccessService
     ) {
         $this->auth = $auth;
         $this->template = $template;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
         $this->url = $url;
         $this->lang = $translationManager->user();
         $this->userServiceAccessService = $userServiceAccessService;
@@ -79,7 +79,7 @@ class BlockUserButtons extends Block
         // TODO Remove along with retro theme
         if (
             $this->userServiceAccessService->canUserUseService(
-                $this->heart->getService("charge_wallet"),
+                $this->serviceManager->getService("charge_wallet"),
                 $user
             )
         ) {

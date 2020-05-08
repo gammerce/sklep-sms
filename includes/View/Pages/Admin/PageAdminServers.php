@@ -3,6 +3,9 @@ namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
 use App\Managers\PaymentModuleManager;
+use App\Managers\ServerManager;
+use App\Managers\ServerServiceManager;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\PaymentPlatform;
 use App\Models\Server;
@@ -10,7 +13,6 @@ use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -31,14 +33,20 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
+
+    /** @var ServerManager */
+    private $serverManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    /** @var ServerServiceManager */
+    private $serverServiceManager;
 
     public function __construct(
         Template $template,
@@ -46,13 +54,17 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         PaymentPlatformRepository $paymentPlatformRepository,
         ServiceModuleManager $serviceModuleManager,
         PaymentModuleManager $paymentModuleManager,
-        Heart $heart
+        ServerManager $serverManager,
+        ServiceManager $serviceManager,
+        ServerServiceManager $serverServiceManager
     ) {
         parent::__construct($template, $translationManager);
         $this->paymentPlatformRepository = $paymentPlatformRepository;
-        $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->serverManager = $serverManager;
+        $this->serviceManager = $serviceManager;
+        $this->serverServiceManager = $serverServiceManager;
     }
 
     public function getPrivilege()
@@ -69,7 +81,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         $recordId = as_int($request->query->get("record"));
 
-        $bodyRows = collect($this->heart->getServers())
+        $bodyRows = collect($this->serverManager->getServers())
             ->filter(function (Server $server) use ($recordId) {
                 return $recordId === null || $server->getId() === $recordId;
             })
@@ -131,7 +143,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId === "server_edit") {
-            $server = $this->heart->getServer($query["id"]);
+            $server = $this->serverManager->getServer($query["id"]);
         } else {
             $server = null;
         }
@@ -165,7 +177,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             })
             ->join();
 
-        $services = collect($this->heart->getServices())
+        $services = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule instanceof IServicePurchaseExternal;
@@ -173,7 +185,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ->map(function (Service $service) use ($server) {
                 $isLinked =
                     $server &&
-                    $this->heart->serverServiceLinked($server->getId(), $service->getId());
+                    $this->serverServiceManager->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    );
                 $options = [
                     create_dom_element("option", $this->lang->strtoupper($this->lang->t("no")), [
                         "value" => 0,

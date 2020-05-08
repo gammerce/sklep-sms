@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\System\Heart;
+use App\Managers\GroupManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class User
@@ -77,8 +77,8 @@ class User
         /** @var Request $request */
         $request = app()->make(Request::class);
 
-        /** @var Heart $heart */
-        $heart = app()->make(Heart::class);
+        /** @var GroupManager $groupManager */
+        $groupManager = app()->make(GroupManager::class);
 
         $this->uid = $uid;
         $this->username = $username;
@@ -99,7 +99,7 @@ class User
 
         if ($this->groups) {
             foreach ($this->groups as $groupId) {
-                $group = $heart->getGroup($groupId);
+                $group = $groupManager->getGroup($groupId);
 
                 if ($group) {
                     foreach ($group->getPermissions() as $privilege => $value) {

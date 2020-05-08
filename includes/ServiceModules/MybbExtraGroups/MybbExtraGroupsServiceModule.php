@@ -13,6 +13,7 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\UserManager;
 use App\Models\MybbExtraGroupsUserService;
 use App\Models\MybbUser;
 use App\Models\Purchase;
@@ -37,7 +38,6 @@ use App\Support\Database;
 use App\Support\Expression;
 use App\Support\QueryParticle;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -76,8 +76,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var Auth */
     private $auth;
 
-    /** @var Heart */
-    private $heart;
+    /** @var UserManager */
+    private $userManager;
 
     /** @var Translator */
     private $lang;
@@ -114,7 +114,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         parent::__construct($service);
 
         $this->auth = $this->app->make(Auth::class);
-        $this->heart = $this->app->make(Heart::class);
+        $this->userManager = $this->app->make(UserManager::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
@@ -411,7 +411,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $purchase->getEmail(),
             [
                 "uid" => $mybbUser->getUid(),
-                "groups" => implode("", "", $this->groups),
+                "groups" => implode(",", $this->groups),
             ]
         );
     }
@@ -502,7 +502,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         foreach ($statement as $row) {
             $row["extra_data"] = json_decode($row["extra_data"], true);
-            foreach (explode("", "", $row["extra_data"]["mybb_groups"]) as $groupId) {
+            foreach (explode(",", $row["extra_data"]["mybb_groups"]) as $groupId) {
                 $mybbUser->prolongShopGroup($groupId, $row["expire"]);
             }
         }
@@ -609,7 +609,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->heart->getUser($validated["uid"]));
+        $purchase = new Purchase($this->userManager->getUser($validated["uid"]));
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,

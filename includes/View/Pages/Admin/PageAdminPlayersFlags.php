@@ -1,10 +1,10 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Managers\ServerManager;
 use App\ServiceModules\ExtraFlags\PlayerFlag;
 use App\Support\Database;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -25,20 +25,20 @@ class PageAdminPlayersFlags extends PageAdmin
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Database $db,
         CurrentPage $currentPage,
-        Heart $heart
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
+        $this->serverManager = $serverManager;
     }
 
     public function getPrivilege()
@@ -63,7 +63,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $server = $this->heart->getServer($row["server"]);
+                $server = $this->serverManager->getServer($row["server"]);
 
                 $bodyRow = (new BodyRow())
                     ->setDbId($row["id"])

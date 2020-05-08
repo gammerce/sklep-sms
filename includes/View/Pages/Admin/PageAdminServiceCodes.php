@@ -2,10 +2,10 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\ServiceManager;
 use App\Models\Service;
 use App\Support\Database;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -30,20 +30,20 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Database $db,
         CurrentPage $currentPage,
-        Heart $heart
+        ServiceManager $serviceManager
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
     }
 
     public function getPrivilege()
@@ -129,7 +129,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "code_add":
-                $services = collect($this->heart->getServices())
+                $services = collect($this->serviceManager->getServices())
                     ->map(function (Service $service) {
                         return create_dom_element("option", $service->getName(), [
                             "value" => $service->getId(),

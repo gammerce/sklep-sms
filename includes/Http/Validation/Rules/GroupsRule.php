@@ -2,17 +2,17 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\System\Heart;
+use App\Managers\GroupManager;
 
 class GroupsRule extends BaseRule
 {
-    /** @var Heart */
-    private $heart;
+    /** @var GroupManager */
+    private $groupManager;
 
     public function __construct()
     {
         parent::__construct();
-        $this->heart = app()->make(Heart::class);
+        $this->groupManager = app()->make(GroupManager::class);
     }
 
     public function validate($attribute, $value, array $data)
@@ -22,7 +22,7 @@ class GroupsRule extends BaseRule
         }
 
         foreach ($value as $groupId) {
-            if (!$this->heart->getGroup($groupId)) {
+            if (!$this->groupManager->getGroup($groupId)) {
                 return [$this->lang->t('wrong_group')];
             }
         }

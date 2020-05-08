@@ -2,18 +2,16 @@
 namespace App\Payment\General;
 
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\Support\Mailer;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var Mailer */
     private $mailer;
 
@@ -29,20 +27,28 @@ class BoughtServiceService
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var ServerManager */
+    private $serverManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
+
     public function __construct(
         TranslationManager $translationManager,
-        Heart $heart,
         Mailer $mailer,
+        ServerManager $serverManager,
+        ServiceManager $serviceManager,
         BoughtServiceRepository $boughtServiceRepository,
         PurchaseInformation $purchaseInformation,
         DatabaseLogger $logger
     ) {
-        $this->heart = $heart;
         $this->mailer = $mailer;
         $this->lang = $translationManager->user();
         $this->boughtServiceRepository = $boughtServiceRepository;
         $this->logger = $logger;
         $this->purchaseInformation = $purchaseInformation;
+        $this->serverManager = $serverManager;
+        $this->serviceManager = $serviceManager;
     }
 
     /**
@@ -91,8 +97,8 @@ class BoughtServiceService
 
         $returnMessage = $this->sendEmail($serviceId, $authData, $email, $boughtService);
 
-        $service = $this->heart->getService($serviceId);
-        $server = $this->heart->getServer($serverId);
+        $service = $this->serviceManager->getService($serviceId);
+        $server = $this->serverManager->getServer($serverId);
         $quantity = $forever ? $this->lang->t('forever') : "{$quantity} {$service->getTag()}";
 
         $this->logger->log(

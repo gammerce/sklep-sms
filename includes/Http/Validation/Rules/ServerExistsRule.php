@@ -2,22 +2,22 @@
 namespace App\Http\Validation\Rules;
 
 use App\Http\Validation\BaseRule;
-use App\System\Heart;
+use App\Managers\ServerManager;
 
 class ServerExistsRule extends BaseRule
 {
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct()
     {
         parent::__construct();
-        $this->heart = app()->make(Heart::class);
+        $this->serverManager = app()->make(ServerManager::class);
     }
 
     public function validate($attribute, $value, array $data)
     {
-        if (!$this->heart->getServer($value)) {
+        if (!$this->serverManager->getServer($value)) {
             return [$this->lang->t('no_server_id')];
         }
 

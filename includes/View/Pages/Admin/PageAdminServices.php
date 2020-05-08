@@ -2,6 +2,8 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\GroupManager;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Group;
 use App\Models\Service;
@@ -9,7 +11,6 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\ServiceModule;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -25,21 +26,26 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "services";
 
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
+
+    /** @var GroupManager */
+    private $groupManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         ServiceModuleManager $serviceModuleManager,
-        Heart $heart
+        GroupManager $groupManager,
+        ServiceManager $serviceManager
     ) {
         parent::__construct($template, $translationManager);
-        $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->groupManager = $groupManager;
+        $this->serviceManager = $serviceManager;
     }
 
     public function getPrivilege()
@@ -56,7 +62,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     {
         $recordId = $request->query->get("record");
 
-        $bodyRows = collect($this->heart->getServices())
+        $bodyRows = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) use ($recordId) {
                 return $recordId === null || $service->getId() === $recordId;
             })
@@ -105,7 +111,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId == "service_edit") {
-            $service = $this->heart->getService($query["id"]);
+            $service = $this->serviceManager->getService($query["id"]);
 
             if (strlen($service->getModule())) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
@@ -137,7 +143,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 ->join();
         }
 
-        $groups = collect($this->heart->getGroups())
+        $groups = collect($this->groupManager->getGroups())
             ->map(function (Group $group) {
                 return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
                     "value" => $group->getId(),

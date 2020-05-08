@@ -1,6 +1,8 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -8,7 +10,6 @@ use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
@@ -38,11 +39,14 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct(
         Template $template,
@@ -54,7 +58,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         PaginationService $paginationService,
         ServiceModuleManager $serviceModuleManager,
         CurrentPage $currentPage,
-        Heart $heart
+        ServiceManager $serviceManager,
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
 
@@ -64,8 +69,9 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->db = $db;
         $this->paginationService = $paginationService;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->serviceManager = $serviceManager;
+        $this->serverManager = $serverManager;
     }
 
     public function getTitle(Request $request)
@@ -100,8 +106,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $desc = $logInfo["text"];
                 $class = $logInfo["class"];
             } else {
-                $service = $this->heart->getService($transaction->getServiceId());
-                $server = $this->heart->getServer($transaction->getServerId());
+                $service = $this->serviceManager->getService($transaction->getServiceId());
+                $server = $this->serverManager->getServer($transaction->getServerId());
                 $desc = $this->lang->t(
                     "service_was_bought",
                     $service ? $service->getNameI18n() : "",

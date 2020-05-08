@@ -11,7 +11,6 @@ use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
-use App\System\Heart;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -82,7 +81,7 @@ class TransferController
      */
     public function oldAction(
         Request $request,
-        Heart $heart,
+        PaymentModuleManager $paymentModuleManager,
         ExternalPaymentService $externalPaymentService,
         TransferPaymentService $transferPaymentService,
         DatabaseLogger $databaseLogger
@@ -90,7 +89,7 @@ class TransferController
         return $this->action(
             $request->query->get('service'),
             $request,
-            $heart,
+            $paymentModuleManager,
             $externalPaymentService,
             $transferPaymentService,
             $databaseLogger

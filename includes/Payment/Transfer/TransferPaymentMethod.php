@@ -2,6 +2,7 @@
 namespace App\Payment\Transfer;
 
 use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
@@ -9,7 +10,6 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
 use App\Support\Template;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -23,8 +23,8 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var PriceTextService */
     private $priceTextService;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     /** @var Translator */
     private $lang;
@@ -39,7 +39,7 @@ class TransferPaymentMethod implements IPaymentMethod
     private $paymentModuleManager;
 
     public function __construct(
-        Heart $heart,
+        ServiceManager $serviceManager,
         Template $template,
         PriceTextService $priceTextService,
         PurchaseDataService $purchaseDataService,
@@ -49,7 +49,7 @@ class TransferPaymentMethod implements IPaymentMethod
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
         $this->purchaseDataService = $purchaseDataService;
@@ -103,7 +103,7 @@ class TransferPaymentMethod implements IPaymentMethod
             );
         }
 
-        $service = $this->heart->getService($purchase->getServiceId());
+        $service = $this->serviceManager->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t('payment_for_service', $service->getNameI18n()));
 
         $fileName = $this->purchaseDataService->storePurchase($purchase);

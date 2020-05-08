@@ -9,12 +9,12 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Managers\ServiceModuleManager;
+use App\Managers\UserManager;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\Services\PriceTextService;
 use App\System\Auth;
-use App\System\Heart;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,7 +24,7 @@ class WalletChargeCollection
     public function post(
         $userId,
         Request $request,
-        Heart $heart,
+        UserManager $userManager,
         TranslationManager $translationManager,
         Auth $auth,
         Settings $settings,
@@ -53,7 +53,7 @@ class WalletChargeCollection
             throw new InvalidServiceModuleException();
         }
 
-        $editedUser = $heart->getUser($userId);
+        $editedUser = $userManager->getUser($userId);
         $quantity = price_to_int($validated['quantity']);
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
