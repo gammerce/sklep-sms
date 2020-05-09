@@ -1,18 +1,18 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Repositories\ServiceCodeRepository;
+use App\Repositories\PromoCodeRepository;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class ServiceCodeCollectionTest extends HttpTestCase
+class PromoCodeCollectionTest extends HttpTestCase
 {
-    /** @var ServiceCodeRepository */
-    private $serviceCodeRepository;
+    /** @var PromoCodeRepository */
+    private $promoCodeRepository;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->serviceCodeRepository = $this->app->make(ServiceCodeRepository::class);
+        $this->promoCodeRepository = $this->app->make(PromoCodeRepository::class);
     }
 
     /** @test */
@@ -23,23 +23,22 @@ class ServiceCodeCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->post("/api/admin/services/vippro/service_codes", [
+        $response = $this->post("/api/admin/promo_codes", [
             "code" => "abcpo",
-            "quantity" => 40,
             "uid" => null,
             "server_id" => $server->getId(),
+            "service_id" => "vippro",
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $serviceCode = $this->serviceCodeRepository->get($json["data"]["id"]);
+        $serviceCode = $this->promoCodeRepository->get($json["data"]["id"]);
         $this->assertNotNull($serviceCode);
         $this->assertNull($serviceCode->getUid());
         $this->assertSame($server->getId(), $serviceCode->getServerId());
         $this->assertSame("abcpo", $serviceCode->getCode());
-        $this->assertSame(40, $serviceCode->getQuantity());
         $this->assertSame("vippro", $serviceCode->getServiceId());
         $this->assertNotNull($serviceCode->getTimestamp());
     }
@@ -48,22 +47,19 @@ class ServiceCodeCollectionTest extends HttpTestCase
     public function creates_service_code_forever()
     {
         // given
-        $server = $this->factory->server();
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->post("/api/admin/services/vippro/service_codes", [
+        $response = $this->post("/api/admin/service_codes", [
             "code" => "abcpo",
             "quantity" => null,
-            "uid" => null,
-            "server_id" => $server->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $serviceCode = $this->serviceCodeRepository->get($json["data"]["id"]);
+        $serviceCode = $this->promoCodeRepository->get($json["data"]["id"]);
         $this->assertNotNull($serviceCode);
         $this->assertNull($serviceCode->getQuantity());
     }
@@ -75,9 +71,10 @@ class ServiceCodeCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->post("/api/admin/services/vippro/service_codes", [
+        $response = $this->post("/api/admin/service_codes", [
             "quantity" => "asd",
             "server_id" => "asd",
+            "service_id" => "asd",
             "uid" => "asd",
         ]);
 
@@ -95,6 +92,8 @@ class ServiceCodeCollectionTest extends HttpTestCase
                     "<ul class=\"form_warning help is-danger\"><li >Podane ID użytkownika nie jest przypisane do żadnego konta.</li></ul>",
                 "server_id" =>
                     "<ul class=\"form_warning help is-danger\"><li >Brak serwera o takim ID.</li></ul>",
+                "service_id" =>
+                    "<ul class=\"form_warning help is-danger\"><li >Brak usługi o takim ID.</li></ul>",
             ],
             $json["warnings"]
         );

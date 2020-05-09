@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-class ServiceCode
+class PromoCode
 {
     /** @var int */
     private $id;
@@ -9,14 +9,11 @@ class ServiceCode
     /** @var string */
     private $code;
 
-    /** @var string */
+    /** @var string|null */
     private $service;
 
     /** @var int|null */
     private $server;
-
-    /** @var int */
-    private $quantity;
 
     /** @var int|null */
     private $uid;
@@ -24,13 +21,12 @@ class ServiceCode
     /** @var string */
     private $timestamp;
 
-    public function __construct($id, $code, $service, $quantity, $server, $uid, $timestamp)
+    public function __construct($id, $code, $service, $server, $uid, $timestamp)
     {
         $this->id = $id;
         $this->code = $code;
         $this->service = $service;
         $this->server = $server;
-        $this->quantity = $quantity;
         $this->uid = $uid;
         $this->timestamp = $timestamp;
     }

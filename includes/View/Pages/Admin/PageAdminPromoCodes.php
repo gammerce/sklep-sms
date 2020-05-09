@@ -20,9 +20,11 @@ use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
+// TODO Refactor promo codes page
+
+class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 {
-    const PAGE_ID = "service_codes";
+    const PAGE_ID = "promo_codes";
 
     /** @var Database */
     private $db;
@@ -53,7 +55,7 @@ class PageAdminServiceCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t("service_codes");
+        return $this->lang->t("promo_codes");
     }
 
     public function getContent(Request $request)

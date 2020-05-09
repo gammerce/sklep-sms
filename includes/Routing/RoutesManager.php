@@ -13,12 +13,11 @@ use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
 use App\Http\Controllers\Api\Admin\PaymentPlatformResource;
 use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
+use App\Http\Controllers\Api\Admin\PromoCodeCollection;
+use App\Http\Controllers\Api\Admin\PromoCodeResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\Http\Controllers\Api\Admin\ServerResource;
 use App\Http\Controllers\Api\Admin\ServerTokenController;
-use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
-use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
-use App\Http\Controllers\Api\Admin\ServiceCodeResource;
 use App\Http\Controllers\Api\Admin\ServiceCollection;
 use App\Http\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Http\Controllers\Api\Admin\ServiceResource;
@@ -76,9 +75,9 @@ use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireUnauthorized;
 use App\Http\Middlewares\RunCron;
-use App\Http\Middlewares\StartAdminSession;
 use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetupAvailable;
+use App\Http\Middlewares\StartAdminSession;
 use App\Http\Middlewares\StartUserSession;
 use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
@@ -363,11 +362,6 @@ class RoutesManager
                     'uses' => UserResource::class . '@delete',
                 ]);
 
-                $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeAddFormController::class . '@get',
-                ]);
-
                 $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
                     'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
                     'uses' => UserServiceAddFormController::class . '@get',
@@ -378,9 +372,9 @@ class RoutesManager
                     'uses' => UserServiceCollection::class . '@post',
                 ]);
 
-                $r->post('/api/admin/services/{serviceId}/service_codes', [
+                $r->post('/api/admin/promo_codes', [
                     'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeCollection::class . '@post',
+                    'uses' => PromoCodeCollection::class . '@post',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
@@ -408,9 +402,9 @@ class RoutesManager
                     'uses' => WalletChargeCollection::class . '@post',
                 ]);
 
-                $r->delete('/api/admin/service_codes/{serviceCodeId}', [
+                $r->delete('/api/admin/promo_code/{promoCodeId}', [
                     'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeResource::class . '@delete',
+                    'uses' => PromoCodeResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/sms_codes', [

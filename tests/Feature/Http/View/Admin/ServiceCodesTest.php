@@ -10,8 +10,8 @@ class ServiceCodesTest extends HttpTestCase
     {
         // given
         $this->actingAs($this->factory->admin());
-        $this->factory->serviceCode();
-        $this->factory->serviceCode();
+        $this->factory->promoCode();
+        $this->factory->promoCode();
 
         // when
         $response = $this->get("/admin/service_codes");

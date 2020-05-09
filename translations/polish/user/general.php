@@ -26,6 +26,7 @@ return [
     'forgot_password' => 'Nie pamiętam hasła',
     'forgotten_password' => 'Odzyskanie hasła',
     'go_to_payment' => 'Przejdź do płatności',
+    'invalid_promo_code' => 'Nieprawidłowy kod promocyjny',
     'keyreset_error' => 'Wystąpił błąd podczas wysyłania e-maila z linkiem do zresetowania hasła.',
     'languages' => 'Języki',
     'log_accepted_sms_code' => 'Zaakceptowana kod SMS [{1}] Treść: [{2}] Numer: [{3}]',

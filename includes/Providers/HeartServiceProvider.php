@@ -45,7 +45,7 @@ use App\View\Pages\Admin\PageAdminPaymentWallet;
 use App\View\Pages\Admin\PageAdminPlayersFlags;
 use App\View\Pages\Admin\PageAdminPricing;
 use App\View\Pages\Admin\PageAdminServers;
-use App\View\Pages\Admin\PageAdminServiceCodes;
+use App\View\Pages\Admin\PageAdminPromoCodes;
 use App\View\Pages\Admin\PageAdminServices;
 use App\View\Pages\Admin\PageAdminSettings;
 use App\View\Pages\Admin\PageAdminSmsCodes;
@@ -157,7 +157,7 @@ class HeartServiceProvider
         $pageManager->registerAdmin(PageAdminPlayersFlags::class);
         $pageManager->registerAdmin(PageAdminPricing::class);
         $pageManager->registerAdmin(PageAdminServers::class);
-        $pageManager->registerAdmin(PageAdminServiceCodes::class);
+        $pageManager->registerAdmin(PageAdminPromoCodes::class);
         $pageManager->registerAdmin(PageAdminServices::class);
         $pageManager->registerAdmin(PageAdminSettings::class);
         $pageManager->registerAdmin(PageAdminSmsCodes::class);

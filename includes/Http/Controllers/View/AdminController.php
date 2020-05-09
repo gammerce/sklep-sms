@@ -115,9 +115,9 @@ class AdminController
         }
 
         if (has_privileges("view_service_codes")) {
-            $pid = "service_codes";
+            $pid = "promo_codes";
             $name = $lang->t($pid);
-            $serviceCodesLink = $template->render("admin/page_link", compact("pid", "name"));
+            $promoCodesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
         if (has_privileges("view_antispam_questions")) {
@@ -156,8 +156,8 @@ class AdminController
                     "logsLink",
                     "playersFlagsLink",
                     "pricingLink",
+                    "promoCodesLink",
                     "serversLink",
-                    "serviceCodesLink",
                     "servicesLink",
                     "settingsLink",
                     "smsCodesLink",

@@ -33,13 +33,6 @@ class Purchase
      */
     private $serviceId = null;
 
-    /**
-     * Order details like auth_data, password etc.
-     *
-     * @var array
-     */
-    private $order = null;
-
     /** @var User */
     public $user;
 
@@ -51,7 +44,19 @@ class Purchase
      *
      * @var array
      */
-    private $payment = null;
+    private $payment = [];
+
+    /**
+     * Order details like auth_data, password etc.
+     *
+     * @var array
+     */
+    private $order = [];
+
+    /**
+     * @var PromoCode
+     */
+    private $promoCode;
 
     /**
      * Purchase description ( useful for transfer payments )
@@ -77,6 +82,9 @@ class Purchase
         return $this->serviceId;
     }
 
+    /**
+     * @param string $serviceId
+     */
     public function setServiceId($serviceId)
     {
         $this->serviceId = (string) $serviceId;
@@ -130,6 +138,9 @@ class Purchase
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     */
     public function setEmail($email)
     {
         $this->email = (string) $email;
@@ -174,5 +185,21 @@ class Purchase
     public function markAsAttempted()
     {
         $this->isAttempted = true;
+    }
+
+    /**
+     * @return PromoCode
+     */
+    public function getPromoCode()
+    {
+        return $this->promoCode;
+    }
+
+    /**
+     * @param PromoCode $promoCode
+     */
+    public function setPromoCode(PromoCode $promoCode)
+    {
+        $this->promoCode = $promoCode;
     }
 }

@@ -7,7 +7,7 @@ use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\PriceRepository;
 use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
-use App\Repositories\ServiceCodeRepository;
+use App\Repositories\PromoCodeRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\SmsCodeRepository;
 use App\Repositories\UserRepository;
@@ -39,8 +39,8 @@ class Factory
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    /** @var ServiceCodeRepository */
-    private $serviceCodeRepository;
+    /** @var PromoCodeRepository */
+    private $promoCodeRepository;
 
     /** @var PriceRepository */
     private $priceRepository;
@@ -64,7 +64,7 @@ class Factory
         PriceRepository $priceRepository,
         ServerServiceRepository $serverServiceRepository,
         PaymentPlatformRepository $paymentPlatformRepository,
-        ServiceCodeRepository $serviceCodeRepository,
+        PromoCodeRepository $promoCodeRepository,
         LogRepository $logRepository,
         SmsCodeRepository $smsCodeRepository,
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
@@ -77,7 +77,7 @@ class Factory
         $this->serviceRepository = $serviceRepository;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->priceRepository = $priceRepository;
-        $this->serviceCodeRepository = $serviceCodeRepository;
+        $this->promoCodeRepository = $promoCodeRepository;
         $this->logRepository = $logRepository;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
@@ -230,12 +230,11 @@ class Factory
         );
     }
 
-    public function serviceCode(array $attributes = [])
+    public function promoCode(array $attributes = [])
     {
         $attributes = array_merge(
             [
                 "code" => $this->faker->word,
-                "quantity" => $this->faker->numberBetween(1, 100),
                 "server_id" => null,
                 "service_id" => "vip",
                 "uid" => null,
@@ -243,10 +242,9 @@ class Factory
             $attributes
         );
 
-        return $this->serviceCodeRepository->create(
+        return $this->promoCodeRepository->create(
             $attributes["code"],
             $attributes["service_id"],
-            $attributes["quantity"],
             $attributes["server_id"],
             $attributes["uid"]
         );

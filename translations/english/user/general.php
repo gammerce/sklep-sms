@@ -26,6 +26,7 @@ return [
     'forgot_password' => 'I don\'t remember a password',
     'forgotten_password' => 'Password recovery',
     'go_to_payment' => 'Proceed to payment',
+    'invalid_promo_code' => 'Invalid promo code',
     'keyreset_error' => 'An error occurred while sending e-mail with password reset link.',
     'languages' => 'Languages',
     'log_accepted_sms_code' => 'SMS code was accepted [{1}] SMS text: [{2}] Number: [{3}]',
