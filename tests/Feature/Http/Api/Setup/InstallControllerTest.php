@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature\Http\Api;
+namespace Tests\Feature\Http\Api\Setup;
 
 use App\Install\ShopState;
 use App\System\Application;

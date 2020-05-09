@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Shop;
 
 use App\Managers\ServiceModuleManager;
 use Symfony\Component\HttpFoundation\Response;

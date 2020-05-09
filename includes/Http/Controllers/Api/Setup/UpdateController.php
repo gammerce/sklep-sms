@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Setup;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;

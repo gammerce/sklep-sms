@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\UnauthorizedException;
 use App\Http\Responses\PlainResponse;
