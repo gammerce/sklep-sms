@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
+use DateTime;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PromoCodeCollectionTest extends HttpTestCase
@@ -41,10 +42,13 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame("abcpo", $promoCode->getCode());
         $this->assertSameEnum(QuantityType::PERCENTAGE(), $promoCode->getQuantityType());
         $this->assertSame(20, $promoCode->getQuantity());
-        $this->assertNull($promoCode->getUid());
+        $this->assertNull($promoCode->getUserId());
         $this->assertSame($server->getId(), $promoCode->getServerId());
         $this->assertSame("vippro", $promoCode->getServiceId());
-        $this->assertNotNull($promoCode->getTimestamp());
+        $this->assertInstanceOf(DateTime::class, $promoCode->getCreatedAt());
+        $this->assertNull($promoCode->getUsageCount());
+        $this->assertNull($promoCode->getUsageLimit());
+        $this->assertNull($promoCode->getExpiresAt());
     }
 
     /** @test */

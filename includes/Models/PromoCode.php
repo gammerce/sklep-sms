@@ -3,6 +3,7 @@ namespace App\Models;
 
 use App\PromoCode\QuantityType;
 use App\Services\PriceTextService;
+use DateTime;
 use UnexpectedValueException;
 
 class PromoCode
@@ -19,6 +20,9 @@ class PromoCode
     /** @var int */
     private $quantity;
 
+    /** @var DateTime */
+    private $createdAt;
+
     /** @var string|null */
     private $service;
 
@@ -26,20 +30,29 @@ class PromoCode
     private $server;
 
     /** @var int|null */
-    private $uid;
+    private $userId;
 
-    /** @var string */
-    private $timestamp;
+    /** @var int */
+    private $usageCount;
+
+    /** @var int|null */
+    private $usageLimit;
+
+    /** @var DateTime|null */
+    private $expiresAt;
 
     public function __construct(
         $id,
         $code,
         QuantityType $quantityType,
         $quantity,
-        $service,
-        $server,
-        $uid,
-        $timestamp
+        DateTime $createdAt,
+        $usageCount = 0,
+        $usageLimit = null,
+        DateTime $expiresAt = null,
+        $service = null,
+        $server = null,
+        $userId = null
     ) {
         $this->id = $id;
         $this->code = $code;
@@ -47,8 +60,11 @@ class PromoCode
         $this->quantity = $quantity;
         $this->service = $service;
         $this->server = $server;
-        $this->uid = $uid;
-        $this->timestamp = $timestamp;
+        $this->userId = $userId;
+        $this->createdAt = $createdAt;
+        $this->usageCount = $usageCount;
+        $this->usageLimit = $usageLimit;
+        $this->expiresAt = $expiresAt;
     }
 
     /**
@@ -102,17 +118,53 @@ class PromoCode
     /**
      * @return int
      */
-    public function getUid()
+    public function getUserId()
     {
-        return $this->uid;
+        return $this->userId;
     }
 
     /**
-     * @return string
+     * @return DateTime
      */
-    public function getTimestamp()
+    public function getCreatedAt()
     {
-        return $this->timestamp;
+        return $this->createdAt;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUsageCount()
+    {
+        return $this->usageCount;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getRemainingUsage()
+    {
+        if ($this->usageLimit === null) {
+            return null;
+        }
+
+        return $this->usageLimit - $this->usageCount;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getUsageLimit()
+    {
+        return $this->usageLimit;
+    }
+
+    /**
+     * @return DateTime|null
+     */
+    public function getExpiresAt()
+    {
+        return $this->expiresAt;
     }
 
     /**

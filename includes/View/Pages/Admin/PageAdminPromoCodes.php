@@ -81,7 +81,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->setDbId($promoCode->getId())
                     ->addCell(new Cell($promoCode->getCode()))
                     ->addCell(new Cell($promoCode->getQuantityFormatted()))
-                    ->addCell(new Cell(convert_date($promoCode->getTimestamp())))
+                    ->addCell(new Cell(convert_date($promoCode->getCreatedAt())))
                     ->setDeleteAction(has_privileges("manage_promo_codes"));
             })
             ->all();

@@ -4,12 +4,14 @@ namespace App\Repositories;
 use App\Models\PromoCode;
 use App\PromoCode\QuantityType;
 use App\Support\Database;
+use DateTime;
 
 // TODO Add expiration time
 // TODO Add max usage limit
 // TODO Remove service code payments
 // TODO Migrate service code payments
 // TODO Add used promo code along with bought service
+// TODO Add method to update usage count
 
 class PromoCodeRepository
 {
@@ -25,16 +27,37 @@ class PromoCodeRepository
         $code,
         QuantityType $quantityType,
         $quantity,
+        $usageLimit,
+        DateTime $expiresAt = null,
         $serviceId = null,
         $serverId = null,
-        $uid = null
+        $userId = null
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_promo_codes` " .
-                    "SET `code` = ?, `quantity_type` = ?, `quantity` = ?, `service` = ?, `server` = ?, `uid` = ?"
+                <<<EOF
+INSERT INTO `ss_promo_codes` 
+SET
+`code` = ?,
+`quantity_type` = ?,
+`quantity` = ?,
+`usage_limit` = ?,
+`expires_at` = ?,
+`service_id` = ?,
+`server_id` = ?,
+`user_id` = ?
+EOF
             )
-            ->execute([$code, $quantityType, $quantity, $serviceId, $serverId, $uid]);
+            ->execute([
+                $code,
+                $quantityType,
+                $quantity,
+                $usageLimit,
+                $expiresAt,
+                $serviceId,
+                $serverId,
+                $userId,
+            ]);
 
         return $this->get($this->db->lastId());
     }
@@ -86,14 +109,17 @@ class PromoCodeRepository
     public function mapToModel(array $data)
     {
         return new PromoCode(
-            as_int($data['id']),
-            $data['code'],
-            new QuantityType($data['quantity_type']),
-            $data['quantity'],
-            $data['service'],
-            as_int($data['server']),
-            as_int($data['uid']),
-            $data['timestamp']
+            as_int($data["id"]),
+            as_string($data["code"]),
+            new QuantityType($data["quantity_type"]),
+            as_int($data["quantity"]),
+            as_datetime($data["created_at"]),
+            as_int($data["usage_count"]),
+            as_int($data["usage_limit"]),
+            as_datetime($data["expires_at"]),
+            as_string($data["service_id"]),
+            as_int($data["server_id"]),
+            as_int($data["user_id"])
         );
     }
 }

@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EnumRule;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MaxLengthRule;
@@ -31,7 +32,9 @@ class PromoCodeCollection
                 "code" => $request->request->get("code"),
                 "quantity_type" => $request->request->get("quantity_type"),
                 "quantity" => $request->request->get("quantity"),
-                "uid" => $request->request->get("uid") ?: null,
+                "usage_limit" => $request->request->get("usage_limit") ?: null,
+                "expires_at" => $request->request->get("expires_at") ?: null,
+                "user_id" => $request->request->get("user_id") ?: null,
                 "server_id" => $request->request->get("server_id") ?: null,
                 "service_id" => $request->request->get("service_id") ?: null,
             ],
@@ -39,7 +42,9 @@ class PromoCodeCollection
                 "code" => [new RequiredRule(), new MaxLengthRule(16)],
                 "quantity_type" => [new RequiredRule(), new EnumRule(QuantityType::class)],
                 "quantity" => [new RequiredRule(), new IntegerRule()],
-                "uid" => [new UserExistsRule()],
+                "usage_limit" => [new IntegerRule()],
+                "expires_at" => [new DateTimeRule()],
+                "user_id" => [new UserExistsRule()],
                 "server_id" => [new ServerExistsRule()],
                 "service_id" => [new ServiceExistsRule()],
             ]
@@ -47,20 +52,24 @@ class PromoCodeCollection
 
         $validated = $validator->validateOrFail();
 
-        $code = $validated["code"];
+        $code = as_string($validated["code"]);
         $quantityType = new QuantityType($validated["quantity_type"]);
-        $quantity = $validated["quantity"];
-        $uid = $validated["uid"];
-        $serverId = $validated["server_id"];
-        $serviceId = $validated["service_id"];
+        $quantity = as_int($validated["quantity"]);
+        $usageLimit = as_int($validated["usage_limit"]);
+        $expiresAt = as_datetime($validated["expires_at"]);
+        $userId = as_int($validated["user_id"]);
+        $serverId = as_int($validated["server_id"]);
+        $serviceId = as_string($validated["service_id"]);
 
         $promoCode = $promoCodeRepository->create(
             $code,
             $quantityType,
             $quantity,
+            $usageLimit,
+            $expiresAt,
             $serviceId,
             $serverId,
-            $uid
+            $userId
         );
         $logger->logWithActor("log_promo_code_added", $code, $serviceId);
 

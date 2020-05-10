@@ -236,11 +236,13 @@ class Factory
         $attributes = array_merge(
             [
                 "code" => $this->faker->word,
+                "expires_at" => null,
                 "quantity_type" => QuantityType::PERCENTAGE(),
                 "quantity" => 30,
                 "server_id" => null,
                 "service_id" => "vip",
-                "uid" => null,
+                "usage_limit" => null,
+                "user_id" => null,
             ],
             $attributes
         );
@@ -249,9 +251,11 @@ class Factory
             $attributes["code"],
             $attributes["quantity_type"],
             $attributes["quantity"],
+            $attributes["usage_limit"],
+            $attributes["expires_at"],
             $attributes["service_id"],
             $attributes["server_id"],
-            $attributes["uid"]
+            $attributes["user_id"]
         );
     }
 
