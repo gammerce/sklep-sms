@@ -97,6 +97,7 @@ return [
     'information' => 'Informacje',
     'invalid_payment_module' => 'Błędny moduł płatności',
     'invalid_price' => 'Nieprawidłowa kwota',
+    'invalid_value' => 'Nieprawidłowa wartość',
     'language' => 'Język',
     'last_active_at' => 'Ostatnia aktywność',
     'latest_version' => 'Najnowsza wersja',

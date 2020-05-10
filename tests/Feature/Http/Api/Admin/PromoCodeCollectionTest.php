@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -16,7 +17,7 @@ class PromoCodeCollectionTest extends HttpTestCase
     }
 
     /** @test */
-    public function creates_service_code()
+    public function creates_promo_code()
     {
         // given
         $server = $this->factory->server();
@@ -25,7 +26,8 @@ class PromoCodeCollectionTest extends HttpTestCase
         // when
         $response = $this->post("/api/admin/promo_codes", [
             "code" => "abcpo",
-            "uid" => null,
+            "quantity" => 20,
+            "quantity_type" => "percentage",
             "server_id" => $server->getId(),
             "service_id" => "vippro",
         ]);
@@ -36,32 +38,13 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $serviceCode = $this->promoCodeRepository->get($json["data"]["id"]);
         $this->assertNotNull($serviceCode);
+        $this->assertSame("abcpo", $serviceCode->getCode());
+        $this->assertSameEnum(QuantityType::PERCENTAGE(), $serviceCode->getQuantityType());
+        $this->assertSame(20, $serviceCode->getQuantity());
         $this->assertNull($serviceCode->getUid());
         $this->assertSame($server->getId(), $serviceCode->getServerId());
-        $this->assertSame("abcpo", $serviceCode->getCode());
         $this->assertSame("vippro", $serviceCode->getServiceId());
         $this->assertNotNull($serviceCode->getTimestamp());
-    }
-
-    /** @test */
-    public function creates_service_code_forever()
-    {
-        // given
-        $this->actingAs($this->factory->admin());
-
-        // when
-        $response = $this->post("/api/admin/service_codes", [
-            "code" => "abcpo",
-            "quantity" => null,
-        ]);
-
-        // then
-        $this->assertSame(200, $response->getStatusCode());
-        $json = $this->decodeJsonResponse($response);
-        $this->assertSame("ok", $json["return_id"]);
-        $serviceCode = $this->promoCodeRepository->get($json["data"]["id"]);
-        $this->assertNotNull($serviceCode);
-        $this->assertNull($serviceCode->getQuantity());
     }
 
     /** @test */
@@ -72,6 +55,7 @@ class PromoCodeCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/service_codes", [
+            "quantity_type" => "asd",
             "quantity" => "asd",
             "server_id" => "asd",
             "service_id" => "asd",

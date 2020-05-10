@@ -2,14 +2,11 @@
 namespace App\Repositories;
 
 use App\Models\PromoCode;
+use App\PromoCode\QuantityType;
 use App\Support\Database;
 
-// TODO Add migration ss_service_codes to ss_promo_codes
-// TODO Add percentage discount
-// TODO Add amount discount
 // TODO Add expiration time
 // TODO Add max usage limit
-// TODO Move shop controllers to shop directory
 // TODO Remove service code payments
 // TODO Migrate service code payments
 // TODO Add used promo code along with bought service
@@ -24,14 +21,20 @@ class PromoCodeRepository
         $this->db = $db;
     }
 
-    public function create($code, $serviceId = null, $serverId = null, $uid = null)
-    {
+    public function create(
+        $code,
+        QuantityType $quantityType,
+        $quantity,
+        $serviceId = null,
+        $serverId = null,
+        $uid = null
+    ) {
         $this->db
             ->statement(
                 "INSERT INTO `ss_promo_codes` " .
-                    "SET `code` = ?, `service` = ?, `server` = ?, `uid` = ?"
+                    "SET `code` = ?, `quantity_type` = ?, `quantity` = ?, `service` = ?, `server` = ?, `uid` = ?"
             )
-            ->execute([$code, $serviceId, $serverId, $uid]);
+            ->execute([$code, $quantityType, $quantity, $serviceId, $serverId, $uid]);
 
         return $this->get($this->db->lastId());
     }
@@ -85,6 +88,8 @@ class PromoCodeRepository
         return new PromoCode(
             as_int($data['id']),
             $data['code'],
+            new QuantityType($data['quantity_type']),
+            $data['quantity'],
             $data['service'],
             as_int($data['server']),
             as_int($data['uid']),

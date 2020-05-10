@@ -96,6 +96,7 @@ return [
     'information' => 'Information',
     'invalid_payment_module' => 'Invalid payment module',
     'invalid_price' => 'Invalid price',
+    'invalid_value' => 'Invalid value',
     'language' => 'Language',
     'last_active_at' => 'Last active at',
     'latest_version' => 'Latest version',

@@ -7,6 +7,7 @@ use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
 use Mockery;
+use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\Concerns\ApplicationConcern;
@@ -132,6 +133,11 @@ class TestCase extends BaseTestCase
     protected function assertDatabaseHas($table, array $data)
     {
         $this->assertTrue($this->databaseHas($table, $data));
+    }
+
+    protected function assertSameEnum(Enum $expected, Enum $value)
+    {
+        $this->assertTrue($expected->equals($value), "$expected does not equal $value");
     }
 
     private function databaseHas($table, array $data)

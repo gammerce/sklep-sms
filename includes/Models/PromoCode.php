@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\PromoCode\QuantityType;
+
 class PromoCode
 {
     /** @var int */
@@ -8,6 +10,12 @@ class PromoCode
 
     /** @var string */
     private $code;
+
+    /** @var QuantityType */
+    private $quantityType;
+
+    /** @var int */
+    private $quantity;
 
     /** @var string|null */
     private $service;
@@ -21,10 +29,20 @@ class PromoCode
     /** @var string */
     private $timestamp;
 
-    public function __construct($id, $code, $service, $server, $uid, $timestamp)
-    {
+    public function __construct(
+        $id,
+        $code,
+        QuantityType $quantityType,
+        $quantity,
+        $service,
+        $server,
+        $uid,
+        $timestamp
+    ) {
         $this->id = $id;
         $this->code = $code;
+        $this->quantityType = $quantityType;
+        $this->quantity = $quantity;
         $this->service = $service;
         $this->server = $server;
         $this->uid = $uid;
@@ -61,6 +79,14 @@ class PromoCode
     public function getServerId()
     {
         return $this->server;
+    }
+
+    /**
+     * @return QuantityType
+     */
+    public function getQuantityType()
+    {
+        return $this->quantityType;
     }
 
     /**

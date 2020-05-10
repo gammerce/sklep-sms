@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
+use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
 use App\Repositories\LogRepository;
 use App\Repositories\PaymentPlatformRepository;
@@ -235,6 +236,8 @@ class Factory
         $attributes = array_merge(
             [
                 "code" => $this->faker->word,
+                "quantity_type" => QuantityType::PERCENTAGE(),
+                "quantity" => 30,
                 "server_id" => null,
                 "service_id" => "vip",
                 "uid" => null,
@@ -244,6 +247,8 @@ class Factory
 
         return $this->promoCodeRepository->create(
             $attributes["code"],
+            $attributes["quantity_type"],
+            $attributes["quantity"],
             $attributes["service_id"],
             $attributes["server_id"],
             $attributes["uid"]
