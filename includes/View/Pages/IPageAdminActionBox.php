@@ -9,7 +9,7 @@ interface IPageAdminActionBox
      * @param string $boxId
      * @param array $query
      *
-     * @return string|null
+     * @return array
      */
     public function getActionBox($boxId, array $query);
 }

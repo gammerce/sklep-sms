@@ -114,7 +114,7 @@ class AdminController
             $smsCodesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_service_codes")) {
+        if (has_privileges("view_promo_codes")) {
             $pid = "promo_codes";
             $name = $lang->t($pid);
             $promoCodesLink = $template->render("admin/page_link", compact("pid", "name"));

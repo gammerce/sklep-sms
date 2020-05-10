@@ -1,57 +1,34 @@
 import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
+import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { get_random_string, json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
-$(document).delegate("#service_code_button_add", "click", function() {
-    showActionBox(currentPage, "code_add");
+$(document).delegate("#promo_code_button_add", "click", function() {
+    showActionBox(currentPage, "add");
 });
 
 // Generate code
-$(document).delegate("#form_service_code_add [name=random_code]", "click", function() {
+$(document).delegate("#form_promo_code_add [name=random_code]", "click", function() {
     $(this)
         .closest("form")
         .find("[name=code]")
         .val(get_random_string());
 });
 
-// Selecting a service while adding service code
-var serviceCodeAddForm;
-$(document).delegate("#form_service_code_add [name=service_id]", "change", function() {
-    var serviceId = $(this).val();
-
-    if (!serviceId && serviceCodeAddForm) {
-        serviceCodeAddForm.remove();
-        return;
-    }
-
-    restRequest("GET", "/api/admin/services/" + serviceId + "/service_codes/add_form", {}, function(
-        content
-    ) {
-        if (serviceCodeAddForm) {
-            serviceCodeAddForm.remove();
-        }
-
-        serviceCodeAddForm = $(content);
-        serviceCodeAddForm.insertAfter(".action_box .ftbody");
-    });
-});
-
-// Delete service code
 $(document).delegate(".table-structure .delete_row", "click", function() {
-    var rowId = $(this).closest("tr");
-    var serviceCodeId = rowId.children("td[headers=id]").text();
+    const rowId = $(this).closest("tr");
+    const promoCodeId = rowId.children("td[headers=id]").text();
 
     loader.show();
     $.ajax({
         type: "DELETE",
-        url: buildUrl("/api/admin/service_codes/" + serviceCodeId),
+        url: buildUrl(`/api/admin/promo_codes/${promoCodeId}`),
         complete: function() {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
+            const jsonObj = json_parse(content);
             if (!jsonObj) {
                 return;
             }
@@ -74,18 +51,13 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Add service code
-$(document).delegate("#form_service_code_add", "submit", function(e) {
+$(document).delegate("#form_promo_code_add", "submit", function(e) {
     e.preventDefault();
-
-    var serviceId = $(this)
-        .find("[name=service_id]")
-        .val();
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/admin/services/" + serviceId + "/service_codes"),
+        url: buildUrl("/api/admin/promo_codes"),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();
@@ -103,7 +75,7 @@ $(document).delegate("#form_service_code_add", "submit", function(e) {
             }
 
             if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_service_code_add"), jsonObj.warnings);
+                showWarnings($("#form_promo_code_add"), jsonObj.warnings);
             } else if (jsonObj.return_id === "ok") {
                 clearAndHideActionBox();
                 refreshAdminContent();

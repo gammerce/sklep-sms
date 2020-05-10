@@ -2,6 +2,8 @@
 namespace App\Models;
 
 use App\PromoCode\QuantityType;
+use App\Services\PriceTextService;
+use UnexpectedValueException;
 
 class PromoCode
 {
@@ -111,5 +113,23 @@ class PromoCode
     public function getTimestamp()
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuantityFormatted()
+    {
+        if ($this->quantityType->equals(QuantityType::PERCENTAGE())) {
+            return "{$this->quantity}%";
+        }
+
+        if ($this->quantityType->equals(QuantityType::FIXED())) {
+            /** @var PriceTextService $priceTextService */
+            $priceTextService = app()->make(PriceTextService::class);
+            return $priceTextService->getPriceText($this->quantity);
+        }
+
+        throw new UnexpectedValueException();
     }
 }

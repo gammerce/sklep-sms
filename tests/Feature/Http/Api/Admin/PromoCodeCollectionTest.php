@@ -36,15 +36,15 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $serviceCode = $this->promoCodeRepository->get($json["data"]["id"]);
-        $this->assertNotNull($serviceCode);
-        $this->assertSame("abcpo", $serviceCode->getCode());
-        $this->assertSameEnum(QuantityType::PERCENTAGE(), $serviceCode->getQuantityType());
-        $this->assertSame(20, $serviceCode->getQuantity());
-        $this->assertNull($serviceCode->getUid());
-        $this->assertSame($server->getId(), $serviceCode->getServerId());
-        $this->assertSame("vippro", $serviceCode->getServiceId());
-        $this->assertNotNull($serviceCode->getTimestamp());
+        $promoCode = $this->promoCodeRepository->get($json["data"]["id"]);
+        $this->assertNotNull($promoCode);
+        $this->assertSame("abcpo", $promoCode->getCode());
+        $this->assertSameEnum(QuantityType::PERCENTAGE(), $promoCode->getQuantityType());
+        $this->assertSame(20, $promoCode->getQuantity());
+        $this->assertNull($promoCode->getUid());
+        $this->assertSame($server->getId(), $promoCode->getServerId());
+        $this->assertSame("vippro", $promoCode->getServiceId());
+        $this->assertNotNull($promoCode->getTimestamp());
     }
 
     /** @test */
@@ -54,7 +54,7 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->post("/api/admin/service_codes", [
+        $response = $this->post("/api/admin/promo_codes", [
             "quantity_type" => "asd",
             "quantity" => "asd",
             "server_id" => "asd",

@@ -54,7 +54,7 @@ class PromoCodeCollection
         $serverId = $validated["server_id"];
         $serviceId = $validated["service_id"];
 
-        $serviceCode = $promoCodeRepository->create(
+        $promoCode = $promoCodeRepository->create(
             $code,
             $quantityType,
             $quantity,
@@ -66,7 +66,7 @@ class PromoCodeCollection
 
         return new SuccessApiResponse($lang->t("promo_code_added"), [
             "data" => [
-                "id" => $serviceCode->getId(),
+                "id" => $promoCode->getId(),
             ],
         ]);
     }

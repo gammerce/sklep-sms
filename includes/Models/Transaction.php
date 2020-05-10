@@ -70,9 +70,6 @@ class Transaction
     private $free;
 
     /** @var string */
-    private $serviceCode;
-
-    /** @var string */
     private $timestamp;
 
     public function __construct(
@@ -98,7 +95,6 @@ class Transaction
         $smsText,
         $smsNumber,
         $free,
-        $serviceCode,
         $timestamp
     ) {
         $this->id = $id;
@@ -123,7 +119,6 @@ class Transaction
         $this->smsText = $smsText;
         $this->smsNumber = $smsNumber;
         $this->free = $free;
-        $this->serviceCode = $serviceCode;
         $this->timestamp = $timestamp;
     }
 
@@ -310,14 +305,6 @@ class Transaction
     public function isFree()
     {
         return $this->free;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceCode()
-    {
-        return $this->serviceCode;
     }
 
     /**

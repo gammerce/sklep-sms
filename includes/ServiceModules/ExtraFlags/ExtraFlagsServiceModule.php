@@ -44,7 +44,6 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\ServiceModules\Interfaces\IServiceServiceCode;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
@@ -83,8 +82,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceActionExecute,
     IServiceUserOwnServices,
     IServiceUserOwnServicesEdit,
-    IServiceTakeOver,
-    IServiceServiceCode
+    IServiceTakeOver
 {
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "ss_user_service_extra_flags";

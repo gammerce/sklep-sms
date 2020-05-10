@@ -85,8 +85,8 @@ function has_privileges($privilege, $user = null)
         "manage_users",
         "view_sms_codes",
         "manage_sms_codes",
-        "view_service_codes", // TODO Change it to "view_promo_codes"
-        "manage_service_codes", // TODO Change it to "manage_promo_codes"
+        "view_promo_codes",
+        "manage_promo_codes",
         "view_antispam_questions",
         "manage_antispam_questions",
         "view_services",

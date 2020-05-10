@@ -373,7 +373,7 @@ class RoutesManager
                 ]);
 
                 $r->post('/api/admin/promo_codes', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
                     'uses' => PromoCodeCollection::class . '@post',
                 ]);
 
@@ -403,7 +403,7 @@ class RoutesManager
                 ]);
 
                 $r->delete('/api/admin/promo_code/{promoCodeId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
                     'uses' => PromoCodeResource::class . '@delete',
                 ]);
 

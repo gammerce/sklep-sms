@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageServiceCodesActionBoxAddTest extends HttpTestCase
+class PagePromoCodesActionBoxAddTest extends HttpTestCase
 {
     /** @test */
     public function get_add_box()
@@ -12,13 +12,13 @@ class PageServiceCodesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get("/api/admin/pages/service_codes/action_boxes/code_add");
+        $response = $this->get("/api/admin/pages/promo_codes/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj kod na usługę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Dodaj kod promocyjny", $json["template"]);
     }
 
     /** @test */
@@ -28,11 +28,11 @@ class PageServiceCodesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/service_codes/action_boxes/service_code_add");
+        $response = $this->getJson("/api/admin/pages/promo_codes/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }
