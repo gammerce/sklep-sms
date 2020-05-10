@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidServiceModuleException;

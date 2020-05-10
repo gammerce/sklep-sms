@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Responses\HtmlResponse;
 use App\View\Pages\Admin\PageAdminIncome;
