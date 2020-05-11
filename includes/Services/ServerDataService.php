@@ -58,7 +58,7 @@ class ServerDataService
 
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .
-                "WHERE (`server` = ? OR `server` IS NULL) " .
+                "WHERE (`server_id` = ? OR `server_id` IS NULL) " .
                 "AND `sms_price` IS NOT NULL " .
                 "AND `service_id` IN ({$keys}) " .
                 "ORDER BY `service_id` ASC, `quantity` ASC"
@@ -144,10 +144,10 @@ EOF
                     ->join();
 
                 return [
-                    'type' => (int) $data['type'],
-                    'auth_data' => $data['auth_data'],
-                    'password' => $data['password'],
-                    'flags' => $flags,
+                    "type" => (int) $data["type"],
+                    "auth_data" => $data["auth_data"],
+                    "password" => $data["password"],
+                    "flags" => $flags,
                 ];
             })
             ->all();

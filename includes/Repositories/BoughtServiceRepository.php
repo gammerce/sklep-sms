@@ -5,7 +5,6 @@ use App\Models\BoughtService;
 use App\Support\Database;
 
 // TODO Replace uid with user_id
-// TODO Replace server with server_id
 
 class BoughtServiceRepository
 {
@@ -46,7 +45,7 @@ class BoughtServiceRepository
             ->statement(
                 "INSERT INTO `ss_bought_services` " .
                     "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service_id` = ?, " .
-                    "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
+                    "`server_id` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )
             ->execute([
                 $uid ?: 0,
@@ -70,11 +69,11 @@ class BoughtServiceRepository
             as_int($data["uid"]),
             $data["payment"],
             $data["payment_id"],
-            $data["service_id"],
-            as_int($data["server"]),
+            as_string($data["service_id"]),
+            as_int($data["server_id"]),
             $data["amount"],
-            $data["auth_data"],
-            $data["email"],
+            as_string($data["auth_data"]),
+            as_string($data["email"]),
             json_decode($data["extra_data"])
         );
     }

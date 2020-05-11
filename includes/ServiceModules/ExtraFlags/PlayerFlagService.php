@@ -46,7 +46,7 @@ class PlayerFlagService
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
                 "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
-                "WHERE `server` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
+                "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
         );
         $statement->execute([$serverId, $type, $authData]);
 

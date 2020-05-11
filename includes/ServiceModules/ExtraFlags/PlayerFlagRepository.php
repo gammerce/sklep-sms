@@ -4,6 +4,8 @@ namespace App\ServiceModules\ExtraFlags;
 use App\Exceptions\EntityNotFoundException;
 use App\Support\Database;
 
+// TODO Replace server with server_id
+
 class PlayerFlagRepository
 {
     /** @var Database */
@@ -58,7 +60,7 @@ class PlayerFlagRepository
     public function getByCredentials($serverId, $type, $authData)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_players_flags` WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
+            "SELECT * FROM `ss_players_flags` WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
         );
         $statement->execute([$serverId, $type, $authData]);
 
@@ -93,7 +95,7 @@ class PlayerFlagRepository
 
         $this->db
             ->statement(
-                "INSERT INTO `ss_players_flags` SET `server` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
+                "INSERT INTO `ss_players_flags` SET `server_id` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
             )
             ->execute(array_merge([$serverId, $type, $authData, $password], $values));
 
@@ -105,7 +107,7 @@ class PlayerFlagRepository
         $this->db
             ->statement(
                 "DELETE FROM `ss_players_flags` " .
-                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
+                    "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
             )
             ->execute([$serverId, $type, $authData]);
     }

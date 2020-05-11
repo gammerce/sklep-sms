@@ -88,7 +88,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
             <<<EOF
 SELECT SQL_CALC_FOUND_ROWS * 
 FROM `ss_prices` 
-ORDER BY `service_id`, `server`, `quantity` 
+ORDER BY `service_id`, `server_id`, `quantity` 
 LIMIT ?, ?
 EOF
         );

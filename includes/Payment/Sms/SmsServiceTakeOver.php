@@ -23,7 +23,7 @@ class SmsServiceTakeOver implements IServiceTakeOver
     {
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
-                "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
+                "WHERE t.payment = 'sms' AND t.sms_code = ? AND `service_id` = ? AND `server_id` = ? AND `auth_data` = ?"
         );
         $statement->execute([$paymentId, $serviceId, $serverId, $authData]);
 

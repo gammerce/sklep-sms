@@ -5,8 +5,6 @@ use App\Exceptions\EntityNotFoundException;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
 
-// TODO Replace server with server_id
-
 class ExtraFlagUserServiceRepository
 {
     /** @var Database */
@@ -54,7 +52,7 @@ class ExtraFlagUserServiceRepository
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "INSERT INTO `$table` (`us_id`, `server`, `service_id`, `type`, `auth_data`, `password`) " .
+            "INSERT INTO `$table` (`us_id`, `server_id`, `service_id`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
         $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
@@ -88,7 +86,7 @@ class ExtraFlagUserServiceRepository
             as_string($data["service_id"]),
             as_int($data["uid"]),
             as_int($data["expire"]),
-            as_int($data["server"]),
+            as_int($data["server_id"]),
             as_int($data["type"]),
             as_string($data["auth_data"]),
             as_string($data["password"])
