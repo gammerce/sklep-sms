@@ -63,6 +63,14 @@ class PlayerFlag
     /**
      * @return int
      */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return int
+     */
     public function getServerId()
     {
         return $this->server;

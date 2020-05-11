@@ -4,8 +4,6 @@ namespace App\ServiceModules\ExtraFlags;
 use App\Exceptions\EntityNotFoundException;
 use App\Support\Database;
 
-// TODO Replace server with server_id
-
 class PlayerFlagRepository
 {
     /** @var Database */
@@ -154,11 +152,11 @@ class PlayerFlagRepository
             ->all();
 
         return new PlayerFlag(
-            as_int($data['id']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password'],
+            as_int($data["id"]),
+            as_int($data["server_id"]),
+            as_int($data["type"]),
+            as_string($data["auth_data"]),
+            as_string($data["password"]),
             $flags
         );
     }

@@ -124,7 +124,7 @@ SELECT f.type, f.auth_data, f.password,
 (f.x > UNIX_TIMESTAMP() OR f.x = '-1') AS `x`,
 (f.z > UNIX_TIMESTAMP() OR f.z = '-1') AS `z`
 FROM `ss_players_flags` AS f
-INNER JOIN `ss_servers` AS s ON s.id = f.server
+INNER JOIN `ss_servers` AS s ON s.id = f.server_id
 WHERE s.id = ?
 ORDER BY f.auth_data, f.type DESC
 EOF

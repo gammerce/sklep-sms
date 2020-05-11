@@ -3,6 +3,7 @@ namespace App\View\Pages\Admin;
 
 use App\Managers\ServerManager;
 use App\ServiceModules\ExtraFlags\PlayerFlag;
+use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
@@ -28,17 +29,22 @@ class PageAdminPlayersFlags extends PageAdmin
     /** @var ServerManager */
     private $serverManager;
 
+    /** @var PlayerFlagRepository */
+    private $playerFlagRepository;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Database $db,
         CurrentPage $currentPage,
-        ServerManager $serverManager
+        ServerManager $serverManager,
+        PlayerFlagRepository $playerFlagRepository
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
         $this->currentPage = $currentPage;
         $this->serverManager = $serverManager;
+        $this->playerFlagRepository = $playerFlagRepository;
     }
 
     public function getPrivilege()
@@ -63,15 +69,19 @@ class PageAdminPlayersFlags extends PageAdmin
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
-                $server = $this->serverManager->getServer($row["server"]);
+                return $this->playerFlagRepository->mapToModel($row);
+            })
+            ->map(function (PlayerFlag $playerFlag) {
+                $server = $this->serverManager->getServer($playerFlag->getServerId());
 
                 $bodyRow = (new BodyRow())
-                    ->setDbId($row["id"])
+                    ->setDbId($playerFlag->getId())
                     ->addCell(new Cell(new ServerRef($server->getId(), $server->getName())))
-                    ->addCell(new Cell($row["auth_data"]));
+                    ->addCell(new Cell($playerFlag->getAuthData()));
 
                 foreach (PlayerFlag::FLAGS as $flag) {
-                    $value = $row[$flag] ? convert_expire($row[$flag]) : " ";
+                    $flagValue = $playerFlag->getFlag($flag);
+                    $value = $flagValue ? convert_expire($flagValue) : " ";
                     $bodyRow->addCell(new Cell($value));
                 }
 
