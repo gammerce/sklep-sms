@@ -108,6 +108,7 @@ class UserServiceCollectionTest extends HttpTestCase
             ExtraFlagType::TYPE_NICK,
             'michal'
         );
+        $this->assertNotNull($playerFlag);
         $this->assertPlayerFlags(["t" => $expectedExpire], $playerFlag->getFlags());
     }
 

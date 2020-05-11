@@ -7,7 +7,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Support\Database;
 
-// TODO Replace server to server_id
+// TODO Replace server with server_id
 
 class PriceRepository
 {

@@ -46,7 +46,7 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame($server->getId(), $promoCode->getServerId());
         $this->assertSame("vippro", $promoCode->getServiceId());
         $this->assertInstanceOf(DateTime::class, $promoCode->getCreatedAt());
-        $this->assertNull($promoCode->getUsageCount());
+        $this->assertSame(0, $promoCode->getUsageCount());
         $this->assertNull($promoCode->getUsageLimit());
         $this->assertNull($promoCode->getExpiresAt());
     }
@@ -63,7 +63,7 @@ class PromoCodeCollectionTest extends HttpTestCase
             "quantity" => "asd",
             "server_id" => "asd",
             "service_id" => "asd",
-            "uid" => "asd",
+            "user_id" => "asd",
         ]);
 
         // then
@@ -74,14 +74,16 @@ class PromoCodeCollectionTest extends HttpTestCase
             [
                 "code" =>
                     "<ul class=\"form_warning help is-danger\"><li >Pole nie może być puste.</li></ul>",
+                "quantity_type" =>
+                    "<ul class=\"form_warning help is-danger\"><li >Nieprawidłowa wartość</li></ul>",
                 "quantity" =>
                     "<ul class=\"form_warning help is-danger\"><li >Pole musi być liczbą całkowitą.</li></ul>",
-                "uid" =>
+                "user_id" =>
                     "<ul class=\"form_warning help is-danger\"><li >Podane ID użytkownika nie jest przypisane do żadnego konta.</li></ul>",
                 "server_id" =>
                     "<ul class=\"form_warning help is-danger\"><li >Brak serwera o takim ID.</li></ul>",
                 "service_id" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Brak usługi o takim ID.</li></ul>",
+                    "<ul class=\"form_warning help is-danger\"><li >Taka usługa nie istnieje.</li></ul>",
             ],
             $json["warnings"]
         );

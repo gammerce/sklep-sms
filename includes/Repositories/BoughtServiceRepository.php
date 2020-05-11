@@ -4,6 +4,9 @@ namespace App\Repositories;
 use App\Models\BoughtService;
 use App\Support\Database;
 
+// TODO Replace uid with user_id
+// TODO Replace server with server_id
+
 class BoughtServiceRepository
 {
     /** @var Database */
@@ -42,7 +45,7 @@ class BoughtServiceRepository
         $this->db
             ->statement(
                 "INSERT INTO `ss_bought_services` " .
-                    "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service` = ?, " .
+                    "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service_id` = ?, " .
                     "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )
             ->execute([
@@ -52,8 +55,8 @@ class BoughtServiceRepository
                 $serviceId,
                 $serverId ?: 0,
                 $quantity,
-                $authData ?: '',
-                $email ?: '',
+                $authData ?: "",
+                $email ?: "",
                 json_encode($extraData),
             ]);
 
@@ -63,16 +66,16 @@ class BoughtServiceRepository
     private function mapToModel(array $data)
     {
         return new BoughtService(
-            as_int($data['id']),
-            as_int($data['uid']),
-            $data['payment'],
-            $data['payment_id'],
-            $data['service'],
-            as_int($data['server']),
-            $data['amount'],
-            $data['auth_data'],
-            $data['email'],
-            json_decode($data['extra_data'])
+            as_int($data["id"]),
+            as_int($data["uid"]),
+            $data["payment"],
+            $data["payment_id"],
+            $data["service_id"],
+            as_int($data["server"]),
+            $data["amount"],
+            $data["auth_data"],
+            $data["email"],
+            json_decode($data["extra_data"])
         );
     }
 }

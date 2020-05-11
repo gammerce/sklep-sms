@@ -85,13 +85,15 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     public function getContent(Request $request)
     {
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `ss_prices` " .
-                "ORDER BY `service`, `server`, `quantity` " .
-                "LIMIT ?, ?"
+            <<<EOF
+SELECT SQL_CALC_FOUND_ROWS * 
+FROM `ss_prices` 
+ORDER BY `service_id`, `server`, `quantity` 
+LIMIT ?, ?
+EOF
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {

@@ -58,8 +58,10 @@ class ServerDataService
 
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .
-                "WHERE (`server` = ? OR `server` IS NULL) AND `sms_price` IS NOT NULL AND `service` IN ({$keys}) " .
-                "ORDER BY `service` ASC, `quantity` ASC"
+                "WHERE (`server` = ? OR `server` IS NULL) " .
+                "AND `sms_price` IS NOT NULL " .
+                "AND `service_id` IN ({$keys}) " .
+                "ORDER BY `service_id` ASC, `quantity` ASC"
         );
         $statement->execute(array_merge([$server->getId()], $serviceIds));
 

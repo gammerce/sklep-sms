@@ -269,7 +269,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
                 "FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = usef.service " .
+                "LEFT JOIN `ss_services` AS s ON s.id = usef.service_id " .
                 "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
@@ -511,13 +511,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         // let's prolong the existing one.
         $statement = $this->db->statement(
             "SELECT * FROM `{$this->getUserServiceTable()}` " .
-                "WHERE `service` = ? AND `server` = ? AND `type` = ? AND `auth_data` = ?"
+                "WHERE `service_id` = ? AND `server` = ? AND `type` = ? AND `auth_data` = ?"
         );
         $statement->execute([$this->service->getId(), $serverId, $type, $authData]);
 
         if ($statement->rowCount()) {
             $row = $statement->fetch();
-            $userServiceId = $row['us_id'];
+            $userServiceId = $row["us_id"];
 
             if ($days === null) {
                 $expire = null;
@@ -1024,7 +1024,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
-                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
+                "WHERE us.service_id = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
         );
         $statement->execute([
             $this->service->getId(),
@@ -1165,7 +1165,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT `id` FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
-                "WHERE us.service = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
+                "WHERE us.service_id = ? AND `server` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
         );
         $statement->execute([$this->service->getId(), $serverId, $type, $authData, $password]);
 

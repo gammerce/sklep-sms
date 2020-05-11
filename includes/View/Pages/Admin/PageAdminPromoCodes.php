@@ -2,6 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Exceptions\UnauthorizedException;
+use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
 use App\Models\PromoCode;
 use App\Models\Service;
@@ -36,6 +37,9 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     /** @var ServiceManager */
     private $serviceManager;
 
+    /** @var ServerManager */
+    private $serverManager;
+
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
 
@@ -45,13 +49,15 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         PromoCodeRepository $promoCodeRepository,
         Database $db,
         CurrentPage $currentPage,
-        ServiceManager $serviceManager
+        ServiceManager $serviceManager,
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
         $this->currentPage = $currentPage;
         $this->serviceManager = $serviceManager;
         $this->promoCodeRepository = $promoCodeRepository;
+        $this->serverManager = $serverManager;
     }
 
     public function getPrivilege()
@@ -123,9 +129,15 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
+                $servers = collect($this->serverManager->getServers())
+                    ->map(function (Service $service) {
+                        return new Option($service->getName(), $service->getId());
+                    })
+                    ->join();
+
                 $output = $this->template->render(
                     "admin/action_boxes/promo_code_add",
-                    compact("services")
+                    compact("services", "servers")
                 );
                 break;
 

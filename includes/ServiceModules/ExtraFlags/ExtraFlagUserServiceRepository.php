@@ -5,6 +5,8 @@ use App\Exceptions\EntityNotFoundException;
 use App\Repositories\UserServiceRepository;
 use App\Support\Database;
 
+// TODO Replace server with server_id
+
 class ExtraFlagUserServiceRepository
 {
     /** @var Database */

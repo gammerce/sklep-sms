@@ -79,7 +79,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $expctedExpire = time() + 2 * 24 * 60 * 60;
         $userService = $this->extraFlagUserServiceRepository->findOrFail([
-            "us.service" => "vippro",
+            "us.service_id" => "vippro",
         ]);
         $this->assertAlmostSameTimestamp($expctedExpire, $userService->getExpire());
         $this->assertSame($server->getId(), $userService->getServerId());
@@ -159,7 +159,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
 
         $userService = $this->extraFlagUserServiceRepository->findOrFail([
-            "us.service" => "vippro",
+            "us.service_id" => "vippro",
         ]);
         $this->assertSame(-1, $userService->getExpire());
 

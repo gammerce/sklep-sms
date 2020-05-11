@@ -23,6 +23,7 @@ class ServiceIdUTF8MB4 extends Migration
             "ALTER TABLE `ss_user_service` CHANGE COLUMN `service` `service_id` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin",
             "ALTER TABLE `ss_user_service_extra_flags` CHANGE COLUMN `service` `service_id` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin",
             "ALTER TABLE `ss_user_service_mybb_extra_groups` CHANGE COLUMN `service` `service_id` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin",
+            "ALTER TABLE `ss_bought_services` CHANGE COLUMN `service` `service_id` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin",
             "ALTER TABLE `ss_services` CHANGE COLUMN `id` `id` VARCHAR(16) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
         ]);
 

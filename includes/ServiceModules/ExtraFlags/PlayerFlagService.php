@@ -15,14 +15,19 @@ class PlayerFlagService
     /** @var ServiceManager */
     private $serviceManager;
 
+    /** @var ExtraFlagUserServiceRepository */
+    private $extraFlagUserServiceRepository;
+
     public function __construct(
         PlayerFlagRepository $playerFlagRepository,
+        ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
         Database $db,
         ServiceManager $serviceManager
     ) {
         $this->playerFlagRepository = $playerFlagRepository;
         $this->db = $db;
         $this->serviceManager = $serviceManager;
+        $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
     }
 
     public function recalculatePlayerFlags($serverId, $type, $authData)
@@ -49,17 +54,22 @@ class PlayerFlagService
         $flags = [];
         $password = "";
         foreach ($statement as $row) {
-            // Pobranie hasła, bierzemy je tylko raz na początku
-            $password = $password ? $password : $row['password'];
+            $extraFlagUserService = $this->extraFlagUserServiceRepository->mapToModel($row);
 
-            $service = $this->serviceManager->getService($row['service']);
+            // Pobranie hasła, bierzemy je tylko raz na początku
+            $password = $password ? $password : $extraFlagUserService->getPassword();
+
+            $service = $this->serviceManager->getService($extraFlagUserService->getServiceId());
             $serviceFlags = $service->getFlags();
             foreach (str_split($serviceFlags) as $flag) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.
                 // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
                 // I znowu weźmie maksa
                 // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
-                $flags[$flag] = $this->maxMinus(array_get($flags, $flag), $row['expire']);
+                $flags[$flag] = $this->maxMinus(
+                    array_get($flags, $flag),
+                    $extraFlagUserService->getExpire()
+                );
             }
         }
 

@@ -261,7 +261,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "s.id AS `service_id`, s.name AS `service`, us.expire, usmeg.mybb_uid " .
                 "FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usmeg ON usmeg.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = usmeg.service " .
+                "LEFT JOIN `ss_services` AS s ON s.id = usmeg.service_id " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
                 $where .
                 "ORDER BY us.id DESC " .
@@ -495,7 +495,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT us.expire - UNIX_TIMESTAMP() AS `expire`, s.data AS `extra_data` FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS m ON us.id = m.us_id " .
-                "INNER JOIN `ss_services` AS s ON us.service = s.id " .
+                "INNER JOIN `ss_services` AS s ON us.service_id = s.id " .
                 "WHERE m.mybb_uid = ?"
         );
         $statement->execute([$userService->getMybbUid()]);
