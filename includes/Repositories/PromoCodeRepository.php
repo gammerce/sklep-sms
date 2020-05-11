@@ -6,8 +6,6 @@ use App\PromoCode\QuantityType;
 use App\Support\Database;
 use DateTime;
 
-// TODO Add expiration time
-// TODO Add max usage limit
 // TODO Remove service code payments
 // TODO Migrate service code payments
 // TODO Add used promo code along with bought service
@@ -44,8 +42,8 @@ SET
 `usage_limit` = ?,
 `expires_at` = ?,
 `service_id` = ?,
-`server` = ?,
-`uid` = ?
+`server_id` = ?,
+`user_id` = ?
 EOF
             )
             ->execute([

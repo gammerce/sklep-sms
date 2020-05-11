@@ -7,8 +7,6 @@ use App\Loggers\DatabaseLogger;
 use App\Repositories\PromoCodeRepository;
 use App\Translation\TranslationManager;
 
-// TODO Test it
-
 class PromoCodeResource
 {
     public function delete(

@@ -377,6 +377,11 @@ class RoutesManager
                     'uses' => PromoCodeCollection::class . '@post',
                 ]);
 
+                $r->delete('/api/admin/promo_codes/{promoCodeId}', [
+                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
+                    'uses' => PromoCodeResource::class . '@delete',
+                ]);
+
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
                     'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
                     'uses' => ServiceModuleExtraFieldsController::class . '@get',
@@ -400,11 +405,6 @@ class RoutesManager
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorized::class, "manage_users"]],
                     'uses' => WalletChargeCollection::class . '@post',
-                ]);
-
-                $r->delete('/api/admin/promo_code/{promoCodeId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
-                    'uses' => PromoCodeResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/sms_codes', [
