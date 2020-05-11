@@ -4,6 +4,8 @@ namespace App\Repositories;
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
 
+// TODO Replace uid with user_id
+
 class UserServiceRepository
 {
     /** @var Database */
@@ -17,16 +19,16 @@ class UserServiceRepository
     /**
      * @param string $serviceId
      * @param int|null $seconds
-     * @param int|null $uid
+     * @param int|null $userId
      * @return string
      */
-    public function create($serviceId, $seconds, $uid)
+    public function create($serviceId, $seconds, $userId)
     {
         $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`service`, `expire`, `uid`) " .
+            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `uid`) " .
                 "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?)"
         );
-        $statement->execute([$serviceId, $seconds, $seconds, $uid ?: 0]);
+        $statement->execute([$serviceId, $seconds, $seconds, $userId ?: 0]);
         return $this->db->lastId();
     }
 
@@ -57,12 +59,12 @@ class UserServiceRepository
             return 0;
         }
 
-        if (array_key_exists('uid', $data) && $data['uid'] === null) {
-            $data['uid'] = 0;
+        if (array_key_exists("uid", $data) && $data["uid"] === null) {
+            $data["uid"] = 0;
         }
 
-        if (array_key_exists('expire', $data) && $data['expire'] === null) {
-            $data['expire'] = -1;
+        if (array_key_exists("expire", $data) && $data["expire"] === null) {
+            $data["expire"] = -1;
         }
 
         $params = map_to_params($data);
@@ -77,11 +79,11 @@ class UserServiceRepository
     public function updateWithModule(ServiceModule $serviceModule, $userServiceId, array $data)
     {
         $baseData = collect($data)->filter(function ($value, $key) {
-            return in_array($key, ['uid', 'service', 'expire'], true);
+            return in_array($key, ["uid", "service_id", "expire"], true);
         });
 
         $moduleData = collect($data)->filter(function ($value, $key) {
-            return !in_array($key, ['uid', 'expire'], true);
+            return !in_array($key, ["uid", "expire"], true);
         });
 
         $affected = $this->update($userServiceId, $baseData->all());

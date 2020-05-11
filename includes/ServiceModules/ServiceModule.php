@@ -13,12 +13,12 @@ abstract class ServiceModule
     /**
      * Module identifier defined by inheriting class
      */
-    const MODULE_ID = '';
+    const MODULE_ID = "";
 
     /**
      * Database table where user services are stored
      */
-    const USER_SERVICE_TABLE = '';
+    const USER_SERVICE_TABLE = "";
 
     /** @var Service|null */
     public $service;
@@ -51,10 +51,10 @@ abstract class ServiceModule
     public function mapToUserService(array $data)
     {
         return new UserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire'])
+            as_int($data["id"]),
+            as_string($data["service_id"]),
+            as_int($data["uid"]),
+            as_int($data["expire"])
         );
     }
 
@@ -97,7 +97,7 @@ abstract class ServiceModule
     public function showOnWeb()
     {
         if ($this->service !== null) {
-            return array_get($this->service->getData(), 'web', false);
+            return array_get($this->service->getData(), "web", false);
         }
 
         return false;
@@ -105,7 +105,7 @@ abstract class ServiceModule
 
     /**
      * Super krotki opis to 28 znakow, przeznaczony jest tylko na serwery
-     * Krotki opis, to 'description', krótki na strone WEB
+     * Krotki opis, to "description", krótki na strone WEB
      * Pełny opis, to plik z opisem całej usługi
      *
      * @return string    Description

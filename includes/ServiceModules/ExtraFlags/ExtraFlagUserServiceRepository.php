@@ -52,7 +52,7 @@ class ExtraFlagUserServiceRepository
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "INSERT INTO `$table` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
+            "INSERT INTO `$table` (`us_id`, `server`, `service_id`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
         $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
@@ -82,14 +82,14 @@ class ExtraFlagUserServiceRepository
     public function mapToModel(array $data)
     {
         return new ExtraFlagUserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password']
+            as_int($data["id"]),
+            as_string($data["service_id"]),
+            as_int($data["uid"]),
+            as_int($data["expire"]),
+            as_int($data["server"]),
+            as_int($data["type"]),
+            as_string($data["auth_data"]),
+            as_string($data["password"])
         );
     }
 }

@@ -7,6 +7,8 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Support\Database;
 
+// TODO Replace server to server_id
+
 class PriceRepository
 {
     /** @var Database */
@@ -41,8 +43,8 @@ class PriceRepository
     }
 
     public function create(
-        $service,
-        $server,
+        $serviceId,
+        $serverId,
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
@@ -51,12 +53,12 @@ class PriceRepository
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
+                "INSERT INTO `ss_prices` (`service_id`, `server`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
                     "VALUES ( ?, ?, ?, ?, ?, ?, ? )"
             )
             ->execute([
-                $service,
-                $server,
+                $serviceId,
+                $serverId,
                 $smsPrice,
                 $transferPrice,
                 $directBillingPrice,
@@ -76,7 +78,7 @@ class PriceRepository
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .
-                "WHERE `service` = ? AND (`server` = ? OR `server` IS NULL) " .
+                "WHERE `service_id` = ? AND (`server` = ? OR `server` IS NULL) " .
                 "ORDER BY `quantity` ASC"
         );
         $statement->execute([$service->getId(), $server ? $server->getId() : null]);
@@ -91,8 +93,8 @@ class PriceRepository
 
     public function update(
         $id,
-        $service,
-        $server,
+        $serviceId,
+        $serverId,
         $smsPrice,
         $transferPrice,
         $directBillingPrice,
@@ -101,12 +103,12 @@ class PriceRepository
     ) {
         $statement = $this->db->statement(
             "UPDATE `ss_prices` " .
-                "SET `service` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ?, `discount` = ? " .
+                "SET `service_id` = ?, `server` = ?, `sms_price` = ?, `transfer_price` = ?, `direct_billing_price` = ?, `quantity` = ?, `discount` = ? " .
                 "WHERE `id` = ?"
         );
         $statement->execute([
-            $service,
-            $server,
+            $serviceId,
+            $serverId,
             $smsPrice,
             $transferPrice,
             $directBillingPrice,
@@ -130,7 +132,7 @@ class PriceRepository
     {
         return new Price(
             as_int($data['id']),
-            $data['service'],
+            as_string($data['service_id']),
             as_int($data['server']),
             as_int($data['sms_price']),
             as_int($data['transfer_price']),

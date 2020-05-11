@@ -989,7 +989,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ? as_int($data["expire"])
             : $userService->getExpire();
         $type = as_int(array_get($data, "type", $userService->getType()));
-        $authData = array_get($data, "auth_data", $userService->getAuthData());
+        $authData = as_string(array_get($data, "auth_data", $userService->getAuthData()));
         $serverId = as_int(array_get($data, "server", $userService->getServerId()));
         $uid = as_int(array_get($data, "uid"));
         $shouldUidBeUpdated = array_key_exists("uid", $data);
@@ -1061,7 +1061,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $set
             );
         } else {
-            $set["service"] = $this->service->getId();
+            $set["service_id"] = $this->service->getId();
             $set["server"] = $serverId;
             $set["type"] = $type;
             $set["auth_data"] = $authData;

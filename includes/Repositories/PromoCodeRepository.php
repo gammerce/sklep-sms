@@ -44,8 +44,8 @@ SET
 `usage_limit` = ?,
 `expires_at` = ?,
 `service_id` = ?,
-`server_id` = ?,
-`user_id` = ?
+`server` = ?,
+`uid` = ?
 EOF
             )
             ->execute([
