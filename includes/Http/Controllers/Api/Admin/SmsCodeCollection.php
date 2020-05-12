@@ -37,7 +37,6 @@ class SmsCodeCollection
 
         if ($expiresAt) {
             $expiresAt = new DateTime($expiresAt);
-            // TODO Fix it
             $expiresAt->setTime(23, 59, 59);
         }
 
