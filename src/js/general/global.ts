@@ -1,8 +1,13 @@
-import {loader} from "./loader";
-import {handleErrorResponse} from "./infobox";
-import {trimSlashes} from "./stocks";
+import { loader } from "./loader";
+import { handleErrorResponse } from "./infobox";
+import { trimSlashes } from "./stocks";
 
-export const restRequest = function(method: string, path: string, data: any, onSuccessFunction?: any): void {
+export const restRequest = function(
+    method: string,
+    path: string,
+    data: any,
+    onSuccessFunction?: any
+): void {
     loader.show();
 
     $.ajax({
@@ -49,8 +54,7 @@ export const changeUrl = function(data: Record<any, any>): void {
     $.each(data, function(key, value) {
         if (value.length) {
             params[key] = encodeURIComponent(value);
-        }
-        else {
+        } else {
             delete params[key];
         }
     });

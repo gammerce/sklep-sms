@@ -4,7 +4,12 @@ import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
 
-export const getAndSetTemplate = function(element: JQuery, template: string, data: any, onSuccessFunction?): void {
+export const getAndSetTemplate = function(
+    element: JQuery,
+    template: string,
+    data: any,
+    onSuccessFunction?
+): void {
     loader.show();
 
     $.ajax({
@@ -80,7 +85,11 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
  * @param {string} boxId
  * @param {object} data
  */
-export const showActionBox = function(pageId: string, boxId: string, data?: Record<any, any>): void {
+export const showActionBox = function(
+    pageId: string,
+    boxId: string,
+    data?: Record<any, any>
+): void {
     restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
         const jsonObj = json_parse(content);
         if (!jsonObj) {

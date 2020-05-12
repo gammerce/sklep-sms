@@ -7,9 +7,11 @@ use App\Managers\ServiceManager;
 use App\Models\PromoCode;
 use App\Models\Server;
 use App\Models\Service;
+use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
 use App\Support\Database;
 use App\Support\Template;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -21,8 +23,8 @@ use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
-// TODO Promo code add form
 // TODO Display more columns (expiration, remaining usages)
 
 class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
@@ -44,6 +46,9 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
 
+    /** @var Settings */
+    private $settings;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
@@ -51,7 +56,8 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         Database $db,
         CurrentPage $currentPage,
         ServiceManager $serviceManager,
-        ServerManager $serverManager
+        ServerManager $serverManager,
+        Settings $settings
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
@@ -59,6 +65,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         $this->serviceManager = $serviceManager;
         $this->promoCodeRepository = $promoCodeRepository;
         $this->serverManager = $serverManager;
+        $this->settings = $settings;
     }
 
     public function getPrivilege()
@@ -136,9 +143,18 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
+                $quantityTypes = collect(QuantityType::values())
+                    ->map(function (QuantityType $quantityType) {
+                        return new Option(
+                            $this->getQuantityTypeName($quantityType),
+                            $quantityType->getValue()
+                        );
+                    })
+                    ->join();
+
                 $output = $this->template->render(
                     "admin/action_boxes/promo_code_add",
-                    compact("services", "servers")
+                    compact("services", "servers", "quantityTypes")
                 );
                 break;
 
@@ -150,5 +166,17 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             "status" => "ok",
             "template" => $output,
         ];
+    }
+
+    private function getQuantityTypeName(QuantityType $quantityType)
+    {
+        switch ($quantityType) {
+            case QuantityType::FIXED:
+                return $this->settings->getCurrency();
+            case QuantityType::PERCENTAGE():
+                return "%";
+            default:
+                throw new UnexpectedValueException();
+        }
     }
 }

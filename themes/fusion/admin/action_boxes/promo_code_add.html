@@ -1,12 +1,12 @@
 <form id="form_promo_code_add" class="action_box">
     <div class="service_main_info">
-        {$lang->t('add_promo_code')}
+        {{ __('add_promo_code') }}
     </div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="code" class="required">{$lang->t('code')}</label>
+                    <label for="code" class="required">{{ __('code') }}</label>
                 </td>
                 <td>
                     <div class="field has-addons">
@@ -20,11 +20,52 @@
                             />
                         </div>
                         <div class="control">
+                            <button type="button" name="random_code" class="button is-small">
+                                {{ __('generate') }}
+                            </button>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="quantity" class="required">{{ __('quantity') }}</label>
+                </td>
+                <td>
+                    <div class="field has-addons">
+                        <div class="control">
                             <input
-                                type="button"
-                                name="random_code"
-                                value="{$lang->t('generate')}"
-                                class="button is-small"
+                                type="number"
+                                id="quantity"
+                                name="quantity"
+                                class="input is-small"
+                                min="0"
+                                required
+                            />
+                        </div>
+                        <div class="control">
+                            <div class="select is-small">
+                                <select name="quantity_type">
+                                    {!! $quantityTypes !!}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="expires_at">{{ __('expires') }}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                id="expires_at"
+                                name="expires_at"
+                                type="date"
+                                class="input is-small"
+                                placeholder="{{ __('usage_limit_placeholder') }}"
                             />
                         </div>
                     </div>
@@ -32,15 +73,34 @@
             </tr>
             <tr>
                 <td>
-                    <label for="service_id">{$lang->t('service')}</label>
+                    <label for="usage_limit">{{ __('usage_limit') }}</label>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <input
+                                id="usage_limit"
+                                name="usage_limit"
+                                type="number"
+                                class="input is-small"
+                                placeholder="{{ __('usage_limit_placeholder') }}"
+                                min="0"
+                            />
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="service_id">{{ __('service') }}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="service_id" name="service_id">
-                                    <option value="">{$lang->t('all')}</option>
-                                    {$services}
+                                    <option value="">{{ __('all') }}</option>
+                                    {!! $services !!}
                                 </select>
                             </div>
                         </div>
@@ -49,15 +109,15 @@
             </tr>
             <tr>
                 <td>
-                    <label for="server_id">{$lang->t('server')}</label>
+                    <label for="server_id">{{ __('server') }}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
                                 <select id="server_id" name="server_id">
-                                    <option value="">{$lang->t('all')}</option>
-                                    {$servers}
+                                    <option value="">{{ __('all') }}</option>
+                                    {!! $servers !!}
                                 </select>
                             </div>
                         </div>
@@ -66,7 +126,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="user_id">{$lang->t('user_id')}</label>
+                    <label for="user_id">{{ __('user_id') }}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -83,7 +143,7 @@
             </tr>
             <tr>
                 <td colspan="2">
-                    <input type="submit" value="{$lang->t('add')}" class="button w100" />
+                    <input type="submit" value="{{ __('add') }}" class="button w100" />
                 </td>
             </tr>
         </tbody>

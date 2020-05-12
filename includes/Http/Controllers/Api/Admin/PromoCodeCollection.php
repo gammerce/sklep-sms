@@ -6,6 +6,7 @@ use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EnumRule;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\ServerExistsRule;
 use App\Http\Validation\Rules\ServiceExistsRule;
@@ -41,8 +42,8 @@ class PromoCodeCollection
             [
                 "code" => [new RequiredRule(), new MaxLengthRule(16)],
                 "quantity_type" => [new RequiredRule(), new EnumRule(QuantityType::class)],
-                "quantity" => [new RequiredRule(), new IntegerRule()],
-                "usage_limit" => [new IntegerRule()],
+                "quantity" => [new RequiredRule(), new IntegerRule(), new MinValueRule(0)],
+                "usage_limit" => [new IntegerRule(), new MinValueRule(0)],
                 "expires_at" => [new DateTimeRule()],
                 "user_id" => [new UserExistsRule()],
                 "server_id" => [new ServerExistsRule()],
@@ -54,7 +55,13 @@ class PromoCodeCollection
 
         $code = as_string($validated["code"]);
         $quantityType = new QuantityType($validated["quantity_type"]);
-        $quantity = as_int($validated["quantity"]);
+
+        if ($quantityType->equals(QuantityType::FIXED())) {
+            $quantity = $validated["quantity"] * 100;
+        } else {
+            $quantity = as_int($validated["quantity"]);
+        }
+
         $usageLimit = as_int($validated["usage_limit"]);
         $expiresAt = as_datetime($validated["expires_at"]);
         $userId = as_int($validated["user_id"]);

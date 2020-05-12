@@ -258,6 +258,8 @@ return [
         'Update available for {1}/{2} servers. To download it go to <a href="{3}">Servers update</a>.',
     'update_servers' => 'Servers update',
     'update_web' => 'WWW website update',
+    'usage_limit' => 'Usage limit',
+    'usage_limit_placeholder' => 'Leave blank to set no usage limit',
     'user_edit' => 'User edited successfully.',
     'user_service_edit' => 'Player\'s service editing',
     'users' => 'Users',

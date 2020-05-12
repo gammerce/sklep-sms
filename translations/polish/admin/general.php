@@ -261,6 +261,8 @@ return [
         'Dostępna jest aktualizacja dla {1}/{2} serwerów. Aby ją pobrać przejdź do strony <a href="{3}">Aktualizacja Serwerów</a>.',
     'update_servers' => 'Aktualizacja serwerów',
     'update_web' => 'Aktualizacja strony WWW',
+    'usage_limit' => 'Limit użyć',
+    'usage_limit_placeholder' => 'Zostaw puste, aby nie ustawiać limitu wykorzystań',
     'user_edit' => 'Użytkownik został prawidłowo wyedytowany.',
     'user_service_edit' => 'Edytowanie usługi przez użytkownika',
     'users' => 'Użytkownicy',
