@@ -41,7 +41,7 @@ class PurchaseSerializer
     {
         if ($purchase instanceof Purchase) {
             // Fix: Refresh user to avoid bugs linked with user wallet
-            $purchase->user = $this->userRepository->get($purchase->user->getUid()) ?: new User();
+            $purchase->user = $this->userRepository->get($purchase->user->getId()) ?: new User();
             return $purchase;
         }
 

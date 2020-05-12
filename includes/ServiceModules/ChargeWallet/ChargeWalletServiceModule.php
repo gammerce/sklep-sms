@@ -121,12 +121,12 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     public function purchase(Purchase $purchase)
     {
         $this->walletPaymentService->chargeWallet(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->getOrder(Purchase::ORDER_QUANTITY)
         );
 
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
             $purchase->getPayment(Purchase::PAYMENT_METHOD),

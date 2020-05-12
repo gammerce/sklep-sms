@@ -31,7 +31,7 @@ class UserServiceResource
             throw new EntityNotFoundException();
         }
 
-        if ($userService->getUid() !== $user->getUid()) {
+        if ($userService->getUserId() !== $user->getId()) {
             throw new EntityNotFoundException();
         }
 

@@ -96,7 +96,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $this->assertNotNull($boughtService);
         $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
 
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(9900, $freshUser->getWallet());
     }
 
@@ -142,7 +142,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             $response->getContent()
         );
 
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(99, $freshUser->getWallet());
     }
 
@@ -233,7 +233,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             $json
         );
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(10000, $freshUser->getWallet());
     }
 }

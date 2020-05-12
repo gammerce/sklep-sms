@@ -54,7 +54,7 @@ class BoughtServiceService
     /**
      * Add information about purchasing a service
      *
-     * @param int $uid
+     * @param int $userId
      * @param string $userName
      * @param string $ip
      * @param string $method
@@ -69,7 +69,7 @@ class BoughtServiceService
      * @return int
      */
     public function create(
-        $uid,
+        $userId,
         $userName,
         $ip,
         $method,
@@ -84,7 +84,7 @@ class BoughtServiceService
         $forever = $quantity === null;
 
         $boughtService = $this->boughtServiceRepository->create(
-            $uid,
+            $userId,
             $method,
             $paymentId,
             $serviceId,
@@ -111,7 +111,7 @@ class BoughtServiceService
             $email,
             $returnMessage,
             $userName,
-            $uid,
+            $userId,
             $ip
         );
 

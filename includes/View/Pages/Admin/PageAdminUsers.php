@@ -132,7 +132,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ->join("; ");
 
                 return (new BodyRow())
-                    ->setDbId($user->getUid())
+                    ->setDbId($user->getId())
                     ->addCell(new Cell($user->getUsername()))
                     ->addCell(new Cell($user->getForename()))
                     ->addCell(new Cell($user->getSurname()))
@@ -149,7 +149,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ->addAction($this->createPasswordButton())
                     ->setDeleteAction(has_privileges("manage_users"))
                     ->setEditAction(has_privileges("manage_users"))
-                    ->when($recordId === $user->getUid(), function (BodyRow $bodyRow) {
+                    ->when($recordId === $user->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
             })
@@ -194,7 +194,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "user_edit":
-                $user = $this->userManager->getUser($query["uid"]);
+                $user = $this->userManager->getUser($query["user_id"]);
 
                 $groups = collect($this->groupManager->getGroups())
                     ->map(function (Group $group) use ($user) {
@@ -217,14 +217,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "surname" => $user->getSurname(),
                     "forename" => $user->getForename(),
                     "steamId" => $user->getSteamId(),
-                    "uid" => $user->getUid(),
+                    "userId" => $user->getId(),
                     "wallet" => $this->priceTextService->getPlainPrice($user->getWallet()),
                     "groups" => $groups,
                 ]);
                 break;
 
             case "charge_wallet":
-                $user = $this->userManager->getUser($query["uid"]);
+                $user = $this->userManager->getUser($query["user_id"]);
                 $output = $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact("user")
@@ -232,7 +232,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 break;
 
             case "change_password":
-                $user = $this->userManager->getUser($query["uid"]);
+                $user = $this->userManager->getUser($query["user_id"]);
                 $output = $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact("user")

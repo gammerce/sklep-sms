@@ -36,15 +36,15 @@ class UserResource
                 "groups" => $request->request->get("groups") ?: [],
             ]),
             [
-                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
+                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getId())],
                 "forename" => [],
                 "groups" => [new UserGroupsRule()],
-                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getUid())],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getId())],
                 "surname" => [],
                 "username" => [
                     new RequiredRule(),
                     new UsernameRule(),
-                    new UniqueUsernameRule($editedUser->getUid()),
+                    new UniqueUsernameRule($editedUser->getId()),
                 ],
                 "wallet" => [new RequiredRule(), new NumberRule()],
             ]

@@ -4,8 +4,6 @@ namespace App\Repositories;
 use App\Models\BoughtService;
 use App\Support\Database;
 
-// TODO Replace uid with user_id
-
 class BoughtServiceRepository
 {
     /** @var Database */
@@ -31,7 +29,7 @@ class BoughtServiceRepository
     }
 
     public function create(
-        $uid,
+        $userId,
         $method,
         $paymentId,
         $serviceId,
@@ -44,11 +42,11 @@ class BoughtServiceRepository
         $this->db
             ->statement(
                 "INSERT INTO `ss_bought_services` " .
-                    "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service_id` = ?, " .
+                    "SET `user_id` = ?, `payment` = ?, `payment_id` = ?, `service_id` = ?, " .
                     "`server_id` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
             )
             ->execute([
-                $uid ?: 0,
+                $userId ?: 0,
                 $method,
                 $paymentId,
                 $serviceId,
@@ -66,7 +64,7 @@ class BoughtServiceRepository
     {
         return new BoughtService(
             as_int($data["id"]),
-            as_int($data["uid"]),
+            as_int($data["user_id"]),
             $data["payment"],
             $data["payment_id"],
             as_string($data["service_id"]),

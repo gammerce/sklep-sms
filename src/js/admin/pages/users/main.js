@@ -14,13 +14,13 @@ var rowId = 0;
 $(document).delegate(".table-structure .charge_wallet", "click", function() {
     rowId = $(this).closest("tr");
     showActionBox(currentPage, "charge_wallet", {
-        uid: rowId.children("td[headers=id]").text(),
+        user_id: rowId.children("td[headers=id]").text(),
     });
 });
 
 $(document).delegate(".table-structure .change_password", "click", function() {
     showActionBox(currentPage, "change_password", {
-        uid: $(this)
+        user_id: $(this)
             .closest("tr")
             .find("td[headers=id]")
             .text(),
@@ -29,7 +29,7 @@ $(document).delegate(".table-structure .change_password", "click", function() {
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
     showActionBox(currentPage, "user_edit", {
-        uid: $(this)
+        user_id: $(this)
             .closest("tr")
             .find("td[headers=id]")
             .text(),
@@ -80,13 +80,13 @@ $(document).delegate("#form_charge_wallet", "submit", function(e) {
 
     var that = this;
     var userId = $(this)
-        .find("[name=uid]")
+        .find("[name=user_id]")
         .val();
 
     loader.show();
     $.ajax({
         type: "POST",
-        url: buildUrl("/api/admin/users/" + userId + "/wallet/charge"),
+        url: buildUrl(`/api/admin/users/${userId}/wallet/charge`),
         data: $(this).serialize(),
         complete: function() {
             loader.hide();
@@ -111,8 +111,8 @@ $(document).delegate("#form_charge_wallet", "submit", function(e) {
                     rowId.children("td[headers=wallet]"),
                     "admin_user_wallet",
                     {
-                        uid: $(that)
-                            .find("input[name=uid]")
+                        user_id: $(that)
+                            .find("input[name=user_id]")
                             .val(),
                     },
                     function() {
@@ -135,7 +135,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
     var that = this;
 
     var userId = $(this)
-        .find("input[name=uid]")
+        .find("input[name=user_id]")
         .val();
 
     loader.show();
@@ -175,7 +175,7 @@ $(document).delegate("#form_user_edit", "submit", function(e) {
 
     var that = this;
     var userId = $(that)
-        .find("[name=uid]")
+        .find("[name=user_id]")
         .val();
 
     loader.show();

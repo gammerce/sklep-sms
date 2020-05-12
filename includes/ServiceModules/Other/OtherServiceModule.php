@@ -52,7 +52,7 @@ class OtherServiceModule extends ServiceModule implements
     public function purchase(Purchase $purchase)
     {
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
             $purchase->getPayment(Purchase::PAYMENT_METHOD),

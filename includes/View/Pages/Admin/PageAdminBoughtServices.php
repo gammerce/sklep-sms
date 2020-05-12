@@ -78,7 +78,7 @@ class PageAdminBoughtServices extends PageAdmin
                         "t.id",
                         "t.payment",
                         "t.payment_id",
-                        "t.uid",
+                        "t.user_id",
                         "t.ip",
                         "t.email",
                         "t.auth_data",

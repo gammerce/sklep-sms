@@ -35,11 +35,11 @@ class UserProfileResource
                 "username" => [
                     new RequiredRule(),
                     new UsernameRule(),
-                    new UniqueUsernameRule($user->getUid()),
+                    new UniqueUsernameRule($user->getId()),
                 ],
                 "forename" => [],
                 "surname" => [],
-                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($user->getUid())],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($user->getId())],
             ]
         );
 

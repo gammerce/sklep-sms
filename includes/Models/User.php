@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 class User
 {
     /** @var int */
-    private $uid;
+    private $id;
 
     /** @var string */
     private $username;
@@ -58,7 +58,7 @@ class User
     private $platform;
 
     public function __construct(
-        $uid = null,
+        $id = null,
         $username = null,
         $password = null,
         $salt = null,
@@ -80,7 +80,7 @@ class User
         /** @var GroupManager $groupManager */
         $groupManager = app()->make(GroupManager::class);
 
-        $this->uid = $uid;
+        $this->id = $id;
         $this->username = $username;
         $this->password = $password;
         $this->salt = $salt;
@@ -112,15 +112,15 @@ class User
 
     public function exists()
     {
-        return !!$this->getUid();
+        return !!$this->getId();
     }
 
     /**
      * @return int
      */
-    public function getUid()
+    public function getId()
     {
-        return $this->uid;
+        return $this->id;
     }
 
     /**

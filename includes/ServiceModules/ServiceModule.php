@@ -53,7 +53,7 @@ abstract class ServiceModule
         return new UserService(
             as_int($data["id"]),
             as_string($data["service_id"]),
-            as_int($data["uid"]),
+            as_int($data["user_id"]),
             as_int($data["expire"])
         );
     }

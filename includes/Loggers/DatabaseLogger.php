@@ -40,7 +40,7 @@ class DatabaseLogger
 
         if ($this->auth->check()) {
             $user = $this->auth->user();
-            $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
+            $message .= " | User: {$user->getUsername()}({$user->getId()})({$user->getLastIp()})";
         }
 
         $this->logRepository->create($message);
@@ -49,7 +49,7 @@ class DatabaseLogger
     public function logWithUser(User $user, $key, ...$args)
     {
         $message = $this->langShop->t($key, ...$args);
-        $message .= " | User: {$user->getUsername()}({$user->getUid()})({$user->getLastIp()})";
+        $message .= " | User: {$user->getUsername()}({$user->getId()})({$user->getLastIp()})";
         $this->logRepository->create($message);
     }
 }

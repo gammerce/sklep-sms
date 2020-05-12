@@ -298,7 +298,7 @@ class Factory
         $attributes = array_merge(
             [
                 "service_id" => "vip",
-                "uid" => null,
+                "user_id" => null,
                 "seconds" => 35 * 24 * 60 * 60,
                 "server_id" => null,
                 "type" => ExtraFlagType::TYPE_NICK,
@@ -310,7 +310,7 @@ class Factory
 
         return $this->extraFlagUserServiceRepository->create(
             $attributes["service_id"],
-            $attributes["uid"],
+            $attributes["user_id"],
             $attributes["seconds"],
             $attributes["server_id"],
             $attributes["type"],

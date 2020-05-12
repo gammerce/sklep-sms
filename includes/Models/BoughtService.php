@@ -7,7 +7,7 @@ class BoughtService
     private $id;
 
     /** @var int */
-    private $uid;
+    private $userId;
 
     /** @var string */
     private $method;
@@ -35,7 +35,7 @@ class BoughtService
 
     public function __construct(
         $id,
-        $uid,
+        $userId,
         $method,
         $paymentId,
         $service,
@@ -46,7 +46,7 @@ class BoughtService
         $extraData
     ) {
         $this->id = $id;
-        $this->uid = $uid;
+        $this->userId = $userId;
         $this->method = $method;
         $this->paymentId = $paymentId;
         $this->service = $service;
@@ -64,9 +64,9 @@ class BoughtService
     }
 
     /** @return int */
-    public function getUid()
+    public function getUserId()
     {
-        return $this->uid;
+        return $this->userId;
     }
 
     /** @return string */

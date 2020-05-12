@@ -18,19 +18,19 @@ class UserManager
     }
 
     /**
-     * @param int $uid
+     * @param int $userId
      * @return User
      */
-    public function getUser($uid)
+    public function getUser($userId)
     {
-        if ($uid && isset($this->users[$uid])) {
-            return $this->users[$uid];
+        if ($userId && isset($this->users[$userId])) {
+            return $this->users[$userId];
         }
 
-        $user = $this->userRepository->get($uid);
+        $user = $this->userRepository->get($userId);
 
         if ($user) {
-            $this->users[$user->getUid()] = $user;
+            $this->users[$user->getId()] = $user;
             return $user;
         }
 
@@ -42,7 +42,7 @@ class UserManager
      */
     public function setUser(User $user)
     {
-        $this->users[$user->getUid()] = $user;
+        $this->users[$user->getId()] = $user;
     }
 
     /**
@@ -55,7 +55,7 @@ class UserManager
         $user = $this->userRepository->findByPassword($login, $password);
 
         if ($user) {
-            $this->users[$user->getUid()] = $user;
+            $this->users[$user->getId()] = $user;
             return $user;
         }
 

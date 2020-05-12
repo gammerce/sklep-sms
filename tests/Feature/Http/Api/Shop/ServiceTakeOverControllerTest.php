@@ -44,7 +44,7 @@ class ServiceTakeOverControllerTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $userServices = $userServiceService->find();
         $this->assertCount(1, $userServices);
-        $this->assertSame($user->getUid(), $userServices[0]->getUid());
+        $this->assertSame($user->getId(), $userServices[0]->getUserId());
     }
 
     /** @test */
@@ -80,6 +80,6 @@ class ServiceTakeOverControllerTest extends HttpTestCase
         $this->assertSame("no_service", $json["return_id"]);
         $userServices = $userServiceService->find();
         $this->assertCount(1, $userServices);
-        $this->assertSame(0, $userServices[0]->getUid());
+        $this->assertSame(0, $userServices[0]->getUserId());
     }
 }

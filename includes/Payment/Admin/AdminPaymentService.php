@@ -22,7 +22,7 @@ class AdminPaymentService
     {
         $this->db
             ->statement("INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) VALUES (?, ?, ?)")
-            ->execute([$admin->getUid(), $admin->getLastIp(), $admin->getPlatform()]);
+            ->execute([$admin->getId(), $admin->getLastIp(), $admin->getPlatform()]);
 
         return $this->db->lastId();
     }

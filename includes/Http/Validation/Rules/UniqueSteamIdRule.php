@@ -23,7 +23,7 @@ class UniqueSteamIdRule extends BaseRule
     {
         $user = $this->userRepository->findBySteamId($value);
 
-        if ($user && $user->getUid() !== $this->exceptUserId) {
+        if ($user && $user->getId() !== $this->exceptUserId) {
             return [$this->lang->t("steam_id_occupied")];
         }
 

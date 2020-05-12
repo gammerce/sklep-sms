@@ -96,7 +96,7 @@ class RegisterController
 
         $logger->log(
             "log_new_account",
-            $createdUser->getUid(),
+            $createdUser->getId(),
             $createdUser->getUsername(),
             $createdUser->getRegIp()
         );

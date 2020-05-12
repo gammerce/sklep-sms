@@ -5,7 +5,7 @@
     <table>
         <tr>
             <td>{$lang->t('id')}</td>
-            <td>{{ $uid }}</td>
+            <td>{{ $userId }}</td>
         </tr>
         <tr>
             <td colspan="2" class="line"></td>
@@ -154,7 +154,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="hidden" name="uid" value="{{ $uid }}" />
+                <input type="hidden" name="user_id" value="{{ $userId }}" />
                 <input type="submit" value="{$lang->t('edit')}" class="button w100" />
             </td>
         </tr>

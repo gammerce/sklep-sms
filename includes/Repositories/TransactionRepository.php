@@ -7,7 +7,7 @@ class TransactionRepository
 {
     private $transactionsQuery = <<<EOF
 (SELECT bs.id AS `id`,
-bs.uid AS `uid`,
+bs.user_id AS `user_id`,
 u.username AS `username`,
 bs.payment AS `payment`,
 bs.payment_id AS `payment_id`,
@@ -30,7 +30,7 @@ ps.number AS `sms_number`,
 IFNULL(ps.free, IFNULL(pt.free, IFNULL(pdb.free, 0))) AS `free`,
 bs.timestamp AS `timestamp`
 FROM `ss_bought_services` AS bs
-LEFT JOIN `ss_users` AS u ON u.uid = bs.uid
+LEFT JOIN `ss_users` AS u ON u.uid = bs.user_id
 LEFT JOIN `ss_payment_admin` AS pa ON bs.payment = 'admin' AND pa.id = bs.payment_id
 LEFT JOIN `ss_users` AS u2 ON u2.uid = pa.aid
 LEFT JOIN `ss_payment_sms` AS ps ON bs.payment = 'sms' AND ps.id = bs.payment_id
@@ -43,25 +43,25 @@ EOF;
     {
         return new Transaction(
             as_int($data["id"]),
-            as_int($data["uid"]),
-            $data["username"],
+            as_int($data["user_id"]),
+            as_string($data["username"]),
             $data["payment"],
             $data["payment_id"],
             $data["external_payment_id"],
-            $data["service_id"],
+            as_string($data["service_id"]),
             as_int($data["server_id"]),
             as_float($data["amount"]),
-            $data["auth_data"],
-            $data["email"],
+            as_string($data["auth_data"]),
+            as_string($data["email"]),
             json_decode($data["extra_data"], true),
-            $data["ip"],
-            $data["platform"],
+            as_string($data["ip"]),
+            as_string($data["platform"]),
             as_int($data["income"]),
             as_int($data["cost"]),
             as_int($data["aid"]),
-            $data["adminname"],
-            $data["sms_code"],
-            $data["sms_text"],
+            as_string($data["adminname"]),
+            as_string($data["sms_code"]),
+            as_string($data["sms_text"]),
             $data["sms_number"],
             (bool) $data["free"],
             $data["timestamp"]

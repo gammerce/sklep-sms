@@ -46,9 +46,9 @@ class ExtraFlagUserServiceRepository
         return $this->mapToModel($data);
     }
 
-    public function create($serviceId, $uid, $seconds, $serverId, $type, $authData, $password)
+    public function create($serviceId, $userId, $seconds, $serverId, $type, $authData, $password)
     {
-        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $uid);
+        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $userId);
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
@@ -84,7 +84,7 @@ class ExtraFlagUserServiceRepository
         return new ExtraFlagUserService(
             as_int($data["id"]),
             as_string($data["service_id"]),
-            as_int($data["uid"]),
+            as_int($data["user_id"]),
             as_int($data["expire"]),
             as_int($data["server_id"]),
             as_int($data["type"]),
