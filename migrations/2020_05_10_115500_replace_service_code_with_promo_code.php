@@ -10,6 +10,7 @@ class ReplaceServiceCodeWithPromoCode extends Migration
         // server 0 === null
         // uid 0 === null
         // service 0 === null
+        // default quantity_type == PERCENTAGE, quantity == 100
 
         $this->executeQueries([
             "ALTER TABLE `ss_service_codes` RENAME `ss_promo_codes`",

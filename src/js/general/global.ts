@@ -1,11 +1,8 @@
-import { loader } from "./loader";
-import { handleErrorResponse } from "./infobox";
-import { get_value, trimSlashes } from "./stocks";
+import {loader} from "./loader";
+import {handleErrorResponse} from "./infobox";
+import {trimSlashes} from "./stocks";
 
-export const restRequest = function(method, path, data, onSuccessFunction) {
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
-
+export const restRequest = function(method: string, path: string, data: any, onSuccessFunction?: any): void {
     loader.show();
 
     $.ajax({
@@ -15,18 +12,16 @@ export const restRequest = function(method, path, data, onSuccessFunction) {
         complete: function() {
             loader.hide();
         },
-        success: function(content) {
-            onSuccessFunction(content);
-        },
+        success: onSuccessFunction,
         error: handleErrorResponse,
     });
 };
 
-export const buildUrl = function(path, query) {
-    var prefix = typeof baseUrl !== "undefined" ? trimSlashes(baseUrl) + "/" : "";
-    var queryString = $.param(query || {});
+export const buildUrl = function(path: string, query?: object): string {
+    const prefix = typeof window.baseUrl !== "undefined" ? trimSlashes(window.baseUrl) + "/" : "";
+    const queryString = $.param(query || {});
 
-    var output = prefix + trimSlashes(path);
+    let output = prefix + trimSlashes(path);
 
     if (queryString) {
         output += "?" + queryString;
@@ -35,8 +30,7 @@ export const buildUrl = function(path, query) {
     return output;
 };
 
-export const changeUrl = function(data) {
-    data = get_value(data, {});
+export const changeUrl = function(data: Record<any, any>): void {
     var splittedUrl = document.URL.split("?");
     var url = splittedUrl[0];
     var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
@@ -53,8 +47,12 @@ export const changeUrl = function(data) {
     }
 
     $.each(data, function(key, value) {
-        if (value.length) params[key] = encodeURIComponent(value);
-        else delete params[key];
+        if (value.length) {
+            params[key] = encodeURIComponent(value);
+        }
+        else {
+            delete params[key];
+        }
     });
 
     var strparams = [];
@@ -65,31 +63,31 @@ export const changeUrl = function(data) {
     window.location.href = url + "?" + strparams.join("&");
 };
 
-export const hideAndDisable = function(node) {
+export const hideAndDisable = function(node: JQuery): void {
     hide(node);
     node.prop("disabled", true);
     node.find("input").prop("disabled", true);
 };
 
-export const showAndEnable = function(node) {
+export const showAndEnable = function(node: JQuery): void {
     show(node);
     node.prop("disabled", false);
     node.find("input").prop("disabled", false);
 };
 
-export const hide = function(node) {
+export const hide = function(node: JQuery): void {
     node.addClass("is-hidden");
 };
 
-export const show = function(node) {
+export const show = function(node: JQuery): void {
     node.removeClass("is-hidden");
 };
 
-export const isShown = function(node) {
+export const isShown = function(node: JQuery): boolean {
     return !node.hasClass("is-hidden");
 };
 
-export const showWarnings = function(form, warnings) {
+export const showWarnings = function(form: JQuery, warnings: Record<string, any>) {
     $.each(warnings, function(name, element) {
         const inputElement = form.find('[name="' + name + '"]');
         const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
@@ -98,7 +96,9 @@ export const showWarnings = function(form, warnings) {
         inputElement.addClass("is-danger");
         field.append(appendedElement);
 
+        // @ts-ignore
         if (inputElement.effect) {
+            // @ts-ignore
             inputElement.effect("highlight", 1000);
         }
     });
@@ -108,10 +108,14 @@ export const removeFormWarnings = function() {
     $(".form_warning").remove();
 };
 
-export const element_with_data_module = function(a) {
-    if (typeof a.attr("data-module") !== "undefined") return a;
+export const element_with_data_module = function(a: JQuery): JQuery | null {
+    if (typeof a.attr("data-module") !== "undefined") {
+        return a;
+    }
 
-    if (typeof a.prop("tagName") === "undefined") return null;
+    if (typeof a.prop("tagName") === "undefined") {
+        return null;
+    }
 
     return element_with_data_module(a.parent());
 };

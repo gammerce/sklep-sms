@@ -4,15 +4,12 @@ import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
 
-export const getAndSetTemplate = function(element, template, data, onSuccessFunction) {
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
-
+export const getAndSetTemplate = function(element: JQuery, template: string, data: any, onSuccessFunction?): void {
     loader.show();
 
     $.ajax({
         type: "GET",
-        url: buildUrl("/api/admin/templates/" + template),
+        url: buildUrl(`/api/admin/templates/${template}`),
         data: data,
         complete() {
             loader.hide();
@@ -29,7 +26,10 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
             }
 
             element.html(jsonObj.template);
-            onSuccessFunction();
+
+            if (onSuccessFunction) {
+                onSuccessFunction();
+            }
         },
         error(error) {
             handleErrorResponse();
@@ -38,13 +38,10 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
     });
 };
 
-export const refreshAdminContent = () => refreshBlocks(`admincontent:${currentPage}`);
+export const refreshAdminContent = () => refreshBlocks(`admincontent:${window.currentPage}`);
 
-export const refreshBlocks = function(bricks, onSuccessFunction) {
+export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): void {
     loader.show();
-
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
     $.ajax({
         type: "GET",
@@ -65,7 +62,9 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
                 brickNode.attr("class", brick.class);
             });
 
-            onSuccessFunction(content);
+            if (onSuccessFunction) {
+                onSuccessFunction(content);
+            }
         },
         error(error) {
             handleErrorResponse();
@@ -81,7 +80,7 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
  * @param {string} boxId
  * @param {object} data
  */
-export const showActionBox = function(pageId, boxId, data = undefined) {
+export const showActionBox = function(pageId: string, boxId: string, data?: Record<any, any>): void {
     restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
         const jsonObj = json_parse(content);
         if (!jsonObj) {
@@ -98,7 +97,7 @@ export const showActionBox = function(pageId, boxId, data = undefined) {
     });
 };
 
-export const clearAndHideActionBox = function() {
+export const clearAndHideActionBox = function(): void {
     action_box.hide();
     $("#action_box_wrapper_td").html("");
 };

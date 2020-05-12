@@ -3,7 +3,7 @@ export const loader = {
     show_task: 0,
     blocked: false,
 
-    show: function() {
+    show() {
         loader.blocked = true;
         // Usuwamy poprzedni task pokazujacy ladowanie
         if (loader.show_task) {
@@ -27,7 +27,7 @@ export const loader = {
         }, 300);
     },
 
-    hide: function() {
+    hide() {
         loader.blocked = false;
         if (loader.show_task) {
             clearTimeout(loader.show_task);

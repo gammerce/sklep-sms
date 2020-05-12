@@ -14,8 +14,8 @@
 <script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
 <script type="text/javascript">
     var language = "{{ $lang->getCurrentLanguage() }}";
-    var baseUrl = "{{ $url->to('/') }}";
-    var currentPage = "{{ $currentPageId }}";
+    window.baseUrl = "{{ $url->to('/') }}";
+    window.currentPage = "{{ $currentPageId }}";
 </script>
 {$scripts}
 

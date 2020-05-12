@@ -10,6 +10,8 @@ class PagePromoCodesActionBoxAddTest extends HttpTestCase
     {
         // give
         $this->actingAs($this->factory->admin());
+        $this->factory->service();
+        $this->factory->server();
 
         // when
         $response = $this->get("/api/admin/pages/promo_codes/action_boxes/add");

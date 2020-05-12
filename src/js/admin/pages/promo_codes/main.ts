@@ -5,7 +5,7 @@ import { get_random_string, json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 $(document).delegate("#promo_code_button_add", "click", function() {
-    showActionBox(currentPage, "add");
+    showActionBox(window.currentPage, "add");
 });
 
 // Generate code
@@ -65,12 +65,8 @@ $(document).delegate("#form_promo_code_add", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            const jsonObj = json_parse(content);
+            if (!jsonObj || !jsonObj.return_id) {
                 return sthWentWrong();
             }
 

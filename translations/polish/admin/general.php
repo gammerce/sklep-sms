@@ -19,7 +19,6 @@ return [
     'additions' => 'Dodatki',
     'admin_id' => 'ID Admina',
     'all' => 'Wszystkie',
-    'all_servers' => 'Wszystkie',
     'amxx_server' => 'Serwer gry (AMXX)',
     'answers' => 'Odpowiedzi',
     'antispam_add' => 'Pytanie anty-spamowe zostało prawidłowo dodane.',

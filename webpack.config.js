@@ -95,6 +95,10 @@ module.exports = {
             }
         ]
     },
+    resolve: {
+        extensions: ['.ts', '.js'],
+        symlinks: false,
+    },
     optimization: {
         removeAvailableModules: false,
         removeEmptyChunks: false,

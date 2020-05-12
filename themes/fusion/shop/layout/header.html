@@ -14,8 +14,8 @@
 <script type="text/javascript">
     var f = "{!! $footer !!}";
     var language = "{{ $lang->getCurrentLanguage() }}";
-    var baseUrl = "{{ url('/') }}";
-    var currentPage = "{{ $currentPageId }}";
+    window.baseUrl = "{{ url('/') }}";
+    window.currentPage = "{{ $currentPageId }}";
 </script>
 {!! $scripts !!}
 

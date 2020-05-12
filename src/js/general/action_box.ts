@@ -6,7 +6,7 @@ export const action_box = {
     exit: $(""),
     created: false,
 
-    create: function() {
+    create() {
         action_box.element = $("<div>", {
             class: "action_box_wrapper",
         }).hide();
@@ -21,7 +21,7 @@ export const action_box = {
         action_box.created = true;
     },
 
-    show: function(content) {
+    show(content) {
         if (!action_box.created) action_box.create();
 
         action_box.box.html(content);
@@ -48,7 +48,7 @@ export const action_box = {
         }
     },
 
-    hide: function() {
+    hide() {
         action_box.element.stop().fadeOut("slow", function() {
             action_box.created = false;
             $(this).remove();

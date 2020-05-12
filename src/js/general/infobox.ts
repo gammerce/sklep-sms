@@ -1,11 +1,9 @@
-import { get_value } from "./stocks";
-
 export const infobox = {
     element: $(""),
     hide_task: 0,
 
     // Wyświetlanie informacji
-    show_info: function show_info(message, positive, length) {
+    show_info(message: string, positive: boolean, length: number = 4000) {
         if (!message) return;
 
         // Usuwamy poprzedniego boxa
@@ -16,9 +14,6 @@ export const infobox = {
             clearTimeout(infobox.hide_task);
             infobox.hide_task = 0;
         }
-
-        // Przerabiamy długość wyświetlania okna
-        length = get_value(length, 4000);
 
         infobox.element = $("<div>", {
             html: message,
@@ -39,7 +34,7 @@ export const infobox = {
         }, length); // <-- time in milliseconds
     },
 
-    remove: function() {
+    remove() {
         infobox.element.stop().fadeOut("slow", function() {
             $(this).remove();
         });

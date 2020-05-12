@@ -19,7 +19,6 @@ return [
     'additions' => 'Additions',
     'admin_id' => 'Admin ID',
     'all' => 'All',
-    'all_servers' => 'All',
     'amxx_server' => 'Game server (AMXX)',
     'answers' => 'Answers',
     'antispam_add' => 'Antispam question added successfully.',

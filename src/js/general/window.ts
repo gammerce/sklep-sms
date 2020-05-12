@@ -2,7 +2,7 @@ export const window_info = {
     element: $(""),
     exit: $(""),
 
-    create: function(width, height, text) {
+    create(width, height, text) {
         window_info.element = $("<div>", {
             width: width,
             height: height,
@@ -22,7 +22,7 @@ export const window_info = {
         });
     },
 
-    remove: function() {
+    remove() {
         window_info.element.slideUp("normal", function() {
             $(this).remove();
         });

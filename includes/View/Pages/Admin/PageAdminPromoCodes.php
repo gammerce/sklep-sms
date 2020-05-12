@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
 use App\Models\PromoCode;
+use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PromoCodeRepository;
 use App\Support\Database;
@@ -130,8 +131,8 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->join();
 
                 $servers = collect($this->serverManager->getServers())
-                    ->map(function (Service $service) {
-                        return new Option($service->getName(), $service->getId());
+                    ->map(function (Server $server) {
+                        return new Option($server->getName(), $server->getId());
                     })
                     ->join();
 
