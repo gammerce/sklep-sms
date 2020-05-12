@@ -15,11 +15,6 @@ $(document).delegate("#form_sms_code_add [name=random_code]", "click", function(
         .val(get_random_string());
 });
 
-$(document).delegate("#form_sms_code_add [name=forever]", "change", function() {
-    const form = $(this).closest("form");
-    form.find("[name=expires_at]").prop("disabled", $(this).prop("checked"));
-});
-
 // Delete sms code
 $(document).delegate(".table-structure .delete_row", "click", function() {
     var rowId = $(this).closest("tr");

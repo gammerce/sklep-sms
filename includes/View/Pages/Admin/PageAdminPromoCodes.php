@@ -25,6 +25,7 @@ use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
+// TODO Add info about null expires_at
 // TODO Display more columns (expiration, remaining usages)
 
 class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
