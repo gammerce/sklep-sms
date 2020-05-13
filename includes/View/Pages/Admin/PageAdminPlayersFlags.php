@@ -10,6 +10,7 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\ServerRef;
 use App\View\Html\Structure;
@@ -81,8 +82,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
                 foreach (PlayerFlag::FLAGS as $flag) {
                     $flagValue = $playerFlag->getFlag($flag);
-                    $value = $flagValue ? convert_expire($flagValue) : " ";
-                    $bodyRow->addCell(new Cell($value));
+                    $bodyRow->addCell(new ExpirationCell($flagValue));
                 }
 
                 return $bodyRow;

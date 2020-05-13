@@ -221,6 +221,7 @@ return [
     'promo_codes' => 'Kody promocyjne',
     'provision' => 'Prowizja',
     'regenerate_token' => 'Wygeneruj token',
+    'remaining_usage' => 'Pozostałe użycia',
     'script_updated' => 'Skrypt sklepu jest zaktualizowany do najnowszej wersji.',
     'separated' => '( oddzielone średnikiem \';\' )',
     'server_added' => 'Serwer został prawidłowo dodany.',

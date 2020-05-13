@@ -61,6 +61,7 @@ use App\Translation\Translator;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
@@ -291,7 +292,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->addCell(new Cell(new ServerRef($row["server_id"], $row["server_name"])))
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
                     ->addCell(new Cell($row["auth_data"]))
-                    ->addCell(new Cell(convert_expire($row["expire"])))
+                    ->addCell(new ExpirationCell($row["expire"]))
                     ->setDeleteAction(has_privileges("manage_user_services"))
                     ->setEditAction(has_privileges("manage_user_services"));
             })
@@ -750,12 +751,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
 
         // Zamiana daty
-        $userServiceExpire = "";
         if ($userService->isForever()) {
+            $userServiceExpire = "";
             $checked["forever"] = "checked";
             $disabled["expire"] = "disabled";
         } else {
-            $userServiceExpire = convert_date($userService->getExpire());
+            $userServiceExpire = as_datetime_string($userService->getExpire());
         }
 
         return $this->template->renderNoComments(
@@ -921,7 +922,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->serverManager->getServer($userService->getServerId());
         $serviceInfo["server"] = $server->getName();
-        $serviceInfo["expire"] = convert_expire($userService->getExpire());
+        $serviceInfo["expire"] = as_expiration_datetime_string($userService->getExpire());
         $serviceInfo["service"] = $this->service->getNameI18n();
 
         return $this->template->render(
@@ -942,7 +943,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "buttonEdit" => $buttonEdit,
             "authData" => $userService->getAuthData(),
             "userServiceId" => $userService->getId(),
-            "expire" => convert_expire($userService->getExpire()),
+            "expire" => as_expiration_datetime_string($userService->getExpire()),
             "moduleId" => $this->getModuleId(),
             "serverName" => $server->getName(),
             "serviceName" => $this->service->getNameI18n(),

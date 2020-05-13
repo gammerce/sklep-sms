@@ -28,28 +28,16 @@ class PromoCodeCollection
     ) {
         $lang = $translationManager->user();
 
-        $validator = new Validator(
-            [
-                "code" => $request->request->get("code"),
-                "quantity_type" => $request->request->get("quantity_type"),
-                "quantity" => $request->request->get("quantity"),
-                "usage_limit" => $request->request->get("usage_limit") ?: null,
-                "expires_at" => $request->request->get("expires_at") ?: null,
-                "user_id" => $request->request->get("user_id") ?: null,
-                "server_id" => $request->request->get("server_id") ?: null,
-                "service_id" => $request->request->get("service_id") ?: null,
-            ],
-            [
-                "code" => [new RequiredRule(), new MaxLengthRule(16)],
-                "quantity_type" => [new RequiredRule(), new EnumRule(QuantityType::class)],
-                "quantity" => [new RequiredRule(), new IntegerRule(), new MinValueRule(0)],
-                "usage_limit" => [new IntegerRule(), new MinValueRule(0)],
-                "expires_at" => [new DateTimeRule()],
-                "user_id" => [new UserExistsRule()],
-                "server_id" => [new ServerExistsRule()],
-                "service_id" => [new ServiceExistsRule()],
-            ]
-        );
+        $validator = new Validator($request->request->all(), [
+            "code" => [new RequiredRule(), new MaxLengthRule(16)],
+            "quantity_type" => [new RequiredRule(), new EnumRule(QuantityType::class)],
+            "quantity" => [new RequiredRule(), new IntegerRule(), new MinValueRule(0)],
+            "usage_limit" => [new IntegerRule(), new MinValueRule(0)],
+            "expires_at" => [new DateTimeRule()],
+            "user_id" => [new UserExistsRule()],
+            "server_id" => [new ServerExistsRule()],
+            "service_id" => [new ServiceExistsRule()],
+        ]);
 
         $validated = $validator->validateOrFail();
 
@@ -57,7 +45,7 @@ class PromoCodeCollection
         $quantityType = new QuantityType($validated["quantity_type"]);
 
         if ($quantityType->equals(QuantityType::FIXED())) {
-            $quantity = $validated["quantity"] * 100;
+            $quantity = price_to_int($validated["quantity"]);
         } else {
             $quantity = as_int($validated["quantity"]);
         }
@@ -67,6 +55,10 @@ class PromoCodeCollection
         $userId = as_int($validated["user_id"]);
         $serverId = as_int($validated["server_id"]);
         $serviceId = as_string($validated["service_id"]);
+
+        if ($expiresAt) {
+            $expiresAt->setTime(23, 59, 59);
+        }
 
         $promoCode = $promoCodeRepository->create(
             $code,

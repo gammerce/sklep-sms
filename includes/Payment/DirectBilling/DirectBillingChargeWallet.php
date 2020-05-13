@@ -69,7 +69,9 @@ class DirectBillingChargeWallet implements IChargeWallet
 
     public function getTransactionView(Transaction $transaction)
     {
-        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
+        $quantity = $this->priceTextService->getPriceText(
+            price_to_int($transaction->getQuantity())
+        );
         return $this->template->renderNoComments(
             "shop/services/charge_wallet/web_purchase_info_transfer",
             compact("quantity")

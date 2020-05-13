@@ -65,15 +65,15 @@ class UserServiceCollectionTest extends HttpTestCase
             [
                 [
                     "s" => "VIP",
-                    "e" => convert_expire($userServiceSteamId->getExpire()),
+                    "e" => as_expiration_datetime_string($userServiceSteamId->getExpire()),
                 ],
                 [
                     "s" => "VIP PRO",
-                    "e" => convert_expire($userServiceIp->getExpire()),
+                    "e" => as_expiration_datetime_string($userServiceIp->getExpire()),
                 ],
                 [
                     "s" => "VIP",
-                    "e" => convert_expire($userServiceNick->getExpire()),
+                    "e" => as_expiration_datetime_string($userServiceNick->getExpire()),
                 ],
             ],
             $json
@@ -145,7 +145,7 @@ class UserServiceCollectionTest extends HttpTestCase
             [
                 [
                     "s" => "VIP PRO",
-                    "e" => convert_expire($userServiceNick->getExpire()),
+                    "e" => as_expiration_datetime_string($userServiceNick->getExpire()),
                 ],
             ],
             $json

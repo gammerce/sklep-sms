@@ -44,6 +44,7 @@ use App\Translation\Translator;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
@@ -285,7 +286,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                     )
                     ->addCell(new Cell($row["service"]))
                     ->addCell(new Cell($row["mybb_uid"]))
-                    ->addCell(new Cell(convert_expire($row["expire"])))
+                    ->addCell(new ExpirationCell($row["expire"]))
                     ->setDeleteAction(has_privileges("manage_user_services"))
                     ->setEditAction(false);
             })
@@ -644,13 +645,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement->execute([$userService->getMybbUid()]);
         $username = $statement->fetchColumn();
 
-        $expire = convert_expire($userService->getExpire());
-        $mybbUid = "$username ({$userService->getMybbUid()})";
-
         return $this->template->render(
             "shop/services/mybb_extra_groups/user_own_service",
             compact("mybbUid", "expire") + [
+                "expire" => as_expiration_datetime_string($userService->getExpire()),
                 "moduleId" => $this->getModuleId(),
+                "mybbUid" => "$username ({$userService->getMybbUid()})",
                 "serviceName" => $this->service->getNameI18n(),
                 "userServiceId" => $userService->getId(),
             ]

@@ -31,12 +31,11 @@ class SmsCodeCollection
 
         $validated = $validator->validateOrFail();
 
-        $code = $validated["code"];
-        $smsPrice = $validated["sms_price"];
-        $expiresAt = $validated["expires_at"] ?: null;
+        $code = as_string($validated["code"]);
+        $smsPrice = as_int($validated["sms_price"]);
+        $expiresAt = as_datetime($validated["expires_at"]);
 
         if ($expiresAt) {
-            $expiresAt = new DateTime($expiresAt);
             $expiresAt->setTime(23, 59, 59);
         }
 

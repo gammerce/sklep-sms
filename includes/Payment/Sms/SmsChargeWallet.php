@@ -88,7 +88,9 @@ class SmsChargeWallet implements IChargeWallet
 
     public function getTransactionView(Transaction $transaction)
     {
-        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
+        $quantity = $this->priceTextService->getPriceText(
+            price_to_int($transaction->getQuantity())
+        );
         $desc = $this->lang->t("wallet_was_charged", $quantity);
 
         return $this->template->renderNoComments(

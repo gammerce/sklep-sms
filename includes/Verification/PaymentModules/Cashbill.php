@@ -43,13 +43,13 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     public function verifySms($returnCode, $number)
     {
         $handle = fopen(
-            'http://sms.cashbill.pl/backcode_check_singleuse_noip.php' .
-                '?id=' .
-                '&code=' .
+            "http://sms.cashbill.pl/backcode_check_singleuse_noip.php" .
+                "?id=" .
+                "&code=" .
                 urlencode($this->getSmsCode()) .
-                '&check=' .
+                "&check=" .
                 urlencode($returnCode),
-            'r'
+            "r"
         );
 
         if ($handle) {
@@ -60,7 +60,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             $bramka = fgets($handle, 96);
             fclose($handle);
 
-            if ($status == '0') {
+            if ($status == "0") {
                 throw new BadCodeException();
             }
 
@@ -84,16 +84,16 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
 
         return [
-            'url' => 'https://pay.cashbill.pl/form/pay.php',
-            'method' => 'POST',
-            'service' => $this->getService(),
-            'desc' => $purchase->getDesc(),
-            'forname' => $purchase->user->getForename(),
-            'surname' => $purchase->user->getSurname(),
-            'email' => $purchase->getEmail(),
-            'amount' => $cost,
-            'userdata' => $dataFilename,
-            'sign' => md5(
+            "url" => "https://pay.cashbill.pl/form/pay.php",
+            "method" => "POST",
+            "service" => $this->getService(),
+            "desc" => $purchase->getDesc(),
+            "forname" => $purchase->user->getForename(),
+            "surname" => $purchase->user->getSurname(),
+            "email" => $purchase->getEmail(),
+            "amount" => $cost,
+            "userdata" => $dataFilename,
+            "sign" => md5(
                 $this->getService() .
                     $cost .
                     $purchase->getDesc() .
@@ -108,16 +108,16 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $amount = price_to_int($body['amount']);
+        $amount = price_to_int($body["amount"]);
 
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId($body['orderid']);
+        $finalizedPayment->setOrderId($body["orderid"]);
         $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setDataFilename($body['userdata']);
-        $finalizedPayment->setExternalServiceId($body['service']);
-        $finalizedPayment->setOutput('OK');
+        $finalizedPayment->setDataFilename($body["userdata"]);
+        $finalizedPayment->setExternalServiceId($body["service"]);
+        $finalizedPayment->setOutput("OK");
 
         return $finalizedPayment;
     }
@@ -128,9 +128,9 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     private function isPaymentValid(array $body)
     {
-        return $this->checkSign($body, $this->getKey(), $body['sign']) &&
-            strtoupper($body['status']) == "OK" &&
-            $body['service'] == $this->getService();
+        return $this->checkSign($body, $this->getKey(), $body["sign"]) &&
+            strtoupper($body["status"]) == "OK" &&
+            $body["service"] == $this->getService();
     }
 
     /**
@@ -146,11 +146,11 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
     public function checkSign(array $data, $key, $sign)
     {
         $calculatedSign = md5(
-            $data['service'] .
-                $data['orderid'] .
-                $data['amount'] .
-                $data['userdata'] .
-                $data['status'] .
+            $data["service"] .
+                $data["orderid"] .
+                $data["amount"] .
+                $data["userdata"] .
+                $data["status"] .
                 $key
         );
         return $calculatedSign == $sign;
@@ -158,7 +158,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return $this->getData("sms_text");
     }
 
     /**
@@ -166,7 +166,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function getKey()
     {
-        return $this->getData('key');
+        return $this->getData("key");
     }
 
     /**
@@ -174,6 +174,6 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
      */
     public function getService()
     {
-        return $this->getData('service');
+        return $this->getData("service");
     }
 }

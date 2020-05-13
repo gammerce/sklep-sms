@@ -31,6 +31,9 @@ class PromoCodeCollectionTest extends HttpTestCase
             "quantity_type" => "percentage",
             "server_id" => $server->getId(),
             "service_id" => "vippro",
+            "expires_at" => "2020-01-01",
+            "usage_limit" => 5,
+            "user_id" => 1,
         ]);
 
         // then
@@ -42,13 +45,13 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame("abcpo", $promoCode->getCode());
         $this->assertSameEnum(QuantityType::PERCENTAGE(), $promoCode->getQuantityType());
         $this->assertSame(20, $promoCode->getQuantity());
-        $this->assertNull($promoCode->getUserId());
+        $this->assertSame(1, $promoCode->getUserId());
         $this->assertSame($server->getId(), $promoCode->getServerId());
         $this->assertSame("vippro", $promoCode->getServiceId());
         $this->assertInstanceOf(DateTime::class, $promoCode->getCreatedAt());
         $this->assertSame(0, $promoCode->getUsageCount());
-        $this->assertNull($promoCode->getUsageLimit());
-        $this->assertNull($promoCode->getExpiresAt());
+        $this->assertSame(5, $promoCode->getUsageLimit());
+        $this->assertSame("2020-01-01 23:59", as_datetime_string($promoCode->getExpiresAt()));
     }
 
     /** @test */

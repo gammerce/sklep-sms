@@ -50,7 +50,7 @@ EOF
             ->map(function (array $item) {
                 return [
                     "s" => $item["service"],
-                    "e" => convert_expire($item["expire"]),
+                    "e" => as_expiration_datetime_string($item["expire"]),
                 ];
             })
             ->all();

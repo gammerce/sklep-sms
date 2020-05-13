@@ -122,16 +122,16 @@ class ServerRepository
     private function mapToModel(array $data)
     {
         return new Server(
-            as_int($data['id']),
-            $data['name'],
-            $data['ip'],
-            $data['port'],
-            as_int($data['sms_platform']),
-            as_int($data['transfer_platform']),
-            $data['type'],
-            $data['version'],
-            convert_date($data['last_active_at']),
-            $data['token']
+            as_int($data["id"]),
+            $data["name"],
+            $data["ip"],
+            $data["port"],
+            as_int($data["sms_platform"]),
+            as_int($data["transfer_platform"]),
+            $data["type"],
+            $data["version"],
+            as_datetime_string($data["last_active_at"]),
+            $data["token"]
         );
     }
 

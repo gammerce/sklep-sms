@@ -51,7 +51,7 @@ EOF
                 $quantityType,
                 $quantity,
                 $usageLimit,
-                $expiresAt,
+                serialize_date($expiresAt),
                 $serviceId,
                 $serverId,
                 $userId,

@@ -12,6 +12,7 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\ExpirationDateCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Structure;
@@ -90,11 +91,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                             $this->priceTextService->getPriceGrossText($smsCode->getSmsPrice())
                         )
                     )
-                    ->addCell(
-                        new Cell(
-                            as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never")
-                        )
-                    )
+                    ->addCell(new ExpirationDateCell($smsCode->getExpiresAt()))
                     ->setDeleteAction(has_privileges("manage_sms_codes"));
             })
             ->all();

@@ -16,6 +16,8 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DateTimeCell;
+use App\View\Html\ExpirationDateCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Option;
@@ -26,7 +28,6 @@ use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 // TODO Add info about null expires_at
-// TODO Display more columns (expiration, remaining usages)
 
 class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 {
@@ -96,7 +97,9 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->setDbId($promoCode->getId())
                     ->addCell(new Cell($promoCode->getCode()))
                     ->addCell(new Cell($promoCode->getQuantityFormatted()))
-                    ->addCell(new Cell(convert_date($promoCode->getCreatedAt())))
+                    ->addCell(new Cell($promoCode->getRemainingUsage()))
+                    ->addCell(new ExpirationDateCell($promoCode->getExpiresAt()))
+                    ->addCell(new DateTimeCell($promoCode->getCreatedAt()))
                     ->setDeleteAction(has_privileges("manage_promo_codes"));
             })
             ->all();
@@ -105,6 +108,8 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
             ->addHeadCell(new HeadCell($this->lang->t("code")))
             ->addHeadCell(new HeadCell($this->lang->t("quantity")))
+            ->addHeadCell(new HeadCell($this->lang->t("remaining_usage")))
+            ->addHeadCell(new HeadCell($this->lang->t("expire")))
             ->addHeadCell(new HeadCell($this->lang->t("date_of_creation")))
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);

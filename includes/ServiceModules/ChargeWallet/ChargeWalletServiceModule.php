@@ -141,7 +141,9 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
+        $quantity = $this->priceTextService->getPriceText(
+            price_to_int($transaction->getQuantity())
+        );
 
         if ($action === "web") {
             try {

@@ -171,51 +171,6 @@ function get_ip(Request $request = null)
 }
 
 /**
- * Zwraca datę w odpowiednim formacie
- *
- * @param int|string $timestamp
- * @param string $format
- *
- * @return string
- */
-function convert_date($timestamp, $format = "")
-{
-    if (!strlen($format)) {
-        /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
-        $format = $settings->getDateFormat();
-    }
-
-    $date = as_datetime($timestamp);
-    return $date ? $date->format($format) : null;
-}
-
-/**
- * @param int $timestamp
- * @return string
- */
-function convert_expire($timestamp)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-    if ($timestamp === -1 || $timestamp === null) {
-        return $lang->t("never");
-    }
-
-    return convert_date($timestamp);
-}
-
-/**
- * @param DateTime|null $date
- * @return string|null
- */
-function get_date_for_database($date)
-{
-    return $date ? $date->format("Y-m-d H:i:s") : null;
-}
-
-/**
  * Returns sms cost net by number
  *
  * @param string $number
@@ -563,13 +518,55 @@ function as_date_string($value)
 }
 
 /**
- * @param string|int|DateTime|null $value
+ * @param int|string|DateTime|null $value
+ * @param string $format
  * @return string
  */
-function as_datetime_string($value)
+function as_datetime_string($value, $format = "")
 {
+    if (!strlen($format)) {
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
+        $format = $settings->getDateFormat();
+    }
+
     $date = as_datetime($value);
-    return $date ? $date->format("Y-m-d H:i:s") : "";
+    return $date ? $date->format($format) : null;
+}
+
+/**
+ * @param int|string|DateTime|null $value
+ * @return string
+ */
+function as_expiration_date_string($value)
+{
+    if ($value === -1 || $value === null) {
+        return __("never");
+    }
+
+    return as_date_string($value);
+}
+
+/**
+ * @param int|string|DateTime|null $value
+ * @return string
+ */
+function as_expiration_datetime_string($value)
+{
+    if ($value === -1 || $value === null) {
+        return __("never");
+    }
+
+    return as_datetime_string($value);
+}
+
+/**
+ * @param DateTime|null $date
+ * @return string|null
+ */
+function serialize_date($date)
+{
+    return $date ? $date->format("Y-m-d H:i:s") : null;
 }
 
 /**

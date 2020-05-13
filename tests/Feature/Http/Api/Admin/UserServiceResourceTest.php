@@ -43,7 +43,7 @@ class UserServiceResourceTest extends HttpTestCase
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
             "auth_data" => "STEAM_1:1:21984552",
             "type" => ExtraFlagType::TYPE_SID,
-            "expire" => convert_date($expireTimestamp, "Y-m-d H:i:s"),
+            "expire" => as_datetime_string($expireTimestamp, "Y-m-d H:i:s"),
             "server_id" => $server->getId(),
             "service_id" => "vip",
             "user_id" => $user->getId(),
@@ -124,7 +124,7 @@ class UserServiceResourceTest extends HttpTestCase
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
             "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "my_nick2",
-            "expire" => convert_date($userService->getExpire() + 2),
+            "expire" => as_datetime_string($userService->getExpire() + 2),
             "server_id" => $server->getId(),
         ]);
 

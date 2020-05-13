@@ -218,6 +218,7 @@ return [
     'promo_codes' => 'Promo codes',
     'provision' => 'Provision',
     'regenerate_token' => 'Regenerate token',
+    'remaining_usage' => 'Remaining usage',
     'script_updated' => 'Shop script is updated to the latest version.',
     'separated' => '( separated with semicolon \';\' )',
     'server_added' => 'Server added successfully.',
