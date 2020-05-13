@@ -15,7 +15,7 @@ const getFiles = (dirPath) =>
             return [`${dirPath}/${file}`];
         })
         .flat()
-        .filter(path => path.match(/\.(ts|js)$/));
+        .filter(path => path.match(/\.(tsx?|jsx?)$/));
 
 
 const entryPaths = [
@@ -23,7 +23,7 @@ const entryPaths = [
     ...getFiles("./src/js/shop/pages"),
 ];
 
-const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(js|ts)$/, ""), path]));
+const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(jsx?|tsx?)$/, ""), path]));
 
 module.exports = {
     mode: environment,
@@ -46,7 +46,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(ts|js)$/,
+                test: /\.(tsx?|jsx?)$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
@@ -96,7 +96,7 @@ module.exports = {
         ]
     },
     resolve: {
-        extensions: ['.ts', '.js'],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
         symlinks: false,
     },
     optimization: {

@@ -1,8 +1,17 @@
 {
   "compilerOptions": {
     "sourceMap": true,
+    "moduleResolution": "node",
     "module": "es6",
     "target": "es5",
+    "jsx": "react",
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "lib": [
+      "esnext",
+      "es2017",
+      "dom"
+    ],
     "allowJs": true
   }
 }

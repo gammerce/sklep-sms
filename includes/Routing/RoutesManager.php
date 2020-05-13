@@ -57,6 +57,7 @@ use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
 use App\Http\Controllers\Api\Shop\TemplateResource;
 use App\Http\Controllers\Api\Setup\UpdateController;
+use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
 use App\Http\Controllers\Api\Shop\UserServiceBrickController;
 use App\Http\Controllers\Api\Shop\UserServiceEditFormController;
@@ -309,6 +310,10 @@ class RoutesManager
 
                         $r->get('/api/services/{service}/take_over/create_form', [
                             'uses' => ServiceTakeOverFormController::class . '@get',
+                        ]);
+
+                        $r->get('/api/transactions/{transactionId}', [
+                            'uses' => TransactionResource::class . '@get',
                         ]);
                     }
                 );

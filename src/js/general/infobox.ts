@@ -1,3 +1,5 @@
+import {__} from "./i18n";
+
 export const infobox = {
     element: $(""),
     hide_task: 0,
@@ -42,9 +44,9 @@ export const infobox = {
 };
 
 export const handleErrorResponse = function() {
-    infobox.show_info(lang["ajax_error"], false);
+    infobox.show_info(__("ajax_error"), false);
 };
 
 export const sthWentWrong = function() {
-    infobox.show_info(lang["sth_went_wrong"], false);
+    infobox.show_info(__("sth_went_wrong"), false);
 };

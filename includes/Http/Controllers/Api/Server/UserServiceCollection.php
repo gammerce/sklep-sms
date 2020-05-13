@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
-use App\Http\Responses\JsonResponse;
+use App\Http\Responses\ServerJsonResponse;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\System\ServerAuth;
@@ -56,7 +56,7 @@ EOF
             ->all();
 
         return $acceptHeader->has("application/json")
-            ? new JsonResponse($data)
+            ? new ServerJsonResponse($data)
             : new AssocResponse($data);
     }
 }

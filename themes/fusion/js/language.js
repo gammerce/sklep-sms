@@ -1,4 +1,4 @@
-var lang = {
-    ajax_error: "{$lang->t('ajax_error')}",
-    sth_went_wrong: "{$lang->t('sth_went_wrong')}",
+window.lang = {
+    ajax_error: "{{ __('ajax_error') }}",
+    sth_went_wrong: "{{ __('sth_went_wrong') }}",
 };

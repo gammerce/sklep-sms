@@ -3,7 +3,7 @@ namespace App\Http\Responses;
 
 use Symfony\Component\HttpFoundation\JsonResponse as BaseJsonResponse;
 
-class JsonResponse extends BaseJsonResponse
+class ServerJsonResponse extends BaseJsonResponse
 {
     public function __construct($data = null, $status = 200, $headers = [])
     {

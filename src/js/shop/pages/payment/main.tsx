@@ -1,16 +1,20 @@
-import { refreshBlocks } from "../../utils/utils";
-import { loader } from "../../../general/loader";
+import React from "react";
+import ReactDOM from "react-dom";
+import {refreshBlocks} from "../../utils/utils";
+import {loader} from "../../../general/loader";
 import {
     buildUrl,
-    hide,
     isShown,
     removeFormWarnings,
     restRequest,
     show,
     showWarnings,
 } from "../../../general/global";
-import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
-import { json_parse } from "../../../general/stocks";
+import {handleErrorResponse, infobox, sthWentWrong} from "../../../general/infobox";
+import {json_parse} from "../../../general/stocks";
+import {PaymentView} from "../../molecules/payment/PaymentView";
+
+window.onload = () => ReactDOM.render(<PaymentView />, document.getElementById("payment-methods"));
 
 $(document).delegate("#pay_wallet", "click", function() {
     purchaseService("wallet");
@@ -108,8 +112,8 @@ function purchaseService(method) {
                 // Refresh wallet
                 refreshBlocks("wallet", function() {
                     const wallet = $("#wallet");
-                    if (wallet.effect) {
-                        wallet.effect("highlight", "slow");
+                    if ((wallet as any).effect) {
+                        (wallet as any).effect("highlight", "slow");
                     }
                 });
             } else if (jsonObj.return_id === "external") {

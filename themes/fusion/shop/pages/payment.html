@@ -14,31 +14,7 @@
             {!! $orderDetails !!}
         </fieldset>
 
-        <div class="columns">
-            <div class="column is-one-third promo-code-box" style="justify-content: center;">
-                <div class="field">
-                    <label class="label" for="promo_code">Promo code</label>
-                    <div class="control">
-                        <div class="field has-addons">
-                            <div class="control">
-                                <input
-                                    id="promo_code"
-                                    class="input"
-                                    placeholder="{{ __('type_code') }}"
-                                />
-                            </div>
-                            <div class="control">
-                                <button class="button is-primary">{{ __('use_code') }}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="column is-two-thirds">
-                <div class="payment-methods-box">
-                    {!! $paymentMethods !!}
-                </div>
-            </div>
+        <div id="payment-methods">
         </div>
     </div>
 </main>

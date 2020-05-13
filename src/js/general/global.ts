@@ -22,7 +22,7 @@ export const restRequest = function(
     });
 };
 
-export const buildUrl = function(path: string, query?: object): string {
+export const buildUrl = function(path: string, query?: Record<string, any>): string {
     const prefix = typeof window.baseUrl !== "undefined" ? trimSlashes(window.baseUrl) + "/" : "";
     const queryString = $.param(query || {});
 
@@ -100,10 +100,8 @@ export const showWarnings = function(form: JQuery, warnings: Record<string, any>
         inputElement.addClass("is-danger");
         field.append(appendedElement);
 
-        // @ts-ignore
-        if (inputElement.effect) {
-            // @ts-ignore
-            inputElement.effect("highlight", 1000);
+        if ((inputElement as any).effect) {
+            (inputElement as any).effect("highlight", 1000);
         }
     });
 };
