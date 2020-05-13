@@ -39,15 +39,22 @@ class UrlGenerator
         return $url;
     }
 
-    public function versioned($path)
+    /**
+     * @param string $path
+     * @param array $query
+     * @return string
+     */
+    public function versioned($path, $query = [])
     {
-        $url = $this->to($path);
-
-        if (str_contains($url, '?')) {
-            return $url . "&v={$this->getVersion()}";
-        }
-
-        return $url . "?v={$this->getVersion()}";
+        return $this->to(
+            $path,
+            array_merge(
+                [
+                    "v" => $this->getVersion(),
+                ],
+                $query
+            )
+        );
     }
 
     public function getShopUrl()

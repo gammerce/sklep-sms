@@ -1,6 +1,6 @@
-import {Transaction} from "../types/Transaction";
-import {buildUrl} from "../../general/global";
-import {AxiosInstance} from "axios";
+import { Transaction } from "../types/Transaction";
+import { buildUrl } from "../../general/global";
+import { AxiosInstance } from "axios";
 
 export class Api {
     public constructor(private readonly axios: AxiosInstance) {

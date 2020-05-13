@@ -132,7 +132,7 @@ class Translator
      */
     private function translate($key)
     {
-        $this->load($this->getCurrentLanguage());
+        $this->load();
         return array_get($this->translations, $key, $key);
     }
 
@@ -152,8 +152,10 @@ class Translator
         return $string;
     }
 
-    private function load($language)
+    private function load()
     {
+        $language = $this->getCurrentLanguage();
+
         if ($this->loadedLanguage === $language) {
             return;
         }
@@ -206,5 +208,14 @@ class Translator
         }
 
         $this->loadedLanguage = $language;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTranslations()
+    {
+        $this->load();
+        return $this->translations;
     }
 }

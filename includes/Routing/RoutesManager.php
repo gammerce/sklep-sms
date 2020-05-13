@@ -132,19 +132,19 @@ class RoutesManager
          */
         $r->redirectPermanent('/cron', '/api/cron');
 
-        $r->get('/lang.js', [
-            'uses' => LanguageJsController::class . '@get',
-        ]);
-
-        $r->get('/api/cron', [
-            'uses' => CronController::class . '@get',
-        ]);
-
         $r->addGroup(
             [
                 "middlewares" => [SetLanguage::class],
             ],
             function (RouteCollector $r) {
+                $r->get('/lang.js', [
+                    'uses' => LanguageJsController::class . '@get',
+                ]);
+
+                $r->get('/api/cron', [
+                    'uses' => CronController::class . '@get',
+                ]);
+
                 $r->get('/api/server/services/{serviceId}/long_description', [
                     'uses' => ServiceLongDescriptionController::class . '@get',
                 ]);

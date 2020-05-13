@@ -3,6 +3,7 @@ import {__} from "../../../general/i18n";
 import {Transaction} from "../../types/Transaction";
 import {api} from "../../utils/container";
 import {Loader} from "../../components/Loader";
+import {PaymentMethodSms} from "./methods/PaymentMethodSms";
 
 interface State {
     transaction?: Transaction;
@@ -13,11 +14,14 @@ export const PaymentView: FunctionComponent<State> = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
 
-    useEffect(() => {
-        api.getTransaction(transactionId)
-            .then(transaction => setData({transaction}))
-            .catch(console.error);
-    });
+    useEffect(
+        () => {
+            api.getTransaction(transactionId)
+                .then(transaction => setData({transaction}))
+                .catch(console.error);
+        },
+        []
+    );
 
     if (!data.transaction) {
         return <Loader />;
@@ -47,7 +51,8 @@ export const PaymentView: FunctionComponent<State> = () => {
                 </div>
             </div>
             <div className="column is-two-thirds">
-                <div className="payment-methods-box" dangerouslySetInnerHTML={{__html: data.transaction.paymentMethods}}>
+                <div className="payment-methods-box">
+                    <PaymentMethodSms priceGross={"23"} smsCode={"asd"} smsNumber={"234324"} />
                 </div>
             </div>
         </div>

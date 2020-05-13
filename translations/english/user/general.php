@@ -87,6 +87,7 @@ return [
     'profile' => 'Profile',
     'profile_edit' => 'Profile has been updated.',
     'profile_subtitle' => 'Tell us a little more about yourself.',
+    'promo_code' => 'Promo code',
     'purchase' => 'Service purchase',
     'purchase_form_validated' => 'Given data is correct. Now choose payment method.',
     'purchase_success' => 'Service purchased successfully.',

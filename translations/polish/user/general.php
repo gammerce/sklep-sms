@@ -88,6 +88,7 @@ return [
     'profile' => 'Profil',
     'profile_edit' => 'Profil został zaktualizowany.',
     'profile_subtitle' => 'Powiedz nam nieco więcej o sobie.',
+    'promo_code' => 'Kod promocyjny',
     'purchase' => 'Zakup usługi',
     'purchase_form_validated' => 'Wprowadzone dane są prawidłowe. Wybierz teraz metodę płatności.',
     'purchase_success' => 'Usługa została prawidłowo zakupiona.',

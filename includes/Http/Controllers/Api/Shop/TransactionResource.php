@@ -12,8 +12,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TransactionResource
 {
-    public function get($transactionId, PurchaseDataService $purchaseDataService, ServiceModuleManager $serviceModuleManager, PaymentMethodFactory $paymentMethodFactory)
-    {
+    public function get(
+        $transactionId,
+        PurchaseDataService $purchaseDataService,
+        ServiceModuleManager $serviceModuleManager,
+        PaymentMethodFactory $paymentMethodFactory
+    ) {
         $purchase = $purchaseDataService->restorePurchase($transactionId);
 
         if (!$purchase || $purchase->isAttempted()) {
@@ -37,6 +41,10 @@ class TransactionResource
             })
             ->join();
 
-        return new JsonResponse(compact("orderDetails", "paymentMethods"));
+        return new JsonResponse([
+            "methods" => [
+                "sms" => 1,
+            ],
+        ]);
     }
 }

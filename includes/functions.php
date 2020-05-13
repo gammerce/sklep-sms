@@ -722,13 +722,14 @@ function url($path, array $query = [])
 
 /**
  * @param string $path
+ * @param array $query
  * @return string
  */
-function versioned($path)
+function versioned($path, $query = [])
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
-    return $url->versioned($path);
+    return $url->versioned($path, $query);
 }
 
 function dd(...$vars)
