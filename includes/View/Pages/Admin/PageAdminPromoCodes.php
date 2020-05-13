@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 // TODO Add info about null expires_at
+// TODO Add view box
 
 class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 {
