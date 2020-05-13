@@ -1,5 +1,6 @@
 import React, {FunctionComponent} from "react";
 import {__} from "../../../../general/i18n";
+import {purchaseService} from "../../../utils/payment/paymentUtils";
 
 interface Props {
     price: string;
@@ -7,6 +8,10 @@ interface Props {
 
 export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
     const {price} = props;
+
+    const onPayClick = () => {
+        purchaseService("a", "transfer");
+    };
 
     return (
         <div className="payment-type-wrapper">
@@ -23,7 +28,7 @@ export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
                     </div>
                 </div>
                 <footer className="card-footer">
-                    <a id="pay_transfer" className="card-footer-item">
+                    <a id="pay_transfer" className="card-footer-item" onClick={onPayClick}>
                         {__('pay_transfer')}
                     </a>
                 </footer>

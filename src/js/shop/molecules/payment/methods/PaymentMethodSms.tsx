@@ -1,5 +1,7 @@
-import React, {FunctionComponent} from "react";
+import React, {ChangeEvent, FunctionComponent, useState} from "react";
 import {__} from "../../../../general/i18n";
+import {purchaseService} from "../../../utils/payment/paymentUtils";
+import classNames from "classnames";
 
 interface Props {
     priceGross: string;
@@ -7,8 +9,37 @@ interface Props {
     smsNumber: string;
 }
 
+interface State {
+    smsCode: string;
+    showDetails: boolean;
+}
+
 export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
+    const [data, setData] = useState<State>({
+        smsCode: "",
+        showDetails: false,
+    });
     const {priceGross, smsCode, smsNumber} = props;
+
+    const onPayClick = () => {
+        if (data.showDetails) {
+            purchaseService("a", "sms", {
+                sms_code: data.smsCode
+            });
+        } else {
+            setData(state => ({
+                ...state,
+                showDetails: true
+            }));
+        }
+    };
+
+    const updateSmsCode = (e: ChangeEvent<HTMLInputElement>) => {
+        setData(state => ({
+            ...state,
+            smsCode: e.target.value
+        }));
+    }
 
     return (
         <div className="payment-type-wrapper">
@@ -26,7 +57,9 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                         </span>
                     </div>
 
-                    <div id="sms_details" className="has-text-left is-hidden">
+                    <div className={classNames("sms-details", {
+                        "is-hidden": !data.showDetails,
+                    })}>
                         <h1 className="title is-5">{__('sms_send_sms')}</h1>
 
                         <div className="field is-horizontal">
@@ -61,6 +94,8 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                                             id="sms_code"
                                             name="sms_code"
                                             className="input is-small is-family-monospace"
+                                            value={data.smsCode}
+                                            onChange={updateSmsCode}
                                             maxLength={16}
                                         />
                                     </div>
@@ -70,7 +105,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                     </div>
                 </div>
                 <footer className="card-footer">
-                    <a id="pay_sms" className="card-footer-item">
+                    <a id="pay_sms" className="card-footer-item" onClick={onPayClick}>
                         {__('pay_sms')}
                     </a>
                 </footer>

@@ -307,13 +307,13 @@ body {
         justify-content: center;
     }
 
-    #sms_details {
+    .sms-details {
         animation: slideUp 0.6s;
         margin-top: 2rem;
 
         .field-label {
             white-space: nowrap;
-            flex-grow: 3;
+            flex-grow: 4;
         }
     }
 }

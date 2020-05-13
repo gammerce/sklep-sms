@@ -11,4 +11,9 @@ export class Api {
         const reponse = await this.axios.get(buildUrl(`/api/transactions/${id}`));
         return reponse.data;
     }
+
+    public async makePayment(transactionId: string, body: any): Promise<any> {
+        const response = await this.axios.post(buildUrl(`/api/payment/${transactionId}`), body);
+        return response.data;
+    }
 }

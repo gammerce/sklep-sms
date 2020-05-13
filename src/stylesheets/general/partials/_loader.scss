@@ -27,6 +27,8 @@
     align-items: center;
 
     .loader {
+        border-bottom-color: $primary;
+        border-left-color: $primary;
         width: 5rem;
         height: 5rem;
     }
