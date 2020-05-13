@@ -9,7 +9,6 @@ use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
-use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -17,9 +16,6 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
-    /** @var Template */
-    private $template;
-
     /** @var PriceTextService */
     private $priceTextService;
 
@@ -40,14 +36,12 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function __construct(
         ServiceManager $serviceManager,
-        Template $template,
         PriceTextService $priceTextService,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager,
         PaymentModuleManager $paymentModuleManager,
         Settings $settings
     ) {
-        $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
@@ -56,13 +50,12 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function render(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase)
     {
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
-
-        return $this->template->render("shop/payment/payment_method_transfer", compact('price'));
+        return compact("price");
     }
 
     public function isAvailable(Purchase $purchase)
@@ -82,7 +75,7 @@ class TransferPaymentMethod implements IPaymentMethod
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
             return new Result(
                 "no_transfer_price",
-                $this->lang->t('payment_method_unavailable'),
+                $this->lang->t("payment_method_unavailable"),
                 false
             );
         }
@@ -90,7 +83,7 @@ class TransferPaymentMethod implements IPaymentMethod
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) <= 100) {
             return new Result(
                 "too_little_for_transfer",
-                $this->lang->t('transfer_above_amount', $this->settings->getCurrency()),
+                $this->lang->t("transfer_above_amount", $this->settings->getCurrency()),
                 false
             );
         }
@@ -98,18 +91,18 @@ class TransferPaymentMethod implements IPaymentMethod
         if (!($paymentModule instanceof SupportTransfer)) {
             return new Result(
                 "transfer_unavailable",
-                $this->lang->t('transfer_unavailable'),
+                $this->lang->t("transfer_unavailable"),
                 false
             );
         }
 
         $service = $this->serviceManager->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t('payment_for_service', $service->getNameI18n()));
+        $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 
         $fileName = $this->purchaseDataService->storePurchase($purchase);
 
-        return new Result("external", $this->lang->t('external_payment_prepared'), true, [
-            'data' => $paymentModule->prepareTransfer($purchase, $fileName),
+        return new Result("external", $this->lang->t("external_payment_prepared"), true, [
+            "data" => $paymentModule->prepareTransfer($purchase, $fileName),
         ]);
     }
 }

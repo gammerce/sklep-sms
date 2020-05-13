@@ -29,22 +29,15 @@ class TransactionResource
             throw new InvalidServiceModuleException();
         }
 
-        $orderDetails = $serviceModule->orderDetails($purchase);
-        $renderers = $paymentMethodFactory->createAll();
-
-        $paymentMethods = collect($renderers)
-            ->filter(function (IPaymentMethod $renderer) use ($purchase) {
-                return $renderer->isAvailable($purchase);
+        $paymentMethods = collect($paymentMethodFactory->createAll())
+            ->filter(function (IPaymentMethod $paymentMethod) use ($purchase) {
+                return $paymentMethod->isAvailable($purchase);
             })
-            ->map(function (IPaymentMethod $renderer) use ($purchase) {
-                return $renderer->render($purchase);
+            ->mapWithKeys(function (IPaymentMethod $paymentMethod) use ($purchase) {
+                return $paymentMethod->getPaymentDetails($purchase);
             })
-            ->join();
+            ->all();
 
-        return new JsonResponse([
-            "methods" => [
-                "sms" => 1,
-            ],
-        ]);
+        return new JsonResponse($paymentMethods);
     }
 }

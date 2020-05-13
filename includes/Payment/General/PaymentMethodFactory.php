@@ -33,7 +33,7 @@ class PaymentMethodFactory
     public function createAll()
     {
         return collect($this->paymentMethodsClasses)
-            ->map(function ($class) {
+            ->mapWithKeys(function ($class) {
                 return $this->app->make($class);
             })
             ->all();

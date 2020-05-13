@@ -1,1 +1,1 @@
-window.lang = { $translations };
+window.lang = $translations;

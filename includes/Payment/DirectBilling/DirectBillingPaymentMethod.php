@@ -8,16 +8,12 @@ use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
-use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
 
 class DirectBillingPaymentMethod implements IPaymentMethod
 {
-    /** @var Template */
-    private $template;
-
     /** @var PriceTextService */
     private $priceTextService;
 
@@ -31,28 +27,23 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     private $paymentModuleManager;
 
     public function __construct(
-        Template $template,
         PriceTextService $priceTextService,
         PaymentModuleManager $paymentModuleManager,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager
     ) {
-        $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->purchaseDataService = $purchaseDataService;
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function render(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase)
     {
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
         );
-        return $this->template->render(
-            "shop/payment/payment_method_direct_billing",
-            compact("price")
-        );
+        return compact("price");
     }
 
     /**

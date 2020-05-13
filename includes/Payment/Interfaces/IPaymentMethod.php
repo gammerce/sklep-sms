@@ -9,9 +9,9 @@ interface IPaymentMethod
 {
     /**
      * @param Purchase $purchase
-     * @return string
+     * @return array
      */
-    public function render(Purchase $purchase);
+    public function getPaymentDetails(Purchase $purchase);
 
     /**
      * @param Purchase $purchase

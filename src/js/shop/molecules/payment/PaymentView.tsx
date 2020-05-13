@@ -4,13 +4,16 @@ import {Transaction} from "../../types/Transaction";
 import {api} from "../../utils/container";
 import {Loader} from "../../components/Loader";
 import {PaymentMethodSms} from "./methods/PaymentMethodSms";
+import {PaymentMethodTransfer} from "./methods/PaymentMethodTransfer";
+import {PaymentMethodDirectBilling} from "./methods/PaymentMethodWallet";
+import {PaymentMethodWallet} from "./methods/PaymentMethodDirectBilling";
 
 interface State {
     transaction?: Transaction;
 }
 
-export const PaymentView: FunctionComponent<State> = () => {
-    const [data, setData] = useState({ transaction: undefined });
+export const PaymentView: FunctionComponent = () => {
+    const [data, setData] = useState<State>({ transaction: undefined });
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
 
@@ -52,7 +55,26 @@ export const PaymentView: FunctionComponent<State> = () => {
             </div>
             <div className="column is-two-thirds">
                 <div className="payment-methods-box">
-                    <PaymentMethodSms priceGross={"23"} smsCode={"asd"} smsNumber={"234324"} />
+                    {
+                        data.transaction.sms &&
+                        <PaymentMethodSms
+                            priceGross={data.transaction.sms.price_gross}
+                            smsCode={data.transaction.sms.sms_code}
+                            smsNumber={data.transaction.sms.sms_number}
+                        />
+                    }
+                    {
+                        data.transaction.transfer &&
+                        <PaymentMethodTransfer price={data.transaction.transfer.price}/>
+                    }
+                    {
+                        data.transaction.wallet &&
+                        <PaymentMethodWallet price={data.transaction.wallet.price}/>
+                    }
+                    {
+                        data.transaction.direct_billing &&
+                        <PaymentMethodDirectBilling price={data.transaction.direct_billing.price}/>
+                    }
                 </div>
             </div>
         </div>

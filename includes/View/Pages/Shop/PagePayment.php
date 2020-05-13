@@ -3,9 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Managers\ServiceModuleManager;
-use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
-use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Template;
 use App\Translation\TranslationManager;
@@ -18,9 +16,6 @@ class PagePayment extends Page
 {
     const PAGE_ID = "payment";
 
-    /** @var PaymentMethodFactory */
-    private $paymentMethodFactory;
-
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
@@ -31,12 +26,10 @@ class PagePayment extends Page
         Template $template,
         TranslationManager $translationManager,
         ServiceModuleManager $serviceModuleManager,
-        PurchaseDataService $purchaseDataService,
-        PaymentMethodFactory $paymentMethodFactory
+        PurchaseDataService $purchaseDataService
     ) {
         parent::__construct($template, $translationManager);
 
-        $this->paymentMethodFactory = $paymentMethodFactory;
         $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
     }
@@ -61,20 +54,9 @@ class PagePayment extends Page
         }
 
         $orderDetails = $serviceModule->orderDetails($purchase);
-        $renderers = $this->paymentMethodFactory->createAll();
-
-        $paymentMethods = collect($renderers)
-            ->filter(function (IPaymentMethod $renderer) use ($purchase) {
-                return $renderer->isAvailable($purchase);
-            })
-            ->map(function (IPaymentMethod $renderer) use ($purchase) {
-                return $renderer->render($purchase);
-            })
-            ->join();
 
         return $this->template->render("shop/pages/payment", [
             "orderDetails" => $orderDetails,
-            "paymentMethods" => $paymentMethods,
         ]);
     }
 }

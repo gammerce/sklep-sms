@@ -6,15 +6,11 @@ use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
-use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class WalletPaymentMethod implements IPaymentMethod
 {
-    /** @var Template */
-    private $template;
-
     /** @var PriceTextService */
     private $priceTextService;
 
@@ -25,24 +21,22 @@ class WalletPaymentMethod implements IPaymentMethod
     private $walletPaymentService;
 
     public function __construct(
-        Template $template,
         PriceTextService $priceTextService,
         TranslationManager $translationManager,
         WalletPaymentService $walletPaymentService
     ) {
-        $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
     }
 
-    public function render(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase)
     {
         $price = $this->priceTextService->getPriceText(
             $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
         );
 
-        return $this->template->render("shop/payment/payment_method_wallet", compact('price'));
+        return compact("price");
     }
 
     public function isAvailable(Purchase $purchase)
@@ -55,13 +49,13 @@ class WalletPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         if (!$purchase->user->exists()) {
-            return new Result("wallet_not_logged", $this->lang->t('no_login_no_wallet'), false);
+            return new Result("wallet_not_logged", $this->lang->t("no_login_no_wallet"), false);
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
             return new Result(
                 "no_transfer_price",
-                $this->lang->t('payment_method_unavailable'),
+                $this->lang->t("payment_method_unavailable"),
                 false
             );
         }
@@ -72,7 +66,7 @@ class WalletPaymentMethod implements IPaymentMethod
                 $purchase->user
             );
         } catch (NotEnoughFundsException $e) {
-            return new Result("no_money", $this->lang->t('not_enough_money'), false);
+            return new Result("no_money", $this->lang->t("not_enough_money"), false);
         }
 
         $purchase->setPayment([
@@ -80,8 +74,8 @@ class WalletPaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return new Result("purchased", $this->lang->t('purchase_success'), true, [
-            'bsid' => $boughtServiceId,
+        return new Result("purchased", $this->lang->t("purchase_success"), true, [
+            "bsid" => $boughtServiceId,
         ]);
     }
 }
