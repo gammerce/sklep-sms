@@ -79,6 +79,7 @@ return [
     'email_sender_name' => 'Nazwa nadawcy e-maila',
     'email_taken' => 'Podany e-mail jest już zajęty.',
     'expires' => 'Wygasa',
+    'expires_help' => 'Zostaw pole puste, aby ustawić na zawsze.',
     'field_integer' => 'Pole musi być liczbą całkowitą.',
     'free_of_charge' => 'Darmowy',
     'generate' => 'Generuj',

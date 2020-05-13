@@ -79,6 +79,7 @@ return [
     'email_sender_name' => 'E-mail sender name',
     'email_taken' => 'Given e-mail is already taken.',
     'expires' => 'Expires',
+    'expires_help' => 'Leave blank to make it forever.',
     'field_integer' => 'Field must be an integer.',
     'free_of_charge' => 'Free',
     'generate' => 'Generate',
