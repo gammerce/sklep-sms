@@ -16,6 +16,7 @@ use UnexpectedValueException;
 trait MakePurchaseConcern
 {
     use PaymentModuleFactoryConcern;
+    use CssettiConcern;
 
     /**
      * @param array $attributes
@@ -23,6 +24,7 @@ trait MakePurchaseConcern
      */
     protected function createRandomPurchase(array $attributes = [])
     {
+        $this->mockCSSSettiGetData();
         $this->mockPaymentModuleFactory();
         $this->makeVerifySmsSuccessful(Cssetti::class);
 
@@ -37,40 +39,40 @@ trait MakePurchaseConcern
 
         /** @var PaymentPlatform $paymentPlatform */
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Cssetti::MODULE_ID,
+            "module" => Cssetti::MODULE_ID,
         ]);
 
         /** @var Server $server */
         $server = $this->factory->server([
-            'sms_platform_id' => $paymentPlatform->getId(),
+            "sms_platform_id" => $paymentPlatform->getId(),
         ]);
 
         /** @var Price $price */
         $price = $this->factory->price();
 
         $this->factory->serverService([
-            'server_id' => $server->getId(),
-            'service_id' => 'vip',
+            "server_id" => $server->getId(),
+            "service_id" => "vip",
         ]);
 
         $attributes = array_merge(
             [
-                'price_id' => $price->getId(),
-                'type' => ExtraFlagType::TYPE_NICK,
-                'auth_data' => "example",
-                'password' => "anc123",
-                'sms_code' => "mycode",
-                'method' => Purchase::METHOD_SMS,
-                'ip' => "192.0.2.1",
-                'email' => 'example@abc.pl',
+                "price_id" => $price->getId(),
+                "type" => ExtraFlagType::TYPE_NICK,
+                "auth_data" => "example",
+                "password" => "anc123",
+                "sms_code" => "mycode",
+                "method" => Purchase::METHOD_SMS,
+                "ip" => "192.0.2.1",
+                "email" => "example@abc.pl",
             ],
             $attributes
         );
 
-        $serviceModule = $serviceModuleManager->get('vip');
+        $serviceModule = $serviceModuleManager->get("vip");
         $result = $purchaseService->purchase($serviceModule, $server, $attributes);
 
-        if ($result->getStatus() !== 'purchased') {
+        if ($result->getStatus() !== "purchased") {
             throw new UnexpectedValueException();
         }
 

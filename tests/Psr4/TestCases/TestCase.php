@@ -14,6 +14,7 @@ use Tests\Psr4\Concerns\ApplicationConcern;
 use Tests\Psr4\Concerns\FileSystemConcern;
 use Tests\Psr4\Concerns\MailerConcern;
 use Tests\Psr4\Concerns\MockeryConcern;
+use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\Factory;
 
 class TestCase extends BaseTestCase
@@ -22,6 +23,7 @@ class TestCase extends BaseTestCase
     use FileSystemConcern;
     use MailerConcern;
     use MockeryConcern;
+    use RequesterConcern;
 
     /** @var Application */
     protected $app;
@@ -48,6 +50,7 @@ class TestCase extends BaseTestCase
         $this->mockLicense();
         $this->mockFileSystem();
         $this->mockMailer();
+        $this->mockRequester();
 
         if ($this->mockLocale) {
             $this->mockLocale();

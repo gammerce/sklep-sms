@@ -22,6 +22,7 @@ class Requester
      */
     public function get($url, array $query = [], array $headers = [], $timeout = 10)
     {
+        var_dump("Asdasd");
         return $this->curl("GET", $url, $query, [], $headers, $timeout);
     }
 
@@ -110,7 +111,9 @@ class Requester
         $response = curl_exec($curl);
 
         if ($response === false) {
-            $this->logger->error("CURL request failed.", [
+            $this->logger->error("CURL request failed", [
+                "method" => $method,
+                "url" => $url,
                 "error" => curl_error($curl),
                 "error_no" => curl_errno($curl),
             ]);

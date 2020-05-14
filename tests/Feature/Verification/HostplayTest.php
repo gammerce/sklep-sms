@@ -1,18 +1,15 @@
 <?php
 namespace Tests\Feature\Verification;
 
+use App\Managers\PaymentModuleManager;
 use App\Requesting\Response;
 use App\Verification\PaymentModules\Hostplay;
 use App\Verification\Results\SmsSuccessResult;
-use App\Managers\PaymentModuleManager;
 use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class HostplayTest extends TestCase
 {
-    use RequesterConcern;
-
     /** @var Hostplay */
     private $hostplay;
 
@@ -20,13 +17,11 @@ class HostplayTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockRequester();
-
         /** @var PaymentModuleManager $paymentModuleManager */
         $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Hostplay::MODULE_ID,
+            "module" => Hostplay::MODULE_ID,
         ]);
 
         $this->hostplay = $paymentModuleManager->get($paymentPlatform);
@@ -37,8 +32,8 @@ class HostplayTest extends TestCase
     {
         // given
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['http://hostplay.pl/api/payment/api_code_verify.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["http://hostplay.pl/api/payment/api_code_verify.php", Mockery::any()])
             ->andReturn(new Response(200, '{"status":"OK","kwota":"16.91"}'));
 
         // when

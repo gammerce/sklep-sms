@@ -22,7 +22,6 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->mockRequester();
         $this->mockPaymentModuleFactory();
         $this->makeVerifySmsSuccessful(Gosetti::class);
         $this->mockGoSettiGetData();

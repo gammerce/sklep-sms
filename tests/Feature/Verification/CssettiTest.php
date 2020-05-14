@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Verification;
 
+use App\Managers\PaymentModuleManager;
 use App\Requesting\Response;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
@@ -8,15 +9,12 @@ use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\Results\SmsSuccessResult;
-use App\Managers\PaymentModuleManager;
 use Mockery;
 use Tests\Psr4\Concerns\FixtureConcern;
-use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class CssettiTest extends TestCase
 {
-    use RequesterConcern;
     use FixtureConcern;
 
     /** @var Cssetti */
@@ -25,8 +23,6 @@ class CssettiTest extends TestCase
     protected function setUp()
     {
         parent::setUp();
-
-        $this->mockRequester();
 
         /** @var PaymentModuleManager $paymentModuleManager */
         $paymentModuleManager = $this->app->make(PaymentModuleManager::class);

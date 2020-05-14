@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature\Http\Api\Shop;
+namespace Tests\Feature\Http\Api\Ipn;
 
 use App\Models\Purchase;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;

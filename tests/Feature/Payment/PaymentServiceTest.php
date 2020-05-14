@@ -10,12 +10,14 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\Pukawka;
 use DateTime;
+use Tests\Psr4\Concerns\CssettiConcern;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class PaymentServiceTest extends TestCase
 {
     use PaymentModuleFactoryConcern;
+    use CssettiConcern;
 
     /** @var PaymentService */
     private $paymentService;
@@ -46,16 +48,16 @@ class PaymentServiceTest extends TestCase
         $serviceId = "cod_exp_transfer";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'server_id' => $server->getId(),
-            'sms_price' => 100,
-            'quantity' => 20,
+            "service_id" => $serviceId,
+            "server_id" => $server->getId(),
+            "sms_price" => 100,
+            "quantity" => 20,
         ]);
 
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
@@ -84,6 +86,8 @@ class PaymentServiceTest extends TestCase
     public function pays_with_sms_code()
     {
         // given
+        $this->mockCSSSettiGetData();
+
         /** @var SmsCodeRepository $smsCodeRepository */
         $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
 
@@ -94,14 +98,14 @@ class PaymentServiceTest extends TestCase
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 200,
+            "service_id" => $serviceId,
+            "sms_price" => 200,
         ]);
 
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
@@ -125,6 +129,8 @@ class PaymentServiceTest extends TestCase
     public function cannot_pay_with_expired_sms_code()
     {
         // given
+        $this->mockCSSSettiGetData();
+
         /** @var SmsCodeRepository $smsCodeRepository */
         $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
 
@@ -140,14 +146,14 @@ class PaymentServiceTest extends TestCase
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 200,
+            "service_id" => $serviceId,
+            "sms_price" => 200,
         ]);
 
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
         $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
@@ -176,16 +182,16 @@ class PaymentServiceTest extends TestCase
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 100,
-            'quantity' => null,
+            "service_id" => $serviceId,
+            "sms_price" => 100,
+            "quantity" => null,
         ]);
 
         $purchase = new Purchase(new User());
         $purchase->setOrder([
             Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => 'STEAM_1:0:22309350',
+            "type" => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
         ]);
         $purchase->setUsingPrice($price);
         $purchase->setServiceId($serviceId);
@@ -203,6 +209,6 @@ class PaymentServiceTest extends TestCase
         $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
         $this->assertNotNull($boughtService);
         $this->assertEquals(-1, $boughtService->getAmount());
-        $this->assertSame('STEAM_1:0:22309350', $boughtService->getAuthData());
+        $this->assertSame("STEAM_1:0:22309350", $boughtService->getAuthData());
     }
 }

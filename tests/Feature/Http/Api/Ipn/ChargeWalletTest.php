@@ -1,23 +1,21 @@
 <?php
-namespace Tests\Feature\Http\Api\Shop;
+namespace Tests\Feature\Http\Api\Ipn;
 
 use App\Models\Purchase;
 use App\Repositories\SettingsRepository;
 use App\Repositories\UserRepository;
-use App\Requesting\Response;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
-use Mockery;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
-use Tests\Psr4\Concerns\RequesterConcern;
+use Tests\Psr4\Concerns\SimPayConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ChargeWalletTest extends HttpTestCase
 {
-    use RequesterConcern;
     use PaymentModuleFactoryConcern;
+    use SimPayConcern;
 
     /** @var SettingsRepository */
     private $settingsRepository;
@@ -83,21 +81,8 @@ class ChargeWalletTest extends HttpTestCase
     /** @test */
     public function charges_using_direct_billing()
     {
-        $dataFileName = null;
-        $this->mockRequester();
-        $this->requesterMock
-            ->shouldReceive("post")
-            ->withArgs(["https://simpay.pl/db/api", Mockery::any()])
-            ->andReturnUsing(function ($url, $body) use (&$dataFileName) {
-                $dataFileName = $body["control"];
-                return new Response(
-                    200,
-                    json_encode([
-                        "status" => "success",
-                        "link" => "https://example.com",
-                    ])
-                );
-            });
+        $this->mockSimPayIpList();
+        $this->mockSimPayApiSuccessResponse();
 
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => SimPay::MODULE_ID,
@@ -128,7 +113,7 @@ class ChargeWalletTest extends HttpTestCase
             "valuenet_gross" => 2.5,
             "valuenet" => 2.0,
             "valuepartner" => 1.5,
-            "control" => $dataFileName,
+            "control" => $transactionId,
         ];
         $ipnBody["sign"] = hash(
             "sha256",

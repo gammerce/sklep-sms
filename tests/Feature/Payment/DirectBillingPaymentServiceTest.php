@@ -1,46 +1,31 @@
 <?php
 namespace Tests\Feature\Payment;
 
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
 use App\Repositories\PaymentDirectBillingRepository;
-use App\Requesting\Response;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\PaymentModules\SimPay;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
-use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
+use Tests\Psr4\Concerns\SimPayConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class DirectBillingPaymentServiceTest extends TestCase
 {
-    use RequesterConcern;
+    use SimPayConcern;
 
     /** @test */
     public function pays_with_transfer()
     {
         // given
-        $dataFileName = null;
-        $this->mockRequester();
-        $this->requesterMock
-            ->shouldReceive("post")
-            ->withArgs(["https://simpay.pl/db/api", Mockery::any()])
-            ->andReturnUsing(function ($url, $body) use (&$dataFileName) {
-                $dataFileName = $body["control"];
-                return new Response(
-                    200,
-                    json_encode([
-                        "status" => "success",
-                        "link" => "https://example.com",
-                    ])
-                );
-            });
+        $this->mockSimPayIpList();
+        $this->mockSimPayApiSuccessResponse();
 
         /** @var DirectBillingPaymentService $directBillingPaymentService */
         $directBillingPaymentService = $this->app->make(DirectBillingPaymentService::class);
@@ -96,7 +81,7 @@ class DirectBillingPaymentServiceTest extends TestCase
                 "valuenet_gross" => 1.9,
                 "valuenet" => 1.5,
                 "valuepartner" => 1.2,
-                "control" => $dataFileName,
+                "control" => $purchase->getId(),
                 "sign" => "",
             ]
         );
