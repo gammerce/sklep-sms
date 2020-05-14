@@ -3,6 +3,7 @@ namespace App\Payment\DirectBilling;
 
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
@@ -78,6 +79,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
      * @param Purchase $purchase
      * @param IServicePurchase $serviceModule
      * @return Result
+     * @throws PaymentProcessingException
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
@@ -88,18 +90,16 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $promoCode = $purchase->getPromoCode();
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
-            return new Result(
+            throw new PaymentProcessingException(
                 "direct_billing_unavailable",
-                $this->lang->t("direct_billing_unavailable"),
-                false
+                $this->lang->t("direct_billing_unavailable")
             );
         }
 
         if ($price === null) {
-            return new Result(
+            throw new PaymentProcessingException(
                 "no_transfer_price",
-                $this->lang->t("payment_method_unavailable"),
-                false
+                $this->lang->t("payment_method_unavailable")
             );
         }
 

@@ -6,6 +6,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
@@ -99,11 +100,17 @@ class SmsPaymentMethod implements IPaymentMethod
         );
 
         if (!($paymentModule instanceof SupportSms)) {
-            return new Result("sms_unavailable", $this->lang->t("sms_unavailable"), false);
+            throw new PaymentProcessingException(
+                "sms_unavailable",
+                $this->lang->t("sms_unavailable")
+            );
         }
 
         if ($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) === null) {
-            return new Result("no_sms_price", $this->lang->t("payment_method_unavailable"), false);
+            throw new PaymentProcessingException(
+                "no_sms_price",
+                $this->lang->t("payment_method_unavailable")
+            );
         }
 
         $validator = new Validator(
@@ -128,7 +135,10 @@ class SmsPaymentMethod implements IPaymentMethod
                 $purchase->user
             );
         } catch (SmsPaymentException $e) {
-            return new Result($e->getErrorCode(), $this->getSmsExceptionMessage($e), false);
+            throw new PaymentProcessingException(
+                $e->getErrorCode(),
+                $this->getSmsExceptionMessage($e)
+            );
         }
 
         $purchase->setPayment([

@@ -4,6 +4,7 @@ namespace App\Payment\Transfer;
 use App\Managers\PaymentModuleManager;
 use App\Managers\ServiceManager;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -87,31 +88,28 @@ class TransferPaymentMethod implements IPaymentMethod
         $promoCode = $purchase->getPromoCode();
 
         if (!($paymentModule instanceof SupportTransfer)) {
-            return new Result(
+            throw new PaymentProcessingException(
                 "transfer_unavailable",
-                $this->lang->t("transfer_unavailable"),
-                false
+                $this->lang->t("transfer_unavailable")
             );
         }
 
         if ($price === null) {
-            return new Result(
+            throw new PaymentProcessingException(
                 "no_transfer_price",
-                $this->lang->t("payment_method_unavailable"),
-                false
-            );
-        }
-
-        if ($price <= 100) {
-            return new Result(
-                "too_little_for_transfer",
-                $this->lang->t("transfer_above_amount", $this->settings->getCurrency()),
-                false
+                $this->lang->t("payment_method_unavailable")
             );
         }
 
         if ($promoCode) {
             $price = $this->promoCodeService->applyDiscount($promoCode, $price);
+        }
+
+        if ($price <= 100) {
+            throw new PaymentProcessingException(
+                "too_little_for_transfer",
+                $this->lang->t("transfer_above_amount", $this->settings->getCurrency())
+            );
         }
 
         $service = $this->serviceManager->getService($purchase->getServiceId());

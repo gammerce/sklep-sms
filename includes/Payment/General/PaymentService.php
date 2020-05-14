@@ -3,6 +3,7 @@ namespace App\Payment\General;
 
 use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Repositories\PromoCodeRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
@@ -56,14 +57,15 @@ class PaymentService
             return new Result("wrong_method", $this->lang->t("wrong_payment_method"), false);
         }
 
-        $paymentResult = $paymentMethod->pay($purchase, $serviceModule);
-        $paymentStatus = $paymentResult->getStatus();
+        try {
+            $paymentResult = $paymentMethod->pay($purchase, $serviceModule);
+        } catch (PaymentProcessingException $e) {
+            return new Result($e->getStatus(), $e->getMessage(), false);
+        }
 
-        if ($paymentStatus === "purchased" || $paymentStatus === "external") {
-            $promoCode = $purchase->getPromoCode();
-            if ($promoCode) {
-                $this->promoCodeRepository->useIt($promoCode->getId());
-            }
+        $promoCode = $purchase->getPromoCode();
+        if ($promoCode) {
+            $this->promoCodeRepository->useIt($promoCode->getId());
         }
 
         return $paymentResult;

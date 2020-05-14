@@ -6,6 +6,7 @@ use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Support\Result;
@@ -165,7 +166,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ]);
         }
 
-        return new Result("error", "SimPay response. $status: $message", false);
+        throw new PaymentProcessingException("error", "SimPay response. $status: $message");
     }
 
     public function finalizeDirectBilling(array $query, array $body)

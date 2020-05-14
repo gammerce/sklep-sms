@@ -109,7 +109,9 @@ EOF
     public function useIt($id)
     {
         $this->db
-            ->statement("UPDATE `ss_promo_codes` SET `usage_count` = `usage_count` + 1 WHERE `id` = ?")
+            ->statement(
+                "UPDATE `ss_promo_codes` SET `usage_count` = `usage_count` + 1 WHERE `id` = ?"
+            )
             ->execute([$id]);
     }
 

@@ -2,6 +2,7 @@
 namespace App\Payment\Interfaces;
 
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Support\Result;
 
@@ -23,6 +24,7 @@ interface IPaymentMethod
      * @param Purchase $purchase
      * @param IServicePurchase $serviceModule
      * @return Result
+     * @throws PaymentProcessingException
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule);
 }

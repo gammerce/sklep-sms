@@ -2,6 +2,7 @@
 namespace App\Payment\Wallet;
 
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -67,17 +68,19 @@ class WalletPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         if (!$purchase->user->exists()) {
-            return new Result("wallet_not_logged", $this->lang->t("no_login_no_wallet"), false);
+            throw new PaymentProcessingException(
+                "wallet_not_logged",
+                $this->lang->t("no_login_no_wallet")
+            );
         }
 
         $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
         $promoCode = $purchase->getPromoCode();
 
         if ($price === null) {
-            return new Result(
+            throw new PaymentProcessingException(
                 "no_transfer_price",
-                $this->lang->t("payment_method_unavailable"),
-                false
+                $this->lang->t("payment_method_unavailable")
             );
         }
 
@@ -88,7 +91,7 @@ class WalletPaymentMethod implements IPaymentMethod
         try {
             $paymentId = $this->walletPaymentService->payWithWallet($price, $purchase->user);
         } catch (NotEnoughFundsException $e) {
-            return new Result("no_money", $this->lang->t("not_enough_money"), false);
+            throw new PaymentProcessingException("no_money", $this->lang->t("not_enough_money"));
         }
 
         $purchase->setPayment([
