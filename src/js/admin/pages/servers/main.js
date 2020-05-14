@@ -65,7 +65,7 @@ $(document).delegate(".table-structure .regenerate-token", "click", function() {
                 showNotification("Nowy token: " + content.data.token);
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -101,7 +101,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -132,7 +132,7 @@ $(document).delegate("#form_server_add", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -168,7 +168,7 @@ $(document).delegate("#form_server_edit", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

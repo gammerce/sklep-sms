@@ -56,7 +56,7 @@ $(document).delegate("#form_service_take_over", "submit", function(e) {
                 }, 2000);
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

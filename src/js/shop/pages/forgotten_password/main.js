@@ -26,7 +26,7 @@ $(document).delegate("#form_forgotten_password", "submit", function(e) {
                 getAndSetTemplate($("#page-content"), "forgotten_password_sent");
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

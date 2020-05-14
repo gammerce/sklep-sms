@@ -63,7 +63,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -113,7 +113,7 @@ $(document).delegate("#form_charge_wallet", "submit", function(e) {
                 clearAndHideActionBox();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -148,7 +148,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
                 clearAndHideActionBox();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -184,7 +184,7 @@ $(document).delegate("#form_user_edit", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

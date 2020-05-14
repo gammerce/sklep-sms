@@ -59,10 +59,10 @@ $(document).ready(function($) {
                     }, 4000);
                 }
 
-                infobox.show_info(content.text, content.positive);
+                infobox.showInfo(content.text, content.positive);
             },
             error: function(error) {
-                infobox.show_info("Wystąpił błąd podczas przeprowadzania instalacji.", false);
+                infobox.showInfo("Wystąpił błąd podczas przeprowadzania instalacji.", false);
             },
         });
     });

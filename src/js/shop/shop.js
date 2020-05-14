@@ -44,7 +44,7 @@ $(document).delegate("#form_login", "submit", function(e) {
                 location.reload();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -74,7 +74,7 @@ $(document).delegate("#logout", "click", function(e) {
                 location.reload();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

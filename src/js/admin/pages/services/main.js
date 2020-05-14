@@ -76,7 +76,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -108,9 +108,9 @@ $(document).delegate("#form_service_add", "submit", function(e) {
             }
 
             if (typeof content.length !== "undefined") {
-                infobox.show_info(content.text, content.positive, content.length);
+                infobox.showInfo(content.text, content.positive, content.length);
             } else {
-                infobox.show_info(content.text, content.positive);
+                infobox.showInfo(content.text, content.positive);
             }
         },
         error: handleErrorResponse,
@@ -147,7 +147,7 @@ $(document).delegate("#form_service_edit", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

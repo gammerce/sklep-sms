@@ -26,7 +26,7 @@ $(document).delegate("#form_settings_edit", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

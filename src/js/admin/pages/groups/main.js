@@ -41,7 +41,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -69,7 +69,7 @@ $(document).delegate("#form_group_add", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -101,7 +101,7 @@ $(document).delegate("#form_group_edit", "submit", function(e) {
                 refreshAdminContent();
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

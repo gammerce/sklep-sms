@@ -26,7 +26,7 @@ $(document).delegate("#form_profile_update", "submit", function(e) {
                 showWarnings($(that), content.warnings);
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

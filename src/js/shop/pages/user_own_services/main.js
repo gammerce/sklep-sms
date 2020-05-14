@@ -55,7 +55,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
                 goToPayment(content.transaction_id);
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

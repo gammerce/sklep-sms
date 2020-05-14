@@ -26,7 +26,7 @@ $(document).delegate("#form_change_password", "submit", function(e) {
                 getAndSetTemplate($("#page-content"), "reset_password_changed");
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

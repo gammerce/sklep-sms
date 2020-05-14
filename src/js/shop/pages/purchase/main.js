@@ -34,9 +34,9 @@ $(document).delegate("#form_purchase", "submit", function(e) {
             }
 
             if (content.positive) {
-                infobox.show_info(content.text, content.positive, 8000);
+                infobox.showInfo(content.text, content.positive, 8000);
             } else {
-                infobox.show_info(content.text, content.positive);
+                infobox.showInfo(content.text, content.positive);
             }
         },
         error: handleErrorResponse,

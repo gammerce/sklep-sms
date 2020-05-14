@@ -41,7 +41,7 @@ $(document).delegate("#register", "submit", function(e) {
                 $("#register [name=as_answer]").val("");
             }
 
-            infobox.show_info(content.text, content.positive);
+            infobox.showInfo(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

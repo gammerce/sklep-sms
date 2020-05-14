@@ -4,7 +4,7 @@ export const infobox = {
     element: $(""),
     hide_task: 0,
 
-    show_info(message: string, positive: boolean, length: number = 4000): void {
+    showInfo(message: string, positive: boolean, length: number = 4000): void {
         if (!message) {
             return;
         }
@@ -44,5 +44,5 @@ export const infobox = {
     },
 };
 
-export const handleErrorResponse = () => infobox.show_info(__("ajax_error"), false);
-export const sthWentWrong = () => infobox.show_info(__("sth_went_wrong"), false);
+export const handleErrorResponse = () => infobox.showInfo(__("ajax_error"), false);
+export const sthWentWrong = () => infobox.showInfo(__("sth_went_wrong"), false);

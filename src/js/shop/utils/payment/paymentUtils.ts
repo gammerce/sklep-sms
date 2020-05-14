@@ -61,7 +61,7 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
         }
     }
 
-    infobox.show_info(result.text, result.positive);
+    infobox.showInfo(result.text, result.positive);
 };
 
 const redirectToExternalWithPost = (response: any) => {
