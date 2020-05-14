@@ -51,6 +51,10 @@ class PaymentResource
 
         if ($paymentResult->getStatus() === "purchased") {
             $purchaseDataService->deletePurchase($transactionId);
+        } else {
+            // Let's store changes made to purchase object
+            // Since it will be used later
+            $purchaseDataService->storePurchase($purchase);
         }
 
         return new ApiResponse(

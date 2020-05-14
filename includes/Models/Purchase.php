@@ -26,18 +26,21 @@ class Purchase
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
 
+    /** @var string */
+    private $id;
+
     /**
      * ID of row from ss_services table
      *
      * @var string|null
      */
-    private $serviceId = null;
+    private $serviceId;
 
     /** @var User */
     public $user;
 
-    /** @var string */
-    private $email = null;
+    /** @var string|null */
+    private $email;
 
     /**
      * Payment details like method, sms_code et.c
@@ -60,10 +63,9 @@ class Purchase
 
     /**
      * Purchase description ( useful for transfer payments )
-     *
-     * @var string
+     * @var string|null
      */
-    private $desc = null;
+    private $desc;
 
     /**
      * Attempt to finalize purchase has been made
@@ -75,6 +77,7 @@ class Purchase
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->id = 0;
     }
 
     public function getServiceId()
@@ -201,5 +204,13 @@ class Purchase
     public function setPromoCode(PromoCode $promoCode)
     {
         $this->promoCode = $promoCode;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }
