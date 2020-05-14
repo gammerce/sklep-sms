@@ -54,8 +54,8 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
         complete() {
             loader.hide();
         },
-        success(content) {
-            for (const [brick_id, brick] of content.entries()) {
+        success(content: Dict) {
+            for (const [brick_id, brick] of Object.entries(content)) {
                 const brickNode = $(`#${brick_id}`);
                 brickNode.html(brick.content);
                 brickNode.attr("class", brick.class);

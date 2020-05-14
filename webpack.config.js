@@ -30,9 +30,9 @@ module.exports = {
     entry: {
         shop_retro: './src/stylesheets/shop/retro.ts',
         shop_fusion: './src/stylesheets/shop/fusion.ts',
-        admin: './src/js/admin/admin.js',
-        install: './src/js/setup/install.js',
-        update: './src/js/setup/update.js',
+        admin: './src/js/admin/admin.ts',
+        install: './src/js/setup/install.ts',
+        update: './src/js/setup/update.ts',
         shop: './src/js/shop/shop.ts',
         ...entries
     },

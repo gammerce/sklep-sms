@@ -4,22 +4,25 @@ import "core-js";
 import { infobox, sthWentWrong } from "../general/infobox";
 import { loader } from "../general/loader";
 import { buildUrl, removeFormWarnings } from "../general/global";
+import { Dict } from "../shop/types/general";
 
 jQuery(document).ready(function($) {
     $("#form_install").submit(function(e) {
         e.preventDefault();
 
-        if (loader.blocked) return;
+        if (loader.blocked) {
+            return;
+        }
 
         loader.show();
         $.ajax({
             type: "POST",
             url: buildUrl("/api/install"),
             data: $(this).serialize(),
-            complete: function() {
+            complete() {
                 loader.hide();
             },
-            success: function(content) {
+            success(content: Dict) {
                 removeFormWarnings();
                 $(".warnings").remove();
 
@@ -29,7 +32,7 @@ jQuery(document).ready(function($) {
 
                 // Wyświetlenie błędów w formularzu
                 if (content.return_id === "warnings") {
-                    $.each(content.warnings, function(name, element) {
+                    for (const [name, element] of Object.entries<any>(content.warnings)) {
                         if (name === "general") {
                             $("<div>", {
                                 class: "warnings",
@@ -40,14 +43,14 @@ jQuery(document).ready(function($) {
 
                         var fieldElement = $('#form_install [name="' + name + '"]');
                         fieldElement.closest(".field").append(element);
-                    });
+                    }
                 } else if (content.return_id === "ok") {
                     $("body").addClass("installed");
                     $("body").html(
                         $("<div>", {
                             class: "installed",
                             html: "Instalacja przebiegła pomyślnie.",
-                        })
+                        }) as any
                     );
 
                     setTimeout(function() {

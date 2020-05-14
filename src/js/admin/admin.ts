@@ -3,6 +3,7 @@ import "../../stylesheets/admin/admin.scss";
 import "core-js";
 import { changeUrl } from "../general/global";
 
+// @ts-ignore
 jQuery.fn.scrollTo = function(elem, speed) {
     $(this).animate(
         {

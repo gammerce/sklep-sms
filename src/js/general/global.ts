@@ -41,29 +41,32 @@ export const changeUrl = function(data: Dict): void {
     var url = splittedUrl[0];
     var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
 
-    var params = {};
+    var params: Dict = {};
 
     if (query) {
-        $.each(query.split("&"), function(key, value) {
+        for (const value of query.split("&")) {
             var param = value.split("=");
 
-            if (param[1].length) params[param[0]] = param[1];
-            else delete params[param[0]];
-        });
+            if (param[1].length) {
+                params[param[0]] = param[1];
+            } else {
+                delete params[param[0]];
+            }
+        }
     }
 
-    $.each(data, function(key, value) {
+    for (const [key, value] of Object.entries(data)) {
         if (value.length) {
             params[key] = encodeURIComponent(value);
         } else {
             delete params[key];
         }
-    });
+    }
 
     var strparams = [];
-    $.each(params, function(key, value) {
+    for (const [key, value] of Object.entries(params)) {
         strparams.push(encodeURIComponent(key) + "=" + encodeURIComponent(value));
-    });
+    }
 
     window.location.href = url + "?" + strparams.join("&");
 };
@@ -93,7 +96,7 @@ export const isShown = function(node: JQuery): boolean {
 };
 
 export const showWarnings = function(form: JQuery, warnings: Dict) {
-    for (const [name, element] of warnings.entries()) {
+    for (const [name, element] of Object.entries(warnings)) {
         const inputElement = form.find(`[name="${name}"]`);
         const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
         const field = inputElement.closest(".field");

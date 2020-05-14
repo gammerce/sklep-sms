@@ -29,6 +29,10 @@ class PromoCodeService
 
         $promoCodeModel = $this->promoCodeRepository->findByCode($promoCode);
 
+        if (!$promoCodeModel) {
+            return null;
+        }
+
         if ($promoCodeModel->getExpiresAt() && $promoCodeModel->getExpiresAt() < new DateTime()) {
             return null;
         }

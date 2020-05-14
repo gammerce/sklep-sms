@@ -72,7 +72,7 @@ const redirectToExternalWithPost = (response: any) => {
         method: "POST",
     });
 
-    $.each(response.data, function(key, value) {
+    for (const [key, value] of Object.entries(response.data)) {
         if (key === "url") {
             return true;
         }
@@ -84,7 +84,7 @@ const redirectToExternalWithPost = (response: any) => {
                 value: value,
             })
         );
-    });
+    }
 
     // It doesn't work with firefox without it
     $("body").append(form);

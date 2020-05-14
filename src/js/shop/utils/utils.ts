@@ -1,6 +1,7 @@
 import { loader } from "../../general/loader";
 import { handleErrorResponse } from "../../general/infobox";
 import { buildUrl } from "../../general/global";
+import { Dict } from "../types/general";
 
 export const handleError = (e: Error) => console.error(e);
 
@@ -16,10 +17,10 @@ export const getAndSetTemplate = function(
         type: "GET",
         url: buildUrl(`/api/templates/${template}`),
         data,
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             if (content.return_id === "no_access") {
                 alert(content.text);
                 location.reload();
@@ -28,7 +29,7 @@ export const getAndSetTemplate = function(
             element.html(content.template);
             onSuccessFunction();
         },
-        error: function(error) {
+        error(error) {
             handleErrorResponse();
             location.reload();
         },
@@ -42,11 +43,11 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
         type: "GET",
         url: buildUrl(`/api/bricks/${bricks}`),
         data: window.location.search.replace(/^\?/, ""),
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
-            for (const [brick_id, brick] of content.entries()) {
+        success(content: Dict) {
+            for (const [brick_id, brick] of Object.entries(content)) {
                 const brickNode = $(`#${brick_id}`);
                 brickNode.html(brick.content);
                 brickNode.attr("class", brick.class);
@@ -56,7 +57,7 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
                 onSuccessFunction(content);
             }
         },
-        error: function(error) {
+        error(error) {
             handleErrorResponse();
             location.reload();
         },

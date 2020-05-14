@@ -35,7 +35,7 @@ class TransactionResource
             throw new InvalidServiceModuleException();
         }
 
-        $promoCode = $request->query->get("promo_code");
+        $promoCode = trim($request->query->get("promo_code"));
         $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
         if ($promoCodeModel) {
             $purchase->setPromoCode($promoCodeModel);

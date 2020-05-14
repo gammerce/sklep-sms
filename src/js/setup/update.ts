@@ -11,7 +11,7 @@ function markAsUpdate() {
         $("<div>", {
             class: "updated",
             html: "Aktualizacja przebiegła pomyślnie.",
-        })
+        }) as any
     );
 
     setTimeout(function() {
