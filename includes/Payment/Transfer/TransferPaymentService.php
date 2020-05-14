@@ -85,7 +85,7 @@ class TransferPaymentService
 
         $this->logger->logWithUser(
             $purchase->user,
-            'log_external_payment_accepted',
+            "log_external_payment_accepted",
             $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
@@ -93,6 +93,6 @@ class TransferPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
-        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
+        $this->purchaseDataService->deletePurchase($purchase);
     }
 }

@@ -101,6 +101,6 @@ class DirectBillingPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
-        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
+        $this->purchaseDataService->deletePurchase($purchase);
     }
 }

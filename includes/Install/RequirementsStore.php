@@ -46,7 +46,7 @@ class RequirementsStore
             "data/",
             "data/cache/",
             "data/logs/",
-            "data/transfers/",
+            "data/transactions/",
             "themes/fusion/shop/services/",
         ];
     }

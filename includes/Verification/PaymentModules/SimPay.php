@@ -133,11 +133,11 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new UnknownErrorException();
     }
 
-    public function prepareDirectBilling(Purchase $purchase, $dataFilename)
+    public function prepareDirectBilling(Purchase $purchase)
     {
         $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) / 100;
         $serviceId = $this->getDirectBillingServiceId();
-        $control = $dataFilename;
+        $control = $purchase->getId();
         $apiKey = $this->getDirectBillingApiKey();
 
         $body = [
@@ -182,7 +182,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $finalizedPayment->setOrderId($id);
         $finalizedPayment->setCost($valueGross);
         $finalizedPayment->setIncome($valuePartner);
-        $finalizedPayment->setDataFilename($control);
+        $finalizedPayment->setTransactionId($control);
         $finalizedPayment->setExternalServiceId($id);
         $finalizedPayment->setTestMode(false);
         $finalizedPayment->setOutput("OK");

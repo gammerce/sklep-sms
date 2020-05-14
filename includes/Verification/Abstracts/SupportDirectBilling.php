@@ -9,10 +9,9 @@ interface SupportDirectBilling
 {
     /**
      * @param Purchase $purchase
-     * @param string $dataFilename
      * @return Result
      */
-    public function prepareDirectBilling(Purchase $purchase, $dataFilename);
+    public function prepareDirectBilling(Purchase $purchase);
 
     /**
      * @param array $query

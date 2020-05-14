@@ -22,15 +22,16 @@ class ExternalPaymentService
      */
     public function restorePurchase(FinalizedPayment $finalizedPayment)
     {
-        $fileName = $finalizedPayment->getDataFilename();
-        $purchase = $this->purchaseDataService->restorePurchase($fileName);
+        $transactionId = $finalizedPayment->getTransactionId();
+        $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
         if (!$purchase || $purchase->isAttempted()) {
             throw new LackOfValidPurchaseDataException();
         }
 
         $purchase->markAsAttempted();
-        $this->purchaseDataService->updatePurchase($fileName, $purchase);
+        $this->purchaseDataService->storePurchase($purchase);
+
         return $purchase;
     }
 }

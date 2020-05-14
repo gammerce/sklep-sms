@@ -36,7 +36,7 @@ class FinalizedPayment
      *
      * @var string
      */
-    private $dataFilename = '';
+    private $transactionId = '';
 
     /**
      * Service ID from the external system
@@ -110,17 +110,17 @@ class FinalizedPayment
     /**
      * @return string
      */
-    public function getDataFilename()
+    public function getTransactionId()
     {
-        return $this->dataFilename;
+        return $this->transactionId;
     }
 
     /**
-     * @param string $dataFilename
+     * @param string $transactionId
      */
-    public function setDataFilename($dataFilename)
+    public function setTransactionId($transactionId)
     {
-        $this->dataFilename = (string) $dataFilename;
+        $this->transactionId = (string) $transactionId;
     }
 
     /**

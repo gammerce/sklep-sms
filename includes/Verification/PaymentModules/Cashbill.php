@@ -76,12 +76,12 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
 
     /**
      * @param Purchase $purchase
-     * @param string $dataFilename
      * @return array
      */
-    public function prepareTransfer(Purchase $purchase, $dataFilename)
+    public function prepareTransfer(Purchase $purchase)
     {
         $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
+        $userData = $purchase->getId();
 
         return [
             "url" => "https://pay.cashbill.pl/form/pay.php",
@@ -92,12 +92,12 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             "surname" => $purchase->user->getSurname(),
             "email" => $purchase->getEmail(),
             "amount" => $cost,
-            "userdata" => $dataFilename,
+            "userdata" => $userData,
             "sign" => md5(
                 $this->getService() .
                     $cost .
                     $purchase->getDesc() .
-                    $dataFilename .
+                    $userData .
                     $purchase->user->getForename() .
                     $purchase->user->getSurname() .
                     $purchase->getEmail() .
@@ -115,7 +115,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         $finalizedPayment->setOrderId($body["orderid"]);
         $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setDataFilename($body["userdata"]);
+        $finalizedPayment->setTransactionId($body["userdata"]);
         $finalizedPayment->setExternalServiceId($body["service"]);
         $finalizedPayment->setOutput("OK");
 

@@ -50,10 +50,10 @@ class PaymentResource
         $paymentResult = $paymentService->makePayment($purchase);
 
         if ($paymentResult->getStatus() === "purchased") {
-            $purchaseDataService->deletePurchase($transactionId);
-        } else {
+            $purchaseDataService->deletePurchase($purchase);
+        } elseif ($paymentResult->getStatus() === "external") {
             // Let's store changes made to purchase object
-            // Since it will be used later
+            // since it will be used later
             $purchaseDataService->storePurchase($purchase);
         }
 

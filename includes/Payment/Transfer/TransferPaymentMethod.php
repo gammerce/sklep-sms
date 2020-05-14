@@ -116,10 +116,8 @@ class TransferPaymentMethod implements IPaymentMethod
         $service = $this->serviceManager->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 
-        $fileName = $this->purchaseDataService->storePurchase($purchase);
-
         return new Result("external", $this->lang->t("external_payment_prepared"), true, [
-            "data" => $paymentModule->prepareTransfer($purchase, $fileName),
+            "data" => $paymentModule->prepareTransfer($purchase),
         ]);
     }
 }

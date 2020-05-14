@@ -74,10 +74,17 @@ class Purchase
      */
     private $isAttempted = false;
 
+    /**
+     * Transaction has been deleted
+     *
+     * @var bool
+     */
+    private $isDeleted = false;
+
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->id = 0;
+        $this->id = $this->generateId();
     }
 
     public function getServiceId()
@@ -191,6 +198,19 @@ class Purchase
     }
 
     /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->isDeleted;
+    }
+
+    public function markAsDeleted()
+    {
+        $this->isDeleted = true;
+    }
+
+    /**
      * @return PromoCode
      */
     public function getPromoCode()
@@ -212,5 +232,13 @@ class Purchase
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    private function generateId()
+    {
+        return substr(generate_uuid4(), 0, 32);
     }
 }

@@ -46,7 +46,7 @@ before_deploy:
     zip -r \
     --exclude='data/cache/**' \
     --exclude='data/errors/**' \
-    --exclude='data/transfers/**' \
+    --exclude='data/transactions/**' \
     build.zip \
     build/ \
     bootstrap/ \

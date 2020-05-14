@@ -28,64 +28,41 @@ class PurchaseDataService
 
     /**
      * @param Purchase $purchase
-     * @return string
      */
     public function storePurchase(Purchase $purchase)
     {
+        $transactionId = escape_filename($purchase->getId());
         $serialized = $this->purchaseSerializer->serialize($purchase);
-        $fileName = $this->generateIdentifier($serialized);
-        $path = $this->path->to("data/transfers/$fileName");
-        $this->fileSystem->put($path, $serialized);
-
-        return $fileName;
-    }
-
-    /**
-     * @param string $fileName
-     * @param Purchase $purchase
-     */
-    public function updatePurchase($fileName, Purchase $purchase)
-    {
-        $fileName = escape_filename($fileName);
-        $serialized = $this->purchaseSerializer->serialize($purchase);
-        $path = $this->path->to("data/transfers/$fileName");
+        $path = $this->path->to("data/transactions/$transactionId");
         $this->fileSystem->put($path, $serialized);
     }
 
     /**
-     * @param string $fileName
+     * @param string $transactionId
      * @return Purchase|null
      */
-    public function restorePurchase($fileName)
+    public function restorePurchase($transactionId)
     {
-        $fileName = escape_filename($fileName);
-        if (!$fileName || !$this->fileSystem->exists($this->path->to("data/transfers/$fileName"))) {
+        $transactionId = escape_filename($transactionId);
+        if (
+            !$transactionId ||
+            !$this->fileSystem->exists($this->path->to("data/transactions/$transactionId"))
+        ) {
             return null;
         }
 
         return $this->purchaseSerializer->deserialize(
-            $this->fileSystem->get($this->path->to("data/transfers/$fileName"))
+            $this->fileSystem->get($this->path->to("data/transactions/$transactionId"))
         );
     }
 
     /**
-     * @param string $fileName
+     * @param Purchase $purchase
      */
-    public function deletePurchase($fileName)
+    public function deletePurchase(Purchase $purchase)
     {
-        $fileName = escape_filename($fileName);
-        $this->fileSystem->delete($this->path->to("data/transfers/$fileName"));
-    }
-
-    /**
-     * 32 characters long unique purchase identifier
-     *
-     * @param string $serialized
-     * @return string
-     */
-    private function generateIdentifier($serialized)
-    {
-        $fileName = hash("sha256", microtime() . $serialized);
-        return substr($fileName, 0, 32);
+        $transactionId = escape_filename($purchase->getId());
+        $this->fileSystem->delete($this->path->to("data/transactions/$transactionId"));
+        $purchase->markAsDeleted();
     }
 }

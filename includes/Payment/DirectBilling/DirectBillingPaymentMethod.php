@@ -101,8 +101,6 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
-        $fileName = $this->purchaseDataService->storePurchase($purchase);
-
-        return $paymentModule->prepareDirectBilling($purchase, $fileName);
+        return $paymentModule->prepareDirectBilling($purchase);
     }
 }

@@ -138,9 +138,10 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         throw new UnknownErrorException();
     }
 
-    public function prepareTransfer(Purchase $purchase, $dataFilename)
+    public function prepareTransfer(Purchase $purchase)
     {
         $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
+        $control = $purchase->getId();
         $signature = hash('sha256', $this->shopId . $this->hash . $cost);
 
         return [
@@ -149,7 +150,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             'shopid' => $this->shopId,
             'signature' => $signature,
             'amount' => $cost,
-            'control' => $dataFilename,
+            'control' => $control,
             'return_urlc' => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
             'return_url' => $this->url->to("/page/payment_success"),
             'description' => $purchase->getDesc(),
@@ -166,7 +167,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         $finalizedPayment->setOrderId(array_get($body, 'orderID'));
         $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setDataFilename(array_get($body, 'control'));
+        $finalizedPayment->setTransactionId(array_get($body, 'control'));
         $finalizedPayment->setTestMode($isTest);
         $finalizedPayment->setOutput("OK");
 
