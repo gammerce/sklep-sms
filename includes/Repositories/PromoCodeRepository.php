@@ -103,8 +103,6 @@ EOF
         return !!$statement->rowCount();
     }
 
-    // TODO Test it
-
     public function useIt($id)
     {
         $this->db
