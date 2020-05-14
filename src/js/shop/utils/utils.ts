@@ -1,12 +1,13 @@
 import { loader } from "../../general/loader";
-import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
 import { buildUrl } from "../../general/global";
 
-export const getAndSetTemplate = function(element, template, data, onSuccessFunction) {
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
-
+export const getAndSetTemplate = function(
+    element: JQuery,
+    template: string,
+    data?: any,
+    onSuccessFunction?: any
+) {
     loader.show();
 
     $.ajax({
@@ -17,17 +18,12 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
             loader.hide();
         },
         success: function(content) {
-            const jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (jsonObj.return_id === "no_access") {
-                alert(jsonObj.text);
+            if (content.return_id === "no_access") {
+                alert(content.text);
                 location.reload();
             }
 
-            element.html(jsonObj.template);
+            element.html(content.template);
             onSuccessFunction();
         },
         error: function(error) {
@@ -48,16 +44,11 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
             loader.hide();
         },
         success: function(content) {
-            const jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            $.each(jsonObj, function(brick_id, brick) {
+            for (const [brick_id, brick] of content.entries()) {
                 const brickNode = $(`#${brick_id}`);
                 brickNode.html(brick.content);
                 brickNode.attr("class", brick.class);
-            });
+            }
 
             if (onSuccessFunction) {
                 onSuccessFunction(content);

@@ -1,9 +1,8 @@
 import { loader } from "../../general/loader";
 import { buildUrl, restRequest } from "../../general/global";
-import { json_parse } from "../../general/stocks";
-import { handleErrorResponse } from "../../general/infobox";
+import { handleErrorResponse, sthWentWrong } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
-import {Dict} from "../../shop/types/general";
+import { Dict } from "../../shop/types/general";
 
 export const getAndSetTemplate = function(
     element: JQuery,
@@ -21,17 +20,16 @@ export const getAndSetTemplate = function(
             loader.hide();
         },
         success(content) {
-            const jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
+            if (!content) {
+                return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "no_access") {
-                alert(jsonObj.text);
+            if (content.return_id === "no_access") {
+                alert(content.text);
                 location.reload();
             }
 
-            element.html(jsonObj.template);
+            element.html(content.template);
 
             if (onSuccessFunction) {
                 onSuccessFunction();
@@ -57,16 +55,11 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
             loader.hide();
         },
         success(content) {
-            const jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            $.each(jsonObj, function(brick_id, brick) {
+            for (const [brick_id, brick] of content.entries()) {
                 const brickNode = $(`#${brick_id}`);
                 brickNode.html(brick.content);
                 brickNode.attr("class", brick.class);
-            });
+            }
 
             if (onSuccessFunction) {
                 onSuccessFunction(content);
@@ -86,24 +79,15 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
  * @param {string} boxId
  * @param {object} data
  */
-export const showActionBox = function(
-    pageId: string,
-    boxId: string,
-    data?: Dict,
-): void {
+export const showActionBox = function(pageId: string, boxId: string, data?: Dict): void {
     restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
-        const jsonObj = json_parse(content);
-        if (!jsonObj) {
-            return;
-        }
-
         // Nie udalo sie prawidlowo pozyskac danych
-        if (jsonObj.return_id !== "ok") {
-            alert(jsonObj.text);
+        if (content.return_id !== "ok") {
+            alert(content.text);
             location.reload();
         }
 
-        action_box.show(jsonObj.template);
+        action_box.show(content.template);
     });
 };
 

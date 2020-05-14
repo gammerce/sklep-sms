@@ -1,5 +1,4 @@
 import { goToPayment } from "../../utils/utils";
-import { json_parse } from "../../../general/stocks";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { window_info } from "../../../general/window";
@@ -24,25 +23,20 @@ $(document).delegate("#form_purchase", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_purchase"), jsonObj.warnings);
-            } else if (jsonObj.return_id === "ok") {
-                goToPayment(jsonObj.transaction_id);
+            if (content.return_id === "warnings") {
+                showWarnings($("#form_purchase"), content.warnings);
+            } else if (content.return_id === "ok") {
+                goToPayment(content.transaction_id);
             }
 
-            if (jsonObj.positive) {
-                infobox.show_info(jsonObj.text, jsonObj.positive, 8000);
+            if (content.positive) {
+                infobox.show_info(content.text, content.positive, 8000);
             } else {
-                infobox.show_info(jsonObj.text, jsonObj.positive);
+                infobox.show_info(content.text, content.positive);
             }
         },
         error: handleErrorResponse,

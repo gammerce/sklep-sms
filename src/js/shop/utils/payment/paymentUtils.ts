@@ -1,10 +1,10 @@
-import {loader} from "../../../general/loader";
-import {showWarnings} from "../../../general/global";
-import {infobox, sthWentWrong} from "../../../general/infobox";
-import {refreshBlocks} from "../utils";
-import {api} from "../container";
-import {Dict} from "../../types/general";
-import {PaymentMethod} from "../../types/transaction";
+import { loader } from "../../../general/loader";
+import { showWarnings } from "../../../general/global";
+import { infobox, sthWentWrong } from "../../../general/infobox";
+import { refreshBlocks } from "../utils";
+import { api } from "../container";
+import { Dict } from "../../types/general";
+import { PaymentMethod } from "../../types/transaction";
 
 export const purchaseService = async (
     transactionId: string,
@@ -62,7 +62,7 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
     }
 
     infobox.show_info(result.text, result.positive);
-}
+};
 
 const redirectToExternalWithPost = (response: any) => {
     const form = $("<form>", {
@@ -88,10 +88,10 @@ const redirectToExternalWithPost = (response: any) => {
     $("body").append(form);
 
     form.submit();
-}
+};
 
 const redirectToExternalWithGet = (response: any) => {
     const url = response.data.url;
     delete response.data.url;
     window.location.href = url + "?" + $.param(response.data);
-}
+};

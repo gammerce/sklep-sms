@@ -1,6 +1,5 @@
 import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl } from "../../../general/global";
 
@@ -30,16 +29,11 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "ok") {
+            if (content.return_id === "ok") {
                 // Delete row
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
@@ -47,7 +41,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -66,21 +60,16 @@ $(document).delegate("#form_group_add", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "ok") {
+            if (content.return_id === "ok") {
                 clearAndHideActionBox();
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -103,21 +92,16 @@ $(document).delegate("#form_group_edit", "submit", function(e) {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "ok") {
+            if (content.return_id === "ok") {
                 clearAndHideActionBox();
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

@@ -1,16 +1,4 @@
 import { element_with_data_module } from "./global";
-import {Dict} from "../shop/types/general";
-
-export const json_parse = function(text: string, show?: boolean): Dict | false {
-    show = typeof show !== "undefined" ? show : true;
-
-    try {
-        return JSON.parse(text);
-    } catch (err) {
-        if (show) alert(text);
-        return false;
-    }
-};
 
 export const get_random_string = function(length: number = 8): string {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";

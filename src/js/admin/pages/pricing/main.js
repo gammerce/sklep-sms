@@ -1,6 +1,5 @@
 import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { json_parse } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
@@ -30,16 +29,11 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
             loader.hide();
         },
         success: function(content) {
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "ok") {
+            if (content.return_id === "ok") {
                 // Delete row
                 rowId.fadeOut("slow");
                 rowId.css({ background: "#FFF4BA" });
@@ -47,7 +41,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -68,23 +62,18 @@ $(document).delegate("#form_price_add", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_price_add"), jsonObj.warnings);
-            } else if (jsonObj.return_id === "ok") {
+            if (content.return_id === "warnings") {
+                showWarnings($("#form_price_add"), content.warnings);
+            } else if (content.return_id === "ok") {
                 clearAndHideActionBox();
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
@@ -109,23 +98,18 @@ $(document).delegate("#form_price_edit", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            var jsonObj = json_parse(content);
-            if (!jsonObj) {
-                return;
-            }
-
-            if (!jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "warnings") {
-                showWarnings($("#form_price_edit"), jsonObj.warnings);
-            } else if (jsonObj.return_id === "ok") {
+            if (content.return_id === "warnings") {
+                showWarnings($("#form_price_edit"), content.warnings);
+            } else if (content.return_id === "ok") {
                 clearAndHideActionBox();
                 refreshAdminContent();
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });

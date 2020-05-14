@@ -1,7 +1,7 @@
 import { loader } from "./loader";
 import { handleErrorResponse } from "./infobox";
 import { trimSlashes } from "./stocks";
-import {Dict} from "../shop/types/general";
+import { Dict } from "../shop/types/general";
 
 export const restRequest = function(
     method: string,

@@ -1,5 +1,4 @@
 import { goToPayment, refreshBlocks } from "../../utils/utils";
-import { json_parse } from "../../../general/stocks";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
@@ -44,20 +43,19 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
         success: function(content) {
             removeFormWarnings();
 
-            const jsonObj = json_parse(content);
-            if (!jsonObj || !jsonObj.return_id) {
+            if (!content.return_id) {
                 return sthWentWrong();
             }
 
-            if (jsonObj.return_id === "warnings") {
-                showWarnings(that, jsonObj.warnings);
-            } else if (jsonObj.return_id === "ok") {
+            if (content.return_id === "warnings") {
+                showWarnings(that, content.warnings);
+            } else if (content.return_id === "ok") {
                 refreshBlocks(`content:${currentPage}`);
-            } else if (jsonObj.return_id === "payment") {
-                goToPayment(jsonObj.transaction_id);
+            } else if (content.return_id === "payment") {
+                goToPayment(content.transaction_id);
             }
 
-            infobox.show_info(jsonObj.text, jsonObj.positive);
+            infobox.show_info(content.text, content.positive);
         },
         error: handleErrorResponse,
     });
