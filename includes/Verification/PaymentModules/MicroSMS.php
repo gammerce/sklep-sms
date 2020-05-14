@@ -138,36 +138,36 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         throw new UnknownErrorException();
     }
 
-    public function prepareTransfer(Purchase $purchase)
+    public function prepareTransfer($price, Purchase $purchase)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
+        $price /= 100;
         $control = $purchase->getId();
-        $signature = hash('sha256', $this->shopId . $this->hash . $cost);
+        $signature = hash("sha256", $this->shopId . $this->hash . $price);
 
         return [
-            'url' => 'https://microsms.pl/api/bankTransfer/',
-            'method' => 'GET',
-            'shopid' => $this->shopId,
-            'signature' => $signature,
-            'amount' => $cost,
-            'control' => $control,
-            'return_urlc' => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
-            'return_url' => $this->url->to("/page/payment_success"),
-            'description' => $purchase->getDesc(),
+            "url" => "https://microsms.pl/api/bankTransfer/",
+            "method" => "GET",
+            "shopid" => $this->shopId,
+            "signature" => $signature,
+            "amount" => $price,
+            "control" => $control,
+            "return_urlc" => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
+            "return_url" => $this->url->to("/page/payment_success"),
+            "description" => $purchase->getDesc(),
         ];
     }
 
     public function finalizeTransfer(array $query, array $body)
     {
-        $isTest = strtolower(array_get($body, 'test')) === "true";
-        $amount = price_to_int(array_get($body, 'amountPay'));
+        $isTest = strtolower(array_get($body, "test")) === "true";
+        $amount = price_to_int(array_get($body, "amountPay"));
 
         $finalizedPayment = new FinalizedPayment();
         $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId(array_get($body, 'orderID'));
+        $finalizedPayment->setOrderId(array_get($body, "orderID"));
         $finalizedPayment->setCost($amount);
         $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setTransactionId(array_get($body, 'control'));
+        $finalizedPayment->setTransactionId(array_get($body, "control"));
         $finalizedPayment->setTestMode($isTest);
         $finalizedPayment->setOutput("OK");
 
@@ -176,8 +176,8 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isPaymentValid(array $body)
     {
-        $userId = array_get($body, 'userid');
-        $status = strtolower(array_get($body, 'status'));
+        $userId = array_get($body, "userid");
+        $status = strtolower(array_get($body, "status"));
         $ip = get_ip();
 
         if ($status !== "true") {
@@ -202,13 +202,13 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isIpValid($ip)
     {
-        $response = $this->requester->get('https://microsms.pl/psc/ips/');
+        $response = $this->requester->get("https://microsms.pl/psc/ips/");
 
         if (!$response || $response->isBadResponse()) {
             return false;
         }
 
-        return in_array($ip, explode(',', $response->getBody()));
+        return in_array($ip, explode(",", $response->getBody()));
     }
 
     public function getSmsCode()

@@ -84,23 +84,29 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
-
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) === null) {
-            return new Result(
-                "no_transfer_price",
-                $this->lang->t('payment_method_unavailable'),
-                false
-            );
-        }
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $promoCode = $purchase->getPromoCode();
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
             return new Result(
                 "direct_billing_unavailable",
-                $this->lang->t('direct_billing_unavailable'),
+                $this->lang->t("direct_billing_unavailable"),
                 false
             );
         }
 
-        return $paymentModule->prepareDirectBilling($purchase);
+        if ($price === null) {
+            return new Result(
+                "no_transfer_price",
+                $this->lang->t("payment_method_unavailable"),
+                false
+            );
+        }
+
+        if ($promoCode) {
+            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
+        }
+
+        return $paymentModule->prepareDirectBilling($price, $purchase);
     }
 }

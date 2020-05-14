@@ -70,7 +70,10 @@ class WalletPaymentMethod implements IPaymentMethod
             return new Result("wallet_not_logged", $this->lang->t("no_login_no_wallet"), false);
         }
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $promoCode = $purchase->getPromoCode();
+
+        if ($price === null) {
             return new Result(
                 "no_transfer_price",
                 $this->lang->t("payment_method_unavailable"),
@@ -78,11 +81,12 @@ class WalletPaymentMethod implements IPaymentMethod
             );
         }
 
+        if ($promoCode) {
+            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
+        }
+
         try {
-            $paymentId = $this->walletPaymentService->payWithWallet(
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
-                $purchase->user
-            );
+            $paymentId = $this->walletPaymentService->payWithWallet($price, $purchase->user);
         } catch (NotEnoughFundsException $e) {
             return new Result("no_money", $this->lang->t("not_enough_money"), false);
         }

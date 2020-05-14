@@ -74,13 +74,9 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         throw new NoConnectionException();
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
-    public function prepareTransfer(Purchase $purchase)
+    public function prepareTransfer($price, Purchase $purchase)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
+        $price /= 100;
         $userData = $purchase->getId();
 
         return [
@@ -91,11 +87,11 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             "forname" => $purchase->user->getForename(),
             "surname" => $purchase->user->getSurname(),
             "email" => $purchase->getEmail(),
-            "amount" => $cost,
+            "amount" => $price,
             "userdata" => $userData,
             "sign" => md5(
                 $this->getService() .
-                    $cost .
+                    $price .
                     $purchase->getDesc() .
                     $userData .
                     $purchase->user->getForename() .

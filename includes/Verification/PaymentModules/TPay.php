@@ -49,19 +49,19 @@ class TPay extends PaymentModule implements SupportTransfer
         return [];
     }
 
-    public function prepareTransfer(Purchase $purchase)
+    public function prepareTransfer($price, Purchase $purchase)
     {
-        $cost = round($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) / 100, 2);
+        $price /= 100;
         $crc = $purchase->getId();
 
         return [
             "url" => "https://secure.transferuj.pl",
             "method" => "POST",
             "id" => $this->accountId,
-            "kwota" => $cost,
+            "kwota" => $price,
             "opis" => $purchase->getDesc(),
             "crc" => $crc,
-            "md5sum" => md5($this->accountId . $cost . $crc . $this->key),
+            "md5sum" => md5($this->accountId . $price . $crc . $this->key),
             "imie" => $purchase->user->getForename(),
             "nazwisko" => $purchase->user->getSurname(),
             "email" => $purchase->getEmail(),

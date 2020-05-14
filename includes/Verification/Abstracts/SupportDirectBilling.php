@@ -8,10 +8,11 @@ use App\Support\Result;
 interface SupportDirectBilling
 {
     /**
+     * @param int $price
      * @param Purchase $purchase
      * @return Result
      */
-    public function prepareDirectBilling(Purchase $purchase);
+    public function prepareDirectBilling($price, Purchase $purchase);
 
     /**
      * @param array $query

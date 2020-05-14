@@ -77,7 +77,7 @@ class PromoCodeService
 
             case QuantityType::PERCENTAGE():
                 $multiplier = (100 - $promoCode->getQuantity()) / 100;
-                return max(0, $price * $multiplier);
+                return max(0, ceil($price * $multiplier));
 
             default:
                 return $price;

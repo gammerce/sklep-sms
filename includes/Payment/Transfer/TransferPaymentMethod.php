@@ -4,7 +4,6 @@ namespace App\Payment\Transfer;
 use App\Managers\PaymentModuleManager;
 use App\Managers\ServiceManager;
 use App\Models\Purchase;
-use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -29,9 +28,6 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var Settings */
     private $settings;
 
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
@@ -41,7 +37,6 @@ class TransferPaymentMethod implements IPaymentMethod
     public function __construct(
         ServiceManager $serviceManager,
         PriceTextService $priceTextService,
-        PurchaseDataService $purchaseDataService,
         PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
         PaymentModuleManager $paymentModuleManager,
@@ -51,7 +46,6 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
         $this->settings = $settings;
-        $this->purchaseDataService = $purchaseDataService;
         $this->paymentModuleManager = $paymentModuleManager;
         $this->promoCodeService = $promoCodeService;
     }
@@ -89,21 +83,8 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
         );
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
-            return new Result(
-                "no_transfer_price",
-                $this->lang->t("payment_method_unavailable"),
-                false
-            );
-        }
-
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) <= 100) {
-            return new Result(
-                "too_little_for_transfer",
-                $this->lang->t("transfer_above_amount", $this->settings->getCurrency()),
-                false
-            );
-        }
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $promoCode = $purchase->getPromoCode();
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new Result(
@@ -113,11 +94,36 @@ class TransferPaymentMethod implements IPaymentMethod
             );
         }
 
+        if ($price === null) {
+            return new Result(
+                "no_transfer_price",
+                $this->lang->t("payment_method_unavailable"),
+                false
+            );
+        }
+
+        if ($price <= 100) {
+            return new Result(
+                "too_little_for_transfer",
+                $this->lang->t("transfer_above_amount", $this->settings->getCurrency()),
+                false
+            );
+        }
+
+        if ($promoCode) {
+            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
+        }
+
         $service = $this->serviceManager->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 
-        return new Result("external", $this->lang->t("external_payment_prepared"), true, [
-            "data" => $paymentModule->prepareTransfer($purchase),
-        ]);
+        $data = $paymentModule->prepareTransfer($price, $purchase);
+
+        return new Result(
+            "external",
+            $this->lang->t("external_payment_prepared"),
+            true,
+            compact("data")
+        );
     }
 }

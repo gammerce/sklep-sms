@@ -133,9 +133,9 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new UnknownErrorException();
     }
 
-    public function prepareDirectBilling(Purchase $purchase)
+    public function prepareDirectBilling($price, Purchase $purchase)
     {
-        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) / 100;
+        $price /= 100;
         $serviceId = $this->getDirectBillingServiceId();
         $control = $purchase->getId();
         $apiKey = $this->getDirectBillingApiKey();
@@ -145,8 +145,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             "control" => $control,
             "complete" => $this->url->to("/page/payment_success"),
             "failure" => $this->url->to("/page/payment_error"),
-            "amount_gross" => $amount,
-            "sign" => hash("sha256", $serviceId . $amount . $control . $apiKey),
+            "amount_gross" => $price,
+            "sign" => hash("sha256", $serviceId . $price . $control . $apiKey),
         ];
 
         $response = $this->requester->post("https://simpay.pl/db/api", $body);
