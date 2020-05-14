@@ -3,6 +3,7 @@ import { buildUrl, restRequest } from "../../general/global";
 import { json_parse } from "../../general/stocks";
 import { handleErrorResponse } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
+import {Dict} from "../../shop/types/general";
 
 export const getAndSetTemplate = function(
     element: JQuery,
@@ -88,7 +89,7 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
 export const showActionBox = function(
     pageId: string,
     boxId: string,
-    data?: Record<any, any>
+    data?: Dict,
 ): void {
     restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
         const jsonObj = json_parse(content);

@@ -1,6 +1,7 @@
 import { loader } from "./loader";
 import { handleErrorResponse } from "./infobox";
 import { trimSlashes } from "./stocks";
+import {Dict} from "../shop/types/general";
 
 export const restRequest = function(
     method: string,
@@ -22,7 +23,7 @@ export const restRequest = function(
     });
 };
 
-export const buildUrl = function(path: string, query?: Record<string, any>): string {
+export const buildUrl = function(path: string, query?: Dict): string {
     const prefix = typeof window.baseUrl !== "undefined" ? trimSlashes(window.baseUrl) + "/" : "";
     const queryString = $.param(query || {});
 
@@ -35,7 +36,7 @@ export const buildUrl = function(path: string, query?: Record<string, any>): str
     return output;
 };
 
-export const changeUrl = function(data: Record<any, any>): void {
+export const changeUrl = function(data: Dict): void {
     var splittedUrl = document.URL.split("?");
     var url = splittedUrl[0];
     var query = splittedUrl.length > 1 ? splittedUrl.pop() : "";
@@ -91,7 +92,7 @@ export const isShown = function(node: JQuery): boolean {
     return !node.hasClass("is-hidden");
 };
 
-export const showWarnings = function(form: JQuery, warnings: Record<string, any>) {
+export const showWarnings = function(form: JQuery, warnings: Dict) {
     $.each(warnings, function(name, element) {
         const inputElement = form.find('[name="' + name + '"]');
         const appendedElement = Array.isArray(element) ? element.join("<br />") : element;

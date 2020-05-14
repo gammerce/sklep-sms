@@ -1,35 +1,43 @@
-import { loader } from "../../../general/loader";
-import { restRequest, showWarnings } from "../../../general/global";
-import { infobox, sthWentWrong } from "../../../general/infobox";
-import { refreshBlocks } from "../utils";
-import { api } from "../container";
+import {loader} from "../../../general/loader";
+import {showWarnings} from "../../../general/global";
+import {infobox, sthWentWrong} from "../../../general/infobox";
+import {refreshBlocks} from "../utils";
+import {api} from "../container";
+import {Dict} from "../../types/general";
+import {PaymentMethod} from "../../types/transaction";
 
 export const purchaseService = async (
     transactionId: string,
-    method: string,
-    body: Record<string, any> = {}
+    method: PaymentMethod,
+    body: Dict = {}
 ) => {
     if (loader.blocked) {
         return;
     }
 
-    loader.show();
-
-    const result = await api.makePayment(transactionId, {
-        method,
-    });
-
-    if (!result || !result.return_id) {
-        return sthWentWrong();
+    try {
+        loader.show();
+        await makePayment(transactionId, {
+            method,
+            ...body,
+        });
+    } catch (e) {
+        sthWentWrong();
+    } finally {
+        loader.hide();
     }
+};
+
+const makePayment = async (transactionId: string, body: Dict): Promise<void> => {
+    const result = await api.makePayment(transactionId, body);
 
     if (result.return_id === "warnings") {
         showWarnings($("#payment"), result.warnings);
     } else if (result.return_id === "purchased") {
         // Update content window with purchase details
-        restRequest("GET", `/api/purchases/${result.bsid}`, {}, function(message) {
-            $("#page-content").html(message);
-        });
+        api.getPurchase(result.bsid)
+            .then(message => $("#page-content").html(message))
+            .catch(console.error);
 
         // Refresh wallet
         refreshBlocks("wallet", function() {
@@ -54,15 +62,15 @@ export const purchaseService = async (
     }
 
     infobox.show_info(result.text, result.positive);
-};
+}
 
-function redirectToExternalWithPost(jsonObj) {
+const redirectToExternalWithPost = (response: any) => {
     const form = $("<form>", {
-        action: jsonObj.data.url,
+        action: response.data.url,
         method: "POST",
     });
 
-    $.each(jsonObj.data, function(key, value) {
+    $.each(response.data, function(key, value) {
         if (key === "url") {
             return true;
         }
@@ -76,16 +84,14 @@ function redirectToExternalWithPost(jsonObj) {
         );
     });
 
-    // Bez tego nie dziala pod firefoxem
+    // It doesn't work with firefox without it
     $("body").append(form);
 
-    // Wysyłamy formularz zakupu
     form.submit();
 }
 
-function redirectToExternalWithGet(jsonObj) {
-    const url = jsonObj.data.url;
-    delete jsonObj.data.url;
-
-    window.location.href = url + "?" + $.param(jsonObj.data);
+const redirectToExternalWithGet = (response: any) => {
+    const url = response.data.url;
+    delete response.data.url;
+    window.location.href = url + "?" + $.param(response.data);
 }

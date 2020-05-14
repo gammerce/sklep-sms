@@ -1,4 +1,4 @@
-import { Transaction } from "../types/Transaction";
+import { Transaction } from "../types/transaction";
 import { buildUrl } from "../../general/global";
 import { AxiosInstance } from "axios";
 
@@ -14,6 +14,11 @@ export class Api {
 
     public async makePayment(transactionId: string, body: any): Promise<any> {
         const response = await this.axios.post(buildUrl(`/api/payment/${transactionId}`), body);
+        return response.data;
+    }
+
+    public async getPurchase(boughtServiceId: number): Promise<string> {
+        const response = await this.axios.get(`/api/purchases/${boughtServiceId}`);
         return response.data;
     }
 }

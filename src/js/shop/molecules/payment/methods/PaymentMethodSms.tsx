@@ -1,35 +1,37 @@
 import React, {ChangeEvent, FunctionComponent, useState} from "react";
 import {__} from "../../../../general/i18n";
-import {purchaseService} from "../../../utils/payment/paymentUtils";
 import classNames from "classnames";
+import {Dict} from "../../../types/general";
+import {PaymentMethod} from "../../../types/transaction";
 
 interface Props {
     priceGross: string;
     smsCode: string;
     smsNumber: string;
+    onPay(method: PaymentMethod, body?: Dict);
 }
 
 interface State {
     smsCode: string;
-    showDetails: boolean;
+    detailsVisible: boolean;
 }
 
 export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
     const [data, setData] = useState<State>({
         smsCode: "",
-        showDetails: false,
+        detailsVisible: false,
     });
-    const {priceGross, smsCode, smsNumber} = props;
+    const {priceGross, smsCode, smsNumber, onPay} = props;
 
     const onPayClick = () => {
-        if (data.showDetails) {
-            purchaseService("a", "sms", {
+        if (data.detailsVisible) {
+            onPay(PaymentMethod.Sms, {
                 sms_code: data.smsCode
             });
         } else {
             setData(state => ({
                 ...state,
-                showDetails: true
+                detailsVisible: true
             }));
         }
     };
@@ -58,7 +60,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                     </div>
 
                     <div className={classNames("sms-details", {
-                        "is-hidden": !data.showDetails,
+                        "is-hidden": !data.detailsVisible,
                     })}>
                         <h1 className="title is-5">{__('sms_send_sms')}</h1>
 

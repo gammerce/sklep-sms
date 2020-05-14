@@ -37,11 +37,8 @@ export const getAndSetTemplate = function(element, template, data, onSuccessFunc
     });
 };
 
-export const refreshBlocks = function(bricks, onSuccessFunction) {
+export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
     loader.show();
-
-    onSuccessFunction =
-        typeof onSuccessFunction !== "undefined" ? onSuccessFunction : function() {};
 
     $.ajax({
         type: "GET",
@@ -62,7 +59,9 @@ export const refreshBlocks = function(bricks, onSuccessFunction) {
                 brickNode.attr("class", brick.class);
             });
 
-            onSuccessFunction(content);
+            if (onSuccessFunction) {
+                onSuccessFunction(content);
+            }
         },
         error: function(error) {
             handleErrorResponse();

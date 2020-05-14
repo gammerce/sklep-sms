@@ -1,3 +1,10 @@
+export enum PaymentMethod {
+    DirectBilling = "direct_billing",
+    Sms = "sms",
+    Transfer = "transfer",
+    Wallet = "wallet",
+}
+
 export interface Transaction {
     direct_billing?: {
         price: string;

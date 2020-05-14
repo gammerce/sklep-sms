@@ -4,9 +4,10 @@ export const infobox = {
     element: $(""),
     hide_task: 0,
 
-    // Wyświetlanie informacji
-    show_info(message: string, positive: boolean, length: number = 4000) {
-        if (!message) return;
+    show_info(message: string, positive: boolean, length: number = 4000): void {
+        if (!message) {
+            return;
+        }
 
         // Usuwamy poprzedniego boxa
         infobox.element.remove();
@@ -43,10 +44,5 @@ export const infobox = {
     },
 };
 
-export const handleErrorResponse = function() {
-    infobox.show_info(__("ajax_error"), false);
-};
-
-export const sthWentWrong = function() {
-    infobox.show_info(__("sth_went_wrong"), false);
-};
+export const handleErrorResponse = () => infobox.show_info(__("ajax_error"), false);
+export const sthWentWrong = () => infobox.show_info(__("sth_went_wrong"), false);

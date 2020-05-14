@@ -1,12 +1,14 @@
 import React, {FunctionComponent, useEffect, useState} from "react";
 import {__} from "../../../general/i18n";
-import {Transaction} from "../../types/Transaction";
+import {PaymentMethod, Transaction} from "../../types/transaction";
 import {api} from "../../utils/container";
 import {Loader} from "../../components/Loader";
 import {PaymentMethodSms} from "./methods/PaymentMethodSms";
 import {PaymentMethodTransfer} from "./methods/PaymentMethodTransfer";
-import {PaymentMethodDirectBilling} from "./methods/PaymentMethodWallet";
-import {PaymentMethodWallet} from "./methods/PaymentMethodDirectBilling";
+import {PaymentMethodDirectBilling} from "./methods/PaymentMethodDirectBilling";
+import {PaymentMethodWallet} from "./methods/PaymentMethodWallet";
+import {Dict} from "../../types/general";
+import {purchaseService} from "../../utils/payment/paymentUtils";
 
 interface State {
     transaction?: Transaction;
@@ -25,6 +27,10 @@ export const PaymentView: FunctionComponent = () => {
         },
         []
     );
+
+    const onPay = (method: PaymentMethod, body: Dict): void => {
+        purchaseService(transactionId, method, body).catch(console.error);
+    }
 
     if (!data.transaction) {
         return <Loader />;
@@ -61,19 +67,29 @@ export const PaymentView: FunctionComponent = () => {
                             priceGross={data.transaction.sms.price_gross}
                             smsCode={data.transaction.sms.sms_code}
                             smsNumber={data.transaction.sms.sms_number}
+                            onPay={onPay}
                         />
                     }
                     {
                         data.transaction.transfer &&
-                        <PaymentMethodTransfer price={data.transaction.transfer.price}/>
+                        <PaymentMethodTransfer
+                            price={data.transaction.transfer.price}
+                            onPay={onPay}
+                        />
                     }
                     {
                         data.transaction.wallet &&
-                        <PaymentMethodWallet price={data.transaction.wallet.price}/>
+                        <PaymentMethodWallet
+                            price={data.transaction.wallet.price}
+                            onPay={onPay}
+                        />
                     }
                     {
                         data.transaction.direct_billing &&
-                        <PaymentMethodDirectBilling price={data.transaction.direct_billing.price}/>
+                        <PaymentMethodDirectBilling
+                            price={data.transaction.direct_billing.price}
+                            onPay={onPay}
+                        />
                     }
                 </div>
             </div>

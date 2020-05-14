@@ -2,8 +2,9 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Http\Responses\ApiResponse;
 use App\Http\Responses\ErrorApiResponse;
+use App\Http\Responses\ErrorJsonApiResponse;
+use App\Http\Responses\JsonApiResponse;
 use App\Models\Purchase;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
@@ -35,7 +36,7 @@ class PaymentResource
         if (strlen($promoCode)) {
             $promoCodeModel = $promoCodeRepository->get($promoCode);
             if (!$promoCodeModel) {
-                return new ErrorApiResponse($lang->t("invalid_promo_code"));
+                return new ErrorJsonApiResponse($lang->t("invalid_promo_code"));
             }
 
             $purchase->setPromoCode($promoCodeModel);
@@ -52,7 +53,7 @@ class PaymentResource
             $purchaseDataService->deletePurchase($transactionId);
         }
 
-        return new ApiResponse(
+        return new JsonApiResponse(
             $paymentResult->getStatus(),
             $paymentResult->getText(),
             $paymentResult->isPositive(),

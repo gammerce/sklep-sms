@@ -1,17 +1,17 @@
 import React, {FunctionComponent} from "react";
 import {__} from "../../../../general/i18n";
-import {purchaseService} from "../../../utils/payment/paymentUtils";
+import {Dict} from "../../../types/general";
+import {PaymentMethod} from "../../../types/transaction";
 
 interface Props {
     price: string;
+    onPay(method: PaymentMethod, body?: Dict);
 }
 
 export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
-    const {price} = props;
+    const {price, onPay} = props;
 
-    const onPayClick = () => {
-        purchaseService("a", "transfer");
-    };
+    const onPayClick = () => onPay(PaymentMethod.Transfer);
 
     return (
         <div className="payment-type-wrapper">
