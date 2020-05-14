@@ -28,12 +28,12 @@ const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/sr
 module.exports = {
     mode: environment,
     entry: {
-        shop_retro: './src/stylesheets/shop/retro.js',
-        shop_fusion: './src/stylesheets/shop/fusion.js',
+        shop_retro: './src/stylesheets/shop/retro.ts',
+        shop_fusion: './src/stylesheets/shop/fusion.ts',
         admin: './src/js/admin/admin.js',
         install: './src/js/setup/install.js',
         update: './src/js/setup/update.js',
-        shop: './src/js/shop/shop.js',
+        shop: './src/js/shop/shop.ts',
         ...entries
     },
     output: {

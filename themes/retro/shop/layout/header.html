@@ -10,8 +10,8 @@
 <script type="text/javascript" src="{{ $url->versioned('build/js/shop.js') }}"></script>
 <script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
 <script type="text/javascript">
-    var f = "{$footer}";
-    var language = "{{ $lang->getCurrentLanguage() }}";
+    window.f = "{$footer}";
+    window.language = "{{ $lang->getCurrentLanguage() }}";
     window.baseUrl = "{{ $url->to('/') }}";
     window.currentPage = "{{ $currentPageId }}";
 </script>

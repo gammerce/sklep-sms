@@ -5,11 +5,11 @@ import { buildUrl, restRequest } from "../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../general/infobox";
 
 $(document).ready(function() {
-    if (typeof f !== "undefined") {
-        $(".content_td").append(atob(f));
+    if (window.f) {
+        $(".f-placement").append(atob(window.f));
     }
 
-    $("#language_" + language).addClass("is-active");
+    $("#language_" + window.language).addClass("is-active");
 });
 
 // Login
@@ -35,7 +35,7 @@ $(document).delegate("#form_login", "submit", function(e) {
                 } else {
                     $("#user_buttons").css({ overflow: "hidden" }); // Hide login area
                     refreshBlocks(
-                        `logged_info,wallet,user_buttons,services_buttons,content:${currentPage}`
+                        `logged_info,wallet,user_buttons,services_buttons,content:${window.currentPage}`
                     );
                 }
             }
@@ -67,7 +67,7 @@ $(document).delegate("#logout", "click", function(e) {
 
             if (content.return_id === "logged_out") {
                 refreshBlocks(
-                    `logged_info,wallet,user_buttons,services_buttons,content:${currentPage}`
+                    `logged_info,wallet,user_buttons,services_buttons,content:${window.currentPage}`
                 );
             }
             if (content.return_id === "already_logged_out") {

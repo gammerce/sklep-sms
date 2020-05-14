@@ -9,7 +9,6 @@ use DateTime;
 // TODO Remove service code payments
 // TODO Migrate service code payments
 // TODO Add used promo code along with bought service
-// TODO Add method to update usage count
 
 class PromoCodeRepository
 {

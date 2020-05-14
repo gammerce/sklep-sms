@@ -22,7 +22,6 @@ class Requester
      */
     public function get($url, array $query = [], array $headers = [], $timeout = 10)
     {
-        var_dump("Asdasd");
         return $this->curl("GET", $url, $query, [], $headers, $timeout);
     }
 
