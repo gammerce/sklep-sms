@@ -104,6 +104,15 @@ EOF
         return !!$statement->rowCount();
     }
 
+    // TODO Test it
+
+    public function useIt($id)
+    {
+        $this->db
+            ->statement("UPDATE `ss_promo_codes` SET `usage_count` = `usage_count` + 1 WHERE `id` = ?")
+            ->execute([$id]);
+    }
+
     public function mapToModel(array $data)
     {
         return new PromoCode(

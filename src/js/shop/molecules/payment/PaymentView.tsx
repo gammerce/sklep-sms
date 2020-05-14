@@ -12,8 +12,6 @@ import {purchaseService} from "../../utils/payment/paymentUtils";
 import {handleError} from "../../utils/utils";
 import {loader} from "../../../general/loader";
 
-// TODO Add ability to remove promo code
-
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
     const [promoCode, setPromoCode] = useState<string>("");
