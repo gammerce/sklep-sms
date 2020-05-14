@@ -53,18 +53,18 @@ class TransferPaymentServiceTest extends TestCase
             'transfer_price' => 4080,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
-            Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceModule->service->getId());
-        $purchase->setDesc("Description");
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                'type' => ExtraFlagType::TYPE_SID,
+            ])
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
+                Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceModule->service->getId())
+            ->setDesc("Description");
 
         // when
         $payResult = $transferPaymentMethod->pay($purchase, $serviceModule);

@@ -94,10 +94,12 @@ class Purchase
 
     /**
      * @param string $serviceId
+     * @return Purchase
      */
     public function setServiceId($serviceId)
     {
         $this->serviceId = (string) $serviceId;
+        return $this;
     }
 
     /**
@@ -109,11 +111,17 @@ class Purchase
         return array_get($this->order, $key);
     }
 
+    /**
+     * @param array $order
+     * @return $this
+     */
     public function setOrder(array $order)
     {
         foreach ($order as $key => $value) {
             $this->order[$key] = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -125,11 +133,17 @@ class Purchase
         return array_get($this->payment, $key);
     }
 
+    /**
+     * @param array $payment
+     * @return $this
+     */
     public function setPayment(array $payment)
     {
         foreach ($payment as $key => $value) {
             $this->payment[$key] = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -150,10 +164,12 @@ class Purchase
 
     /**
      * @param string $email
+     * @return Purchase
      */
     public function setEmail($email)
     {
         $this->email = (string) $email;
+        return $this;
     }
 
     /**
@@ -166,12 +182,18 @@ class Purchase
 
     /**
      * @param string $desc
+     * @return Purchase
      */
     public function setDesc($desc)
     {
         $this->desc = $desc;
+        return $this;
     }
 
+    /**
+     * @param Price $price
+     * @return $this
+     */
     public function setUsingPrice(Price $price)
     {
         $this->setPayment([
@@ -182,6 +204,8 @@ class Purchase
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),
         ]);
+
+        return $this;
     }
 
     /**
@@ -220,10 +244,12 @@ class Purchase
 
     /**
      * @param PromoCode $promoCode
+     * @return Purchase
      */
     public function setPromoCode(PromoCode $promoCode)
     {
         $this->promoCode = $promoCode;
+        return $this;
     }
 
     /**

@@ -54,18 +54,18 @@ class PaymentServiceTest extends TestCase
             "quantity" => 20,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "abcd1234",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "abcd1234",
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+            ]);
 
         // when
         $payResult = $this->paymentService->makePayment($purchase);
@@ -102,18 +102,18 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "QWERTY",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "QWERTY",
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+            ]);
 
         // when
         $payResult = $this->paymentService->makePayment($purchase);
@@ -150,18 +150,18 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "QWERTY",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "QWERTY",
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+            ]);
 
         // when
         $payResult = $this->paymentService->makePayment($purchase);
@@ -187,19 +187,19 @@ class PaymentServiceTest extends TestCase
             "quantity" => null,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-            "auth_data" => "STEAM_1:0:22309350",
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "abcd1234",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => "STEAM_1:0:22309350",
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "abcd1234",
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+            ]);
 
         // when
         $payResult = $this->paymentService->makePayment($purchase);

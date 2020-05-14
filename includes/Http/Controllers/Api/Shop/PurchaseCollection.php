@@ -38,8 +38,7 @@ class PurchaseCollection
             return new ApiResponse("no_permission", $lang->t("service_no_permission"), 0);
         }
 
-        $purchase = new Purchase($user);
-        $purchase->setServiceId($serviceModule->service->getId());
+        $purchase = (new Purchase($user))->setServiceId($serviceModule->service->getId());
 
         if ($user->getEmail()) {
             $purchase->setEmail($user->getEmail());

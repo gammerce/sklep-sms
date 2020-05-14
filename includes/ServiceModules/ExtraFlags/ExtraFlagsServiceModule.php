@@ -666,22 +666,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
         $purchasingUser = $this->userManager->getUser($validated["user_id"]);
-        $purchase = new Purchase($purchasingUser);
-        $purchase->setServiceId($this->service->getId());
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
-            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
-        ]);
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $validated["server_id"],
-            "type" => $validated["type"],
-            "auth_data" => $validated["auth_data"],
-            "password" => $validated["password"],
-            Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
-        ]);
-        $purchase->setEmail($validated["email"]);
-        $boughtServiceId = $this->purchase($purchase);
+        $purchase = (new Purchase($purchasingUser))
+            ->setServiceId($this->service->getId())
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
+                Purchase::PAYMENT_PAYMENT_ID => $paymentId,
+            ])
+            ->setOrder([
+                Purchase::ORDER_SERVER => $validated["server_id"],
+                "type" => $validated["type"],
+                "auth_data" => $validated["auth_data"],
+                "password" => $validated["password"],
+                Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
+            ])
+            ->setEmail($validated["email"]);
 
+        $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
     }
 

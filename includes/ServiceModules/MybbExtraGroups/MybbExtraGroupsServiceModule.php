@@ -610,19 +610,19 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = new Purchase($this->userManager->getUser($validated["user_id"]));
-        $purchase->setServiceId($this->service->getId());
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
-            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
-        ]);
-        $purchase->setOrder([
-            "username" => $validated["mybb_username"],
-            Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
-        ]);
-        $purchase->setEmail($validated["email"]);
-        $boughtServiceId = $this->purchase($purchase);
+        $purchase = (new Purchase($this->userManager->getUser($validated["user_id"])))
+            ->setServiceId($this->service->getId())
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
+                Purchase::PAYMENT_PAYMENT_ID => $paymentId,
+            ])
+            ->setOrder([
+                "username" => $validated["mybb_username"],
+                Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
+            ])
+            ->setEmail($validated["email"]);
 
+        $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor(
             "log_user_service_added",
             $user->getUsername(),

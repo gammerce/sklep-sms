@@ -66,23 +66,22 @@ class PurchaseService
         $user = $this->auth->user();
         $user->setLastIp($ip);
 
-        $purchase = new Purchase($user);
-        $purchase->setServiceId($serviceModule->service->getId());
-        $purchase->setEmail($email);
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => $type,
-            "auth_data" => $authData,
-            "password" => $password,
-            "passwordr" => $password,
-        ]);
-
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => $method,
-            Purchase::PAYMENT_SMS_CODE => $smsCode,
-            Purchase::PAYMENT_PLATFORM_SMS =>
-                $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId(),
-        ]);
+        $purchase = (new Purchase($user))
+            ->setServiceId($serviceModule->service->getId())
+            ->setEmail($email)
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => $type,
+                "auth_data" => $authData,
+                "password" => $password,
+                "passwordr" => $password,
+            ])
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => $method,
+                Purchase::PAYMENT_SMS_CODE => $smsCode,
+                Purchase::PAYMENT_PLATFORM_SMS =>
+                    $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId(),
+            ]);
 
         if ($price) {
             $purchase->setUsingPrice($price);

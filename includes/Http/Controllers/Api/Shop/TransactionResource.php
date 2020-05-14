@@ -3,16 +3,16 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidServiceModuleException;
+use App\Http\Responses\ErrorApiResponse;
 use App\Managers\ServiceModuleManager;
 use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-
-// TODO Write test
 
 class TransactionResource
 {
@@ -22,8 +22,10 @@ class TransactionResource
         PromoCodeService $promoCodeService,
         PurchaseDataService $purchaseDataService,
         ServiceModuleManager $serviceModuleManager,
-        PaymentMethodFactory $paymentMethodFactory
+        PaymentMethodFactory $paymentMethodFactory,
+        TranslationManager $translationManager
     ) {
+        $lang = $translationManager->user();
         $purchase = $purchaseDataService->restorePurchase($transactionId);
 
         if (!$purchase || $purchase->isAttempted()) {
@@ -36,8 +38,12 @@ class TransactionResource
         }
 
         $promoCode = trim($request->query->get("promo_code"));
-        $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
-        if ($promoCodeModel) {
+        if ($promoCode) {
+            $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
+            if (!$promoCodeModel) {
+                return new ErrorApiResponse($lang->t("invalid_promo_code"));
+            }
+
             $purchase->setPromoCode($promoCodeModel);
         }
 

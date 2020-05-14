@@ -59,17 +59,17 @@ class DirectBillingPaymentServiceTest extends TestCase
             "direct_billing_price" => 190,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_DIRECT_BILLING,
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => Purchase::METHOD_DIRECT_BILLING,
+                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId);
 
         // when
         $directBillingPaymentMethod->pay($purchase, $serviceModule);
