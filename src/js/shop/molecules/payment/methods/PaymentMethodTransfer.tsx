@@ -2,14 +2,16 @@ import React, {FunctionComponent} from "react";
 import {__} from "../../../../general/i18n";
 import {Dict} from "../../../types/general";
 import {PaymentMethod} from "../../../types/transaction";
+import {PaymentPrice} from "../../../components/PaymentPrice";
 
 interface Props {
     price: string;
+    oldPrice?: string;
     onPay(method: PaymentMethod, body?: Dict);
 }
 
 export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
-    const {price, onPay} = props;
+    const {price, oldPrice, onPay} = props;
 
     const onPayClick = () => onPay(PaymentMethod.Transfer);
 
@@ -22,10 +24,7 @@ export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
                     </p>
                 </header>
                 <div className="card-content">
-                    <div className="content">
-                        <strong>{__('price')}</strong>:&nbsp;
-                        {price}
-                    </div>
+                    <PaymentPrice price={price} oldPrice={oldPrice} />
                 </div>
                 <footer className="card-footer">
                     <a id="pay_transfer" className="card-footer-item" onClick={onPayClick}>

@@ -96,6 +96,7 @@ return [
         'Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.',
     'register_vert' => 'Z<br />A<br />R<br />E<br />J<br />E<br />S<br />T<br />R<br />U<br />J',
     'regulations' => 'Regulamin',
+    'remove' => 'Usuń',
     'repeat' => 'Powtórz',
     'required_data' => 'Wymagane dane',
     'reset_link_sent' => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>

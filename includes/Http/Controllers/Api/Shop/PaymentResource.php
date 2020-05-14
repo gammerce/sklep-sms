@@ -7,7 +7,7 @@ use App\Http\Responses\ErrorApiResponse;
 use App\Models\Purchase;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
-use App\Repositories\PromoCodeRepository;
+use App\PromoCode\PromoCodeService;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -17,8 +17,8 @@ class PaymentResource
         $transactionId,
         Request $request,
         PaymentService $paymentService,
+        PromoCodeService $promoCodeService,
         PurchaseDataService $purchaseDataService,
-        PromoCodeRepository $promoCodeRepository,
         TranslationManager $translationManager
     ) {
         $lang = $translationManager->user();
@@ -33,7 +33,8 @@ class PaymentResource
         $promoCode = trim($request->request->get("promo_code"));
 
         if (strlen($promoCode)) {
-            $promoCodeModel = $promoCodeRepository->get($promoCode);
+            $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
+
             if (!$promoCodeModel) {
                 return new ErrorApiResponse($lang->t("invalid_promo_code"));
             }

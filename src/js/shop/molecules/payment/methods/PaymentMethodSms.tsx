@@ -3,6 +3,7 @@ import {__} from "../../../../general/i18n";
 import classNames from "classnames";
 import {Dict} from "../../../types/general";
 import {PaymentMethod} from "../../../types/transaction";
+import {PaymentPrice} from "../../../components/PaymentPrice";
 
 interface Props {
     priceGross: string;
@@ -11,37 +12,22 @@ interface Props {
     onPay(method: PaymentMethod, body?: Dict);
 }
 
-interface State {
-    smsCode: string;
-    detailsVisible: boolean;
-}
-
 export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
-    const [data, setData] = useState<State>({
-        smsCode: "",
-        detailsVisible: false,
-    });
     const {priceGross, smsCode, smsNumber, onPay} = props;
+    const [returnCode, setReturnCode] = useState<string>("");
+    const [detailsVisible, setDetailsVisible] = useState<boolean>(false);
 
     const onPayClick = () => {
-        if (data.detailsVisible) {
+        if (detailsVisible) {
             onPay(PaymentMethod.Sms, {
-                sms_code: data.smsCode
+                sms_code: smsCode
             });
         } else {
-            setData(state => ({
-                ...state,
-                detailsVisible: true
-            }));
+            setDetailsVisible(true);
         }
     };
 
-    const updateSmsCode = (e: ChangeEvent<HTMLInputElement>) => {
-        setData(state => ({
-            ...state,
-            smsCode: e.target.value
-        }));
-    }
+    const updateReturnCode = (e: ChangeEvent<HTMLInputElement>) => setReturnCode(e.target.value);
 
     return (
         <div className="payment-type-wrapper">
@@ -53,14 +39,11 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                 </header>
                 <div className="card-content">
                     <div>
-                        <strong>{__('price')}</strong>:&nbsp;
-                        <span className="is-family-monospace">
-                            {priceGross}
-                        </span>
+                        <PaymentPrice price={priceGross} />
                     </div>
 
                     <div className={classNames("sms-details", {
-                        "is-hidden": !data.detailsVisible,
+                        "is-hidden": !detailsVisible,
                     })}>
                         <h1 className="title is-5">{__('sms_send_sms')}</h1>
 
@@ -96,8 +79,8 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                                             id="sms_code"
                                             name="sms_code"
                                             className="input is-small is-family-monospace"
-                                            value={data.smsCode}
-                                            onChange={updateSmsCode}
+                                            value={returnCode}
+                                            onChange={updateReturnCode}
                                             maxLength={16}
                                         />
                                     </div>

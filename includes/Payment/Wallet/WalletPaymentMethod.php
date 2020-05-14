@@ -3,11 +3,14 @@ namespace App\Payment\Wallet;
 
 use App\Models\Purchase;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+
+// TODO Do not allow promo codes in case of charging a wallet
 
 class WalletPaymentMethod implements IPaymentMethod
 {
@@ -20,23 +23,38 @@ class WalletPaymentMethod implements IPaymentMethod
     /** @var WalletPaymentService */
     private $walletPaymentService;
 
+    /** @var PromoCodeService */
+    private $promoCodeService;
+
     public function __construct(
         PriceTextService $priceTextService,
+        PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
         WalletPaymentService $walletPaymentService
     ) {
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
+        $this->promoCodeService = $promoCodeService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
-        );
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $promoCode = $purchase->getPromoCode();
 
-        return compact("price");
+        if ($promoCode) {
+            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
+
+            return [
+                "price" => $this->priceTextService->getPriceText($discountedPrice),
+                "old_price" => $this->priceTextService->getPlainPrice($price),
+            ];
+        }
+
+        return [
+            "price" => $this->priceTextService->getPriceText($price),
+        ];
     }
 
     public function isAvailable(Purchase $purchase)

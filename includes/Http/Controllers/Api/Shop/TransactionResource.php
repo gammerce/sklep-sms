@@ -7,13 +7,19 @@ use App\Managers\ServiceModuleManager;
 use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+// TODO Write test
 
 class TransactionResource
 {
     public function get(
         $transactionId,
+        Request $request,
+        PromoCodeService $promoCodeService,
         PurchaseDataService $purchaseDataService,
         ServiceModuleManager $serviceModuleManager,
         PaymentMethodFactory $paymentMethodFactory
@@ -27,6 +33,12 @@ class TransactionResource
         $serviceModule = $serviceModuleManager->get($purchase->getServiceId());
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
             throw new InvalidServiceModuleException();
+        }
+
+        $promoCode = $request->query->get("promo_code");
+        $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
+        if ($promoCodeModel) {
+            $purchase->setPromoCode($promoCodeModel);
         }
 
         $paymentMethods = collect($paymentMethodFactory->createAll())

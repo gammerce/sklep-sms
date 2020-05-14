@@ -1,7 +1,7 @@
 import { loader } from "../../../general/loader";
-import { showWarnings } from "../../../general/global";
+import { removeFormWarnings, showWarnings } from "../../../general/global";
 import { infobox, sthWentWrong } from "../../../general/infobox";
-import { refreshBlocks } from "../utils";
+import { handleError, refreshBlocks } from "../utils";
 import { api } from "../container";
 import { Dict } from "../../types/general";
 import { PaymentMethod } from "../../types/transaction";
@@ -29,6 +29,8 @@ export const purchaseService = async (
 };
 
 const makePayment = async (transactionId: string, body: Dict): Promise<void> => {
+    removeFormWarnings();
+
     const result = await api.makePayment(transactionId, body);
 
     if (result.return_id === "warnings") {
@@ -37,7 +39,7 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
         // Update content window with purchase details
         api.getPurchase(result.bsid)
             .then(message => $("#page-content").html(message))
-            .catch(console.error);
+            .catch(handleError);
 
         // Refresh wallet
         refreshBlocks("wallet", function() {

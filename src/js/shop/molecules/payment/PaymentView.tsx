@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState} from "react";
+import React, {ChangeEvent, FunctionComponent, useEffect, useState} from "react";
 import {__} from "../../../general/i18n";
 import {PaymentMethod, Transaction} from "../../types/transaction";
 import {api} from "../../utils/container";
@@ -9,30 +9,68 @@ import {PaymentMethodDirectBilling} from "./methods/PaymentMethodDirectBilling";
 import {PaymentMethodWallet} from "./methods/PaymentMethodWallet";
 import {Dict} from "../../types/general";
 import {purchaseService} from "../../utils/payment/paymentUtils";
+import {handleError} from "../../utils/utils";
+import {loader} from "../../../general/loader";
 
-interface State {
-    transaction?: Transaction;
-}
+// TODO Add ability to remove promo code
 
 export const PaymentView: FunctionComponent = () => {
-    const [data, setData] = useState<State>({ transaction: undefined });
+    const [transaction, setTransaction] = useState<Transaction>();
+    const [promoCode, setPromoCode] = useState<string>("");
+    const [appliedPromoCode, setAppliedPromoCode] = useState<string>("");
+
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
+
+    // TODO Handle API errors
 
     useEffect(
         () => {
             api.getTransaction(transactionId)
-                .then(transaction => setData({transaction}))
-                .catch(console.error);
+                .then(setTransaction)
+                .catch(handleError);
         },
         []
     );
 
     const onPay = (method: PaymentMethod, body: Dict): void => {
-        purchaseService(transactionId, method, body).catch(console.error);
+        purchaseService(
+            transactionId,
+            method,
+            {
+                ...body,
+                promo_code: appliedPromoCode,
+            }
+        )
+            .catch(handleError);
     }
 
-    if (!data.transaction) {
+    const updatePromoCode = (e: ChangeEvent<HTMLInputElement>) => setPromoCode(e.target.value);
+
+    const applyPromoCode = async () => {
+        loader.show();
+        try {
+            const result = await api.getTransaction(transactionId, promoCode);
+            setTransaction(result);
+            setAppliedPromoCode(promoCode);
+        } finally {
+            loader.hide();
+        }
+    }
+
+    const removePromoCode = async () => {
+        loader.show();
+        try {
+            const result = await api.getTransaction(transactionId);
+            setTransaction(result);
+            setAppliedPromoCode("");
+            setPromoCode("");
+        } finally {
+            loader.hide();
+        }
+    }
+
+    if (!transaction) {
         return <Loader />;
     }
 
@@ -48,13 +86,34 @@ export const PaymentView: FunctionComponent = () => {
                                     id="promo_code"
                                     className="input"
                                     placeholder={__("type_code")}
+                                    value={promoCode}
+                                    onChange={updatePromoCode}
+                                    disabled={!!appliedPromoCode}
                                 />
                             </div>
-                            <div className="control">
-                                <button className="button is-primary">
-                                    {__("use_code")}
-                                </button>
-                            </div>
+                            {
+                                !appliedPromoCode &&
+                                <div className="control">
+                                    <button className="button is-primary" onClick={applyPromoCode}>
+                                        <span className="icon">
+                                            <i className="fas fa-tag" />
+                                        </span>
+                                        <span>{__("use_code")}</span>
+                                    </button>
+                                </div>
+                            }
+                            {
+                                appliedPromoCode &&
+                                <div className="control">
+                                    <button className="button is-primary" onClick={removePromoCode}>
+                                        <span className="icon">
+                                            <i className="fas fa-trash" />
+                                        </span>
+                                        <span>{__("remove")}</span>
+                                    </button>
+                                </div>
+                            }
+
                         </div>
                     </div>
                 </div>
@@ -62,32 +121,35 @@ export const PaymentView: FunctionComponent = () => {
             <div className="column is-two-thirds">
                 <div className="payment-methods-box">
                     {
-                        data.transaction.sms &&
+                        transaction.sms &&
                         <PaymentMethodSms
-                            priceGross={data.transaction.sms.price_gross}
-                            smsCode={data.transaction.sms.sms_code}
-                            smsNumber={data.transaction.sms.sms_number}
+                            priceGross={transaction.sms.price_gross}
+                            smsCode={transaction.sms.sms_code}
+                            smsNumber={transaction.sms.sms_number}
                             onPay={onPay}
                         />
                     }
                     {
-                        data.transaction.transfer &&
+                        transaction.transfer &&
                         <PaymentMethodTransfer
-                            price={data.transaction.transfer.price}
+                            price={transaction.transfer.price}
+                            oldPrice={transaction.transfer.old_price}
                             onPay={onPay}
                         />
                     }
                     {
-                        data.transaction.wallet &&
+                        transaction.wallet &&
                         <PaymentMethodWallet
-                            price={data.transaction.wallet.price}
+                            price={transaction.wallet.price}
+                            oldPrice={transaction.wallet.old_price}
                             onPay={onPay}
                         />
                     }
                     {
-                        data.transaction.direct_billing &&
+                        transaction.direct_billing &&
                         <PaymentMethodDirectBilling
-                            price={data.transaction.direct_billing.price}
+                            price={transaction.direct_billing.price}
+                            oldPrice={transaction.direct_billing.old_price}
                             onPay={onPay}
                         />
                     }

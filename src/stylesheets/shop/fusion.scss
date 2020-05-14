@@ -287,6 +287,15 @@ body {
             background-color: $scheme-main;
             font-weight: bold;
         }
+
+        .old-price {
+            color: darken($scheme-invert-ter, 20%);
+            font-family: $family-monospace;
+        }
+
+        .price-value {
+            font-family: $family-monospace;
+        }
     }
 
     .order-details {
@@ -313,7 +322,7 @@ body {
 
         .field-label {
             white-space: nowrap;
-            flex-grow: 4;
+            flex-basis: 90px;
         }
     }
 }

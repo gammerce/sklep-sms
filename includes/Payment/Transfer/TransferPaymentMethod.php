@@ -6,6 +6,7 @@ use App\Managers\ServiceManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
@@ -34,10 +35,14 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
+    /** @var PromoCodeService */
+    private $promoCodeService;
+
     public function __construct(
         ServiceManager $serviceManager,
         PriceTextService $priceTextService,
         PurchaseDataService $purchaseDataService,
+        PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
         PaymentModuleManager $paymentModuleManager,
         Settings $settings
@@ -48,14 +53,26 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->settings = $settings;
         $this->purchaseDataService = $purchaseDataService;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->promoCodeService = $promoCodeService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
-        );
-        return compact("price");
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+        $promoCode = $purchase->getPromoCode();
+
+        if ($promoCode) {
+            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
+
+            return [
+                "price" => $this->priceTextService->getPriceText($discountedPrice),
+                "old_price" => $this->priceTextService->getPlainPrice($price),
+            ];
+        }
+
+        return [
+            "price" => $this->priceTextService->getPriceText($price),
+        ];
     }
 
     public function isAvailable(Purchase $purchase)

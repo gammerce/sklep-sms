@@ -5,6 +5,7 @@ use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Support\Result;
@@ -26,9 +27,13 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
+    /** @var PromoCodeService */
+    private $promoCodeService;
+
     public function __construct(
         PriceTextService $priceTextService,
         PaymentModuleManager $paymentModuleManager,
+        PromoCodeService $promoCodeService,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager
     ) {
@@ -36,14 +41,26 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $this->lang = $translationManager->user();
         $this->purchaseDataService = $purchaseDataService;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->promoCodeService = $promoCodeService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
-        );
-        return compact("price");
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $promoCode = $purchase->getPromoCode();
+
+        if ($promoCode) {
+            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
+
+            return [
+                "price" => $this->priceTextService->getPriceText($discountedPrice),
+                "old_price" => $this->priceTextService->getPlainPrice($price),
+            ];
+        }
+
+        return [
+            "price" => $this->priceTextService->getPriceText($price),
+        ];
     }
 
     /**

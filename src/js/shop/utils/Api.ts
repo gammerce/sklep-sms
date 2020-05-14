@@ -7,8 +7,9 @@ export class Api {
         //
     }
 
-    public async getTransaction(id: string): Promise<Transaction> {
-        const reponse = await this.axios.get(buildUrl(`/api/transactions/${id}`));
+    public async getTransaction(id: string, promoCode?: string): Promise<Transaction> {
+        const params = { promo_code: promoCode };
+        const reponse = await this.axios.get(buildUrl(`/api/transactions/${id}`), { params });
         return reponse.data;
     }
 

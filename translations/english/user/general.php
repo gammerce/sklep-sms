@@ -95,6 +95,7 @@ return [
         'Account registered successfully. In a moment you will be automatically logged in.',
     'register_vert' => 'R<br />E<br />G<br />I<br />S<br />T<br />E<br />R',
     'regulations' => 'Regulations',
+    'remove' => 'Remove',
     'repeat' => 'Repeat',
     'required_data' => 'Required data',
     'reset_link_sent' => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail.<br/>

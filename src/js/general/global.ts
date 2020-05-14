@@ -93,8 +93,8 @@ export const isShown = function(node: JQuery): boolean {
 };
 
 export const showWarnings = function(form: JQuery, warnings: Dict) {
-    $.each(warnings, function(name, element) {
-        const inputElement = form.find('[name="' + name + '"]');
+    for (const [name, element] of warnings.entries()) {
+        const inputElement = form.find(`[name="${name}"]`);
         const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
         const field = inputElement.closest(".field");
 
@@ -104,12 +104,10 @@ export const showWarnings = function(form: JQuery, warnings: Dict) {
         if ((inputElement as any).effect) {
             (inputElement as any).effect("highlight", 1000);
         }
-    });
+    }
 };
 
-export const removeFormWarnings = function() {
-    $(".form_warning").remove();
-};
+export const removeFormWarnings = () => $(".form_warning").remove();
 
 export const element_with_data_module = function(a: JQuery): JQuery | null {
     if (typeof a.attr("data-module") !== "undefined") {

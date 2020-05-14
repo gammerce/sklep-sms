@@ -2,6 +2,8 @@ import { loader } from "../../general/loader";
 import { handleErrorResponse } from "../../general/infobox";
 import { buildUrl } from "../../general/global";
 
+export const handleError = (e: Error) => console.error(e);
+
 export const getAndSetTemplate = function(
     element: JQuery,
     template: string,
