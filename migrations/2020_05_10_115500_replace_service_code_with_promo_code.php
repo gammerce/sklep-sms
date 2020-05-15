@@ -23,10 +23,10 @@ class ReplaceServiceCodeWithPromoCode extends Migration
             "ALTER TABLE `ss_groups` CHANGE COLUMN `manage_service_codes` `manage_promo_codes` TINYINT(1) NOT NULL DEFAULT '0'",
         ]);
 
-        foreach ($this->db->query("SELECT * FROM `ss_service_codes`") as $serviceCode) {
+        foreach ($this->db->query("SELECT * FROM `ss_promo_codes`") as $serviceCode) {
             $this->db
                 ->statement(
-                    "UPDATE `ss_service_codes` SET `quantity_type` = 'percentage', `server_id` = ?, `user_id` = ? WHERE `id` = ?"
+                    "UPDATE `ss_promo_codes` SET `quantity_type` = 'percentage', `server_id` = ?, `user_id` = ? WHERE `id` = ?"
                 )
                 ->execute([
                     $serviceCode["server"] ?: null,
