@@ -2,7 +2,6 @@
 namespace App\Payment\Sms;
 
 use App\Loggers\DatabaseLogger;
-use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
 use App\Support\Database;
@@ -39,16 +38,37 @@ class SmsPaymentService
 
     /**
      * @param SupportSms $paymentModule
-     * @param string     $code
-     * @param SmsNumber  $smsNumber
-     * @param User       $user
+     * @param string|null $code
+     * @param int $price
+     * @param User $user
      * @return int
      */
-    public function payWithSms(SupportSms $paymentModule, $code, SmsNumber $smsNumber, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user)
     {
+        // TODO IMPORTANT Test it
+        if ($price === 0) {
+            return $this->storePaymentSms(
+                $paymentModule,
+                new SmsSuccessResult(false, 0),
+                $code,
+                $price,
+                "",
+                $user
+            );
+        }
+
+        $smsNumber = $this->smsPriceService->getNumber($price, $paymentModule);
+
         $result = $this->tryToUseSmsCode($code, $smsNumber->getPrice());
         if ($result) {
-            return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+            return $this->storePaymentSms(
+                $paymentModule,
+                $result,
+                $code,
+                $smsNumber->getPrice(),
+                $smsNumber->getNumber(),
+                $user
+            );
         }
 
         try {
@@ -71,7 +91,14 @@ class SmsPaymentService
             throw $e;
         }
 
-        $smsPaymentId = $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+        $smsPaymentId = $this->storePaymentSms(
+            $paymentModule,
+            $result,
+            $code,
+            $smsNumber->getPrice(),
+            $smsNumber->getNumber(),
+            $user
+        );
         $this->logger->logWithUser(
             $user,
             "log_accepted_sms_code",
@@ -83,11 +110,21 @@ class SmsPaymentService
         return $smsPaymentId;
     }
 
+    /**
+     * @param SupportSms $smsPaymentModule
+     * @param SmsSuccessResult $result
+     * @param string|null $code
+     * @param number|null $price
+     * @param string|null $number
+     * @param User $user
+     * @return string
+     */
     private function storePaymentSms(
         SupportSms $smsPaymentModule,
         SmsSuccessResult $result,
         $code,
-        SmsNumber $smsNumber,
+        $price,
+        $number,
         User $user
     ) {
         $this->db
@@ -97,10 +134,10 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($smsNumber->getPrice(), $smsPaymentModule),
-                $this->smsPriceService->getGross($smsNumber->getPrice()),
+                $this->smsPriceService->getProvision($price, $smsPaymentModule),
+                $this->smsPriceService->getGross($price),
                 $smsPaymentModule->getSmsCode(),
-                $smsNumber->getNumber(),
+                $number,
                 $user->getLastIp(),
                 $user->getPlatform(),
                 $result->isFree() ? 1 : 0,

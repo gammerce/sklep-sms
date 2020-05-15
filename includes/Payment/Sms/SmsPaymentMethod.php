@@ -1,10 +1,6 @@
 <?php
 namespace App\Payment\Sms;
 
-use App\Exceptions\ValidationException;
-use App\Http\Validation\Rules\MaxLengthRule;
-use App\Http\Validation\Rules\RequiredRule;
-use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
@@ -90,7 +86,6 @@ class SmsPaymentMethod implements IPaymentMethod
      * @param IServicePurchase $serviceModule
      * @return PaymentResult
      * @throws PaymentProcessingException
-     * @throws ValidationException
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
@@ -114,27 +109,12 @@ class SmsPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($price === 0) {
-            // TODO IMPORTANT Omit sms code verification
-            dd("Not implemented");
-        }
-
-        $validator = new Validator(
-            [
-                "sms_code" => $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
-            ],
-            [
-                "sms_code" => [new RequiredRule(), new MaxLengthRule(16)],
-            ]
-        );
-        $validator->validateOrFail();
-
         try {
             // Let's check sms code
             $paymentId = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
-                $this->smsPriceService->getNumber($price, $paymentModule),
+                $price,
                 $purchase->user
             );
         } catch (SmsPaymentException $e) {
