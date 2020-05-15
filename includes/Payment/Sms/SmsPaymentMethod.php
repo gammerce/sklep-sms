@@ -105,11 +105,18 @@ class SmsPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($this->smsPriceService->getPrice($purchase) === null) {
+        $price = $this->smsPriceService->getPrice($purchase);
+
+        if ($price === null) {
             throw new PaymentProcessingException(
                 "no_sms_price",
                 $this->lang->t("payment_method_unavailable")
             );
+        }
+
+        if ($price === 0) {
+            // TODO Omit sms code verification
+            dd("Not implemented");
         }
 
         $validator = new Validator(
@@ -123,14 +130,11 @@ class SmsPaymentMethod implements IPaymentMethod
         $validator->validateOrFail();
 
         try {
-            // Let"s check sms code
+            // Let's check sms code
             $paymentId = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
-                $this->smsPriceService->getNumber(
-                    $this->smsPriceService->getPrice($purchase),
-                    $paymentModule
-                ),
+                $this->smsPriceService->getNumber($price, $paymentModule),
                 $purchase->user
             );
         } catch (SmsPaymentException $e) {

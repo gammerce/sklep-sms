@@ -5,7 +5,6 @@ use App\Loggers\DatabaseLogger;
 use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
-use App\Payment\Sms\SmsPriceService;
 use App\Support\Database;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;
@@ -62,7 +61,7 @@ class SmsPaymentService
             throw $e;
         } catch (SmsPaymentException $e) {
             $this->logger->log(
-                'log_bad_sms_code_used',
+                "log_bad_sms_code_used",
                 $code,
                 $paymentModule->getSmsCode(),
                 $smsNumber->getNumber(),
@@ -75,7 +74,7 @@ class SmsPaymentService
         $smsPaymentId = $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
         $this->logger->logWithUser(
             $user,
-            'log_accepted_sms_code',
+            "log_accepted_sms_code",
             $code,
             $paymentModule->getSmsCode(),
             $smsNumber->getNumber()
@@ -124,7 +123,7 @@ class SmsPaymentService
         }
 
         $this->smsCodeRepository->delete($smsCode->getId());
-        $this->logger->log('log_payment_remove_code_from_db', $code, $smsPrice);
+        $this->logger->log("log_payment_remove_code_from_db", $code, $smsPrice);
 
         return new SmsSuccessResult($smsCode->isFree());
     }
@@ -141,7 +140,7 @@ class SmsPaymentService
 
         $this->logger->logWithUser(
             $user,
-            'log_add_code_to_reuse',
+            "log_add_code_to_reuse",
             $code,
             $smsPrice,
             $expectedSmsPrice

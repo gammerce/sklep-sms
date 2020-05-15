@@ -47,7 +47,6 @@ export const action_box = {
             action_box.box.fadeIn();
         }
 
-        console.log("event added");
         document.addEventListener("keydown", this._onKeyDown);
     },
 

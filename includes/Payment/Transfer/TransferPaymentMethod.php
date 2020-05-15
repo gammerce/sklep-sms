@@ -100,7 +100,7 @@ class TransferPaymentMethod implements IPaymentMethod
         // TODO Test it
         $finalizedPayment = (new FinalizedPayment())
             ->setStatus(true)
-            ->setOrderId(generate_id(16))
+            ->setOrderId(generate_id(8))
             ->setCost(0)
             ->setIncome(0)
             ->setTransactionId($purchase->getId())

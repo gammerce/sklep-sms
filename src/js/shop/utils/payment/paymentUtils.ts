@@ -87,7 +87,6 @@ const redirectToExternalWithPost = (response: any) => {
     // It doesn't work with firefox without it
     $("body").append(form);
 
-    console.log(form);
     form.submit();
 };
 

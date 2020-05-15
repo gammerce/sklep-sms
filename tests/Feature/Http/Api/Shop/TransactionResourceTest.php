@@ -63,7 +63,7 @@ class TransactionResourceTest extends HttpTestCase
             [
                 "payment_methods" => [
                     "sms" => [
-                        "price_gross" => "30.75 PLN",
+                        "price" => "30.75 PLN",
                         "sms_code" => "abc123",
                         "sms_number" => "92521",
                     ],
@@ -125,11 +125,6 @@ class TransactionResourceTest extends HttpTestCase
         $this->assertSame(
             [
                 "payment_methods" => [
-                    "sms" => [
-                        "price_gross" => "30.75 PLN",
-                        "sms_code" => "abc123",
-                        "sms_number" => "92521",
-                    ],
                     "direct_billing" => [
                         "price" => "8.40 PLN",
                         "old_price" => "12.00",
@@ -186,7 +181,7 @@ class TransactionResourceTest extends HttpTestCase
             [
                 "payment_methods" => [
                     "sms" => [
-                        "price_gross" => "30.75 PLN",
+                        "price" => "30.75 PLN",
                         "sms_code" => "abc123",
                         "sms_number" => "92521",
                     ],

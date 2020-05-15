@@ -776,7 +776,7 @@ function generate_uuid4()
  * @param int $length
  * @return string
  */
-function generate_id($length = 16)
+function generate_id($length)
 {
     return substr(hash("sha256", generate_uuid4()), 0, $length);
 }

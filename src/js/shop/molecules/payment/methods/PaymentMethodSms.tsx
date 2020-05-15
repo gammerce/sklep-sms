@@ -10,6 +10,7 @@ interface Props {
     oldPrice?: string;
     smsCode: string;
     smsNumber: string;
+
     onPay(method: PaymentMethod, body?: Dict);
 }
 
@@ -23,6 +24,8 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
             onPay(PaymentMethod.Sms, {
                 sms_code: returnCode,
             });
+        } else if (smsNumber === null) {
+            onPay(PaymentMethod.Sms);
         } else {
             setDetailsVisible(true);
         }
@@ -40,7 +43,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                 </header>
                 <div className="card-content">
                     <div>
-                        <PaymentPrice price={price} oldPrice={oldPrice} />
+                        <PaymentPrice price={price} oldPrice={oldPrice}/>
                     </div>
 
                     <div className={classNames("sms-details", {

@@ -54,7 +54,7 @@ class PromoCodeCollection
         $expiresAt = as_datetime($validated["expires_at"]);
         $userId = as_int($validated["user_id"]);
         $serverId = as_int($validated["server_id"]);
-        $serviceId = as_string($validated["service_id"]);
+        $serviceId = as_string($validated["service_id"]) ?: null;
 
         if ($expiresAt) {
             $expiresAt->setTime(23, 59, 59);

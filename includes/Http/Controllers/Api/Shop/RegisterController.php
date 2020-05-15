@@ -46,7 +46,7 @@ class RegisterController
             return new ApiResponse("wrong_sign", $lang->t("wrong_sign"), 0, $data);
         }
 
-        // Let"s store antispam question id in session
+        // Let's store antispam question id in session
         $session->set("asid", $antispamQuestion->getId());
 
         $validator = new Validator(
