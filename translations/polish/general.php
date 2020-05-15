@@ -79,6 +79,7 @@ return [
     'october' => 'Październik',
     'old_password' => 'Stare Hasło',
     'only_yes_no' => 'Pole może przyjąć tylko wartości: \'TAK\' i \'NIE\'',
+    'other' => 'Inne',
     'password' => 'Hasło',
     'payment_bad_type' => 'Błąd w konstruktorze klasy Payment. Niedozwolony typ płatności.',
     'payment_id' => 'ID płatności',

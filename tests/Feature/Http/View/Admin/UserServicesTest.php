@@ -27,7 +27,7 @@ class UserServicesTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains(
-            "<div class=\"title is-4\">Czasowe usługi użytkowników: Dodatkowe flagi",
+            "<div class=\"title is-4\">Czasowe usługi użytkowników: Flagi Gracza",
             $response->getContent()
         );
     }

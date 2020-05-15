@@ -12,7 +12,7 @@ return [
 Enter user control panel <i>(on the board)</i> -> Click <b>User groups</b> -> <b>Set it as default</b>',
     'mybb_db_data' => 'MyBB database data',
     'mybb_group_bought' => 'Purchase of a service {1} for user: {2}.',
-    'mybb_groups' => 'MyBB groups',
+    'mybb_groups' => 'MyBB Groups',
     'mybb_user' => 'MyBB user',
     'no_user' => 'There is no user with such username.',
 ];

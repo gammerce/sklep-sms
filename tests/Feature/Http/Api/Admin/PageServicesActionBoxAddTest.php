@@ -12,13 +12,13 @@ class PageServicesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj usługę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Dodaj usługę", $json["template"]);
     }
 
     /** @test */
@@ -28,11 +28,11 @@ class PageServicesActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/services/action_boxes/service_add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

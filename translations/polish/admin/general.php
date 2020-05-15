@@ -173,7 +173,6 @@ return [
         'W sumie klienci sklepu wykonali <strong>{1}</strong> płatności internetowych.',
     'number_of_users' => 'Dotychczas zarejestrowało się <strong>{1}</strong> użytkowników.',
     'order' => 'Kolejność',
-    'other' => 'Inne',
     'payment_module' => 'Moduł płatności',
     'payment_platform_added' => "Platforma płatności została prawidłowo dodana.",
     'payment_platform_deleted' => "Platforma płatności została usunięta.",

@@ -170,7 +170,6 @@ return [
     'number_of_transfers' => 'In total, users have made <strong>{1}</strong> transfers.',
     'number_of_users' => 'So far we have <strong>{1}</strong> registered users.',
     'order' => 'Order',
-    'other' => 'Other',
     'payment_module' => 'Payment module',
     'payment_platform_added' => "Payment platform has been added successfully.",
     'payment_platform_deleted' => "Payment platform has been deleted.",

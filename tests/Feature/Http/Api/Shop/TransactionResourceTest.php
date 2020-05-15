@@ -61,19 +61,22 @@ class TransactionResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "sms" => [
-                    "price_gross" => "30.75 PLN",
-                    "sms_code" => "abc123",
-                    "sms_number" => "92521",
-                ],
-                "direct_billing" => [
-                    "price" => "12.00 PLN",
-                ],
-                "transfer" => [
-                    "price" => "10.00 PLN",
-                ],
-                "wallet" => [
-                    "price" => "10.00 PLN",
+                "promo_code" => true,
+                "payment_methods" => [
+                    "sms" => [
+                        "price_gross" => "30.75 PLN",
+                        "sms_code" => "abc123",
+                        "sms_number" => "92521",
+                    ],
+                    "direct_billing" => [
+                        "price" => "12.00 PLN",
+                    ],
+                    "transfer" => [
+                        "price" => "10.00 PLN",
+                    ],
+                    "wallet" => [
+                        "price" => "10.00 PLN",
+                    ],
                 ],
             ],
             $json
@@ -123,22 +126,25 @@ class TransactionResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "sms" => [
-                    "price_gross" => "30.75 PLN",
-                    "sms_code" => "abc123",
-                    "sms_number" => "92521",
-                ],
-                "direct_billing" => [
-                    "price" => "8.40 PLN",
-                    "old_price" => "12.00",
-                ],
-                "transfer" => [
-                    "price" => "7.00 PLN",
-                    "old_price" => "10.00",
-                ],
-                "wallet" => [
-                    "price" => "7.00 PLN",
-                    "old_price" => "10.00",
+                "promo_code" => true,
+                "payment_methods" => [
+                    "sms" => [
+                        "price_gross" => "30.75 PLN",
+                        "sms_code" => "abc123",
+                        "sms_number" => "92521",
+                    ],
+                    "direct_billing" => [
+                        "price" => "8.40 PLN",
+                        "old_price" => "12.00",
+                    ],
+                    "transfer" => [
+                        "price" => "7.00 PLN",
+                        "old_price" => "10.00",
+                    ],
+                    "wallet" => [
+                        "price" => "7.00 PLN",
+                        "old_price" => "10.00",
+                    ],
                 ],
             ],
             $json
@@ -180,16 +186,19 @@ class TransactionResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "sms" => [
-                    "price_gross" => "30.75 PLN",
-                    "sms_code" => "abc123",
-                    "sms_number" => "92521",
-                ],
-                "direct_billing" => [
-                    "price" => "12.00 PLN",
-                ],
-                "transfer" => [
-                    "price" => "10.00 PLN",
+                "promo_code" => true,
+                "payment_methods" => [
+                    "sms" => [
+                        "price_gross" => "30.75 PLN",
+                        "sms_code" => "abc123",
+                        "sms_number" => "92521",
+                    ],
+                    "direct_billing" => [
+                        "price" => "12.00 PLN",
+                    ],
+                    "transfer" => [
+                        "price" => "10.00 PLN",
+                    ],
                 ],
             ],
             $json

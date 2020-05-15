@@ -79,6 +79,7 @@ return [
     'october' => 'October',
     'old_password' => 'Old Password',
     'only_yes_no' => 'Field can only accept values: \'YES\' and \'NO\'',
+    'other' => 'Other',
     'password' => 'Password',
     'payment_bad_type' => 'Error in Payment class constructor. Payment type not allowed.',
     'payment_id' => 'Payment ID',

@@ -8,4 +8,5 @@ return [
     'choose_sms_value' => 'Choose SMS value',
     'type_amount' => 'Enter amount',
     'type_charge_price' => 'Enter charge price',
+    'wallet_top_up' => 'Wallet Top Up',
 ];

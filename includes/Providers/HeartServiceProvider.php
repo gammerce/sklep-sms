@@ -177,19 +177,9 @@ class HeartServiceProvider
 
     private function registerServices(ServiceModuleManager $serviceModuleManager)
     {
-        // TODO Translate it
-        $serviceModuleManager->register(ChargeWalletServiceModule::class, "Doładowanie Portfela");
-
-        $serviceModuleManager->register(
-            ExtraFlagsServiceModule::class,
-            "Dodatkowe Uprawnienia / Flagi"
-        );
-
-        $serviceModuleManager->register(
-            MybbExtraGroupsServiceModule::class,
-            "Dodatkowe Grupy (MyBB)"
-        );
-
-        $serviceModuleManager->register(OtherServiceModule::class, "Inne");
+        $serviceModuleManager->register(ChargeWalletServiceModule::class, "wallet_top_up");
+        $serviceModuleManager->register(ExtraFlagsServiceModule::class, "extra_flags");
+        $serviceModuleManager->register(MybbExtraGroupsServiceModule::class, "mybb_groups");
+        $serviceModuleManager->register(OtherServiceModule::class, "other");
     }
 }

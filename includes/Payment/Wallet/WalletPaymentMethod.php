@@ -11,8 +11,6 @@ use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-// TODO Do not allow promo codes in case of charging a wallet
-
 class WalletPaymentMethod implements IPaymentMethod
 {
     /** @var PriceTextService */
