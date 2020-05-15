@@ -10,7 +10,7 @@ use App\Models\SmsNumber;
 use App\Models\Transaction;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
-use App\Services\SmsPriceService;
+use App\Payment\Sms\SmsPriceService;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -147,7 +147,7 @@ class SmsChargeWallet implements IChargeWallet
     public function getPrice(Purchase $purchase)
     {
         return $this->priceTextService->getPriceGrossText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
+            $this->smsPriceService->getPrice($purchase)
         );
     }
 

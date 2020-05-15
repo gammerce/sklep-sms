@@ -5,6 +5,9 @@ use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
 use App\Services\PriceTextService;
 
+// TODO Handle sync direct billing payment
+// TODO Show sms payment when cost === 0
+
 class DirectBillingPriceService
 {
     /** @var PromoCodeService */

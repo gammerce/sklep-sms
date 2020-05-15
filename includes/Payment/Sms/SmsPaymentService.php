@@ -5,7 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
-use App\Services\SmsPriceService;
+use App\Payment\Sms\SmsPriceService;
 use App\Support\Database;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;

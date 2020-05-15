@@ -13,7 +13,6 @@ use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
-use App\Services\SmsPriceService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
@@ -63,13 +62,13 @@ class SmsPaymentMethod implements IPaymentMethod
         }
 
         $smsNumber = $this->smsPriceService->getNumber(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
+            $this->smsPriceService->getPrice($purchase),
             $smsPaymentModule
         );
 
         return [
             "price_gross" => $this->priceTextService->getPriceGrossText(
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS)
+                $this->smsPriceService->getPrice($purchase)
             ),
             "sms_code" => $smsPaymentModule->getSmsCode(),
             "sms_number" => $smsNumber ? $smsNumber->getNumber() : null,
@@ -80,7 +79,7 @@ class SmsPaymentMethod implements IPaymentMethod
     {
         if (
             !$purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS) ||
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) === null ||
+            $this->smsPriceService->getPrice($purchase) === null ||
             $purchase->getPayment(Purchase::PAYMENT_DISABLED_SMS)
         ) {
             return false;
@@ -92,7 +91,7 @@ class SmsPaymentMethod implements IPaymentMethod
 
         return $smsPaymentModule instanceof SupportSms &&
             $this->smsPriceService->isPriceAvailable(
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
+                $this->smsPriceService->getPrice($purchase),
                 $smsPaymentModule
             );
     }
@@ -117,7 +116,7 @@ class SmsPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS) === null) {
+        if ($this->smsPriceService->getPrice($purchase) === null) {
             throw new PaymentProcessingException(
                 "no_sms_price",
                 $this->lang->t("payment_method_unavailable")
@@ -140,7 +139,7 @@ class SmsPaymentMethod implements IPaymentMethod
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $this->smsPriceService->getNumber(
-                    $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS),
+                    $this->smsPriceService->getPrice($purchase),
                     $paymentModule
                 ),
                 $purchase->user
