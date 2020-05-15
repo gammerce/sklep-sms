@@ -28,9 +28,13 @@ class TransferChargeWallet implements IChargeWallet
     /** @var Translator */
     private $lang;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
+        TransferPriceService $transferPriceService,
         Settings $settings,
         TranslationManager $translationManager
     ) {
@@ -38,6 +42,7 @@ class TransferChargeWallet implements IChargeWallet
         $this->priceTextService = $priceTextService;
         $this->settings = $settings;
         $this->lang = $translationManager->user();
+        $this->transferPriceService = $transferPriceService;
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -93,7 +98,7 @@ class TransferChargeWallet implements IChargeWallet
     public function getPrice(Purchase $purchase)
     {
         return $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            $this->transferPriceService->getPrice($purchase)
         );
     }
 

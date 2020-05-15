@@ -5,63 +5,36 @@ use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
-use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Services\PriceTextService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
 
 class DirectBillingPaymentMethod implements IPaymentMethod
 {
-    /** @var PriceTextService */
-    private $priceTextService;
-
     /** @var Translator */
     private $lang;
-
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
 
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
-    /** @var PromoCodeService */
-    private $promoCodeService;
+    /** @var DirectBillingPriceService */
+    private $directBillingPriceService;
 
     public function __construct(
-        PriceTextService $priceTextService,
         PaymentModuleManager $paymentModuleManager,
-        PromoCodeService $promoCodeService,
-        PurchaseDataService $purchaseDataService,
+        DirectBillingPriceService $directBillingPriceService,
         TranslationManager $translationManager
     ) {
-        $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
-        $this->purchaseDataService = $purchaseDataService;
         $this->paymentModuleManager = $paymentModuleManager;
-        $this->promoCodeService = $promoCodeService;
+        $this->directBillingPriceService = $directBillingPriceService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
-        $promoCode = $purchase->getPromoCode();
-
-        if ($promoCode) {
-            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
-
-            return [
-                "price" => $this->priceTextService->getPriceText($discountedPrice),
-                "old_price" => $this->priceTextService->getPlainPrice($price),
-            ];
-        }
-
-        return [
-            "price" => $this->priceTextService->getPriceText($price),
-        ];
+        return $this->directBillingPriceService->getOldAndNewPrice($purchase);
     }
 
     /**
@@ -71,7 +44,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     public function isAvailable(Purchase $purchase)
     {
         return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING) &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) !== null &&
+            $this->directBillingPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
     }
 
@@ -86,8 +59,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
         );
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
-        $promoCode = $purchase->getPromoCode();
+        $price = $this->directBillingPriceService->getPrice($purchase);
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
             throw new PaymentProcessingException(
@@ -101,10 +73,6 @@ class DirectBillingPaymentMethod implements IPaymentMethod
                 "no_transfer_price",
                 $this->lang->t("payment_method_unavailable")
             );
-        }
-
-        if ($promoCode) {
-            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
         }
 
         return $paymentModule->prepareDirectBilling($price, $purchase);

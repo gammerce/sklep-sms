@@ -28,16 +28,21 @@ class DirectBillingChargeWallet implements IChargeWallet
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
+    /** @var DirectBillingPriceService */
+    private $directBillingPriceService;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
         Settings $settings,
-        PaymentModuleManager $paymentModuleManager
+        PaymentModuleManager $paymentModuleManager,
+        DirectBillingPriceService $directBillingPriceService
     ) {
         $this->template = $template;
         $this->priceTextService = $priceTextService;
         $this->settings = $settings;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->directBillingPriceService = $directBillingPriceService;
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -98,15 +103,13 @@ class DirectBillingChargeWallet implements IChargeWallet
     public function getPrice(Purchase $purchase)
     {
         return $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
+            $this->directBillingPriceService->getPrice($purchase)
         );
     }
 
     public function getQuantity(Purchase $purchase)
     {
-        $price =
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) /
-            $this->settings->getVat();
+        $price = $this->directBillingPriceService->getPrice($purchase) / $this->settings->getVat();
         $minQuantity = $this->priceTextService->getPriceText($price * 0.5);
         $maxQuantity = $this->priceTextService->getPriceText($price * 0.7);
         return "W zależności od operatora i ceny, od $minQuantity do $maxQuantity";

@@ -11,6 +11,7 @@ use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
+use App\Payment\Transfer\TransferPriceService;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -22,6 +23,7 @@ class TransferController
         PaymentModuleManager $paymentModuleManager,
         ExternalPaymentService $externalPaymentService,
         TransferPaymentService $transferPaymentService,
+        TransferPriceService $transferPriceService,
         DatabaseLogger $logger
     ) {
         $paymentModule = $paymentModuleManager->getByPlatformId($paymentPlatform);
@@ -55,7 +57,7 @@ class TransferController
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+                $transferPriceService->getPrice($purchase)
             );
         } catch (PaymentRejectedException $e) {
             $logger->log(

@@ -9,79 +9,51 @@ use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Services\PriceTextService;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
-    /** @var PriceTextService */
-    private $priceTextService;
-
     /** @var ServiceManager */
     private $serviceManager;
 
     /** @var Translator */
     private $lang;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
-
-    /** @var PromoCodeService */
-    private $promoCodeService;
 
     /** @var TransferPaymentService */
     private $transferPaymentService;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
         ServiceManager $serviceManager,
-        PriceTextService $priceTextService,
-        PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
         TransferPaymentService $transferPaymentService,
-        PaymentModuleManager $paymentModuleManager,
-        Settings $settings
+        TransferPriceService $transferPriceService,
+        PaymentModuleManager $paymentModuleManager
     ) {
-        $this->priceTextService = $priceTextService;
         $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
-        $this->settings = $settings;
         $this->paymentModuleManager = $paymentModuleManager;
-        $this->promoCodeService = $promoCodeService;
         $this->transferPaymentService = $transferPaymentService;
+        $this->transferPriceService = $transferPriceService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
-        $promoCode = $purchase->getPromoCode();
-
-        if ($promoCode) {
-            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
-
-            return [
-                "price" => $this->priceTextService->getPriceText($discountedPrice),
-                "old_price" => $this->priceTextService->getPlainPrice($price),
-            ];
-        }
-
-        return [
-            "price" => $this->priceTextService->getPriceText($price),
-        ];
+        return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
     public function isAvailable(Purchase $purchase)
     {
         return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER) &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) > 1 &&
+            $this->transferPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
     }
 
@@ -97,8 +69,7 @@ class TransferPaymentMethod implements IPaymentMethod
             $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
         );
 
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
-        $promoCode = $purchase->getPromoCode();
+        $price = $this->transferPriceService->getPrice($purchase);
 
         if (!($paymentModule instanceof SupportTransfer)) {
             throw new PaymentProcessingException(
@@ -112,10 +83,6 @@ class TransferPaymentMethod implements IPaymentMethod
                 "no_transfer_price",
                 $this->lang->t("payment_method_unavailable")
             );
-        }
-
-        if ($promoCode) {
-            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
         }
 
         $service = $this->serviceManager->getService($purchase->getServiceId());

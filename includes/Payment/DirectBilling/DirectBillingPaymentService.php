@@ -8,7 +8,6 @@ use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
-use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -21,27 +20,27 @@ class DirectBillingPaymentService
     /** @var PaymentDirectBillingRepository */
     private $paymentDirectBillingRepository;
 
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
-
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
+    /** @var DirectBillingPriceService */
+    private $directBillingPriceService;
+
     public function __construct(
         DatabaseLogger $logger,
         ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
         PaymentDirectBillingRepository $paymentDirectBillingRepository,
-        ExternalPaymentService $externalPaymentService
+        DirectBillingPriceService $directBillingPriceService
     ) {
         $this->logger = $logger;
         $this->paymentDirectBillingRepository = $paymentDirectBillingRepository;
-        $this->externalPaymentService = $externalPaymentService;
         $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->directBillingPriceService = $directBillingPriceService;
     }
 
     /**
@@ -58,8 +57,7 @@ class DirectBillingPaymentService
         }
 
         if (
-            $finalizedPayment->getCost() !==
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
+            $finalizedPayment->getCost() !== $this->directBillingPriceService->getPrice($purchase)
         ) {
             throw new InvalidPaidAmountException();
         }
@@ -93,7 +91,7 @@ class DirectBillingPaymentService
 
         $this->logger->logWithUser(
             $purchase->user,
-            'log_external_payment_accepted',
+            "log_external_payment_accepted",
             $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),

@@ -6,61 +6,41 @@ use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\PromoCode\PromoCodeService;
+use App\Payment\Transfer\TransferPriceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Services\PriceTextService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class WalletPaymentMethod implements IPaymentMethod
 {
-    /** @var PriceTextService */
-    private $priceTextService;
-
     /** @var Translator */
     private $lang;
 
     /** @var WalletPaymentService */
     private $walletPaymentService;
 
-    /** @var PromoCodeService */
-    private $promoCodeService;
+    /** @var TransferPriceService */
+    private $transferPriceService;
 
     public function __construct(
-        PriceTextService $priceTextService,
-        PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
+        TransferPriceService $transferPriceService,
         WalletPaymentService $walletPaymentService
     ) {
-        $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
-        $this->promoCodeService = $promoCodeService;
+        $this->transferPriceService = $transferPriceService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
-        $promoCode = $purchase->getPromoCode();
-
-        if ($promoCode) {
-            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
-
-            return [
-                "price" => $this->priceTextService->getPriceText($discountedPrice),
-                "old_price" => $this->priceTextService->getPlainPrice($price),
-            ];
-        }
-
-        return [
-            "price" => $this->priceTextService->getPriceText($price),
-        ];
+        return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
     public function isAvailable(Purchase $purchase)
     {
         return is_logged() &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
+            $this->transferPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }
 
@@ -79,8 +59,7 @@ class WalletPaymentMethod implements IPaymentMethod
             );
         }
 
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
-        $promoCode = $purchase->getPromoCode();
+        $price = $this->transferPriceService->getPrice($purchase);
 
         if ($price === null) {
             throw new PaymentProcessingException(
@@ -89,15 +68,13 @@ class WalletPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($promoCode) {
-            $price = $this->promoCodeService->applyDiscount($promoCode, $price);
-        }
-
         try {
             $paymentId = $this->walletPaymentService->payWithWallet($price, $purchase->user);
         } catch (NotEnoughFundsException $e) {
             throw new PaymentProcessingException("no_money", $this->lang->t("not_enough_money"));
         }
+
+        // TODO Test payment with 0 pln
 
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,

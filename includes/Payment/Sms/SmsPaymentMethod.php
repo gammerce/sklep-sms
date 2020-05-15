@@ -19,6 +19,8 @@ use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\SmsPaymentException;
 
+// TODO Allow payment with 0 PLN
+
 class SmsPaymentMethod implements IPaymentMethod
 {
     /** @var SmsPriceService */

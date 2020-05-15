@@ -7,6 +7,7 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
+use App\Payment\DirectBilling\DirectBillingPriceService;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
@@ -21,6 +22,7 @@ class DirectBillingController
         Request $request,
         PaymentModuleManager $paymentModuleManager,
         DatabaseLogger $logger,
+        DirectBillingPriceService $directBillingPriceService,
         ExternalPaymentService $externalPaymentService,
         DirectBillingPaymentService $directBillingPaymentService
     ) {
@@ -55,7 +57,7 @@ class DirectBillingController
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
+                $directBillingPriceService->getPrice($purchase)
             );
         } catch (PaymentRejectedException $e) {
             $logger->log(

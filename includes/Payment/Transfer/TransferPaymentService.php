@@ -18,9 +18,6 @@ class TransferPaymentService
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
 
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
-
     /** @var DatabaseLogger */
     private $logger;
 
@@ -30,18 +27,21 @@ class TransferPaymentService
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
-        ExternalPaymentService $externalPaymentService,
         ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
+        TransferPriceService $transferPriceService,
         DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
-        $this->externalPaymentService = $externalPaymentService;
         $this->logger = $logger;
         $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->transferPriceService = $transferPriceService;
     }
 
     /**
@@ -58,9 +58,7 @@ class TransferPaymentService
             throw new PaymentRejectedException();
         }
 
-        if (
-            $finalizedPayment->getCost() !== $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
-        ) {
+        if ($finalizedPayment->getCost() !== $this->transferPriceService->getPrice($purchase)) {
             throw new InvalidPaidAmountException();
         }
 
