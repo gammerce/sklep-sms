@@ -51,9 +51,15 @@ class PurchaseDataService
             return null;
         }
 
-        return $this->purchaseSerializer->deserialize(
+        $purchase = $this->purchaseSerializer->deserialize(
             $this->fileSystem->get($this->path->to("data/transactions/$transactionId"))
         );
+
+        if ($purchase && $purchase->isAttempted()) {
+            return null;
+        }
+
+        return $purchase;
     }
 
     /**

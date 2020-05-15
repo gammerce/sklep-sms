@@ -25,7 +25,7 @@ class ExternalPaymentService
         $transactionId = $finalizedPayment->getTransactionId();
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchase || $purchase->isAttempted()) {
+        if (!$purchase) {
             throw new LackOfValidPurchaseDataException();
         }
 

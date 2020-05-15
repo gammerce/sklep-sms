@@ -1,22 +1,20 @@
-import React, {ChangeEvent, FunctionComponent, useState} from "react";
+import React, {ChangeEvent, FunctionComponent, useEffect, useState} from "react";
 import {__} from "../../../general/i18n";
 
 interface Props {
-    hasPromoCode: boolean;
+    promoCode?: string;
     onPromoCodeApply(promoCode: string): Promise<void>;
     onPromoCodeRemove(): Promise<void>;
 }
 
 export const PromoCodeBox: FunctionComponent<Props> = (props) => {
-    const [promoCode, setPromoCode] = useState<string>("");
-    const {hasPromoCode, onPromoCodeApply, onPromoCodeRemove} = props;
+    const {promoCode: transactionPromoCode, onPromoCodeApply, onPromoCodeRemove} = props;
+    const [promoCode, setPromoCode] = useState<string>(transactionPromoCode);
+
+    useEffect(() => setPromoCode(transactionPromoCode), [transactionPromoCode]);
 
     const updatePromoCode = (e: ChangeEvent<HTMLInputElement>) => setPromoCode(e.target.value);
     const applyPromoCode = () => onPromoCodeApply(promoCode);
-    const removePromoCode = async () => {
-        await onPromoCodeRemove();
-        setPromoCode("");
-    }
 
     return (
         <div className="promo-code-box">
@@ -31,11 +29,11 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                                 placeholder={__("type_code")}
                                 value={promoCode}
                                 onChange={updatePromoCode}
-                                disabled={hasPromoCode}
+                                disabled={!!transactionPromoCode}
                             />
                         </div>
                         {
-                            !hasPromoCode &&
+                            !transactionPromoCode &&
                             <div className="control">
                                 <button
                                     className="button is-primary"
@@ -50,9 +48,9 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                             </div>
                         }
                         {
-                            hasPromoCode &&
+                            !!transactionPromoCode &&
                             <div className="control">
-                                <button className="button is-primary" onClick={removePromoCode}>
+                                <button className="button is-primary" onClick={onPromoCodeRemove}>
                                         <span className="icon">
                                             <i className="fas fa-trash" />
                                         </span>

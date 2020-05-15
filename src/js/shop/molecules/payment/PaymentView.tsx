@@ -14,7 +14,6 @@ import {PromoCodeBox} from "./PromoCodeBox";
 
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
-    const [promoCode, setPromoCode] = useState<string>("");
 
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
@@ -31,24 +30,15 @@ export const PaymentView: FunctionComponent = () => {
     );
 
     const onPay = (method: PaymentMethod, body: Dict): void => {
-        purchaseService(
-            transactionId,
-            method,
-            {
-                ...body,
-                promo_code: promoCode,
-            }
-        )
-            .catch(handleError);
+        purchaseService(transactionId, method, body).catch(handleError);
     }
 
 
     const applyPromoCode = async (promoCode: string) => {
         loader.show();
         try {
-            const result = await api.getTransaction(transactionId, promoCode);
+            const result = await api.applyPromoCode(transactionId, promoCode);
             setTransaction(result);
-            setPromoCode(promoCode);
         } finally {
             loader.hide();
         }
@@ -57,9 +47,8 @@ export const PaymentView: FunctionComponent = () => {
     const removePromoCode = async () => {
         loader.show();
         try {
-            const result = await api.getTransaction(transactionId);
+            const result = await api.unsetPromoCode(transactionId);
             setTransaction(result);
-            setPromoCode("");
         } finally {
             loader.hide();
         }
@@ -70,14 +59,15 @@ export const PaymentView: FunctionComponent = () => {
     }
 
     const {sms, transfer, direct_billing, wallet} = transaction.payment_methods;
+    const acceptsPromoCode = transaction.promo_code !== undefined;
 
     return (
         <div className="columns">
             {
-                transaction.promo_code &&
+                acceptsPromoCode &&
                 <div className="column is-one-third">
                     <PromoCodeBox
-                        hasPromoCode={!!promoCode}
+                        promoCode={transaction.promo_code}
                         onPromoCodeApply={applyPromoCode}
                         onPromoCodeRemove={removePromoCode}
                     />
@@ -86,7 +76,7 @@ export const PaymentView: FunctionComponent = () => {
             <div className="column">
                 <div className="payment-methods-box">
                     {
-                        sms && !promoCode &&
+                        sms && acceptsPromoCode &&
                         <PaymentMethodSms
                             priceGross={sms.price_gross}
                             smsCode={sms.sms_code}

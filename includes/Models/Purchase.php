@@ -243,10 +243,10 @@ class Purchase
     }
 
     /**
-     * @param PromoCode $promoCode
+     * @param PromoCode|null $promoCode
      * @return Purchase
      */
-    public function setPromoCode(PromoCode $promoCode)
+    public function setPromoCode(PromoCode $promoCode = null)
     {
         $this->promoCode = $promoCode;
         return $this;

@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\Concerns\CssettiConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class TransactionResourceTest extends HttpTestCase
+class TransactionPromoCodeResourceTest extends HttpTestCase
 {
     use CssettiConcern;
 
@@ -25,66 +25,7 @@ class TransactionResourceTest extends HttpTestCase
     }
 
     /** @test */
-    public function get_transaction_details()
-    {
-        // given
-        $this->mockCSSSettiGetData();
-        $user = $this->factory->user();
-        $this->actingAs($user);
-
-        $transferPlatform = $this->factory->paymentPlatform([
-            "module" => TPay::MODULE_ID,
-        ]);
-        $directBillingPlatform = $this->factory->paymentPlatform([
-            "module" => SimPay::MODULE_ID,
-        ]);
-        $smsPlatform = $this->factory->paymentPlatform([
-            "module" => Cssetti::MODULE_ID,
-        ]);
-
-        $purchase = (new Purchase($user))->setServiceId("vip")->setPayment([
-            Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_SMS => $smsPlatform->getId(),
-            Purchase::PAYMENT_PRICE_TRANSFER => 1000,
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
-            Purchase::PAYMENT_PRICE_SMS => 2500,
-        ]);
-
-        $this->purchaseDataService->storePurchase($purchase);
-
-        // when
-        $response = $this->get("/api/transactions/{$purchase->getId()}");
-
-        // then
-        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
-            [
-                "payment_methods" => [
-                    "sms" => [
-                        "price_gross" => "30.75 PLN",
-                        "sms_code" => "abc123",
-                        "sms_number" => "92521",
-                    ],
-                    "direct_billing" => [
-                        "price" => "12.00 PLN",
-                    ],
-                    "transfer" => [
-                        "price" => "10.00 PLN",
-                    ],
-                    "wallet" => [
-                        "price" => "10.00 PLN",
-                    ],
-                ],
-                "promo_code" => "",
-            ],
-            $json
-        );
-    }
-
-    /** @test */
-    public function get_transaction_details_with_promo_code_applied()
+    public function apply_promo_code()
     {
         // given
         $this->mockCSSSettiGetData();
@@ -117,7 +58,9 @@ class TransactionResourceTest extends HttpTestCase
         $this->purchaseDataService->storePurchase($purchase);
 
         // when
-        $response = $this->get("/api/transactions/{$purchase->getId()}");
+        $response = $this->post(
+            "/api/transactions/{$purchase->getId()}/promo_code/{$promoCode->getCode()}"
+        );
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
@@ -150,34 +93,64 @@ class TransactionResourceTest extends HttpTestCase
     }
 
     /** @test */
-    public function get_transaction_details_without_user()
+    public function coupon_is_not_applicable()
     {
         // given
-        $this->mockCSSSettiGetData();
+        $user = $this->factory->user();
+        $promoCode = $this->factory->promoCode([
+            "user_id" => $user->getId(),
+        ]);
 
         $transferPlatform = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,
         ]);
-        $directBillingPlatform = $this->factory->paymentPlatform([
-            "module" => SimPay::MODULE_ID,
-        ]);
-        $smsPlatform = $this->factory->paymentPlatform([
-            "module" => Cssetti::MODULE_ID,
-        ]);
 
         $purchase = (new Purchase(new User()))->setServiceId("vip")->setPayment([
             Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_SMS => $smsPlatform->getId(),
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
-            Purchase::PAYMENT_PRICE_SMS => 2500,
         ]);
 
         $this->purchaseDataService->storePurchase($purchase);
 
         // when
-        $response = $this->get("/api/transactions/{$purchase->getId()}");
+        $response = $this->post(
+            "/api/transactions/{$purchase->getId()}/promo_code/{$promoCode->getCode()}"
+        );
+
+        // then
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame(
+            [
+                "return_id" => "error",
+                "text" => "Nieprawidłowy kod promocyjny",
+                "positive" => false,
+            ],
+            $json
+        );
+    }
+
+    /** @test */
+    public function removes_coupon()
+    {
+        // given
+        $transferPlatform = $this->factory->paymentPlatform([
+            "module" => TPay::MODULE_ID,
+        ]);
+        $promoCode = $this->factory->promoCode();
+
+        $purchase = (new Purchase(new User()))
+            ->setServiceId("vip")
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
+                Purchase::PAYMENT_PRICE_TRANSFER => 1000,
+            ])
+            ->setPromoCode($promoCode);
+
+        $this->purchaseDataService->storePurchase($purchase);
+
+        // when
+        $response = $this->delete("/api/transactions/{$purchase->getId()}/promo_code");
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
@@ -185,14 +158,6 @@ class TransactionResourceTest extends HttpTestCase
         $this->assertSame(
             [
                 "payment_methods" => [
-                    "sms" => [
-                        "price_gross" => "30.75 PLN",
-                        "sms_code" => "abc123",
-                        "sms_number" => "92521",
-                    ],
-                    "direct_billing" => [
-                        "price" => "12.00 PLN",
-                    ],
                     "transfer" => [
                         "price" => "10.00 PLN",
                     ],

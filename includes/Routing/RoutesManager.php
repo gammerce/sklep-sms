@@ -57,6 +57,7 @@ use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
 use App\Http\Controllers\Api\Shop\TemplateResource;
 use App\Http\Controllers\Api\Setup\UpdateController;
+use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
 use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
 use App\Http\Controllers\Api\Shop\UserServiceBrickController;
@@ -314,6 +315,14 @@ class RoutesManager
 
                         $r->get('/api/transactions/{transactionId}', [
                             'uses' => TransactionResource::class . '@get',
+                        ]);
+
+                        $r->post('/api/transactions/{transactionId}/promo_code/{promoCode}', [
+                            'uses' => TransactionPromoCodeResource::class . '@post',
+                        ]);
+
+                        $r->delete('/api/transactions/{transactionId}/promo_code', [
+                            'uses' => TransactionPromoCodeResource::class . '@delete',
                         ]);
                     }
                 );

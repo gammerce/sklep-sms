@@ -3,13 +3,9 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
-use App\Http\Responses\ErrorApiResponse;
-use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
-use App\PromoCode\PromoCodeService;
-use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,36 +15,16 @@ class PaymentResource
         $transactionId,
         Request $request,
         PaymentService $paymentService,
-        PromoCodeService $promoCodeService,
-        PurchaseDataService $purchaseDataService,
-        ServiceModuleManager $serviceModuleManager,
-        TranslationManager $translationManager
+        PurchaseDataService $purchaseDataService
     ) {
-        $lang = $translationManager->user();
         $purchase = $purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchase || $purchase->isAttempted()) {
+        if (!$purchase) {
             throw new EntityNotFoundException();
         }
 
         $method = $request->request->get("method");
         $smsCode = trim($request->request->get("sms_code"));
-
-        $serviceModule = $serviceModuleManager->get($purchase->getServiceId());
-
-        if ($serviceModule instanceof IServicePromoCode) {
-            $promoCode = trim($request->request->get("promo_code"));
-
-            if (strlen($promoCode)) {
-                $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
-
-                if (!$promoCodeModel) {
-                    return new ErrorApiResponse($lang->t("invalid_promo_code"));
-                }
-
-                $purchase->setPromoCode($promoCodeModel);
-            }
-        }
 
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,

@@ -105,13 +105,6 @@ class TransferPaymentMethod implements IPaymentMethod
             $price = $this->promoCodeService->applyDiscount($promoCode, $price);
         }
 
-        if ($price <= 100) {
-            throw new PaymentProcessingException(
-                "too_little_for_transfer",
-                $this->lang->t("transfer_above_amount", $this->settings->getCurrency())
-            );
-        }
-
         $service = $this->serviceManager->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 

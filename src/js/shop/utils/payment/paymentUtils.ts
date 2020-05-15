@@ -73,22 +73,21 @@ const redirectToExternalWithPost = (response: any) => {
     });
 
     for (const [key, value] of Object.entries(response.data)) {
-        if (key === "url") {
-            return true;
+        if (key !== "url") {
+            form.append(
+                $("<input>", {
+                    type: "hidden",
+                    name: key,
+                    value: value,
+                })
+            );
         }
-
-        form.append(
-            $("<input>", {
-                type: "hidden",
-                name: key,
-                value: value,
-            })
-        );
     }
 
     // It doesn't work with firefox without it
     $("body").append(form);
 
+    console.log(form);
     form.submit();
 };
 

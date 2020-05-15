@@ -6,7 +6,7 @@ export enum PaymentMethod {
 }
 
 export interface Transaction {
-    promo_code: boolean;
+    promo_code?: string;
     payment_methods: {
         direct_billing?: {
             price: string;

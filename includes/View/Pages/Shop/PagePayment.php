@@ -42,7 +42,7 @@ class PagePayment extends Page
         $transactionId = $request->query->get("tid");
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
-        if (!$purchase || $purchase->isAttempted()) {
+        if (!$purchase) {
             throw new EntityNotFoundException();
         }
 
