@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
@@ -158,20 +159,14 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/promo_code_add",
                     compact("services", "servers", "quantityTypes")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 
     private function getQuantityTypeName(QuantityType $quantityType)

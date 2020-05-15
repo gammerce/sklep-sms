@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\GroupManager;
 use App\Managers\ServiceManager;
@@ -110,39 +111,6 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        if ($boxId == "service_edit") {
-            $service = $this->serviceManager->getService($query["id"]);
-
-            if (strlen($service->getModule())) {
-                $serviceModule = $this->serviceModuleManager->get($service->getId());
-
-                if ($serviceModule instanceof IServiceAdminManage) {
-                    $extraFields = create_dom_element(
-                        "tbody",
-                        new RawText($serviceModule->serviceAdminExtraFieldsGet()),
-                        [
-                            "class" => "extra_fields",
-                        ]
-                    );
-                }
-            }
-        } elseif ($boxId == "service_add") {
-            $servicesModules = collect($this->serviceModuleManager->all())
-                ->filter(function (ServiceModule $serviceModule) {
-                    return $serviceModule instanceof IServiceCreate;
-                })
-                ->map(function (ServiceModule $serviceModule) {
-                    return create_dom_element(
-                        "option",
-                        $this->serviceModuleManager->getName($serviceModule->getModuleId()),
-                        [
-                            "value" => $serviceModule->getModuleId(),
-                        ]
-                    );
-                })
-                ->join();
-        }
-
         $groups = collect($this->groupManager->getGroups())
             ->map(function (Group $group) {
                 return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
@@ -156,29 +124,53 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             ->join();
 
         switch ($boxId) {
-            case "service_add":
-                $output = $this->template->render(
+            case "add":
+                $servicesModules = collect($this->serviceModuleManager->all())
+                    ->filter(function (ServiceModule $serviceModule) {
+                        return $serviceModule instanceof IServiceCreate;
+                    })
+                    ->map(function (ServiceModule $serviceModule) {
+                        return create_dom_element(
+                            "option",
+                            $this->serviceModuleManager->getName($serviceModule->getModuleId()),
+                            [
+                                "value" => $serviceModule->getModuleId(),
+                            ]
+                        );
+                    })
+                    ->join();
+
+                return $this->template->render(
                     "admin/action_boxes/service_add",
                     compact("groups", "servicesModules")
                 );
-                break;
 
-            case "service_edit":
+            case "edit":
+                $service = $this->serviceManager->getService($query["id"]);
+
+                if (strlen($service->getModule())) {
+                    $serviceModule = $this->serviceModuleManager->get($service->getId());
+
+                    if ($serviceModule instanceof IServiceAdminManage) {
+                        $extraFields = create_dom_element(
+                            "tbody",
+                            new RawText($serviceModule->serviceAdminExtraFieldsGet()),
+                            [
+                                "class" => "extra_fields",
+                            ]
+                        );
+                    }
+                }
+
                 $serviceModuleName = $this->serviceModuleManager->getName($service->getModule());
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/service_edit",
                     compact("service", "groups", "serviceModuleName", "extraFields")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

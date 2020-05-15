@@ -4,11 +4,11 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl } from "../../../general/global";
 
 $(document).delegate("#group_button_add", "click", function() {
-    showActionBox(currentPage, "group_add");
+    showActionBox(window.currentPage, "group_add");
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(currentPage, "group_edit", {
+    showActionBox(window.currentPage, "group_edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

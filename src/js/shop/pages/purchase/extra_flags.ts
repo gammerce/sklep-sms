@@ -10,7 +10,7 @@ $(document).ready(function($) {
 
 $(document).delegate("#form_purchase input[name=type]", "change", function() {
     var form = $(this).closest("form");
-    var currentType = $(this).val();
+    var currentType = $(this).val() as string;
 
     hideAndDisable(form.find("#type_nick"));
     hideAndDisable(form.find("#type_ip"));

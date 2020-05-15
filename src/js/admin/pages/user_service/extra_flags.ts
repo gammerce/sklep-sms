@@ -8,12 +8,12 @@ import { get_type_name } from "../../../general/extra_flags";
 
 // Zmiana typu usługi
 $(document).delegate("#form_user_service_add [name=type]", "change", function() {
-    var module = service_module_act_can("extra_flags", $(this));
+    const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
     }
 
-    var currentType = $(this).val();
+    const currentType = $(this).val() as string;
 
     hideAndDisable(module.find("#type_nick"));
     hideAndDisable(module.find("#type_ip"));
@@ -32,10 +32,14 @@ $(document).delegate("#form_user_service_add [name=type]", "change", function() 
 
 // Zmiana usługi przy edycji
 $(document).delegate("#form_user_service_edit [name=service_id]", "change", function() {
-    var module;
-    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
+    const module = service_module_act_can("extra_flags", $(this));
+    if (!module) {
+        return;
+    }
 
-    if (!$(this).val().length) {
+    const serviceId = $(this).val() as string;
+
+    if (!serviceId.length) {
         module
             .find("[name=server_id]")
             .children()
@@ -44,11 +48,9 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
         return;
     }
 
-    var serviceId = $(this).val();
-
     restRequest(
         "POST",
-        "/api/admin/services/" + serviceId + "/actions/servers_for_service",
+        `/api/admin/services/${serviceId}/actions/servers_for_service`,
         {
             server_id: module.find("[name=server_id]").val(),
         },
@@ -59,29 +61,39 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
 });
 
 $(document).delegate("#form_user_service_add [name=forever]", "change", function() {
-    var module;
-    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
-
-    if ($(this).prop("checked")) module.find("[name=quantity]").prop("disabled", true);
-    else module.find("[name=quantity]").prop("disabled", false);
-});
-
-$(document).delegate("#form_user_service_edit [name=forever]", "change", function() {
-    var module;
-    if (!(module = service_module_act_can("extra_flags", $(this)))) return;
-
-    if ($(this).prop("checked")) module.find("[name=expire]").prop("disabled", true);
-    else module.find("[name=expire]").prop("disabled", false);
-});
-
-// Zmiana typu usługi
-$(document).delegate("#form_user_service_edit [name=type]", "change", function() {
-    var module = service_module_act_can("extra_flags", $(this));
+    const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
     }
 
-    var currentType = $(this).val();
+    if ($(this).prop("checked")) {
+        module.find("[name=quantity]").prop("disabled", true);
+    } else {
+        module.find("[name=quantity]").prop("disabled", false);
+    }
+});
+
+$(document).delegate("#form_user_service_edit [name=forever]", "change", function() {
+    const module = service_module_act_can("extra_flags", $(this));
+    if (!module) {
+        return;
+    }
+
+    if ($(this).prop("checked")) {
+        module.find("[name=expire]").prop("disabled", true);
+    } else {
+        module.find("[name=expire]").prop("disabled", false);
+    }
+});
+
+// Zmiana typu usługi
+$(document).delegate("#form_user_service_edit [name=type]", "change", function() {
+    const module = service_module_act_can("extra_flags", $(this));
+    if (!module) {
+        return;
+    }
+
+    const currentType = $(this).val() as string;
 
     hideAndDisable(module.find("#type_nick"));
     hideAndDisable(module.find("#type_ip"));

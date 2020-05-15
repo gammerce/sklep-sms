@@ -50,7 +50,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             if (content.return_id === "warnings") {
                 showWarnings(that, content.warnings);
             } else if (content.return_id === "ok") {
-                refreshBlocks(`content:${currentPage}`);
+                refreshBlocks(`content:${window.currentPage}`);
             } else if (content.return_id === "payment") {
                 goToPayment(content.transaction_id);
             }

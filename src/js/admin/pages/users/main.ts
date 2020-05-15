@@ -9,16 +9,16 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 // This is used later when action is done
-var rowId = 0;
+let rowId: any = 0;
 $(document).delegate(".table-structure .charge_wallet", "click", function() {
     rowId = $(this).closest("tr");
-    showActionBox(currentPage, "charge_wallet", {
+    showActionBox(window.currentPage, "charge_wallet", {
         user_id: rowId.children("td[headers=id]").text(),
     });
 });
 
 $(document).delegate(".table-structure .change_password", "click", function() {
-    showActionBox(currentPage, "change_password", {
+    showActionBox(window.currentPage, "change_password", {
         user_id: $(this)
             .closest("tr")
             .find("td[headers=id]")
@@ -27,7 +27,7 @@ $(document).delegate(".table-structure .change_password", "click", function() {
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(currentPage, "user_edit", {
+    showActionBox(window.currentPage, "edit", {
         user_id: $(this)
             .closest("tr")
             .find("td[headers=id]")

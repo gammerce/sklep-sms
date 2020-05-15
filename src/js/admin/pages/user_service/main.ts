@@ -11,7 +11,7 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 
 // Kliknięcie dodania usługi użytkownika
 $(document).delegate("#user_service_button_add", "click", function() {
-    showActionBox(currentPage, "user_service_add");
+    showActionBox(window.currentPage, "add");
 });
 
 // Kliknięcie edycji usługi użytkownika
@@ -22,12 +22,12 @@ $(document).delegate("[id^=edit_row_]", "click", function() {
                 .attr("id")
                 .replace("edit_row_", "row_")
     );
-    showActionBox(currentPage, "user_service_edit", {
+    showActionBox(window.currentPage, "edit", {
         id: rowId.children("td[headers=id]").text(),
     });
 });
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(currentPage, "user_service_edit", {
+    showActionBox(window.currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

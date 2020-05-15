@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Repositories\GroupRepository;
 use App\Support\Database;
@@ -101,16 +102,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $group = $this->groupRepository->get($query["id"]);
 
             if (!$group) {
-                return [
-                    "status" => "ok",
-                    "template" => create_dom_element("form", $this->lang->t("no_such_group"), [
-                        "class" => "action_box",
-                        "style" => [
-                            "padding" => "20px",
-                            "color" => "white",
-                        ],
-                    ]),
-                ];
+                return create_dom_element("form", $this->lang->t("no_such_group"), [
+                    "class" => "action_box",
+                    "style" => [
+                        "padding" => "20px",
+                        "color" => "white",
+                    ],
+                ]);
             }
         }
 
@@ -144,26 +142,19 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "group_add":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/group_add",
                     compact("privileges")
                 );
-                break;
 
             case "group_edit":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/group_edit",
                     compact("privileges", "group")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

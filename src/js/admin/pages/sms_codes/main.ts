@@ -5,7 +5,7 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#sms_code_button_add", "click", function() {
-    showActionBox(currentPage, "sms_code_add");
+    showActionBox(window.currentPage, "add");
 });
 
 $(document).delegate("#form_sms_code_add [name=random_code]", "click", function() {

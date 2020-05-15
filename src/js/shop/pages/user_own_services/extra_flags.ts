@@ -8,7 +8,7 @@ $(document).delegate("#user_own_services .row [name=type]", "change", function()
         return;
     }
 
-    var currentType = $(this).val();
+    var currentType = $(this).val() as string;
 
     hideAndDisable(module.find(".type_nick"));
     hideAndDisable(module.find(".type_ip"));

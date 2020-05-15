@@ -5,12 +5,12 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 
 // Kliknięcie dodania usługi
 $(document).delegate("#service_button_add", "click", function() {
-    showActionBox(currentPage, "service_add");
+    showActionBox(window.currentPage, "add");
 });
 
 // Kliknięcie edycji usługi
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(currentPage, "service_edit", {
+    showActionBox(window.currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

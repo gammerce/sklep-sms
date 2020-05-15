@@ -15,7 +15,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 
     $.ajax({
         type: "DELETE",
-        url: buildUrl("/api/admin/logs/" + logId),
+        url: buildUrl(`/api/admin/logs/${logId}`),
         complete() {
             loader.hide();
         },

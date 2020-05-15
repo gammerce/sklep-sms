@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\GroupManager;
 use App\Managers\UserManager;
@@ -193,7 +194,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         }
 
         switch ($boxId) {
-            case "user_edit":
+            case "edit":
                 $user = $this->userManager->getUser($query["user_id"]);
 
                 $groups = collect($this->groupManager->getGroups())
@@ -211,7 +212,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
-                $output = $this->template->render("admin/action_boxes/user_edit", [
+                return $this->template->render("admin/action_boxes/user_edit", [
                     "email" => $user->getEmail(),
                     "username" => $user->getUsername(),
                     "surname" => $user->getSurname(),
@@ -221,31 +222,23 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     "wallet" => $this->priceTextService->getPlainPrice($user->getWallet()),
                     "groups" => $groups,
                 ]);
-                break;
 
             case "charge_wallet":
                 $user = $this->userManager->getUser($query["user_id"]);
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact("user")
                 );
-                break;
 
             case "change_password":
                 $user = $this->userManager->getUser($query["user_id"]);
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact("user")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

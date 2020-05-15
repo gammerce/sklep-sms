@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
@@ -104,26 +105,23 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         }
 
         switch ($boxId) {
-            case "user_service_add":
+            case "add":
                 $services = collect($this->serviceManager->getServices())
                     ->filter(function (Service $service) {
                         $serviceModule = $this->serviceModuleManager->get($service->getId());
                         return $serviceModule instanceof IServiceUserServiceAdminAdd;
                     })
                     ->map(function (Service $service) {
-                        return create_dom_element("option", $service->getName(), [
-                            "value" => $service->getId(),
-                        ]);
+                        return new Option($service->getName(), $service->getId());
                     })
                     ->join();
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/user_service_add",
                     compact("services")
                 );
-                break;
 
-            case "user_service_edit":
+            case "edit":
                 $userService = $this->userServiceService->findOne($query["id"]);
 
                 $formData = $this->lang->t("service_edit_unable");
@@ -137,17 +135,14 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                     }
                 }
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/user_service_edit",
                     compact("serviceModuleId", "formData")
                 );
-                break;
-        }
 
-        return [
-            "status" => isset($output) ? "ok" : "no_output",
-            "template" => isset($output) ? $output : "",
-        ];
+            default:
+                throw new EntityNotFoundException();
+        }
     }
 
     private function createModuleSelectBox($subpage)

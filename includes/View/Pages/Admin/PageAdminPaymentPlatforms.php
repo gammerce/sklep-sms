@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Http\Services\DataFieldService;
 use App\Managers\PaymentModuleManager;
@@ -114,24 +115,17 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        $output = $this->getActionBoxContent($boxId, $query);
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
-    }
-
-    private function getActionBoxContent($boxId, array $query)
-    {
         if ($boxId === "create") {
-            $paymentModules = array_map(function ($paymentModuleId) {
-                return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
-            }, $this->paymentModuleManager->allIds());
+            $paymentModules = collect($this->paymentModuleManager->allIds())
+                ->map(function ($paymentModuleId) {
+                    return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
+                })
+                ->join();
 
-            return $this->template->render("admin/action_boxes/payment_platform_add", [
-                "paymentModules" => implode("", $paymentModules),
-            ]);
+            return $this->template->render(
+                "admin/action_boxes/payment_platform_add",
+                compact("paymentModules")
+            );
         }
 
         if ($boxId === "edit") {
@@ -148,6 +142,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             );
         }
 
-        return "";
+        throw new EntityNotFoundException();
     }
 }

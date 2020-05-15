@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
@@ -218,11 +219,10 @@ EOF
 
         switch ($boxId) {
             case "price_add":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/price_add",
                     compact("services", "servers", "smsPrices")
                 );
-                break;
 
             case "price_edit":
                 $directBillingPrice = $price->hasDirectBillingPrice()
@@ -232,7 +232,7 @@ EOF
                     ? $price->getTransferPrice() / 100
                     : null;
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/price_edit",
                     compact(
                         "directBillingPrice",
@@ -246,15 +246,9 @@ EOF
                         "discount" => $price->getDiscount(),
                     ]
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

@@ -8,7 +8,7 @@ $(document).delegate("#form_service_take_over [name=type]", "change", function()
         return;
     }
 
-    const currentType = $(this).val();
+    const currentType = $(this).val() as string;
 
     hideAndDisable(module.find("[data-type='nick']"));
     hideAndDisable(module.find("[data-type='ip']"));

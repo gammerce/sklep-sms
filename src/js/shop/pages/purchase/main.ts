@@ -63,8 +63,9 @@ $(document).delegate("#show_service_desc", "click", function() {
 
 $(document).delegate("#form_purchase [name=quantity]", "change", function() {
     const form = $(this).closest("form");
+    const quantity = $(this).val() as string;
 
-    if ($(this).val().length) {
+    if (quantity.length) {
         show(form.find("#cost_wrapper"));
     } else {
         hide(form.find("#cost_wrapper"));
