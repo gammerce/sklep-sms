@@ -3,6 +3,7 @@ namespace App\Payment\General;
 
 use App\Models\Purchase;
 use App\Models\User;
+use App\PromoCode\PromoCodeService;
 use App\Repositories\UserRepository;
 
 class PurchaseSerializer
@@ -10,9 +11,13 @@ class PurchaseSerializer
     /** @var UserRepository */
     private $userRepository;
 
-    public function __construct(UserRepository $userRepository)
+    /** @var PromoCodeService */
+    private $promoCodeService;
+
+    public function __construct(UserRepository $userRepository, PromoCodeService $promoCodeService)
     {
         $this->userRepository = $userRepository;
+        $this->promoCodeService = $promoCodeService;
     }
 
     /**
@@ -39,12 +44,23 @@ class PurchaseSerializer
      */
     private function enhancePurchase($purchase)
     {
-        if ($purchase instanceof Purchase) {
-            // Fix: Refresh user to avoid bugs linked with user wallet
-            $purchase->user = $this->userRepository->get($purchase->user->getId()) ?: new User();
-            return $purchase;
+        if (!$purchase instanceof Purchase) {
+            return null;
         }
 
-        return null;
+        // Fix: Refresh user to avoid bugs linked with user wallet
+        $purchase->user = $this->userRepository->get($purchase->user->getId()) ?: new User();
+
+        // Refresh promo code in case somebody else used it in a meantime
+        $promoCode = $purchase->getPromoCode();
+        if ($promoCode) {
+            $freshPromoCode = $this->promoCodeService->findApplicablePromoCode(
+                $promoCode->getCode(),
+                $purchase
+            );
+            $purchase->setPromoCode($freshPromoCode);
+        }
+
+        return $purchase;
     }
 }

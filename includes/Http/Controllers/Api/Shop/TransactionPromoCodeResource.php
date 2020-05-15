@@ -35,7 +35,7 @@ class TransactionPromoCodeResource
             throw new InvalidServiceModuleException();
         }
 
-        $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
+        $promoCodeModel = $promoCodeService->findApplicablePromoCode($promoCode, $purchase);
         if (!$promoCodeModel) {
             return new ErrorApiResponse($lang->t("invalid_promo_code"));
         }

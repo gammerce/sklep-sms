@@ -17,11 +17,11 @@ class PromoCodeService
     }
 
     /**
+     * @param string $promoCode
      * @param Purchase $purchase
-     * @param $promoCode
      * @return PromoCode|null
      */
-    public function findApplicablePromoCode(Purchase $purchase, $promoCode)
+    public function findApplicablePromoCode($promoCode, Purchase $purchase)
     {
         if (!strlen($promoCode)) {
             return null;
