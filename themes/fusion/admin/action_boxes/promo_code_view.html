@@ -1,0 +1,83 @@
+<form class="action_box">
+    <div class="service_main_info">
+        {{ __('promo_code') }}
+    </div>
+
+    <fieldset disabled>
+        <div class="field">
+            <label>{{ __('id') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $id }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('code') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $code }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('quantity') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $quantity }}" />
+            </div>
+        </div>
+
+        <div class="field is-grouped">
+            <div class="control">
+                <div class="field">
+                    <label>{{ __('usage_count') }}</label>
+                    <div class="control">
+                        <input class="input" value="{{ $usageCount }}" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="control">
+                <div class="field">
+                    <label>{{ __('usage_limit') }}</label>
+                    <div class="control">
+                        <input class="input" value="{{ $usageLimit }}" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('expires') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $expiresAt }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('server') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $serverId }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('service') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $serviceId }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('user') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $userId }}" />
+            </div>
+        </div>
+
+        <div class="field">
+            <label>{{ __('created_at') }}</label>
+            <div class="control">
+                <input class="input" value="{{ $createdAt }}" />
+            </div>
+        </div>
+    </fieldset>
+</form>

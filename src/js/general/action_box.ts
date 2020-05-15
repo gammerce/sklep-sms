@@ -46,6 +46,9 @@ export const action_box = {
             action_box.element.show();
             action_box.box.fadeIn();
         }
+
+        console.log("event added");
+        document.addEventListener("keydown", this._onKeyDown);
     },
 
     hide() {
@@ -53,5 +56,14 @@ export const action_box = {
             action_box.created = false;
             $(this).remove();
         });
+
+        document.removeEventListener("keydown", this._onKeyDown);
+    },
+
+    _onKeyDown(e) {
+        // 27 is Escape key
+        if (e.keyCode === 27) {
+            action_box.hide();
+        }
     },
 };

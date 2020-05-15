@@ -16,6 +16,15 @@ $(document).delegate("#form_promo_code_add [name=random_code]", "click", functio
         .val(get_random_string());
 });
 
+$(document).delegate(".table-structure .view-action", "click", function() {
+    showActionBox(window.currentPage, "view", {
+        id: $(this)
+            .closest("tr")
+            .find("td[headers=id]")
+            .text(),
+    });
+});
+
 $(document).delegate(".table-structure .delete_row", "click", function() {
     const rowId = $(this).closest("tr");
     const promoCodeId = rowId.children("td[headers=id]").text();

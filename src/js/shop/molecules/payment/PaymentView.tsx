@@ -86,7 +86,7 @@ export const PaymentView: FunctionComponent = () => {
             <div className="column">
                 <div className="payment-methods-box">
                     {
-                        sms &&
+                        sms && !promoCode &&
                         <PaymentMethodSms
                             priceGross={sms.price_gross}
                             smsCode={sms.sms_code}

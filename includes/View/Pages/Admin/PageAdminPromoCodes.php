@@ -21,14 +21,13 @@ use App\View\Html\DateTimeCell;
 use App\View\Html\ExpirationDateCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\Link;
 use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
-
-// TODO Add view box
 
 class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 {
@@ -101,6 +100,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($promoCode->getRemainingUsage()))
                     ->addCell(new ExpirationDateCell($promoCode->getExpiresAt()))
                     ->addCell(new DateTimeCell($promoCode->getCreatedAt()))
+                    ->addAction($this->createViewButton())
                     ->setDeleteAction(has_privileges("manage_promo_codes"));
             })
             ->all();
@@ -111,23 +111,32 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("quantity")))
             ->addHeadCell(new HeadCell($this->lang->t("remaining_usage")))
             ->addHeadCell(new HeadCell($this->lang->t("expire")))
-            ->addHeadCell(new HeadCell($this->lang->t("date_of_creation")))
+            ->addHeadCell(new HeadCell($this->lang->t("created_at")))
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
         if (has_privileges("manage_promo_codes")) {
-            $button = (new Input())
-                ->setParam("id", "promo_code_button_add")
-                ->setParam("type", "button")
-                ->addClass("button")
-                ->setParam("value", $this->lang->t("add_code"));
-
-            $wrapper->addButton($button);
+            $addButton = $this->createAddButton();
+            $wrapper->addButton($addButton);
         }
 
         return $wrapper->toHtml();
+    }
+
+    private function createAddButton()
+    {
+        return (new Input())
+            ->setParam("id", "promo_code_button_add")
+            ->setParam("type", "button")
+            ->addClass("button")
+            ->setParam("value", $this->lang->t("add_code"));
+    }
+
+    private function createViewButton()
+    {
+        return (new Link($this->lang->t("view")))->addClass("dropdown-item view-action");
     }
 
     public function getActionBox($boxId, array $query)
@@ -163,6 +172,22 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     "admin/action_boxes/promo_code_add",
                     compact("services", "servers", "quantityTypes")
                 );
+
+            case "view":
+                $promoCode = $this->promoCodeRepository->get(array_get($query, "id"));
+
+                return $this->template->render("admin/action_boxes/promo_code_view", [
+                    "id" => $promoCode->getId(),
+                    "code" => $promoCode->getCode(),
+                    "quantity" => $promoCode->getQuantityFormatted(),
+                    "usageCount" => $promoCode->getUsageCount(),
+                    "usageLimit" => $promoCode->getUsageLimit(),
+                    "serviceId" => $promoCode->getServiceId(),
+                    "serverId" => $promoCode->getServerId(),
+                    "userId" => $promoCode->getUserId(),
+                    "expiresAt" => as_date_string($promoCode->getCreatedAt()),
+                    "createdAt" => as_datetime_string($promoCode->getCreatedAt()),
+                ]);
 
             default:
                 throw new EntityNotFoundException();
