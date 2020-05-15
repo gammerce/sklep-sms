@@ -51,24 +51,7 @@
         </table>
     </div>
 
-    <div id="cost_wrapper">
-        <div>
-            <span>
-                <strong>{$lang->t('transfer_price')}</strong>:
-                <span id="cost_transfer"></span>
-            </span>
-            <br />
-            <span>
-                <strong>{$lang->t('sms_price')}</strong>:
-                <span id="cost_sms"></span>
-            </span>
-            <br />
-            <span>
-                <strong>{$lang->t('direct_billing_price')}</strong>:
-                <span id="cost_direct_billing"></span>
-            </span>
-        </div>
-    </div>
+    {!! $costBox !!}
 
     <div class="purchase-button-wrapper">
         <button type="submit" class="button is-success purchase-button">

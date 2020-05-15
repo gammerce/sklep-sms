@@ -332,3 +332,19 @@ dl.form {
     text-align: center;
     margin-top: 2rem;
 }
+
+#cost_box {
+    .price-row {
+        display: flex;
+
+        &:not(:last-child) {
+            margin-bottom: 0.75rem;
+        }
+
+        .price-label {
+            min-width: 200px;
+            text-align: right;
+            margin-right: 1rem;
+        }
+    }
+}

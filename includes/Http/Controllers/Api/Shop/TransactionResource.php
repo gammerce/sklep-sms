@@ -9,6 +9,7 @@ use App\Payment\General\PaymentMethodFactory;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
+use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -37,14 +38,18 @@ class TransactionResource
             throw new InvalidServiceModuleException();
         }
 
-        $promoCode = trim($request->query->get("promo_code"));
-        if ($promoCode) {
-            $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
-            if (!$promoCodeModel) {
-                return new ErrorApiResponse($lang->t("invalid_promo_code"));
-            }
+        if ($serviceModule instanceof IServicePromoCode) {
+            $promoCode = trim($request->query->get("promo_code"));
 
-            $purchase->setPromoCode($promoCodeModel);
+            if ($promoCode) {
+                $promoCodeModel = $promoCodeService->findApplicablePromoCode($purchase, $promoCode);
+
+                if (!$promoCodeModel) {
+                    return new ErrorApiResponse($lang->t("invalid_promo_code"));
+                }
+
+                $purchase->setPromoCode($promoCodeModel);
+            }
         }
 
         $paymentMethods = collect($paymentMethodFactory->createAll())

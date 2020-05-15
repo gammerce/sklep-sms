@@ -160,6 +160,25 @@ body {
     text-align: center;
 }
 
+#cost_box {
+    display: flex;
+    justify-content: center;
+
+    .price-row {
+        display: flex;
+
+        &:not(:last-child) {
+            margin-bottom: 0.75rem;
+        }
+
+        .price-label {
+            min-width: 200px;
+            text-align: right;
+            margin-right: 1rem;
+        }
+    }
+}
+
 // Pages
 
 .homepage-box {

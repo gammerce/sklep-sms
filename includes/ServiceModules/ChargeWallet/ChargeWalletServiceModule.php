@@ -69,9 +69,9 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         }
 
         return $this->template->render("shop/services/charge_wallet/purchase_form", [
-            'paymentMethodBodies' => implode("", $paymentMethodBodies),
-            'paymentMethodOptions' => implode("<br />", $paymentMethodOptions),
-            'serviceId' => $this->service->getId(),
+            "paymentMethodBodies" => implode("", $paymentMethodBodies),
+            "paymentMethodOptions" => implode("<br />", $paymentMethodOptions),
+            "serviceId" => $this->service->getId(),
         ]);
     }
 
@@ -81,7 +81,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             throw new UnauthorizedException();
         }
 
-        $method = array_get($body, 'method');
+        $method = array_get($body, "method");
 
         try {
             $paymentMethod = $this->chargeWalletFactory->create($method);
@@ -151,7 +151,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
                     $transaction->getPaymentMethod()
                 );
             } catch (InvalidArgumentException $e) {
-                return '';
+                return "";
             }
 
             return $paymentMethod->getTransactionView($transaction);
@@ -159,11 +159,11 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('wallet_was_charged', $quantity),
-                'class' => "income",
+                "text" => $this->lang->t("wallet_was_charged", $quantity),
+                "class" => "income",
             ];
         }
 
-        return '';
+        return "";
     }
 }

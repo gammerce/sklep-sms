@@ -26,7 +26,7 @@ $(document).delegate("#form_purchase input[name=type]", "change", function() {
 $(document).delegate("#form_purchase [name=server_id]", "change", function() {
     var form = $(this).closest("form");
 
-    form.find("#cost_wrapper").slideUp();
+    form.find("#cost_box").slideUp();
     if ($(this).val() == "") {
         form.find("[name=quantity]")
             .children()
@@ -39,7 +39,7 @@ $(document).delegate("#form_purchase [name=server_id]", "change", function() {
 
     restRequest(
         "POST",
-        "/api/services/" + serviceId + "/actions/prices_for_server",
+        `/api/services/${serviceId}/actions/prices_for_server`,
         {
             server_id: $(this).val(),
         },

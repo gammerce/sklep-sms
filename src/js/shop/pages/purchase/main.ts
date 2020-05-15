@@ -66,9 +66,9 @@ $(document).delegate("#form_purchase [name=quantity]", "change", function() {
     const quantity = $(this).val() as string;
 
     if (quantity.length) {
-        show(form.find("#cost_wrapper"));
+        show(form.find("#cost_box"));
     } else {
-        hide(form.find("#cost_wrapper"));
+        hide(form.find("#cost_box"));
         return;
     }
 
@@ -86,22 +86,21 @@ $(document).delegate("#form_purchase [name=quantity]", "change", function() {
 });
 
 function toggleCost(node, price, discount) {
-    node.text("");
-    node.parent()
-        .find(".discount")
-        .text("");
+    const priceNode = node.find(".price");
+    const discountNode = node.find(".discount");
+
+    priceNode.text("");
+    discountNode.text("");
 
     if (price) {
-        node.text(price);
+        priceNode.text(price);
 
         if (discount) {
-            node.parent()
-                .find(".discount")
-                .text(`-${discount}%`);
+            discountNode.text(`-${discount}%`);
         }
 
-        show(node.parent());
+        show(node);
     } else {
-        hide(node.parent());
+        hide(node);
     }
 }

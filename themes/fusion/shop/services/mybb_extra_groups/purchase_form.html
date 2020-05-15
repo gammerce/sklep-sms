@@ -36,31 +36,16 @@
                 </div>
             </div>
 
-            <div id="cost_wrapper" class="has-text-centered is-hidden">
-                <div>
-                    <strong>{{ __('transfer_price') }}</strong>:
-                    <span id="cost_transfer"></span>
-                    <sup class="discount"></sup>
-                </div>
-
-                <div>
-                    <strong>{{ __('sms_price') }}</strong>:
-                    <span id="cost_sms"></span>
-                    <sup class="discount"></sup>
-                </div>
-
-                <div>
-                    <strong>{{ __('direct_billing_price') }}</strong>:
-                    <span id="cost_direct_billing"></span>
-                    <sup class="discount"></sup>
-                </div>
-            </div>
+            {!! $costBox !!}
         </div>
     </div>
 
     <div class="form-footer">
         <button type="submit" class="button is-success">
-            {{ __('go_to_payment') }}
+            <span class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </span>
+            <span>{{ __('go_to_payment') }}</span>
         </button>
     </div>
 

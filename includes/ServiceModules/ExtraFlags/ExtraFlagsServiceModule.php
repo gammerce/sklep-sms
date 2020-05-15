@@ -42,6 +42,7 @@ use App\ServiceModules\ExtraFlags\Rules\ExtraFlagTypeRule;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
+use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
@@ -83,7 +84,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceActionExecute,
     IServiceUserOwnServices,
     IServiceUserOwnServicesEdit,
-    IServiceTakeOver
+    IServiceTakeOver,
+    IServicePromoCode
 {
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "ss_user_service_extra_flags";
@@ -330,8 +332,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->join();
 
         $servers = $this->getServerOptions();
+        $costBox = $this->template->render("shop/components/purchase/cost_box");
 
         return $this->template->render("shop/services/extra_flags/purchase_form", [
+            "costBox" => $costBox,
             "servers" => $servers,
             "serviceId" => $this->service->getId(),
             "types" => $types,
