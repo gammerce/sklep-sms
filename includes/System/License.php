@@ -10,8 +10,6 @@ use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-// TODO Fix powered by sklep-sms on retro theme
-
 class License
 {
     const CACHE_TTL = 10 * 60;
