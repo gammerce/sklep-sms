@@ -6,7 +6,6 @@ use App\PromoCode\QuantityType;
 use App\Support\Database;
 use DateTime;
 
-// TODO Remove service code payments
 // TODO Migrate service code payments
 // TODO Add used promo code along with bought service
 

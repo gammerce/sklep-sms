@@ -6,13 +6,8 @@ class ReplaceServiceCodeWithPromoCode extends Migration
 {
     public function up()
     {
-        // TODO Handle existing service codes
-        // server 0 === null
-        // uid 0 === null
-        // service 0 === null
-        // default quantity_type == PERCENTAGE, quantity == 100
-
         $this->executeQueries([
+            "UPDATE `ss_service_codes` SET `quantity` = 100",
             "ALTER TABLE `ss_service_codes` RENAME `ss_promo_codes`",
             "ALTER TABLE `ss_promo_codes` ADD COLUMN `quantity_type` VARCHAR(255) NOT NULL",
             "ALTER TABLE `ss_promo_codes` CHANGE COLUMN `quantity` `quantity` INT(11) NOT NULL",
@@ -27,6 +22,18 @@ class ReplaceServiceCodeWithPromoCode extends Migration
             "ALTER TABLE `ss_groups` CHANGE COLUMN `view_service_codes` `view_promo_codes` TINYINT(1) NOT NULL DEFAULT '0'",
             "ALTER TABLE `ss_groups` CHANGE COLUMN `manage_service_codes` `manage_promo_codes` TINYINT(1) NOT NULL DEFAULT '0'",
         ]);
+
+        foreach ($this->db->query("SELECT * FROM `ss_service_codes`") as $serviceCode) {
+            $this->db
+                ->statement(
+                    "UPDATE `ss_service_codes` SET `quantity_type` = 'percentage', `server_id` = ?, `user_id` = ? WHERE `id` = ?"
+                )
+                ->execute([
+                    $serviceCode["server"] ?: null,
+                    $serviceCode["user_id"] ?: null,
+                    $serviceCode["id"],
+                ]);
+        }
 
         $this->db->query(
             <<<EOF

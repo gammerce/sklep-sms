@@ -73,6 +73,8 @@ use App\View\Renders\PurchasePriceRenderer;
 use InvalidArgumentException;
 use UnexpectedValueException;
 
+// TODO Fix purchasing service when forever service already exists
+
 class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceAdminManage,
     IServiceCreate,

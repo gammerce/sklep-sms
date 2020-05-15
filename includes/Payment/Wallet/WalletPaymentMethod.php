@@ -74,8 +74,6 @@ class WalletPaymentMethod implements IPaymentMethod
             throw new PaymentProcessingException("no_money", $this->lang->t("not_enough_money"));
         }
 
-        // TODO Test payment with 0 pln
-
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentId,
         ]);
