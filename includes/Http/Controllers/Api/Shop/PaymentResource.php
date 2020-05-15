@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class PaymentResource
 {
@@ -15,10 +18,12 @@ class PaymentResource
         $transactionId,
         Request $request,
         PaymentService $paymentService,
-        PurchaseDataService $purchaseDataService
+        PurchaseDataService $purchaseDataService,
+        TranslationManager $translationManager
     ) {
-        $purchase = $purchaseDataService->restorePurchase($transactionId);
+        $lang = $translationManager->user();
 
+        $purchase = $purchaseDataService->restorePurchase($transactionId);
         if (!$purchase) {
             throw new EntityNotFoundException();
         }
@@ -31,22 +36,31 @@ class PaymentResource
             Purchase::PAYMENT_SMS_CODE => $smsCode,
         ]);
 
-        $paymentResult = $paymentService->makePayment($purchase);
-        $paymentStatus = $paymentResult->getStatus();
-
-        if ($paymentStatus === "purchased") {
-            $purchaseDataService->deletePurchase($purchase);
-        } elseif ($paymentStatus === "external") {
-            // Let's store changes made to purchase object
-            // since it will be used later
-            $purchaseDataService->storePurchase($purchase);
+        try {
+            $paymentResult = $paymentService->makePayment($purchase);
+        } catch (PaymentProcessingException $e) {
+            return new ApiResponse($e->getCode(), $e->getMessage(), false);
         }
 
-        return new ApiResponse(
-            $paymentResult->getStatus(),
-            $paymentResult->getText(),
-            $paymentResult->isPositive(),
-            $paymentResult->getData()
-        );
+        switch ($paymentResult->getType()) {
+            case PaymentResultType::PURCHASED():
+                $purchaseDataService->deletePurchase($purchase);
+
+                return new ApiResponse("purchased", $lang->t("purchase_success"), true, [
+                    "bsid" => $paymentResult->getData(),
+                ]);
+
+            case PaymentResultType::EXTERNAL():
+                // Let's store changes made to purchase object
+                // since it will be used later
+                $purchaseDataService->storePurchase($purchase);
+
+                return new ApiResponse("external", $lang->t("external_payment_prepared"), true, [
+                    "data" => $paymentResult->getData(),
+                ]);
+
+            default:
+                throw new UnexpectedValueException("Unexpected result type");
+        }
     }
 }

@@ -3,13 +3,15 @@ namespace App\Payment\Transfer;
 
 use App\Managers\PaymentModuleManager;
 use App\Managers\ServiceManager;
+use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
-use App\Support\Result;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -35,11 +37,15 @@ class TransferPaymentMethod implements IPaymentMethod
     /** @var PromoCodeService */
     private $promoCodeService;
 
+    /** @var TransferPaymentService */
+    private $transferPaymentService;
+
     public function __construct(
         ServiceManager $serviceManager,
         PriceTextService $priceTextService,
         PromoCodeService $promoCodeService,
         TranslationManager $translationManager,
+        TransferPaymentService $transferPaymentService,
         PaymentModuleManager $paymentModuleManager,
         Settings $settings
     ) {
@@ -49,6 +55,7 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->settings = $settings;
         $this->paymentModuleManager = $paymentModuleManager;
         $this->promoCodeService = $promoCodeService;
+        $this->transferPaymentService = $transferPaymentService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
@@ -78,6 +85,12 @@ class TransferPaymentMethod implements IPaymentMethod
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
     }
 
+    /**
+     * @param Purchase $purchase
+     * @param IServicePurchase $serviceModule
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
@@ -108,13 +121,36 @@ class TransferPaymentMethod implements IPaymentMethod
         $service = $this->serviceManager->getService($purchase->getServiceId());
         $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 
-        $data = $paymentModule->prepareTransfer($price, $purchase);
+        if ($price === 0) {
+            return $this->makeSyncPayment($purchase);
+        } else {
+            return $this->makeAsyncPayment($paymentModule, $price, $purchase);
+        }
+    }
 
-        return new Result(
-            "external",
-            $this->lang->t("external_payment_prepared"),
-            true,
-            compact("data")
+    private function makeSyncPayment(Purchase $purchase)
+    {
+        // TODO Test it
+        $finalizedPayment = (new FinalizedPayment())
+            ->setStatus(true)
+            ->setOrderId(generate_id(16))
+            ->setCost(0)
+            ->setIncome(0)
+            ->setTransactionId($purchase->getId())
+            ->setExternalServiceId("promo_code")
+            ->setOutput("OK");
+
+        $boughtServiceId = $this->transferPaymentService->finalizePurchase(
+            $purchase,
+            $finalizedPayment
         );
+
+        return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
+    }
+
+    private function makeAsyncPayment(SupportTransfer $paymentModule, $price, Purchase $purchase)
+    {
+        $data = $paymentModule->prepareTransfer($price, $purchase);
+        return new PaymentResult(PaymentResultType::EXTERNAL(), $data);
     }
 }

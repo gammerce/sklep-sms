@@ -5,19 +5,9 @@ use Exception;
 
 class PaymentProcessingException extends Exception
 {
-    private $status;
-
-    public function __construct($status, $message)
+    public function __construct($code, $message, Exception $previous = null)
     {
-        parent::__construct($message);
-        $this->status = $status;
-    }
-
-    /**
-     * @return string
-     */
-    public function getStatus()
-    {
-        return $this->status;
+        parent::__construct($message, 0, $previous);
+        $this->code = $code;
     }
 }

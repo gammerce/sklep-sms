@@ -771,3 +771,12 @@ function generate_uuid4()
         mt_rand(0, 0xffff)
     );
 }
+
+/**
+ * @param int $length
+ * @return string
+ */
+function generate_id($length = 16)
+{
+    return substr(hash("sha256", generate_uuid4()), 0, $length);
+}

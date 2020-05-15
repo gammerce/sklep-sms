@@ -48,15 +48,15 @@ class TransferPaymentServiceTest extends TestCase
         $serviceModule = $serviceModuleManager->get($serviceId);
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'server_id' => $server->getId(),
-            'transfer_price' => 4080,
+            "service_id" => $serviceId,
+            "server_id" => $server->getId(),
+            "transfer_price" => 4080,
         ]);
 
         $purchase = (new Purchase(new User()))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
-                'type' => ExtraFlagType::TYPE_SID,
+                "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPayment([
                 Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
@@ -67,15 +67,15 @@ class TransferPaymentServiceTest extends TestCase
             ->setDesc("Description");
 
         // when
-        $payResult = $transferPaymentMethod->pay($purchase, $serviceModule);
+        $paymentResult = $transferPaymentMethod->pay($purchase, $serviceModule);
         $finalizedPayment = $paymentModule->finalizeTransfer(
             [],
             [
-                'tr_id' => "abc",
-                'tr_amount' => $payResult->getDatum("data")["kwota"],
-                'tr_crc' => $payResult->getDatum("data")["crc"],
-                'id' => "tpay",
-                'md5sum' => "xyz",
+                "tr_id" => "abc",
+                "tr_amount" => $paymentResult->getData()["kwota"],
+                "tr_crc" => $paymentResult->getData()["crc"],
+                "id" => "tpay",
+                "md5sum" => "xyz",
             ]
         );
         $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct

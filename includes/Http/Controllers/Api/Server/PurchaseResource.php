@@ -5,11 +5,14 @@ use App\Exceptions\ValidationException;
 use App\Http\Responses\ServerResponseFactory;
 use App\Http\Services\PurchaseService;
 use App\Managers\ServiceModuleManager;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResultType;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\System\ServerAuth;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
+use UnexpectedValueException;
 
 class PurchaseResource
 {
@@ -35,7 +38,6 @@ class PurchaseResource
         }
 
         $serviceModule = $serviceModuleManager->get($request->request->get('service_id'));
-
         if (!($serviceModule instanceof IServicePurchaseExternal)) {
             return $responseFactory->create(
                 $acceptHeader,
@@ -46,7 +48,7 @@ class PurchaseResource
         }
 
         try {
-            $purchaseResult = $purchaseService->purchase(
+            $paymentResult = $purchaseService->purchase(
                 $serviceModule,
                 $server,
                 $request->request->all()
@@ -62,15 +64,23 @@ class PurchaseResource
                 false,
                 compact('warnings')
             );
+        } catch (PaymentProcessingException $e) {
+            return $responseFactory->create($acceptHeader, $e->getCode(), $e->getMessage(), false);
         }
 
-        return $responseFactory->create(
-            $acceptHeader,
-            $purchaseResult->getStatus(),
-            $purchaseResult->getText(),
-            $purchaseResult->isPositive(),
-            $purchaseResult->getData()
-        );
+        if ($paymentResult->getType()->equals(PaymentResultType::PURCHASED())) {
+            return $responseFactory->create(
+                $acceptHeader,
+                "purchased",
+                $lang->t("purchase_success"),
+                true,
+                [
+                    "bsid" => $paymentResult->getData(),
+                ]
+            );
+        }
+
+        throw new UnexpectedValueException("Unexpected payment result type");
     }
 
     private function isCorrectlySigned(Request $request, $secret)

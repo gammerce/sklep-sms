@@ -7,9 +7,10 @@ use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
@@ -158,11 +159,9 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $link = array_get($result, "link");
 
         if ($status === "success") {
-            return new Result("external", $this->lang->t("external_payment_prepared"), true, [
-                "data" => [
-                    "method" => "GET",
-                    "url" => $link,
-                ],
+            return new PaymentResult(PaymentResultType::EXTERNAL(), [
+                "method" => "GET",
+                "url" => $link,
             ]);
         }
 
@@ -178,17 +177,15 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $valuePartner = price_to_int(array_get($body, "valuepartner"));
         $control = array_get($body, "control");
 
-        $finalizedPayment = new FinalizedPayment();
-        $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId($id);
-        $finalizedPayment->setCost($valueGross);
-        $finalizedPayment->setIncome($valuePartner);
-        $finalizedPayment->setTransactionId($control);
-        $finalizedPayment->setExternalServiceId($id);
-        $finalizedPayment->setTestMode(false);
-        $finalizedPayment->setOutput("OK");
-
-        return $finalizedPayment;
+        return (new FinalizedPayment())
+            ->setStatus($this->isPaymentValid($body))
+            ->setOrderId($id)
+            ->setCost($valueGross)
+            ->setIncome($valuePartner)
+            ->setTransactionId($control)
+            ->setExternalServiceId($id)
+            ->setTestMode(false)
+            ->setOutput("OK");
     }
 
     public function getSmsCode()

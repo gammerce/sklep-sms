@@ -1,17 +1,18 @@
 <?php
 namespace App\Http\Services;
 
+use App\Exceptions\InvalidServiceModuleException;
 use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Models\Server;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
-use App\Support\Result;
 use App\System\Auth;
 use App\System\Settings;
-use UnexpectedValueException;
 
 class PurchaseService
 {
@@ -43,13 +44,15 @@ class PurchaseService
      * @param ServiceModule $serviceModule
      * @param Server $server
      * @param array $body
-     * @return Result
+     * @return PaymentResult
      * @throws ValidationException
+     * @throws PaymentProcessingException
+     * @throws InvalidServiceModuleException
      */
     public function purchase(ServiceModule $serviceModule, Server $server, array $body)
     {
         if (!($serviceModule instanceof IServicePurchaseExternal)) {
-            throw new UnexpectedValueException();
+            throw new InvalidServiceModuleException();
         }
 
         $type = as_int(array_get($body, "type"));

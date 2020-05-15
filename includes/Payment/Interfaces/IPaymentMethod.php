@@ -1,10 +1,11 @@
 <?php
 namespace App\Payment\Interfaces;
 
+use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Support\Result;
 
 interface IPaymentMethod
 {
@@ -23,8 +24,9 @@ interface IPaymentMethod
     /**
      * @param Purchase $purchase
      * @param IServicePurchase $serviceModule
-     * @return Result
+     * @return PaymentResult
      * @throws PaymentProcessingException
+     * @throws ValidationException
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule);
 }

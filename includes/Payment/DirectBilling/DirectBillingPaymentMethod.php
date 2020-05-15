@@ -4,12 +4,12 @@ namespace App\Payment\DirectBilling;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
-use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportDirectBilling;
@@ -78,7 +78,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /**
      * @param Purchase $purchase
      * @param IServicePurchase $serviceModule
-     * @return Result
+     * @return PaymentResult
      * @throws PaymentProcessingException
      */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)

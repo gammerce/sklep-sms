@@ -7,6 +7,7 @@ use App\Models\PaymentPlatform;
 use App\Models\Price;
 use App\Models\Purchase;
 use App\Models\Server;
+use App\Payment\General\PaymentResultType;
 use App\Repositories\BoughtServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Cssetti;
@@ -70,12 +71,11 @@ trait MakePurchaseConcern
         );
 
         $serviceModule = $serviceModuleManager->get("vip");
-        $result = $purchaseService->purchase($serviceModule, $server, $attributes);
+        $paymentResult = $purchaseService->purchase($serviceModule, $server, $attributes);
 
-        if ($result->getStatus() !== "purchased") {
-            throw new UnexpectedValueException();
+        if ($paymentResult->getType()->equals(PaymentResultType::PURCHASED())) {
+            return $boughtServiceRepository->get($paymentResult->getData());
         }
-
-        return $boughtServiceRepository->get($result->getDatum("bsid"));
+        throw new UnexpectedValueException();
     }
 }

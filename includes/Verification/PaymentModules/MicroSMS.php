@@ -162,16 +162,14 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         $isTest = strtolower(array_get($body, "test")) === "true";
         $amount = price_to_int(array_get($body, "amountPay"));
 
-        $finalizedPayment = new FinalizedPayment();
-        $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId(array_get($body, "orderID"));
-        $finalizedPayment->setCost($amount);
-        $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setTransactionId(array_get($body, "control"));
-        $finalizedPayment->setTestMode($isTest);
-        $finalizedPayment->setOutput("OK");
-
-        return $finalizedPayment;
+        return (new FinalizedPayment())
+            ->setStatus($this->isPaymentValid($body))
+            ->setOrderId(array_get($body, "orderID"))
+            ->setCost($amount)
+            ->setIncome($amount)
+            ->setTransactionId(array_get($body, "control"))
+            ->setTestMode($isTest)
+            ->setOutput("OK");
     }
 
     private function isPaymentValid(array $body)

@@ -3,11 +3,12 @@ namespace App\Payment\Wallet;
 
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\PromoCode\PromoCodeService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
-use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -63,6 +64,12 @@ class WalletPaymentMethod implements IPaymentMethod
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }
 
+    /**
+     * @param Purchase $purchase
+     * @param IServicePurchase $serviceModule
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         if (!$purchase->user->exists()) {
@@ -97,8 +104,6 @@ class WalletPaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return new Result("purchased", $this->lang->t("purchase_success"), true, [
-            "bsid" => $boughtServiceId,
-        ]);
+        return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 }

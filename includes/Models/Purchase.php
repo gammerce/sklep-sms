@@ -84,7 +84,7 @@ class Purchase
     public function __construct(User $user)
     {
         $this->user = $user;
-        $this->id = $this->generateId();
+        $this->id = generate_id(32);
     }
 
     public function getServiceId()
@@ -258,13 +258,5 @@ class Purchase
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    private function generateId()
-    {
-        return substr(generate_uuid4(), 0, 32);
     }
 }

@@ -1,17 +1,19 @@
 <?php
 namespace App\Payment\Sms;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Services\PriceTextService;
 use App\Services\SmsPriceService;
-use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
@@ -93,6 +95,13 @@ class SmsPaymentMethod implements IPaymentMethod
             );
     }
 
+    /**
+     * @param Purchase $purchase
+     * @param IServicePurchase $serviceModule
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     * @throws ValidationException
+     */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
@@ -146,9 +155,7 @@ class SmsPaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return new Result("purchased", $this->lang->t("purchase_success"), true, [
-            "bsid" => $boughtServiceId,
-        ]);
+        return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 
     private function getSmsExceptionMessage(SmsPaymentException $e)

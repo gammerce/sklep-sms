@@ -3,6 +3,8 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
@@ -68,11 +70,11 @@ class PaymentServiceTest extends TestCase
             ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
@@ -116,11 +118,11 @@ class PaymentServiceTest extends TestCase
             ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
     }
@@ -129,6 +131,10 @@ class PaymentServiceTest extends TestCase
     public function cannot_pay_with_expired_sms_code()
     {
         // given
+        $this->expectException(PaymentProcessingException::class);
+        $this->expectExceptionCode("bad_code");
+        $this->expectExceptionMessage("Wprowadzono błędny kod zwrotny.");
+
         $this->mockCSSSettiGetData();
 
         /** @var SmsCodeRepository $smsCodeRepository */
@@ -137,12 +143,7 @@ class PaymentServiceTest extends TestCase
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
         ]);
-        $smsCode = $smsCodeRepository->create(
-            "QWERTY",
-            200,
-            false,
-            new DateTime("2020-02-02 10:00:00")
-        );
+        $smsCodeRepository->create("QWERTY", 200, false, new DateTime("2020-02-02 10:00:00"));
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
@@ -164,11 +165,7 @@ class PaymentServiceTest extends TestCase
             ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
-
-        // then
-        $this->assertSame("bad_code", $payResult->getStatus());
-        $this->assertNotNull($smsCodeRepository->get($smsCode->getId()));
+        $this->paymentService->makePayment($purchase);
     }
 
     /** @test */
@@ -202,11 +199,11 @@ class PaymentServiceTest extends TestCase
             ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertEquals(-1, $boughtService->getAmount());
         $this->assertSame("STEAM_1:0:22309350", $boughtService->getAuthData());

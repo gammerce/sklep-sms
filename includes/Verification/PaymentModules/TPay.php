@@ -76,17 +76,15 @@ class TPay extends PaymentModule implements SupportTransfer
         // e.g. "40.80"
         $amount = price_to_int(array_get($body, "tr_amount"));
 
-        $finalizedPayment = new FinalizedPayment();
-        $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId(array_get($body, "tr_id"));
-        $finalizedPayment->setCost($amount);
-        $finalizedPayment->setIncome($amount);
-        $finalizedPayment->setTransactionId(array_get($body, "tr_crc"));
-        $finalizedPayment->setExternalServiceId(array_get($body, "id"));
-        $finalizedPayment->setTestMode(array_get($body, "test_mode", false));
-        $finalizedPayment->setOutput("TRUE");
-
-        return $finalizedPayment;
+        return (new FinalizedPayment())
+            ->setStatus($this->isPaymentValid($body))
+            ->setOrderId(array_get($body, "tr_id"))
+            ->setCost($amount)
+            ->setIncome($amount)
+            ->setTransactionId(array_get($body, "tr_crc"))
+            ->setExternalServiceId(array_get($body, "id"))
+            ->setTestMode(array_get($body, "test_mode", false))
+            ->setOutput("TRUE");
     }
 
     private function isPaymentValid(array $body)

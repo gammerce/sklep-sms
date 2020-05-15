@@ -47,6 +47,7 @@ class TransferPaymentService
     /**
      * @param Purchase $purchase
      * @param FinalizedPayment $finalizedPayment
+     * @return int
      * @throws InvalidPaidAmountException
      * @throws PaymentRejectedException
      * @throws InvalidServiceModuleException
@@ -94,5 +95,7 @@ class TransferPaymentService
         );
 
         $this->purchaseDataService->deletePurchase($purchase);
+
+        return $boughtServiceId;
     }
 }
