@@ -4,6 +4,7 @@ namespace App\Payment\Sms;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\PromoCode\PromoCodeService;
+use App\Services\PriceTextService;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 
@@ -15,10 +16,17 @@ class SmsPriceService
     /** @var PromoCodeService */
     private $promoCodeService;
 
-    public function __construct(Settings $settings, PromoCodeService $promoCodeService)
-    {
+    /** @var PriceTextService */
+    private $priceTextService;
+
+    public function __construct(
+        Settings $settings,
+        PromoCodeService $promoCodeService,
+        PriceTextService $priceTextService
+    ) {
         $this->settings = $settings;
         $this->promoCodeService = $promoCodeService;
+        $this->priceTextService = $priceTextService;
     }
 
     /**
@@ -28,6 +36,10 @@ class SmsPriceService
      */
     public function isPriceAvailable($smsPrice, SupportSms $paymentModule)
     {
+        if ($smsPrice === 0) {
+            return true;
+        }
+
         $smsNumbers = $paymentModule::getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
@@ -108,5 +120,28 @@ class SmsPriceService
         }
 
         return $price;
+    }
+
+    /**
+     * @param Purchase $purchase
+     * @return array
+     */
+    public function getOldAndNewPrice(Purchase $purchase)
+    {
+        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+        $promoCode = $purchase->getPromoCode();
+
+        if ($promoCode) {
+            $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
+
+            return [
+                "price" => $this->priceTextService->getPriceGrossText($discountedPrice),
+                "old_price" => $this->priceTextService->getPlainPriceGross($price),
+            ];
+        }
+
+        return [
+            "price" => $this->priceTextService->getPriceGrossText($price),
+        ];
     }
 }

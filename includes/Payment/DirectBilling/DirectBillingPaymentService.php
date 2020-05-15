@@ -10,6 +10,7 @@ use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
+use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\Interfaces\IServicePurchase;
 
 class DirectBillingPaymentService
@@ -46,6 +47,7 @@ class DirectBillingPaymentService
     /**
      * @param Purchase $purchase
      * @param FinalizedPayment $finalizedPayment
+     * @return int
      * @throws InvalidPaidAmountException
      * @throws PaymentRejectedException
      * @throws InvalidServiceModuleException
@@ -80,10 +82,10 @@ class DirectBillingPaymentService
             Purchase::PAYMENT_PAYMENT_ID => $paymentDirectBilling->getId(),
         ]);
 
+        // TODO Move it to charge wallet module
         // Set charge amount to income value, since it was not set during the purchase process.
         // We don't know up front the income value.
-        // TODO Move it to charge wallet module
-        if (!$purchase->getOrder(Purchase::ORDER_QUANTITY)) {
+        if ($serviceModule instanceof ChargeWalletServiceModule) {
             $purchase->setOrder([Purchase::ORDER_QUANTITY => $finalizedPayment->getIncome()]);
         }
 
@@ -100,5 +102,7 @@ class DirectBillingPaymentService
         );
 
         $this->purchaseDataService->deletePurchase($purchase);
+
+        return $boughtServiceId;
     }
 }

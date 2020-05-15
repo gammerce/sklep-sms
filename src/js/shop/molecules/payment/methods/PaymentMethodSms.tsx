@@ -6,14 +6,15 @@ import {PaymentMethod} from "../../../types/transaction";
 import {PaymentPrice} from "../../../components/PaymentPrice";
 
 interface Props {
-    priceGross: string;
+    price: string;
+    oldPrice?: string;
     smsCode: string;
     smsNumber: string;
     onPay(method: PaymentMethod, body?: Dict);
 }
 
 export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
-    const {priceGross, smsCode, smsNumber, onPay} = props;
+    const {price, oldPrice, smsCode, smsNumber, onPay} = props;
     const [returnCode, setReturnCode] = useState<string>("");
     const [detailsVisible, setDetailsVisible] = useState<boolean>(false);
 
@@ -39,7 +40,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                 </header>
                 <div className="card-content">
                     <div>
-                        <PaymentPrice price={priceGross} />
+                        <PaymentPrice price={price} oldPrice={oldPrice} />
                     </div>
 
                     <div className={classNames("sms-details", {

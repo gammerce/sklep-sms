@@ -105,7 +105,7 @@ class TransferPaymentMethod implements IPaymentMethod
             ->setIncome(0)
             ->setTransactionId($purchase->getId())
             ->setExternalServiceId("promo_code")
-            ->setOutput("OK");
+            ->setTestMode(false);
 
         $boughtServiceId = $this->transferPaymentService->finalizePurchase(
             $purchase,

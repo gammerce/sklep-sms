@@ -2,9 +2,11 @@
 namespace App\Payment\DirectBilling;
 
 use App\Managers\PaymentModuleManager;
+use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Translation\TranslationManager;
@@ -22,14 +24,19 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     /** @var DirectBillingPriceService */
     private $directBillingPriceService;
 
+    /** @var DirectBillingPaymentService */
+    private $directBillingPaymentService;
+
     public function __construct(
         PaymentModuleManager $paymentModuleManager,
         DirectBillingPriceService $directBillingPriceService,
+        DirectBillingPaymentService $directBillingPaymentService,
         TranslationManager $translationManager
     ) {
         $this->lang = $translationManager->user();
         $this->paymentModuleManager = $paymentModuleManager;
         $this->directBillingPriceService = $directBillingPriceService;
+        $this->directBillingPaymentService = $directBillingPaymentService;
     }
 
     public function getPaymentDetails(Purchase $purchase)
@@ -75,6 +82,30 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
+        if ($price === 0) {
+            return $this->makeSyncPayment($purchase);
+        }
+
         return $paymentModule->prepareDirectBilling($price, $purchase);
+    }
+
+    private function makeSyncPayment(Purchase $purchase)
+    {
+        // TODO Test it
+        $finalizedPayment = (new FinalizedPayment())
+            ->setStatus(true)
+            ->setOrderId(generate_id(16))
+            ->setCost(0)
+            ->setIncome(0)
+            ->setTransactionId($purchase->getId())
+            ->setExternalServiceId("promo_code")
+            ->setTestMode(false);
+
+        $boughtServiceId = $this->directBillingPaymentService->finalizePurchase(
+            $purchase,
+            $finalizedPayment
+        );
+
+        return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 }

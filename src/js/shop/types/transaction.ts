@@ -13,7 +13,8 @@ export interface Transaction {
             old_price?: string;
         };
         sms?: {
-            price_gross: string;
+            price: string;
+            old_price?: string;
             sms_code: string;
             sms_number: string;
         };

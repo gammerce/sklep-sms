@@ -12,21 +12,15 @@ use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Services\PriceTextService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\SmsPaymentException;
 
-// TODO Allow payment with 0 PLN
-
 class SmsPaymentMethod implements IPaymentMethod
 {
     /** @var SmsPriceService */
     private $smsPriceService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
 
     /** @var SmsPaymentService */
     private $smsPaymentService;
@@ -39,13 +33,11 @@ class SmsPaymentMethod implements IPaymentMethod
 
     public function __construct(
         SmsPriceService $smsPriceService,
-        PriceTextService $priceTextService,
         SmsPaymentService $smsPaymentService,
         TranslationManager $translationManager,
         PaymentModuleManager $paymentModuleManager
     ) {
         $this->smsPriceService = $smsPriceService;
-        $this->priceTextService = $priceTextService;
         $this->smsPaymentService = $smsPaymentService;
         $this->lang = $translationManager->user();
         $this->paymentModuleManager = $paymentModuleManager;
@@ -66,13 +58,10 @@ class SmsPaymentMethod implements IPaymentMethod
             $smsPaymentModule
         );
 
-        return [
-            "price_gross" => $this->priceTextService->getPriceGrossText(
-                $this->smsPriceService->getPrice($purchase)
-            ),
+        return array_merge($this->smsPriceService->getOldAndNewPrice($purchase), [
             "sms_code" => $smsPaymentModule->getSmsCode(),
             "sms_number" => $smsNumber ? $smsNumber->getNumber() : null,
-        ];
+        ]);
     }
 
     public function isAvailable(Purchase $purchase)

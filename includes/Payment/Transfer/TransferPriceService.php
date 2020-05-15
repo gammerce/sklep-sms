@@ -47,6 +47,7 @@ class TransferPriceService
     public function getOldAndNewPrice(Purchase $purchase)
     {
         $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER);
+
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {
