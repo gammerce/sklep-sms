@@ -61,6 +61,9 @@ class TransactionResource
             })
             ->all();
 
-        return new JsonResponse($paymentMethods);
+        return new JsonResponse([
+            "promo_code" => $serviceModule instanceof IServicePromoCode,
+            "payment_methods" => $paymentMethods,
+        ]);
     }
 }

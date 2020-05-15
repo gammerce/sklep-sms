@@ -189,7 +189,7 @@ return [
     'price_add' => 'Price added successfully.',
     'price_edit' => 'Price edited successfully.',
     'price_no_edit' => 'Could not edit price.',
-    'pricing' => 'Price list',
+    'pricing' => 'Pricing',
     'privilege_acp' => 'Access to ACP',
     'privilege_manage_antispam_questions' => 'Antispam questions management',
     'privilege_manage_groups' => 'Groups management',

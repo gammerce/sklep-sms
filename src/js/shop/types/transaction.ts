@@ -6,21 +6,24 @@ export enum PaymentMethod {
 }
 
 export interface Transaction {
-    direct_billing?: {
-        price: string;
-        old_price?: string;
-    };
-    sms?: {
-        price_gross: string;
-        sms_code: string;
-        sms_number: string;
-    };
-    transfer?: {
-        price: string;
-        old_price?: string;
-    };
-    wallet?: {
-        price: string;
-        old_price?: string;
+    promo_code: boolean;
+    payment_methods: {
+        direct_billing?: {
+            price: string;
+            old_price?: string;
+        };
+        sms?: {
+            price_gross: string;
+            sms_code: string;
+            sms_number: string;
+        };
+        transfer?: {
+            price: string;
+            old_price?: string;
+        };
+        wallet?: {
+            price: string;
+            old_price?: string;
+        };
     };
 }

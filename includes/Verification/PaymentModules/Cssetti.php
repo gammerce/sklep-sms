@@ -64,9 +64,9 @@ class Cssetti extends PaymentModule implements SupportSms
     {
         $this->tryToFetchSmsData();
 
-        $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2CheckCode.php', [
-            'UserId' => $this->getAccountId(),
-            'Code' => $returnCode,
+        $response = $this->requester->get("https://cssetti.pl/Api/SmsApiV2CheckCode.php", [
+            "UserId" => $this->getAccountId(),
+            "Code" => $returnCode,
         ]);
 
         if (!$response) {
@@ -81,15 +81,15 @@ class Cssetti extends PaymentModule implements SupportSms
 
         $content = strval(floatval($content));
 
-        if ($content == '0') {
+        if ($content == "0") {
             throw new BadCodeException();
         }
 
-        if ($content == '-1') {
+        if ($content == "-1") {
             throw new WrongCredentialsException();
         }
 
-        if ($content == '-2' || $content == '-3') {
+        if ($content == "-2" || $content == "-3") {
             throw new ExternalErrorException();
         }
 
@@ -118,7 +118,7 @@ class Cssetti extends PaymentModule implements SupportSms
 
     private function getAccountId()
     {
-        return $this->getData('account_id');
+        return $this->getData("account_id");
     }
 
     private function tryToFetchSmsData()
@@ -130,7 +130,7 @@ class Cssetti extends PaymentModule implements SupportSms
 
     private function fetchSmsData()
     {
-        $response = $this->requester->get('https://cssetti.pl/Api/SmsApiV2GetData.php');
+        $response = $this->requester->get("https://cssetti.pl/Api/SmsApiV2GetData.php");
 
         if (!$response) {
             $this->fileLogger->error("Could not get cssetti sms data.");
@@ -140,11 +140,11 @@ class Cssetti extends PaymentModule implements SupportSms
         $data = $response->json();
 
         // cssetti provides SMS code in the response
-        $this->smsCode = $data['Code'];
+        $this->smsCode = $data["Code"];
 
-        foreach ($data['Numbers'] as $numberData) {
-            $this->numbers[strval(floatval($numberData['TopUpAmount']))] = strval(
-                $numberData['Number']
+        foreach ($data["Numbers"] as $numberData) {
+            $this->numbers[strval(floatval($numberData["TopUpAmount"]))] = strval(
+                $numberData["Number"]
             );
         }
     }

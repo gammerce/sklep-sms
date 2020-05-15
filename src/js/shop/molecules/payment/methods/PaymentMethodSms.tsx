@@ -20,7 +20,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
     const onPayClick = () => {
         if (detailsVisible) {
             onPay(PaymentMethod.Sms, {
-                sms_code: smsCode
+                sms_code: returnCode,
             });
         } else {
             setDetailsVisible(true);
