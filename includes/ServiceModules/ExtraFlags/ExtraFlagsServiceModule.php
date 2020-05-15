@@ -487,6 +487,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_SERVER)
         );
 
+        $promoCode = $purchase->getPromoCode();
+
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
@@ -498,6 +500,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getOrder("auth_data"),
             $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null,
             [
                 "type" => $purchase->getOrder("type"),
                 "password" => $purchase->getOrder("password"),

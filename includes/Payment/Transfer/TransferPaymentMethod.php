@@ -97,7 +97,7 @@ class TransferPaymentMethod implements IPaymentMethod
 
     private function makeSyncPayment(Purchase $purchase)
     {
-        // TODO Test it
+        // TODO IMPORTANT Test it
         $finalizedPayment = (new FinalizedPayment())
             ->setStatus(true)
             ->setOrderId(generate_id(8))

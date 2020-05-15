@@ -37,13 +37,25 @@ class BoughtServiceRepository
         $quantity,
         $authData,
         $email,
+        $promoCode,
         $extraData = []
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_bought_services` " .
-                    "SET `user_id` = ?, `payment` = ?, `payment_id` = ?, `service_id` = ?, " .
-                    "`server_id` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
+                <<<EOF
+INSERT INTO `ss_bought_services` 
+SET
+    `user_id` = ?,
+    `payment` = ?,
+    `payment_id` = ?,
+    `service_id` = ?,
+    `server_id` = ?,
+    `amount` = ?,
+    `auth_data` = ?,
+    `email` = ?,
+    `promo_code` = ?,
+    `extra_data` = ?
+EOF
             )
             ->execute([
                 $userId ?: 0,
@@ -54,6 +66,7 @@ class BoughtServiceRepository
                 $quantity,
                 $authData ?: "",
                 $email ?: "",
+                $promoCode,
                 json_encode($extraData),
             ]);
 
@@ -72,6 +85,7 @@ class BoughtServiceRepository
             $data["amount"],
             as_string($data["auth_data"]),
             as_string($data["email"]),
+            as_string($data["promo_code"]),
             json_decode($data["extra_data"])
         );
     }

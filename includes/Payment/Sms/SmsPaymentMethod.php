@@ -115,7 +115,7 @@ class SmsPaymentMethod implements IPaymentMethod
         }
 
         if ($price === 0) {
-            // TODO Omit sms code verification
+            // TODO IMPORTANT Omit sms code verification
             dd("Not implemented");
         }
 

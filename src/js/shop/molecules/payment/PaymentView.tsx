@@ -18,7 +18,7 @@ export const PaymentView: FunctionComponent = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
 
-    // TODO Handle API errors
+    // TODO IMPORTANT Handle API errors
 
     useEffect(
         () => {

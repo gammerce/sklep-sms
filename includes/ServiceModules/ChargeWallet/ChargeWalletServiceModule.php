@@ -125,6 +125,8 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             $purchase->getOrder(Purchase::ORDER_QUANTITY)
         );
 
+        $promoCode = $purchase->getPromoCode();
+
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
@@ -135,7 +137,8 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY) / 100,
             $purchase->user->getUsername(),
-            $purchase->getEmail()
+            $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null
         );
     }
 

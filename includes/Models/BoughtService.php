@@ -30,6 +30,9 @@ class BoughtService
     /** @var string */
     private $email;
 
+    /** @var string|null */
+    private $promoCode;
+
     /** @var array */
     private $extraData;
 
@@ -43,6 +46,7 @@ class BoughtService
         $amount,
         $authData,
         $email,
+        $promoCode,
         $extraData
     ) {
         $this->id = $id;
@@ -54,6 +58,7 @@ class BoughtService
         $this->amount = $amount;
         $this->authData = $authData;
         $this->email = $email;
+        $this->promoCode = $promoCode;
         $this->extraData = $extraData;
     }
 
@@ -109,6 +114,14 @@ class BoughtService
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPromoCode()
+    {
+        return $this->promoCode;
     }
 
     /** @return array */

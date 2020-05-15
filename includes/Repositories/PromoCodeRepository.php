@@ -6,9 +6,6 @@ use App\PromoCode\QuantityType;
 use App\Support\Database;
 use DateTime;
 
-// TODO Migrate service code payments
-// TODO Add used promo code along with bought service
-
 class PromoCodeRepository
 {
     /** @var Database */

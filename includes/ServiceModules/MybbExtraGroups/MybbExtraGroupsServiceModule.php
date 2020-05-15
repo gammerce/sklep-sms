@@ -404,6 +404,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
         $this->saveMybbUser($mybbUser);
 
+        $promoCode = $purchase->getPromoCode();
+
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
@@ -415,6 +417,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getOrder("username") . " ({$mybbUser->getUid()})",
             $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null,
             [
                 "uid" => $mybbUser->getUid(),
                 "groups" => implode(",", $this->groups),

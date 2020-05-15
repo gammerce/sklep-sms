@@ -21,6 +21,7 @@ class ReplaceServiceCodeWithPromoCode extends Migration
             "ALTER TABLE `ss_promo_codes` ADD COLUMN `usage_count` INT(11) NOT NULL DEFAULT 0",
             "ALTER TABLE `ss_groups` CHANGE COLUMN `view_service_codes` `view_promo_codes` TINYINT(1) NOT NULL DEFAULT '0'",
             "ALTER TABLE `ss_groups` CHANGE COLUMN `manage_service_codes` `manage_promo_codes` TINYINT(1) NOT NULL DEFAULT '0'",
+            "ALTER TABLE `ss_bought_services` ADD COLUMN `promo_code` VARCHAR(255) DEFAULT NULL",
         ]);
 
         foreach ($this->db->query("SELECT * FROM `ss_promo_codes`") as $serviceCode) {

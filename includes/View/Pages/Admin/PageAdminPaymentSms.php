@@ -18,6 +18,8 @@ use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use Symfony\Component\HttpFoundation\Request;
 
+// TODO Squash payments into one list
+
 class PageAdminPaymentSms extends PageAdmin
 {
     const PAGE_ID = "payment_sms";

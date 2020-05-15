@@ -48,7 +48,7 @@ return [
     'july' => 'July',
     'june' => 'June',
     'log_bought_service_info' =>
-        'Service was purchased [{1}]. Data: [{2}] Quantity: [{3}] Server: [{4}] Transaction ID: [{5}]. Email: [{6}][{7}] {8}({9})({10})',
+        'Service was purchased [{1}]. Data: [{2}] Quantity: [{3}] Server: [{4}] Transaction ID: [{5}] Promo Code: [{6}] Email: [{7}][{8}] {9}({10})({11})',
     'log_email_was_sent' => 'An e-mail was sent to an address: [{1}] saying: {2}',
     'log_expired_service_delete' => 'AUTOMAT: Player\'s expired service removed. {1}',
     'log_payment_remove_code_from_db' =>

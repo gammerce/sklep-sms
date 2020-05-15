@@ -48,7 +48,7 @@ return [
     'july' => 'Lipiec',
     'june' => 'Czerwiec',
     'log_bought_service_info' =>
-        'Zakupiono usługę [{1}]. Dane: [{2}] Ilość: [{3}] Serwer: [{4}] ID transakcji: [{5}]. Email: [{6}][{7}] {8}({9})({10})',
+        'Zakupiono usługę [{1}]. Dane: [{2}] Ilość: [{3}] Serwer: [{4}] ID transakcji: [{5}] Kod promocyjny: [{6}] Email: [{7}][{8}] {9}({10})({11})',
     'log_email_was_sent' => 'Wysłano e-maila na adres: [{1}] o treści: {2}',
     'log_expired_service_delete' => 'AUTOMAT: Usunięto wygasłą usługę użytkownika. {1}',
     'log_payment_remove_code_from_db' =>
