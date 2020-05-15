@@ -12,6 +12,8 @@ import {handleError} from "../../utils/utils";
 import {loader} from "../../../general/loader";
 import {PromoCodeBox} from "./PromoCodeBox";
 
+// TODO Accept 0PLN payment
+
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
 
