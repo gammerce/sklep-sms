@@ -30,6 +30,8 @@ function regenerate_token(identifier, button) {
                 loader.hide();
             },
             success: function(content) {
+                content = JSON.parse(content);
+
                 const box = $(button)
                     .closest(".row")
                     .find(".regenerated-token-box");
