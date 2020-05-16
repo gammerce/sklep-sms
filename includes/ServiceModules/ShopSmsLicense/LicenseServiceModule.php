@@ -164,7 +164,7 @@ class LicenseServiceModule extends ServiceModule implements
                 "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
                 "FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = m.service " .
+                "LEFT JOIN `ss_services` AS s ON s.id = m.service_id " .
                 "LEFT JOIN `ss_users` AS u ON u.uid = us.user_id " .
                 $where .
                 "ORDER BY us.id DESC " .
