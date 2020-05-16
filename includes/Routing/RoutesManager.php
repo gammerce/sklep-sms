@@ -86,6 +86,7 @@ use App\Http\Middlewares\ValidateLicense;
 use App\Install\ShopState;
 use App\System\Application;
 use App\System\Settings;
+use Exception;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -597,7 +598,11 @@ class RoutesManager
             return new RedirectResponse($this->url->to('/setup'));
         }
 
-        $this->settings->load();
+        try {
+            $this->settings->load();
+        } catch (Exception $e) {
+            //
+        }
 
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
