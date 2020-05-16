@@ -8,9 +8,9 @@ use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Models\Transaction;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
-use App\Payment\Sms\SmsPriceService;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -116,7 +116,7 @@ class SmsChargeWallet implements IChargeWallet
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => Purchase::METHOD_SMS,
+            "value" => PaymentMethod::SMS(),
             "text" => "SMS",
         ]);
 
@@ -138,7 +138,7 @@ class SmsChargeWallet implements IChargeWallet
 
         $body = $this->template->render("shop/services/charge_wallet/sms_body", [
             "smsList" => $smsList,
-            "type" => Purchase::METHOD_SMS,
+            "type" => PaymentMethod::SMS(),
         ]);
 
         return [$option, $body];

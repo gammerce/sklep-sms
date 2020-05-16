@@ -3,12 +3,6 @@ namespace App\Models;
 
 class Purchase
 {
-    const METHOD_ADMIN = "admin";
-    const METHOD_DIRECT_BILLING = "direct_billing";
-    const METHOD_SMS = "sms";
-    const METHOD_TRANSFER = "transfer";
-    const METHOD_WALLET = "wallet";
-
     const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
     const PAYMENT_DISABLED_SMS = "no_sms";
     const PAYMENT_DISABLED_TRANSFER = "no_transfer";

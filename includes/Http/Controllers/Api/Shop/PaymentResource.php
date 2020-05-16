@@ -5,6 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
@@ -28,7 +29,7 @@ class PaymentResource
             throw new EntityNotFoundException();
         }
 
-        $method = $request->request->get("method");
+        $method = new PaymentMethod($request->request->get("method"));
         $smsCode = trim($request->request->get("sms_code"));
 
         $purchase->setPayment([

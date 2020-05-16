@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Feature\Http\Api\Server;
 
-use App\Models\Purchase;
 use App\Models\Server;
+use App\Payment\General\PaymentMethod;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Other\OtherServiceModule;
@@ -67,7 +67,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
                 "auth_data" => $authData,
                 "password" => "",
                 "sms_code" => $smsCode,
-                "method" => Purchase::METHOD_SMS,
+                "method" => PaymentMethod::SMS(),
                 "price_id" => $price->getId(),
                 "ip" => "192.0.2.1",
                 "sign" => $sign,
@@ -91,7 +91,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
         $boughtServiceId = $matches[1];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
-        $this->assertEquals(Purchase::METHOD_SMS, $boughtService->getMethod());
+        $this->assertEquals(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals("monety", $boughtService->getServiceId());
     }
 }

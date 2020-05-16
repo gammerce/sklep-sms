@@ -7,6 +7,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Transaction;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
@@ -85,11 +86,11 @@ class TransferChargeWallet implements IChargeWallet
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => Purchase::METHOD_TRANSFER,
+            "value" => PaymentMethod::TRANSFER(),
             "text" => $this->lang->t("transfer_transfer"),
         ]);
         $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
-            "type" => Purchase::METHOD_TRANSFER,
+            "type" => PaymentMethod::TRANSFER(),
         ]);
 
         return [$option, $body];

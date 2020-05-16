@@ -1,8 +1,11 @@
 <?php
 namespace Tests\Feature\Payment;
 
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\User;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
@@ -11,8 +14,6 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -59,7 +60,7 @@ class TransferPaymentServiceTest extends TestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPayment([
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_TRANSFER,
+                Purchase::PAYMENT_METHOD => PaymentMethod::TRANSFER(),
                 Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
             ])
             ->setUsingPrice($price)

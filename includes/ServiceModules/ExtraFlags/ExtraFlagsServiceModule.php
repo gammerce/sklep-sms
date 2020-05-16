@@ -30,6 +30,7 @@ use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\UserServiceRepository;
@@ -70,7 +71,6 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
-use InvalidArgumentException;
 use UnexpectedValueException;
 
 // TODO Fix purchasing service when forever service already exists
@@ -493,7 +493,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
@@ -678,7 +678,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $purchase = (new Purchase($purchasingUser))
             ->setServiceId($this->service->getId())
             ->setPayment([
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
+                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
             ->setOrder([
@@ -1131,11 +1131,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function serviceTakeOver(array $body)
     {
-        $paymentMethodId = array_get($body, "payment_method");
-
         try {
+            $paymentMethodId = new PaymentMethod(array_get($body, "payment_method"));
             $paymentMethod = $this->serviceTakeOverFactory->create($paymentMethodId);
-        } catch (InvalidArgumentException $e) {
+        } catch (UnexpectedValueException $e) {
             throw new ValidationException([
                 "payment_method" => "Invalid value",
             ]);

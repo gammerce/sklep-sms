@@ -153,7 +153,7 @@ class PageAdminBoughtServices extends PageAdmin
                         new Cell(
                             new PaymentRef(
                                 $transaction->getPaymentId(),
-                                $transaction->getPaymentMethod()
+                                (string) $transaction->getPaymentMethod()
                             )
                         )
                     )

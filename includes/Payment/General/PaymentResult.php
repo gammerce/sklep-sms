@@ -1,7 +1,7 @@
 <?php
 namespace App\Payment\General;
 
-class PaymentResult
+final class PaymentResult
 {
     /** @var PaymentResultType */
     private $type;

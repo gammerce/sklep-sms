@@ -7,6 +7,7 @@ use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Models\Transaction;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
@@ -90,11 +91,11 @@ class DirectBillingChargeWallet implements IChargeWallet
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => Purchase::METHOD_DIRECT_BILLING,
+            "value" => PaymentMethod::DIRECT_BILLING(),
             "text" => "Direct Billing",
         ]);
         $body = $this->template->render("shop/services/charge_wallet/direct_billing_body", [
-            "type" => Purchase::METHOD_DIRECT_BILLING,
+            "type" => PaymentMethod::DIRECT_BILLING(),
         ]);
 
         return [$option, $body];

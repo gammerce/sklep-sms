@@ -1,30 +1,31 @@
 <?php
 namespace App\Payment\General;
 
-use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\Payment\Sms\SmsPaymentMethod;
 use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Wallet\WalletPaymentMethod;
 use App\System\Application;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class PaymentMethodFactory
 {
     /** @var Application */
     private $app;
 
-    private $paymentMethodsClasses = [
-        Purchase::METHOD_SMS => SmsPaymentMethod::class,
-        Purchase::METHOD_DIRECT_BILLING => DirectBillingPaymentMethod::class,
-        Purchase::METHOD_TRANSFER => TransferPaymentMethod::class,
-        Purchase::METHOD_WALLET => WalletPaymentMethod::class,
-    ];
+    /** @var string[] */
+    private $paymentMethodsClasses;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->paymentMethodsClasses = [
+            PaymentMethod::SMS()->getValue() => SmsPaymentMethod::class,
+            PaymentMethod::DIRECT_BILLING()->getValue() => DirectBillingPaymentMethod::class,
+            PaymentMethod::TRANSFER()->getValue() => TransferPaymentMethod::class,
+            PaymentMethod::WALLET()->getValue() => WalletPaymentMethod::class,
+        ];
     }
 
     /**
@@ -40,15 +41,16 @@ class PaymentMethodFactory
     }
 
     /**
-     * @param string $paymentMethodId
+     * @param PaymentMethod $paymentMethod
      * @return IPaymentMethod
+     * @throws UnexpectedValueException
      */
-    public function create($paymentMethodId)
+    public function create(PaymentMethod $paymentMethod)
     {
-        if (!array_key_exists($paymentMethodId, $this->paymentMethodsClasses)) {
-            throw new InvalidArgumentException("Payment method [$paymentMethodId] doesn't exist");
+        if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
+            return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);
         }
 
-        return $this->app->make($this->paymentMethodsClasses[$paymentMethodId]);
+        throw new UnexpectedValueException("Payment method [$paymentMethod] doesn't exist");
     }
 }

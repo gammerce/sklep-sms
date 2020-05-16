@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Ipn;
 
-use App\Models\Purchase;
+use App\Payment\General\PaymentMethod;
 use App\Repositories\SettingsRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
@@ -44,7 +44,7 @@ class ChargeWalletTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
-            "method" => Purchase::METHOD_TRANSFER,
+            "method" => PaymentMethod::TRANSFER(),
             "transfer_price" => 40.8,
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
@@ -52,7 +52,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $paymentResponse = $this->post("/api/payment/{$transactionId}", [
-            "method" => Purchase::METHOD_TRANSFER,
+            "method" => PaymentMethod::TRANSFER(),
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
         $json = $this->decodeJsonResponse($paymentResponse);
@@ -95,7 +95,7 @@ class ChargeWalletTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
-            "method" => Purchase::METHOD_DIRECT_BILLING,
+            "method" => PaymentMethod::DIRECT_BILLING(),
             "direct_billing_price" => 2.5,
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
@@ -103,7 +103,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $paymentResponse = $this->post("/api/payment/{$transactionId}", [
-            "method" => Purchase::METHOD_DIRECT_BILLING,
+            "method" => PaymentMethod::DIRECT_BILLING(),
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
 
@@ -146,7 +146,7 @@ class ChargeWalletTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => ChargeWalletServiceModule::MODULE_ID,
-            "method" => Purchase::METHOD_SMS,
+            "method" => PaymentMethod::SMS(),
             "sms_price" => 500,
         ]);
         $this->assertSame(200, $validationResponse->getStatusCode());
@@ -154,7 +154,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => Purchase::METHOD_SMS,
+            "method" => PaymentMethod::SMS(),
             "sms_code" => "abc123",
         ]);
         $this->assertSame(200, $response->getStatusCode());

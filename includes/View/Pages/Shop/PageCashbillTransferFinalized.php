@@ -3,7 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Exceptions\InvalidConfigException;
 use App\Managers\PaymentModuleManager;
-use App\Models\Purchase;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseInformation;
 use App\Support\Template;
 use App\System\Settings;
@@ -79,7 +79,7 @@ class PageCashbillTransferFinalized extends Page
         }
 
         $content = $this->purchaseInformation->get([
-            "payment" => Purchase::METHOD_TRANSFER,
+            "payment" => PaymentMethod::TRANSFER(),
             "payment_id" => $orderId,
             "action" => "web",
         ]);

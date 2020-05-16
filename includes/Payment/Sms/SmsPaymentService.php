@@ -45,7 +45,6 @@ class SmsPaymentService
      */
     public function payWithSms(SupportSms $paymentModule, $code, $price, User $user)
     {
-        // TODO IMPORTANT Test it
         if ($price === 0) {
             return $this->storePaymentSms(
                 $paymentModule,

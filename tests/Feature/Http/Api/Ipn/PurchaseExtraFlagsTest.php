@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Ipn;
 
-use App\Models\Purchase;
+use App\Payment\General\PaymentMethod;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
@@ -56,7 +56,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => "vippro",
-            "method" => Purchase::METHOD_SMS,
+            "method" => PaymentMethod::SMS(),
             "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "mama",
             "password" => "manq12a",
@@ -70,7 +70,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => Purchase::METHOD_SMS,
+            "method" => PaymentMethod::SMS(),
             "sms_code" => "abc123",
         ]);
         $this->assertSame(200, $response->getStatusCode());
@@ -121,7 +121,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => "vippro",
-            "method" => Purchase::METHOD_TRANSFER,
+            "method" => PaymentMethod::TRANSFER(),
             "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "mama",
             "password" => "manq12a",
@@ -135,7 +135,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => Purchase::METHOD_TRANSFER,
+            "method" => PaymentMethod::TRANSFER(),
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);

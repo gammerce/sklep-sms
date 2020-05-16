@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentMethod;
+
 class Transaction
 {
     /** @var int */
@@ -147,11 +149,11 @@ class Transaction
     }
 
     /**
-     * @return string
+     * @return PaymentMethod
      */
     public function getPaymentMethod()
     {
-        return $this->paymentMethod;
+        return new PaymentMethod($this->paymentMethod);
     }
 
     /**

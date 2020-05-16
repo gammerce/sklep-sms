@@ -10,7 +10,7 @@ use App\Repositories\PromoCodeRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class PaymentService
 {
@@ -57,7 +57,7 @@ class PaymentService
             $paymentMethod = $this->paymentMethodFactory->create(
                 $purchase->getPayment(Purchase::PAYMENT_METHOD)
             );
-        } catch (InvalidArgumentException $e) {
+        } catch (UnexpectedValueException $e) {
             throw new PaymentProcessingException(
                 "wrong_method",
                 $this->lang->t("wrong_payment_method")

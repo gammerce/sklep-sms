@@ -2,16 +2,16 @@
 namespace Tests\Psr4\Concerns;
 
 use App\Http\Services\PurchaseService;
+use App\Managers\ServiceModuleManager;
 use App\Models\BoughtService;
 use App\Models\PaymentPlatform;
 use App\Models\Price;
-use App\Models\Purchase;
 use App\Models\Server;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentResultType;
 use App\Repositories\BoughtServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Cssetti;
-use App\Managers\ServiceModuleManager;
 use UnexpectedValueException;
 
 trait MakePurchaseConcern
@@ -63,7 +63,7 @@ trait MakePurchaseConcern
                 "auth_data" => "example",
                 "password" => "anc123",
                 "sms_code" => "mycode",
-                "method" => Purchase::METHOD_SMS,
+                "method" => PaymentMethod::SMS(),
                 "ip" => "192.0.2.1",
                 "email" => "example@abc.pl",
             ],

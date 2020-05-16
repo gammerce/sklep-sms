@@ -4,6 +4,7 @@ namespace Tests\Feature\Payment;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
@@ -66,7 +67,7 @@ class PaymentServiceTest extends TestCase
             ->setPayment([
                 Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
         // when
@@ -79,7 +80,7 @@ class PaymentServiceTest extends TestCase
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
         $this->assertSame(0, $boughtService->getUserId());
-        $this->assertSame(Purchase::METHOD_SMS, $boughtService->getMethod());
+        $this->assertSame(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
         $this->assertSame("", $boughtService->getAuthData());
     }
@@ -114,7 +115,7 @@ class PaymentServiceTest extends TestCase
             ->setPayment([
                 Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
         // when
@@ -161,7 +162,7 @@ class PaymentServiceTest extends TestCase
             ->setPayment([
                 Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
         // when
@@ -195,7 +196,7 @@ class PaymentServiceTest extends TestCase
             ->setPayment([
                 Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
         // when

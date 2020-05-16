@@ -135,7 +135,10 @@ class TestCase extends BaseTestCase
 
     protected function assertDatabaseHas($table, array $data)
     {
-        $this->assertTrue($this->databaseHas($table, $data));
+        $this->assertTrue(
+            $this->databaseHas($table, $data),
+            "Database does not contain given data."
+        );
     }
 
     protected function assertSameEnum(Enum $expected, Enum $value)

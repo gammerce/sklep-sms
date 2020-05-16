@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Wallet\WalletPaymentService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
@@ -16,7 +17,7 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class ChargeWalletServiceModule extends ServiceModule implements IServicePurchaseWeb, IBeLoggedMust
 {
@@ -81,11 +82,10 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             throw new UnauthorizedException();
         }
 
-        $method = array_get($body, "method");
-
         try {
+            $method = new PaymentMethod(array_get($body, "method"));
             $paymentMethod = $this->chargeWalletFactory->create($method);
-        } catch (InvalidArgumentException $e) {
+        } catch (UnexpectedValueException $e) {
             throw new ValidationException([
                 "method" => "Invalid value",
             ]);
@@ -131,7 +131,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
@@ -153,7 +153,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
                 $paymentMethod = $this->chargeWalletFactory->create(
                     $transaction->getPaymentMethod()
                 );
-            } catch (InvalidArgumentException $e) {
+            } catch (UnexpectedValueException $e) {
                 return "";
             }
 

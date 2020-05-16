@@ -23,6 +23,7 @@ use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchasePriceService;
 use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
@@ -410,7 +411,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
@@ -621,7 +622,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $purchase = (new Purchase($this->userManager->getUser($validated["user_id"])))
             ->setServiceId($this->service->getId())
             ->setPayment([
-                Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
+                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
             ->setOrder([
