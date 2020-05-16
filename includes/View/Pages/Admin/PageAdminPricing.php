@@ -102,7 +102,7 @@ EOF
             })
             ->map(function (Price $price) {
                 if ($price->isForEveryServer()) {
-                    $serverEntry = $this->lang->t("all_servers");
+                    $serverEntry = $this->lang->t("all");
                 } else {
                     $server = $this->serverManager->getServer($price->getServerId());
                     $serverEntry = $server
