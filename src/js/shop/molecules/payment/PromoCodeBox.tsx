@@ -25,6 +25,7 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                         <div className="control">
                             <input
                                 id="promo_code"
+                                name="promo_code"
                                 className="input"
                                 placeholder={__("type_code")}
                                 value={promoCode}

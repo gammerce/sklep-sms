@@ -30,12 +30,18 @@ use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Http\Controllers\Api\Admin\UserServiceCollection;
 use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
 use App\Http\Controllers\Api\Admin\WalletChargeCollection;
+use App\Http\Controllers\Api\Ipn\DirectBillingController;
+use App\Http\Controllers\Api\Ipn\TransferController;
+use App\Http\Controllers\Api\Server\PlayerFlagCollection;
+use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
+use App\Http\Controllers\Api\Server\ServerConfigController;
+use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
+use App\Http\Controllers\Api\Server\UserServiceCollection as ServerUserServiceCollection;
+use App\Http\Controllers\Api\Setup\InstallController;
+use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\BrickResource;
 use App\Http\Controllers\Api\Shop\CronController;
 use App\Http\Controllers\Api\Shop\IncomeController;
-use App\Http\Controllers\Api\Setup\InstallController;
-use App\Http\Controllers\Api\Ipn\DirectBillingController;
-use App\Http\Controllers\Api\Ipn\TransferController;
 use App\Http\Controllers\Api\Shop\LogInController;
 use App\Http\Controllers\Api\Shop\LogOutController;
 use App\Http\Controllers\Api\Shop\PasswordForgottenController;
@@ -45,18 +51,12 @@ use App\Http\Controllers\Api\Shop\PaymentResource;
 use App\Http\Controllers\Api\Shop\PurchaseCollection;
 use App\Http\Controllers\Api\Shop\PurchaseResource;
 use App\Http\Controllers\Api\Shop\RegisterController;
-use App\Http\Controllers\Api\Server\PlayerFlagCollection;
-use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
-use App\Http\Controllers\Api\Server\ServerConfigController;
-use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
-use App\Http\Controllers\Api\Server\UserServiceCollection as ServerUserServiceCollection;
 use App\Http\Controllers\Api\Shop\ServiceActionController;
 use App\Http\Controllers\Api\Shop\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverController;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
 use App\Http\Controllers\Api\Shop\TemplateResource;
-use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
 use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
@@ -317,7 +317,7 @@ class RoutesManager
                             'uses' => TransactionResource::class . '@get',
                         ]);
 
-                        $r->post('/api/transactions/{transactionId}/promo_code/{promoCode}', [
+                        $r->post('/api/transactions/{transactionId}/promo_code', [
                             'uses' => TransactionPromoCodeResource::class . '@post',
                         ]);
 

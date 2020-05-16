@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Services\UserServiceService;
 use Tests\Psr4\Concerns\PlayerFlagConcern;

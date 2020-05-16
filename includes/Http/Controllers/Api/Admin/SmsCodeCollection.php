@@ -10,7 +10,6 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\SmsCodeRepository;
 use App\Translation\TranslationManager;
-use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 
 class SmsCodeCollection

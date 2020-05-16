@@ -10,21 +10,16 @@ use App\Exceptions\LicenseRequestException;
 use App\Exceptions\UnauthorizedException;
 use App\Exceptions\ValidationException;
 use App\Http\RequestHelper;
-use App\Http\Responses\ApiResponse;
-use App\Http\Responses\HtmlResponse;
 use App\Http\Responses\PlainResponse;
-use App\Http\Responses\ServerResponseFactory;
+use App\Http\Responses\ResponseFactory;
 use App\Loggers\FileLogger;
 use App\Routing\UrlGenerator;
-use App\Services\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Html\Li;
 use App\View\Html\Ul;
-use App\View\Renders\ErrorRenderer;
 use Exception;
 use Raven_Client;
-use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,17 +36,11 @@ class ExceptionHandler implements ExceptionHandlerContract
     /** @var FileLogger */
     private $fileLogger;
 
-    /** @var ErrorRenderer */
-    private $errorRenderer;
-
-    /** @var ServerResponseFactory */
-    private $serverResponseFactory;
-
     /** @var UrlGenerator */
     private $url;
 
-    /** @var IntendedUrlService */
-    private $intendedUrlService;
+    /** @var ResponseFactory */
+    private $responseFactory;
 
     private $dontReport = [
         EntityNotFoundException::class,
@@ -66,28 +55,29 @@ class ExceptionHandler implements ExceptionHandlerContract
         Application $app,
         TranslationManager $translationManager,
         FileLogger $logger,
-        ErrorRenderer $errorRenderer,
-        ServerResponseFactory $serverResponseFactory,
-        UrlGenerator $url,
-        IntendedUrlService $intendedUrlService
+        ResponseFactory $apiResponseFactory,
+        UrlGenerator $url
     ) {
         $this->app = $app;
         $this->lang = $translationManager->user();
         $this->fileLogger = $logger;
-        $this->errorRenderer = $errorRenderer;
-        $this->serverResponseFactory = $serverResponseFactory;
         $this->url = $url;
-        $this->intendedUrlService = $intendedUrlService;
+        $this->responseFactory = $apiResponseFactory;
     }
 
     public function render(Request $request, Exception $e)
     {
         if ($e instanceof EntityNotFoundException) {
-            return $this->renderError(Response::HTTP_NOT_FOUND, $e, $request);
+            return $this->responseFactory->createError(
+                $request,
+                "error",
+                $e->getMessage(),
+                Response::HTTP_NOT_FOUND
+            );
         }
 
         if ($e instanceof UnauthorizedException) {
-            return $this->renderUnauthorizedException($request);
+            return $this->responseFactory->createUnauthorized($request);
         }
 
         if ($e instanceof AccessProhibitedException) {
@@ -95,14 +85,16 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         if ($e instanceof InvalidServiceModuleException) {
-            return new ApiResponse("wrong_module", $this->lang->t("bad_module"), false);
+            return $this->responseFactory->createError(
+                $request,
+                "wrong_module",
+                $this->lang->t("bad_module")
+            );
         }
 
         if ($e instanceof ValidationException) {
-            return new ApiResponse(
-                "warnings",
-                $this->lang->t("form_wrong_filled"),
-                false,
+            return $this->responseFactory->createWarnings(
+                $request,
                 array_merge(
                     [
                         "warnings" => $this->formatWarnings($e->warnings),
@@ -132,7 +124,12 @@ class ExceptionHandler implements ExceptionHandlerContract
             return new PlainResponse($e->getMessage());
         }
 
-        return $this->renderError(500, $e, $request);
+        return $this->responseFactory->createError(
+            $request,
+            "error",
+            $e->getMessage(),
+            Response::HTTP_INTERNAL_SERVER_ERROR
+        );
     }
 
     public function report(Exception $e)
@@ -178,30 +175,18 @@ class ExceptionHandler implements ExceptionHandlerContract
         return true;
     }
 
-    private function renderError($status, Exception $e, Request $request)
+    private function renderAccessProhibitedException(Request $request)
     {
         $requestHelper = new RequestHelper($request);
 
-        if ($requestHelper->isFromServer()) {
-            $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
-            return $this->serverResponseFactory->create(
-                $acceptHeader,
-                "error",
-                $e->getMessage(),
-                false,
-                [],
-                $status
-            );
+        if ($requestHelper->isAdminSession()) {
+            return new RedirectResponse($this->url->to("/admin"));
         }
 
-        if ($requestHelper->expectsJson()) {
-            return new ApiResponse("error", $e->getMessage(), false, [], $status);
-        }
-
-        $output = $this->errorRenderer->render("$status", $request);
-        return new HtmlResponse($output, $status);
+        return new RedirectResponse($this->url->to("/"));
     }
 
+    // TODO Do it on frontend
     private function formatWarnings(array $warnings)
     {
         $output = [];
@@ -221,33 +206,5 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         return $output;
-    }
-
-    private function renderUnauthorizedException(Request $request)
-    {
-        $requestHelper = new RequestHelper($request);
-
-        if ($requestHelper->expectsJson()) {
-            return new ApiResponse("no_access", $this->lang->t("not_logged_or_no_perm"), false);
-        }
-
-        $this->intendedUrlService->set($request);
-
-        if ($requestHelper->isAdminSession()) {
-            return new RedirectResponse($this->url->to("/admin/login"));
-        }
-
-        return new RedirectResponse($this->url->to("/login"));
-    }
-
-    private function renderAccessProhibitedException(Request $request)
-    {
-        $requestHelper = new RequestHelper($request);
-
-        if ($requestHelper->isAdminSession()) {
-            return new RedirectResponse($this->url->to("/admin"));
-        }
-
-        return new RedirectResponse($this->url->to("/"));
     }
 }

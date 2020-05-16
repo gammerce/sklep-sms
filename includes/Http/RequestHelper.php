@@ -62,4 +62,9 @@ class RequestHelper
         return isset($acceptable[0]) &&
             (str_contains($acceptable[0], "/json") || str_contains($acceptable[0], "+json"));
     }
+
+    public function acceptsNewFormat(Request $request)
+    {
+        return $request->headers->get("Accept-version") === "v2";
+    }
 }

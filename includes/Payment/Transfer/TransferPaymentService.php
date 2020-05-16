@@ -8,7 +8,6 @@ use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
-use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;

@@ -11,6 +11,9 @@ import {purchaseService} from "../../utils/payment/paymentUtils";
 import {handleError} from "../../utils/utils";
 import {loader} from "../../../general/loader";
 import {PromoCodeBox} from "./PromoCodeBox";
+import {AxiosError} from "axios";
+import {showWarnings} from "../../../general/global";
+import {infobox} from "../../../general/infobox";
 
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
@@ -18,31 +21,39 @@ export const PaymentView: FunctionComponent = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
 
-    // TODO IMPORTANT Handle API errors
-
     useEffect(
         () => {
-            api.getTransaction(transactionId)
-                .then(setTransaction)
-                .catch(handleError);
+            fetchTransaction().catch(handleError);
         },
         []
     );
 
+    const fetchTransaction = async () => {
+        const result = await api.getTransaction(transactionId);
+        setTransaction(result);
+    };
+
     const onPay = (method: PaymentMethod, body: Dict): void => {
         purchaseService(transactionId, method, body).catch(handleError);
-    }
-
+    };
 
     const applyPromoCode = async (promoCode: string) => {
         loader.show();
         try {
             const result = await api.applyPromoCode(transactionId, promoCode);
             setTransaction(result);
+        } catch (error) {
+            const e: AxiosError = error;
+
+            if (e.response.status === 422) {
+                showWarnings($("#payment"), e.response.data.warnings);
+            }
+
+            infobox.showInfo(e.response.data.text, false);
         } finally {
             loader.hide();
         }
-    }
+    };
 
     const removePromoCode = async () => {
         loader.show();
@@ -52,7 +63,7 @@ export const PaymentView: FunctionComponent = () => {
         } finally {
             loader.hide();
         }
-    }
+    };
 
     if (!transaction) {
         return <Loader />;

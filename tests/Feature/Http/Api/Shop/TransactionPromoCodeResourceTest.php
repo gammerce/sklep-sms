@@ -59,9 +59,9 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $this->purchaseDataService->storePurchase($purchase);
 
         // when
-        $response = $this->post(
-            "/api/transactions/{$purchase->getId()}/promo_code/{$promoCode->getCode()}"
-        );
+        $response = $this->post("/api/transactions/{$purchase->getId()}/promo_code", [
+            "promo_code" => $promoCode->getCode(),
+        ]);
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
@@ -125,9 +125,9 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $this->purchaseDataService->storePurchase($purchase);
 
         // when
-        $response = $this->post(
-            "/api/transactions/{$purchase->getId()}/promo_code/{$promoCode->getCode()}"
-        );
+        $response = $this->post("/api/transactions/{$purchase->getId()}/promo_code", [
+            "promo_code" => $promoCode->getCode(),
+        ]);
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
@@ -181,9 +181,9 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $this->purchaseDataService->storePurchase($purchase);
 
         // when
-        $response = $this->post(
-            "/api/transactions/{$purchase->getId()}/promo_code/{$promoCode->getCode()}"
-        );
+        $response = $this->post("/api/transactions/{$purchase->getId()}/promo_code", [
+            "promo_code" => $promoCode->getCode(),
+        ]);
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
