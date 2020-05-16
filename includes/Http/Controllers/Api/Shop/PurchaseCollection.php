@@ -27,7 +27,7 @@ class PurchaseCollection
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $serviceId = $request->request->get('service_id');
+        $serviceId = $request->request->get("service_id");
         $serviceModule = $serviceModuleManager->get($serviceId);
 
         if (!($serviceModule instanceof IServicePurchaseWeb)) {
@@ -35,11 +35,10 @@ class PurchaseCollection
         }
 
         if (!$userServiceAccessService->canUserUseService($serviceModule->service, $user)) {
-            return new ApiResponse("no_permission", $lang->t('service_no_permission'), 0);
+            return new ApiResponse("no_permission", $lang->t("service_no_permission"), 0);
         }
 
-        $purchase = new Purchase($user);
-        $purchase->setServiceId($serviceModule->service->getId());
+        $purchase = (new Purchase($user))->setServiceId($serviceModule->service->getId());
 
         if ($user->getEmail()) {
             $purchase->setEmail($user->getEmail());
@@ -64,10 +63,10 @@ class PurchaseCollection
         }
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
-        $transactionId = $purchaseDataService->storePurchase($purchase);
+        $purchaseDataService->storePurchase($purchase);
 
-        return new ApiResponse("ok", $lang->t('purchase_form_validated'), true, [
-            "transaction_id" => $transactionId,
+        return new ApiResponse("ok", $lang->t("purchase_form_validated"), true, [
+            "transaction_id" => $purchase->getId(),
         ]);
     }
 }

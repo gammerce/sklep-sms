@@ -1,11 +1,11 @@
 <form id="form_sms_code_add" class="action_box">
     <div class="service_main_info">
-        Dodaj kod SMS
+        {{ __('add_code') }}
     </div>
     <table>
         <tr>
             <td>
-                <label for="code">{$lang->strtoupper($lang->t('sms_code'))}</label>
+                <label for="code">{{ __('sms_code') }}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -16,7 +16,7 @@
                         <input
                             type="button"
                             name="random_code"
-                            value="{$lang->t('generate')}"
+                            value="{{ __('generate') }}"
                             class="button is-small"
                         />
                     </div>
@@ -25,15 +25,15 @@
         </tr>
         <tr>
             <td>
-                <label for="sms_price">{$lang->strtoupper($lang->t('sms_price'))}</label>
+                <label for="sms_price">{{ __('sms_price') }}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_price" name="sms_price">
-                                <option value="">{$lang->t('choose_sms_price')}</option>
-                                {$smsPrices}
+                                <option value="">{{ __('choose_sms_price') }}</option>
+                                {!! $smsPrices !!}
                             </select>
                         </div>
                     </div>
@@ -42,7 +42,8 @@
         </tr>
         <tr>
             <td>
-                <label for="expires_at">{$lang->t('expires')}</label>
+                <label for="expires_at">{{ __('expires') }}</label>
+                <div class="hint">{{ __('expires_help') }}</div>
             </td>
             <td>
                 <div class="field">
@@ -52,15 +53,9 @@
                             id="expires_at"
                             name="expires_at"
                             class="input is-small"
-                            disabled
                         />
                     </div>
                 </div>
-
-                <label class="checkbox">
-                    <input type="checkbox" name="forever" checked />
-                    {$lang->t('forever')}
-                </label>
             </td>
         </tr>
         <tr>
@@ -68,7 +63,7 @@
         </tr>
         <tr>
             <td colspan="2">
-                <input type="submit" value="{$lang->t('add')}" class="button w100" />
+                <input type="submit" value="{{ __('add') }}" class="button w100" />
             </td>
         </tr>
     </table>

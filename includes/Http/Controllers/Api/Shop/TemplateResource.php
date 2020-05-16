@@ -2,10 +2,10 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\UnauthorizedException;
-use App\Http\Responses\PlainResponse;
 use App\Managers\UserManager;
 use App\Services\PriceTextService;
 use App\Support\Template;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource
@@ -33,28 +33,28 @@ class TemplateResource
     {
         $templateName = escape_filename($name);
         $data = $this->getData($templateName, $request);
-        return new PlainResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 
     private function getData($templateName, Request $request)
     {
-        $email = $request->query->get('email');
+        $email = $request->query->get("email");
 
         if ($templateName === "admin_user_wallet") {
             if (!has_privileges("manage_users")) {
                 throw new UnauthorizedException();
             }
 
-            $user = $this->userManager->getUser($request->query->get('uid'));
+            $user = $this->userManager->getUser($request->query->get("user_id"));
             $wallet = $user ? $this->priceTextService->getPriceText($user->getWallet()) : null;
 
             return [
-                'template' => $wallet,
+                "template" => $wallet,
             ];
         }
 
         return [
-            'template' => $this->template->render("jsonhttp/$templateName", compact('email')),
+            "template" => $this->template->render("jsonhttp/$templateName", compact("email")),
         ];
     }
 }

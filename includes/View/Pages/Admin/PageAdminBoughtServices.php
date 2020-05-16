@@ -13,6 +13,7 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
 use App\View\Html\PaymentRef;
 use App\View\Html\RawText;
@@ -78,7 +79,7 @@ class PageAdminBoughtServices extends PageAdmin
                         "t.id",
                         "t.payment",
                         "t.payment_id",
-                        "t.uid",
+                        "t.user_id",
                         "t.ip",
                         "t.email",
                         "t.auth_data",
@@ -152,7 +153,7 @@ class PageAdminBoughtServices extends PageAdmin
                         new Cell(
                             new PaymentRef(
                                 $transaction->getPaymentId(),
-                                $transaction->getPaymentMethod()
+                                (string) $transaction->getPaymentMethod()
                             )
                         )
                     )
@@ -164,7 +165,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell(new RawText($extraData)))
                     ->addCell(new Cell($transaction->getEmail()))
                     ->addCell(new Cell($transaction->getIp()))
-                    ->addCell(new Cell(convert_date($transaction->getTimestamp()), "date"));
+                    ->addCell(new DateTimeCell($transaction->getTimestamp(), "date"));
             })
             ->all();
 

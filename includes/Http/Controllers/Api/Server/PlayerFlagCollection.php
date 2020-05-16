@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
-use App\Http\Responses\JsonResponse;
+use App\Http\Responses\ServerJsonResponse;
 use App\Services\ServerDataService;
 use App\System\ServerAuth;
 use Symfony\Component\HttpFoundation\AcceptHeader;
@@ -33,7 +33,7 @@ class PlayerFlagCollection
         ];
 
         return $acceptHeader->has("application/json")
-            ? new JsonResponse($data)
+            ? new ServerJsonResponse($data)
             : new AssocResponse($data);
     }
 }

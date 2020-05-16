@@ -3,15 +3,7 @@ namespace App\Models;
 
 class Purchase
 {
-    const METHOD_ADMIN = "admin";
-    const METHOD_DIRECT_BILLING = "direct_billing";
-    const METHOD_SERVICE_CODE = "service_code";
-    const METHOD_SMS = "sms";
-    const METHOD_TRANSFER = "transfer";
-    const METHOD_WALLET = "wallet";
-
     const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
-    const PAYMENT_DISABLED_SERVICE_CODE = "no_code";
     const PAYMENT_DISABLED_SMS = "no_sms";
     const PAYMENT_DISABLED_TRANSFER = "no_transfer";
     const PAYMENT_DISABLED_WALLET = "no_wallet";
@@ -23,45 +15,51 @@ class Purchase
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
-    const PAYMENT_SERVICE_CODE = "service_code";
     const PAYMENT_SMS_CODE = "sms_code";
 
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
+
+    /** @var string */
+    private $id;
 
     /**
      * ID of row from ss_services table
      *
      * @var string|null
      */
-    private $serviceId = null;
-
-    /**
-     * Order details like auth_data, password etc.
-     *
-     * @var array
-     */
-    private $order = null;
+    private $serviceId;
 
     /** @var User */
     public $user;
 
-    /** @var string */
-    private $email = null;
+    /** @var string|null */
+    private $email;
 
     /**
      * Payment details like method, sms_code et.c
      *
      * @var array
      */
-    private $payment = null;
+    private $payment = [];
+
+    /**
+     * Order details like auth_data, password etc.
+     *
+     * @var array
+     */
+    private $order = [];
+
+    /**
+     * @var PromoCode
+     */
+    private $promoCode;
 
     /**
      * Purchase description ( useful for transfer payments )
-     *
-     * @var string
+     * @var string|null
      */
-    private $desc = null;
+    private $desc;
 
     /**
      * Attempt to finalize purchase has been made
@@ -70,9 +68,17 @@ class Purchase
      */
     private $isAttempted = false;
 
+    /**
+     * Transaction has been deleted
+     *
+     * @var bool
+     */
+    private $isDeleted = false;
+
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->id = generate_id(32);
     }
 
     public function getServiceId()
@@ -80,9 +86,14 @@ class Purchase
         return $this->serviceId;
     }
 
+    /**
+     * @param string $serviceId
+     * @return Purchase
+     */
     public function setServiceId($serviceId)
     {
         $this->serviceId = (string) $serviceId;
+        return $this;
     }
 
     /**
@@ -94,11 +105,17 @@ class Purchase
         return array_get($this->order, $key);
     }
 
+    /**
+     * @param array $order
+     * @return $this
+     */
     public function setOrder(array $order)
     {
         foreach ($order as $key => $value) {
             $this->order[$key] = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -110,11 +127,17 @@ class Purchase
         return array_get($this->payment, $key);
     }
 
+    /**
+     * @param array $payment
+     * @return $this
+     */
     public function setPayment(array $payment)
     {
         foreach ($payment as $key => $value) {
             $this->payment[$key] = $value;
         }
+
+        return $this;
     }
 
     /**
@@ -133,9 +156,14 @@ class Purchase
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     * @return Purchase
+     */
     public function setEmail($email)
     {
         $this->email = (string) $email;
+        return $this;
     }
 
     /**
@@ -148,12 +176,18 @@ class Purchase
 
     /**
      * @param string $desc
+     * @return Purchase
      */
     public function setDesc($desc)
     {
         $this->desc = $desc;
+        return $this;
     }
 
+    /**
+     * @param Price $price
+     * @return $this
+     */
     public function setUsingPrice(Price $price)
     {
         $this->setPayment([
@@ -164,6 +198,8 @@ class Purchase
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),
         ]);
+
+        return $this;
     }
 
     /**
@@ -177,5 +213,44 @@ class Purchase
     public function markAsAttempted()
     {
         $this->isAttempted = true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return $this->isDeleted;
+    }
+
+    public function markAsDeleted()
+    {
+        $this->isDeleted = true;
+    }
+
+    /**
+     * @return PromoCode
+     */
+    public function getPromoCode()
+    {
+        return $this->promoCode;
+    }
+
+    /**
+     * @param PromoCode|null $promoCode
+     * @return Purchase
+     */
+    public function setPromoCode(PromoCode $promoCode = null)
+    {
+        $this->promoCode = $promoCode;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 }

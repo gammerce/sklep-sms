@@ -11,11 +11,14 @@
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{ $url->versioned('build/js/vendors.js') }}"></script>
 <script type="text/javascript" src="{{ $url->versioned('build/js/admin.js') }}"></script>
-<script type="text/javascript" src="{{ $url->versioned('lang.js') }}"></script>
+<script
+    type="text/javascript"
+    src="{{ $url->versioned('lang.js', ['language' => $lang->getCurrentLanguage()]) }}"
+></script>
 <script type="text/javascript">
-    var language = "{{ $lang->getCurrentLanguage() }}";
-    var baseUrl = "{{ $url->to('/') }}";
-    var currentPage = "{{ $currentPageId }}";
+    window.language = "{{ $lang->getCurrentLanguage() }}";
+    window.baseUrl = "{{ url('/') }}";
+    window.currentPage = "{{ $currentPageId }}";
 </script>
 {$scripts}
 

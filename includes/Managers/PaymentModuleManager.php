@@ -86,11 +86,6 @@ class PaymentModuleManager
             return null;
         }
 
-        $paymentModule = $this->get($paymentPlatform);
-        if (!$paymentModule) {
-            return null;
-        }
-
-        return $paymentModule;
+        return $this->get($paymentPlatform);
     }
 }

@@ -35,12 +35,12 @@ class OtherServiceModule extends ServiceModule implements
     {
         return new Validator(
             [
-                'email' => $purchase->getEmail(),
-                'server_id' => $purchase->getOrder(Purchase::ORDER_SERVER),
+                "email" => $purchase->getEmail(),
+                "server_id" => $purchase->getOrder(Purchase::ORDER_SERVER),
             ],
             [
-                'email' => [new EmailRule()],
-                'server_id' => [
+                "email" => [new EmailRule()],
+                "server_id" => [
                     new RequiredRule(),
                     new ServerExistsRule(),
                     new ServerLinkedToServiceRule($this->service),
@@ -51,17 +51,20 @@ class OtherServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
+        $promoCode = $purchase->getPromoCode();
+
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder('auth_data'),
-            $purchase->getEmail()
+            $purchase->getOrder("auth_data"),
+            $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null
         );
     }
 
@@ -72,7 +75,7 @@ class OtherServiceModule extends ServiceModule implements
 
     public function serviceAdminExtraFieldsGet()
     {
-        return '';
+        return "";
     }
 
     public function serviceAdminManagePre(Validator $validator)

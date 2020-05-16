@@ -38,14 +38,13 @@ use App\View\Pages\Admin\PageAdminMain;
 use App\View\Pages\Admin\PageAdminPaymentAdmin;
 use App\View\Pages\Admin\PageAdminPaymentDirectBilling;
 use App\View\Pages\Admin\PageAdminPaymentPlatforms;
-use App\View\Pages\Admin\PageAdminPaymentServiceCode;
 use App\View\Pages\Admin\PageAdminPaymentSms;
 use App\View\Pages\Admin\PageAdminPaymentTransfer;
 use App\View\Pages\Admin\PageAdminPaymentWallet;
 use App\View\Pages\Admin\PageAdminPlayersFlags;
 use App\View\Pages\Admin\PageAdminPricing;
+use App\View\Pages\Admin\PageAdminPromoCodes;
 use App\View\Pages\Admin\PageAdminServers;
-use App\View\Pages\Admin\PageAdminServiceCodes;
 use App\View\Pages\Admin\PageAdminServices;
 use App\View\Pages\Admin\PageAdminSettings;
 use App\View\Pages\Admin\PageAdminSmsCodes;
@@ -57,18 +56,18 @@ use App\View\Pages\Shop\PageCashbillTransferFinalized;
 use App\View\Pages\Shop\PageChangePassword;
 use App\View\Pages\Shop\PageContact;
 use App\View\Pages\Shop\PageForgottenPassword;
+use App\View\Pages\Shop\PageLogin;
 use App\View\Pages\Shop\PageMain;
 use App\View\Pages\Shop\PagePayment;
 use App\View\Pages\Shop\PagePaymentError;
 use App\View\Pages\Shop\PagePaymentLog;
 use App\View\Pages\Shop\PagePaymentSuccess;
-use App\View\Pages\Shop\PageServices;
 use App\View\Pages\Shop\PageProfile;
 use App\View\Pages\Shop\PagePurchase;
 use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
-use App\View\Pages\Shop\PageLogin;
+use App\View\Pages\Shop\PageServices;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
 use App\View\Pages\Shop\PageUserOwnServices;
@@ -150,14 +149,13 @@ class HeartServiceProvider
         $pageManager->registerAdmin(PageAdminPaymentAdmin::class);
         $pageManager->registerAdmin(PageAdminPaymentDirectBilling::class);
         $pageManager->registerAdmin(PageAdminPaymentPlatforms::class);
-        $pageManager->registerAdmin(PageAdminPaymentServiceCode::class);
         $pageManager->registerAdmin(PageAdminPaymentSms::class);
         $pageManager->registerAdmin(PageAdminPaymentTransfer::class);
         $pageManager->registerAdmin(PageAdminPaymentWallet::class);
         $pageManager->registerAdmin(PageAdminPlayersFlags::class);
         $pageManager->registerAdmin(PageAdminPricing::class);
         $pageManager->registerAdmin(PageAdminServers::class);
-        $pageManager->registerAdmin(PageAdminServiceCodes::class);
+        $pageManager->registerAdmin(PageAdminPromoCodes::class);
         $pageManager->registerAdmin(PageAdminServices::class);
         $pageManager->registerAdmin(PageAdminSettings::class);
         $pageManager->registerAdmin(PageAdminSmsCodes::class);
@@ -179,19 +177,9 @@ class HeartServiceProvider
 
     private function registerServices(ServiceModuleManager $serviceModuleManager)
     {
-        // TODO Translate it
-        $serviceModuleManager->register(ChargeWalletServiceModule::class, "Doładowanie Portfela");
-
-        $serviceModuleManager->register(
-            ExtraFlagsServiceModule::class,
-            "Dodatkowe Uprawnienia / Flagi"
-        );
-
-        $serviceModuleManager->register(
-            MybbExtraGroupsServiceModule::class,
-            "Dodatkowe Grupy (MyBB)"
-        );
-
-        $serviceModuleManager->register(OtherServiceModule::class, "Inne");
+        $serviceModuleManager->register(ChargeWalletServiceModule::class, "wallet_top_up");
+        $serviceModuleManager->register(ExtraFlagsServiceModule::class, "extra_flags");
+        $serviceModuleManager->register(MybbExtraGroupsServiceModule::class, "mybb_groups");
+        $serviceModuleManager->register(OtherServiceModule::class, "other");
     }
 }

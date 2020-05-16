@@ -8,8 +8,7 @@ interface IPageAdminActionBox
      *
      * @param string $boxId
      * @param array $query
-     *
-     * @return string|null
+     * @return string
      */
     public function getActionBox($boxId, array $query);
 }

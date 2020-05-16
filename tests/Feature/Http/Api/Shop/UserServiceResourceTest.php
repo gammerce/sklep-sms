@@ -27,16 +27,16 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
-            'uid' => $user->getUid(),
-            'seconds' => 7 * 24 * 60 * 60,
+            "server_id" => $server->getId(),
+            "user_id" => $user->getId(),
+            "seconds" => 7 * 24 * 60 * 60,
         ]);
 
         // when
         $response = $this->put("/api/user_services/{$userService->getId()}", [
-            'auth_data' => '192.0.2.5',
-            'password' => 'ab12ab',
-            'type' => ExtraFlagType::TYPE_IP,
+            "auth_data" => "192.0.2.5",
+            "password" => "ab12ab",
+            "type" => ExtraFlagType::TYPE_IP,
         ]);
 
         // then
@@ -44,8 +44,8 @@ class UserServiceResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
         $freshUserService = $this->extraFlagUserServiceRepository->get($userService->getId());
-        $this->assertSame('192.0.2.5', $freshUserService->getAuthData());
-        $this->assertSame('ab12ab', $freshUserService->getPassword());
+        $this->assertSame("192.0.2.5", $freshUserService->getAuthData());
+        $this->assertSame("ab12ab", $freshUserService->getPassword());
         $this->assertSame(ExtraFlagType::TYPE_IP, $freshUserService->getType());
         $this->assertAlmostSameTimestamp($userService->getExpire(), $freshUserService->getExpire());
     }
@@ -58,14 +58,14 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
 
         // when
         $response = $this->put("/api/user_services/{$userService->getId()}", [
-            'auth_data' => '192.0.2.5',
-            'password' => 'ab12ab',
-            'type' => ExtraFlagType::TYPE_IP,
+            "auth_data" => "192.0.2.5",
+            "password" => "ab12ab",
+            "type" => ExtraFlagType::TYPE_IP,
         ]);
 
         // then
@@ -81,15 +81,15 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
-            'uid' => $user->getUid(),
+            "server_id" => $server->getId(),
+            "user_id" => $user->getId(),
         ]);
 
         // when
         $response = $this->put("/api/user_services/{$userService->getId()}", [
-            'auth_data' => 'sd',
-            'password' => 'ab12a',
-            'type' => ExtraFlagType::TYPE_IP,
+            "auth_data" => "sd",
+            "password" => "ab12a",
+            "type" => ExtraFlagType::TYPE_IP,
         ]);
 
         // then

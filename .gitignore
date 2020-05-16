@@ -10,8 +10,8 @@
 !/data/cache/.gitkeep
 /data/logs/*
 !/data/logs/.gitkeep
-/data/transfers/*
-!/data/transfers/.gitkeep
+/data/transactions/*
+!/data/transactions/.gitkeep
 /data/setup_error
 /data/setup_progress
 test.http

@@ -28,7 +28,7 @@ class UserResourceTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->put("/api/admin/users/{$this->user->getUid()}", [
+        $response = $this->put("/api/admin/users/{$this->user->getId()}", [
             "email" => 'example@example.com',
             "groups" => [1],
             "username" => "myabc",
@@ -40,7 +40,7 @@ class UserResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
 
-        $freshUser = $this->repository->get($this->user->getUid());
+        $freshUser = $this->repository->get($this->user->getId());
         $this->assertSame("example@example.com", $freshUser->getEmail());
         $this->assertSame("", $freshUser->getForename());
         $this->assertSame("", $freshUser->getSurname());
@@ -66,7 +66,7 @@ class UserResourceTest extends HttpTestCase
         ]);
 
         // when
-        $response = $this->put("/api/admin/users/{$this->user->getUid()}", [
+        $response = $this->put("/api/admin/users/{$this->user->getId()}", [
             "email" => $email,
             "groups" => [1],
             "username" => $username,

@@ -42,11 +42,11 @@ class Hostplay extends PaymentModule implements SupportSms
 
     public function verifySms($returnCode, $number)
     {
-        $response = $this->requester->get('http://hostplay.pl/api/payment/api_code_verify.php', [
-            'payment' => 'homepay_sms',
-            'userid' => $this->getUserId(),
-            'comment' => 'SklepSMS',
-            'code' => $returnCode,
+        $response = $this->requester->get("http://hostplay.pl/api/payment/api_code_verify.php", [
+            "payment" => "homepay_sms",
+            "userid" => $this->getUserId(),
+            "comment" => "SklepSMS",
+            "code" => $returnCode,
         ]);
 
         if (!$response) {
@@ -54,9 +54,9 @@ class Hostplay extends PaymentModule implements SupportSms
         }
 
         $content = $response->json();
-        $responseNumber = $this->getSmsNumberByProvision(price_to_int($content['kwota']));
+        $responseNumber = $this->getSmsNumberByProvision(price_to_int($content["kwota"]));
 
-        if (strtoupper($content['status']) === 'OK') {
+        if (strtoupper($content["status"]) === "OK") {
             if ($responseNumber == $number) {
                 return new SmsSuccessResult();
             }
@@ -64,20 +64,20 @@ class Hostplay extends PaymentModule implements SupportSms
             throw new BadNumberException(get_sms_cost($responseNumber));
         }
 
-        if (strtoupper($content['status']) === 'FAIL') {
-            if (strtoupper($content['error']) === "BAD_CODE") {
+        if (strtoupper($content["status"]) === "FAIL") {
+            if (strtoupper($content["error"]) === "BAD_CODE") {
                 throw new BadCodeException();
             }
 
-            if (strtoupper($content['error']) === "BAD_CODE[1]") {
+            if (strtoupper($content["error"]) === "BAD_CODE[1]") {
                 throw new BadCodeException();
             }
 
-            if (strtoupper($content['error']) === "BAD_AMOUNT") {
+            if (strtoupper($content["error"]) === "BAD_AMOUNT") {
                 throw new BadNumberException(null);
             }
 
-            if (strtoupper($content['error']) === "BAD_AMOUNT2") {
+            if (strtoupper($content["error"]) === "BAD_AMOUNT2") {
                 throw new BadNumberException(null);
             }
         }
@@ -92,7 +92,7 @@ class Hostplay extends PaymentModule implements SupportSms
 
     private function getUserId()
     {
-        return $this->getData('user_id');
+        return $this->getData("user_id");
     }
 
     /**

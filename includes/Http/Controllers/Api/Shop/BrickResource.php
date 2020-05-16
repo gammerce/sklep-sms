@@ -1,8 +1,8 @@
 <?php
 namespace App\Http\Controllers\Api\Shop;
 
-use App\Http\Responses\PlainResponse;
 use App\Managers\BlockManager;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class BrickResource
@@ -21,11 +21,11 @@ class BrickResource
             if ($block) {
                 $contentId = $block->getContentId();
                 $content = $block->getContent($request, array_slice($fragments, 1));
-                $data[$contentId]['content'] = $content !== null ? strval($content) : null;
-                $data[$contentId]['class'] = $content ? $block->getContentClass() : "";
+                $data[$contentId]["content"] = $content !== null ? strval($content) : null;
+                $data[$contentId]["class"] = $content ? $block->getContentClass() : "";
             }
         }
 
-        return new PlainResponse(json_encode($data));
+        return new JsonResponse($data);
     }
 }

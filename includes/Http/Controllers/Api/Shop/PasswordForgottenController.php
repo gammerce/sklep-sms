@@ -47,7 +47,7 @@ class PasswordForgottenController
             return new ApiResponse("sent", $lang->t('email_sent'), 1);
         }
 
-        $code = $userRepository->createResetPasswordKey($editedUser->getUid());
+        $code = $userRepository->createResetPasswordKey($editedUser->getId());
 
         $link = $url->to("/page/reset_password?code=" . urlencode($code));
         $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
@@ -70,7 +70,7 @@ class PasswordForgottenController
             $logger->log(
                 'log_reset_key_email',
                 $editedUser->getUsername(),
-                $editedUser->getUid(),
+                $editedUser->getId(),
                 $editedUser->getEmail(),
                 $validated['username'],
                 $validated['email']

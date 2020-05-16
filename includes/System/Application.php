@@ -12,7 +12,7 @@ use Illuminate\Container\Container;
 
 class Application extends Container
 {
-    const VERSION = "3.14.0-rc.1";
+    const VERSION = "3.14.0-rc.2";
 
     /** @var array */
     private $providers = [

@@ -63,7 +63,7 @@ class UserRepository
                 implode(";", $user->getGroups()),
                 (int) $user->getWallet(),
                 $user->getSteamId() ?: null,
-                $user->getUid(),
+                $user->getId(),
             ]);
     }
 
@@ -192,19 +192,19 @@ class UserRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
-    public function createResetPasswordKey($uid)
+    public function createResetPasswordKey($userId)
     {
         $key = get_random_string(32);
         $this->db
             ->statement("UPDATE `ss_users` SET `reset_password_key` = ? WHERE `uid` = ?")
-            ->execute([$key, $uid]);
+            ->execute([$key, $userId]);
 
         return $key;
     }
 
-    public function updatePassword($uid, $password)
+    public function updatePassword($userId, $password)
     {
-        if (is_demo() && as_int($uid) === 1) {
+        if (is_demo() && as_int($userId) === 1) {
             // Do not allow to modify admin's password in demo version
             return;
         }
@@ -215,14 +215,14 @@ class UserRepository
             ->statement(
                 "UPDATE `ss_users` SET `password` = ?, `salt` = ?, `reset_password_key` = '' WHERE `uid` = ?"
             )
-            ->execute([hash_password($password, $salt), $salt, $uid]);
+            ->execute([hash_password($password, $salt), $salt, $userId]);
     }
 
     public function touch(User $user)
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `lastactiv` = NOW(), `lastip` = ? WHERE `uid` = ?")
-            ->execute([$user->getLastIp(), $user->getUid()]);
+            ->execute([$user->getLastIp(), $user->getId()]);
     }
 
     public function delete($id)
@@ -236,21 +236,21 @@ class UserRepository
     public function mapToModel(array $data)
     {
         return new User(
-            as_int($data['uid']),
-            $data['username'],
-            $data['password'],
-            $data['salt'],
-            $data['email'],
-            $data['forename'],
-            $data['surname'],
-            $data['steam_id'],
-            explode(';', $data['groups']),
-            $data['regdate'],
-            $data['lastactiv'],
-            (int) $data['wallet'],
-            $data['regip'],
-            $data['lastip'],
-            $data['reset_password_key']
+            as_int($data["uid"]),
+            $data["username"],
+            $data["password"],
+            $data["salt"],
+            $data["email"],
+            $data["forename"],
+            $data["surname"],
+            $data["steam_id"],
+            explode(";", $data["groups"]),
+            $data["regdate"],
+            $data["lastactiv"],
+            (int) $data["wallet"],
+            $data["regip"],
+            $data["lastip"],
+            $data["reset_password_key"]
         );
     }
 }

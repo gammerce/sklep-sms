@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Models\SmsCode;
 use App\Repositories\SmsCodeRepository;
@@ -12,8 +13,10 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\ExpirationDateCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -90,11 +93,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                             $this->priceTextService->getPriceGrossText($smsCode->getSmsPrice())
                         )
                     )
-                    ->addCell(
-                        new Cell(
-                            as_date_string($smsCode->getExpiresAt()) ?: $this->lang->t("never")
-                        )
-                    )
+                    ->addCell(new ExpirationDateCell($smsCode->getExpiresAt()))
                     ->setDeleteAction(has_privileges("manage_sms_codes"));
             })
             ->all();
@@ -129,32 +128,23 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         }
 
         switch ($boxId) {
-            case "sms_code_add":
+            case "add":
                 $smsPrices = collect($this->smsPriceRepository->all())
                     ->map(function ($smsPrice) {
-                        return create_dom_element(
-                            "option",
+                        return new Option(
                             $this->priceTextService->getPriceGrossText($smsPrice),
-                            [
-                                "value" => $smsPrice,
-                            ]
+                            $smsPrice
                         );
                     })
                     ->join();
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/sms_code_add",
                     compact("smsPrices")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

@@ -61,7 +61,7 @@ class ExpiredUserServiceService
 
                 $this->logger->log(
                     'log_expired_service_delete',
-                    "id: {$userService->getId()}, service_id: {$userService->getServiceId()}, uid: {$userService->getUid()}"
+                    "id: {$userService->getId()}, service_id: {$userService->getServiceId()}, user_id: {$userService->getUserId()}"
                 );
             }
         }

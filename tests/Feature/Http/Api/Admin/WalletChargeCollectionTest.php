@@ -19,7 +19,7 @@ class WalletChargeCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->post("/api/admin/users/{$user->getUid()}/wallet/charge", [
+        $response = $this->post("/api/admin/users/{$user->getId()}/wallet/charge", [
             "quantity" => 1,
         ]);
 
@@ -27,7 +27,7 @@ class WalletChargeCollectionTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("charged", $json["return_id"]);
-        $freshUser = $userRepository->get($user->getUid());
+        $freshUser = $userRepository->get($user->getId());
         $this->assertSame(1100, $freshUser->getWallet());
     }
 

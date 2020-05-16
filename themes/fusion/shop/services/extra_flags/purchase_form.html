@@ -116,7 +116,7 @@
                 <div class="column is-half field">
                     <label for="server_id" class="label required">{{ __('server') }}</label>
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-fullwidth">
                             <select id="server_id" name="server_id" required>
                                 <option value="">
                                     {{ __('choose_server') }}
@@ -130,7 +130,7 @@
                 <div class="column is-half field">
                     <label for="quantity" class="label required">{{ __('quantity') }}</label>
                     <div class="control">
-                        <div class="select">
+                        <div class="select is-fullwidth">
                             <select id="quantity" name="quantity" required>
                                 <option value="">
                                     {{ __('choose_quantity') }}
@@ -140,24 +140,8 @@
                     </div>
                 </div>
 
-                <div id="cost_wrapper" class="column is-full has-text-centered is-hidden">
-                    <div>
-                        <strong>{{ __('transfer_price') }}</strong>:
-                        <span id="cost_transfer"></span>
-                        <sup class="discount"></sup>
-                    </div>
-
-                    <div>
-                        <strong>{{ __('sms_price') }}</strong>:
-                        <span id="cost_sms"></span>
-                        <sup class="discount"></sup>
-                    </div>
-
-                    <div>
-                        <strong>{{ __('direct_billing_price') }}</strong>:
-                        <span id="cost_direct_billing"></span>
-                        <sup class="discount"></sup>
-                    </div>
+                <div class="column is-full">
+                    {!! $costBox !!}
                 </div>
             </div>
         </div>
@@ -165,7 +149,10 @@
 
     <div class="form-footer">
         <button type="submit" class="button is-success">
-            {{ __('go_to_payment') }}
+            <span class="icon">
+                <i class="fas fa-shopping-cart"></i>
+            </span>
+            <span>{{ __('go_to_payment') }}</span>
         </button>
     </div>
 

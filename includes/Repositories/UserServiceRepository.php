@@ -17,16 +17,16 @@ class UserServiceRepository
     /**
      * @param string $serviceId
      * @param int|null $seconds
-     * @param int|null $uid
+     * @param int|null $userId
      * @return string
      */
-    public function create($serviceId, $seconds, $uid)
+    public function create($serviceId, $seconds, $userId)
     {
         $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`service`, `expire`, `uid`) " .
+            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
                 "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?)"
         );
-        $statement->execute([$serviceId, $seconds, $seconds, $uid ?: 0]);
+        $statement->execute([$serviceId, $seconds, $seconds, $userId ?: 0]);
         return $this->db->lastId();
     }
 
@@ -57,12 +57,12 @@ class UserServiceRepository
             return 0;
         }
 
-        if (array_key_exists('uid', $data) && $data['uid'] === null) {
-            $data['uid'] = 0;
+        if (array_key_exists("user_id", $data) && $data["user_id"] === null) {
+            $data["user_id"] = 0;
         }
 
-        if (array_key_exists('expire', $data) && $data['expire'] === null) {
-            $data['expire'] = -1;
+        if (array_key_exists("expire", $data) && $data["expire"] === null) {
+            $data["expire"] = -1;
         }
 
         $params = map_to_params($data);
@@ -77,11 +77,11 @@ class UserServiceRepository
     public function updateWithModule(ServiceModule $serviceModule, $userServiceId, array $data)
     {
         $baseData = collect($data)->filter(function ($value, $key) {
-            return in_array($key, ['uid', 'service', 'expire'], true);
+            return in_array($key, ["user_id", "service_id", "expire"], true);
         });
 
         $moduleData = collect($data)->filter(function ($value, $key) {
-            return !in_array($key, ['uid', 'expire'], true);
+            return !in_array($key, ["user_id", "expire"], true);
         });
 
         $affected = $this->update($userServiceId, $baseData->all());
@@ -99,10 +99,12 @@ class UserServiceRepository
         return $affected;
     }
 
-    public function updateUid($id, $uid)
+    public function updateUserId($id, $userId)
     {
-        $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
-        $statement->execute([$uid, $id]);
+        $statement = $this->db->statement(
+            "UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?"
+        );
+        $statement->execute([$userId, $id]);
 
         return !!$statement->rowCount();
     }

@@ -1,9 +1,9 @@
 <?php
 namespace Tests\Feature\Services;
 
+use App\Managers\ServiceModuleManager;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
-use App\Managers\ServiceModuleManager;
 use Tests\Psr4\TestCases\TestCase;
 
 class UserServiceRepositoryTest extends TestCase

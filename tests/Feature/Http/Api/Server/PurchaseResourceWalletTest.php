@@ -3,8 +3,8 @@ namespace Tests\Feature\Http\Api\Server;
 
 use App\Exceptions\LicenseRequestException;
 use App\Models\Price;
-use App\Models\Purchase;
 use App\Models\Server;
+use App\Payment\General\PaymentMethod;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
@@ -71,7 +71,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => Purchase::METHOD_WALLET,
+                "method" => PaymentMethod::WALLET(),
                 "sign" => $sign,
             ],
             [
@@ -94,9 +94,9 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $boughtServiceId = (int) $matches[1];
         $boughtService = $this->boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
-        $this->assertEquals(Purchase::METHOD_WALLET, $boughtService->getMethod());
+        $this->assertSameEnum(PaymentMethod::WALLET(), $boughtService->getMethod());
 
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(9900, $freshUser->getWallet());
     }
 
@@ -123,7 +123,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => Purchase::METHOD_WALLET,
+                "method" => PaymentMethod::WALLET(),
                 "sign" => $sign,
             ],
             [
@@ -142,7 +142,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             $response->getContent()
         );
 
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(99, $freshUser->getWallet());
     }
 
@@ -164,7 +164,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => Purchase::METHOD_WALLET,
+                "method" => PaymentMethod::WALLET(),
                 "sign" => $sign,
             ],
             [
@@ -212,7 +212,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => Purchase::METHOD_WALLET,
+                "method" => PaymentMethod::WALLET(),
                 "sign" => $sign,
             ],
             [
@@ -233,7 +233,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             $json
         );
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(10000, $freshUser->getWallet());
     }
 }

@@ -7,6 +7,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Transaction;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
@@ -28,9 +29,13 @@ class TransferChargeWallet implements IChargeWallet
     /** @var Translator */
     private $lang;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
         Template $template,
         PriceTextService $priceTextService,
+        TransferPriceService $transferPriceService,
         Settings $settings,
         TranslationManager $translationManager
     ) {
@@ -38,6 +43,7 @@ class TransferChargeWallet implements IChargeWallet
         $this->priceTextService = $priceTextService;
         $this->settings = $settings;
         $this->lang = $translationManager->user();
+        $this->transferPriceService = $transferPriceService;
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -64,7 +70,9 @@ class TransferChargeWallet implements IChargeWallet
 
     public function getTransactionView(Transaction $transaction)
     {
-        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
+        $quantity = $this->priceTextService->getPriceText(
+            price_to_int($transaction->getQuantity())
+        );
         return $this->template->renderNoComments(
             "shop/services/charge_wallet/web_purchase_info_transfer",
             compact("quantity")
@@ -78,11 +86,11 @@ class TransferChargeWallet implements IChargeWallet
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => Purchase::METHOD_TRANSFER,
+            "value" => PaymentMethod::TRANSFER(),
             "text" => $this->lang->t("transfer_transfer"),
         ]);
         $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
-            "type" => Purchase::METHOD_TRANSFER,
+            "type" => PaymentMethod::TRANSFER(),
         ]);
 
         return [$option, $body];
@@ -91,7 +99,7 @@ class TransferChargeWallet implements IChargeWallet
     public function getPrice(Purchase $purchase)
     {
         return $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
+            $this->transferPriceService->getPrice($purchase)
         );
     }
 

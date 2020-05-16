@@ -1,8 +1,18 @@
 <?php
 namespace App\Requesting;
 
+use App\Loggers\FileLogger;
+
 class Requester
 {
+    /** @var FileLogger */
+    private $logger;
+
+    public function __construct(FileLogger $logger)
+    {
+        $this->logger = $logger;
+    }
+
     /**
      * @param string $url
      * @param array  $query
@@ -100,6 +110,12 @@ class Requester
         $response = curl_exec($curl);
 
         if ($response === false) {
+            $this->logger->error("CURL request failed", [
+                "method" => $method,
+                "url" => $url,
+                "error" => curl_error($curl),
+                "error_no" => curl_errno($curl),
+            ]);
             return false;
         }
 

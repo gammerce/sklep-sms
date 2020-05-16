@@ -99,7 +99,7 @@ class BlockUserButtons extends Block
             "acpButton" => $acpButton,
             "chargeWalletButton" => $chargeWalletButton,
             "username" => $user->getUsername(),
-            "userId" => $user->getUid(),
+            "userId" => $user->getId(),
         ]);
     }
 }

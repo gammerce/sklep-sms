@@ -56,7 +56,7 @@ class SmsCodeRepository
             ->statement(
                 "INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?"
             )
-            ->execute([$code, $smsPrice, $free ? 1 : 0, get_date_for_database($expires)]);
+            ->execute([$code, $smsPrice, $free ? 1 : 0, serialize_date($expires)]);
 
         return $this->get($this->db->lastId());
     }
@@ -72,11 +72,11 @@ class SmsCodeRepository
     public function mapToModel(array $data)
     {
         return new SmsCode(
-            (int) $data['id'],
-            $data['code'],
-            (int) $data['sms_price'],
-            (bool) $data['free'],
-            as_datetime($data['expires_at'])
+            (int) $data["id"],
+            $data["code"],
+            (int) $data["sms_price"],
+            (bool) $data["free"],
+            as_datetime($data["expires_at"])
         );
     }
 }

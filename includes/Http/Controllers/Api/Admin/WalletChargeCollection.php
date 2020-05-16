@@ -12,6 +12,7 @@ use App\Managers\ServiceModuleManager;
 use App\Managers\UserManager;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
+use App\Payment\General\PaymentMethod;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\Services\PriceTextService;
 use App\System\Auth;
@@ -38,11 +39,11 @@ class WalletChargeCollection
 
         $validator = new Validator(
             array_merge($request->request->all(), [
-                'uid' => $userId,
+                "user_id" => $userId,
             ]),
             [
-                'uid' => [new RequiredRule(), new UserExistsRule()],
-                'quantity' => [new RequiredRule(), new NumberRule()],
+                "user_id" => [new RequiredRule(), new UserExistsRule()],
+                "quantity" => [new RequiredRule(), new NumberRule()],
             ]
         );
 
@@ -54,7 +55,7 @@ class WalletChargeCollection
         }
 
         $editedUser = $userManager->getUser($userId);
-        $quantity = price_to_int($validated['quantity']);
+        $quantity = price_to_int($validated["quantity"]);
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
         $quantity = max($quantity, -$editedUser->getWallet());
@@ -63,22 +64,22 @@ class WalletChargeCollection
         $paymentId = $adminPaymentService->payByAdmin($user);
 
         // Kupujemy usługę
-        $purchase = new Purchase($editedUser);
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_ADMIN,
-            Purchase::PAYMENT_PAYMENT_ID => $paymentId,
-        ]);
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $quantity,
-        ]);
-        $purchase->setEmail($editedUser->getEmail());
+        $purchase = (new Purchase($editedUser))
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
+                Purchase::PAYMENT_PAYMENT_ID => $paymentId,
+            ])
+            ->setOrder([
+                Purchase::ORDER_QUANTITY => $quantity,
+            ])
+            ->setEmail($editedUser->getEmail());
 
         $serviceModule->purchase($purchase);
 
         $logger->logWithActor(
-            'log_account_charged',
+            "log_account_charged",
             $editedUser->getUsername(),
-            $editedUser->getUid(),
+            $editedUser->getId(),
             $priceTextService->getPlainPrice($quantity),
             $settings->getCurrency()
         );
@@ -86,7 +87,7 @@ class WalletChargeCollection
         return new ApiResponse(
             "charged",
             $lang->t(
-                'account_charge_success',
+                "account_charge_success",
                 $editedUser->getUsername(),
                 $priceTextService->getPlainPrice($quantity),
                 $settings->getCurrency()

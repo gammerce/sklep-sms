@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
@@ -85,13 +86,15 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     public function getContent(Request $request)
     {
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * " .
-                "FROM `ss_prices` " .
-                "ORDER BY `service`, `server`, `quantity` " .
-                "LIMIT ?, ?"
+            <<<EOF
+SELECT SQL_CALC_FOUND_ROWS * 
+FROM `ss_prices` 
+ORDER BY `service_id`, `server_id`, `quantity` 
+LIMIT ?, ?
+EOF
         );
         $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
-        $rowsCount = $this->db->query('SELECT FOUND_ROWS()')->fetchColumn();
+        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
@@ -216,11 +219,10 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "price_add":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/price_add",
                     compact("services", "servers", "smsPrices")
                 );
-                break;
 
             case "price_edit":
                 $directBillingPrice = $price->hasDirectBillingPrice()
@@ -230,7 +232,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                     ? $price->getTransferPrice() / 100
                     : null;
 
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/price_edit",
                     compact(
                         "directBillingPrice",
@@ -244,15 +246,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
                         "discount" => $price->getDiscount(),
                     ]
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

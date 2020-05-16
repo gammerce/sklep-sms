@@ -41,9 +41,9 @@ class Auth
         $this->user = $user;
     }
 
-    public function setUserById($uid)
+    public function setUserById($userId)
     {
-        $this->user = $this->userManager->getUser($uid);
+        $this->user = $this->userManager->getUser($userId);
     }
 
     /**
@@ -57,7 +57,7 @@ class Auth
         }
 
         $this->userManager->setUser($user);
-        $request->getSession()->set("uid", $user->getUid());
+        $request->getSession()->set("uid", $user->getId());
         $this->user = $user;
     }
 
@@ -74,7 +74,7 @@ class Auth
         $session = $request->getSession();
 
         if ($user && has_privileges("acp", $user)) {
-            $session->set("uid", $user->getUid());
+            $session->set("uid", $user->getId());
             $this->user = $user;
         } else {
             $session->set("info", "wrong_data");

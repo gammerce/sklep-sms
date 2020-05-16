@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\PaymentModuleManager;
 use App\Managers\ServerManager;
@@ -209,26 +210,19 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "server_add":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/server_add",
                     compact("smsPlatforms", "services", "transferPlatforms")
                 );
-                break;
 
             case "server_edit":
-                $output = $this->template->render(
+                return $this->template->render(
                     "admin/action_boxes/server_edit",
                     compact("server", "smsPlatforms", "services", "transferPlatforms")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

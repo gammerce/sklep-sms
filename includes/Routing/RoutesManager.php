@@ -13,12 +13,11 @@ use App\Http\Controllers\Api\Admin\PaymentPlatformCollection;
 use App\Http\Controllers\Api\Admin\PaymentPlatformResource;
 use App\Http\Controllers\Api\Admin\PriceCollection;
 use App\Http\Controllers\Api\Admin\PriceResource;
+use App\Http\Controllers\Api\Admin\PromoCodeCollection;
+use App\Http\Controllers\Api\Admin\PromoCodeResource;
 use App\Http\Controllers\Api\Admin\ServerCollection;
 use App\Http\Controllers\Api\Admin\ServerResource;
 use App\Http\Controllers\Api\Admin\ServerTokenController;
-use App\Http\Controllers\Api\Admin\ServiceCodeAddFormController;
-use App\Http\Controllers\Api\Admin\ServiceCodeCollection;
-use App\Http\Controllers\Api\Admin\ServiceCodeResource;
 use App\Http\Controllers\Api\Admin\ServiceCollection;
 use App\Http\Controllers\Api\Admin\ServiceModuleExtraFieldsController;
 use App\Http\Controllers\Api\Admin\ServiceResource;
@@ -31,12 +30,18 @@ use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
 use App\Http\Controllers\Api\Admin\UserServiceCollection;
 use App\Http\Controllers\Api\Admin\UserServiceResource as AdminUserServiceResource;
 use App\Http\Controllers\Api\Admin\WalletChargeCollection;
+use App\Http\Controllers\Api\Ipn\DirectBillingController;
+use App\Http\Controllers\Api\Ipn\TransferController;
+use App\Http\Controllers\Api\Server\PlayerFlagCollection;
+use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
+use App\Http\Controllers\Api\Server\ServerConfigController;
+use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
+use App\Http\Controllers\Api\Server\UserServiceCollection as ServerUserServiceCollection;
+use App\Http\Controllers\Api\Setup\InstallController;
+use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\BrickResource;
 use App\Http\Controllers\Api\Shop\CronController;
 use App\Http\Controllers\Api\Shop\IncomeController;
-use App\Http\Controllers\Api\Setup\InstallController;
-use App\Http\Controllers\Api\Ipn\DirectBillingController;
-use App\Http\Controllers\Api\Ipn\TransferController;
 use App\Http\Controllers\Api\Shop\LogInController;
 use App\Http\Controllers\Api\Shop\LogOutController;
 use App\Http\Controllers\Api\Shop\PasswordForgottenController;
@@ -46,18 +51,14 @@ use App\Http\Controllers\Api\Shop\PaymentResource;
 use App\Http\Controllers\Api\Shop\PurchaseCollection;
 use App\Http\Controllers\Api\Shop\PurchaseResource;
 use App\Http\Controllers\Api\Shop\RegisterController;
-use App\Http\Controllers\Api\Server\PlayerFlagCollection;
-use App\Http\Controllers\Api\Server\PurchaseResource as ServerPurchaseResource;
-use App\Http\Controllers\Api\Server\ServerConfigController;
-use App\Http\Controllers\Api\Server\ServiceLongDescriptionController;
-use App\Http\Controllers\Api\Server\UserServiceCollection as ServerUserServiceCollection;
 use App\Http\Controllers\Api\Shop\ServiceActionController;
 use App\Http\Controllers\Api\Shop\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverController;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
 use App\Http\Controllers\Api\Shop\TemplateResource;
-use App\Http\Controllers\Api\Setup\UpdateController;
+use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
+use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
 use App\Http\Controllers\Api\Shop\UserServiceBrickController;
 use App\Http\Controllers\Api\Shop\UserServiceEditFormController;
@@ -76,9 +77,9 @@ use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireUnauthorized;
 use App\Http\Middlewares\RunCron;
-use App\Http\Middlewares\StartAdminSession;
 use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetupAvailable;
+use App\Http\Middlewares\StartAdminSession;
 use App\Http\Middlewares\StartUserSession;
 use App\Http\Middlewares\UpdateUserActivity;
 use App\Http\Middlewares\ValidateLicense;
@@ -132,19 +133,19 @@ class RoutesManager
          */
         $r->redirectPermanent('/cron', '/api/cron');
 
-        $r->get('/lang.js', [
-            'uses' => LanguageJsController::class . '@get',
-        ]);
-
-        $r->get('/api/cron', [
-            'uses' => CronController::class . '@get',
-        ]);
-
         $r->addGroup(
             [
                 "middlewares" => [SetLanguage::class],
             ],
             function (RouteCollector $r) {
+                $r->get('/lang.js', [
+                    'uses' => LanguageJsController::class . '@get',
+                ]);
+
+                $r->get('/api/cron', [
+                    'uses' => CronController::class . '@get',
+                ]);
+
                 $r->get('/api/server/services/{serviceId}/long_description', [
                     'uses' => ServiceLongDescriptionController::class . '@get',
                 ]);
@@ -311,6 +312,18 @@ class RoutesManager
                         $r->get('/api/services/{service}/take_over/create_form', [
                             'uses' => ServiceTakeOverFormController::class . '@get',
                         ]);
+
+                        $r->get('/api/transactions/{transactionId}', [
+                            'uses' => TransactionResource::class . '@get',
+                        ]);
+
+                        $r->post('/api/transactions/{transactionId}/promo_code', [
+                            'uses' => TransactionPromoCodeResource::class . '@post',
+                        ]);
+
+                        $r->delete('/api/transactions/{transactionId}/promo_code', [
+                            'uses' => TransactionPromoCodeResource::class . '@delete',
+                        ]);
                     }
                 );
             }
@@ -363,11 +376,6 @@ class RoutesManager
                     'uses' => UserResource::class . '@delete',
                 ]);
 
-                $r->get('/api/admin/services/{serviceId}/service_codes/add_form', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeAddFormController::class . '@get',
-                ]);
-
                 $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
                     'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
                     'uses' => UserServiceAddFormController::class . '@get',
@@ -378,9 +386,14 @@ class RoutesManager
                     'uses' => UserServiceCollection::class . '@post',
                 ]);
 
-                $r->post('/api/admin/services/{serviceId}/service_codes', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeCollection::class . '@post',
+                $r->post('/api/admin/promo_codes', [
+                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
+                    'uses' => PromoCodeCollection::class . '@post',
+                ]);
+
+                $r->delete('/api/admin/promo_codes/{promoCodeId}', [
+                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
+                    'uses' => PromoCodeResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
@@ -406,11 +419,6 @@ class RoutesManager
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
                     'middlewares' => [[RequireAuthorized::class, "manage_users"]],
                     'uses' => WalletChargeCollection::class . '@post',
-                ]);
-
-                $r->delete('/api/admin/service_codes/{serviceCodeId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_service_codes"]],
-                    'uses' => ServiceCodeResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/sms_codes', [

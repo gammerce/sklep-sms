@@ -2,77 +2,76 @@
 namespace App\Payment\Wallet;
 
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
+use App\Payment\Transfer\TransferPriceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
-use App\Services\PriceTextService;
-use App\Support\Result;
-use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class WalletPaymentMethod implements IPaymentMethod
 {
-    /** @var Template */
-    private $template;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
     /** @var Translator */
     private $lang;
 
     /** @var WalletPaymentService */
     private $walletPaymentService;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
-        Template $template,
-        PriceTextService $priceTextService,
         TranslationManager $translationManager,
+        TransferPriceService $transferPriceService,
         WalletPaymentService $walletPaymentService
     ) {
-        $this->template = $template;
-        $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
+        $this->transferPriceService = $transferPriceService;
     }
 
-    public function render(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase)
     {
-        $price = $this->priceTextService->getPriceText(
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
-        );
-
-        return $this->template->render("shop/payment/payment_method_wallet", compact('price'));
+        return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
     public function isAvailable(Purchase $purchase)
     {
         return is_logged() &&
-            $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) !== null &&
+            $this->transferPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }
 
+    /**
+     * @param Purchase $purchase
+     * @param IServicePurchase $serviceModule
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     */
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         if (!$purchase->user->exists()) {
-            return new Result("wallet_not_logged", $this->lang->t('no_login_no_wallet'), false);
+            throw new PaymentProcessingException(
+                "wallet_not_logged",
+                $this->lang->t("no_login_no_wallet")
+            );
         }
 
-        if ($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER) === null) {
-            return new Result(
+        $price = $this->transferPriceService->getPrice($purchase);
+
+        if ($price === null) {
+            throw new PaymentProcessingException(
                 "no_transfer_price",
-                $this->lang->t('payment_method_unavailable'),
-                false
+                $this->lang->t("payment_method_unavailable")
             );
         }
 
         try {
-            $paymentId = $this->walletPaymentService->payWithWallet(
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER),
-                $purchase->user
-            );
+            $paymentId = $this->walletPaymentService->payWithWallet($price, $purchase->user);
         } catch (NotEnoughFundsException $e) {
-            return new Result("no_money", $this->lang->t('not_enough_money'), false);
+            throw new PaymentProcessingException("no_money", $this->lang->t("not_enough_money"));
         }
 
         $purchase->setPayment([
@@ -80,8 +79,6 @@ class WalletPaymentMethod implements IPaymentMethod
         ]);
         $boughtServiceId = $serviceModule->purchase($purchase);
 
-        return new Result("purchased", $this->lang->t('purchase_success'), true, [
-            'bsid' => $boughtServiceId,
-        ]);
+        return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 }

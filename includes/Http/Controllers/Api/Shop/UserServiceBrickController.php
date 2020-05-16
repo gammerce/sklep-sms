@@ -32,7 +32,7 @@ class UserServiceBrickController
             return new PlainResponse($lang->t('dont_play_games'));
         }
 
-        if ($userService->getUid() !== $user->getUid()) {
+        if ($userService->getUserId() !== $user->getId()) {
             return new PlainResponse($lang->t('dont_play_games'));
         }
 

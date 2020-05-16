@@ -13,9 +13,6 @@ class LanguageJsControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame(
-            "var lang = {\n    ajax_error: \"Wystąpił błąd podczas pozyskiwania danych.\",\n    sth_went_wrong: \"Coś poszło nie tak\",\n};\n",
-            $response->getContent()
-        );
+        $this->assertStringStartsWith("window.lang = {", $response->getContent());
     }
 }

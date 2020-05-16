@@ -2,8 +2,8 @@
 namespace Tests\Feature\Http\Api\Setup;
 
 use App\Install\ShopState;
-use App\System\Application;
 use App\Support\Database;
+use App\System\Application;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use Tests\Psr4\Concerns\ApplicationConcern;

@@ -4,6 +4,8 @@ namespace App\Managers;
 use App\Exceptions\InvalidConfigException;
 use App\ServiceModules\ServiceModule;
 use App\System\Application;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 
 class ServiceModuleManager
 {
@@ -13,12 +15,19 @@ class ServiceModuleManager
     /** @var ServiceManager */
     private $serviceManager;
 
+    /** @var Translator */
+    private $lang;
+
     private $classes = [];
 
-    public function __construct(Application $app, ServiceManager $serviceManager)
-    {
+    public function __construct(
+        Application $app,
+        ServiceManager $serviceManager,
+        TranslationManager $translationManager
+    ) {
         $this->app = $app;
         $this->serviceManager = $serviceManager;
+        $this->lang = $translationManager->user();
     }
 
     /**
@@ -34,10 +43,7 @@ class ServiceModuleManager
             throw new InvalidConfigException("There is a service with such an id: [$id] already.");
         }
 
-        $this->classes[$id] = [
-            'name' => $name,
-            'class' => $class,
-        ];
+        $this->classes[$id] = compact("name", "class");
     }
 
     /**
@@ -58,9 +64,9 @@ class ServiceModuleManager
             return null;
         }
 
-        $className = $this->classes[$service->getModule()]['class'];
+        $className = $this->classes[$service->getModule()]["class"];
 
-        return $className ? $this->app->makeWith($className, compact('service')) : null;
+        return $className ? $this->app->makeWith($className, compact("service")) : null;
     }
 
     /**
@@ -75,11 +81,11 @@ class ServiceModuleManager
             return null;
         }
 
-        if (!isset($this->classes[$moduleId]['class'])) {
+        if (!isset($this->classes[$moduleId]["class"])) {
             return null;
         }
 
-        $classname = $this->classes[$moduleId]['class'];
+        $classname = $this->classes[$moduleId]["class"];
 
         return $this->app->make($classname);
     }
@@ -90,7 +96,7 @@ class ServiceModuleManager
             return null;
         }
 
-        return $this->classes[$moduleId]['name'];
+        return $this->lang->t($this->classes[$moduleId]["name"]);
     }
 
     /**

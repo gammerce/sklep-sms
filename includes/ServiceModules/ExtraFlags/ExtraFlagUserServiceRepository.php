@@ -46,13 +46,13 @@ class ExtraFlagUserServiceRepository
         return $this->mapToModel($data);
     }
 
-    public function create($serviceId, $uid, $seconds, $serverId, $type, $authData, $password)
+    public function create($serviceId, $userId, $seconds, $serverId, $type, $authData, $password)
     {
-        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $uid);
+        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $userId);
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
-            "INSERT INTO `$table` (`us_id`, `server`, `service`, `type`, `auth_data`, `password`) " .
+            "INSERT INTO `$table` (`us_id`, `server_id`, `service_id`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
         $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
@@ -82,14 +82,14 @@ class ExtraFlagUserServiceRepository
     public function mapToModel(array $data)
     {
         return new ExtraFlagUserService(
-            as_int($data['id']),
-            $data['service'],
-            as_int($data['uid']),
-            as_int($data['expire']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password']
+            as_int($data["id"]),
+            as_string($data["service_id"]),
+            as_int($data["user_id"]),
+            as_int($data["expire"]),
+            as_int($data["server_id"]),
+            as_int($data["type"]),
+            as_string($data["auth_data"]),
+            as_string($data["password"])
         );
     }
 }

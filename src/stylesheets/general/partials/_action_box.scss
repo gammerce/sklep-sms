@@ -63,6 +63,10 @@
         padding: 0;
     }
 
+    td:nth-child(1) {
+        max-width: 200px;
+    }
+
     td:nth-child(2) {
         color: #ccc;
     }
@@ -73,5 +77,9 @@
                 text-transform: uppercase;
             }
         }
+    }
+
+    fieldset {
+        margin: 1rem;
     }
 }

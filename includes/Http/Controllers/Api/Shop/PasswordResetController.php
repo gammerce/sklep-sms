@@ -43,8 +43,8 @@ class PasswordResetController
             return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
         }
 
-        $userRepository->updatePassword($user->getUid(), $pass);
-        $logger->log('log_reset_pass', $user->getUid());
+        $userRepository->updatePassword($user->getId(), $pass);
+        $logger->log('log_reset_pass', $user->getId());
 
         return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
     }

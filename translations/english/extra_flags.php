@@ -6,7 +6,7 @@ return [
     'chosen_incorrect_type' => 'Chosen type of purchase not allowed.',
     'existing_service_has_different_password' =>
         'Service purchased by (nick/ip) already exists but it has different password.',
-    'extra_flags' => 'Extra flags',
+    'extra_flags' => 'Player Flags',
     'flags' => 'Flags',
     'if_displayed_in_shop' => 'Should it be displayed <br/>in webstore.',
     'just_purchased' => 'Hello {1},<br/>

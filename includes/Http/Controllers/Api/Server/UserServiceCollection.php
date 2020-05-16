@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
-use App\Http\Responses\JsonResponse;
+use App\Http\Responses\ServerJsonResponse;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\System\ServerAuth;
@@ -13,7 +13,7 @@ class UserServiceCollection
 {
     public function get(Request $request, Database $db, ServerAuth $serverAuth)
     {
-        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+        $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $nick = $request->query->get("nick");
         $ip = $request->query->get("ip");
         $steamId = $request->query->get("steam_id");
@@ -25,8 +25,8 @@ class UserServiceCollection
 SELECT s.name AS `service`, us.expire
 FROM `ss_user_service` AS us 
 INNER JOIN `ss_user_service_extra_flags` AS usef ON usef.us_id = us.id 
-INNER JOIN `ss_services` AS s ON us.service = s.id 
-WHERE usef.server = ?
+INNER JOIN `ss_services` AS s ON us.service_id = s.id 
+WHERE usef.server_id = ?
 AND (us.expire > UNIX_TIMESTAMP() OR us.expire = -1)
 AND (
     (usef.type = ? AND usef.auth_data = ?) 
@@ -50,13 +50,13 @@ EOF
             ->map(function (array $item) {
                 return [
                     "s" => $item["service"],
-                    "e" => convert_expire($item["expire"]),
+                    "e" => as_expiration_datetime_string($item["expire"]),
                 ];
             })
             ->all();
 
         return $acceptHeader->has("application/json")
-            ? new JsonResponse($data)
+            ? new ServerJsonResponse($data)
             : new AssocResponse($data);
     }
 }

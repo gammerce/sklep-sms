@@ -13,9 +13,9 @@ class UserServiceBrickControllerTest extends HttpTestCase
         $this->actingAs($user);
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'auth_data' => 'myauth',
-            'server_id' => $server->getId(),
-            'uid' => $user->getUid(),
+            "auth_data" => "myauth",
+            "server_id" => $server->getId(),
+            "user_id" => $user->getId(),
         ]);
 
         // when

@@ -6,9 +6,11 @@ use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Support\Result;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
@@ -133,11 +135,11 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new UnknownErrorException();
     }
 
-    public function prepareDirectBilling(Purchase $purchase, $dataFilename)
+    public function prepareDirectBilling($price, Purchase $purchase)
     {
-        $amount = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING) / 100;
+        $price /= 100;
         $serviceId = $this->getDirectBillingServiceId();
-        $control = $dataFilename;
+        $control = $purchase->getId();
         $apiKey = $this->getDirectBillingApiKey();
 
         $body = [
@@ -145,8 +147,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             "control" => $control,
             "complete" => $this->url->to("/page/payment_success"),
             "failure" => $this->url->to("/page/payment_error"),
-            "amount_gross" => $amount,
-            "sign" => hash("sha256", $serviceId . $amount . $control . $apiKey),
+            "amount_gross" => $price,
+            "sign" => hash("sha256", $serviceId . $price . $control . $apiKey),
         ];
 
         $response = $this->requester->post("https://simpay.pl/db/api", $body);
@@ -157,15 +159,13 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $link = array_get($result, "link");
 
         if ($status === "success") {
-            return new Result("external", $this->lang->t("external_payment_prepared"), true, [
-                "data" => [
-                    "method" => "GET",
-                    "url" => $link,
-                ],
+            return new PaymentResult(PaymentResultType::EXTERNAL(), [
+                "method" => "GET",
+                "url" => $link,
             ]);
         }
 
-        return new Result("error", "SimPay response. $status: $message", false);
+        throw new PaymentProcessingException("error", "SimPay response. $status: $message");
     }
 
     public function finalizeDirectBilling(array $query, array $body)
@@ -177,17 +177,15 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $valuePartner = price_to_int(array_get($body, "valuepartner"));
         $control = array_get($body, "control");
 
-        $finalizedPayment = new FinalizedPayment();
-        $finalizedPayment->setStatus($this->isPaymentValid($body));
-        $finalizedPayment->setOrderId($id);
-        $finalizedPayment->setCost($valueGross);
-        $finalizedPayment->setIncome($valuePartner);
-        $finalizedPayment->setDataFilename($control);
-        $finalizedPayment->setExternalServiceId($id);
-        $finalizedPayment->setTestMode(false);
-        $finalizedPayment->setOutput("OK");
-
-        return $finalizedPayment;
+        return (new FinalizedPayment())
+            ->setStatus($this->isPaymentValid($body))
+            ->setOrderId($id)
+            ->setCost($valueGross)
+            ->setIncome($valuePartner)
+            ->setTransactionId($control)
+            ->setExternalServiceId($id)
+            ->setTestMode(false)
+            ->setOutput("OK");
     }
 
     public function getSmsCode()

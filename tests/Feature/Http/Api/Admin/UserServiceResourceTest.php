@@ -35,18 +35,18 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
         $expireTimestamp = time() + 24321;
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'auth_data' => 'STEAM_1:1:21984552',
-            'type' => ExtraFlagType::TYPE_SID,
-            'expire' => convert_date($expireTimestamp, "Y-m-d H:i:s"),
-            'server_id' => $server->getId(),
-            'service_id' => 'vip',
-            'uid' => $user->getUid(),
+            "auth_data" => "STEAM_1:1:21984552",
+            "type" => ExtraFlagType::TYPE_SID,
+            "expire" => as_datetime_string($expireTimestamp, "Y-m-d H:i:s"),
+            "server_id" => $server->getId(),
+            "service_id" => "vip",
+            "user_id" => $user->getId(),
         ]);
 
         // then
@@ -55,18 +55,18 @@ class UserServiceResourceTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $freshUserService = $this->extraFlagUserServiceRepository->get($userService->getId());
         $this->assertSame(ExtraFlagType::TYPE_SID, $freshUserService->getType());
-        $this->assertSame('STEAM_1:1:21984552', $freshUserService->getAuthData());
-        $this->assertSame('', $freshUserService->getPassword());
-        $this->assertSame($user->getUid(), $freshUserService->getUid());
+        $this->assertSame("STEAM_1:1:21984552", $freshUserService->getAuthData());
+        $this->assertSame("", $freshUserService->getPassword());
+        $this->assertSame($user->getId(), $freshUserService->getUserId());
         $this->assertSame($expireTimestamp, $freshUserService->getExpire());
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_SID,
-            'STEAM_1:1:21984552'
+            "STEAM_1:1:21984552"
         );
         $this->assertNotNull($playerFlag);
         $this->assertSame(ExtraFlagType::TYPE_SID, $playerFlag->getType());
-        $this->assertSame('STEAM_1:1:21984552', $playerFlag->getAuthData());
+        $this->assertSame("STEAM_1:1:21984552", $playerFlag->getAuthData());
         $this->assertSame("", $playerFlag->getPassword());
         $this->assertSame($server->getId(), $playerFlag->getServerId());
         $this->assertPlayerFlags(["t" => $expireTimestamp], $playerFlag->getFlags());
@@ -80,16 +80,16 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'auth_data' => 'STEAM_1:1:21984552',
-            'type' => ExtraFlagType::TYPE_SID,
-            'forever' => 'on',
-            'server_id' => $server->getId(),
-            'service_id' => 'vip',
+            "auth_data" => "STEAM_1:1:21984552",
+            "type" => ExtraFlagType::TYPE_SID,
+            "forever" => "on",
+            "server_id" => $server->getId(),
+            "service_id" => "vip",
         ]);
 
         // then
@@ -101,7 +101,7 @@ class UserServiceResourceTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_SID,
-            'STEAM_1:1:21984552'
+            "STEAM_1:1:21984552"
         );
         $this->assertPlayerFlags(["t" => -1], $playerFlag->getFlags());
     }
@@ -114,18 +114,18 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => "my_nick",
-            'password' => "my_password",
-            'server_id' => $server->getId(),
+            "type" => ExtraFlagType::TYPE_NICK,
+            "auth_data" => "my_nick",
+            "password" => "my_password",
+            "server_id" => $server->getId(),
         ]);
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'my_nick2',
-            'expire' => convert_date($userService->getExpire() + 2),
-            'server_id' => $server->getId(),
+            "type" => ExtraFlagType::TYPE_NICK,
+            "auth_data" => "my_nick2",
+            "expire" => as_datetime_string($userService->getExpire() + 2),
+            "server_id" => $server->getId(),
         ]);
 
         // then
@@ -137,7 +137,7 @@ class UserServiceResourceTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'my_nick2'
+            "my_nick2"
         );
         $this->assertSame("my_password", $playerFlag->getPassword());
     }
@@ -150,16 +150,16 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'auth_data' => 'STEAM_1:1:21984552',
-            'type' => ExtraFlagType::TYPE_SID,
-            'forever' => 'on',
-            'server_id' => $server->getId(),
-            'service_id' => 'vippro',
+            "auth_data" => "STEAM_1:1:21984552",
+            "type" => ExtraFlagType::TYPE_SID,
+            "forever" => "on",
+            "server_id" => $server->getId(),
+            "service_id" => "vippro",
         ]);
 
         // then
@@ -171,7 +171,7 @@ class UserServiceResourceTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_SID,
-            'STEAM_1:1:21984552'
+            "STEAM_1:1:21984552"
         );
         $this->assertPlayerFlags(["b" => -1, "t" => -1, "x" => -1], $playerFlag->getFlags());
     }
@@ -184,15 +184,15 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
 
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
-            'auth_data' => 'sd',
-            'password' => 'ab12a',
-            'type' => ExtraFlagType::TYPE_IP,
-            'service_id' => 'vip',
+            "auth_data" => "sd",
+            "password" => "ab12a",
+            "type" => ExtraFlagType::TYPE_IP,
+            "service_id" => "vip",
         ]);
 
         // then

@@ -29,7 +29,7 @@ class BoughtServiceRepository
     }
 
     public function create(
-        $uid,
+        $userId,
         $method,
         $paymentId,
         $serviceId,
@@ -37,23 +37,36 @@ class BoughtServiceRepository
         $quantity,
         $authData,
         $email,
+        $promoCode,
         $extraData = []
     ) {
         $this->db
             ->statement(
-                "INSERT INTO `ss_bought_services` " .
-                    "SET `uid` = ?, `payment` = ?, `payment_id` = ?, `service` = ?, " .
-                    "`server` = ?, `amount` = ?, `auth_data` = ?, `email` = ?, `extra_data` = ?"
+                <<<EOF
+INSERT INTO `ss_bought_services` 
+SET
+    `user_id` = ?,
+    `payment` = ?,
+    `payment_id` = ?,
+    `service_id` = ?,
+    `server_id` = ?,
+    `amount` = ?,
+    `auth_data` = ?,
+    `email` = ?,
+    `promo_code` = ?,
+    `extra_data` = ?
+EOF
             )
             ->execute([
-                $uid ?: 0,
+                $userId ?: 0,
                 $method,
                 $paymentId,
                 $serviceId,
                 $serverId ?: 0,
                 $quantity,
-                $authData ?: '',
-                $email ?: '',
+                $authData ?: "",
+                $email ?: "",
+                $promoCode,
                 json_encode($extraData),
             ]);
 
@@ -63,16 +76,17 @@ class BoughtServiceRepository
     private function mapToModel(array $data)
     {
         return new BoughtService(
-            as_int($data['id']),
-            as_int($data['uid']),
-            $data['payment'],
-            $data['payment_id'],
-            $data['service'],
-            as_int($data['server']),
-            $data['amount'],
-            $data['auth_data'],
-            $data['email'],
-            json_decode($data['extra_data'])
+            as_int($data["id"]),
+            as_int($data["user_id"]),
+            $data["payment"],
+            $data["payment_id"],
+            as_string($data["service_id"]),
+            as_int($data["server_id"]),
+            $data["amount"],
+            as_string($data["auth_data"]),
+            as_string($data["email"]),
+            as_string($data["promo_code"]),
+            json_decode($data["extra_data"])
         );
     }
 }

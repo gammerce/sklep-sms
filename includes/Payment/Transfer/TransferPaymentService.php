@@ -8,7 +8,6 @@ use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
-use App\Payment\General\ExternalPaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -17,9 +16,6 @@ class TransferPaymentService
 {
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
-
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
 
     /** @var DatabaseLogger */
     private $logger;
@@ -30,23 +26,27 @@ class TransferPaymentService
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
+    /** @var TransferPriceService */
+    private $transferPriceService;
+
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
-        ExternalPaymentService $externalPaymentService,
         ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
+        TransferPriceService $transferPriceService,
         DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
-        $this->externalPaymentService = $externalPaymentService;
         $this->logger = $logger;
         $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->transferPriceService = $transferPriceService;
     }
 
     /**
      * @param Purchase $purchase
      * @param FinalizedPayment $finalizedPayment
+     * @return int
      * @throws InvalidPaidAmountException
      * @throws PaymentRejectedException
      * @throws InvalidServiceModuleException
@@ -57,9 +57,7 @@ class TransferPaymentService
             throw new PaymentRejectedException();
         }
 
-        if (
-            $finalizedPayment->getCost() !== $purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER)
-        ) {
+        if ($finalizedPayment->getCost() !== $this->transferPriceService->getPrice($purchase)) {
             throw new InvalidPaidAmountException();
         }
 
@@ -85,7 +83,7 @@ class TransferPaymentService
 
         $this->logger->logWithUser(
             $purchase->user,
-            'log_external_payment_accepted',
+            "log_external_payment_accepted",
             $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
@@ -93,6 +91,8 @@ class TransferPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
-        $this->purchaseDataService->deletePurchase($finalizedPayment->getDataFilename());
+        $this->purchaseDataService->deletePurchase($purchase);
+
+        return $boughtServiceId;
     }
 }
