@@ -17,6 +17,7 @@ use App\Payment\General\PurchaseDataService;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
+use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
@@ -38,6 +39,7 @@ use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DOMElement;
+use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
@@ -81,7 +83,8 @@ class LicenseServiceModule extends ServiceModule implements
     IServiceUserOwnServices,
     IServiceUserOwnServicesEdit,
     IServiceUserServiceAdminAdd,
-    IServiceCreate
+    IServiceCreate,
+    IServicePromoCode
 {
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
@@ -216,7 +219,7 @@ class LicenseServiceModule extends ServiceModule implements
                     ->addCell(new Cell($row['identifier']))
                     ->addCell(new Cell($row['external_license_id']))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row['cost_daily'])))
-                    ->addCell(new Cell(convert_expire($row['expire'])))
+                    ->addCell(new ExpirationCell($row['expire']))
                     ->setDeleteAction(has_privileges("manage_user_services"))
                     ->setEditAction(false);
             })
@@ -263,7 +266,10 @@ class LicenseServiceModule extends ServiceModule implements
 
         $validated = $validator->validateOrFail();
 
-        $costDaily = $this->getDailyCost($validated['platform_amxmodx'], $validated['platform_sourcemod']);
+        $costDaily = $this->getDailyCost(
+            $validated['platform_amxmodx'],
+            $validated['platform_sourcemod']
+        );
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $validated['amount'],
             'engines' => [
@@ -295,24 +301,25 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
-        $engines = $purchase->getOrder('engines');
+        $engines = $purchase->getOrder("engines");
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
         $result = $this->licenseServerService->create(
             $lifetime,
-            !!$engines['amxx'],
-            !!$engines['sm']
+            !!$engines["amxx"],
+            !!$engines["sm"]
         );
-        $externalLicenseId = $result['id'];
-        $token = $result['token'];
-        $expiresAt = $result['expires_at'];
+        $externalLicenseId = $result["id"];
+        $token = $result["token"];
+        $expiresAt = $result["expires_at"];
         $identifier = generateUUID4();
+        $promoCode = $purchase->getPromoCode();
 
         // Dodajemy usługę użytkownika do bazy sklepu
         $userServiceId = $this->userServiceRepository->createFixedExpire(
             $this->service->getId(),
             $expiresAt,
-            $purchase->user->getUid()
+            $purchase->user->getId()
         );
 
         $this->db
@@ -332,14 +339,14 @@ class LicenseServiceModule extends ServiceModule implements
                 $this->service->getId(),
                 $identifier,
                 $externalLicenseId,
-                $purchase->getOrder('cost_daily'),
+                $purchase->getOrder("cost_daily"),
                 $purchase->getEmail(),
-                $engines['amxx'],
-                $engines['sm'],
+                $engines["amxx"],
+                $engines["sm"],
             ]);
 
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
             $purchase->getPayment(Purchase::PAYMENT_METHOD),
@@ -349,11 +356,12 @@ class LicenseServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $identifier,
             $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null,
             [
-                'token' => $token,
-                'identifier' => $identifier,
-                'expire' => convert_date($expiresAt),
-                'engines' => $this->engineService->formatOrderEngines($engines),
+                "token" => $token,
+                "identifier" => $identifier,
+                "expire" => as_datetime_string($expiresAt),
+                "engines" => $this->engineService->formatOrderEngines($engines),
             ]
         );
     }
@@ -366,10 +374,10 @@ class LicenseServiceModule extends ServiceModule implements
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license/purchase_info_email",
                 [
-                    'engines' => $engines,
-                    'expire' => $transaction->getExtraDatum("expire"),
-                    'identifier' => $transaction->getExtraDatum("identifier"),
-                    'token' => $transaction->getExtraDatum("token"),
+                    "engines" => $engines,
+                    "expire" => $transaction->getExtraDatum("expire"),
+                    "identifier" => $transaction->getExtraDatum("identifier"),
+                    "token" => $transaction->getExtraDatum("token"),
                 ]
             );
         }
@@ -378,20 +386,20 @@ class LicenseServiceModule extends ServiceModule implements
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license/purchase_info_web",
                 [
-                    'email' => $transaction->getEmail(),
-                    'engines' => $engines,
-                    'expire' => $transaction->getExtraDatum("expire"),
-                    'identifier' => $transaction->getExtraDatum("identifier"),
-                    'token' => $transaction->getExtraDatum("token"),
-                    'serviceName' => $this->service->getName(),
+                    "email" => $transaction->getEmail(),
+                    "engines" => $engines,
+                    "expire" => $transaction->getExtraDatum("expire"),
+                    "identifier" => $transaction->getExtraDatum("identifier"),
+                    "token" => $transaction->getExtraDatum("token"),
+                    "serviceName" => $this->service->getName(),
                 ]
             );
         }
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('license_bought', $transaction->getQuantity()),
-                'class' => "outcome",
+                "text" => $this->lang->t("license_bought", $transaction->getQuantity()),
+                "class" => "outcome",
             ];
         }
 
@@ -403,7 +411,7 @@ class LicenseServiceModule extends ServiceModule implements
         return $this->template->renderNoComments(
             "admin/services/shopsms_license/user_service_admin_add",
             [
-                'moduleId' => $this->getModuleId(),
+                "moduleId" => $this->getModuleId(),
             ]
         );
     }
@@ -411,9 +419,9 @@ class LicenseServiceModule extends ServiceModule implements
     public function userServiceAdminAdd(array $body)
     {
         return [
-            'status' => 'ok',
-            'text' => $this->lang->t('service_added_correctly'),
-            'positive' => true,
+            "status" => "ok",
+            "text" => $this->lang->t("service_added_correctly"),
+            "positive" => true,
         ];
     }
 
@@ -434,17 +442,17 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         return $this->template->render("shop/services/shopsms_license/user_own_service", [
-            'buttonEdit' => $buttonEdit,
-            'costMonthly' => $this->priceTextService->getPriceText(
+            "buttonEdit" => $buttonEdit,
+            "costMonthly" => $this->priceTextService->getPriceText(
                 $userService->getCostDaily() * 30
             ),
-            'email' => $userService->getEmail() ?: $this->lang->t('none'),
-            'engines' => $this->engineService->formatEngines($engines),
-            'expire' => convert_expire($userService->getExpire()),
-            'identifier' => $userService->getIdentifier(),
-            'moduleId' => $this->getModuleId(),
-            'serviceName' => $this->service->getName(),
-            'userServiceId' => $userService->getId(),
+            "email" => $userService->getEmail() ?: $this->lang->t("none"),
+            "engines" => $this->engineService->formatEngines($engines),
+            "expire" => as_expiration_datetime_string($userService->getExpire()),
+            "identifier" => $userService->getIdentifier(),
+            "moduleId" => $this->getModuleId(),
+            "serviceName" => $this->service->getName(),
+            "userServiceId" => $userService->getId(),
         ]);
     }
 
@@ -471,7 +479,7 @@ class LicenseServiceModule extends ServiceModule implements
             ),
             "email" => $userService->getEmail(),
             "engines" => $engines,
-            "expire" => convert_expire($userService->getExpire()),
+            "expire" => as_expiration_datetime_string($userService->getExpire()),
             "identifier" => $userService->getIdentifier(),
             "serviceId" => $this->service->getId(),
             "serviceName" => $this->service->getName(),
@@ -569,7 +577,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $user = $this->auth->user();
         $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
-        $statement->execute([$user->getUid(), $userServiceId]);
+        $statement->execute([$user->getId(), $userServiceId]);
 
         if (!$statement->rowCount()) {
             return [
@@ -611,7 +619,10 @@ class LicenseServiceModule extends ServiceModule implements
                 return "0.00";
             }
 
-            $dailyCost = $this->getDailyCost($body['platform_amxmodx'], $body['platform_sourcemod']);
+            $dailyCost = $this->getDailyCost(
+                $body['platform_amxmodx'],
+                $body['platform_sourcemod']
+            );
             $bargainPercentage = $this->getBargainPercentage($daysAmount);
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
@@ -732,7 +743,10 @@ class LicenseServiceModule extends ServiceModule implements
             // Jezeli anulujemy wsparcie dla jakiegos silnika, to tracimy wszelkie znizki
             // i przeliczamy normalnie koszt jaki wychodzi
             if ($engineData['old'] && !$engineData['new']) {
-                $costDaily = $this->getDailyCost($body['platform_amxmodx'], $body['platform_sourcemod']);
+                $costDaily = $this->getDailyCost(
+                    $body['platform_amxmodx'],
+                    $body['platform_sourcemod']
+                );
                 break;
             }
 

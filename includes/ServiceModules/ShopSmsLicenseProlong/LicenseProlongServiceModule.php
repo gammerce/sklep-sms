@@ -15,6 +15,7 @@ use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
+use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
@@ -35,7 +36,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     IServicePurchaseWeb,
     IServiceActionExecute,
     IServiceUserServiceAdminAdd,
-    IServiceCreate
+    IServiceCreate,
+    IServicePromoCode
 {
     const MODULE_ID = "shopsms_license_prolong";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
@@ -155,6 +157,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $lifetime
         );
         $expiresAt = $result["expires_at"];
+        $promoCode = $purchase->getPromoCode();
 
         // Update license expire time
         $this->db
@@ -162,7 +165,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             ->execute([$expiresAt, $userService->getId()]);
 
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
             $purchase->getPayment(Purchase::PAYMENT_METHOD),
@@ -172,8 +175,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $userService->getIdentifier(),
             $userService->getEmail(),
+            $promoCode ? $promoCode->getCode() : null,
             [
-                "expire" => convert_date($expiresAt),
+                "expire" => as_datetime_string($expiresAt),
             ]
         );
     }
