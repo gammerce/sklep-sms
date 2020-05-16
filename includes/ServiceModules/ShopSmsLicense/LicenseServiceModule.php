@@ -41,6 +41,7 @@ use App\View\Html\Cell;
 use App\View\Html\DOMElement;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
@@ -186,7 +187,7 @@ class LicenseServiceModule extends ServiceModule implements
                 return (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($userEntry))
-                    ->addCell(new Cell($row["service"]))
+                    ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service"])))
                     ->addCell(new Cell($row["identifier"]))
                     ->addCell(new Cell($row["external_license_id"]))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
@@ -297,7 +298,7 @@ class LicenseServiceModule extends ServiceModule implements
             ->statement(
                 "INSERT INTO `{$this->getUserServiceTable()}` SET " .
                     "`us_id` = ?, " .
-                    "`service` = ?, " .
+                    "`service_id` = ?, " .
                     "`identifier` = ?, " .
                     "`external_license_id` = ?, " .
                     "`cost_daily` = ?, " .
@@ -539,7 +540,7 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         $statement = $this->db->statement(
-            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service` = ? AND `external_license_id` = ?"
+            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service_id` = ? AND `external_license_id` = ?"
         );
         $statement->execute([$validated["service_id"], $response["id"]]);
 
