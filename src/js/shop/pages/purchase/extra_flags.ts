@@ -1,5 +1,5 @@
 import { get_type_name } from "../../../general/extra_flags";
-import {hide, hideAndDisable, restRequest, showAndEnable} from "../../../general/global";
+import { hide, hideAndDisable, restRequest, showAndEnable } from "../../../general/global";
 
 $(document).ready(function($) {
     // So as no option is selected when somebody returned to the previous page
@@ -26,7 +26,7 @@ $(document).delegate("#form_purchase input[name=type]", "change", function() {
 $(document).delegate("#form_purchase [name=server_id]", "change", function() {
     const form = $(this).closest("form");
 
-    hide(form.find("#cost_box"))
+    hide(form.find("#cost_box"));
 
     if ($(this).val() == "") {
         form.find("[name=quantity]")
