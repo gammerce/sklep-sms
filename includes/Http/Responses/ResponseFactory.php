@@ -140,7 +140,6 @@ class ResponseFactory
         return new RedirectResponse($this->url->to("/login"));
     }
 
-    // TODO Do it on frontend
     private function formatWarnings(array $warnings)
     {
         $output = [];
