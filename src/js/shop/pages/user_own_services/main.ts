@@ -52,7 +52,7 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
             } else if (content.return_id === "ok") {
                 refreshBlocks(`content:${window.currentPage}`);
             } else if (content.return_id === "payment") {
-                goToPayment(content.transaction_id);
+                goToPayment(content.data.transaction_id);
             }
 
             infobox.showInfo(content.text, content.positive);

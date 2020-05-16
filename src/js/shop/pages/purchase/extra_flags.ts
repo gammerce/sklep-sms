@@ -1,5 +1,5 @@
 import { get_type_name } from "../../../general/extra_flags";
-import { hideAndDisable, restRequest, showAndEnable } from "../../../general/global";
+import {hide, hideAndDisable, restRequest, showAndEnable} from "../../../general/global";
 
 $(document).ready(function($) {
     // So as no option is selected when somebody returned to the previous page
@@ -9,8 +9,8 @@ $(document).ready(function($) {
 });
 
 $(document).delegate("#form_purchase input[name=type]", "change", function() {
-    var form = $(this).closest("form");
-    var currentType = $(this).val() as string;
+    const form = $(this).closest("form");
+    const currentType = $(this).val() as string;
 
     hideAndDisable(form.find("#type_nick"));
     hideAndDisable(form.find("#type_ip"));
@@ -24,9 +24,10 @@ $(document).delegate("#form_purchase input[name=type]", "change", function() {
 });
 
 $(document).delegate("#form_purchase [name=server_id]", "change", function() {
-    var form = $(this).closest("form");
+    const form = $(this).closest("form");
 
-    form.find("#cost_box").slideUp();
+    hide(form.find("#cost_box"))
+
     if ($(this).val() == "") {
         form.find("[name=quantity]")
             .children()
@@ -35,7 +36,7 @@ $(document).delegate("#form_purchase [name=server_id]", "change", function() {
         return;
     }
 
-    var serviceId = form.find("[name=service_id]").val();
+    const serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",
