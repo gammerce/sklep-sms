@@ -16,8 +16,6 @@ use App\Loggers\FileLogger;
 use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\Html\Li;
-use App\View\Html\Ul;
 use Exception;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -97,7 +95,7 @@ class ExceptionHandler implements ExceptionHandlerContract
                 $request,
                 array_merge(
                     [
-                        "warnings" => $this->formatWarnings($e->warnings),
+                        "warnings" => $e->warnings,
                     ],
                     $e->data
                 )
@@ -184,27 +182,5 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
 
         return new RedirectResponse($this->url->to("/"));
-    }
-
-    // TODO Do it on frontend
-    private function formatWarnings(array $warnings)
-    {
-        $output = [];
-
-        foreach ($warnings as $brick => $warning) {
-            if ($warning) {
-                $items = collect($warning)
-                    ->map(function ($text) {
-                        return new Li($text);
-                    })
-                    ->all();
-
-                $help = new Ul($items);
-                $help->addClass("form_warning help is-danger");
-                $output[$brick] = $help->toHtml();
-            }
-        }
-
-        return $output;
     }
 }

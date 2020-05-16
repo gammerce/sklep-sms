@@ -12,8 +12,8 @@ import {handleError} from "../../utils/utils";
 import {loader} from "../../../general/loader";
 import {PromoCodeBox} from "./PromoCodeBox";
 import {AxiosError} from "axios";
-import {showWarnings} from "../../../general/global";
 import {infobox} from "../../../general/infobox";
+import {__} from "../../../general/i18n";
 
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
@@ -46,7 +46,7 @@ export const PaymentView: FunctionComponent = () => {
             const e: AxiosError = error;
 
             if (e.response.status === 422) {
-                showWarnings($("#payment"), e.response.data.warnings);
+                return infobox.showInfo(e.response.data.warnings?.promo_code ?? __("sth_went_wrong") , false);
             }
 
             infobox.showInfo(e.response.data.text, false);

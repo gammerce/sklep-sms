@@ -6,6 +6,8 @@ use App\Routing\UrlGenerator;
 use App\Services\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\View\Html\Li;
+use App\View\Html\Ul;
 use App\View\Renders\ErrorRenderer;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -63,7 +65,14 @@ class ResponseFactory
             return new JsonResponse($data, Response::HTTP_UNPROCESSABLE_ENTITY);
         }
 
-        return new ApiResponse("warnings", $this->lang->t("form_wrong_filled"), false, $data);
+        return new ApiResponse(
+            "warnings",
+            $this->lang->t("form_wrong_filled"),
+            false,
+            array_merge($data, [
+                "warnings" => $this->formatWarnings($data["warnings"]),
+            ])
+        );
     }
 
     public function createError(Request $request, $id, $text, $status = null)
@@ -129,5 +138,27 @@ class ResponseFactory
         }
 
         return new RedirectResponse($this->url->to("/login"));
+    }
+
+    // TODO Do it on frontend
+    private function formatWarnings(array $warnings)
+    {
+        $output = [];
+
+        foreach ($warnings as $brick => $warning) {
+            if ($warning) {
+                $items = collect($warning)
+                    ->map(function ($text) {
+                        return new Li($text);
+                    })
+                    ->all();
+
+                $help = new Ul($items);
+                $help->addClass("form_warning help is-danger");
+                $output[$brick] = $help->toHtml();
+            }
+        }
+
+        return $output;
     }
 }

@@ -59,7 +59,6 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                                 </button>
                             </div>
                         }
-
                     </div>
                 </div>
             </div>
