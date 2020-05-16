@@ -30,6 +30,16 @@ class UserServiceRepository
         return $this->db->lastId();
     }
 
+    public function createFixedExpire($serviceId, $expiresAt, $userId)
+    {
+        $statement = $this->db->statement(
+            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
+                "VALUES (?, ?, ?)"
+        );
+        $statement->execute([$serviceId, $expiresAt, $userId ?: 0]);
+        return $this->db->lastId();
+    }
+
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` = ?");
