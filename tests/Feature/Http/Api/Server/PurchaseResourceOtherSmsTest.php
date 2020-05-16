@@ -91,7 +91,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
         $boughtServiceId = $matches[1];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
-        $this->assertEquals(PaymentMethod::SMS(), $boughtService->getMethod());
+        $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals("monety", $boughtService->getServiceId());
     }
 }

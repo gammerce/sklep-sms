@@ -80,7 +80,7 @@ class PaymentServiceTest extends TestCase
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
         $this->assertSame(0, $boughtService->getUserId());
-        $this->assertSame(PaymentMethod::SMS(), $boughtService->getMethod());
+        $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
         $this->assertSame("", $boughtService->getAuthData());
     }

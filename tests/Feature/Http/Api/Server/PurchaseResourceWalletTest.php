@@ -94,7 +94,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $boughtServiceId = (int) $matches[1];
         $boughtService = $this->boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
-        $this->assertEquals(PaymentMethod::WALLET(), $boughtService->getMethod());
+        $this->assertSameEnum(PaymentMethod::WALLET(), $boughtService->getMethod());
 
         $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(9900, $freshUser->getWallet());

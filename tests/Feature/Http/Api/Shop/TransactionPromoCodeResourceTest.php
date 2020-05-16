@@ -188,11 +188,13 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
-                "return_id" => "error",
-                "text" => "Nieprawidłowy kod promocyjny",
-                "positive" => false,
+                "return_id" => "warnings",
+                "warnings" => [
+                    "promo_code" =>
+                        "<ul class=\"form_warning help is-danger\"><li >Nieprawidłowy kod promocyjny</li></ul>",
+                ],
             ],
             $json
         );

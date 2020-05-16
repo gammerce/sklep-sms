@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentMethod;
+
 class BoughtService
 {
     /** @var int */
@@ -74,10 +76,10 @@ class BoughtService
         return $this->userId;
     }
 
-    /** @return string */
+    /** @return PaymentMethod */
     public function getMethod()
     {
-        return $this->method;
+        return new PaymentMethod($this->method);
     }
 
     /** @return string */
