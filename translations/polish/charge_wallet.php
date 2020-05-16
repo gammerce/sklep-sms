@@ -8,4 +8,5 @@ return [
     'choose_sms_value' => 'Wybierz wartość SMSa',
     'type_amount' => 'Podaj kwotę',
     'type_charge_price' => 'Podaj koszt doładowania',
+    'wallet_top_up' => 'Doładowanie Portfela',
 ];

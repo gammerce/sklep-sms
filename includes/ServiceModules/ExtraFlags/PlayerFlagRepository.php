@@ -58,7 +58,7 @@ class PlayerFlagRepository
     public function getByCredentials($serverId, $type, $authData)
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_players_flags` WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
+            "SELECT * FROM `ss_players_flags` WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
         );
         $statement->execute([$serverId, $type, $authData]);
 
@@ -93,7 +93,7 @@ class PlayerFlagRepository
 
         $this->db
             ->statement(
-                "INSERT INTO `ss_players_flags` SET `server` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
+                "INSERT INTO `ss_players_flags` SET `server_id` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
             )
             ->execute(array_merge([$serverId, $type, $authData, $password], $values));
 
@@ -105,7 +105,7 @@ class PlayerFlagRepository
         $this->db
             ->statement(
                 "DELETE FROM `ss_players_flags` " .
-                    "WHERE `server` = ? AND `type` = ? AND `auth_data` = ?"
+                    "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
             )
             ->execute([$serverId, $type, $authData]);
     }
@@ -152,11 +152,11 @@ class PlayerFlagRepository
             ->all();
 
         return new PlayerFlag(
-            as_int($data['id']),
-            as_int($data['server']),
-            as_int($data['type']),
-            $data['auth_data'],
-            $data['password'],
+            as_int($data["id"]),
+            as_int($data["server_id"]),
+            as_int($data["type"]),
+            as_string($data["auth_data"]),
+            as_string($data["password"]),
             $flags
         );
     }

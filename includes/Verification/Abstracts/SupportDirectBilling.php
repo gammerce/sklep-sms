@@ -3,16 +3,18 @@ namespace App\Verification\Abstracts;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
-use App\Support\Result;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentResult;
 
 interface SupportDirectBilling
 {
     /**
+     * @param int $price
      * @param Purchase $purchase
-     * @param string $dataFilename
-     * @return Result
+     * @return PaymentResult
+     * @throws PaymentProcessingException
      */
-    public function prepareDirectBilling(Purchase $purchase, $dataFilename);
+    public function prepareDirectBilling($price, Purchase $purchase);
 
     /**
      * @param array $query

@@ -37,7 +37,7 @@ class SmsCodeCollectionTest extends HttpTestCase
         $this->assertSame("SDSAD", $smsCode->getCode());
         $this->assertSame(400, $smsCode->getSmsPrice());
         $this->assertTrue($smsCode->isFree());
-        $this->assertSame("2020-02-02 23:59:59", as_datetime_string($smsCode->getExpiresAt()));
+        $this->assertSame("2020-02-02 23:59", as_datetime_string($smsCode->getExpiresAt()));
     }
 
     /** @test */

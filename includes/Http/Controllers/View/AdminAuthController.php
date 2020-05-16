@@ -1,12 +1,12 @@
 <?php
 namespace App\Http\Controllers\View;
 
+use App\Managers\UserManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Services\IntendedUrlService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,7 +51,7 @@ class AdminAuthController
         Request $request,
         Auth $auth,
         UrlGenerator $url,
-        Heart $heart,
+        UserManager $userManager,
         IntendedUrlService $intendedUrlService
     ) {
         if ($request->request->get("action") === "logout") {
@@ -61,7 +61,7 @@ class AdminAuthController
 
         // Let's try to login to ACP
         if ($request->request->has("username") && $request->request->has("password")) {
-            $user = $heart->getUserByLogin(
+            $user = $userManager->getUserByLogin(
                 $request->request->get("username"),
                 $request->request->get("password")
             );

@@ -3,9 +3,14 @@ namespace App\Providers;
 
 use App\Cache\FileCache;
 use App\Managers\BlockManager;
+use App\Managers\GroupManager;
 use App\Managers\PageManager;
 use App\Managers\PaymentModuleManager;
+use App\Managers\ServerManager;
+use App\Managers\ServerServiceManager;
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
+use App\Managers\UserManager;
 use App\Managers\WebsiteHeader;
 use App\Support\Database;
 use App\Support\FileSystem;
@@ -14,7 +19,6 @@ use App\Support\Path;
 use App\System\Application;
 use App\System\Auth;
 use App\System\ExternalConfigProvider;
-use App\System\Heart;
 use App\System\License;
 use App\System\ServerAuth;
 use App\System\Settings;
@@ -32,20 +36,24 @@ class AppServiceProvider
         $this->registerDatabase($app);
         $this->registerCache($app);
 
-        $app->singleton(Session::class);
-        $app->singleton(Heart::class);
         $app->singleton(Auth::class);
-        $app->singleton(ServerAuth::class);
-        $app->singleton(Settings::class);
-        $app->singleton(CurrentPage::class);
-        $app->singleton(License::class);
-        $app->singleton(TranslationManager::class);
-        $app->singleton(ExternalConfigProvider::class);
-        $app->singleton(WebsiteHeader::class);
-        $app->singleton(PageManager::class);
         $app->singleton(BlockManager::class);
-        $app->singleton(ServiceModuleManager::class);
+        $app->singleton(CurrentPage::class);
+        $app->singleton(ExternalConfigProvider::class);
+        $app->singleton(GroupManager::class);
+        $app->singleton(License::class);
+        $app->singleton(PageManager::class);
         $app->singleton(PaymentModuleManager::class);
+        $app->singleton(ServerAuth::class);
+        $app->singleton(ServerManager::class);
+        $app->singleton(ServiceManager::class);
+        $app->singleton(ServiceModuleManager::class);
+        $app->singleton(ServerServiceManager::class);
+        $app->singleton(Session::class);
+        $app->singleton(Settings::class);
+        $app->singleton(TranslationManager::class);
+        $app->singleton(UserManager::class);
+        $app->singleton(WebsiteHeader::class);
     }
 
     private function registerDatabase(Application $app)

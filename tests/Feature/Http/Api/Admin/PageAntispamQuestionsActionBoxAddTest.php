@@ -12,9 +12,7 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get(
-            "/api/admin/pages/antispam_questions/action_boxes/antispam_question_add"
-        );
+        $response = $this->get("/api/admin/pages/antispam_questions/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -31,9 +29,7 @@ class PageAntispamQuestionsActionBoxAddTest extends HttpTestCase
         $this->actingAs($admin);
 
         // when
-        $response = $this->getJson(
-            "/api/admin/pages/antispam_questions/action_boxes/antispam_question_add"
-        );
+        $response = $this->getJson("/api/admin/pages/antispam_questions/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

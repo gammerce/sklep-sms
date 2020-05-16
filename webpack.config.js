@@ -15,7 +15,7 @@ const getFiles = (dirPath) =>
             return [`${dirPath}/${file}`];
         })
         .flat()
-        .filter(path => path.match(/\.(ts|js)$/));
+        .filter(path => path.match(/\.(tsx?|jsx?)$/));
 
 
 const entryPaths = [
@@ -23,17 +23,17 @@ const entryPaths = [
     ...getFiles("./src/js/shop/pages"),
 ];
 
-const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(js|ts)$/, ""), path]));
+const entries = Object.fromEntries(entryPaths.map(path => [path.replace(/^.*\/src\/js/, "").replace(/\.(jsx?|tsx?)$/, ""), path]));
 
 module.exports = {
     mode: environment,
     entry: {
-        shop_retro: './src/stylesheets/shop/retro.js',
-        shop_fusion: './src/stylesheets/shop/fusion.js',
-        admin: './src/js/admin/admin.js',
-        install: './src/js/setup/install.js',
-        update: './src/js/setup/update.js',
-        shop: './src/js/shop/shop.js',
+        shop_retro: './src/stylesheets/shop/retro.ts',
+        shop_fusion: './src/stylesheets/shop/fusion.ts',
+        admin: './src/js/admin/admin.ts',
+        install: './src/js/setup/install.ts',
+        update: './src/js/setup/update.ts',
+        shop: './src/js/shop/shop.ts',
         ...entries
     },
     output: {
@@ -46,7 +46,7 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.(ts|js)$/,
+                test: /\.(tsx?|jsx?)$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
@@ -94,6 +94,10 @@ module.exports = {
                 })
             }
         ]
+    },
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        symlinks: false,
     },
     optimization: {
         removeAvailableModules: false,

@@ -7,12 +7,14 @@ use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
 use Mockery;
+use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\Concerns\ApplicationConcern;
 use Tests\Psr4\Concerns\FileSystemConcern;
 use Tests\Psr4\Concerns\MailerConcern;
 use Tests\Psr4\Concerns\MockeryConcern;
+use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\Factory;
 
 class TestCase extends BaseTestCase
@@ -21,6 +23,7 @@ class TestCase extends BaseTestCase
     use FileSystemConcern;
     use MailerConcern;
     use MockeryConcern;
+    use RequesterConcern;
 
     /** @var Application */
     protected $app;
@@ -47,6 +50,7 @@ class TestCase extends BaseTestCase
         $this->mockLicense();
         $this->mockFileSystem();
         $this->mockMailer();
+        $this->mockRequester();
 
         if ($this->mockLocale) {
             $this->mockLocale();
@@ -131,7 +135,15 @@ class TestCase extends BaseTestCase
 
     protected function assertDatabaseHas($table, array $data)
     {
-        $this->assertTrue($this->databaseHas($table, $data));
+        $this->assertTrue(
+            $this->databaseHas($table, $data),
+            "Database does not contain given data."
+        );
+    }
+
+    protected function assertSameEnum(Enum $expected, Enum $value)
+    {
+        $this->assertTrue($expected->equals($value), "$expected does not equal $value");
     }
 
     private function databaseHas($table, array $data)

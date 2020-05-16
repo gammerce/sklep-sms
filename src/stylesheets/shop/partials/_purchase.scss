@@ -31,18 +31,6 @@
             margin: 0;
             padding: 0;
         }
-
-        #cost_wrapper {
-            width: 100%;
-            margin: 50px 0;
-            text-align: center;
-            display: none;
-
-            div {
-                display: inline-block;
-                text-align: left;
-            }
-        }
     }
 
     &.module-mybb-extra-groups {
@@ -52,18 +40,6 @@
         .inputs {
             display: inline-block;
             text-align: left;
-        }
-
-        #cost_wrapper {
-            width: 100%;
-            margin: 20px 0 40px 0;
-            text-align: center;
-            display: none;
-
-            div {
-                display: inline-block;
-                text-align: left;
-            }
         }
     }
 }

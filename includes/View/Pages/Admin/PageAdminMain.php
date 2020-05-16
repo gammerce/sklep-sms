@@ -2,6 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Http\Services\IncomeService;
+use App\Managers\ServerManager;
 use App\Models\Server;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
@@ -11,7 +12,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Support\Version;
 use App\System\Application;
-use App\System\Heart;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\Html\RawText;
@@ -46,8 +46,8 @@ class PageAdminMain extends PageAdmin
     /** @var Application */
     private $app;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     /** @var Database */
     private $db;
@@ -63,7 +63,7 @@ class PageAdminMain extends PageAdmin
         TransactionRepository $transactionRepository,
         UrlGenerator $url,
         Application $app,
-        Heart $heart,
+        ServerManager $serverManager,
         Database $db
     ) {
         parent::__construct($template, $translationManager);
@@ -76,7 +76,7 @@ class PageAdminMain extends PageAdmin
         $this->transactionRepository = $transactionRepository;
         $this->url = $url;
         $this->app = $app;
-        $this->heart = $heart;
+        $this->serverManager = $serverManager;
         $this->db = $db;
     }
 
@@ -143,7 +143,7 @@ class PageAdminMain extends PageAdmin
         }
 
         $serversCount = 0;
-        foreach ($this->heart->getServers() as $server) {
+        foreach ($this->serverManager->getServers() as $server) {
             if (!$this->isServerNewest($server, $newestAmxXVersion, $newestSmVersion)) {
                 $serversCount += 1;
             }
@@ -156,7 +156,7 @@ class PageAdminMain extends PageAdmin
                 $this->lang->t(
                     "update_available_servers",
                     $serversCount,
-                    $this->heart->getServersAmount(),
+                    $this->serverManager->getServersAmount(),
                     $updateServersLink
                 ),
                 "is-success"
@@ -172,7 +172,7 @@ class PageAdminMain extends PageAdmin
 
         // Server
         $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_servers", $this->heart->getServersAmount()),
+            $this->lang->t("number_of_servers", $this->serverManager->getServersAmount()),
             $this->url->to("/admin/servers")
         );
 

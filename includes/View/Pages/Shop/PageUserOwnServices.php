@@ -93,22 +93,22 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
             $statement = $this->db->statement(
                 "SELECT COUNT(*) FROM `ss_user_service` AS us " .
-                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
-                    "WHERE us.uid = ? AND s.module IN ({$keys}) "
+                    "INNER JOIN `ss_services` AS s ON us.service_id = s.id " .
+                    "WHERE us.user_id = ? AND s.module IN ({$keys}) "
             );
-            $statement->execute(array_merge([$user->getUid()], $moduleIds->all()));
+            $statement->execute(array_merge([$user->getId()], $moduleIds->all()));
             $rowsCount = $statement->fetchColumn();
 
             $statement = $this->db->statement(
                 "SELECT us.id FROM `ss_user_service` AS us " .
-                    "INNER JOIN `ss_services` AS s ON us.service = s.id " .
-                    "WHERE us.uid = ? AND s.module IN ({$keys}) " .
+                    "INNER JOIN `ss_services` AS s ON us.service_id = s.id " .
+                    "WHERE us.user_id = ? AND s.module IN ({$keys}) " .
                     "ORDER BY us.id DESC " .
                     "LIMIT ?, ?"
             );
             $statement->execute(
                 array_merge(
-                    [$user->getUid()],
+                    [$user->getId()],
                     $moduleIds->all(),
                     get_row_limit($this->currentPage->getPageNumber(), 4)
                 )

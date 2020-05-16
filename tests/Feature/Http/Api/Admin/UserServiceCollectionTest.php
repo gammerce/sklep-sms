@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Services\UserServiceService;
 use Tests\Psr4\Concerns\PlayerFlagConcern;
@@ -59,7 +59,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $this->assertSame('michal', $userService->getAuthData());
         $this->assertSame('abc123', $userService->getPassword());
         $this->assertSame($server->getId(), $userService->getServerId());
-        $this->assertSame(0, $userService->getUid());
+        $this->assertSame(0, $userService->getUserId());
         $this->assertAlmostSameTimestamp($expectedExpire, $userService->getExpire());
 
         $playerFlag = $this->playerFlagRepository->getByCredentials(
@@ -108,6 +108,7 @@ class UserServiceCollectionTest extends HttpTestCase
             ExtraFlagType::TYPE_NICK,
             'michal'
         );
+        $this->assertNotNull($playerFlag);
         $this->assertPlayerFlags(["t" => $expectedExpire], $playerFlag->getFlags());
     }
 

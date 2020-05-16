@@ -36,7 +36,6 @@ class ServerConfigControllerTest extends HttpTestCase
             "sms_platform_id" => $this->paymentPlatform->getId(),
         ]);
 
-        $this->mockRequester();
         $this->mockGoSettiGetData();
     }
 

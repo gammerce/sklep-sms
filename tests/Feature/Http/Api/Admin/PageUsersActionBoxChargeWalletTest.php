@@ -14,7 +14,7 @@ class PageUsersActionBoxChargeWalletTest extends HttpTestCase
 
         // when
         $response = $this->getJson("/api/admin/pages/users/action_boxes/charge_wallet", [
-            "uid" => $admin->getUid(),
+            "user_id" => $admin->getId(),
         ]);
 
         // then
@@ -33,7 +33,7 @@ class PageUsersActionBoxChargeWalletTest extends HttpTestCase
 
         // when
         $response = $this->getJson("/api/admin/pages/servers/action_boxes/charge_wallet", [
-            "uid" => $admin->getUid(),
+            "user_id" => $admin->getId(),
         ]);
 
         // then

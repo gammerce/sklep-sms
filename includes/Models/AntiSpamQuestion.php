@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+// TODO Replace it with captcha
+
 class AntiSpamQuestion
 {
     /** @var int */

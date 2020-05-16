@@ -3,6 +3,9 @@ namespace Tests\Feature\Payment;
 
 use App\Models\Purchase;
 use App\Models\User;
+use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
@@ -10,12 +13,14 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\Pukawka;
 use DateTime;
+use Tests\Psr4\Concerns\CssettiConcern;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class PaymentServiceTest extends TestCase
 {
     use PaymentModuleFactoryConcern;
+    use CssettiConcern;
 
     /** @var PaymentService */
     private $paymentService;
@@ -46,36 +51,36 @@ class PaymentServiceTest extends TestCase
         $serviceId = "cod_exp_transfer";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'server_id' => $server->getId(),
-            'sms_price' => 100,
-            'quantity' => 20,
+            "service_id" => $serviceId,
+            "server_id" => $server->getId(),
+            "sms_price" => 100,
+            "quantity" => 20,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "abcd1234",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "abcd1234",
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
+            ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertSame($server->getId(), $boughtService->getServerId());
         $this->assertSame($serviceId, $boughtService->getServiceId());
-        $this->assertSame(0, $boughtService->getUid());
-        $this->assertSame(Purchase::METHOD_SMS, $boughtService->getMethod());
+        $this->assertSame(0, $boughtService->getUserId());
+        $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
         $this->assertSame("", $boughtService->getAuthData());
     }
@@ -84,6 +89,8 @@ class PaymentServiceTest extends TestCase
     public function pays_with_sms_code()
     {
         // given
+        $this->mockCSSSettiGetData();
+
         /** @var SmsCodeRepository $smsCodeRepository */
         $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
 
@@ -94,29 +101,29 @@ class PaymentServiceTest extends TestCase
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 200,
+            "service_id" => $serviceId,
+            "sms_price" => 200,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "QWERTY",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "QWERTY",
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
+            ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertNull($smsCodeRepository->get($smsCode->getId()));
     }
@@ -125,44 +132,41 @@ class PaymentServiceTest extends TestCase
     public function cannot_pay_with_expired_sms_code()
     {
         // given
+        $this->expectException(PaymentProcessingException::class);
+        $this->expectExceptionCode("bad_code");
+        $this->expectExceptionMessage("Wprowadzono błędny kod zwrotny.");
+
+        $this->mockCSSSettiGetData();
+
         /** @var SmsCodeRepository $smsCodeRepository */
         $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
         ]);
-        $smsCode = $smsCodeRepository->create(
-            "QWERTY",
-            200,
-            false,
-            new DateTime("2020-02-02 10:00:00")
-        );
+        $smsCodeRepository->create("QWERTY", 200, false, new DateTime("2020-02-02 10:00:00"));
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 200,
+            "service_id" => $serviceId,
+            "sms_price" => 200,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "QWERTY",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "QWERTY",
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
+            ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
-
-        // then
-        $this->assertSame("bad_code", $payResult->getStatus());
-        $this->assertNotNull($smsCodeRepository->get($smsCode->getId()));
+        $this->paymentService->makePayment($purchase);
     }
 
     /** @test */
@@ -176,33 +180,33 @@ class PaymentServiceTest extends TestCase
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'service_id' => $serviceId,
-            'sms_price' => 100,
-            'quantity' => null,
+            "service_id" => $serviceId,
+            "sms_price" => 100,
+            "quantity" => null,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => 'STEAM_1:0:22309350',
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-            Purchase::PAYMENT_SMS_CODE => "abcd1234",
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_SMS,
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+                "auth_data" => "STEAM_1:0:22309350",
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId)
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
+                Purchase::PAYMENT_SMS_CODE => "abcd1234",
+                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
+            ]);
 
         // when
-        $payResult = $this->paymentService->makePayment($purchase);
+        $paymentResult = $this->paymentService->makePayment($purchase);
 
         // then
-        $this->assertSame("purchased", $payResult->getStatus());
-        $boughtService = $this->boughtServiceRepository->get($payResult->getDatum("bsid"));
+        $this->assertSameEnum(PaymentResultType::PURCHASED(), $paymentResult->getType());
+        $boughtService = $this->boughtServiceRepository->get($paymentResult->getData());
         $this->assertNotNull($boughtService);
         $this->assertEquals(-1, $boughtService->getAmount());
-        $this->assertSame('STEAM_1:0:22309350', $boughtService->getAuthData());
+        $this->assertSame("STEAM_1:0:22309350", $boughtService->getAuthData());
     }
 }

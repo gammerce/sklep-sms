@@ -18,3 +18,18 @@
         border-bottom-color: red;
     }
 }
+
+.huge-loader {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .loader {
+        border-bottom-color: $primary;
+        border-left-color: $primary;
+        width: 5rem;
+        height: 5rem;
+    }
+}

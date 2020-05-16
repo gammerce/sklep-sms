@@ -7,6 +7,7 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
 use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
+use App\Payment\DirectBilling\DirectBillingPriceService;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
@@ -21,6 +22,7 @@ class DirectBillingController
         Request $request,
         PaymentModuleManager $paymentModuleManager,
         DatabaseLogger $logger,
+        DirectBillingPriceService $directBillingPriceService,
         ExternalPaymentService $externalPaymentService,
         DirectBillingPaymentService $directBillingPaymentService
     ) {
@@ -41,7 +43,7 @@ class DirectBillingController
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
         } catch (LackOfValidPurchaseDataException $e) {
             $logger->log(
-                'log_external_payment_no_transaction_file',
+                "log_external_payment_no_transaction_file",
                 $finalizedPayment->getOrderId()
             );
             return new PlainResponse($finalizedPayment->getOutput());
@@ -51,15 +53,15 @@ class DirectBillingController
             $directBillingPaymentService->finalizePurchase($purchase, $finalizedPayment);
         } catch (InvalidPaidAmountException $e) {
             $logger->log(
-                'log_external_payment_invalid_amount',
+                "log_external_payment_invalid_amount",
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
-                $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING)
+                $directBillingPriceService->getPrice($purchase)
             );
         } catch (PaymentRejectedException $e) {
             $logger->log(
-                'log_external_payment_not_accepted',
+                "log_external_payment_not_accepted",
                 $purchase->getPayment(Purchase::PAYMENT_METHOD),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost() / 100,
@@ -67,7 +69,7 @@ class DirectBillingController
             );
         } catch (InvalidServiceModuleException $e) {
             $logger->log(
-                'log_external_payment_invalid_module',
+                "log_external_payment_invalid_module",
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );

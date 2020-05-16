@@ -34,7 +34,7 @@ class UserProfileResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertSame("abc", $freshUser->getUsername());
         $this->assertSame("poq", $freshUser->getForename());
         $this->assertSame("wer", $freshUser->getSurname());

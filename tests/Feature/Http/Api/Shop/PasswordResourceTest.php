@@ -35,7 +35,7 @@ class PasswordResourceTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("password_changed", $json["return_id"]);
-        $freshUser = $this->userRepository->get($user->getUid());
+        $freshUser = $this->userRepository->get($user->getId());
         $this->assertSame(
             hash_password("abc123", $freshUser->getSalt()),
             $freshUser->getPassword()

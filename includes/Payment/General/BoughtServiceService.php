@@ -2,18 +2,16 @@
 namespace App\Payment\General;
 
 use App\Loggers\DatabaseLogger;
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\Support\Mailer;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    /** @var Heart */
-    private $heart;
-
     /** @var Mailer */
     private $mailer;
 
@@ -29,26 +27,34 @@ class BoughtServiceService
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var ServerManager */
+    private $serverManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
+
     public function __construct(
         TranslationManager $translationManager,
-        Heart $heart,
         Mailer $mailer,
+        ServerManager $serverManager,
+        ServiceManager $serviceManager,
         BoughtServiceRepository $boughtServiceRepository,
         PurchaseInformation $purchaseInformation,
         DatabaseLogger $logger
     ) {
-        $this->heart = $heart;
         $this->mailer = $mailer;
         $this->lang = $translationManager->user();
         $this->boughtServiceRepository = $boughtServiceRepository;
         $this->logger = $logger;
         $this->purchaseInformation = $purchaseInformation;
+        $this->serverManager = $serverManager;
+        $this->serviceManager = $serviceManager;
     }
 
     /**
      * Add information about purchasing a service
      *
-     * @param int $uid
+     * @param int $userId
      * @param string $userName
      * @param string $ip
      * @param string $method
@@ -58,12 +64,12 @@ class BoughtServiceService
      * @param int|null $quantity
      * @param string $authData
      * @param string $email
+     * @param string $promoCode
      * @param array $extraData
-     *
      * @return int
      */
     public function create(
-        $uid,
+        $userId,
         $userName,
         $ip,
         $method,
@@ -73,12 +79,13 @@ class BoughtServiceService
         $quantity,
         $authData,
         $email,
+        $promoCode,
         $extraData = []
     ) {
         $forever = $quantity === null;
 
         $boughtService = $this->boughtServiceRepository->create(
-            $uid,
+            $userId,
             $method,
             $paymentId,
             $serviceId,
@@ -86,25 +93,29 @@ class BoughtServiceService
             $forever ? -1 : $quantity,
             $authData,
             $email,
+            $promoCode,
             $extraData
         );
 
         $returnMessage = $this->sendEmail($serviceId, $authData, $email, $boughtService);
 
-        $service = $this->heart->getService($serviceId);
-        $server = $this->heart->getServer($serverId);
-        $quantity = $forever ? $this->lang->t('forever') : "{$quantity} {$service->getTag()}";
+        $service = $this->serviceManager->getService($serviceId);
+        $server = $this->serverManager->getServer($serverId);
+        $quantity = $forever ? $this->lang->t("forever") : "{$quantity} {$service->getTag()}";
 
         $this->logger->log(
-            'log_bought_service_info',
+            "log_bought_service_info",
             $serviceId,
             $authData,
             $quantity,
-            $server ? $server->getName() : '',
+            $server ? $server->getName() : "",
             $paymentId,
+            $promoCode,
+            $email,
+            $promoCode,
             $returnMessage,
             $userName,
-            $uid,
+            $userId,
             $ip
         );
 
@@ -114,22 +125,22 @@ class BoughtServiceService
     private function sendEmail($service, $authData, $email, BoughtService $boughtService)
     {
         if (!strlen($email)) {
-            return $this->lang->t('none');
+            return $this->lang->t("none");
         }
 
         $message = $this->purchaseInformation->get([
-            'purchase_id' => $boughtService->getId(),
-            'action' => "email",
+            "purchase_id" => $boughtService->getId(),
+            "action" => "email",
         ]);
 
         if (!strlen($message)) {
-            return $this->lang->t('none');
+            return $this->lang->t("none");
         }
 
         $title =
-            $service == 'charge_wallet'
-                ? $this->lang->t('charge_wallet')
-                : $this->lang->t('purchase');
+            $service == "charge_wallet"
+                ? $this->lang->t("charge_wallet")
+                : $this->lang->t("purchase");
 
         $ret = $this->mailer->send($email, $authData, $title, $message);
 

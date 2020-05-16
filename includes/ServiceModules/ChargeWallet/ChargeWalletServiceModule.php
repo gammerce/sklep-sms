@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Wallet\WalletPaymentService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
@@ -16,7 +17,7 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class ChargeWalletServiceModule extends ServiceModule implements IServicePurchaseWeb, IBeLoggedMust
 {
@@ -69,9 +70,9 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         }
 
         return $this->template->render("shop/services/charge_wallet/purchase_form", [
-            'paymentMethodBodies' => implode("", $paymentMethodBodies),
-            'paymentMethodOptions' => implode("<br />", $paymentMethodOptions),
-            'serviceId' => $this->service->getId(),
+            "paymentMethodBodies" => implode("", $paymentMethodBodies),
+            "paymentMethodOptions" => implode("<br />", $paymentMethodOptions),
+            "serviceId" => $this->service->getId(),
         ]);
     }
 
@@ -81,11 +82,10 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             throw new UnauthorizedException();
         }
 
-        $method = array_get($body, 'method');
-
         try {
+            $method = new PaymentMethod(array_get($body, "method"));
             $paymentMethod = $this->chargeWalletFactory->create($method);
-        } catch (InvalidArgumentException $e) {
+        } catch (UnexpectedValueException $e) {
             throw new ValidationException([
                 "method" => "Invalid value",
             ]);
@@ -95,7 +95,6 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $purchase->setPayment([
             Purchase::PAYMENT_METHOD => $method,
             Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
-            Purchase::PAYMENT_DISABLED_SERVICE_CODE => true,
             Purchase::PAYMENT_DISABLED_SMS => true,
             Purchase::PAYMENT_DISABLED_TRANSFER => true,
             Purchase::PAYMENT_DISABLED_WALLET => true,
@@ -122,35 +121,40 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     public function purchase(Purchase $purchase)
     {
         $this->walletPaymentService->chargeWallet(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->getOrder(Purchase::ORDER_QUANTITY)
         );
 
+        $promoCode = $purchase->getPromoCode();
+
         return $this->boughtServiceService->create(
-            $purchase->user->getUid(),
+            $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY) / 100,
             $purchase->user->getUsername(),
-            $purchase->getEmail()
+            $purchase->getEmail(),
+            $promoCode ? $promoCode->getCode() : null
         );
     }
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $quantity = $this->priceTextService->getPriceText($transaction->getQuantity() * 100);
+        $quantity = $this->priceTextService->getPriceText(
+            price_to_int($transaction->getQuantity())
+        );
 
         if ($action === "web") {
             try {
                 $paymentMethod = $this->chargeWalletFactory->create(
                     $transaction->getPaymentMethod()
                 );
-            } catch (InvalidArgumentException $e) {
-                return '';
+            } catch (UnexpectedValueException $e) {
+                return "";
             }
 
             return $paymentMethod->getTransactionView($transaction);
@@ -158,11 +162,11 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
 
         if ($action === "payment_log") {
             return [
-                'text' => $this->lang->t('wallet_was_charged', $quantity),
-                'class' => "income",
+                "text" => $this->lang->t("wallet_was_charged", $quantity),
+                "class" => "income",
             ];
         }
 
-        return '';
+        return "";
     }
 }

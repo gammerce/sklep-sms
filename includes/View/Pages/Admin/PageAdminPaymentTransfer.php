@@ -11,7 +11,7 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
-use App\View\Html\DateCell;
+use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
 use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
@@ -99,7 +99,7 @@ class PageAdminPaymentTransfer extends PageAdmin
                     ->addCell(new Cell($income))
                     ->addCell(new Cell($transaction->getIp()))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
-                    ->addCell(new DateCell($transaction->getTimestamp()))
+                    ->addCell(new DateTimeCell($transaction->getTimestamp()))
                     ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass('highlighted');
                     });

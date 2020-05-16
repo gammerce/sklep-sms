@@ -6,7 +6,7 @@ return [
     'chosen_incorrect_type' => 'Wybrano niedozwolony typ zakupu.',
     'existing_service_has_different_password' =>
         'Istnieje już usługa wykupiona na te dane (nick/ip) lecz posiada inne hasło.',
-    'extra_flags' => 'Dodatkowe flagi',
+    'extra_flags' => 'Flagi Gracza',
     'flags' => 'Flagi',
     'if_displayed_in_shop' => 'Czy ma być wyświetlane <br/>w sklepie internetowym.',
     'just_purchased' => 'Witaj {1},<br/>

@@ -13,7 +13,7 @@ class ResetPasswordTest extends HttpTestCase
         /** @var UserRepository $userRepository */
         $userRepository = $this->app->make(UserRepository::class);
         $user = $this->factory->user();
-        $resetKey = $userRepository->createResetPasswordKey($user->getUid());
+        $resetKey = $userRepository->createResetPasswordKey($user->getId());
 
         // when
         $response = $this->get("/page/reset_password", ["code" => $resetKey]);

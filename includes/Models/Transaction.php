@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentMethod;
+
 class Transaction
 {
     /** @var int */
@@ -70,9 +72,6 @@ class Transaction
     private $free;
 
     /** @var string */
-    private $serviceCode;
-
-    /** @var string */
     private $timestamp;
 
     public function __construct(
@@ -98,7 +97,6 @@ class Transaction
         $smsText,
         $smsNumber,
         $free,
-        $serviceCode,
         $timestamp
     ) {
         $this->id = $id;
@@ -123,7 +121,6 @@ class Transaction
         $this->smsText = $smsText;
         $this->smsNumber = $smsNumber;
         $this->free = $free;
-        $this->serviceCode = $serviceCode;
         $this->timestamp = $timestamp;
     }
 
@@ -152,11 +149,11 @@ class Transaction
     }
 
     /**
-     * @return string
+     * @return PaymentMethod
      */
     public function getPaymentMethod()
     {
-        return $this->paymentMethod;
+        return new PaymentMethod($this->paymentMethod);
     }
 
     /**
@@ -310,14 +307,6 @@ class Transaction
     public function isFree()
     {
         return $this->free;
-    }
-
-    /**
-     * @return string
-     */
-    public function getServiceCode()
-    {
-        return $this->serviceCode;
     }
 
     /**

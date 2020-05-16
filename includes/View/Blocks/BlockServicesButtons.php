@@ -8,7 +8,6 @@ use App\Services\ServiceListService;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockServicesButtons extends Block
@@ -30,16 +29,12 @@ class BlockServicesButtons extends Block
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceListService */
     private $serviceListService;
 
     public function __construct(
         Auth $auth,
         Template $template,
-        Heart $heart,
         ServiceModuleManager $serviceModuleManager,
         UrlGenerator $url,
         UserServiceAccessService $userServiceAccessService,
@@ -50,7 +45,6 @@ class BlockServicesButtons extends Block
         $this->url = $url;
         $this->userServiceAccessService = $userServiceAccessService;
         $this->serviceModuleManager = $serviceModuleManager;
-        $this->heart = $heart;
         $this->serviceListService = $serviceListService;
     }
 

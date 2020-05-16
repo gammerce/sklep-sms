@@ -1,46 +1,32 @@
 <?php
 namespace Tests\Feature\Payment;
 
+use App\Managers\PaymentModuleManager;
+use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
+use App\Payment\General\PaymentMethod;
 use App\Repositories\PaymentDirectBillingRepository;
-use App\Requesting\Response;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\PaymentModules\SimPay;
-use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceModuleManager;
-use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
+use Tests\Psr4\Concerns\SimPayConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class DirectBillingPaymentServiceTest extends TestCase
 {
-    use RequesterConcern;
+    use SimPayConcern;
 
     /** @test */
     public function pays_with_transfer()
     {
         // given
-        $dataFileName = null;
-        $this->mockRequester();
-        $this->requesterMock
-            ->shouldReceive("post")
-            ->withArgs(["https://simpay.pl/db/api", Mockery::any()])
-            ->andReturnUsing(function ($url, $body) use (&$dataFileName) {
-                $dataFileName = $body["control"];
-                return new Response(
-                    200,
-                    json_encode([
-                        "status" => "success",
-                        "link" => "https://example.com",
-                    ])
-                );
-            });
+        $this->mockSimPayIpList();
+        $this->mockSimPayApiSuccessResponse();
 
         /** @var DirectBillingPaymentService $directBillingPaymentService */
         $directBillingPaymentService = $this->app->make(DirectBillingPaymentService::class);
@@ -74,17 +60,17 @@ class DirectBillingPaymentServiceTest extends TestCase
             "direct_billing_price" => 190,
         ]);
 
-        $purchase = new Purchase(new User());
-        $purchase->setOrder([
-            Purchase::ORDER_SERVER => $server->getId(),
-            "type" => ExtraFlagType::TYPE_SID,
-        ]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => Purchase::METHOD_DIRECT_BILLING,
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
-        ]);
-        $purchase->setUsingPrice($price);
-        $purchase->setServiceId($serviceId);
+        $purchase = (new Purchase(new User()))
+            ->setOrder([
+                Purchase::ORDER_SERVER => $server->getId(),
+                "type" => ExtraFlagType::TYPE_SID,
+            ])
+            ->setPayment([
+                Purchase::PAYMENT_METHOD => PaymentMethod::DIRECT_BILLING(),
+                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
+            ])
+            ->setUsingPrice($price)
+            ->setServiceId($serviceId);
 
         // when
         $directBillingPaymentMethod->pay($purchase, $serviceModule);
@@ -96,7 +82,7 @@ class DirectBillingPaymentServiceTest extends TestCase
                 "valuenet_gross" => 1.9,
                 "valuenet" => 1.5,
                 "valuepartner" => 1.2,
-                "control" => $dataFileName,
+                "control" => $purchase->getId(),
                 "sign" => "",
             ]
         );

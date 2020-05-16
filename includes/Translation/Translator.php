@@ -132,7 +132,7 @@ class Translator
      */
     private function translate($key)
     {
-        $this->load($this->getCurrentLanguage());
+        $this->load();
         return array_get($this->translations, $key, $key);
     }
 
@@ -146,14 +146,16 @@ class Translator
         $numArgs = count($argList);
 
         for ($i = 1; $i < $numArgs; $i++) {
-            $string = str_replace('{' . $i . '}', $argList[$i], $string);
+            $string = str_replace("{{$i}}", $argList[$i], $string);
         }
 
         return $string;
     }
 
-    private function load($language)
+    private function load()
     {
+        $language = $this->getCurrentLanguage();
+
         if ($this->loadedLanguage === $language) {
             return;
         }
@@ -206,5 +208,14 @@ class Translator
         }
 
         $this->loadedLanguage = $language;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTranslations()
+    {
+        $this->load();
+        return $this->translations;
     }
 }

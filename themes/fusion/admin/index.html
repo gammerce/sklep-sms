@@ -24,7 +24,8 @@
 
                     <div class="acp-box">
                         <div class="title is-5">
-                            {$lang->t('acp')} (&nbsp;v{{ $currentVersion }}&nbsp;)
+                            {$lang->t('acp')}<br />
+                            (&nbsp;v{{ $currentVersion }}&nbsp;)
                         </div>
                         <div class="subtitle is-6">
                             {$lang->t('license_expires')}: {{ $license->getExpires() }}
@@ -72,7 +73,7 @@
                         {$lang->t('additions')}
                     </p>
                     <ul class="menu-list">
-                        {$incomeLink} {$serviceCodesLink} {$smsCodesLink}
+                        {$incomeLink} {$promoCodesLink} {$smsCodesLink}
                     </ul>
 
                     <p class="menu-label">
@@ -107,11 +108,6 @@
                         <li>
                             <a href="{{ $url->to('/admin/payment_admin') }}">
                                 {$lang->t('payments_admin')}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $url->to('/admin/payment_service_code') }}">
-                                {$lang->t('payments_service_code')}
                             </a>
                         </li>
                         {$logsLink}

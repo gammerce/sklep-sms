@@ -2,11 +2,11 @@
 namespace App\View\Pages\Admin;
 
 use App\Http\Services\IncomeService;
+use App\Managers\ServerManager;
 use App\Managers\WebsiteHeader;
 use App\Models\Server;
 use App\Services\PriceTextService;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Html\HeadCell;
 use Symfony\Component\HttpFoundation\Request;
@@ -37,8 +37,8 @@ class PageAdminIncome extends PageAdmin
     /** @var WebsiteHeader */
     private $websiteHeader;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     /** @var PriceTextService */
     private $priceTextService;
@@ -49,13 +49,13 @@ class PageAdminIncome extends PageAdmin
         IncomeService $incomeService,
         WebsiteHeader $websiteHeader,
         PriceTextService $priceTextService,
-        Heart $heart
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->incomeService = $incomeService;
         $this->websiteHeader = $websiteHeader;
-        $this->heart = $heart;
+        $this->serverManager = $serverManager;
         $this->priceTextService = $priceTextService;
     }
 
@@ -129,7 +129,7 @@ class PageAdminIncome extends PageAdmin
             0 => $this->createDatasetEntry($this->lang->t("other"), $this->getColor(0)),
         ];
 
-        foreach ($this->heart->getServers() as $server) {
+        foreach ($this->serverManager->getServers() as $server) {
             $dataset[$server->getId()] = $this->createDatasetEntry(
                 $server->getName(),
                 $this->getColor(count($dataset))
@@ -197,7 +197,7 @@ class PageAdminIncome extends PageAdmin
     {
         $tableRow = "";
 
-        foreach ($this->heart->getServers() as $server) {
+        foreach ($this->serverManager->getServers() as $server) {
             $tableRow .= new HeadCell($server->getName());
         }
 
@@ -258,7 +258,7 @@ class PageAdminIncome extends PageAdmin
      */
     private function getServersIds()
     {
-        return collect($this->heart->getServers())
+        return collect($this->serverManager->getServers())
             ->map(function (Server $server) {
                 return $server->getId();
             })

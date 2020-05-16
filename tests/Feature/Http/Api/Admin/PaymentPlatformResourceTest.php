@@ -4,7 +4,6 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Repositories\SettingsRepository;
-use App\System\Settings;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentPlatformResourceTest extends HttpTestCase

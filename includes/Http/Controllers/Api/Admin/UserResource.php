@@ -13,8 +13,8 @@ use App\Http\Validation\Rules\UserGroupsRule;
 use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Managers\UserManager;
 use App\Repositories\UserRepository;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -24,27 +24,27 @@ class UserResource
         $userId,
         Request $request,
         TranslationManager $translationManager,
-        Heart $heart,
+        UserManager $userManager,
         UserRepository $userRepository,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $editedUser = $heart->getUser($userId);
+        $editedUser = $userManager->getUser($userId);
 
         $validator = new Validator(
             array_merge($request->request->all(), [
                 "groups" => $request->request->get("groups") ?: [],
             ]),
             [
-                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getUid())],
+                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getId())],
                 "forename" => [],
                 "groups" => [new UserGroupsRule()],
-                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getUid())],
+                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getId())],
                 "surname" => [],
                 "username" => [
                     new RequiredRule(),
                     new UsernameRule(),
-                    new UniqueUsernameRule($editedUser->getUid()),
+                    new UniqueUsernameRule($editedUser->getId()),
                 ],
                 "wallet" => [new RequiredRule(), new NumberRule()],
             ]
@@ -52,19 +52,19 @@ class UserResource
 
         $validated = $validator->validateOrFail();
 
-        $editedUser->setEmail($validated['email']);
-        $editedUser->setForename($validated['forename']);
-        $editedUser->setGroups($validated['groups']);
-        $editedUser->setSteamId($validated['steam_id']);
-        $editedUser->setSurname($validated['surname']);
-        $editedUser->setUsername($validated['username']);
-        $editedUser->setWallet(ceil($validated['wallet'] * 100));
+        $editedUser->setEmail($validated["email"]);
+        $editedUser->setForename($validated["forename"]);
+        $editedUser->setGroups($validated["groups"]);
+        $editedUser->setSteamId($validated["steam_id"]);
+        $editedUser->setSurname($validated["surname"]);
+        $editedUser->setUsername($validated["username"]);
+        $editedUser->setWallet(price_to_int($validated["wallet"]));
 
         $userRepository->update($editedUser);
 
-        $logger->logWithActor('log_user_edited', $userId);
+        $logger->logWithActor("log_user_edited", $userId);
 
-        return new SuccessApiResponse($lang->t('user_edit'));
+        return new SuccessApiResponse($lang->t("user_edit"));
     }
 
     public function delete(
@@ -78,10 +78,10 @@ class UserResource
         $deleted = $userRepository->delete($userId);
 
         if ($deleted) {
-            $logger->logWithActor('log_user_deleted', $userId);
-            return new SuccessApiResponse($lang->t('delete_user'));
+            $logger->logWithActor("log_user_deleted", $userId);
+            return new SuccessApiResponse($lang->t("delete_user"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_user'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_user"), 0);
     }
 }

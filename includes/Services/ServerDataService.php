@@ -58,8 +58,10 @@ class ServerDataService
 
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .
-                "WHERE (`server` = ? OR `server` IS NULL) AND `sms_price` IS NOT NULL AND `service` IN ({$keys}) " .
-                "ORDER BY `service` ASC, `quantity` ASC"
+                "WHERE (`server_id` = ? OR `server_id` IS NULL) " .
+                "AND `sms_price` IS NOT NULL " .
+                "AND `service_id` IN ({$keys}) " .
+                "ORDER BY `service_id` ASC, `quantity` ASC"
         );
         $statement->execute(array_merge([$server->getId()], $serviceIds));
 
@@ -122,7 +124,7 @@ SELECT f.type, f.auth_data, f.password,
 (f.x > UNIX_TIMESTAMP() OR f.x = '-1') AS `x`,
 (f.z > UNIX_TIMESTAMP() OR f.z = '-1') AS `z`
 FROM `ss_players_flags` AS f
-INNER JOIN `ss_servers` AS s ON s.id = f.server
+INNER JOIN `ss_servers` AS s ON s.id = f.server_id
 WHERE s.id = ?
 ORDER BY f.auth_data, f.type DESC
 EOF
@@ -142,10 +144,10 @@ EOF
                     ->join();
 
                 return [
-                    'type' => (int) $data['type'],
-                    'auth_data' => $data['auth_data'],
-                    'password' => $data['password'],
-                    'flags' => $flags,
+                    "type" => (int) $data["type"],
+                    "auth_data" => $data["auth_data"],
+                    "password" => $data["password"],
+                    "flags" => $flags,
                 ];
             })
             ->all();

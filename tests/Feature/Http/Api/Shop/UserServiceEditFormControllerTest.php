@@ -13,8 +13,8 @@ class UserServiceEditFormControllerTest extends HttpTestCase
         $this->actingAs($user);
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
-            'uid' => $user->getUid(),
+            "server_id" => $server->getId(),
+            "user_id" => $user->getId(),
         ]);
 
         // when

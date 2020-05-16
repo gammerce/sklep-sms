@@ -1,13 +1,13 @@
 <?php
 namespace App\Models;
 
-use App\System\Heart;
+use App\Managers\GroupManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
     /** @var int */
-    private $uid;
+    private $id;
 
     /** @var string */
     private $username;
@@ -58,7 +58,7 @@ class User
     private $platform;
 
     public function __construct(
-        $uid = null,
+        $id = null,
         $username = null,
         $password = null,
         $salt = null,
@@ -77,10 +77,10 @@ class User
         /** @var Request $request */
         $request = app()->make(Request::class);
 
-        /** @var Heart $heart */
-        $heart = app()->make(Heart::class);
+        /** @var GroupManager $groupManager */
+        $groupManager = app()->make(GroupManager::class);
 
-        $this->uid = $uid;
+        $this->id = $id;
         $this->username = $username;
         $this->password = $password;
         $this->salt = $salt;
@@ -99,7 +99,7 @@ class User
 
         if ($this->groups) {
             foreach ($this->groups as $groupId) {
-                $group = $heart->getGroup($groupId);
+                $group = $groupManager->getGroup($groupId);
 
                 if ($group) {
                     foreach ($group->getPermissions() as $privilege => $value) {
@@ -112,15 +112,15 @@ class User
 
     public function exists()
     {
-        return !!$this->getUid();
+        return !!$this->getId();
     }
 
     /**
      * @return int
      */
-    public function getUid()
+    public function getId()
     {
-        return $this->uid;
+        return $this->id;
     }
 
     /**

@@ -8,6 +8,7 @@ use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DateTimeCell;
 use App\View\Html\Div;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
@@ -77,7 +78,7 @@ class PageAdminLogs extends PageAdmin
                 return (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($div))
-                    ->addCell(new Cell(convert_date($row["timestamp"]), "date"))
+                    ->addCell(new DateTimeCell($row["timestamp"], "date"))
                     ->setDeleteAction(has_privileges("manage_logs"));
             })
             ->all();

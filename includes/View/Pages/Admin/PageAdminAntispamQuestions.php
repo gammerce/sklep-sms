@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Repositories\AntiSpamQuestionRepository;
 use App\Support\Database;
@@ -101,27 +102,20 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
         }
 
         switch ($boxId) {
-            case "antispam_question_add":
-                $output = $this->template->render("admin/action_boxes/antispam_question_add");
-                break;
+            case "add":
+                return $this->template->render("admin/action_boxes/antispam_question_add");
 
-            case "antispam_question_edit":
+            case "edit":
                 $antispamQuestion = $this->antiSpamQuestionRepository->get($query["id"]);
 
-                $output = $this->template->render("admin/action_boxes/antispam_question_edit", [
+                return $this->template->render("admin/action_boxes/antispam_question_edit", [
                     "id" => $antispamQuestion->getId(),
                     "question" => $antispamQuestion->getQuestion(),
                     "answers" => implode(";", $antispamQuestion->getAnswers()),
                 ]);
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

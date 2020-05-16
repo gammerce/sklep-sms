@@ -25,7 +25,7 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
 
         $statement = $this->db->statement(
             "SELECT `password` FROM `$table` " .
-                "WHERE `type` = ? AND `auth_data` = ? AND `server` = ?"
+                "WHERE `type` = ? AND `auth_data` = ? AND `server_id` = ?"
         );
         $statement->execute([$type, $authData, $serverId]);
         $existingPassword = $statement->fetchColumn();

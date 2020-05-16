@@ -1,18 +1,15 @@
 <?php
 namespace Tests\Feature\Verification;
 
+use App\Managers\PaymentModuleManager;
 use App\Requesting\Response;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\Results\SmsSuccessResult;
-use App\Managers\PaymentModuleManager;
 use Mockery;
-use Tests\Psr4\Concerns\RequesterConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class OneShotOneKillTest extends TestCase
 {
-    use RequesterConcern;
-
     /** @var OneShotOneKill */
     private $oneShotOneKill;
 
@@ -20,13 +17,11 @@ class OneShotOneKillTest extends TestCase
     {
         parent::setUp();
 
-        $this->mockRequester();
-
         /** @var PaymentModuleManager $paymentModuleManager */
         $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => OneShotOneKill::MODULE_ID,
+            "module" => OneShotOneKill::MODULE_ID,
         ]);
 
         $this->oneShotOneKill = $paymentModuleManager->get($paymentPlatform);
@@ -37,8 +32,8 @@ class OneShotOneKillTest extends TestCase
     {
         // given
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['http://www.1shot1kill.pl/api', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["http://www.1shot1kill.pl/api", Mockery::any()])
             ->andReturn(new Response(200, '{"status":"ok","amount":"16.25"}'));
 
         // when

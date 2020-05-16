@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Shop;
 
-use App\Models\Purchase;
+use App\Payment\General\PaymentMethod;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Services\UserServiceService;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
@@ -16,11 +16,11 @@ class ServiceTakeOverControllerTest extends HttpTestCase
     {
         // given
         $boughtService = $this->createRandomPurchase([
-            'auth_data' => 'STEAM_1:0:22309350',
-            'password' => null,
-            'method' => Purchase::METHOD_SMS,
-            'sms_code' => 'testcode',
-            'type' => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
+            "password" => null,
+            "method" => PaymentMethod::SMS(),
+            "sms_code" => "testcode",
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
 
         /** @var UserServiceService $userServiceService */
@@ -31,11 +31,11 @@ class ServiceTakeOverControllerTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/services/vip/take_over", [
-            'auth_data' => 'STEAM_1:0:22309350',
-            'payment_method' => Purchase::METHOD_SMS,
-            'payment_id' => 'testcode',
-            'server_id' => $boughtService->getServerId(),
-            'type' => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
+            "payment_method" => PaymentMethod::SMS(),
+            "payment_id" => "testcode",
+            "server_id" => $boughtService->getServerId(),
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
 
         // then
@@ -44,7 +44,7 @@ class ServiceTakeOverControllerTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $userServices = $userServiceService->find();
         $this->assertCount(1, $userServices);
-        $this->assertSame($user->getUid(), $userServices[0]->getUid());
+        $this->assertSame($user->getId(), $userServices[0]->getUserId());
     }
 
     /** @test */
@@ -52,11 +52,11 @@ class ServiceTakeOverControllerTest extends HttpTestCase
     {
         // given
         $boughtService = $this->createRandomPurchase([
-            'auth_data' => 'STEAM_1:0:22309350',
-            'password' => null,
-            'method' => Purchase::METHOD_SMS,
-            'sms_code' => 'testcod1',
-            'type' => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
+            "password" => null,
+            "method" => PaymentMethod::SMS(),
+            "sms_code" => "testcod1",
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
 
         /** @var UserServiceService $userServiceService */
@@ -67,11 +67,11 @@ class ServiceTakeOverControllerTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/services/vip/take_over", [
-            'auth_data' => 'STEAM_1:0:22309350',
-            'payment_method' => Purchase::METHOD_SMS,
-            'payment_id' => 'testcode',
-            'server_id' => $boughtService->getServerId(),
-            'type' => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
+            "payment_method" => PaymentMethod::SMS(),
+            "payment_id" => "testcode",
+            "server_id" => $boughtService->getServerId(),
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
 
         // then
@@ -80,6 +80,6 @@ class ServiceTakeOverControllerTest extends HttpTestCase
         $this->assertSame("no_service", $json["return_id"]);
         $userServices = $userServiceService->find();
         $this->assertCount(1, $userServices);
-        $this->assertSame(0, $userServices[0]->getUid());
+        $this->assertSame(0, $userServices[0]->getUserId());
     }
 }

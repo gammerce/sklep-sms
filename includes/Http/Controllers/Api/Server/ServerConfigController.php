@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Server;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Http\Responses\AssocResponse;
-use App\Http\Responses\JsonResponse;
+use App\Http\Responses\ServerJsonResponse;
 use App\Managers\PaymentModuleManager;
 use App\Models\Price;
 use App\Models\Server;
@@ -130,7 +130,7 @@ class ServerConfigController
         ];
 
         return $acceptHeader->has("application/json")
-            ? new JsonResponse($data)
+            ? new ServerJsonResponse($data)
             : new AssocResponse($data);
     }
 

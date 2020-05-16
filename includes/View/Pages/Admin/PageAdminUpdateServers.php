@@ -1,11 +1,11 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Managers\ServerManager;
 use App\Models\Server;
 use App\Requesting\Requester;
 use App\Support\Template;
 use App\Support\Version;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,21 +19,21 @@ class PageAdminUpdateServers extends PageAdmin
     /** @var Version */
     private $version;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Requester $requester,
         Version $version,
-        Heart $heart
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->requester = $requester;
         $this->version = $version;
-        $this->heart = $heart;
+        $this->serverManager = $serverManager;
     }
 
     public function getPrivilege()
@@ -52,7 +52,7 @@ class PageAdminUpdateServers extends PageAdmin
         $newestSmVersion = $this->version->getNewestSourcemod();
 
         $versionBricks = "";
-        foreach ($this->heart->getServers() as $server) {
+        foreach ($this->serverManager->getServers() as $server) {
             if ($server->getType() === Server::TYPE_AMXMODX) {
                 $newestVersion = $newestAmxxVersion;
                 $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";

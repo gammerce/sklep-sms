@@ -2,10 +2,8 @@
 namespace App\Payment\Sms;
 
 use App\Loggers\DatabaseLogger;
-use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
-use App\Services\SmsPriceService;
 use App\Support\Database;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;
@@ -40,16 +38,36 @@ class SmsPaymentService
 
     /**
      * @param SupportSms $paymentModule
-     * @param string     $code
-     * @param SmsNumber  $smsNumber
-     * @param User       $user
+     * @param string|null $code
+     * @param int $price
+     * @param User $user
      * @return int
      */
-    public function payWithSms(SupportSms $paymentModule, $code, SmsNumber $smsNumber, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user)
     {
+        if ($price === 0) {
+            return $this->storePaymentSms(
+                $paymentModule,
+                new SmsSuccessResult(false, 0),
+                $code,
+                $price,
+                "",
+                $user
+            );
+        }
+
+        $smsNumber = $this->smsPriceService->getNumber($price, $paymentModule);
+
         $result = $this->tryToUseSmsCode($code, $smsNumber->getPrice());
         if ($result) {
-            return $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+            return $this->storePaymentSms(
+                $paymentModule,
+                $result,
+                $code,
+                $smsNumber->getPrice(),
+                $smsNumber->getNumber(),
+                $user
+            );
         }
 
         try {
@@ -62,7 +80,7 @@ class SmsPaymentService
             throw $e;
         } catch (SmsPaymentException $e) {
             $this->logger->log(
-                'log_bad_sms_code_used',
+                "log_bad_sms_code_used",
                 $code,
                 $paymentModule->getSmsCode(),
                 $smsNumber->getNumber(),
@@ -72,10 +90,17 @@ class SmsPaymentService
             throw $e;
         }
 
-        $smsPaymentId = $this->storePaymentSms($paymentModule, $result, $code, $smsNumber, $user);
+        $smsPaymentId = $this->storePaymentSms(
+            $paymentModule,
+            $result,
+            $code,
+            $smsNumber->getPrice(),
+            $smsNumber->getNumber(),
+            $user
+        );
         $this->logger->logWithUser(
             $user,
-            'log_accepted_sms_code',
+            "log_accepted_sms_code",
             $code,
             $paymentModule->getSmsCode(),
             $smsNumber->getNumber()
@@ -84,11 +109,21 @@ class SmsPaymentService
         return $smsPaymentId;
     }
 
+    /**
+     * @param SupportSms $smsPaymentModule
+     * @param SmsSuccessResult $result
+     * @param string|null $code
+     * @param number|null $price
+     * @param string|null $number
+     * @param User $user
+     * @return string
+     */
     private function storePaymentSms(
         SupportSms $smsPaymentModule,
         SmsSuccessResult $result,
         $code,
-        SmsNumber $smsNumber,
+        $price,
+        $number,
         User $user
     ) {
         $this->db
@@ -98,10 +133,10 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($smsNumber->getPrice(), $smsPaymentModule),
-                $this->smsPriceService->getGross($smsNumber->getPrice()),
+                $this->smsPriceService->getProvision($price, $smsPaymentModule),
+                $this->smsPriceService->getGross($price),
                 $smsPaymentModule->getSmsCode(),
-                $smsNumber->getNumber(),
+                $number,
                 $user->getLastIp(),
                 $user->getPlatform(),
                 $result->isFree() ? 1 : 0,
@@ -124,7 +159,7 @@ class SmsPaymentService
         }
 
         $this->smsCodeRepository->delete($smsCode->getId());
-        $this->logger->log('log_payment_remove_code_from_db', $code, $smsPrice);
+        $this->logger->log("log_payment_remove_code_from_db", $code, $smsPrice);
 
         return new SmsSuccessResult($smsCode->isFree());
     }
@@ -141,7 +176,7 @@ class SmsPaymentService
 
         $this->logger->logWithUser(
             $user,
-            'log_add_code_to_reuse',
+            "log_add_code_to_reuse",
             $code,
             $smsPrice,
             $expectedSmsPrice

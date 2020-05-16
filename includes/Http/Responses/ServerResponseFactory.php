@@ -14,7 +14,7 @@ class ServerResponseFactory
         $statusCode = 200
     ) {
         if ($acceptHeader->has("application/json")) {
-            return new JsonResponse(
+            return new ServerJsonResponse(
                 array_merge(
                     [
                         "status" => $status,

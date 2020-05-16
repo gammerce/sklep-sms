@@ -23,7 +23,7 @@ class TransferServiceTakeOver implements IServiceTakeOver
     {
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .
-                "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service` = ? AND `server` = ? AND `auth_data` = ?"
+                "WHERE t.payment = 'transfer' AND t.payment_id = ? AND `service_id` = ? AND `server_id` = ? AND `auth_data` = ?"
         );
         $statement->execute([$paymentId, $serviceId, $serverId, $authData]);
 

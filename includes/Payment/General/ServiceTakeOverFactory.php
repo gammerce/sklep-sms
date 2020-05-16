@@ -1,38 +1,40 @@
 <?php
 namespace App\Payment\General;
 
-use App\Models\Purchase;
 use App\Payment\Interfaces\IServiceTakeOver;
 use App\Payment\Sms\SmsServiceTakeOver;
 use App\Payment\Transfer\TransferServiceTakeOver;
 use App\System\Application;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class ServiceTakeOverFactory
 {
     /** @var Application */
     private $app;
 
-    private $paymentMethodsClasses = [
-        Purchase::METHOD_SMS => SmsServiceTakeOver::class,
-        Purchase::METHOD_TRANSFER => TransferServiceTakeOver::class,
-    ];
+    /** @var array */
+    private $paymentMethodsClasses;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->paymentMethodsClasses = [
+            PaymentMethod::SMS()->getValue() => SmsServiceTakeOver::class,
+            PaymentMethod::TRANSFER()->getValue() => TransferServiceTakeOver::class,
+        ];
     }
 
     /**
-     * @param string $paymentMethodId
+     * @param PaymentMethod $paymentMethod
      * @return IServiceTakeOver
+     * @throws UnexpectedValueException
      */
-    public function create($paymentMethodId)
+    public function create(PaymentMethod $paymentMethod)
     {
-        if (!array_key_exists($paymentMethodId, $this->paymentMethodsClasses)) {
-            throw new InvalidArgumentException("Payment method [$paymentMethodId] doesn't exist");
+        if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
+            return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);
         }
 
-        return $this->app->make($this->paymentMethodsClasses[$paymentMethodId]);
+        throw new UnexpectedValueException("Payment method [$paymentMethod] doesn't exist");
     }
 }

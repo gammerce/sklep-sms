@@ -10,7 +10,7 @@ class UserService
     private $serviceId;
 
     /** @var int|null */
-    private $uid;
+    private $userId;
 
     /**
      * Timestamp or -1 when forever
@@ -19,11 +19,11 @@ class UserService
      */
     private $expire;
 
-    public function __construct($id, $serviceId, $uid, $expire)
+    public function __construct($id, $serviceId, $userId, $expire)
     {
         $this->id = $id;
         $this->serviceId = $serviceId;
-        $this->uid = $uid;
+        $this->userId = $userId;
         $this->expire = $expire;
     }
 
@@ -46,9 +46,9 @@ class UserService
     /**
      * @return int|null
      */
-    public function getUid()
+    public function getUserId()
     {
-        return $this->uid;
+        return $this->userId;
     }
 
     /**

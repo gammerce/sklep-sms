@@ -1,17 +1,19 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Managers\ServerManager;
+use App\Managers\ServiceManager;
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
 use App\View\Html\PaymentRef;
 use App\View\Html\RawText;
@@ -35,8 +37,11 @@ class PageAdminBoughtServices extends PageAdmin
     /** @var CurrentPage */
     private $currentPage;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    /** @var ServerManager */
+    private $serverManager;
 
     public function __construct(
         Template $template,
@@ -44,14 +49,16 @@ class PageAdminBoughtServices extends PageAdmin
         TransactionRepository $transactionRepository,
         Database $db,
         CurrentPage $currentPage,
-        Heart $heart
+        ServiceManager $serviceManager,
+        ServerManager $serverManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
         $this->currentPage = $currentPage;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
+        $this->serverManager = $serverManager;
     }
 
     public function getTitle(Request $request)
@@ -72,7 +79,7 @@ class PageAdminBoughtServices extends PageAdmin
                         "t.id",
                         "t.payment",
                         "t.payment_id",
-                        "t.uid",
+                        "t.user_id",
                         "t.ip",
                         "t.email",
                         "t.auth_data",
@@ -105,8 +112,8 @@ class PageAdminBoughtServices extends PageAdmin
                 return $this->transactionRepository->mapToModel($row);
             })
             ->map(function (Transaction $transaction) {
-                $service = $this->heart->getService($transaction->getServiceId());
-                $server = $this->heart->getServer($transaction->getServerId());
+                $service = $this->serviceManager->getService($transaction->getServiceId());
+                $server = $this->serverManager->getServer($transaction->getServerId());
 
                 $userEntry = $transaction->getUserId()
                     ? new UserRef($transaction->getUserId(), $transaction->getUserName())
@@ -146,7 +153,7 @@ class PageAdminBoughtServices extends PageAdmin
                         new Cell(
                             new PaymentRef(
                                 $transaction->getPaymentId(),
-                                $transaction->getPaymentMethod()
+                                (string) $transaction->getPaymentMethod()
                             )
                         )
                     )
@@ -158,7 +165,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell(new RawText($extraData)))
                     ->addCell(new Cell($transaction->getEmail()))
                     ->addCell(new Cell($transaction->getIp()))
-                    ->addCell(new Cell(convert_date($transaction->getTimestamp()), "date"));
+                    ->addCell(new DateTimeCell($transaction->getTimestamp(), "date"));
             })
             ->all();
 

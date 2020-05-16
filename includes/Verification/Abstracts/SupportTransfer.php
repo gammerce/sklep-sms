@@ -7,23 +7,15 @@ use App\Models\Purchase;
 interface SupportTransfer
 {
     /**
-     * Przygotowanie zapytania POST w celu płatności przelewem
-     *
+     * @param int $price
      * @param Purchase $purchase
-     * @param string   $dataFilename
-     *
      * @return array
-     *  string url => adres url strony do ktorej wysylamy dane POST
-     *  ... - wysyłane pola POST
      */
-    public function prepareTransfer(Purchase $purchase, $dataFilename);
+    public function prepareTransfer($price, Purchase $purchase);
 
     /**
-     * Finalizuje zakup usługi podczas zakupu poprzez przelew
-     *
      * @param array $query
      * @param array $body
-     *
      * @return FinalizedPayment
      */
     public function finalizeTransfer(array $query, array $body);

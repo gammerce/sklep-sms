@@ -1,21 +1,22 @@
 <?php
 namespace App\System;
 
+use App\Managers\UserManager;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class Auth
 {
-    /** @var Heart */
-    private $heart;
+    /** @var UserManager */
+    private $userManager;
 
     /** @var User */
     private $user;
 
-    public function __construct(Heart $heart)
+    public function __construct(UserManager $userManager)
     {
-        $this->heart = $heart;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -40,9 +41,9 @@ class Auth
         $this->user = $user;
     }
 
-    public function setUserById($uid)
+    public function setUserById($userId)
     {
-        $this->user = $this->heart->getUser($uid);
+        $this->user = $this->userManager->getUser($userId);
     }
 
     /**
@@ -55,8 +56,8 @@ class Auth
             throw new UnexpectedValueException("Given user is not logged in");
         }
 
-        $this->heart->setUser($user);
-        $request->getSession()->set("uid", $user->getUid());
+        $this->userManager->setUser($user);
+        $request->getSession()->set("uid", $user->getId());
         $this->user = $user;
     }
 
@@ -73,7 +74,7 @@ class Auth
         $session = $request->getSession();
 
         if ($user && has_privileges("acp", $user)) {
-            $session->set("uid", $user->getUid());
+            $session->set("uid", $user->getId());
             $this->user = $user;
         } else {
             $session->set("info", "wrong_data");

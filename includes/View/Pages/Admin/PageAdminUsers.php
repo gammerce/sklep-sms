@@ -1,7 +1,10 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
+use App\Managers\GroupManager;
+use App\Managers\UserManager;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\UserRepository;
@@ -9,7 +12,6 @@ use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
@@ -31,8 +33,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     /** @var PriceTextService */
     private $priceTextService;
 
-    /** @var Heart */
-    private $heart;
+    /** @var UserManager */
+    private $userManager;
 
     /** @var Database */
     private $db;
@@ -40,22 +42,27 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     /** @var CurrentPage */
     private $currentPage;
 
+    /** @var GroupManager */
+    private $groupManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         UserRepository $userRepository,
         PriceTextService $priceTextService,
-        Heart $heart,
+        UserManager $userManager,
         Database $db,
-        CurrentPage $currentPage
+        CurrentPage $currentPage,
+        GroupManager $groupManager
     ) {
         parent::__construct($template, $translationManager);
 
         $this->userRepository = $userRepository;
         $this->priceTextService = $priceTextService;
-        $this->heart = $heart;
+        $this->userManager = $userManager;
         $this->db = $db;
         $this->currentPage = $currentPage;
+        $this->groupManager = $groupManager;
     }
 
     public function getPrivilege()
@@ -115,7 +122,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->map(function (User $user) use ($recordId) {
                 $groups = collect($user->getGroups())
                     ->map(function ($groupId) {
-                        return $this->heart->getGroup($groupId);
+                        return $this->groupManager->getGroup($groupId);
                     })
                     ->filter(function ($group) {
                         return !!$group;
@@ -126,7 +133,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ->join("; ");
 
                 return (new BodyRow())
-                    ->setDbId($user->getUid())
+                    ->setDbId($user->getId())
                     ->addCell(new Cell($user->getUsername()))
                     ->addCell(new Cell($user->getForename()))
                     ->addCell(new Cell($user->getSurname()))
@@ -143,7 +150,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     ->addAction($this->createPasswordButton())
                     ->setDeleteAction(has_privileges("manage_users"))
                     ->setEditAction(has_privileges("manage_users"))
-                    ->when($recordId === $user->getUid(), function (BodyRow $bodyRow) {
+                    ->when($recordId === $user->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
             })
@@ -187,10 +194,10 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         }
 
         switch ($boxId) {
-            case "user_edit":
-                $user = $this->heart->getUser($query["uid"]);
+            case "edit":
+                $user = $this->userManager->getUser($query["user_id"]);
 
-                $groups = collect($this->heart->getGroups())
+                $groups = collect($this->groupManager->getGroups())
                     ->map(function (Group $group) use ($user) {
                         return create_dom_element(
                             "option",
@@ -205,41 +212,33 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
-                $output = $this->template->render("admin/action_boxes/user_edit", [
+                return $this->template->render("admin/action_boxes/user_edit", [
                     "email" => $user->getEmail(),
                     "username" => $user->getUsername(),
                     "surname" => $user->getSurname(),
                     "forename" => $user->getForename(),
                     "steamId" => $user->getSteamId(),
-                    "uid" => $user->getUid(),
+                    "userId" => $user->getId(),
                     "wallet" => $this->priceTextService->getPlainPrice($user->getWallet()),
                     "groups" => $groups,
                 ]);
-                break;
 
             case "charge_wallet":
-                $user = $this->heart->getUser($query["uid"]);
-                $output = $this->template->render(
+                $user = $this->userManager->getUser($query["user_id"]);
+                return $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact("user")
                 );
-                break;
 
             case "change_password":
-                $user = $this->heart->getUser($query["uid"]);
-                $output = $this->template->render(
+                $user = $this->userManager->getUser($query["user_id"]);
+                return $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact("user")
                 );
-                break;
 
             default:
-                $output = "";
+                throw new EntityNotFoundException();
         }
-
-        return [
-            "status" => "ok",
-            "template" => $output,
-        ];
     }
 }

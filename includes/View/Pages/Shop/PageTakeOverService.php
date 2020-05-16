@@ -1,11 +1,11 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\Support\Template;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
@@ -15,21 +15,21 @@ class PageTakeOverService extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "service_take_over";
 
-    /** @var Heart */
-    private $heart;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
+
+    /** @var ServiceManager */
+    private $serviceManager;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         ServiceModuleManager $serviceModuleManager,
-        Heart $heart
+        ServiceManager $serviceManager
     ) {
         parent::__construct($template, $translationManager);
-        $this->heart = $heart;
         $this->serviceModuleManager = $serviceModuleManager;
+        $this->serviceManager = $serviceManager;
     }
 
     public function getTitle(Request $request)
@@ -39,7 +39,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
 
     public function getContent(Request $request)
     {
-        $servicesOptions = collect($this->heart->getServices())
+        $servicesOptions = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 // Service module doesn't allow taking the service over

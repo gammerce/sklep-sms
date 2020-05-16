@@ -1,12 +1,12 @@
 <?php
 namespace App\View\Blocks;
 
+use App\Managers\ServiceManager;
 use App\Routing\UrlGenerator;
 use App\Services\PriceTextService;
 use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
-use App\System\Heart;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
@@ -28,8 +28,8 @@ class BlockWallet extends Block implements IBeLoggedMust
     /** @var UserServiceAccessService */
     private $userServiceAccessService;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServiceManager */
+    private $serviceManager;
 
     /** @var Translator */
     private $lang;
@@ -43,14 +43,14 @@ class BlockWallet extends Block implements IBeLoggedMust
         UrlGenerator $url,
         UserServiceAccessService $userServiceAccessService,
         PriceTextService $priceTextService,
-        Heart $heart,
+        ServiceManager $serviceManager,
         TranslationManager $translationManager
     ) {
         $this->auth = $auth;
         $this->template = $template;
         $this->url = $url;
         $this->userServiceAccessService = $userServiceAccessService;
-        $this->heart = $heart;
+        $this->serviceManager = $serviceManager;
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
     }
@@ -72,7 +72,7 @@ class BlockWallet extends Block implements IBeLoggedMust
 
         if (
             $this->userServiceAccessService->canUserUseService(
-                $this->heart->getService("charge_wallet"),
+                $this->serviceManager->getService("charge_wallet"),
                 $user
             )
         ) {

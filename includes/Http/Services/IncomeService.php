@@ -1,28 +1,28 @@
 <?php
 namespace App\Http\Services;
 
+use App\Managers\ServerManager;
 use App\Repositories\TransactionRepository;
 use App\Support\Database;
-use App\System\Heart;
 
 class IncomeService
 {
     /** @var Database */
     private $db;
 
-    /** @var Heart */
-    private $heart;
+    /** @var ServerManager */
+    private $serverManager;
 
     /** @var TransactionRepository */
     private $transactionRepository;
 
     public function __construct(
         Database $db,
-        Heart $heart,
+        ServerManager $serverManager,
         TransactionRepository $transactionRepository
     ) {
         $this->db = $db;
-        $this->heart = $heart;
+        $this->serverManager = $serverManager;
         $this->transactionRepository = $transactionRepository;
     }
 
@@ -41,7 +41,7 @@ class IncomeService
         foreach ($statement as $row) {
             $transaction = $this->transactionRepository->mapToModel($row);
             $date = explode(" ", $transaction->getTimestamp())[0];
-            $server = $this->heart->getServer($transaction->getServerId());
+            $server = $this->serverManager->getServer($transaction->getServerId());
             $serverId = $server ? $server->getId() : 0;
 
             if (!isset($data[$date])) {

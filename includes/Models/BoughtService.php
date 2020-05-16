@@ -1,13 +1,15 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentMethod;
+
 class BoughtService
 {
     /** @var int */
     private $id;
 
     /** @var int */
-    private $uid;
+    private $userId;
 
     /** @var string */
     private $method;
@@ -30,12 +32,15 @@ class BoughtService
     /** @var string */
     private $email;
 
+    /** @var string|null */
+    private $promoCode;
+
     /** @var array */
     private $extraData;
 
     public function __construct(
         $id,
-        $uid,
+        $userId,
         $method,
         $paymentId,
         $service,
@@ -43,10 +48,11 @@ class BoughtService
         $amount,
         $authData,
         $email,
+        $promoCode,
         $extraData
     ) {
         $this->id = $id;
-        $this->uid = $uid;
+        $this->userId = $userId;
         $this->method = $method;
         $this->paymentId = $paymentId;
         $this->service = $service;
@@ -54,6 +60,7 @@ class BoughtService
         $this->amount = $amount;
         $this->authData = $authData;
         $this->email = $email;
+        $this->promoCode = $promoCode;
         $this->extraData = $extraData;
     }
 
@@ -64,15 +71,15 @@ class BoughtService
     }
 
     /** @return int */
-    public function getUid()
+    public function getUserId()
     {
-        return $this->uid;
+        return $this->userId;
     }
 
-    /** @return string */
+    /** @return PaymentMethod */
     public function getMethod()
     {
-        return $this->method;
+        return new PaymentMethod($this->method);
     }
 
     /** @return string */
@@ -109,6 +116,14 @@ class BoughtService
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPromoCode()
+    {
+        return $this->promoCode;
     }
 
     /** @return array */

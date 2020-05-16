@@ -1,28 +1,29 @@
 <?php
 namespace App\Payment\General;
 
-use App\Models\Purchase;
 use App\Payment\DirectBilling\DirectBillingChargeWallet;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Payment\Sms\SmsChargeWallet;
 use App\Payment\Transfer\TransferChargeWallet;
 use App\System\Application;
-use InvalidArgumentException;
+use UnexpectedValueException;
 
 class ChargeWalletFactory
 {
     /** @var Application */
     private $app;
 
-    private $paymentMethodsClasses = [
-        Purchase::METHOD_DIRECT_BILLING => DirectBillingChargeWallet::class,
-        Purchase::METHOD_SMS => SmsChargeWallet::class,
-        Purchase::METHOD_TRANSFER => TransferChargeWallet::class,
-    ];
+    /** @var array */
+    private $paymentMethodsClasses;
 
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->paymentMethodsClasses = [
+            PaymentMethod::DIRECT_BILLING()->getValue() => DirectBillingChargeWallet::class,
+            PaymentMethod::SMS()->getValue() => SmsChargeWallet::class,
+            PaymentMethod::TRANSFER()->getValue() => TransferChargeWallet::class,
+        ];
     }
 
     /**
@@ -38,15 +39,16 @@ class ChargeWalletFactory
     }
 
     /**
-     * @param string $paymentMethodId
+     * @param PaymentMethod $paymentMethod
      * @return IChargeWallet
+     * @throws UnexpectedValueException
      */
-    public function create($paymentMethodId)
+    public function create(PaymentMethod $paymentMethod)
     {
-        if (!array_key_exists($paymentMethodId, $this->paymentMethodsClasses)) {
-            throw new InvalidArgumentException("Payment method [$paymentMethodId] doesn't exist");
+        if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
+            return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);
         }
 
-        return $this->app->make($this->paymentMethodsClasses[$paymentMethodId]);
+        throw new UnexpectedValueException("Payment method [$paymentMethod] doesn't exist");
     }
 }

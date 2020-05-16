@@ -85,8 +85,8 @@ function has_privileges($privilege, $user = null)
         "manage_users",
         "view_sms_codes",
         "manage_sms_codes",
-        "view_service_codes",
-        "manage_service_codes",
+        "view_promo_codes",
+        "manage_promo_codes",
         "view_antispam_questions",
         "manage_antispam_questions",
         "view_services",
@@ -168,51 +168,6 @@ function get_ip(Request $request = null)
     }
 
     return $request->server->get('REMOTE_ADDR');
-}
-
-/**
- * Zwraca datę w odpowiednim formacie
- *
- * @param int|string $timestamp
- * @param string $format
- *
- * @return string
- */
-function convert_date($timestamp, $format = "")
-{
-    if (!strlen($format)) {
-        /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
-        $format = $settings->getDateFormat();
-    }
-
-    $date = as_datetime($timestamp);
-    return $date ? $date->format($format) : null;
-}
-
-/**
- * @param int $timestamp
- * @return string
- */
-function convert_expire($timestamp)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-    if ($timestamp === -1 || $timestamp === null) {
-        return $lang->t("never");
-    }
-
-    return convert_date($timestamp);
-}
-
-/**
- * @param DateTime|null $date
- * @return string|null
- */
-function get_date_for_database($date)
-{
-    return $date ? $date->format("Y-m-d H:i:s") : null;
 }
 
 /**
@@ -563,13 +518,55 @@ function as_date_string($value)
 }
 
 /**
- * @param string|int|DateTime|null $value
+ * @param int|string|DateTime|null $value
+ * @param string $format
  * @return string
  */
-function as_datetime_string($value)
+function as_datetime_string($value, $format = "")
 {
+    if (!strlen($format)) {
+        /** @var Settings $settings */
+        $settings = app()->make(Settings::class);
+        $format = $settings->getDateFormat();
+    }
+
     $date = as_datetime($value);
-    return $date ? $date->format("Y-m-d H:i:s") : "";
+    return $date ? $date->format($format) : null;
+}
+
+/**
+ * @param int|string|DateTime|null $value
+ * @return string
+ */
+function as_expiration_date_string($value)
+{
+    if ($value === -1 || $value === null) {
+        return __("never");
+    }
+
+    return as_date_string($value);
+}
+
+/**
+ * @param int|string|DateTime|null $value
+ * @return string
+ */
+function as_expiration_datetime_string($value)
+{
+    if ($value === -1 || $value === null) {
+        return __("never");
+    }
+
+    return as_datetime_string($value);
+}
+
+/**
+ * @param DateTime|null $date
+ * @return string|null
+ */
+function serialize_date($date)
+{
+    return $date ? $date->format("Y-m-d H:i:s") : null;
 }
 
 /**
@@ -725,13 +722,14 @@ function url($path, array $query = [])
 
 /**
  * @param string $path
+ * @param array $query
  * @return string
  */
-function versioned($path)
+function versioned($path, $query = [])
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
-    return $url->versioned($path);
+    return $url->versioned($path, $query);
 }
 
 function dd(...$vars)
@@ -741,4 +739,44 @@ function dd(...$vars)
     }
 
     exit(1);
+}
+
+/**
+ * @link https://stackoverflow.com/a/2040279
+ * @return string
+ */
+function generate_uuid4()
+{
+    return sprintf(
+        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        // 32 bits for "time_low"
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+
+        // 16 bits for "time_mid"
+        mt_rand(0, 0xffff),
+
+        // 16 bits for "time_hi_and_version",
+        // four most significant bits holds version number 4
+        mt_rand(0, 0x0fff) | 0x4000,
+
+        // 16 bits, 8 bits for "clk_seq_hi_res",
+        // 8 bits for "clk_seq_low",
+        // two most significant bits holds zero and one for variant DCE1.1
+        mt_rand(0, 0x3fff) | 0x8000,
+
+        // 48 bits for "node"
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff),
+        mt_rand(0, 0xffff)
+    );
+}
+
+/**
+ * @param int $length
+ * @return string
+ */
+function generate_id($length)
+{
+    return substr(hash("sha256", generate_uuid4()), 0, $length);
 }

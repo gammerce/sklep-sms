@@ -54,6 +54,17 @@ class PriceTextService
     }
 
     /**
+     * @param int|null $price
+     * @return string
+     */
+    public function getPlainPriceGross($price)
+    {
+        return $price !== null
+            ? number_format(($price / 100.0) * $this->settings->getVat(), 2)
+            : null;
+    }
+
+    /**
      * @param int|null $quantity
      * @param Service $service
      * @return string
