@@ -185,7 +185,7 @@ class LicenseServiceModule extends ServiceModule implements
 
                 return (new BodyRow())
                     ->setDbId($row["id"])
-                    ->addCell($userEntry)
+                    ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($row["service"]))
                     ->addCell(new Cell($row["identifier"]))
                     ->addCell(new Cell($row["external_license_id"]))
