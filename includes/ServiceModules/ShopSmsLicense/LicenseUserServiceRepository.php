@@ -9,8 +9,8 @@ class LicenseUserServiceRepository
     {
         return new LicenseUserService(
             as_int($data["id"]),
-            $data["service"],
-            as_int($data["uid"]),
+            $data["service_id"],
+            as_int($data["user_id"]),
             as_int($data["expire"]),
             $data["identifier"],
             $data["external_license_id"],

@@ -547,7 +547,7 @@ class LicenseServiceModule extends ServiceModule implements
         $userServiceId = $row["us_id"];
 
         $user = $this->auth->user();
-        $statement = $this->db->statement("UPDATE `ss_user_service` SET `uid` = ? WHERE `id` = ?");
+        $statement = $this->db->statement("UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?");
         $statement->execute([$user->getId(), $userServiceId]);
 
         if (!$statement->rowCount()) {
