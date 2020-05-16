@@ -41,12 +41,12 @@ class UserServiceResource
         }
 
         if (
-            !$settings['user_edit_service'] ||
+            !$settings["user_edit_service"] ||
             !($serviceModule instanceof IServiceUserOwnServicesEdit)
         ) {
             return new ApiResponse(
                 "service_cant_be_modified",
-                $lang->t('service_cant_be_modified'),
+                $lang->t("service_cant_be_modified"),
                 false
             );
         }
@@ -67,6 +67,6 @@ class UserServiceResource
             );
         }
 
-        return new ApiResponse('ok', $lang->t('edited_user_service'), true);
+        return new ApiResponse("ok", $lang->t("edited_user_service"), true);
     }
 }
