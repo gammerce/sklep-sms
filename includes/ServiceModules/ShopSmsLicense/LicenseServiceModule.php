@@ -482,35 +482,35 @@ class LicenseServiceModule extends ServiceModule implements
 
         $costData = $this->getCostUserEdit($validated, $userService);
 
-        $purchase = new Purchase($this->auth->user());
-        $purchase->setServiceId("ss_license_edit");
-        $purchase->setEmail($validated["email"]);
-        $purchase->setOrder([
-            "user_service_id" => $validated["id"],
-            "cost_daily" => $costData["cost_daily"],
-            "bargain" => $costData["bargain"],
-            "password" => $validated["password"],
-            "engines" => [
-                "amxx" => $validated["platform_amxmodx"],
-                "sm" => $validated["platform_sourcemod"],
-            ],
-        ]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PLATFORM_TRANSFER => $this->settings->getTransferPlatformId(),
-            Purchase::PAYMENT_PRICE_TRANSFER => intval(
-                $costData["surcharge"] * $costData["bargain"]
-            ),
-            Purchase::PAYMENT_DISABLED_SMS => true,
-        ]);
+        $purchase = (new Purchase($this->auth->user()))
+            ->setServiceId("ss_license_edit")
+            ->setEmail($validated["email"])
+            ->setOrder([
+                "user_service_id" => $validated["id"],
+                "cost_daily" => $costData["cost_daily"],
+                "bargain" => $costData["bargain"],
+                "password" => $validated["password"],
+                "engines" => [
+                    "amxx" => $validated["platform_amxmodx"],
+                    "sm" => $validated["platform_sourcemod"],
+                ],
+            ])
+            ->setPayment([
+                Purchase::PAYMENT_PLATFORM_TRANSFER => $this->settings->getTransferPlatformId(),
+                Purchase::PAYMENT_PRICE_TRANSFER => intval(
+                    $costData["surcharge"] * $costData["bargain"]
+                ),
+                Purchase::PAYMENT_DISABLED_SMS => true,
+            ]);
 
-        $transactionId = $this->purchaseDataService->storePurchase($purchase);
+        $this->purchaseDataService->storePurchase($purchase);
 
         return [
             "status" => "payment",
             "text" => $this->lang->t("purchase_form_validated"),
             "positive" => true,
             "data" => [
-                "transaction_id" => $transactionId,
+                "transaction_id" => $purchase->getId(),
             ],
         ];
     }
