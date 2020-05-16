@@ -1,6 +1,5 @@
 import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox } from "../../../general/infobox";
-import { json_parse } from "../../../general/stocks";
 import { buildUrl, restRequest, show } from "../../../general/global";
 
 function engine_toggle(element) {
@@ -31,20 +30,14 @@ function regenerate_token(identifier, button) {
                 loader.hide();
             },
             success: function(content) {
-                const response = json_parse(content);
-
-                if (!response) {
-                    return;
-                }
-
                 const box = $(button)
                     .closest(".row")
                     .find(".regenerated-token-box");
 
                 show(box);
-                box.find(".token-value").text(response.token);
+                box.find(".token-value").text(content.token);
 
-                infobox.show_info("Token został zregenerowany", true);
+                infobox.showInfo("Token został zregenerowany", true);
             },
             error: function() {
                 handleErrorResponse();
@@ -67,16 +60,12 @@ function ss_user_edit_set_cost(form) {
     restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function(
         content
     ) {
-        const jsonObj = json_parse(content);
-        if (!jsonObj) {
-            return;
-        }
-
         const cost = form.find("#cost .price");
         const costMonthly = form.find("#cost-monthly");
 
-        cost.html(jsonObj.surcharge);
-        costMonthly.html(jsonObj.cost_monthly);
+        content = JSON.parse(content);
+        cost.html(content.surcharge);
+        costMonthly.html(content.cost_monthly);
     });
 }
 

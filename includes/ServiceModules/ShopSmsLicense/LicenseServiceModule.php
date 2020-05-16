@@ -42,37 +42,10 @@ use App\View\Html\DOMElement;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
+use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use Exception;
 use UnexpectedValueException;
-
-// https://stackoverflow.com/a/2040279
-function generateUUID4()
-{
-    return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
-        // 32 bits for "time_low"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_mid"
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_hi_and_version",
-        // four most significant bits holds version number 4
-        mt_rand(0, 0x0fff) | 0x4000,
-
-        // 16 bits, 8 bits for "clk_seq_hi_res",
-        // 8 bits for "clk_seq_low",
-        // two most significant bits holds zero and one for variant DCE1.1
-        mt_rand(0, 0x3fff) | 0x8000,
-
-        // 48 bits for "node"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff)
-    );
-}
 
 class LicenseServiceModule extends ServiceModule implements
     IServiceUserServiceAdminDisplay,
@@ -159,26 +132,26 @@ class LicenseServiceModule extends ServiceModule implements
 
     public function userServiceAdminDisplayTitleGet()
     {
-        return $this->lang->t('licenses');
+        return $this->lang->t("licenses");
     }
 
     public function userServiceAdminDisplayGet(array $query, array $body)
     {
         $queryParticle = new QueryParticle();
 
-        if (isset($query['search'])) {
+        if (isset($query["search"])) {
             $queryParticle->extend(
                 create_search_query(
                     [
                         "us.id",
-                        "us.uid",
+                        "us.user_id",
                         "u.username",
                         "s.name",
                         "m.external_license_id",
                         "m.identifier",
-                        'm.cost_daily',
+                        "m.cost_daily",
                     ],
-                    $query['search']
+                    $query["search"]
                 )
             );
         }
@@ -186,12 +159,12 @@ class LicenseServiceModule extends ServiceModule implements
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS us.id, us.uid, u.username, s.id AS `service_id`, " .
+            "SELECT SQL_CALC_FOUND_ROWS us.id, us.user_id, u.username, s.id AS `service_id`, " .
                 "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
                 "FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id " .
                 "LEFT JOIN `ss_services` AS s ON s.id = m.service " .
-                "LEFT JOIN `ss_users` AS u ON u.uid = us.uid " .
+                "LEFT JOIN `ss_users` AS u ON u.uid = us.user_id " .
                 $where .
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
@@ -206,33 +179,31 @@ class LicenseServiceModule extends ServiceModule implements
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
+                $userEntry = $row["user_id"]
+                    ? new UserRef($row["user_id"], $row["username"])
+                    : $this->lang->t("none");
+
                 return (new BodyRow())
-                    ->setDbId($row['id'])
-                    ->addCell(
-                        new Cell(
-                            $row['uid']
-                                ? $row['username'] . " ({$row['uid']})"
-                                : $this->lang->t('none')
-                        )
-                    )
-                    ->addCell(new Cell($row['service']))
-                    ->addCell(new Cell($row['identifier']))
-                    ->addCell(new Cell($row['external_license_id']))
-                    ->addCell(new Cell($this->priceTextService->getPriceText($row['cost_daily'])))
-                    ->addCell(new ExpirationCell($row['expire']))
+                    ->setDbId($row["id"])
+                    ->addCell($userEntry)
+                    ->addCell(new Cell($row["service"]))
+                    ->addCell(new Cell($row["identifier"]))
+                    ->addCell(new Cell($row["external_license_id"]))
+                    ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
+                    ->addCell(new ExpirationCell($row["expire"]))
                     ->setDeleteAction(has_privileges("manage_user_services"))
                     ->setEditAction(false);
             })
             ->all();
 
         $table = (new Structure())
-            ->addHeadCell(new HeadCell($this->lang->t('id'), "id"))
-            ->addHeadCell(new HeadCell($this->lang->t('user')))
-            ->addHeadCell(new HeadCell($this->lang->t('service')))
-            ->addHeadCell(new HeadCell($this->lang->t('identifier')))
-            ->addHeadCell(new HeadCell($this->lang->t('external_license_id')))
-            ->addHeadCell(new HeadCell($this->lang->t('cost_daily')))
-            ->addHeadCell(new HeadCell($this->lang->t('expires')))
+            ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
+            ->addHeadCell(new HeadCell($this->lang->t("user")))
+            ->addHeadCell(new HeadCell($this->lang->t("service")))
+            ->addHeadCell(new HeadCell($this->lang->t("identifier")))
+            ->addHeadCell(new HeadCell($this->lang->t("external_license_id")))
+            ->addHeadCell(new HeadCell($this->lang->t("cost_daily")))
+            ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $query, $rowsCount);
 
@@ -242,10 +213,10 @@ class LicenseServiceModule extends ServiceModule implements
     public function purchaseFormGet(array $query)
     {
         return $this->template->render("shop/services/shopsms_license/purchase_form", [
-            'user' => $this->auth->user(),
-            'serviceId' => $this->service->getId(),
-            'serviceTag' => $this->service->getTag(),
-            'days' => array_get($query, "days"),
+            "user" => $this->auth->user(),
+            "serviceId" => $this->service->getId(),
+            "serviceTag" => $this->service->getTag(),
+            "days" => array_get($query, "days"),
         ]);
     }
 
@@ -253,34 +224,34 @@ class LicenseServiceModule extends ServiceModule implements
     {
         $validator = new Validator(
             array_merge($body, [
-                'email' => trim(array_get($body, 'email')),
+                "email" => trim(array_get($body, "email")),
             ]),
             [
-                'amount' => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
-                'email' => [new RequiredRule(), new EmailRule()],
-                'engines' => [new LicenseEnginesRule()],
-                'platform_amxmodx' => [],
-                'platform_sourcemod' => [],
+                "amount" => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
+                "email" => [new RequiredRule(), new EmailRule()],
+                "engines" => [new LicenseEnginesRule()],
+                "platform_amxmodx" => [],
+                "platform_sourcemod" => [],
             ]
         );
 
         $validated = $validator->validateOrFail();
 
         $costDaily = $this->getDailyCost(
-            $validated['platform_amxmodx'],
-            $validated['platform_sourcemod']
+            $validated["platform_amxmodx"],
+            $validated["platform_sourcemod"]
         );
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $validated['amount'],
-            'engines' => [
-                'amxx' => $validated['platform_amxmodx'],
-                'sm' => $validated['platform_sourcemod'],
+            Purchase::ORDER_QUANTITY => $validated["amount"],
+            "engines" => [
+                "amxx" => $validated["platform_amxmodx"],
+                "sm" => $validated["platform_sourcemod"],
             ],
-            'cost_daily' => $costDaily,
+            "cost_daily" => $costDaily,
         ]);
-        $purchase->setEmail($validated['email']);
+        $purchase->setEmail($validated["email"]);
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost($costDaily, $validated['amount']),
+            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost($costDaily, $validated["amount"]),
             Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
     }
@@ -288,14 +259,14 @@ class LicenseServiceModule extends ServiceModule implements
     public function orderDetails(Purchase $purchase)
     {
         return $this->template->renderNoComments("shop/services/shopsms_license/order_details", [
-            'costMonthly' => $this->priceTextService->getPriceText(
-                $purchase->getOrder('cost_daily') * 30
+            "costMonthly" => $this->priceTextService->getPriceText(
+                $purchase->getOrder("cost_daily") * 30
             ),
-            'email' => $purchase->getEmail() ?: $this->lang->t('none'),
-            'engines' => $this->engineService->formatOrderEngines($purchase->getOrder('engines')),
-            'quantity' => $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            'serviceName' => $this->service->getName(),
-            'serviceTag' => $this->service->getTag(),
+            "email" => $purchase->getEmail() ?: $this->lang->t("none"),
+            "engines" => $this->engineService->formatOrderEngines($purchase->getOrder("engines")),
+            "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
+            "serviceName" => $this->service->getName(),
+            "serviceTag" => $this->service->getTag(),
         ]);
     }
 
@@ -312,7 +283,7 @@ class LicenseServiceModule extends ServiceModule implements
         $externalLicenseId = $result["id"];
         $token = $result["token"];
         $expiresAt = $result["expires_at"];
-        $identifier = generateUUID4();
+        $identifier = generate_uuid4();
         $promoCode = $purchase->getPromoCode();
 
         // Dodajemy usługę użytkownika do bazy sklepu
@@ -463,13 +434,13 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         $engines = [
-            'amxx' => [
-                'input' => $userService->hasPlatformAmxModX() ? "1" : "0",
-                'div' => $userService->hasPlatformAmxModX() ? "is-active" : "",
+            "amxx" => [
+                "input" => $userService->hasPlatformAmxModX() ? "1" : "0",
+                "div" => $userService->hasPlatformAmxModX() ? "is-active" : "",
             ],
-            'sm' => [
-                'input' => $userService->hasPlatformSourceMod() ? "1" : "0",
-                'div' => $userService->hasPlatformSourceMod() ? "is-active" : "",
+            "sm" => [
+                "input" => $userService->hasPlatformSourceMod() ? "1" : "0",
+                "div" => $userService->hasPlatformSourceMod() ? "is-active" : "",
             ],
         ];
 
@@ -601,7 +572,7 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         // Nie usuwaj, jezeli jest mniej niz 30 dni po wygasnieciu
-        if ($who != 'admin' && $userService->getExpire() + 60 * 60 * 24 * 30 > time()) {
+        if ($who != "admin" && $userService->getExpire() + 60 * 60 * 24 * 30 > time()) {
             return false;
         }
 
@@ -613,7 +584,7 @@ class LicenseServiceModule extends ServiceModule implements
     public function actionExecute($action, array $body)
     {
         if ($action === "get_cost") {
-            $daysAmount = (int) $body['amount'];
+            $daysAmount = (int) $body["amount"];
 
             if ($daysAmount < 30) {
                 return "0.00";
@@ -728,13 +699,13 @@ class LicenseServiceModule extends ServiceModule implements
         $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));
 
         $engines = [
-            'amxx' => [
-                'old' => $userService->hasPlatformAmxModX(),
-                'new' => $body['platform_amxmodx'],
+            "amxx" => [
+                "old" => $userService->hasPlatformAmxModX(),
+                "new" => $body["platform_amxmodx"],
             ],
-            'sm' => [
-                'old' => $userService->hasPlatformSourceMod(),
-                'new' => $body['platform_sourcemod'],
+            "sm" => [
+                "old" => $userService->hasPlatformSourceMod(),
+                "new" => $body["platform_sourcemod"],
             ],
         ];
 
@@ -742,16 +713,16 @@ class LicenseServiceModule extends ServiceModule implements
         foreach ($engines as $engine => $engineData) {
             // Jezeli anulujemy wsparcie dla jakiegos silnika, to tracimy wszelkie znizki
             // i przeliczamy normalnie koszt jaki wychodzi
-            if ($engineData['old'] && !$engineData['new']) {
+            if ($engineData["old"] && !$engineData["new"]) {
                 $costDaily = $this->getDailyCost(
-                    $body['platform_amxmodx'],
-                    $body['platform_sourcemod']
+                    $body["platform_amxmodx"],
+                    $body["platform_sourcemod"]
                 );
                 break;
             }
 
             // Jezeli dodajemy wsparcie dla nowego silnika, to dodajemy do dniowki
-            if ($engineData['new'] && !$engineData['old']) {
+            if ($engineData["new"] && !$engineData["old"]) {
                 $additionalCost += $this::COST_ENGINE_PER_DAY;
             }
         }
@@ -761,10 +732,10 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         return [
-            'surcharge' => max(0, ($costDaily - $userService->getCostDaily()) * $daysLeft),
-            'cost_daily' => $costDaily,
-            'cost_monthly' => $costDaily * 30,
-            'bargain' => $this->getBargain($daysLeft),
+            "surcharge" => max(0, ($costDaily - $userService->getCostDaily()) * $daysLeft),
+            "cost_daily" => $costDaily,
+            "cost_monthly" => $costDaily * 30,
+            "bargain" => $this->getBargain($daysLeft),
         ];
     }
 

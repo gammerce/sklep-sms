@@ -1,4 +1,4 @@
-import { restRequest, showWarnings } from "../../../general/global";
+import { restRequest } from "../../../general/global";
 
 function engine_toggle(element) {
     if (element.val() == "1") {
@@ -15,7 +15,8 @@ function engine_toggle(element) {
 function set_cost() {
     const form = $(".shopsms_license_purchase");
 
-    if (!form.find("[name=amount]").val().length) {
+    const amount = form.find("[name=amount]").val() as string;
+    if (!amount.length) {
         $("#cost .price").html("0.00");
         return;
     }
