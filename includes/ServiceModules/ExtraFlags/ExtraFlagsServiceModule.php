@@ -53,7 +53,6 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
-use App\Services\ExpiredUserServiceService;
 use App\Services\PriceTextService;
 use App\Support\Expression;
 use App\Support\QueryParticle;
@@ -72,8 +71,6 @@ use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use UnexpectedValueException;
-
-// TODO Fix purchasing service when forever service already exists
 
 class ExtraFlagsServiceModule extends ServiceModule implements
     IServiceAdminManage,
@@ -119,9 +116,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var DatabaseLogger */
     private $logger;
 
-    /** @var ExpiredUserServiceService */
-    private $expiredUserServiceService;
-
     /** @var AdminPaymentService */
     private $adminPaymentService;
 
@@ -136,9 +130,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
 
     /** @var PlayerFlagService */
     private $playerFlagService;
@@ -161,7 +152,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->userManager = $this->app->make(UserManager::class);
         $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
         $this->logger = $this->app->make(DatabaseLogger::class);
-        $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
@@ -169,7 +159,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ExtraFlagUserServiceRepository::class
         );
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
-        $this->playerFlagRepository = $this->app->make(PlayerFlagRepository::class);
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->serviceTakeOverFactory = $this->app->make(ServiceTakeOverFactory::class);
@@ -478,13 +467,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchase(Purchase $purchase)
     {
-        $this->addPlayerFlags(
-            $purchase->user->getId(),
+        $this->playerFlagService->addPlayerFlags(
+            $this->service->getId(),
+            $purchase->getOrder(Purchase::ORDER_SERVER),
+            $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $purchase->getOrder("type"),
             $purchase->getOrder("auth_data"),
             $purchase->getOrder("password"),
-            $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder(Purchase::ORDER_SERVER)
+            $purchase->user->getId()
         );
 
         $promoCode = $purchase->getPromoCode();
@@ -508,72 +498,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    private function addPlayerFlags($userId, $type, $authData, $password, $days, $serverId)
-    {
-        $authData = trim($authData);
-        $password = strlen($password) ? $password : "";
-
-        // Let's delete expired data. Just in case, to avoid risk of conflicts.
-        $this->expiredUserServiceService->deleteExpired();
-        $this->playerFlagRepository->deleteOldFlags();
-
-        // Let's add a user service. If there is service with the same data,
-        // let's prolong the existing one.
-        $statement = $this->db->statement(
-            "SELECT * FROM `{$this->getUserServiceTable()}` " .
-                "WHERE `service_id` = ? AND `server_id` = ? AND `type` = ? AND `auth_data` = ?"
-        );
-        $statement->execute([$this->service->getId(), $serverId, $type, $authData]);
-
-        if ($statement->rowCount()) {
-            $row = $statement->fetch();
-            $userServiceId = $row["us_id"];
-
-            if ($days === null) {
-                $expire = null;
-            } else {
-                $seconds = $days * 24 * 60 * 60;
-                $expire = new Expression("`expire` + {$seconds}");
-            }
-
-            $this->userServiceRepository->updateWithModule($this, $userServiceId, [
-                "user_id" => $userId,
-                "password" => $password,
-                "expire" => $expire,
-            ]);
-        } else {
-            $this->extraFlagUserServiceRepository->create(
-                $this->service->getId(),
-                $userId,
-                $days !== null ? $days * 24 * 60 * 60 : null,
-                $serverId,
-                $type,
-                $authData,
-                $password
-            );
-        }
-
-        // Let's set identical passwords for all services of that player on that server
-        $this->db
-            ->statement(
-                "UPDATE `{$this->getUserServiceTable()}` " .
-                    "SET `password` = ? " .
-                    "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
-            )
-            ->execute([$password, $serverId, $type, $authData]);
-
-        // Let's recalculate players flags since we've added new user service
-        $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
-    }
-
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $password = "";
         if (strlen($transaction->getExtraDatum("password"))) {
             $password =
                 "<strong>{$this->lang->t("password")}</strong>: " .
                 htmlspecialchars($transaction->getExtraDatum("password")) .
                 "<br />";
+        } else {
+            $password = "";
         }
 
         $quantity =
@@ -587,12 +520,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $server = $this->serverManager->getServer($transaction->getServerId());
 
-        $setinfo = "";
         if (
             $transaction->getExtraDatum("type") &
             (ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP)
         ) {
             $setinfo = $this->lang->t("type_setinfo", $transaction->getExtraDatum("password"));
+        } else {
+            $setinfo = "";
         }
 
         if ($action === "email") {
@@ -1072,7 +1006,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
             // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
             $affected = $this->userServiceRepository->updateWithModule(
-                $this,
+                $this->getUserServiceTable(),
                 $existingUserService->getId(),
                 $set
             );
@@ -1087,7 +1021,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
 
             $affected = $this->userServiceRepository->updateWithModule(
-                $this,
+                $this->getUserServiceTable(),
                 $userService->getId(),
                 $set
             );
