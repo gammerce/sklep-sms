@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Verification\PaymentModules\Cssetti;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentModuleAddFormControllerTest extends HttpTestCase
@@ -14,10 +15,23 @@ class PaymentModuleAddFormControllerTest extends HttpTestCase
         $paymentModuleId = Cssetti::MODULE_ID;
 
         // when
-        $response = $this->get("/api/admin/payment_modules/{$paymentModuleId}/add_form");
+        $response = $this->getJson("/api/admin/payment_modules/{$paymentModuleId}/add_form");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("ID KONTA", $response->getContent());
+    }
+
+    /** @test */
+    public function returns_404_for_invalid_payment_module()
+    {
+        // given
+        $this->actingAs($this->factory->admin());
+
+        // when
+        $response = $this->getJson("/api/admin/payment_modules/asd/add_form");
+
+        // then
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
     }
 }

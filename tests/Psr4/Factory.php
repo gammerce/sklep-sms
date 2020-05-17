@@ -268,7 +268,7 @@ class Factory
             $attributes
         );
 
-        $this->logRepository->create($attributes["text"]);
+        return $this->logRepository->create($attributes["text"]);
     }
 
     public function smsCode(array $attributes = [])
@@ -282,7 +282,7 @@ class Factory
             $attributes
         );
 
-        $this->smsCodeRepository->create(
+        return $this->smsCodeRepository->create(
             $attributes["code"],
             $attributes["sms_price"],
             $attributes["free"]

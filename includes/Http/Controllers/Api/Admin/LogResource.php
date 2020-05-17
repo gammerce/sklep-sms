@@ -18,9 +18,9 @@ class LogResource
         $deleted = $repository->delete($logId);
 
         if ($deleted) {
-            return new SuccessApiResponse($lang->t('delete_log'));
+            return new SuccessApiResponse($lang->t("delete_log"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_log'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_log"), 0);
     }
 }
