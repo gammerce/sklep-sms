@@ -21,11 +21,11 @@ class BoughtServicesTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/bought_services?query=a');
+        $response = $this->get("/admin/bought_services", ["search" => "a"]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Kupione usługi', $response->getContent());
     }
 }
