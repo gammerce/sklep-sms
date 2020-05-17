@@ -98,7 +98,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        if ($boxId == "group_edit") {
+        if ($boxId == "edit") {
             $group = $this->groupRepository->get($query["id"]);
 
             if (!$group) {
@@ -110,6 +110,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                     ],
                 ]);
             }
+        } else {
+            $group = null;
         }
 
         $privileges = "";
@@ -120,7 +122,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
             $values = create_dom_element("option", $this->lang->strtoupper($this->lang->t("no")), [
                 "value" => 0,
-                "selected" => isset($group) && $group->hasPermission($fieldName) ? "" : "selected",
+                "selected" => $group && $group->hasPermission($fieldName) ? "" : "selected",
             ]);
 
             $values .= create_dom_element(
@@ -128,8 +130,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 $this->lang->strtoupper($this->lang->t("yes")),
                 [
                     "value" => 1,
-                    "selected" =>
-                        isset($group) && $group->hasPermission($fieldName) ? "selected" : "",
+                    "selected" => $group && $group->hasPermission($fieldName) ? "selected" : "",
                 ]
             );
 
@@ -141,13 +142,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         }
 
         switch ($boxId) {
-            case "group_add":
+            case "add":
                 return $this->template->render(
                     "admin/action_boxes/group_add",
                     compact("privileges")
                 );
 
-            case "group_edit":
+            case "edit":
                 return $this->template->render(
                     "admin/action_boxes/group_edit",
                     compact("privileges", "group")

@@ -13,15 +13,15 @@ class PageServersActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/server_edit", [
+        $response = $this->getJson("/api/admin/pages/servers/action_boxes/edit", [
             "id" => $server->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Edytuj serwer", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Edytuj serwer", $json["template"]);
     }
 
     /** @test */
@@ -32,13 +32,13 @@ class PageServersActionBoxEditTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/server_edit", [
+        $response = $this->getJson("/api/admin/pages/servers/action_boxes/edit", [
             "id" => $server->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

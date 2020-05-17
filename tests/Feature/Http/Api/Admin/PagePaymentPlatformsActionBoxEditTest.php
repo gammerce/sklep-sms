@@ -1,24 +1,36 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Models\PaymentPlatform;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageServersActionBoxAddTest extends HttpTestCase
+class PagePaymentPlatformsActionBoxEditTest extends HttpTestCase
 {
+    /** @var PaymentPlatform */
+    private $paymentPlatform;
+
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->paymentPlatform = $this->factory->paymentPlatform();
+    }
+
     /** @test */
-    public function get_add_box()
+    public function get_edit_box()
     {
         // give
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/add");
+        $response = $this->get("/api/admin/pages/payment_platforms/action_boxes/edit", [
+            "id" => $this->paymentPlatform->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj serwer", $json["template"]);
+        $this->assertContains("Edytuj platformę płatności", $json["template"]);
     }
 
     /** @test */
@@ -28,7 +40,9 @@ class PageServersActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/add");
+        $response = $this->getJson("/api/admin/pages/payment_platforms/action_boxes/edit", [
+            "id" => $this->paymentPlatform->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());

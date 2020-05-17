@@ -738,6 +738,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             "forever" => "",
         ];
 
+        $nick = null;
+        $ip = null;
+        $sid = null;
+
         if ($userService->getType() === ExtraFlagType::TYPE_NICK) {
             $nick = $userService->getAuthData();
             $classes["nick"] = $classes["password"] = "";

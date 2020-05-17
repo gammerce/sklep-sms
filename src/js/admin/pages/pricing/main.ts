@@ -4,11 +4,11 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 $(document).delegate("#price_button_add", "click", function() {
-    showActionBox(window.currentPage, "price_add");
+    showActionBox(window.currentPage, "add");
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(window.currentPage, "price_edit", {
+    showActionBox(window.currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")
