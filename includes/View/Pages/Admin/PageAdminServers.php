@@ -143,7 +143,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        if ($boxId === "server_edit") {
+        if ($boxId === "edit") {
             $server = $this->serverManager->getServer($query["id"]);
         } else {
             $server = null;
@@ -209,13 +209,13 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ->join();
 
         switch ($boxId) {
-            case "server_add":
+            case "add":
                 return $this->template->render(
                     "admin/action_boxes/server_add",
                     compact("smsPlatforms", "services", "transferPlatforms")
                 );
 
-            case "server_edit":
+            case "edit":
                 return $this->template->render(
                     "admin/action_boxes/server_edit",
                     compact("server", "smsPlatforms", "services", "transferPlatforms")

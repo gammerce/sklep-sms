@@ -172,9 +172,10 @@ EOF
             throw new UnauthorizedException();
         }
 
-        $price = null;
-        if ($boxId == "price_edit") {
+        if ($boxId == "edit") {
             $price = $this->priceRepository->getOrFail($query["id"]);
+        } else {
+            $price = null;
         }
 
         $services = collect($this->serviceManager->getServices())
@@ -218,13 +219,13 @@ EOF
             ->join();
 
         switch ($boxId) {
-            case "price_add":
+            case "add":
                 return $this->template->render(
                     "admin/action_boxes/price_add",
                     compact("services", "servers", "smsPrices")
                 );
 
-            case "price_edit":
+            case "edit":
                 $directBillingPrice = $price->hasDirectBillingPrice()
                     ? $price->getDirectBillingPrice() / 100
                     : null;

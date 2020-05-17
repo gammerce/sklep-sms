@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageServersActionBoxAddTest extends HttpTestCase
+class PagePaymentPlatformsActionBoxAddTest extends HttpTestCase
 {
     /** @test */
     public function get_add_box()
@@ -12,13 +12,13 @@ class PageServersActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/add");
+        $response = $this->get("/api/admin/pages/payment_platforms/action_boxes/create");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj serwer", $json["template"]);
+        $this->assertContains("Dodaj platformę płatności", $json["template"]);
     }
 
     /** @test */
@@ -28,7 +28,7 @@ class PageServersActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/servers/action_boxes/add");
+        $response = $this->getJson("/api/admin/pages/payment_platforms/action_boxes/create");
 
         // then
         $this->assertSame(200, $response->getStatusCode());

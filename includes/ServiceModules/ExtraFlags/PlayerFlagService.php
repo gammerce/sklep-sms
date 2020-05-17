@@ -2,7 +2,10 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Managers\ServiceManager;
+use App\Repositories\UserServiceRepository;
+use App\Services\ExpiredUserServiceService;
 use App\Support\Database;
+use App\Support\Expression;
 
 class PlayerFlagService
 {
@@ -18,9 +21,17 @@ class PlayerFlagService
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
+    /** @var UserServiceRepository */
+    private $userServiceRepository;
+
+    /** @var ExpiredUserServiceService */
+    private $expiredUserServiceService;
+
     public function __construct(
         PlayerFlagRepository $playerFlagRepository,
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
+        UserServiceRepository $userServiceRepository,
+        ExpiredUserServiceService $expiredUserServiceService,
         Database $db,
         ServiceManager $serviceManager
     ) {
@@ -28,6 +39,87 @@ class PlayerFlagService
         $this->db = $db;
         $this->serviceManager = $serviceManager;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
+        $this->userServiceRepository = $userServiceRepository;
+        $this->expiredUserServiceService = $expiredUserServiceService;
+    }
+
+    /**
+     * @param string $serviceId
+     * @param number $serverId
+     * @param number|null $days
+     * @param string $type
+     * @param string $authData
+     * @param string|null $password
+     * @param number|null $userId
+     * @return void
+     */
+    public function addPlayerFlags(
+        $serviceId,
+        $serverId,
+        $days,
+        $type,
+        $authData,
+        $password,
+        $userId
+    ) {
+        $authData = trim($authData);
+        $password = strlen($password) ? $password : "";
+        $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
+
+        // Let's delete expired data. Just in case, to avoid risk of conflicts.
+        $this->expiredUserServiceService->deleteExpired();
+        $this->playerFlagRepository->deleteOldFlags();
+
+        // Let's add a user service. If there is service with the same data,
+        // let's prolong the existing one.
+        $statement = $this->db->statement(
+            <<<EOF
+SELECT * FROM `ss_user_service` AS us 
+INNER JOIN `$table` AS m ON m.us_id = us.id 
+WHERE us.`service_id` = ? AND m.`server_id` = ? AND m.`type` = ? AND m.`auth_data` = ?
+EOF
+        );
+        $statement->execute([$serviceId, $serverId, $type, $authData]);
+
+        if ($statement->rowCount()) {
+            $userService = $this->extraFlagUserServiceRepository->mapToModel($statement->fetch());
+
+            if ($days === null || $userService->isForever()) {
+                $expire = null;
+            } else {
+                $seconds = $days * 24 * 60 * 60;
+                $expire = new Expression("`expire` + {$seconds}");
+            }
+
+            $this->userServiceRepository->updateWithModule($table, $userService->getId(), [
+                "user_id" => $userId,
+                "password" => $password,
+                "expire" => $expire,
+            ]);
+        } else {
+            $seconds = $days === null ? null : $days * 24 * 60 * 60;
+            $this->extraFlagUserServiceRepository->create(
+                $serviceId,
+                $userId,
+                $seconds,
+                $serverId,
+                $type,
+                $authData,
+                $password
+            );
+        }
+
+        // Let's set identical passwords for all services of that player on that server
+        $this->db
+            ->statement(
+                "UPDATE `$table` " .
+                    "SET `password` = ? " .
+                    "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
+            )
+            ->execute([$password, $serverId, $type, $authData]);
+
+        // Let's recalculate players flags since we've added new user service
+        $this->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
     public function recalculatePlayerFlags($serverId, $type, $authData)

@@ -12,13 +12,13 @@ class PageGroupsActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get("/api/admin/pages/groups/action_boxes/group_add");
+        $response = $this->get("/api/admin/pages/groups/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj grupę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Dodaj grupę", $json["template"]);
     }
 
     /** @test */
@@ -28,11 +28,11 @@ class PageGroupsActionBoxAddTest extends HttpTestCase
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/groups/action_boxes/group_add");
+        $response = $this->getJson("/api/admin/pages/groups/action_boxes/add");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

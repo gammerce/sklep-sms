@@ -22,11 +22,11 @@ function showNotification(message) {
 }
 
 $(document).delegate("#server_button_add", "click", function() {
-    showActionBox(window.currentPage, "server_add");
+    showActionBox(window.currentPage, "add");
 });
 
 $(document).delegate(".table-structure .edit_row", "click", function() {
-    showActionBox(window.currentPage, "server_edit", {
+    showActionBox(window.currentPage, "edit", {
         id: $(this)
             .closest("tr")
             .find("td[headers=id]")

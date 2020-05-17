@@ -104,26 +104,26 @@ class TestCase extends BaseTestCase
     private function mockLicense()
     {
         $license = Mockery::mock(License::class);
-        $license->shouldReceive('validate')->andReturn();
-        $license->shouldReceive('getExpires')->andReturn('');
-        $license->shouldReceive('getExternalId')->andReturn(2);
-        $license->shouldReceive('isForever')->andReturn(true);
+        $license->shouldReceive("validate")->andReturn();
+        $license->shouldReceive("getExpires")->andReturn("");
+        $license->shouldReceive("getExternalId")->andReturn(2);
+        $license->shouldReceive("isForever")->andReturn(true);
         $license
-            ->shouldReceive('isValid')
+            ->shouldReceive("isValid")
             ->andReturn(true)
             ->byDefault();
         $license
-            ->shouldReceive('getLoadingException')
+            ->shouldReceive("getLoadingException")
             ->andReturn(null)
             ->byDefault();
-        $license->shouldReceive('getFooter')->andReturn('');
+        $license->shouldReceive("getFooter")->andReturn("");
         $this->app->instance(License::class, $license);
     }
 
     private function mockLocale()
     {
         $localeService = Mockery::mock(LocaleService::class);
-        $localeService->shouldReceive('getLocale')->andReturn('pl');
+        $localeService->shouldReceive("getLocale")->andReturn("pl");
         $this->app->instance(LocaleService::class, $localeService);
     }
 
@@ -139,6 +139,11 @@ class TestCase extends BaseTestCase
             $this->databaseHas($table, $data),
             "Database does not contain given data."
         );
+    }
+
+    protected function assertDatabaseDoesntHave($table, array $data)
+    {
+        $this->assertFalse($this->databaseHas($table, $data), "Database does contain given data.");
     }
 
     protected function assertSameEnum(Enum $expected, Enum $value)

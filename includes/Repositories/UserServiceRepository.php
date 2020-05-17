@@ -1,7 +1,6 @@
 <?php
 namespace App\Repositories;
 
-use App\ServiceModules\ServiceModule;
 use App\Support\Database;
 
 class UserServiceRepository
@@ -84,7 +83,7 @@ class UserServiceRepository
         return $statement->rowCount();
     }
 
-    public function updateWithModule(ServiceModule $serviceModule, $userServiceId, array $data)
+    public function updateWithModule($table, $userServiceId, array $data)
     {
         $baseData = collect($data)->filter(function ($value, $key) {
             return in_array($key, ["user_id", "service_id", "expire"], true);
@@ -100,7 +99,6 @@ class UserServiceRepository
             $params = map_to_params($moduleData);
             $values = map_to_values($moduleData);
 
-            $table = $serviceModule::USER_SERVICE_TABLE;
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
             $statement->execute(array_merge($values, [$userServiceId]));
             $affected = max($affected, $statement->rowCount());
