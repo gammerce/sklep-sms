@@ -83,6 +83,7 @@ class Auth
 
     public function logout(Request $request)
     {
+        $this->user = null;
         $request->getSession()->invalidate();
     }
 }
