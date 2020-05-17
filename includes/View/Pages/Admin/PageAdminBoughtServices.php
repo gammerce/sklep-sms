@@ -15,6 +15,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\PaymentRef;
 use App\View\Html\RawText;
 use App\View\Html\ServerRef;
@@ -117,14 +118,14 @@ class PageAdminBoughtServices extends PageAdmin
 
                 $userEntry = $transaction->getUserId()
                     ? new UserRef($transaction->getUserId(), $transaction->getUserName())
-                    : $this->lang->t("none");
+                    : new NoneText();
 
                 $serverEntry = $server
                     ? new ServerRef($server->getId(), $server->getName())
-                    : $this->lang->t("none");
+                    : new NoneText();
                 $serviceEntry = $service
                     ? new ServiceRef($service->getId(), $service->getName())
-                    : $this->lang->t("none");
+                    : new NoneText();
 
                 $quantity =
                     $transaction->getQuantity() != -1
@@ -162,6 +163,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell($serviceEntry))
                     ->addCell(new Cell($quantity))
                     ->addCell(new Cell($transaction->getAuthData()))
+                    ->addCell(new Cell($transaction->getPromoCode() ?: new NoneText()))
                     ->addCell(new Cell(new RawText($extraData)))
                     ->addCell(new Cell($transaction->getEmail()))
                     ->addCell(new Cell($transaction->getIp()))
@@ -181,6 +183,7 @@ class PageAdminBoughtServices extends PageAdmin
                     "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
                 )
             )
+            ->addHeadCell(new HeadCell($this->lang->t("promo_code")))
             ->addHeadCell(new HeadCell($this->lang->t("additional")))
             ->addHeadCell(new HeadCell($this->lang->t("email")))
             ->addHeadCell(new HeadCell($this->lang->t("ip")))

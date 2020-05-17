@@ -12,6 +12,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\PlatformCell;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
@@ -92,7 +93,7 @@ class PageAdminPaymentAdmin extends PageAdmin
             ->map(function (Transaction $transaction) use ($recordId) {
                 $adminEntry = $transaction->getAdminId()
                     ? new UserRef($transaction->getAdminId(), $transaction->getAdminName())
-                    : $this->lang->t("none");
+                    : new NoneText();
 
                 return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())

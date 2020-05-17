@@ -38,6 +38,9 @@ class Transaction
     /** @var string */
     private $email;
 
+    /** @var string|null */
+    private $promoCode;
+
     /** @var array|null */
     private $extraData;
 
@@ -86,6 +89,7 @@ class Transaction
         $quantity,
         $authData,
         $email,
+        $promoCode,
         $extraData,
         $ip,
         $platform,
@@ -110,6 +114,7 @@ class Transaction
         $this->quantity = $quantity;
         $this->authData = $authData;
         $this->email = $email;
+        $this->promoCode = $promoCode;
         $this->extraData = $extraData;
         $this->ip = $ip;
         $this->platform = $platform;
@@ -210,6 +215,14 @@ class Transaction
     public function getEmail()
     {
         return $this->email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getPromoCode()
+    {
+        return $this->promoCode;
     }
 
     /**
