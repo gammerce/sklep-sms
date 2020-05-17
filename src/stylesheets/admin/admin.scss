@@ -202,3 +202,8 @@ h4 {
 .dropdown-content {
     border: 1px solid darken($dropdown-content-background-color, 20%);
 }
+
+.text-muted {
+    font-size: 0.9rem;
+    color: lighten($scheme-main-ter, 15%);
+}
