@@ -32,8 +32,7 @@ class UrlGenerator
         $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, '/');
 
         if (!empty($query)) {
-            $queryString = http_build_query($query);
-            $url .= "?$queryString";
+            $url .= "?" . http_build_query($query);
         }
 
         return $url;

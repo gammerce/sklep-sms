@@ -28,20 +28,27 @@ class Structure extends DOMElement
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        // Tworzymy thead
+        $hasActions = collect($this->bodyRows)->some(function (BodyRow $bodyRow) {
+            return $bodyRow->hasAnyAction();
+        });
+
+        // THEAD
         $head = new DOMElement("thead");
 
         $headRow = new Row();
         foreach ($this->headCells as $cell) {
             $headRow->addContent($cell);
         }
-        $actions = new HeadCell($lang->t('actions'));
-        $actions->setStyle('width', '4%');
-        $headRow->addContent($actions);
+
+        if ($hasActions) {
+            $actions = new HeadCell($lang->t("actions"));
+            $actions->setStyle("width", "4%");
+            $headRow->addContent($actions);
+        }
 
         $head->addContent($headRow);
 
-        // Tworzymy tbody
+        // TBODY
         $body = new DOMElement("tbody");
         foreach ($this->bodyRows as $row) {
             $body->addContent($row);
@@ -49,10 +56,10 @@ class Structure extends DOMElement
 
         if ($body->isEmpty()) {
             $row = new Row();
-            $cell = new Cell($lang->t('no_data'));
-            $cell->setParam('colspan', '30');
+            $cell = new Cell($lang->t("no_data"));
+            $cell->setParam("colspan", "30");
             $cell->addClass("has-text-centered");
-            $cell->setStyle('padding', '40px');
+            $cell->setStyle("padding", "40px");
             $row->addContent($cell);
             $body->addContent($row);
         }
@@ -130,11 +137,11 @@ class Structure extends DOMElement
 
         if ($pagination) {
             $cell = new Cell($pagination);
-            $cell->setParam('colspan', '31');
+            $cell->setParam("colspan", "31");
 
             $row = new Row($cell);
 
-            $this->foot = (new DOMElement("tfoot", $row))->addClass('display_tfoot');
+            $this->foot = (new DOMElement("tfoot", $row))->addClass("display_tfoot");
         }
 
         return $this;
