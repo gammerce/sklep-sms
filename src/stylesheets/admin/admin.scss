@@ -207,3 +207,12 @@ h4 {
     font-size: 0.9rem;
     color: lighten($scheme-main-ter, 15%);
 }
+
+.info-title {
+    font-weight: 700;
+    margin-right: 0.5rem;
+
+    &:after {
+        content: ":";
+    }
+}

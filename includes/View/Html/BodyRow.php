@@ -95,6 +95,14 @@ class BodyRow extends Row
         return $this->dbId;
     }
 
+    /**
+     * @return bool
+     */
+    public function hasAnyAction()
+    {
+        return $this->deleteAction || $this->editAction || !empty($this->actions);
+    }
+
     private function renderActions()
     {
         /** @var Template $template */
