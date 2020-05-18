@@ -14,6 +14,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Settings;
+use UnexpectedValueException;
 
 class PurchaseService
 {
@@ -60,10 +61,15 @@ class PurchaseService
         $authData = trim(array_get($body, "auth_data"));
         $password = array_get($body, "password");
         $ip = array_get($body, "ip");
-        $method = new PaymentMethod(array_get($body, "method"));
         $smsCode = trim(array_get($body, "sms_code"));
         $priceId = as_int(array_get($body, "price_id"));
         $email = trim(array_get($body, "email"));
+
+        try {
+            $method = new PaymentMethod(array_get($body, "method"));
+        } catch (UnexpectedValueException $e) {
+            $method = null;
+        }
 
         $price = $this->priceRepository->get($priceId);
 

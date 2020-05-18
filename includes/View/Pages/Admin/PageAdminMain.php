@@ -4,6 +4,7 @@ namespace App\View\Pages\Admin;
 use App\Http\Services\IncomeService;
 use App\Managers\ServerManager;
 use App\Models\Server;
+use App\Payment\General\PaymentMethod;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
@@ -204,7 +205,7 @@ class PageAdminMain extends PageAdmin
             ->fetchColumn();
         $bricks[] = $this->createBrick(
             $this->lang->t("number_of_sent_smses", $quantity),
-            $this->url->to("/admin/payment_sms")
+            $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::SMS()])
         );
 
         // Transfer
@@ -217,7 +218,7 @@ class PageAdminMain extends PageAdmin
             ->fetchColumn();
         $bricks[] = $this->createBrick(
             $this->lang->t("number_of_transfers", $quantity),
-            $this->url->to("/admin/payment_transfer")
+            $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::TRANSFER()])
         );
 
         // Income

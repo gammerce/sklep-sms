@@ -29,7 +29,11 @@ class PaymentResource
             throw new EntityNotFoundException();
         }
 
-        $method = new PaymentMethod($request->request->get("method"));
+        try {
+            $method = new PaymentMethod($request->request->get("method"));
+        } catch (UnexpectedValueException $e) {
+            $method = null;
+        }
         $smsCode = trim($request->request->get("sms_code"));
 
         $purchase->setPayment([
