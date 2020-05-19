@@ -6,7 +6,6 @@ use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Models\Server;
 use App\Payment\Exceptions\PaymentProcessingException;
-use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
@@ -14,7 +13,6 @@ use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Settings;
-use UnexpectedValueException;
 
 class PurchaseService
 {
@@ -64,12 +62,7 @@ class PurchaseService
         $smsCode = trim(array_get($body, "sms_code"));
         $priceId = as_int(array_get($body, "price_id"));
         $email = trim(array_get($body, "email"));
-
-        try {
-            $method = new PaymentMethod(array_get($body, "method"));
-        } catch (UnexpectedValueException $e) {
-            $method = null;
-        }
+        $method = as_payment_method(array_get($body, "method"));
 
         $price = $this->priceRepository->get($priceId);
 

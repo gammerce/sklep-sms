@@ -2,7 +2,6 @@
 namespace App\View\Pages\Admin;
 
 use App\Models\Transaction;
-use App\Payment\General\PaymentMethod;
 use App\Repositories\TransactionRepository;
 use App\Services\PriceTextService;
 use App\Support\Database;
@@ -18,12 +17,12 @@ use App\View\Html\InfoTitle;
 use App\View\Html\Li;
 use App\View\Html\NoneText;
 use App\View\Html\PlatformCell;
+use App\View\Html\PriceCell;
 use App\View\Html\Structure;
 use App\View\Html\Ul;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class PageAdminPayments extends PageAdmin
 {
@@ -66,11 +65,7 @@ class PageAdminPayments extends PageAdmin
     {
         $recordId = $request->query->get("record");
         $search = $request->query->get("search");
-        try {
-            $method = new PaymentMethod($request->query->get("method"));
-        } catch (UnexpectedValueException $e) {
-            $method = null;
-        }
+        $method = as_payment_method($request->query->get("method"));
 
         $queryParticle = new QueryParticle();
 
@@ -139,14 +134,14 @@ class PageAdminPayments extends PageAdmin
 
                 return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())
-                    ->addCell(new Cell($transaction->getPaymentMethod()))
-                    ->addCell(new Cell($income))
-                    ->addCell(new Cell($cost))
+                    ->addCell(new Cell($this->lang->t((string) $transaction->getPaymentMethod())))
+                    ->addCell(new PriceCell($income))
+                    ->addCell(new PriceCell($cost))
                     ->addCell(new Cell($free))
                     ->addCell(new Cell($transaction->getPromoCode() ?: new NoneText()))
                     ->addCell(new Cell($transaction->getExternalPaymentId() ?: new NoneText()))
                     ->addCell(new DateTimeCell($transaction->getTimestamp()))
-                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell(new Cell($transaction->getIp(), "ip"))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
                     ->addCell(new Cell($this->createAdditionalField($transaction)))
                     ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
@@ -164,9 +159,9 @@ class PageAdminPayments extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("promo_code")))
             ->addHeadCell(new HeadCell($this->lang->t("external_id")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
-            ->addHeadCell(new HeadCell($this->lang->t("ip")))
+            ->addHeadCell(new HeadCell($this->lang->t("ip"), "ip"))
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
-            ->addHeadCell(new HeadCell($this->lang->t("additional_info")))
+            ->addHeadCell(new HeadCell($this->lang->t("additional")))
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
 
@@ -204,10 +199,7 @@ class PageAdminPayments extends PageAdmin
 
         if ($transaction->getSmsCode()) {
             $output->addContent(
-                new Li([
-                    new InfoTitle($this->lang->t("sms_return_code")),
-                    $transaction->getSmsCode(),
-                ])
+                new Li([new InfoTitle($this->lang->t("code")), $transaction->getSmsCode()])
             );
         }
 

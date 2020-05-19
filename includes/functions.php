@@ -3,6 +3,7 @@
 use App\Loggers\FileLogger;
 use App\Models\Server;
 use App\Models\User;
+use App\Payment\General\PaymentMethod;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
@@ -479,6 +480,19 @@ function as_string($value)
     }
 
     return (string) $value;
+}
+
+/**
+ * @param string $value
+ * @return PaymentMethod|null
+ */
+function as_payment_method($value)
+{
+    try {
+        return new PaymentMethod($value);
+    } catch (UnexpectedValueException $e) {
+        return null;
+    }
 }
 
 /**
