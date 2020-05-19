@@ -71,14 +71,23 @@ h4 {
 
 .table-structure {
     [headers="id"] {
-        width: 4%;
+        white-space: nowrap;
+        max-width: 200px;
     }
 
     [headers="platform"] {
-        width: 30%;
+        max-width: 250px;
+    }
+
+    [headers="ip"] {
+        max-width: 100px;
     }
 
     [headers="date"] {
+        white-space: nowrap;
+    }
+
+    [headers="price"] {
         white-space: nowrap;
     }
 

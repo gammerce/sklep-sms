@@ -154,11 +154,11 @@ class Transaction
     }
 
     /**
-     * @return PaymentMethod
+     * @return PaymentMethod|null
      */
     public function getPaymentMethod()
     {
-        return new PaymentMethod($this->paymentMethod);
+        return as_payment_method($this->paymentMethod);
     }
 
     /**

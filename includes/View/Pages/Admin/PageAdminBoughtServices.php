@@ -132,6 +132,10 @@ class PageAdminBoughtServices extends PageAdmin
                         ? $transaction->getQuantity() . " " . ($service ? $service->getTag() : "")
                         : $this->lang->t("forever");
 
+                $paymentEntry = $transaction->getPaymentMethod()
+                    ? new PaymentRef($transaction->getPaymentId(), $transaction->getPaymentMethod())
+                    : new NoneText();
+
                 $extraData = collect($transaction->getExtraData())
                     ->filter(function ($value) {
                         return strlen($value);
@@ -150,14 +154,7 @@ class PageAdminBoughtServices extends PageAdmin
 
                 return (new BodyRow())
                     ->setDbId($transaction->getId())
-                    ->addCell(
-                        new Cell(
-                            new PaymentRef(
-                                $transaction->getPaymentId(),
-                                $transaction->getPaymentMethod()
-                            )
-                        )
-                    )
+                    ->addCell(new Cell($paymentEntry))
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($serverEntry))
                     ->addCell(new Cell($serviceEntry))
@@ -167,7 +164,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell(new RawText($extraData)))
                     ->addCell(new Cell($transaction->getEmail()))
                     ->addCell(new Cell($transaction->getIp()))
-                    ->addCell(new DateTimeCell($transaction->getTimestamp(), "date"));
+                    ->addCell(new DateTimeCell($transaction->getTimestamp()));
             })
             ->all();
 

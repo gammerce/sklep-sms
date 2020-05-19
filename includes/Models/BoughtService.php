@@ -76,10 +76,10 @@ class BoughtService
         return $this->userId;
     }
 
-    /** @return PaymentMethod */
+    /** @return PaymentMethod|null */
     public function getMethod()
     {
-        return new PaymentMethod($this->method);
+        return as_payment_method($this->method);
     }
 
     /** @return string */
