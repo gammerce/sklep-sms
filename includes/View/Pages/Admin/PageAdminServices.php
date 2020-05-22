@@ -17,7 +17,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
-use App\View\Html\RawText;
+use App\View\Html\RawHtml;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -154,7 +154,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                     if ($serviceModule instanceof IServiceAdminManage) {
                         $extraFields = create_dom_element(
                             "tbody",
-                            new RawText($serviceModule->serviceAdminExtraFieldsGet()),
+                            new RawHtml($serviceModule->serviceAdminExtraFieldsGet()),
                             [
                                 "class" => "extra_fields",
                             ]

@@ -80,7 +80,7 @@ h4 {
     }
 
     [headers="ip"] {
-        max-width: 100px;
+        max-width: 130px;
     }
 
     [headers="date"] {
@@ -89,6 +89,11 @@ h4 {
 
     [headers="price"] {
         white-space: nowrap;
+    }
+
+    td {
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .table-container {

@@ -76,7 +76,7 @@ class DOMElement implements I_ToHtml
         if ($element instanceof I_ToHtml) {
             $this->contents[] = $element;
         } elseif ($element !== null) {
-            $this->contents[] = new SimpleText($element);
+            $this->contents[] = new PlainText($element);
         }
 
         return $this;

@@ -7,7 +7,7 @@ use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\Translation\TranslationManager;
-use App\View\Html\RawText;
+use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
@@ -28,7 +28,7 @@ class ServiceLongDescriptionController
             $safeLink = str_replace('"', '\"', $link);
             $output = create_dom_element(
                 "script",
-                new RawText("window.open(\"$safeLink\", \"\", \"height=720,width=1280\");"),
+                new RawHtml("window.open(\"$safeLink\", \"\", \"height=720,width=1280\");"),
                 [
                     "type" => "text/javascript",
                 ]

@@ -17,7 +17,8 @@ use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
 use App\View\Html\NoneText;
 use App\View\Html\PaymentRef;
-use App\View\Html\RawText;
+use App\View\Html\PlainTextCell;
+use App\View\Html\RawHtml;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -158,12 +159,12 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($serverEntry))
                     ->addCell(new Cell($serviceEntry))
-                    ->addCell(new Cell($quantity))
-                    ->addCell(new Cell($transaction->getAuthData()))
+                    ->addCell(new PlainTextCell($quantity))
+                    ->addCell(new PlainTextCell($transaction->getAuthData()))
                     ->addCell(new Cell($transaction->getPromoCode() ?: new NoneText()))
-                    ->addCell(new Cell(new RawText($extraData)))
-                    ->addCell(new Cell($transaction->getEmail()))
-                    ->addCell(new Cell($transaction->getIp()))
+                    ->addCell(new Cell(new RawHtml($extraData)))
+                    ->addCell(new PlainTextCell($transaction->getEmail()))
+                    ->addCell(new PlainTextCell($transaction->getIp(), "ip"))
                     ->addCell(new DateTimeCell($transaction->getTimestamp()));
             })
             ->all();
