@@ -134,6 +134,9 @@ class BodyRow extends Row
             return null;
         }
 
-        return new Cell(new RawHtml($template->render("admin/more_actions", compact("actions"))));
+        return new Cell(
+            new RawHtml($template->render("admin/more_actions", compact("actions"))),
+            "actions"
+        );
     }
 }
