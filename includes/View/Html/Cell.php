@@ -8,7 +8,7 @@ class Cell extends DOMElement
         parent::__construct("td", $content);
 
         if ($headers) {
-            $this->setParam('headers', $headers);
+            $this->setParam("headers", $headers);
         }
     }
 }

@@ -16,6 +16,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\InfoTitle;
 use App\View\Html\Li;
 use App\View\Html\NoneText;
+use App\View\Html\PlainTextCell;
 use App\View\Html\PlatformCell;
 use App\View\Html\PriceCell;
 use App\View\Html\Structure;
@@ -134,14 +135,16 @@ class PageAdminPayments extends PageAdmin
 
                 return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())
-                    ->addCell(new Cell($this->lang->t((string) $transaction->getPaymentMethod())))
-                    ->addCell(new PriceCell($income))
-                    ->addCell(new PriceCell($cost))
-                    ->addCell(new Cell($free))
+                    ->addCell(
+                        new PlainTextCell($this->lang->t((string) $transaction->getPaymentMethod()))
+                    )
+                    ->addCell(new PlainTextCell($income))
+                    ->addCell(new PlainTextCell($cost))
+                    ->addCell(new PlainTextCell($free))
                     ->addCell(new Cell($transaction->getPromoCode() ?: new NoneText()))
                     ->addCell(new Cell($transaction->getExternalPaymentId() ?: new NoneText()))
                     ->addCell(new DateTimeCell($transaction->getTimestamp()))
-                    ->addCell(new Cell($transaction->getIp(), "ip"))
+                    ->addCell(new PlainTextCell($transaction->getIp(), "ip"))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
                     ->addCell(new Cell($this->createAdditionalField($transaction)))
                     ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {

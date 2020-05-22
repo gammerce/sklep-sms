@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Html;
 
-class SimpleText implements I_ToHtml
+class PlainText implements I_ToHtml
 {
     /** @var  string */
     private $text;

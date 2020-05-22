@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Html;
 
-class RawText implements I_ToHtml
+class RawHtml implements I_ToHtml
 {
     /** @var string */
     private $text;

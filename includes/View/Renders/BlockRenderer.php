@@ -2,7 +2,7 @@
 namespace App\View\Renders;
 
 use App\Managers\BlockManager;
-use App\View\Html\RawText;
+use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockRenderer
@@ -25,7 +25,7 @@ class BlockRenderer
 
         $content = $block->getContent($request, $params);
 
-        return create_dom_element("div", new RawText($content), [
+        return create_dom_element("div", new RawHtml($content), [
             'id' => $block->getContentId(),
             'class' => $content !== null ? $block->getContentClass() : "",
         ]);
