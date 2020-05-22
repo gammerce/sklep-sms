@@ -126,6 +126,10 @@ body {
 
 // Utils
 
+.is-fullwidth {
+    width: 100%;
+}
+
 .button.is-show-more {
     color: $scheme-main-bis;
     background: transparent;
