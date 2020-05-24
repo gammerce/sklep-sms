@@ -1,19 +1,19 @@
 <tbody data-module="{{ $moduleId }}">
     <tr>
         <td>
-            <label for="web">WEB</label>
+            <label for="web" class="required">WEB</label>
             <div class="hint">{!! __('if_displayed_in_shop') }}</div>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
-                        <select id="web" name="web">
+                        <select id="web" name="web" class="is-uppercase" required>
                             <option value="0" {$webSelNo}>
-                                {$lang->strtoupper($lang->t('no'))}
+                                {$lang->t('no')}
                             </option>
                             <option value="1" {$webSelYes}>
-                                {$lang->strtoupper($lang->t('yes'))}
+                                {$lang->t('yes')}
                             </option>
                         </select>
                     </div>
@@ -23,13 +23,13 @@
     </tr>
     <tr>
         <td>
-            <label for="type">{$lang->strtoupper($lang->t('types'))}</label>
+            <label for="type" class="required">{$lang->t('types')}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-multiple is-small">
-                        <select id="type" name="type[]" multiple>
+                        <select id="type" name="type[]" multiple required>
                             {$types}
                         </select>
                     </div>
@@ -39,7 +39,7 @@
     </tr>
     <tr>
         <td>
-            <label for="flags">{$lang->strtoupper($lang->t('flags'))}</label>
+            <label for="flags" class="required">{$lang->t('flags')}</label>
         </td>
         <td>
             <div class="field">
@@ -51,6 +51,7 @@
                         value="{{ $flags }}"
                         maxlength="25"
                         class="input is-small"
+                        required
                     />
                 </div>
             </div>

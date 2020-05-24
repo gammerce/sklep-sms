@@ -50,11 +50,11 @@ class DataFieldService
     {
         switch ($name) {
             case "sms_text":
-                return $this->lang->strtoupper($this->lang->t("sms_code"));
+                return to_upper($this->lang->t("sms_code"));
             case "account_id":
-                return $this->lang->strtoupper($this->lang->t("account_id"));
+                return to_upper($this->lang->t("account_id"));
             default:
-                return $this->lang->strtoupper($name);
+                return to_upper($name);
         }
     }
 }

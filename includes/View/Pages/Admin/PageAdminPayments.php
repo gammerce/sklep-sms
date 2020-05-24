@@ -18,7 +18,6 @@ use App\View\Html\Li;
 use App\View\Html\NoneText;
 use App\View\Html\PlainTextCell;
 use App\View\Html\PlatformCell;
-use App\View\Html\PriceCell;
 use App\View\Html\Structure;
 use App\View\Html\Ul;
 use App\View\Html\UserRef;
@@ -130,8 +129,8 @@ class PageAdminPayments extends PageAdmin
                     new NoneText();
 
                 $free = $transaction->isFree()
-                    ? $this->lang->strtoupper($this->lang->t("yes"))
-                    : $this->lang->strtoupper($this->lang->t("no"));
+                    ? to_upper($this->lang->t("yes"))
+                    : to_upper($this->lang->t("no"));
 
                 return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())

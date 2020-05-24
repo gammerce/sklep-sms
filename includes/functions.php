@@ -794,3 +794,12 @@ function generate_id($length)
 {
     return substr(hash("sha256", generate_uuid4()), 0, $length);
 }
+
+/**
+ * @param $string
+ * @return string
+ */
+function to_upper($string)
+{
+    return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
+}

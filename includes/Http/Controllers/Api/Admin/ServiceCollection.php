@@ -50,7 +50,7 @@ class ServiceCollection
             $validated["tag"],
             $serviceModule->getModuleId(),
             $validated["groups"],
-            $validated["order"],
+            (int) $validated["order"],
             array_get($additionalData, "data", []),
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", "")

@@ -7,7 +7,7 @@
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="id">{$lang->t('id')}</label>
+                    <label for="id" class="required">{$lang->t('id')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="name">{$lang->strtoupper($lang->t('name'))}</label>
+                    <label for="name" class="required">{$lang->t('name')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -45,9 +45,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="short_description"
-                        >{$lang->strtoupper($lang->t('short_description'))}</label
-                    >
+                    <label for="short_description">{$lang->t('short_description')}</label>
                     <div class="hint">{$lang->t('description_on_server')}</div>
                 </td>
                 <td>
@@ -66,7 +64,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="description">{$lang->strtoupper($lang->t('description'))}</label>
+                    <label for="description">{$lang->t('description')}</label>
                     <div class="hint">{$lang->t('description_on_www')}</div>
                 </td>
                 <td>
@@ -84,7 +82,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="tag">{$lang->strtoupper($lang->t('tag'))}</label>
+                    <label for="tag">{$lang->t('tag')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -102,7 +100,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="order">{$lang->strtoupper($lang->t('order'))}</label>
+                    <label for="order">{$lang->t('order')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -114,7 +112,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="groups">{$lang->strtoupper($lang->t('groups'))}</label>
+                    <label for="groups">{$lang->t('groups')}</label>
                     <div class="hint">{$lang->t('groups_to_buy_service')}</div>
                 </td>
                 <td>
@@ -134,14 +132,14 @@
             </tr>
             <tr>
                 <td>
-                    <label for="module">{$lang->strtoupper($lang->t('module'))}</label>
+                    <label for="module" class="required">{$lang->t('module')}</label>
                     <div class="hint">{$lang->t('module_to_operate_service')}</div>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="module" name="module">
+                                <select id="module" name="module" required>
                                     <option value="">{$lang->t('choose_option')}</option>
                                     {$servicesModules}
                                 </select>
