@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>
-                <label for="username">{$lang->t('username')}</label>
+                <label for="username" class="required">{$lang->t('username')}</label>
             </td>
             <td>
                 <div class="field">
@@ -24,6 +24,7 @@
                             class="input is-small"
                             maxlength="64"
                             value="{{ $username }}"
+                            required
                         />
                     </div>
                 </div>
@@ -69,7 +70,7 @@
         </tr>
         <tr>
             <td>
-                <label for="email">{$lang->t('email')}</label>
+                <label for="email" class="required">{$lang->t('email')}</label>
             </td>
             <td>
                 <div class="field">
@@ -81,6 +82,7 @@
                             class="input is-small"
                             maxlength="128"
                             value="{{ $email }}"
+                            required
                         />
                     </div>
                 </div>
@@ -126,7 +128,7 @@
         </tr>
         <tr>
             <td>
-                <label for="wallet">{$lang->t('wallet')}</label>
+                <label for="wallet" class="required">{$lang->t('wallet')}</label>
             </td>
             <td style="vertical-align: middle">
                 <div class="field has-addons">
@@ -139,6 +141,7 @@
                             maxlength="32"
                             step="0.01"
                             value="{{ $wallet }}"
+                            required
                         />
                     </div>
                     <div class="control">

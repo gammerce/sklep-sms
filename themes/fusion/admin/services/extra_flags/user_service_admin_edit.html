@@ -27,13 +27,13 @@
         </tr>
         <tr>
             <td>
-                <label for="type">{$lang->t('type')}</label>
+                <label for="type" class="required">{$lang->t('type')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="type" name="type">
+                            <select id="type" name="type" required>
                                 {$types}
                             </select>
                         </div>
@@ -45,13 +45,14 @@
     <tbody id="type_nick" class="{{ $classes['nick'] }}">
         <tr>
             <td>
-                <label for="nick">Nick</label>
+                <label for="nick" class="required">Nick</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <input type="text" id="nick" name="auth_data" class="input is-small"
-                        maxlength="32" value="{{ $nick }}" autocomplete="off" {$disabled['nick']} />
+                        maxlength="32" value="{{ $nick }}" autocomplete="off" required
+                        {$disabled['nick']} />
                     </div>
                 </div>
             </td>
@@ -60,13 +61,14 @@
     <tbody id="type_ip" class="{{ $classes['ip'] }}">
         <tr>
             <td>
-                <label for="ip">IP</label>
+                <label for="ip" class="required">IP</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <input type="text" id="ip" name="auth_data" class="input is-small"
-                        maxlength="21" value="{{ $ip }}" autocomplete="off" {$disabled['ip']} />
+                        maxlength="21" value="{{ $ip }}" autocomplete="off" required
+                        {$disabled['ip']} />
                     </div>
                 </div>
             </td>
@@ -75,13 +77,14 @@
     <tbody id="type_sid" class="{{ $classes['sid'] }}">
         <tr>
             <td>
-                <label for="sid">SteamID</label>
+                <label for="sid" class="required">SteamID</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <input type="text" id="sid" name="auth_data" class="input is-small"
-                        maxlength="32" value="{{ $sid }}" autocomplete="off" {$disabled['sid']} />
+                        maxlength="32" value="{{ $sid }}" autocomplete="off" required
+                        {$disabled['sid']} />
                     </div>
                 </div>
             </td>
@@ -109,13 +112,13 @@
         </tr>
         <tr>
             <td>
-                <label for="service_id">{$lang->t('service')}</label>
+                <label for="service_id" class="required">{$lang->t('service')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="service_id" name="service_id">
+                            <select id="service_id" name="service_id" required>
                                 {$services}
                             </select>
                         </div>
@@ -125,13 +128,13 @@
         </tr>
         <tr>
             <td>
-                <label for="server_id">{$lang->t('server')}</label>
+                <label for="server_id" class="required">{$lang->t('server')}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
-                            <select id="server_id" name="server_id">
+                            <select id="server_id" name="server_id" required>
                                 {$servers}
                             </select>
                         </div>

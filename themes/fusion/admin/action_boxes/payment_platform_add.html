@@ -6,7 +6,7 @@
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="name">{$lang->t('name')}</label>
+                    <label for="name" class="required">{$lang->t('name')}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -26,13 +26,13 @@
 
             <tr>
                 <td>
-                    <label for="module">{$lang->t('payment_module')}</label>
+                    <label for="module" class="required">{$lang->t('payment_module')}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="module" name="module">
+                                <select id="module" name="module" required>
                                     <option value="">{$lang->t('choose_payment_module')}</option>
                                     {$paymentModules}
                                 </select>
