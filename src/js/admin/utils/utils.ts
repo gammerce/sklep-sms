@@ -50,7 +50,7 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
     $.ajax({
         type: "GET",
         url: buildUrl(`/api/admin/bricks/${bricks}`),
-        data: window.location.search,
+        data: window.location.search.replace(/^\?/, ""),
         complete() {
             loader.hide();
         },

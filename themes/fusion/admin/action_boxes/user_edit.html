@@ -12,7 +12,7 @@
         </tr>
         <tr>
             <td>
-                <label for="username">{$lang->strtoupper($lang->t('username'))}</label>
+                <label for="username" class="required">{$lang->t('username')}</label>
             </td>
             <td>
                 <div class="field">
@@ -24,6 +24,7 @@
                             class="input is-small"
                             maxlength="64"
                             value="{{ $username }}"
+                            required
                         />
                     </div>
                 </div>
@@ -31,7 +32,7 @@
         </tr>
         <tr>
             <td>
-                <label for="forename">{$lang->strtoupper($lang->t('firstname'))}</label>
+                <label for="forename">{$lang->t('firstname')}</label>
             </td>
             <td>
                 <div class="field">
@@ -50,7 +51,7 @@
         </tr>
         <tr>
             <td>
-                <label for="surname">{$lang->strtoupper($lang->t('surname'))}</label>
+                <label for="surname">{$lang->t('surname')}</label>
             </td>
             <td>
                 <div class="field">
@@ -69,7 +70,7 @@
         </tr>
         <tr>
             <td>
-                <label for="email">{$lang->strtoupper($lang->t('email'))}</label>
+                <label for="email" class="required">{$lang->t('email')}</label>
             </td>
             <td>
                 <div class="field">
@@ -81,6 +82,7 @@
                             class="input is-small"
                             maxlength="128"
                             value="{{ $email }}"
+                            required
                         />
                     </div>
                 </div>
@@ -88,7 +90,7 @@
         </tr>
         <tr>
             <td>
-                <label for="steam_id">{$lang->strtoupper($lang->t('sid'))}</label>
+                <label for="steam_id">{$lang->t('sid')}</label>
             </td>
             <td>
                 <div class="field">
@@ -110,7 +112,7 @@
         </tr>
         <tr>
             <td>
-                <label for="groups">{$lang->strtoupper($lang->t('groups'))}</label>
+                <label for="groups">{$lang->t('groups')}</label>
             </td>
             <td>
                 <div class="field">
@@ -126,7 +128,7 @@
         </tr>
         <tr>
             <td>
-                <label for="wallet">{$lang->strtoupper($lang->t('wallet'))}</label>
+                <label for="wallet" class="required">{$lang->t('wallet')}</label>
             </td>
             <td style="vertical-align: middle">
                 <div class="field has-addons">
@@ -139,6 +141,7 @@
                             maxlength="32"
                             step="0.01"
                             value="{{ $wallet }}"
+                            required
                         />
                     </div>
                     <div class="control">

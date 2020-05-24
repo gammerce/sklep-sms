@@ -32,8 +32,8 @@ class Translator
      * @var array
      */
     private $langList = [
-        'polish' => 'pl',
-        'english' => 'en',
+        "polish" => "pl",
+        "english" => "en",
     ];
 
     /**
@@ -43,7 +43,7 @@ class Translator
      */
     private $translations;
 
-    public function __construct($lang = 'polish')
+    public function __construct($lang = "polish")
     {
         $this->path = app()->make(Path::class);
         $this->fileSystem = app()->make(FileSystemContract::class);
@@ -110,17 +110,6 @@ class Translator
     public function t($key, ...$args)
     {
         return $this->sprintf($this->translate($key), ...$args);
-    }
-
-    /**
-     * Strtoupper function
-     *
-     * @param $string
-     * @return string
-     */
-    public function strtoupper($string)
-    {
-        return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
     }
 
     /**

@@ -6,13 +6,13 @@
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="service_id">{$lang->t('service')}</label>
+                    <label for="service_id" class="required">{$lang->t('service')}</label>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-small">
-                                <select id="service_id" name="service_id">
+                                <select id="service_id" name="service_id" required>
                                     <option value="">{$lang->t('choose_service')}</option>
                                     {$services}
                                 </select>

@@ -120,19 +120,15 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 continue;
             }
 
-            $values = create_dom_element("option", $this->lang->strtoupper($this->lang->t("no")), [
+            $values = create_dom_element("option", to_upper($this->lang->t("no")), [
                 "value" => 0,
                 "selected" => $group && $group->hasPermission($fieldName) ? "" : "selected",
             ]);
 
-            $values .= create_dom_element(
-                "option",
-                $this->lang->strtoupper($this->lang->t("yes")),
-                [
-                    "value" => 1,
-                    "selected" => $group && $group->hasPermission($fieldName) ? "selected" : "",
-                ]
-            );
+            $values .= create_dom_element("option", to_upper($this->lang->t("yes")), [
+                "value" => 1,
+                "selected" => $group && $group->hasPermission($fieldName) ? "selected" : "",
+            ]);
 
             $privileges .= $this->template->render("admin/tr_text_select", [
                 "name" => $fieldName,

@@ -938,7 +938,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             : $userService->getExpire();
         $type = as_int(array_get($data, "type", $userService->getType()));
         $authData = as_string(array_get($data, "auth_data", $userService->getAuthData()));
-        $serverId = as_int(array_get($data, "server", $userService->getServerId()));
+        $serverId = as_int(array_get($data, "server_id", $userService->getServerId()));
         $userId = as_int(array_get($data, "user_id"));
         $shouldUserBeUpdated = array_key_exists("user_id", $data);
 

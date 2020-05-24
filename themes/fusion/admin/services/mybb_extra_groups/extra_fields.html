@@ -1,19 +1,19 @@
 <tbody data-module="{{ $moduleId }}">
     <tr>
         <td>
-            <label for="web">WEB</label>
+            <label for="web" class="required">WEB</label>
             <div class="hint">{$lang->t('if_displayed_in_shop')}</div>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
-                        <select id="web" name="web">
+                        <select id="web" name="web" class="is-uppercase" required>
                             <option value="0" {$webSelNo}>
-                                {$lang->strtoupper($lang->t('no'))}
+                                {$lang->t('no')}
                             </option>
                             <option value="1" {$webSelYes}>
-                                {$lang->strtoupper($lang->t('yes'))}
+                                {$lang->t('yes')}
                             </option>
                         </select>
                     </div>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td>
-            <label for="mybb_groups">{$lang->strtoupper($lang->t('mybb_groups'))}</label>
+            <label for="mybb_groups" class="required">{$lang->t('mybb_groups')}</label>
             <div class="hint">{$lang->t('comma_separated')}</div>
         </td>
         <td>
@@ -35,6 +35,7 @@
                         name="mybb_groups"
                         class="input is-small"
                         value="{{ $mybbGroups }}"
+                        required
                     />
                 </div>
             </div>
@@ -48,7 +49,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_host">{$lang->t('db_host')}</label>
+            <label for="db_host" class="required">{$lang->t('db_host')}</label>
         </td>
         <td>
             <div class="field">
@@ -59,6 +60,7 @@
                         name="db_host"
                         class="input is-small"
                         value="{{ $dbHost }}"
+                        required
                     />
                 </div>
             </div>
@@ -66,7 +68,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_user">{$lang->t('db_user')}</label>
+            <label for="db_user" class="required">{$lang->t('db_user')}</label>
         </td>
         <td>
             <div class="field">
@@ -77,6 +79,7 @@
                         name="db_user"
                         class="input is-small"
                         value="{{ $dbUser }}"
+                        required
                     />
                 </div>
             </div>
@@ -102,7 +105,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_name">{$lang->t('db_name')}</label>
+            <label for="db_name" class="required">{$lang->t('db_name')}</label>
         </td>
         <td>
             <div class="field">
@@ -113,6 +116,7 @@
                         name="db_name"
                         class="input is-small"
                         value="{{ $dbName }}"
+                        required
                     />
                 </div>
             </div>

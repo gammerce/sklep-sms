@@ -191,11 +191,11 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                         $service->getId()
                     );
                 $options = [
-                    create_dom_element("option", $this->lang->strtoupper($this->lang->t("no")), [
+                    create_dom_element("option", to_upper($this->lang->t("no")), [
                         "value" => 0,
                         "selected" => $isLinked ? "" : "selected",
                     ]),
-                    create_dom_element("option", $this->lang->strtoupper($this->lang->t("yes")), [
+                    create_dom_element("option", to_upper($this->lang->t("yes")), [
                         "value" => 1,
                         "selected" => $isLinked ? "selected" : "",
                     ]),
