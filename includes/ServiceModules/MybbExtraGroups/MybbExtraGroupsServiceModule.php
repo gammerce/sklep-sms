@@ -25,7 +25,6 @@ use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchasePriceService;
-use App\Repositories\PriceRepository;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
@@ -40,7 +39,6 @@ use App\Support\Database;
 use App\Support\Expression;
 use App\Support\QueryParticle;
 use App\System\Auth;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\CurrentPage;
@@ -48,7 +46,9 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\Structure;
+use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use PDOException;
@@ -86,9 +86,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var Translator */
     private $lang;
 
-    /** @var Settings */
-    private $settings;
-
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
@@ -100,9 +97,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     /** @var PurchasePriceRenderer */
     private $purchasePriceRenderer;
-
-    /** @var PriceRepository */
-    private $priceRepository;
 
     /** @var UserServiceRepository */
     private $userServiceRepository;
@@ -124,10 +118,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->priceRepository = $this->app->make(PriceRepository::class);
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->settings = $this->app->make(Settings::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -278,15 +270,13 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {
+                $userEntry = $row["user_id"]
+                    ? new UserRef($row["user_id"], $row["username"])
+                    : new NoneText();
+
                 return (new BodyRow())
                     ->setDbId($row["id"])
-                    ->addCell(
-                        new Cell(
-                            $row["user_id"]
-                                ? $row["username"] . " ({$row["user_id"]})"
-                                : $this->lang->t("none")
-                        )
-                    )
+                    ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($row["service"]))
                     ->addCell(new Cell($row["mybb_uid"]))
                     ->addCell(new ExpirationCell($row["expire"]))

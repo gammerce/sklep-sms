@@ -64,6 +64,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -277,7 +278,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->map(function (array $row) {
                 $userEntry = $row["user_id"]
                     ? new UserRef($row["user_id"], $row["username"])
-                    : $this->lang->t("none");
+                    : new NoneText();
 
                 return (new BodyRow())
                     ->setDbId($row["id"])
