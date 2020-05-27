@@ -25,7 +25,7 @@ return [
 
     'engines_for_shop' => 'Wybierz silniki gier, na których chesz móc uruchomić sklep.',
     'price_per_option' =>
-        'Wybranie jednej opcji jest darmowe, każda kolejna to koszt 5&nbsp;PLN/msc',
+        'Wybranie jednej opcji jest darmowe, każda kolejna to koszt 6&nbsp;PLN/msc',
     'license_duration' => 'Podaj na jaki okres chcesz zakupić licencję.',
     'license_price' => 'Powyżej <b>364 dni</b>, płacisz tylko <u><b>80%</b></u> ceny',
     'give_email' => 'Podaj swój adres e-mail.',
