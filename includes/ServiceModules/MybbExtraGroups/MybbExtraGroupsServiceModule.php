@@ -51,6 +51,7 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
+use Exception;
 use PDOException;
 use UnexpectedValueException;
 
@@ -69,13 +70,20 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var array */
     private $groups = [];
 
+    /** @var string */
     private $dbHost;
+
+    /** @var string */
     private $dbUser;
+
+    /** @var string */
     private $dbPassword;
+
+    /** @var string */
     private $dbName;
 
     /** @var Database */
-    private $dbMybb = null;
+    private $dbMybb;
 
     /** @var Auth */
     private $auth;
@@ -124,6 +132,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
 
+        $this->readServiceData();
+    }
+
+    private function readServiceData()
+    {
         $serviceData = $this->service ? $this->service->getData() : null;
         if (isset($serviceData["mybb_groups"])) {
             $this->groups = explode(",", $serviceData["mybb_groups"]);
@@ -142,7 +155,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         return new MybbExtraGroupsUserService(
             as_int($data["id"]),
-            $data["service"],
+            as_string($data["service"]),
             as_int($data["user_id"]),
             as_int($data["expire"]),
             as_int($data["mybb_uid"])
@@ -151,7 +164,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function serviceAdminExtraFieldsGet()
     {
-        // WEB
         if ($this->showOnWeb()) {
             $webSelYes = "selected";
             $webSelNo = "";
@@ -160,32 +172,16 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $webSelNo = "selected";
         }
 
-        // We're in the edit mode
-        if ($this->service !== null) {
-            // DB
-            $dbPassword = strlen(array_get($this->service->getData(), "db_password"))
-                ? "********"
-                : "";
-            $dbHost = array_get($this->service->getData(), "db_host");
-            $dbUser = array_get($this->service->getData(), "db_user");
-            $dbName = array_get($this->service->getData(), "db_name");
-
-            // MyBB groups
-            $mybbGroups = array_get($this->service->getData(), "mybb_groups");
-        }
-
-        return $this->template->renderNoComments(
-            "admin/services/mybb_extra_groups/extra_fields",
-            compact(
-                "webSelNo",
-                "webSelYes",
-                "mybbGroups",
-                "dbHost",
-                "dbUser",
-                "dbPassword",
-                "dbName"
-            ) + ["moduleId" => $this->getModuleId()]
-        );
+        return $this->template->renderNoComments("admin/services/mybb_extra_groups/extra_fields", [
+            "moduleId" => $this->getModuleId(),
+            "webSelYes" => $webSelYes,
+            "webSelNo" => $webSelNo,
+            "mybbGroups" => implode(",", $this->groups),
+            "dbHost" => $this->dbHost,
+            "dbUser" => $this->dbUser,
+            "dbPassword" => strlen($this->dbPassword) ? "********" : "",
+            "dbName" => $this->dbName,
+        ]);
     }
 
     public function serviceAdminManagePre(Validator $validator)
@@ -210,17 +206,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             }
         }
 
-        $serviceData = $this->service ? $this->service->getData() : [];
         $extraData = [
             "mybb_groups" => implode(",", $mybbGroups),
             "web" => $body["web"],
             "db_host" => $body["db_host"],
             "db_user" => $body["db_user"],
-            "db_password" => array_get(
-                $body,
-                "db_password",
-                array_get($serviceData, "db_password")
-            ),
+            "db_password" => array_get($body, "db_password", $this->dbPassword),
             "db_name" => $body["db_name"],
         ];
 
@@ -317,8 +308,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
-        $this->connectMybb();
-
         $validator = new Validator(
             [
                 "email" => array_get($body, "email"),
@@ -328,7 +317,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             [
                 "email" => [new RequiredRule(), new EmailRule()],
                 "quantity" => [new IntegerRule()],
-                "username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                "username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb())],
             ]
         );
 
@@ -344,6 +333,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $quantity,
             $this->service
         );
+
         if ($quantityPrice) {
             $purchase->setPayment([
                 Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
@@ -379,7 +369,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "log_mybb_purchase_no_user",
                 json_encode($purchase->getPaymentList())
             );
-            die("Critical error occurred");
+            throw new Exception("User was deleted from MyBB db during the purchase.");
         }
 
         $this->userServiceAdd(
@@ -419,10 +409,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function purchaseInfo($action, Transaction $transaction)
     {
         $username = $transaction->getAuthData();
-        $quantity =
-            $transaction->getQuantity() != -1
-                ? $transaction->getQuantity() . " " . $this->service->getTag()
-                : $this->lang->t("forever");
+        $quantity = $transaction->isForever()
+            ? $this->lang->t("forever")
+            : $transaction->getQuantity() . " " . $this->service->getTag();
         $cost = $transaction->getCost()
             ? $this->priceTextService->getPriceText($transaction->getCost())
             : $this->lang->t("none");
@@ -464,6 +453,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     {
         try {
             $this->connectMybb();
+            return true;
         } catch (PDOException $e) {
             if ($who === "admin") {
                 throw new InvalidConfigException($e->getMessage());
@@ -471,8 +461,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
             return false;
         }
-
-        return true;
     }
 
     public function userServiceDeletePost(UserService $userService)
@@ -592,8 +580,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $user = $this->auth->user();
         $forever = (bool) array_get($body, "forever");
 
-        $this->connectMybb();
-
         $validator = new Validator(
             array_merge($body, [
                 "quantity" => as_int(array_get($body, "quantity")),
@@ -603,7 +589,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
                 "user_id" => [new UserExistsRule()],
-                "mybb_username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb)],
+                "mybb_username" => [new RequiredRule(), new MybbUserExistsRule($this->dbMybb())],
                 "email" => [new EmailRule()],
             ]
         );
@@ -640,9 +626,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        $this->connectMybb();
-
-        $statement = $this->dbMybb->statement(
+        $statement = $this->dbMybb()->statement(
             "SELECT `username` FROM `mybb_users` WHERE `uid` = ?"
         );
         $statement->execute([$userService->getMybbUid()]);
@@ -666,8 +650,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
      */
     private function findMybbUser($userId)
     {
-        $this->connectMybb();
-
         $queryParticle = new QueryParticle();
 
         if (is_integer($userId)) {
@@ -676,7 +658,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $queryParticle->add("`username` = ?", [$userId]);
         }
 
-        $statement = $this->dbMybb->statement(
+        $statement = $this->dbMybb()->statement(
             "SELECT `uid`, `additionalgroups`, `displaygroup`, `usergroup` " .
                 "FROM `mybb_users` " .
                 "WHERE {$queryParticle}"
@@ -746,7 +728,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             array_merge(array_keys($mybbUser->getShopGroup()), $mybbUser->getMybbAddGroups())
         );
 
-        $this->dbMybb
+        $this->dbMybb()
             ->statement(
                 "UPDATE `mybb_users` " .
                     "SET `additionalgroups` = ?, `displaygroup` = ? " .
@@ -757,6 +739,19 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 $mybbUser->getMybbDisplayGroup(),
                 $mybbUser->getUid(),
             ]);
+    }
+
+    /**
+     * @return Database
+     * @throws PDOException
+     */
+    private function dbMybb()
+    {
+        if ($this->dbMybb === null) {
+            $this->connectMybb();
+        }
+
+        return $this->dbMybb;
     }
 
     /**

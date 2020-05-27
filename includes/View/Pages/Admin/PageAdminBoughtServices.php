@@ -128,10 +128,9 @@ class PageAdminBoughtServices extends PageAdmin
                     ? new ServiceRef($service->getId(), $service->getName())
                     : new NoneText();
 
-                $quantity =
-                    $transaction->getQuantity() != -1
-                        ? $transaction->getQuantity() . " " . ($service ? $service->getTag() : "")
-                        : $this->lang->t("forever");
+                $quantity = $transaction->isForever()
+                    ? $this->lang->t("forever")
+                    : $transaction->getQuantity() . " " . ($service ? $service->getTag() : "");
 
                 $paymentEntry = $transaction->getPaymentMethod()
                     ? new PaymentRef($transaction->getPaymentId(), $transaction->getPaymentMethod())

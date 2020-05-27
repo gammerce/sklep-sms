@@ -202,6 +202,14 @@ class Transaction
     }
 
     /**
+     * @return bool
+     */
+    public function isForever()
+    {
+        return $this->quantity === -1;
+    }
+
+    /**
      * @return string
      */
     public function getAuthData()

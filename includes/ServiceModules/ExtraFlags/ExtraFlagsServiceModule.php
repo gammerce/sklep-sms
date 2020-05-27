@@ -510,10 +510,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $password = "";
         }
 
-        $quantity =
-            $transaction->getQuantity() != -1
-                ? "{$transaction->getQuantity()} {$this->service->getTag()}"
-                : $this->lang->t("forever");
+        $quantity = $transaction->isForever()
+            ? $this->lang->t("forever")
+            : "{$transaction->getQuantity()} {$this->service->getTag()}";
 
         $cost = $transaction->getCost()
             ? $this->priceTextService->getPriceText($transaction->getCost())
