@@ -8,7 +8,7 @@ use App\Requesting\Requester;
 
 class ExternalConfigProvider
 {
-    const CACHE_TTL = 120 * 60;
+    const CACHE_TTL = 20 * 60;
 
     /** @var array */
     private $config;
