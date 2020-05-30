@@ -15,6 +15,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
 use App\Services\UserServiceAccessService;
+use App\System\ExternalConfigProvider;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -32,7 +33,8 @@ class ServerConfigController
         PaymentModuleManager $paymentModuleManager,
         Settings $settings,
         ServerAuth $serverAuth,
-        UserServiceAccessService $userServiceAccessService
+        UserServiceAccessService $userServiceAccessService,
+        ExternalConfigProvider $externalConfigProvider
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
@@ -114,20 +116,23 @@ class ServerConfigController
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
-        $data = [
-            "id" => $server->getId(),
-            "license_token" => $settings->getLicenseToken(),
-            "sms_platform_id" => $smsPlatformId,
-            "sms_text" => $smsModule->getSmsCode(),
-            "steam_ids" => "$steamIds;",
-            "currency" => $settings->getCurrency(),
-            "contact" => $settings->getContact(),
-            "vat" => $settings->getVat(),
-            "sn" => $smsNumberItems->all(),
-            "se" => $serviceItems->all(),
-            "pr" => $priceItems->all(),
-            "pf" => $playerFlagItems->all(),
-        ];
+        $data = merge_recursive(
+            [
+                "id" => $server->getId(),
+                "license_token" => $settings->getLicenseToken(),
+                "sms_platform_id" => $smsPlatformId,
+                "sms_text" => $smsModule->getSmsCode(),
+                "steam_ids" => "$steamIds;",
+                "currency" => $settings->getCurrency(),
+                "contact" => $settings->getContact(),
+                "vat" => $settings->getVat(),
+                "sn" => $smsNumberItems->all(),
+                "se" => $serviceItems->all(),
+                "pr" => $priceItems->all(),
+                "pf" => $playerFlagItems->all(),
+            ],
+            (array) $externalConfigProvider->getConfig("server_config")
+        );
 
         return $acceptHeader->has("application/json")
             ? new ServerJsonResponse($data)

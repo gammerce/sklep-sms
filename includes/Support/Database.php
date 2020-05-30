@@ -14,7 +14,7 @@ class Database
     private $user;
 
     /** @var string */
-    private $pass;
+    private $password;
 
     /** @var string */
     private $name;
@@ -25,12 +25,12 @@ class Database
     /** @var PDO */
     private $pdo;
 
-    public function __construct($host, $port, $user, $pass, $name)
+    public function __construct($host, $port, $user, $password, $name)
     {
         $this->host = $host;
         $this->port = $port;
         $this->user = $user;
-        $this->pass = $pass;
+        $this->password = $password;
         $this->name = $name;
     }
 
@@ -59,7 +59,7 @@ class Database
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
-        $this->pdo = new PDO($dsn, $this->user, $this->pass, $options);
+        $this->pdo = new PDO($dsn, $this->user, $this->password, $options);
     }
 
     /**

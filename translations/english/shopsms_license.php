@@ -24,7 +24,7 @@ return [
 
     'engines_for_shop' => 'Choose game engines, on which you will be able to run shop.',
     'price_per_option' =>
-        'Choosing one option is free, each additional is the cost of 5&nbsp;PLN/month',
+        'Choosing one option is free, each additional is the cost of 6&nbsp;PLN/month',
     'license_duration' => 'Enter the period for which you want to buy the license.',
     'license_price' => 'Above <b>364 days</b>, you pay only <u><b>80%</b></u> of the price',
     'give_email' => 'Give your e-mail.',

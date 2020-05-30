@@ -803,3 +803,29 @@ function to_upper($string)
 {
     return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
 }
+
+/**
+ * @param mixed $a
+ * @param mixed $b
+ * @return mixed
+ */
+function merge_recursive($a, $b)
+{
+    if (!is_array($a) || !is_array($b)) {
+        return $b;
+    }
+
+    $output = $a;
+
+    foreach ($b as $key => $value) {
+        if (!isset($a[$key])) {
+            $output[$key] = $value;
+        } elseif (is_int($key)) {
+            $output[] = $value;
+        } else {
+            $output[$key] = merge_recursive($output[$key], $value);
+        }
+    }
+
+    return $output;
+}
