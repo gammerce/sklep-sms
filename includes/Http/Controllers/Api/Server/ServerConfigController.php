@@ -95,16 +95,14 @@ class ServerConfigController
         });
 
         $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-        $playerFlagItems = collect($playersFlags)
-            ->extend($externalConfigProvider->getConfig("players_flags"))
-            ->map(function (array $item) {
-                return [
-                    "t" => $item["type"],
-                    "a" => $item["auth_data"],
-                    "p" => $item["password"],
-                    "f" => $item["flags"],
-                ];
-            });
+        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
+            return [
+                "t" => $item["type"],
+                "a" => $item["auth_data"],
+                "p" => $item["password"],
+                "f" => $item["flags"],
+            ];
+        });
 
         $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
             return $smsNumber->getNumber();
@@ -118,20 +116,23 @@ class ServerConfigController
 
         $serverRepository->touch($server->getId(), $platform, $version);
 
-        $data = [
-            "id" => $server->getId(),
-            "license_token" => $settings->getLicenseToken(),
-            "sms_platform_id" => $smsPlatformId,
-            "sms_text" => $smsModule->getSmsCode(),
-            "steam_ids" => "$steamIds;",
-            "currency" => $settings->getCurrency(),
-            "contact" => $settings->getContact(),
-            "vat" => $settings->getVat(),
-            "sn" => $smsNumberItems->all(),
-            "se" => $serviceItems->all(),
-            "pr" => $priceItems->all(),
-            "pf" => $playerFlagItems->all(),
-        ];
+        $data = merge_recursive(
+            [
+                "id" => $server->getId(),
+                "license_token" => $settings->getLicenseToken(),
+                "sms_platform_id" => $smsPlatformId,
+                "sms_text" => $smsModule->getSmsCode(),
+                "steam_ids" => "$steamIds;",
+                "currency" => $settings->getCurrency(),
+                "contact" => $settings->getContact(),
+                "vat" => $settings->getVat(),
+                "sn" => $smsNumberItems->all(),
+                "se" => $serviceItems->all(),
+                "pr" => $priceItems->all(),
+                "pf" => $playerFlagItems->all(),
+            ],
+            (array) $externalConfigProvider->getConfig("server_config")
+        );
 
         return $acceptHeader->has("application/json")
             ? new ServerJsonResponse($data)
