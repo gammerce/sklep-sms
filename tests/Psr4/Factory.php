@@ -111,14 +111,15 @@ class Factory
     {
         $attributes = array_merge(
             [
-                "id" => strtolower($this->faker->word),
-                "name" => $this->faker->word,
-                "short_description" => $this->faker->word,
+                "data" => [],
                 "description" => $this->faker->sentence,
-                "tag" => $this->faker->word,
-                "module" => ExtraFlagsServiceModule::MODULE_ID,
                 "groups" => [],
+                "id" => strtolower($this->faker->word),
+                "module" => ExtraFlagsServiceModule::MODULE_ID,
+                "name" => $this->faker->word,
                 "order" => 1,
+                "short_description" => $this->faker->word,
+                "tag" => $this->faker->word,
             ],
             $attributes
         );
@@ -131,7 +132,8 @@ class Factory
             $attributes["tag"],
             $attributes["module"],
             $attributes["groups"],
-            $attributes["order"]
+            $attributes["order"],
+            $attributes["data"]
         );
     }
 

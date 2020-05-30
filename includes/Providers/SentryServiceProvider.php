@@ -15,8 +15,8 @@ class SentryServiceProvider
                 $configProvider = $app->make(ExternalConfigProvider::class);
 
                 return new Raven_Client([
-                    'dsn' => getenv('SENTRY_DSN') ?: $configProvider->sentryDSN(),
-                    'release' => $app->version(),
+                    "dsn" => getenv("SENTRY_DSN") ?: $configProvider->sentryDSN(),
+                    "release" => $app->version(),
                 ]);
             });
         }

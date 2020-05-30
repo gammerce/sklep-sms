@@ -130,7 +130,7 @@ class PageAdminMain extends PageAdmin
         $newestAmxXVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
-        if (version_compare($this->app->version(), $newestVersion) < 0) {
+        if ($newestVersion && version_compare($this->app->version(), $newestVersion) < 0) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
             $notes[] = $this->createNote(
@@ -249,22 +249,24 @@ class PageAdminMain extends PageAdmin
 
     /**
      * @param Server $server
-     * @param string $newestAmxxVersion
-     * @param string $newestSmVersion
+     * @param string|null $newestAmxxVersion
+     * @param string|null $newestSmVersion
      * @return bool
      */
     private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion)
     {
         if (
             $server->getType() === Server::TYPE_AMXMODX &&
-            $server->getVersion() !== $newestAmxxVersion
+            $newestAmxxVersion &&
+            version_compare($server->getVersion(), $newestAmxxVersion) < 0
         ) {
             return false;
         }
 
         if (
             $server->getType() === Server::TYPE_SOURCEMOD &&
-            $server->getVersion() !== $newestSmVersion
+            $newestSmVersion &&
+            version_compare($server->getVersion(), $newestSmVersion) < 0
         ) {
             return false;
         }

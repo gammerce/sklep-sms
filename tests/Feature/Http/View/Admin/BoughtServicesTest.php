@@ -11,7 +11,7 @@ class BoughtServicesTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->createRandomPurchase();
+        $this->createRandomExtraFlagsPurchase();
     }
 
     /** @test */

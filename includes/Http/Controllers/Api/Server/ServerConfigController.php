@@ -15,6 +15,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Services\ServerDataService;
 use App\Services\UserServiceAccessService;
+use App\System\ExternalConfigProvider;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
@@ -32,7 +33,8 @@ class ServerConfigController
         PaymentModuleManager $paymentModuleManager,
         Settings $settings,
         ServerAuth $serverAuth,
-        UserServiceAccessService $userServiceAccessService
+        UserServiceAccessService $userServiceAccessService,
+        ExternalConfigProvider $externalConfigProvider
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
@@ -93,14 +95,16 @@ class ServerConfigController
         });
 
         $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
-            return [
-                "t" => $item["type"],
-                "a" => $item["auth_data"],
-                "p" => $item["password"],
-                "f" => $item["flags"],
-            ];
-        });
+        $playerFlagItems = collect($playersFlags)
+            ->extend($externalConfigProvider->getConfig("players_flags"))
+            ->map(function (array $item) {
+                return [
+                    "t" => $item["type"],
+                    "a" => $item["auth_data"],
+                    "p" => $item["password"],
+                    "f" => $item["flags"],
+                ];
+            });
 
         $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
             return $smsNumber->getNumber();
