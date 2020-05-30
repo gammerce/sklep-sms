@@ -12,7 +12,7 @@ class PurchaseResourceTest extends HttpTestCase
     public function show_purchase_information()
     {
         // given
-        $boughtService = $this->createRandomPurchase();
+        $boughtService = $this->createRandomExtraFlagsPurchase();
 
         // when
         $response = $this->get("/api/purchases/{$boughtService->getId()}");

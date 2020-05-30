@@ -16,7 +16,7 @@ class HomepageTest extends HttpTestCase
     protected function setUp()
     {
         parent::setUp();
-        $this->createRandomPurchase();
+        $this->createRandomExtraFlagsPurchase();
 
         $this->requesterMock
             ->shouldReceive("get")

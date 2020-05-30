@@ -86,7 +86,7 @@ EOF
             as_string($data["auth_data"]),
             as_string($data["email"]),
             as_string($data["promo_code"]),
-            json_decode($data["extra_data"])
+            json_decode($data["extra_data"], true)
         );
     }
 }

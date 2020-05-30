@@ -15,10 +15,9 @@ class ServiceTakeOverControllerTest extends HttpTestCase
     public function takes_over_a_service()
     {
         // given
-        $boughtService = $this->createRandomPurchase([
+        $boughtService = $this->createRandomExtraFlagsPurchase([
             "auth_data" => "STEAM_1:0:22309350",
             "password" => null,
-            "method" => PaymentMethod::SMS(),
             "sms_code" => "testcode",
             "type" => ExtraFlagType::TYPE_SID,
         ]);
@@ -51,10 +50,9 @@ class ServiceTakeOverControllerTest extends HttpTestCase
     public function cannot_take_over_if_invalid_data()
     {
         // given
-        $boughtService = $this->createRandomPurchase([
+        $boughtService = $this->createRandomExtraFlagsPurchase([
             "auth_data" => "STEAM_1:0:22309350",
             "password" => null,
-            "method" => PaymentMethod::SMS(),
             "sms_code" => "testcod1",
             "type" => ExtraFlagType::TYPE_SID,
         ]);

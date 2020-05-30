@@ -21,11 +21,9 @@ trait RequesterConcern
 
     private function mockExternalConfig()
     {
-        $this->requesterMock->shouldReceive("get")
+        $this->requesterMock
+            ->shouldReceive("get")
             ->withArgs(["https://license.sklep-sms.pl/config", Mockery::any(), Mockery::any()])
-            ->andReturn(new RequestingResponse(
-                200,
-                json_encode([])
-            ));
+            ->andReturn(new RequestingResponse(200, json_encode([])));
     }
 }

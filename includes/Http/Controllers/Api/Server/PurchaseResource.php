@@ -24,7 +24,7 @@ class PurchaseResource
         ServerResponseFactory $responseFactory,
         ServerAuth $serverAuth
     ) {
-        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+        $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $lang = $translationManager->user();
         $server = $serverAuth->server();
 
@@ -37,12 +37,12 @@ class PurchaseResource
             );
         }
 
-        $serviceModule = $serviceModuleManager->get($request->request->get('service_id'));
+        $serviceModule = $serviceModuleManager->get($request->request->get("service_id"));
         if (!($serviceModule instanceof IServicePurchaseExternal)) {
             return $responseFactory->create(
                 $acceptHeader,
                 "bad_module",
-                $lang->t('bad_module'),
+                $lang->t("bad_module"),
                 false
             );
         }
@@ -55,14 +55,14 @@ class PurchaseResource
             );
         } catch (ValidationException $e) {
             $warnings = $this->formatWarnings($e->warnings);
-            $firstWarning = $this->getFirstWarning($e->warnings) ?: $lang->t('form_wrong_filled');
+            $firstWarning = $this->getFirstWarning($e->warnings) ?: $lang->t("form_wrong_filled");
 
             return $responseFactory->create(
                 $acceptHeader,
                 "warnings",
                 $firstWarning,
                 false,
-                compact('warnings')
+                compact("warnings")
             );
         } catch (PaymentProcessingException $e) {
             return $responseFactory->create($acceptHeader, $e->getCode(), $e->getMessage(), false);

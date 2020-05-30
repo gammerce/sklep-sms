@@ -41,7 +41,7 @@ class PurchaseService
     }
 
     /**
-     * @param ServiceModule $serviceModule
+     * @param IServicePurchaseExternal|ServiceModule $serviceModule
      * @param Server $server
      * @param array $body
      * @return PaymentResult
@@ -49,12 +49,8 @@ class PurchaseService
      * @throws PaymentProcessingException
      * @throws InvalidServiceModuleException
      */
-    public function purchase(ServiceModule $serviceModule, Server $server, array $body)
+    public function purchase(IServicePurchaseExternal $serviceModule, Server $server, array $body)
     {
-        if (!($serviceModule instanceof IServicePurchaseExternal)) {
-            throw new InvalidServiceModuleException();
-        }
-
         $type = as_int(array_get($body, "type"));
         $authData = trim(array_get($body, "auth_data"));
         $password = array_get($body, "password");

@@ -22,8 +22,11 @@ class ExternalConfigProvider
     /** @var Settings */
     private $settings;
 
-    public function __construct(Requester $requester, CachingRequester $cachingRequester, Settings $settings)
-    {
+    public function __construct(
+        Requester $requester,
+        CachingRequester $cachingRequester,
+        Settings $settings
+    ) {
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;
         $this->settings = $settings;
