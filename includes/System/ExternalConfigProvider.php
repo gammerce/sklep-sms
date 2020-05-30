@@ -11,19 +11,27 @@ class ExternalConfigProvider
     const CACHE_TTL = 120 * 60;
 
     /** @var array */
-    protected $config;
+    private $config;
 
     /** @var Requester */
-    protected $requester;
+    private $requester;
 
     /** @var CachingRequester */
-    protected $cachingRequester;
+    private $cachingRequester;
 
-    public function __construct(Requester $requester, CachingRequester $cachingRequester)
+    /** @var Settings */
+    private $settings;
+
+    public function __construct(Requester $requester, CachingRequester $cachingRequester, Settings $settings)
     {
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;
-        $this->config = [];
+        $this->settings = $settings;
+    }
+
+    public function sentryDSN()
+    {
+        return $this->getConfig("sentry_dsn");
     }
 
     public function getConfig($key)
@@ -35,12 +43,7 @@ class ExternalConfigProvider
         return array_get($this->config, $key);
     }
 
-    public function sentryDSN()
-    {
-        return $this->getConfig('sentry_dsn');
-    }
-
-    protected function loadConfig()
+    private function loadConfig()
     {
         try {
             return $this->cachingRequester->load(
@@ -55,14 +58,20 @@ class ExternalConfigProvider
         }
     }
 
-    protected function request()
+    private function request()
     {
-        $response = $this->requester->get('https://license.sklep-sms.pl/config');
+        $response = $this->requester->get(
+            "https://license.sklep-sms.pl/config",
+            [],
+            [
+                "Authorization" => $this->settings->getLicenseToken(),
+            ]
+        );
         return $response ? $response->json() : null;
     }
 
-    protected function fetched()
+    private function fetched()
     {
-        return !empty($this->config);
+        return $this->config !== null;
     }
 }
