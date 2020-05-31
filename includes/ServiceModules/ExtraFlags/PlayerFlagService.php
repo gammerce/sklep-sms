@@ -65,6 +65,7 @@ class PlayerFlagService
         $authData = trim($authData);
         $password = strlen($password) ? $password : "";
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
+        $seconds = multiply($days, 24 * 60 * 60);
 
         // Let's delete expired data. Just in case, to avoid risk of conflicts.
         $this->expiredUserServiceService->deleteExpired();
@@ -84,10 +85,9 @@ EOF
         if ($statement->rowCount()) {
             $userService = $this->extraFlagUserServiceRepository->mapToModel($statement->fetch());
 
-            if ($days === null || $userService->isForever()) {
+            if ($seconds === null || $userService->isForever()) {
                 $expire = null;
             } else {
-                $seconds = $days * 24 * 60 * 60;
                 $expire = new Expression("`expire` + {$seconds}");
             }
 
@@ -97,7 +97,6 @@ EOF
                 "expire" => $expire,
             ]);
         } else {
-            $seconds = $days === null ? null : $days * 24 * 60 * 60;
             $this->extraFlagUserServiceRepository->create(
                 $serviceId,
                 $userId,
@@ -122,6 +121,13 @@ EOF
         $this->recalculatePlayerFlags($serverId, $type, $authData);
     }
 
+    /**
+     * Refresh players flags
+     *
+     * @param int $serverId
+     * @param int $type
+     * @param string $authData
+     */
     public function recalculatePlayerFlags($serverId, $type, $authData)
     {
         // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu

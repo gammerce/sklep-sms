@@ -16,9 +16,21 @@ use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
+use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
+use App\ServiceModules\MybbExtraGroups\MybbUserService;
+use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
+
+function resolve($value)
+{
+    if (is_callable($value)) {
+        return call_user_func($value);
+    }
+
+    return $value;
+}
 
 class Factory
 {
@@ -55,6 +67,9 @@ class Factory
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
+    /** @var MybbUserServiceRepository */
+    private $mybbUserServiceRepository;
+
     /** @var GroupRepository */
     private $groupRepository;
 
@@ -69,6 +84,7 @@ class Factory
         LogRepository $logRepository,
         SmsCodeRepository $smsCodeRepository,
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
+        MybbUserServiceRepository $mybbUserServiceRepository,
         GroupRepository $groupRepository
     ) {
         $this->faker = FakerFactory::create();
@@ -82,6 +98,7 @@ class Factory
         $this->logRepository = $logRepository;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
+        $this->mybbUserServiceRepository = $mybbUserServiceRepository;
         $this->groupRepository = $groupRepository;
     }
 
@@ -109,7 +126,7 @@ class Factory
 
     public function service(array $attributes = [])
     {
-        $attributes = array_merge(
+        $attributes = merge_recursive(
             [
                 "data" => [],
                 "description" => $this->faker->sentence,
@@ -134,6 +151,25 @@ class Factory
             $attributes["groups"],
             $attributes["order"],
             $attributes["data"]
+        );
+    }
+
+    public function mybbService(array $attributes = [])
+    {
+        return $this->service(
+            merge_recursive(
+                [
+                    "module" => MybbExtraGroupsServiceModule::MODULE_ID,
+                    "data" => [
+                        "db_host" => "host",
+                        "db_name" => "name",
+                        "db_password" => "password",
+                        "db_user" => "user",
+                        "mybb_groups" => "1",
+                    ],
+                ],
+                $attributes
+            )
         );
     }
 
@@ -318,6 +354,32 @@ class Factory
             $attributes["type"],
             $attributes["auth_data"],
             $attributes["password"]
+        );
+    }
+
+    /**
+     * @param array $attributes
+     * @return MybbUserService
+     */
+    public function mybbUserService(array $attributes = [])
+    {
+        $attributes = array_merge(
+            [
+                "service_id" => function () {
+                    return $this->mybbService()->getId();
+                },
+                "user_id" => null,
+                "seconds" => 35 * 24 * 60 * 60,
+                "mybb_uid" => 1,
+            ],
+            $attributes
+        );
+
+        return $this->mybbUserServiceRepository->create(
+            resolve($attributes["service_id"]),
+            $attributes["user_id"],
+            $attributes["seconds"],
+            $attributes["mybb_uid"]
         );
     }
 
