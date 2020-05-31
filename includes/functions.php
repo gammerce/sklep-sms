@@ -665,40 +665,27 @@ function log_info($text, array $data = [])
     $logger->info($text, $data);
 }
 
-function map_to_where_params($data)
-{
-    return collect($data)
-        ->map(function ($value, $key) {
-            if ($value instanceof Expression) {
-                return "$key = $value";
-            }
-
-            return "$key = ?";
-        })
-        ->join(" AND ");
-}
-
+/**
+ * @param mixed $data
+ * @return array
+ */
 function map_to_params($data)
 {
-    return collect($data)
-        ->map(function ($value, $key) {
-            if ($value instanceof Expression) {
-                return "`$key` = $value";
-            }
+    $params = [];
+    $values = [];
 
-            return "`$key` = ?";
-        })
-        ->join(", ");
-}
+    foreach (to_array($data) as $key => $value) {
+        if ($value === null) {
+            $params[] = "$key IS NULL";
+        } elseif ($value instanceof Expression) {
+            $params[] = "$key = $value";
+        } else {
+            $params[] = "$key = ?";
+            $values[] = $value;
+        }
+    }
 
-function map_to_values($data)
-{
-    return collect($data)
-        ->filter(function ($value) {
-            return !($value instanceof Expression);
-        })
-        ->values()
-        ->all();
+    return [$params, $values];
 }
 
 function to_array($items)
@@ -828,4 +815,18 @@ function merge_recursive($a, $b)
     }
 
     return $output;
+}
+
+/**
+ * @param int|float $a
+ * @param int|float $b
+ * @return float|int|null
+ */
+function multiply($a, $b)
+{
+    if ($a === null || $b === null) {
+        return null;
+    }
+
+    return $a * $b;
 }

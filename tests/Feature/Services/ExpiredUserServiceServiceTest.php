@@ -2,12 +2,15 @@
 namespace Tests\Feature\Services;
 
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
+use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
 use App\Services\ExpiredUserServiceService;
-use App\Support\Database;
+use Tests\Psr4\Concerns\MybbRepositoryConcern;
 use Tests\Psr4\TestCases\TestCase;
 
 class ExpiredUserServiceServiceTest extends TestCase
 {
+    use MybbRepositoryConcern;
+
     /** @var ExpiredUserServiceService */
     private $expiredUserServiceService;
 
@@ -18,17 +21,14 @@ class ExpiredUserServiceServiceTest extends TestCase
     }
 
     /** @test */
-    public function deletes_everything_related_to_service()
+    public function deletes_extra_flags()
     {
         // given
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
-
         /** @var ExtraFlagUserServiceRepository $extraFlagUserServiceRepository */
         $extraFlagUserServiceRepository = $this->app->make(ExtraFlagUserServiceRepository::class);
 
         $server = $this->factory->server();
-        $extraFlagsUserService = $this->factory->extraFlagUserService([
+        $userService = $this->factory->extraFlagUserService([
             "seconds" => -10,
             "server_id" => $server->getId(),
         ]);
@@ -37,14 +37,43 @@ class ExpiredUserServiceServiceTest extends TestCase
         $this->expiredUserServiceService->deleteExpired();
 
         // then
-        $this->assertNull($extraFlagUserServiceRepository->get($extraFlagsUserService->getId()));
-        $statement = $db->statement("SELECT * FROM `ss_user_service` WHERE `id` = ?");
-        $statement->execute([$extraFlagsUserService->getId()]);
-        $this->assertSame(0, $statement->rowCount());
-        $statement = $db->statement(
-            "SELECT * FROM `ss_user_service_extra_flags` WHERE `us_id` = ?"
-        );
-        $statement->execute([$extraFlagsUserService->getId()]);
-        $this->assertSame(0, $statement->rowCount());
+        $this->assertNull($extraFlagUserServiceRepository->get($userService->getId()));
+        $this->assertDatabaseDoesntHave("ss_user_service", [
+            "id" => $userService->getId(),
+        ]);
+        $this->assertDatabaseDoesntHave("ss_user_service_extra_flags", [
+            "us_id" => $userService->getId(),
+        ]);
+    }
+
+    /** @test */
+    public function deletes_mybb_extra_groups()
+    {
+        // given
+        $this->mockMybbRepository();
+
+        $this->mybbRepositoryMock
+            ->shouldReceive("updateGroups")
+            ->withArgs([1, [1, 2], 1])
+            ->andReturnNull();
+
+        /** @var MybbUserServiceRepository $mybbUserServiceRepository */
+        $mybbUserServiceRepository = $this->app->make(MybbUserServiceRepository::class);
+
+        $userService = $this->factory->mybbUserService([
+            "seconds" => -10,
+        ]);
+
+        // when
+        $this->expiredUserServiceService->deleteExpired();
+
+        // then
+        $this->assertNull($mybbUserServiceRepository->get($userService->getId()));
+        $this->assertDatabaseDoesntHave("ss_user_service", [
+            "id" => $userService->getId(),
+        ]);
+        $this->assertDatabaseDoesntHave("ss_user_service_mybb_extra_groups", [
+            "us_id" => $userService->getId(),
+        ]);
     }
 }

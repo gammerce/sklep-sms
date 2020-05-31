@@ -160,10 +160,10 @@ class TestCase extends BaseTestCase
         /** @var Database $db */
         $db = $this->app->make(Database::class);
 
-        $params = map_to_where_params($data);
-        $values = map_to_values($data);
+        list($params, $values) = map_to_params($data);
+        $params = implode(" AND ", $params);
 
-        $statement = $db->statement("SELECT `id` FROM `{$table}` WHERE {$params}");
+        $statement = $db->statement("SELECT 1 FROM `{$table}` WHERE {$params}");
         $statement->execute($values);
 
         return $statement->rowCount() > 0;

@@ -787,7 +787,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        // Odśwież flagi gracza
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
             $userService->getType(),
