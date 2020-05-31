@@ -74,8 +74,8 @@ class UserServiceRepository
             $data["expire"] = -1;
         }
 
-        $params = map_to_params($data);
-        $values = map_to_values($data);
+        list($params, $values) = map_to_params($data);
+        $params = implode(", ", $params);
 
         $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
         $statement->execute(array_merge($values, [$id]));
@@ -96,8 +96,8 @@ class UserServiceRepository
         $affected = $this->update($userServiceId, $baseData->all());
 
         if ($moduleData->isPopulated()) {
-            $params = map_to_params($moduleData);
-            $values = map_to_values($moduleData);
+            list($params, $values) = map_to_params($moduleData);
+            $params = implode(", ", $params);
 
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
             $statement->execute(array_merge($values, [$userServiceId]));

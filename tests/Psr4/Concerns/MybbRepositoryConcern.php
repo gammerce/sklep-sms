@@ -24,10 +24,18 @@ trait MybbRepositoryConcern
             "displaygroup" => 1,
             "usergroup" => 1,
         ]);
+        $this->mybbRepositoryMock->shouldReceive("getUserByUid")->andReturn([
+            "uid" => 1,
+            "additionalgroups" => "1,2",
+            "displaygroup" => 1,
+            "usergroup" => 1,
+        ]);
 
         $mybbRepositoryFactory
             ->shouldReceive("create")
             ->withArgs(["host", 3306, "user", "password", "name"])
             ->andReturn($this->mybbRepositoryMock);
+
+        $mybbRepositoryFactory->shouldReceive("create")->andReturnNull();
     }
 }

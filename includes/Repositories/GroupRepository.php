@@ -65,8 +65,8 @@ class GroupRepository
     {
         $data["name"] = $name;
 
-        $params = map_to_params($data);
-        $values = map_to_values($data);
+        list($params, $values) = map_to_params($data);
+        $params = implode(", ", $params);
 
         $statement = $this->db->statement("INSERT INTO `ss_groups` SET {$params}");
         $statement->execute($values);
@@ -80,8 +80,8 @@ class GroupRepository
             return false;
         }
 
-        $params = map_to_params($data);
-        $values = map_to_values($data);
+        list($params, $values) = map_to_params($data);
+        $params = implode(", ", $params);
 
         $statement = $this->db->statement("UPDATE `ss_groups` SET {$params} WHERE `id` = ?");
         $statement->execute(array_merge($values, [$id]));
@@ -100,6 +100,6 @@ class GroupRepository
             })
             ->all();
 
-        return new Group(as_int($data['id']), $data['name'], $permissions);
+        return new Group(as_int($data['id']), as_string($data['name']), $permissions);
     }
 }

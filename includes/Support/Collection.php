@@ -143,6 +143,27 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
     }
 
     /**
+     * @return Collection
+     */
+    public function unique()
+    {
+        return new Collection(array_unique($this->items));
+    }
+
+    /**
+     * @param callable|null $callback
+     * @return Collection
+     */
+    public function sort(callable $callback = null)
+    {
+        $items = $this->items;
+
+        $callback ? uasort($items, $callback) : asort($items);
+
+        return new Collection($items);
+    }
+
+    /**
      * @param mixed $key
      * @return bool
      */

@@ -55,12 +55,12 @@ class ExpiredUserServiceService
                 continue;
             }
 
-            if ($serviceModule->userServiceDelete($userService, 'task')) {
+            if ($serviceModule->userServiceDelete($userService, "task")) {
                 $deleteIds[] = $userService->getId();
                 $usersServices[] = $userService;
 
                 $this->logger->log(
-                    'log_expired_service_delete',
+                    "log_expired_service_delete",
                     "id: {$userService->getId()}, service_id: {$userService->getServiceId()}, user_id: {$userService->getUserId()}"
                 );
             }

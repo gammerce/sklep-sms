@@ -43,18 +43,18 @@ class MybbUser
             return;
         }
 
-        $group['expire'] = (int) $group['expire'];
+        $group["expire"] = as_int($group["expire"]);
         $this->shopGroups[(int) $groupId] = $group;
 
         // To nie jest grupa przydzielona przez MyBB, wiec usunmy ja stamtąd
-        if (!$group['was_before']) {
+        if (!$group["was_before"]) {
             $this->removeMybbAddGroup($groupId);
         }
     }
 
     /**
      * @param int $groupId
-     * @param int $seconds
+     * @param int|null $seconds
      */
     public function prolongShopGroup($groupId, $seconds)
     {
@@ -64,12 +64,16 @@ class MybbUser
 
         if (!isset($this->shopGroups[$groupId])) {
             $this->setShopGroup($groupId, [
-                'expire' => 0,
-                'was_before' => in_array($groupId, $this->getMybbAddGroups()),
+                "expire" => 0,
+                "was_before" => in_array($groupId, $this->getMybbAddGroups()),
             ]);
         }
 
-        $this->shopGroups[$groupId]['expire'] += (int) $seconds;
+        if ($seconds === null) {
+            $this->shopGroups[$groupId]["expire"] = null;
+        } else {
+            $this->shopGroups[$groupId]["expire"] += (int) $seconds;
+        }
     }
 
     /**
@@ -120,7 +124,7 @@ class MybbUser
 
             if (
                 isset($this->shopGroups[(int) $groupId]) &&
-                !$this->shopGroups[(int) $groupId]['was_before']
+                !$this->shopGroups[(int) $groupId]["was_before"]
             ) {
                 continue;
             }

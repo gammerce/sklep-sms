@@ -21,8 +21,8 @@ class PlayerFlagRepository
      */
     public function findOrFail(array $data)
     {
-        $params = map_to_where_params($data);
-        $values = map_to_values($data);
+        list($params, $values) = map_to_params($data);
+        $params = implode(" AND ", $params);
 
         $statement = $this->db->statement(
             "SELECT * FROM `ss_players_flags` " . ($params ? "WHERE {$params}" : "")
