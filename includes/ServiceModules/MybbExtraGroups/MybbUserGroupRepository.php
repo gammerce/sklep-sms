@@ -27,14 +27,14 @@ class MybbUserGroupRepository
                 $queryParticle->add("(?, ?, NULL, ?)", [
                     $row["uid"],
                     $row["gid"],
-                    $row["was_before"],
+                    $row["was_before"] ? 1 : 0,
                 ]);
             } else {
                 $queryParticle->add("(?, ?, FROM_UNIXTIME(UNIX_TIMESTAMP() + ?), ?)", [
                     $row["uid"],
                     $row["gid"],
                     $row["expire"],
-                    $row["was_before"],
+                    $row["was_before"] ? 1 : 0,
                 ]);
             }
         }
