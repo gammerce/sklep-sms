@@ -18,13 +18,13 @@ class ServiceCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/services", [
-            'id' => 'example',
-            'name' => 'My Example',
-            'module' => ExtraFlagsServiceModule::MODULE_ID,
-            'order' => 1,
-            'web' => 1,
-            'flags' => 'a',
-            'type' => [ExtraFlagType::TYPE_NICK],
+            "id" => "example",
+            "name" => "My Example",
+            "module" => ExtraFlagsServiceModule::MODULE_ID,
+            "order" => 1,
+            "web" => 1,
+            "flags" => "a",
+            "type" => [ExtraFlagType::TYPE_NICK],
         ]);
 
         // then
@@ -42,18 +42,18 @@ class ServiceCollectionTest extends HttpTestCase
         // given
         $this->actingAs($this->factory->admin());
 
-        $id = 'example';
-        $this->factory->service(compact('id'));
+        $id = "example";
+        $this->factory->extraFlagService(compact("id"));
 
         // when
         $response = $this->post("/api/admin/services", [
-            'id' => $id,
-            'name' => 'My Example',
-            'module' => ExtraFlagsServiceModule::MODULE_ID,
-            'order' => 1,
-            'web' => 1,
-            'flags' => 'a',
-            'type' => [ExtraFlagType::TYPE_NICK],
+            "id" => $id,
+            "name" => "My Example",
+            "module" => ExtraFlagsServiceModule::MODULE_ID,
+            "order" => 1,
+            "web" => 1,
+            "flags" => "a",
+            "type" => [ExtraFlagType::TYPE_NICK],
         ]);
 
         // then
