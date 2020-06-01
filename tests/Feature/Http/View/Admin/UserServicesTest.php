@@ -20,6 +20,7 @@ class UserServicesTest extends HttpTestCase
         // when
         $response = $this->get("/admin/user_service", [
             "subpage" => ExtraFlagsServiceModule::MODULE_ID,
+            "search" => "e",
         ]);
 
         // then
@@ -41,6 +42,7 @@ class UserServicesTest extends HttpTestCase
         // when
         $response = $this->get("/admin/user_service", [
             "subpage" => MybbExtraGroupsServiceModule::MODULE_ID,
+            "search" => "e",
         ]);
 
         // then
