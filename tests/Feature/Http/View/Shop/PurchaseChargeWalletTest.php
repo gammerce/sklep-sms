@@ -10,8 +10,7 @@ class PurchaseChargeWalletTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->user();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->user());
 
         // when
         $response = $this->get("/page/purchase", ["service" => "charge_wallet"]);
