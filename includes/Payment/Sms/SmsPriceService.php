@@ -103,6 +103,7 @@ class SmsPriceService
     public function getPrice(Purchase $purchase)
     {
         $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+
         if ($price === null) {
             return null;
         }

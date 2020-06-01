@@ -3,13 +3,13 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PageServicesActionBoxEditTest extends HttpTestCase
+class PageServicesActionBoxEditMybbTest extends HttpTestCase
 {
     /** @test */
     public function get_edit_box()
     {
         // give
-        $service = $this->factory->service();
+        $service = $this->factory->mybbService();
         $this->actingAs($this->factory->admin());
 
         // when
@@ -20,17 +20,16 @@ class PageServicesActionBoxEditTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Edytuj usługę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Edytuj usługę", $json["template"]);
     }
 
     /** @test */
     public function requires_permission_to_get()
     {
         // give
-        $service = $this->factory->service();
-        $admin = $this->factory->user();
-        $this->actingAs($admin);
+        $service = $this->factory->mybbService();
+        $this->actingAs($this->factory->user());
 
         // when
         $response = $this->getJson("/api/admin/pages/services/action_boxes/edit", [
@@ -40,6 +39,6 @@ class PageServicesActionBoxEditTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

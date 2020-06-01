@@ -124,6 +124,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             case "edit":
                 $userService = $this->userServiceService->findOne($query["id"]);
 
+                $serviceModuleId = 0;
                 $formData = $this->lang->t("service_edit_unable");
 
                 if ($userService) {

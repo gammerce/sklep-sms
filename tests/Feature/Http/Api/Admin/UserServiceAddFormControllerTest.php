@@ -7,7 +7,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 class UserServiceAddFormControllerTest extends HttpTestCase
 {
     /** @test */
-    public function get_add_form()
+    public function get_extra_flags_add_form()
     {
         // given
         $this->actingAs($this->factory->admin());
@@ -18,5 +18,22 @@ class UserServiceAddFormControllerTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("data-module=\"extra_flags\"", $response->getContent());
+    }
+
+    /** @test */
+    public function get_mybb_add_form()
+    {
+        // given
+        $service = $this->factory->mybbService();
+        $this->actingAs($this->factory->admin());
+
+        // when
+        $response = $this->getJson(
+            "/api/admin/services/{$service->getId()}/user_services/add_form"
+        );
+
+        // then
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertContains("data-module=\"mybb_extra_groups\"", $response->getContent());
     }
 }

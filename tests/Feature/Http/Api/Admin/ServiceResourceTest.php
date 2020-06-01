@@ -16,7 +16,7 @@ class ServiceResourceTest extends HttpTestCase
     {
         parent::setUp();
 
-        $this->service = $this->factory->service();
+        $this->service = $this->factory->extraFlagService();
     }
 
     /** @test */
@@ -29,13 +29,13 @@ class ServiceResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/admin/services/{$this->service->getId()}", [
-            'new_id' => 'example',
-            'name' => 'My Example',
-            'module' => ExtraFlagsServiceModule::MODULE_ID,
-            'order' => 1,
-            'web' => 1,
-            'flags' => 'a',
-            'type' => [ExtraFlagType::TYPE_NICK],
+            "new_id" => "example",
+            "name" => "My Example",
+            "module" => ExtraFlagsServiceModule::MODULE_ID,
+            "order" => 1,
+            "web" => 1,
+            "flags" => "a",
+            "type" => [ExtraFlagType::TYPE_NICK],
         ]);
 
         // then
@@ -53,18 +53,18 @@ class ServiceResourceTest extends HttpTestCase
         // given
         $this->actingAs($this->factory->admin());
 
-        $id = 'example';
-        $this->factory->service(compact('id'));
+        $id = "example";
+        $this->factory->extraFlagService(compact("id"));
 
         // when
         $response = $this->put("/api/admin/services/{$this->service->getId()}", [
-            'new_id' => $id,
-            'name' => 'My Example',
-            'module' => ExtraFlagsServiceModule::MODULE_ID,
-            'order' => 1,
-            'web' => 1,
-            'flags' => 'a',
-            'type' => [ExtraFlagType::TYPE_NICK],
+            "new_id" => $id,
+            "name" => "My Example",
+            "module" => ExtraFlagsServiceModule::MODULE_ID,
+            "order" => 1,
+            "web" => 1,
+            "flags" => "a",
+            "type" => [ExtraFlagType::TYPE_NICK],
         ]);
 
         // then

@@ -21,7 +21,7 @@ class PromoCodeRepositoryTest extends TestCase
     public function createsPromoCode()
     {
         // given
-        $service = $this->factory->service();
+        $service = $this->factory->extraFlagService();
         $server = $this->factory->server();
         $user = $this->factory->user();
 

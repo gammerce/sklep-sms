@@ -132,7 +132,7 @@ class Factory
                 "description" => $this->faker->sentence,
                 "groups" => [],
                 "id" => strtolower($this->faker->word),
-                "module" => ExtraFlagsServiceModule::MODULE_ID,
+                "module" => null,
                 "name" => $this->faker->word,
                 "order" => 1,
                 "short_description" => $this->faker->word,
@@ -151,6 +151,18 @@ class Factory
             $attributes["groups"],
             $attributes["order"],
             $attributes["data"]
+        );
+    }
+
+    public function extraFlagService(array $attributes = [])
+    {
+        return $this->service(
+            merge_recursive(
+                [
+                    "module" => ExtraFlagsServiceModule::MODULE_ID,
+                ],
+                $attributes
+            )
         );
     }
 
