@@ -218,7 +218,9 @@ class LicenseServiceModule extends ServiceModule implements
             "serviceId" => $this->service->getId(),
             "serviceTag" => $this->service->getTag(),
             "days" => array_get($query, "days"),
-            "engineMonthlyPrice" => $this::COST_ENGINE_PER_DAY * 30,
+            "engineMonthlyPrice" => $this->priceTextService->getPriceText(
+                $this::COST_ENGINE_PER_DAY * 30
+            ),
         ]);
     }
 
@@ -456,7 +458,9 @@ class LicenseServiceModule extends ServiceModule implements
             "identifier" => $userService->getIdentifier(),
             "serviceId" => $this->service->getId(),
             "serviceName" => $this->service->getName(),
-            "engineMonthlyPrice" => $this::COST_ENGINE_PER_DAY * 30,
+            "engineMonthlyPrice" => $this->priceTextService->getPriceText(
+                $this::COST_ENGINE_PER_DAY * 30
+            ),
         ]);
     }
 
@@ -550,7 +554,9 @@ class LicenseServiceModule extends ServiceModule implements
         $userServiceId = $row["us_id"];
 
         $user = $this->auth->user();
-        $statement = $this->db->statement("UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?");
+        $statement = $this->db->statement(
+            "UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?"
+        );
         $statement->execute([$user->getId(), $userServiceId]);
 
         if (!$statement->rowCount()) {

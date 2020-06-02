@@ -24,8 +24,7 @@ return [
     'service_not_taken_over' => 'Nie udało się przejąć usługi. Może już jesteś jej właścicelem?',
 
     'engines_for_shop' => 'Wybierz silniki gier, na których chesz móc uruchomić sklep.',
-    'price_per_option' =>
-        'Wybranie jednej opcji jest darmowe, każda kolejna to koszt {1}&nbsp;PLN/msc',
+    'price_per_option' => 'Wybranie jednej opcji jest darmowe, każda kolejna to koszt {1}/msc',
     'license_duration' => 'Podaj na jaki okres chcesz zakupić licencję.',
     'license_price' => 'Powyżej <b>364 dni</b>, płacisz tylko <u><b>80%</b></u> ceny',
     'give_email' => 'Podaj swój adres e-mail.',
