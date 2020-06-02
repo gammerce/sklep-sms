@@ -218,6 +218,7 @@ class LicenseServiceModule extends ServiceModule implements
             "serviceId" => $this->service->getId(),
             "serviceTag" => $this->service->getTag(),
             "days" => array_get($query, "days"),
+            "engineMonthlyPrice" => $this::COST_ENGINE_PER_DAY * 30,
         ]);
     }
 
@@ -455,6 +456,7 @@ class LicenseServiceModule extends ServiceModule implements
             "identifier" => $userService->getIdentifier(),
             "serviceId" => $this->service->getId(),
             "serviceName" => $this->service->getName(),
+            "engineMonthlyPrice" => $this::COST_ENGINE_PER_DAY * 30,
         ]);
     }
 
