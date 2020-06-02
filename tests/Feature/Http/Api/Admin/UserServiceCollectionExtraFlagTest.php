@@ -8,7 +8,7 @@ use App\Services\UserServiceService;
 use Tests\Psr4\Concerns\PlayerFlagConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class UserServiceCollectionTest extends HttpTestCase
+class UserServiceCollectionExtraFlagTest extends HttpTestCase
 {
     use PlayerFlagConcern;
 
@@ -36,28 +36,26 @@ class UserServiceCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/services/vip/user_services", [
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'michal',
-            'password' => 'abc123',
-            'quantity' => '5',
-            'server_id' => $server->getId(),
+            "type" => ExtraFlagType::TYPE_NICK,
+            "auth_data" => "michal",
+            "password" => "abc123",
+            "quantity" => "5",
+            "server_id" => $server->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame("ok", $json['return_id']);
-
-        $userServices = $this->userServiceService->find();
-        $this->assertCount(1, $userServices);
+        $this->assertSame("ok", $json["return_id"]);
 
         /** @var ExtraFlagUserService $userService */
-        $userService = $userServices[0];
-        $this->assertSame('vip', $userService->getServiceId());
+        $userService = $this->userServiceService->findOne();
+        $this->assertNotNull($userService);
+        $this->assertSame("vip", $userService->getServiceId());
         $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());
-        $this->assertSame('michal', $userService->getAuthData());
-        $this->assertSame('abc123', $userService->getPassword());
+        $this->assertSame("michal", $userService->getAuthData());
+        $this->assertSame("abc123", $userService->getPassword());
         $this->assertSame($server->getId(), $userService->getServerId());
         $this->assertSame(0, $userService->getUserId());
         $this->assertAlmostSameTimestamp($expectedExpire, $userService->getExpire());
@@ -65,11 +63,11 @@ class UserServiceCollectionTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'michal'
+            "michal"
         );
         $this->assertNotNull($playerFlag);
         $this->assertSame(ExtraFlagType::TYPE_NICK, $playerFlag->getType());
-        $this->assertSame('michal', $playerFlag->getAuthData());
+        $this->assertSame("michal", $playerFlag->getAuthData());
         $this->assertSame("abc123", $playerFlag->getPassword());
         $this->assertSame($server->getId(), $playerFlag->getServerId());
         $this->assertPlayerFlags(["t" => $expectedExpire], $playerFlag->getFlags());
@@ -84,18 +82,18 @@ class UserServiceCollectionTest extends HttpTestCase
 
         // when
         $this->post("/api/admin/services/vip/user_services", [
-            'type' => (string) ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'michal',
-            'password' => 'abc123',
-            'quantity' => '5',
-            'server_id' => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
+            "auth_data" => "michal",
+            "password" => "abc123",
+            "quantity" => "5",
+            "server_id" => $server->getId(),
         ]);
         $this->post("/api/admin/services/vip/user_services", [
-            'type' => (string) ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'michal',
-            'password' => 'abc123',
-            'quantity' => '6',
-            'server_id' => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
+            "auth_data" => "michal",
+            "password" => "abc123",
+            "quantity" => "6",
+            "server_id" => $server->getId(),
         ]);
 
         // then
@@ -106,7 +104,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'michal'
+            "michal"
         );
         $this->assertNotNull($playerFlag);
         $this->assertPlayerFlags(["t" => $expectedExpire], $playerFlag->getFlags());
@@ -120,18 +118,18 @@ class UserServiceCollectionTest extends HttpTestCase
 
         // when
         $this->post("/api/admin/services/vip/user_services", [
-            'type' => (string) ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'michass',
-            'password' => 'abc123',
-            'quantity' => '5',
-            'server_id' => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
+            "auth_data" => "michass",
+            "password" => "abc123",
+            "quantity" => "5",
+            "server_id" => $server->getId(),
         ]);
         $this->post("/api/admin/services/vip/user_services", [
-            'type' => (string) ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'michaśś',
-            'password' => 'abc123',
-            'quantity' => '6',
-            'server_id' => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
+            "auth_data" => "michaśś",
+            "password" => "abc123",
+            "quantity" => "6",
+            "server_id" => $server->getId(),
         ]);
 
         // then
@@ -143,7 +141,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'michass'
+            "michass"
         );
         $this->assertNotNull($playerFlag);
         $this->assertSame("michass", $playerFlag->getAuthData());
@@ -151,7 +149,7 @@ class UserServiceCollectionTest extends HttpTestCase
         $playerFlagSpecialChars = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_NICK,
-            'michaśś'
+            "michaśś"
         );
         $this->assertNotNull($playerFlagSpecialChars);
         $this->assertSame("michaśś", $playerFlagSpecialChars->getAuthData());

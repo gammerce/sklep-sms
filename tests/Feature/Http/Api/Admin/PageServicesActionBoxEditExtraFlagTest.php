@@ -3,34 +3,38 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class PagePromoCodesActionBoxAddTest extends HttpTestCase
+class PageServicesActionBoxEditExtraFlagTest extends HttpTestCase
 {
     /** @test */
-    public function get_add_box()
+    public function get_edit_box()
     {
         // give
+        $service = $this->factory->extraFlagService();
         $this->actingAs($this->factory->admin());
-        $this->factory->extraFlagService();
-        $this->factory->server();
 
         // when
-        $response = $this->get("/api/admin/pages/promo_codes/action_boxes/add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/edit", [
+            "id" => $service->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj kod promocyjny", $json["template"]);
+        $this->assertContains("Edytuj usługę", $json["template"]);
     }
 
     /** @test */
     public function requires_permission_to_get()
     {
         // give
+        $service = $this->factory->extraFlagService();
         $this->actingAs($this->factory->user());
 
         // when
-        $response = $this->getJson("/api/admin/pages/promo_codes/action_boxes/add");
+        $response = $this->getJson("/api/admin/pages/services/action_boxes/edit", [
+            "id" => $service->getId(),
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());

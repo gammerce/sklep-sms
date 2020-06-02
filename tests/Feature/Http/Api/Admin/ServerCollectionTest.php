@@ -25,19 +25,19 @@ class ServerCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $smsPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => MicroSMS::MODULE_ID,
+            "module" => MicroSMS::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => TPay::MODULE_ID,
+            "module" => TPay::MODULE_ID,
         ]);
 
         // when
         $response = $this->post("/api/admin/servers", [
-            'name' => 'My Example',
-            'ip' => '192.168.0.1',
-            'port' => '27015',
-            'sms_platform' => $smsPaymentPlatform->getId(),
-            'transfer_platform' => $transferPaymentPlatform->getId(),
+            "name" => "My Example",
+            "ip" => "192.168.0.1",
+            "port" => "27015",
+            "sms_platform" => $smsPaymentPlatform->getId(),
+            "transfer_platform" => $transferPaymentPlatform->getId(),
         ]);
 
         // then
@@ -62,7 +62,7 @@ class ServerCollectionTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => MicroSMS::MODULE_ID,
+            "module" => MicroSMS::MODULE_ID,
         ]);
 
         $settingsRepository->update([
@@ -71,10 +71,10 @@ class ServerCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/servers", [
-            'name' => 'My Example',
-            'ip' => '192.168.0.1',
-            'port' => '27015',
-            'sms_platform' => null,
+            "name" => "My Example",
+            "ip" => "192.168.0.1",
+            "port" => "27015",
+            "sms_platform" => null,
         ]);
 
         // then
@@ -93,10 +93,10 @@ class ServerCollectionTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/servers", [
-            'name' => 'My Example',
-            'ip' => '192.168.0.1',
-            'port' => '27015',
-            'sms_platform' => null,
+            "name" => "My Example",
+            "ip" => "192.168.0.1",
+            "port" => "27015",
+            "sms_platform" => null,
         ]);
 
         // then

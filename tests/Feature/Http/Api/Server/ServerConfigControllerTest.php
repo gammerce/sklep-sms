@@ -265,7 +265,7 @@ class ServerConfigControllerTest extends HttpTestCase
             "server_id" => $this->server->getId(),
             "service_id" => "vip",
         ]);
-        $this->factory->service([
+        $this->factory->extraFlagService([
             "id" => "test",
             "groups" => [1],
         ]);

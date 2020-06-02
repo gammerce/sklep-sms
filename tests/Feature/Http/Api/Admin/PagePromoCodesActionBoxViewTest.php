@@ -12,7 +12,7 @@ class PagePromoCodesActionBoxViewTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
         $promoCode = $this->factory->promoCode([
             "server_id" => $this->factory->server()->getId(),
-            "service_id" => $this->factory->service()->getId(),
+            "service_id" => $this->factory->extraFlagService()->getId(),
             "user_id" => $this->factory->user()->getId(),
         ]);
 
