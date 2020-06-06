@@ -10,7 +10,6 @@ use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class BlockContent extends Block
 {
@@ -47,7 +46,7 @@ class BlockContent extends Block
         }
 
         if (!$page) {
-            throw new UnexpectedValueException("No page provided");
+            return null;
         }
 
         if ($page instanceof IBeLoggedMust && !is_logged()) {

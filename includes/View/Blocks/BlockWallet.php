@@ -88,9 +88,9 @@ class BlockWallet extends Block implements IBeLoggedMust
             $chargeWalletButton = "";
         }
 
-        return $this->template->render("shop/layout/wallet", [
-            "chargeWalletButton" => $chargeWalletButton,
-            "balance" => $balance,
-        ]);
+        return $this->template->render(
+            "shop/layout/wallet",
+            compact("chargeWalletButton", "balance")
+        );
     }
 }

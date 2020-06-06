@@ -7,7 +7,6 @@ use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Admin\PageAdmin;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class BlockAdminContent extends Block implements IBeLoggedMust
 {
@@ -44,7 +43,7 @@ class BlockAdminContent extends Block implements IBeLoggedMust
         }
 
         if (!$page) {
-            throw new UnexpectedValueException("No page provided");
+            return null;
         }
 
         if (!has_privileges($page->getPrivilege())) {
