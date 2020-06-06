@@ -42,7 +42,7 @@ class SmsPaymentMethod implements IPaymentMethod
     public function getPaymentDetails(Purchase $purchase)
     {
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
         );
 
         if (!($smsPaymentModule instanceof SupportSms)) {
@@ -63,7 +63,7 @@ class SmsPaymentMethod implements IPaymentMethod
     public function isAvailable(Purchase $purchase)
     {
         if (
-            !$purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS) ||
+            !$purchase->getPayment(Purchase::PAYMENT_PLATFORM) ||
             $this->smsPriceService->getPrice($purchase) === null ||
             $purchase->getPayment(Purchase::PAYMENT_DISABLED_SMS)
         ) {
@@ -71,7 +71,7 @@ class SmsPaymentMethod implements IPaymentMethod
         }
 
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
         );
 
         return $smsPaymentModule instanceof SupportSms &&

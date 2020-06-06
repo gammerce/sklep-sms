@@ -43,13 +43,15 @@ class TransactionResourceTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase($user))->setServiceId("vip")->setPayment([
-            Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_SMS => $smsPlatform->getId(),
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
             Purchase::PAYMENT_PRICE_SMS => 2500,
         ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($smsPlatform->getId())
+            ->setTransferPaymentPlatforms([$transferPlatform->getId()])
+            ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
 
         $this->purchaseDataService->storePurchase($purchase);
 
@@ -105,14 +107,16 @@ class TransactionResourceTest extends HttpTestCase
         $purchase = (new Purchase($user))
             ->setServiceId("vip")
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_SMS => $smsPlatform->getId(),
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
                 Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
                 Purchase::PAYMENT_PRICE_SMS => 2500,
             ])
             ->setPromoCode($promoCode);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($smsPlatform->getId())
+            ->setTransferPaymentPlatforms([$transferPlatform->getId()])
+            ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
 
         $this->purchaseDataService->storePurchase($purchase);
 
@@ -161,13 +165,15 @@ class TransactionResourceTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase(new User()))->setServiceId("vip")->setPayment([
-            Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPlatform->getId(),
-            Purchase::PAYMENT_PLATFORM_SMS => $smsPlatform->getId(),
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
             Purchase::PAYMENT_PRICE_SMS => 2500,
         ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($smsPlatform->getId())
+            ->setTransferPaymentPlatforms([$transferPlatform->getId()])
+            ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
 
         $this->purchaseDataService->storePurchase($purchase);
 

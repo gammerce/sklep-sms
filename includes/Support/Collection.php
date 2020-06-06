@@ -10,6 +10,8 @@ use Traversable;
 
 final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Countable
 {
+    use Whenable;
+
     /** @var array */
     private $items;
 

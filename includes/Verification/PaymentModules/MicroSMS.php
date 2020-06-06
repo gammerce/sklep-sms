@@ -153,7 +153,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             "control" => $control,
             "return_urlc" => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
             "return_url" => $this->url->to("/page/payment_success"),
-            "description" => $purchase->getDesc(),
+            "description" => $purchase->getDescription(),
         ];
     }
 

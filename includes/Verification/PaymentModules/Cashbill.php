@@ -83,7 +83,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             "url" => "https://pay.cashbill.pl/form/pay.php",
             "method" => "POST",
             "service" => $this->getService(),
-            "desc" => $purchase->getDesc(),
+            "desc" => $purchase->getDescription(),
             "forname" => $purchase->user->getForename(),
             "surname" => $purchase->user->getSurname(),
             "email" => $purchase->getEmail(),
@@ -92,7 +92,7 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
             "sign" => md5(
                 $this->getService() .
                     $price .
-                    $purchase->getDesc() .
+                    $purchase->getDescription() .
                     $userData .
                     $purchase->user->getForename() .
                     $purchase->user->getSurname() .

@@ -67,10 +67,12 @@ class DirectBillingPaymentServiceTest extends TestCase
             ])
             ->setPayment([
                 Purchase::PAYMENT_METHOD => PaymentMethod::DIRECT_BILLING(),
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
             ])
             ->setUsingPrice($price)
             ->setServiceId($serviceId);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setDirectBillingPaymentPlatform($paymentPlatform->getId());
 
         // when
         $directBillingPaymentMethod->pay($purchase, $serviceModule);

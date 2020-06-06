@@ -65,10 +65,12 @@ class PaymentServiceTest extends TestCase
             ->setUsingPrice($price)
             ->setServiceId($serviceId)
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
@@ -113,10 +115,12 @@ class PaymentServiceTest extends TestCase
             ->setUsingPrice($price)
             ->setServiceId($serviceId)
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
@@ -160,10 +164,12 @@ class PaymentServiceTest extends TestCase
             ->setUsingPrice($price)
             ->setServiceId($serviceId)
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $this->paymentService->makePayment($purchase);
@@ -194,10 +200,12 @@ class PaymentServiceTest extends TestCase
             ->setUsingPrice($price)
             ->setServiceId($serviceId)
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);

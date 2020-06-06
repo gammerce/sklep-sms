@@ -61,11 +61,13 @@ class TransferPaymentServiceTest extends TestCase
             ])
             ->setPayment([
                 Purchase::PAYMENT_METHOD => PaymentMethod::TRANSFER(),
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
             ])
             ->setUsingPrice($price)
             ->setServiceId($serviceModule->service->getId())
-            ->setDesc("Description");
+            ->setDescription("Description");
+
+        $purchase->getPaymentPlatformSelect()
+            ->setTransferPaymentPlatforms([$paymentPlatform->getId()]);
 
         // when
         $paymentResult = $transferPaymentMethod->pay($purchase, $serviceModule);

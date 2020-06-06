@@ -52,7 +52,7 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function isAvailable(Purchase $purchase)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER) &&
+        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM) &&
             $this->transferPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
     }
@@ -86,7 +86,7 @@ class TransferPaymentMethod implements IPaymentMethod
         }
 
         $service = $this->serviceManager->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
+        $purchase->setDescription($this->lang->t("payment_for_service", $service->getNameI18n()));
 
         if ($price === 0) {
             return $this->makeSyncPayment($purchase);

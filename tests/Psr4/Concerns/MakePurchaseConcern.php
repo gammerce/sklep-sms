@@ -97,9 +97,11 @@ trait MakePurchaseConcern
             ->setPayment([
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
                 Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             ])
             ->setUsingPrice($price);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseDataValidate($purchase)->validateOrFail();
 
@@ -180,8 +182,10 @@ trait MakePurchaseConcern
         $purchase = (new Purchase(new User()))->setServiceId($service->getId())->setPayment([
             Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
         ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseFormValidate($purchase, $attributes);
 

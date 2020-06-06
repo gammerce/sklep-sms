@@ -37,13 +37,13 @@ class PaymentResourceTest extends HttpTestCase
             "quantity" => 5,
             "sms_price" => 500,
         ]);
-        $smsPaymentPlatform = $this->factory->paymentPlatform([
+        $smsPlatform = $this->factory->paymentPlatform([
             "module" => Pukawka::MODULE_ID,
         ]);
-        $transferPaymentPlatform = $this->factory->paymentPlatform([
+        $transferPlatform = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,
         ]);
-        $directBillingPaymentPlatform = $this->factory->paymentPlatform([
+        $directBillingPlatform = $this->factory->paymentPlatform([
             "module" => SimPay::MODULE_ID,
         ]);
 
@@ -53,9 +53,6 @@ class PaymentResourceTest extends HttpTestCase
                 Purchase::PAYMENT_PRICE_SMS => 500,
                 Purchase::PAYMENT_PRICE_TRANSFER => 500,
                 Purchase::PAYMENT_PRICE_DIRECT_BILLING => 500,
-                Purchase::PAYMENT_PLATFORM_SMS => $smsPaymentPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPaymentPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPaymentPlatform->getId(),
             ])
             ->setOrder([
                 Purchase::ORDER_QUANTITY => 5,
@@ -64,6 +61,11 @@ class PaymentResourceTest extends HttpTestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPromoCode($promoCode);
+
+        $this->purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($smsPlatform->getId())
+            ->setTransferPaymentPlatforms([$transferPlatform->getId()])
+            ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
 
         $purchaseDataService->storePurchase($this->purchase);
     }

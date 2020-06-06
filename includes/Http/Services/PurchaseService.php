@@ -58,7 +58,7 @@ class PurchaseService
         $smsCode = trim(array_get($body, "sms_code"));
         $priceId = as_int(array_get($body, "price_id"));
         $email = trim(array_get($body, "email"));
-        $method = as_payment_method(array_get($body, "method"));
+        $paymentMethod = as_payment_method(array_get($body, "method"));
 
         $price = $this->priceRepository->get($priceId);
 
@@ -76,11 +76,12 @@ class PurchaseService
                 "passwordr" => $password,
             ])
             ->setPayment([
-                Purchase::PAYMENT_METHOD => $method,
+                Purchase::PAYMENT_METHOD => $paymentMethod,
                 Purchase::PAYMENT_SMS_CODE => $smsCode,
-                Purchase::PAYMENT_PLATFORM_SMS =>
-                    $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId(),
             ]);
+
+        $purchase->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform($server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId());
 
         if ($price) {
             $purchase->setUsingPrice($price);
