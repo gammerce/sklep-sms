@@ -19,7 +19,7 @@ class Version
             "https://api.github.com/repos/gammerce/sklep-sms/releases/latest",
             [],
             [],
-            2
+            4
         );
         $content = $response ? $response->json() : null;
 
@@ -32,7 +32,7 @@ class Version
             "https://api.github.com/repos/gammerce/plugin-amxmodx/releases/latest",
             [],
             [],
-            2
+            4
         );
         $content = $response ? $response->json() : null;
 
@@ -45,7 +45,7 @@ class Version
             "https://api.github.com/repos/gammerce/plugin-sourcemod/releases/latest",
             [],
             [],
-            2
+            4
         );
         $content = $response ? $response->json() : null;
 
