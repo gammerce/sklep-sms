@@ -9,8 +9,12 @@ class Purchase
     const PAYMENT_DISABLED_WALLET = "no_wallet";
     const PAYMENT_METHOD = "method";
     const PAYMENT_PAYMENT_ID = "payment_id";
+    const PAYMENT_PLATFORM = "payment_platform";
+    /** @deprecated  */
     const PAYMENT_PLATFORM_DIRECT_BILLING = "direct_billing_platform";
+    /** @deprecated  */
     const PAYMENT_PLATFORM_SMS = "sms_platform";
+    /** @deprecated  */
     const PAYMENT_PLATFORM_TRANSFER = "transfer_platform";
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";

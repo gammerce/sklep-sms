@@ -28,11 +28,13 @@ class PaymentResource
             throw new EntityNotFoundException();
         }
 
-        $method = as_payment_method($request->request->get("method"));
+        $paymentPlatformId = as_int($request->request->get("payment_platform_id"));
+        $paymentMethod = as_payment_method($request->request->get("method"));
         $smsCode = trim($request->request->get("sms_code"));
 
         $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => $method,
+            Purchase::PAYMENT_METHOD => $paymentMethod,
+            Purchase::PAYMENT_PLATFORM => $paymentPlatformId,
             Purchase::PAYMENT_SMS_CODE => $smsCode,
         ]);
 

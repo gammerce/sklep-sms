@@ -60,7 +60,7 @@ class DirectBillingChargeWallet implements IChargeWallet
         $price = $validated["direct_billing_price"];
 
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
         );
 
         if (!($paymentModule instanceof SupportDirectBilling)) {

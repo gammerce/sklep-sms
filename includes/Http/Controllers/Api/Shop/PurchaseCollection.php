@@ -62,6 +62,8 @@ class PurchaseCollection
             ]);
         }
 
+        // TODO Set available payment platforms
+
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseDataService->storePurchase($purchase);
 

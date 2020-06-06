@@ -50,7 +50,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
      */
     public function isAvailable(Purchase $purchase)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING) &&
+        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM) &&
             $this->directBillingPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
     }
@@ -64,7 +64,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_DIRECT_BILLING)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
         );
         $price = $this->directBillingPriceService->getPrice($purchase);
 

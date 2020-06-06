@@ -66,7 +66,7 @@ class TransferPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
+            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
         );
 
         $price = $this->transferPriceService->getPrice($purchase);

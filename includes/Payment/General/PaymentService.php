@@ -20,11 +20,11 @@ class PaymentService
     /** @var PaymentMethodFactory */
     private $paymentMethodFactory;
 
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
+
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     public function __construct(
         TranslationManager $translationManager,
