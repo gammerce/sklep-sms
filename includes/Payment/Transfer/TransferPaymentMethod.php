@@ -53,7 +53,7 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        $paymentModule = $this->paymentModuleManager->getByPlatformId($paymentPlatform);
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         $price = $this->transferPriceService->getPrice($purchase);
         return $paymentModule instanceof SupportTransfer && $price !== null;
     }
@@ -67,7 +67,7 @@ class TransferPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM)
+            $purchase->getPaymentOption()->getPaymentPlatformId()
         );
 
         $price = $this->transferPriceService->getPrice($purchase);

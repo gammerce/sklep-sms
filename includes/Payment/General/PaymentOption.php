@@ -9,10 +9,10 @@ class PaymentOption
     /** @var int|null */
     private $paymentPlatformId;
 
-    public function __construct(PaymentMethod $paymentMethod, $paymentPlatform = null)
+    public function __construct(PaymentMethod $paymentMethod, $paymentPlatformId = null)
     {
         $this->paymentMethod = $paymentMethod;
-        $this->paymentPlatformId = $paymentPlatform;
+        $this->paymentPlatformId = $paymentPlatformId;
     }
 
     /**

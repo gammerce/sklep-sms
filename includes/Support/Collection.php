@@ -166,12 +166,22 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
     }
 
     /**
-     * @param mixed $key
+     * @param mixed $item
      * @return bool
      */
-    public function includes($key)
+    public function includes($item)
     {
-        return in_array($key, $this->items, true);
+        if (is_callable($item)) {
+            foreach ($this->items as $key => $value) {
+                if (call_user_func($item, $value, $key)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return in_array($item, $this->items, true);
     }
 
     /**

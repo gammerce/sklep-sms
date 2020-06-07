@@ -6,6 +6,8 @@ use App\Exceptions\ValidationException;
 use App\Models\Purchase;
 use App\Models\Server;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentService;
 use App\Repositories\PriceRepository;
@@ -13,6 +15,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Settings;
+use UnexpectedValueException;
 
 class PurchaseService
 {
@@ -60,6 +63,8 @@ class PurchaseService
         $email = trim(array_get($body, "email"));
         $paymentMethod = as_payment_method(array_get($body, "method"));
 
+        $paymentPlatformId = $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId();
+        $paymentOption = $this->getPaymentOption($paymentMethod, $paymentPlatformId);
         $price = $this->priceRepository->get($priceId);
 
         $user = $this->auth->user();
@@ -68,6 +73,7 @@ class PurchaseService
         $purchase = (new Purchase($user))
             ->setServiceId($serviceModule->service->getId())
             ->setEmail($email)
+            ->setPaymentOption($paymentOption)
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => $type,
@@ -76,15 +82,10 @@ class PurchaseService
                 "passwordr" => $password,
             ])
             ->setPayment([
-                Purchase::PAYMENT_METHOD => $paymentMethod,
                 Purchase::PAYMENT_SMS_CODE => $smsCode,
             ]);
 
-        $purchase
-            ->getPaymentSelect()
-            ->setSmsPaymentPlatform(
-                $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId()
-            );
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatformId);
 
         if ($price) {
             $purchase->setUsingPrice($price);
@@ -94,5 +95,26 @@ class PurchaseService
         $validator->validateOrFail();
 
         return $this->paymentService->makePayment($purchase);
+    }
+
+    /**
+     * @param PaymentMethod|null $paymentMethod
+     * @param int|null $paymentPlatformId
+     * @return PaymentOption
+     * @throws UnexpectedValueException
+     */
+    private function getPaymentOption(
+        PaymentMethod $paymentMethod = null,
+        $paymentPlatformId = null
+    ) {
+        if (PaymentMethod::SMS()->equals($paymentMethod)) {
+            return new PaymentOption(PaymentMethod::SMS(), $paymentPlatformId);
+        }
+
+        if (PaymentMethod::WALLET()->equals($paymentMethod)) {
+            return new PaymentOption(PaymentMethod::WALLET());
+        }
+
+        throw new UnexpectedValueException("Unexpected payment method");
     }
 }

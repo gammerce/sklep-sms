@@ -35,10 +35,10 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
 
         $promoCode = $this->factory->promoCode();
         $transferPlatform = $this->factory->paymentPlatform([
-            "module" => TPay::class,
+            "module" => TPay::MODULE_ID,
         ]);
         $directBillingPlatform = $this->factory->paymentPlatform([
-            "module" => SimPay::class,
+            "module" => SimPay::MODULE_ID,
         ]);
         $smsPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
@@ -71,18 +71,30 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "payment_methods" => [
-                    "direct_billing" => [
-                        "price" => "8.40 PLN",
-                        "old_price" => "12.00",
+                "payment_options" => [
+                    [
+                        "method" => "direct_billing",
+                        "payment_platform_id" => $directBillingPlatform->getId(),
+                        "details" => [
+                            "price" => "8.40 PLN",
+                            "old_price" => "12.00",
+                        ],
                     ],
-                    "transfer" => [
-                        "price" => "7.00 PLN",
-                        "old_price" => "10.00",
+                    [
+                        "method" => "transfer",
+                        "payment_platform_id" => $transferPlatform->getId(),
+                        "details" => [
+                            "price" => "7.00 PLN",
+                            "old_price" => "10.00",
+                        ],
                     ],
-                    "wallet" => [
-                        "price" => "7.00 PLN",
-                        "old_price" => "10.00",
+                    [
+                        "method" => "wallet",
+                        "payment_platform_id" => null,
+                        "details" => [
+                            "price" => "7.00 PLN",
+                            "old_price" => "10.00",
+                        ],
                     ],
                 ],
                 "promo_code" => $promoCode->getCode(),
@@ -104,10 +116,10 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             "quantity" => 100,
         ]);
         $transferPlatform = $this->factory->paymentPlatform([
-            "module" => TPay::class,
+            "module" => TPay::MODULE_ID,
         ]);
         $directBillingPlatform = $this->factory->paymentPlatform([
-            "module" => SimPay::class,
+            "module" => SimPay::MODULE_ID,
         ]);
         $smsPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
@@ -140,24 +152,40 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "payment_methods" => [
-                    "sms" => [
-                        "price" => "0.00 PLN",
-                        "old_price" => "30.75",
-                        "sms_code" => "abc123",
-                        "sms_number" => null,
+                "payment_options" => [
+                    [
+                        "method" => "sms",
+                        "payment_platform_id" => $smsPlatform->getId(),
+                        "details" => [
+                            "price" => "0.00 PLN",
+                            "old_price" => "30.75",
+                            "sms_code" => "abc123",
+                            "sms_number" => null,
+                        ],
                     ],
-                    "direct_billing" => [
-                        "price" => "0.00 PLN",
-                        "old_price" => "12.00",
+                    [
+                        "method" => "direct_billing",
+                        "payment_platform_id" => $directBillingPlatform->getId(),
+                        "details" => [
+                            "price" => "0.00 PLN",
+                            "old_price" => "12.00",
+                        ],
                     ],
-                    "transfer" => [
-                        "price" => "0.00 PLN",
-                        "old_price" => "10.00",
+                    [
+                        "method" => "transfer",
+                        "payment_platform_id" => $transferPlatform->getId(),
+                        "details" => [
+                            "price" => "0.00 PLN",
+                            "old_price" => "10.00",
+                        ],
                     ],
-                    "wallet" => [
-                        "price" => "0.00 PLN",
-                        "old_price" => "10.00",
+                    [
+                        "method" => "wallet",
+                        "payment_platform_id" => null,
+                        "details" => [
+                            "price" => "0.00 PLN",
+                            "old_price" => "10.00",
+                        ],
                     ],
                 ],
                 "promo_code" => $promoCode->getCode(),
@@ -235,9 +263,13 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
-                "payment_methods" => [
-                    "transfer" => [
-                        "price" => "10.00 PLN",
+                "payment_options" => [
+                    [
+                        "method" => "transfer",
+                        "payment_platform_id" => $transferPlatform->getId(),
+                        "details" => [
+                            "price" => "10.00 PLN",
+                        ],
                     ],
                 ],
                 "promo_code" => "",

@@ -20,11 +20,7 @@ class PaymentSelect
      */
     public function all()
     {
-        $output = [new PaymentOption(PaymentMethod::WALLET())];
-
-        foreach ($this->transferPaymentPlatforms as $transferPaymentPlatform) {
-            $output[] = new PaymentOption(PaymentMethod::TRANSFER(), $transferPaymentPlatform);
-        }
+        $output = [];
 
         if ($this->smsPaymentPlatform) {
             $output[] = new PaymentOption(PaymentMethod::SMS(), $this->smsPaymentPlatform);
@@ -36,6 +32,12 @@ class PaymentSelect
                 $this->directBillingPaymentPlatform
             );
         }
+
+        foreach ($this->transferPaymentPlatforms as $transferPaymentPlatform) {
+            $output[] = new PaymentOption(PaymentMethod::TRANSFER(), $transferPaymentPlatform);
+        }
+
+        $output[] = new PaymentOption(PaymentMethod::WALLET());
 
         return collect($output)
             ->filter(function (PaymentOption $paymentOption) {
@@ -81,5 +83,24 @@ class PaymentSelect
     public function allowPaymentMethod(PaymentMethod $paymentMethod)
     {
         $this->allowedPaymentMethod = $paymentMethod;
+    }
+
+    /**
+     * @param PaymentMethod|null $paymentMethod
+     * @param int|null $paymentPlatformId
+     * @return bool
+     */
+    public function contains(PaymentMethod $paymentMethod = null, $paymentPlatformId = null)
+    {
+        foreach ($this->all() as $item) {
+            if (
+                $item->getPaymentMethod()->equals($paymentMethod) &&
+                $item->getPaymentPlatformId() === $paymentPlatformId
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

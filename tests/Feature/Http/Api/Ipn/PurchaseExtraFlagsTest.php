@@ -71,17 +71,18 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $response = $this->post("/api/payment/{$transactionId}", [
             "method" => PaymentMethod::SMS(),
+            "payment_platform_id" => $paymentPlatform->getId(),
             "sms_code" => "abc123",
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("purchased", $json["return_id"]);
 
-        $expctedExpire = time() + 2 * 24 * 60 * 60;
+        $expectedExpire = time() + 2 * 24 * 60 * 60;
         $userService = $this->extraFlagUserServiceRepository->findOrFail([
             "us.service_id" => "vippro",
         ]);
-        $this->assertAlmostSameTimestamp($expctedExpire, $userService->getExpire());
+        $this->assertAlmostSameTimestamp($expectedExpire, $userService->getExpire());
         $this->assertSame($server->getId(), $userService->getServerId());
         $this->assertSame("vippro", $userService->getServiceId());
         $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());
@@ -93,9 +94,9 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $this->assertSame(ExtraFlagType::TYPE_NICK, $playerFlag->getType());
         $this->assertSame("mama", $playerFlag->getAuthData());
         $this->assertSame("manq12a", $playerFlag->getPassword());
-        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("b"));
-        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("t"));
-        $this->assertAlmostSameTimestamp($expctedExpire, $playerFlag->getFlag("x"));
+        $this->assertAlmostSameTimestamp($expectedExpire, $playerFlag->getFlag("b"));
+        $this->assertAlmostSameTimestamp($expectedExpire, $playerFlag->getFlag("t"));
+        $this->assertAlmostSameTimestamp($expectedExpire, $playerFlag->getFlag("x"));
         $this->assertSame(0, $playerFlag->getFlag("z"));
     }
 

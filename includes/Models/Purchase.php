@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentSelect;
 
 class Purchase
@@ -8,8 +9,6 @@ class Purchase
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
-    const PAYMENT_METHOD = "method";
-    const PAYMENT_PLATFORM = "platform";
     const PAYMENT_PAYMENT_ID = "payment_id";
     const PAYMENT_SMS_CODE = "sms_code";
 
@@ -44,6 +43,11 @@ class Purchase
      * @var PaymentSelect
      */
     private $paymentSelect;
+
+    /**
+     * @var PaymentOption|null
+     */
+    private $paymentOption;
 
     /**
      * Payment details like method, sms_code et.c
@@ -270,5 +274,23 @@ class Purchase
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return PaymentOption|null
+     */
+    public function getPaymentOption()
+    {
+        return $this->paymentOption;
+    }
+
+    /**
+     * @param PaymentOption $paymentOption
+     * @return Purchase
+     */
+    public function setPaymentOption(PaymentOption $paymentOption)
+    {
+        $this->paymentOption = $paymentOption;
+        return $this;
     }
 }

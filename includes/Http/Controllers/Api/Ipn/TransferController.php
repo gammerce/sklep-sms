@@ -5,7 +5,6 @@ use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
-use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
@@ -54,7 +53,7 @@ class TransferController
         } catch (InvalidPaidAmountException $e) {
             $logger->log(
                 "log_external_payment_invalid_amount",
-                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
                 $transferPriceService->getPrice($purchase)
@@ -62,7 +61,7 @@ class TransferController
         } catch (PaymentRejectedException $e) {
             $logger->log(
                 "log_external_payment_not_accepted",
-                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()

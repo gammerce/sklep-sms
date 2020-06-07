@@ -55,7 +55,7 @@ class PaymentService
 
         try {
             $paymentMethod = $this->paymentMethodFactory->create(
-                $purchase->getPayment(Purchase::PAYMENT_METHOD)
+                $purchase->getPaymentOption()->getPaymentMethod()
             );
         } catch (UnexpectedValueException $e) {
             throw new PaymentProcessingException(

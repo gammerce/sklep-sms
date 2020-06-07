@@ -6,6 +6,7 @@ use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
@@ -59,9 +60,9 @@ class TransferPaymentServiceTest extends TestCase
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
             ])
-            ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::TRANSFER(),
-            ])
+            ->setPaymentOption(
+                new PaymentOption(PaymentMethod::TRANSFER(), $paymentPlatform->getId())
+            )
             ->setUsingPrice($price)
             ->setServiceId($serviceModule->service->getId())
             ->setDescription("Description");

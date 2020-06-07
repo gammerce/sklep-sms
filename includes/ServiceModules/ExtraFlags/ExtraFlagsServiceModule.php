@@ -31,6 +31,7 @@ use App\Models\UserService;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\UserServiceRepository;
@@ -484,7 +485,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
@@ -611,8 +612,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $purchasingUser = $this->userManager->getUser($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser))
             ->setServiceId($this->service->getId())
+            ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
             ->setOrder([

@@ -9,6 +9,7 @@ use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\Wallet\WalletPaymentService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
@@ -18,6 +19,9 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 use UnexpectedValueException;
+
+// TODO Display more detailed information on payment box (sms, transfer, paypal etc.)
+// TODO Add more options to charge wallet form (e.g. paypal)
 
 class ChargeWalletServiceModule extends ServiceModule implements IServicePurchaseWeb, IBeLoggedMust
 {
@@ -82,19 +86,20 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             throw new UnauthorizedException();
         }
 
+        $paymentPlatformId = as_int(array_get($body, "payment_platform_id"));
+
         try {
             $method = new PaymentMethod(array_get($body, "method"));
             $paymentMethod = $this->chargeWalletFactory->create($method);
         } catch (UnexpectedValueException $e) {
             throw new ValidationException([
-                "method" => "Invalid value",
+                "method" => "Invalid payment method",
             ]);
         }
 
-        $purchase->setServiceId($this->service->getId());
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => $method,
-        ]);
+        $purchase
+            ->setServiceId($this->service->getId())
+            ->setPaymentOption(new PaymentOption($method, $paymentPlatformId));
 
         $paymentMethod->setup($purchase, $body);
     }
@@ -102,7 +107,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     public function orderDetails(Purchase $purchase)
     {
         $paymentMethod = $this->chargeWalletFactory->create(
-            $purchase->getPayment(Purchase::PAYMENT_METHOD)
+            $purchase->getPaymentOption()->getPaymentMethod()
         );
 
         $price = $paymentMethod->getPrice($purchase);
@@ -127,7 +132,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
