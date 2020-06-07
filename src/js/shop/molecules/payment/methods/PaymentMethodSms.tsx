@@ -1,9 +1,8 @@
-import React, {ChangeEvent, FunctionComponent, useState} from "react";
-import {__} from "../../../../general/i18n";
+import React, { ChangeEvent, FunctionComponent, useState } from "react";
+import { __ } from "../../../../general/i18n";
 import classNames from "classnames";
-import {Dict} from "../../../types/general";
-import {PaymentMethod} from "../../../types/transaction";
-import {PaymentPrice} from "../../../components/PaymentPrice";
+import { Dict } from "../../../types/general";
+import { PaymentPrice } from "../../../components/PaymentPrice";
 
 interface Props {
     price: string;
@@ -11,7 +10,7 @@ interface Props {
     smsCode: string;
     smsNumber: string;
 
-    onPay(method: PaymentMethod, body?: Dict);
+    onPay(body?: Dict);
 }
 
 export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
@@ -21,11 +20,11 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
 
     const onPayClick = () => {
         if (detailsVisible) {
-            onPay(PaymentMethod.Sms, {
+            onPay({
                 sms_code: returnCode,
             });
         } else if (smsNumber === null) {
-            onPay(PaymentMethod.Sms);
+            onPay();
         } else {
             setDetailsVisible(true);
         }

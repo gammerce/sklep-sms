@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Wallet;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
@@ -38,16 +39,15 @@ class WalletPaymentMethod implements IPaymentMethod
         $this->auth = $auth;
     }
 
-    public function getPaymentDetails(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        return $this->auth->check() &&
-            $this->transferPriceService->getPrice($purchase) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
+        $price = $this->transferPriceService->getPrice($purchase);
+        return $this->auth->check() && $price !== null;
     }
 
     /**

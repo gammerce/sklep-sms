@@ -5,26 +5,57 @@ export enum PaymentMethod {
     Wallet = "wallet",
 }
 
+export type PaymentOption =
+    | DirectBillingPaymentOption
+    | SmsPaymentOption
+    | TransferPaymentOption
+    | WalletPaymentOption;
+
+interface BasePaymentOption {
+    method: PaymentMethod;
+    payment_platform_id?: number;
+    details: any;
+}
+
+export interface DirectBillingPaymentOption extends BasePaymentOption {
+    method: PaymentMethod.DirectBilling;
+    payment_platform_id: number;
+    details: {
+        price: string;
+        old_price?: string;
+    };
+}
+
+export interface SmsPaymentOption extends BasePaymentOption {
+    method: PaymentMethod.Sms;
+    payment_platform_id: number;
+    details: {
+        price: string;
+        old_price?: string;
+        sms_code: string;
+        sms_number: string;
+    };
+}
+
+export interface TransferPaymentOption extends BasePaymentOption {
+    method: PaymentMethod.Transfer;
+    payment_platform_id: number;
+    details: {
+        price: string;
+        old_price?: string;
+    };
+}
+
+export interface WalletPaymentOption extends BasePaymentOption {
+    method: PaymentMethod.Wallet;
+    payment_platform_id: undefined;
+    details: {
+        price: string;
+        old_price?: string;
+    };
+}
+
 export interface Transaction {
     promo_code?: string;
-    payment_methods: {
-        direct_billing?: {
-            price: string;
-            old_price?: string;
-        };
-        sms?: {
-            price: string;
-            old_price?: string;
-            sms_code: string;
-            sms_number: string;
-        };
-        transfer?: {
-            price: string;
-            old_price?: string;
-        };
-        wallet?: {
-            price: string;
-            old_price?: string;
-        };
-    };
+    payment_options: Array<PaymentOption>;
 }

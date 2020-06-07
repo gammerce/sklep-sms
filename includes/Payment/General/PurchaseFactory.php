@@ -27,23 +27,21 @@ class PurchaseFactory
             $purchase->setEmail($user->getEmail());
         }
 
-        $purchase
-            ->getPaymentPlatformSelect()
-            ->when($this->settings->getSmsPlatformId(), function (PaymentPlatformSelect $select) {
-                $select->setSmsPaymentPlatform($this->settings->getSmsPlatformId());
-            })
-            ->when($this->settings->getDirectBillingPlatformId(), function (
-                PaymentPlatformSelect $select
-            ) {
-                $select->setDirectBillingPaymentPlatform(
-                    $this->settings->getDirectBillingPlatformId()
-                );
-            })
-            ->when($this->settings->getTransferPlatformId(), function (
-                PaymentPlatformSelect $select
-            ) {
-                $select->setTransferPaymentPlatforms([$this->settings->getTransferPlatformId()]);
-            });
+        $paymentSelect = $purchase->getPaymentSelect();
+
+        if ($this->settings->getSmsPlatformId()) {
+            $paymentSelect->setSmsPaymentPlatform($this->settings->getSmsPlatformId());
+        }
+
+        if ($this->settings->getDirectBillingPlatformId()) {
+            $paymentSelect->setDirectBillingPaymentPlatform(
+                $this->settings->getDirectBillingPlatformId()
+            );
+        }
+
+        if ($this->settings->getTransferPlatformId()) {
+            $paymentSelect->setTransferPaymentPlatforms([$this->settings->getTransferPlatformId()]);
+        }
 
         return $purchase;
     }

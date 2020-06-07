@@ -61,11 +61,11 @@ class TransferChargeWallet implements IChargeWallet
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
-            Purchase::PAYMENT_DISABLED_TRANSFER => false,
         ]);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $transferPrice,
         ]);
+        $purchase->getPaymentSelect()->allowPaymentMethod(PaymentMethod::TRANSFER());
     }
 
     public function getTransactionView(Transaction $transaction)

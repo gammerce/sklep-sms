@@ -76,8 +76,8 @@ class SmsChargeWallet implements IChargeWallet
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $smsPrice,
-            Purchase::PAYMENT_DISABLED_SMS => false,
         ]);
+        $purchase->getPaymentSelect()->allowPaymentMethod(PaymentMethod::SMS());
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
                 $smsPrice,

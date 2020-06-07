@@ -1,14 +1,10 @@
 <?php
 namespace App\Models;
 
-use App\Payment\General\PaymentPlatformSelect;
+use App\Payment\General\PaymentSelect;
 
 class Purchase
 {
-    const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
-    const PAYMENT_DISABLED_SMS = "no_sms";
-    const PAYMENT_DISABLED_TRANSFER = "no_transfer";
-    const PAYMENT_DISABLED_WALLET = "no_wallet";
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
@@ -45,9 +41,9 @@ class Purchase
     /**
      * List of available payment platforms
      *
-     * @var PaymentPlatformSelect
+     * @var PaymentSelect
      */
-    private $paymentPlatformSelect;
+    private $paymentSelect;
 
     /**
      * Payment details like method, sms_code et.c
@@ -92,7 +88,7 @@ class Purchase
     {
         $this->user = $user;
         $this->id = generate_id(32);
-        $this->paymentPlatformSelect = new PaymentPlatformSelect();
+        $this->paymentSelect = new PaymentSelect();
     }
 
     public function getServiceId()
@@ -199,11 +195,11 @@ class Purchase
     }
 
     /**
-     * @return PaymentPlatformSelect
+     * @return PaymentSelect
      */
-    public function getPaymentPlatformSelect()
+    public function getPaymentSelect()
     {
-        return $this->paymentPlatformSelect;
+        return $this->paymentSelect;
     }
 
     /**

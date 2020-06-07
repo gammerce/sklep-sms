@@ -71,9 +71,7 @@ class DirectBillingPaymentServiceTest extends TestCase
             ->setUsingPrice($price)
             ->setServiceId($serviceId);
 
-        $purchase
-            ->getPaymentPlatformSelect()
-            ->setDirectBillingPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentSelect()->setDirectBillingPaymentPlatform($paymentPlatform->getId());
 
         // when
         $directBillingPaymentMethod->pay($purchase, $serviceModule);

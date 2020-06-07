@@ -4,7 +4,6 @@ namespace App\Http\Services;
 use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PaymentMethodFactory;
-use App\Payment\Interfaces\IPaymentMethod;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePromoCode;
 
@@ -36,32 +35,30 @@ class TransactionService
     public function getTransactionDetails(Purchase $purchase)
     {
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
+        $paymentOptions = $purchase->getPaymentSelect()->all();
+        $paymentOptionsViews = [];
 
-        // TODO Go through all available payment platforms
-        // Make sure it is available
-        // And get its details
+        foreach ($paymentOptions as $paymentOption) {
+            $paymentMethod = $this->paymentMethodFactory->create(
+                $paymentOption->getPaymentMethod()
+            );
+            $paymentPlatform = $this->paymentPlatformRepository->get(
+                $paymentOption->getPaymentPlatformId()
+            );
 
-        $paymentPlatformIds = $purchase->getPaymentPlatformSelect()->all();
-        $paymentPlatforms = $this->paymentPlatformRepository->findMany($paymentPlatformIds);
+            if (!$paymentMethod->isAvailable($purchase, $paymentPlatform)) {
+                continue;
+            }
 
-        // TODO Find a way to return all payment platforms along with wallet
-
-        //        collect($paymentPlatforms)
-        //            ->filter(function (PaymentPlatform $paymentPlatform) {
-        //
-        //            });
-
-        $paymentMethods = collect($this->paymentMethodFactory->createAll())
-            ->filter(function (IPaymentMethod $paymentMethod) use ($purchase) {
-                return $paymentMethod->isAvailable($purchase);
-            })
-            ->mapWithKeys(function (IPaymentMethod $paymentMethod) use ($purchase) {
-                return $paymentMethod->getPaymentDetails($purchase);
-            })
-            ->all();
+            $paymentOptionsViews[] = [
+                "method" => $paymentOption->getPaymentMethod(),
+                "payment_platform_id" => $paymentPlatform ? $paymentPlatform->getId() : null,
+                "details" => $paymentMethod->getPaymentDetails($purchase, $paymentPlatform),
+            ];
+        }
 
         $output = [
-            "payment_methods" => $paymentMethods,
+            "payment_options" => $paymentOptionsViews,
         ];
 
         if ($serviceModule instanceof IServicePromoCode) {

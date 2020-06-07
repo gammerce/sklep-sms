@@ -54,7 +54,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             ->setPromoCode($promoCode);
 
         $purchase
-            ->getPaymentPlatformSelect()
+            ->getPaymentSelect()
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId())
             ->setSmsPaymentPlatform($smsPlatform->getId());
@@ -123,7 +123,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             ->setPromoCode($promoCode);
 
         $purchase
-            ->getPaymentPlatformSelect()
+            ->getPaymentSelect()
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId())
             ->setSmsPaymentPlatform($smsPlatform->getId());
@@ -183,9 +183,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
         ]);
 
-        $purchase
-            ->getPaymentPlatformSelect()
-            ->setTransferPaymentPlatforms([$transferPlatform->getId()]);
+        $purchase->getPaymentSelect()->setTransferPaymentPlatforms([$transferPlatform->getId()]);
 
         $this->purchaseDataService->storePurchase($purchase);
 
@@ -225,9 +223,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             ])
             ->setPromoCode($promoCode);
 
-        $purchase
-            ->getPaymentPlatformSelect()
-            ->setTransferPaymentPlatforms([$transferPlatform->getId()]);
+        $purchase->getPaymentSelect()->setTransferPaymentPlatforms([$transferPlatform->getId()]);
 
         $this->purchaseDataService->storePurchase($purchase);
 

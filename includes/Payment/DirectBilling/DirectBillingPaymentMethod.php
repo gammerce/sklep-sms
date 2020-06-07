@@ -3,6 +3,7 @@ namespace App\Payment\DirectBilling;
 
 use App\Managers\PaymentModuleManager;
 use App\Models\FinalizedPayment;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
@@ -39,20 +40,21 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $this->directBillingPaymentService = $directBillingPaymentService;
     }
 
-    public function getPaymentDetails(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
         return $this->directBillingPriceService->getOldAndNewPrice($purchase);
     }
 
     /**
      * @param Purchase $purchase
+     * @param PaymentPlatform|null $paymentPlatform
      * @return bool
      */
-    public function isAvailable(Purchase $purchase)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM) &&
-            $this->directBillingPriceService->getPrice($purchase) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_DIRECT_BILLING);
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+        $price = $this->directBillingPriceService->getPrice($purchase);
+        return $paymentModule instanceof SupportDirectBilling && $price !== null;
     }
 
     /**

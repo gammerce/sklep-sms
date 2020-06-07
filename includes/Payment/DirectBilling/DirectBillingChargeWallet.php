@@ -69,8 +69,8 @@ class DirectBillingChargeWallet implements IChargeWallet
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price,
-            Purchase::PAYMENT_DISABLED_DIRECT_BILLING => false,
         ]);
+        $purchase->getPaymentSelect()->allowPaymentMethod(PaymentMethod::DIRECT_BILLING());
     }
 
     public function getTransactionView(Transaction $transaction)

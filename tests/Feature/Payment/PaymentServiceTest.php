@@ -69,7 +69,7 @@ class PaymentServiceTest extends TestCase
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
-        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
@@ -118,7 +118,7 @@ class PaymentServiceTest extends TestCase
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
-        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
@@ -166,7 +166,7 @@ class PaymentServiceTest extends TestCase
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
-        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $this->paymentService->makePayment($purchase);
@@ -201,7 +201,7 @@ class PaymentServiceTest extends TestCase
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
-        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);

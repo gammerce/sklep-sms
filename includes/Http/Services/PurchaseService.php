@@ -81,7 +81,7 @@ class PurchaseService
             ]);
 
         $purchase
-            ->getPaymentPlatformSelect()
+            ->getPaymentSelect()
             ->setSmsPaymentPlatform(
                 $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId()
             );

@@ -380,7 +380,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->serverManager->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
         if ($server) {
-            $paymentPlatformSelect = $purchase->getPaymentPlatformSelect();
+            $paymentPlatformSelect = $purchase->getPaymentSelect();
 
             if ($server->getSmsPlatformId()) {
                 $paymentPlatformSelect->setSmsPaymentPlatform($server->getSmsPlatformId());
