@@ -16,6 +16,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use UnexpectedValueException;
 
 class SmsChargeWallet implements IChargeWallet
 {
@@ -71,7 +72,7 @@ class SmsChargeWallet implements IChargeWallet
         );
 
         if (!($smsPaymentModule instanceof SupportSms)) {
-            return;
+            throw new UnexpectedValueException("Payment module doesn't support sms");
         }
 
         $purchase->setPayment([

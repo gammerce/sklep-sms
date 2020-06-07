@@ -137,6 +137,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $response = $this->post("/api/payment/{$transactionId}", [
             "method" => PaymentMethod::TRANSFER(),
+            "payment_platform_id" => $paymentPlatform->getId(),
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);

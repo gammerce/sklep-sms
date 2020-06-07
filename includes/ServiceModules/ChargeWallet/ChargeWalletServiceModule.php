@@ -8,7 +8,6 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
-use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Payment\Wallet\WalletPaymentService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
@@ -87,11 +86,9 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         }
 
         $paymentPlatformId = as_int(array_get($body, "payment_platform_id"));
+        $method = as_payment_method(array_get($body, "method"));
 
-        try {
-            $method = new PaymentMethod(array_get($body, "method"));
-            $paymentMethod = $this->chargeWalletFactory->create($method);
-        } catch (UnexpectedValueException $e) {
+        if (!$purchase->getPaymentSelect()->contains($method, $paymentPlatformId)) {
             throw new ValidationException([
                 "method" => "Invalid payment method",
             ]);
@@ -101,7 +98,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption($method, $paymentPlatformId));
 
-        $paymentMethod->setup($purchase, $body);
+        $this->chargeWalletFactory->create($method)->setup($purchase, $body);
     }
 
     public function orderDetails(Purchase $purchase)

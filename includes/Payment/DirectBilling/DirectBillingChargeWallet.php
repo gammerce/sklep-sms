@@ -12,8 +12,6 @@ use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
 use App\Support\Template;
 use App\System\Settings;
-use App\Verification\Abstracts\SupportDirectBilling;
-use UnexpectedValueException;
 
 class DirectBillingChargeWallet implements IChargeWallet
 {
@@ -58,14 +56,6 @@ class DirectBillingChargeWallet implements IChargeWallet
         );
         $validated = $validator->validateOrFail();
         $price = $validated["direct_billing_price"];
-
-        $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPaymentOption()->getPaymentPlatformId()
-        );
-
-        if (!($paymentModule instanceof SupportDirectBilling)) {
-            throw new UnexpectedValueException("Payment module doesn't support direct billing");
-        }
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price,
