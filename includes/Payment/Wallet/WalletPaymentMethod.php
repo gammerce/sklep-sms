@@ -8,6 +8,7 @@ use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\Payment\Transfer\TransferPriceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
+use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -22,14 +23,19 @@ class WalletPaymentMethod implements IPaymentMethod
     /** @var TransferPriceService */
     private $transferPriceService;
 
+    /** @var Auth */
+    private $auth;
+
     public function __construct(
         TranslationManager $translationManager,
         TransferPriceService $transferPriceService,
-        WalletPaymentService $walletPaymentService
+        WalletPaymentService $walletPaymentService,
+        Auth $auth
     ) {
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
         $this->transferPriceService = $transferPriceService;
+        $this->auth = $auth;
     }
 
     public function getPaymentDetails(Purchase $purchase)
@@ -39,7 +45,7 @@ class WalletPaymentMethod implements IPaymentMethod
 
     public function isAvailable(Purchase $purchase)
     {
-        return is_logged() &&
+        return $this->auth->check() &&
             $this->transferPriceService->getPrice($purchase) !== null &&
             !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
     }

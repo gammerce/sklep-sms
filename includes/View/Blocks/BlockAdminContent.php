@@ -1,32 +1,20 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Managers\PageManager;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
-use App\View\Pages\Admin\PageAdmin;
+use App\View\Pages\PageResolver;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockAdminContent extends Block implements IBeLoggedMust
 {
     const BLOCK_ID = "admincontent";
 
-    /** @var Translator */
-    private $lang;
+    /** @var PageResolver */
+    private $pageResolver;
 
-    /** @var PageManager */
-    private $pageManager;
-
-    public function __construct(PageManager $pageManager, TranslationManager $translationManager)
+    public function __construct(PageResolver $pageResolver)
     {
-        $this->pageManager = $pageManager;
-        $this->lang = $translationManager->user();
-    }
-
-    public function getContentId()
-    {
-        return "content";
+        $this->pageResolver = $pageResolver;
     }
 
     public function getContentClass()
@@ -34,22 +22,8 @@ class BlockAdminContent extends Block implements IBeLoggedMust
         return "";
     }
 
-    protected function content(Request $request, array $params)
+    public function getContent(Request $request, array $params)
     {
-        $page = $params[0];
-
-        if (!($page instanceof PageAdmin)) {
-            $page = $this->pageManager->getAdmin($page);
-        }
-
-        if (!$page) {
-            return null;
-        }
-
-        if (!has_privileges($page->getPrivilege())) {
-            return $this->lang->t("no_privileges");
-        }
-
-        return $page->getContent($request);
+        return (string) $this->pageResolver->resolveAdmin($params[0])->getContent($request);
     }
 }

@@ -1,11 +1,9 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
 use App\Services\ServiceListService;
-use App\Services\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,28 +21,18 @@ class BlockServicesButtons extends Block
     /** @var UrlGenerator */
     private $url;
 
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
     /** @var ServiceListService */
     private $serviceListService;
 
     public function __construct(
         Auth $auth,
         Template $template,
-        ServiceModuleManager $serviceModuleManager,
         UrlGenerator $url,
-        UserServiceAccessService $userServiceAccessService,
         ServiceListService $serviceListService
     ) {
         $this->auth = $auth;
         $this->template = $template;
         $this->url = $url;
-        $this->userServiceAccessService = $userServiceAccessService;
-        $this->serviceModuleManager = $serviceModuleManager;
         $this->serviceListService = $serviceListService;
     }
 
@@ -53,12 +41,7 @@ class BlockServicesButtons extends Block
         return "services-buttons";
     }
 
-    public function getContentId()
-    {
-        return "services_buttons";
-    }
-
-    protected function content(Request $request, array $params)
+    public function getContent(Request $request, array $params)
     {
         $services = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(function (Service $service) {

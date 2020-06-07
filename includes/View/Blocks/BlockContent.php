@@ -1,30 +1,19 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Exceptions\AccessProhibitedException;
-use App\Exceptions\UnauthorizedException;
-use App\Managers\PageManager;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
-use App\View\Interfaces\IBeLoggedCannot;
-use App\View\Interfaces\IBeLoggedMust;
-use App\View\Pages\Page;
+use App\View\Pages\PageResolver;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockContent extends Block
 {
     const BLOCK_ID = "content";
 
-    /** @var Translator */
-    private $lang;
+    /** @var PageResolver */
+    private $pageResolver;
 
-    /** @var PageManager */
-    private $pageManager;
-
-    public function __construct(PageManager $pageManager, TranslationManager $translationManager)
+    public function __construct(PageResolver $pageResolver)
     {
-        $this->lang = $translationManager->user();
-        $this->pageManager = $pageManager;
+        $this->pageResolver = $pageResolver;
     }
 
     public function getContentClass()
@@ -32,31 +21,8 @@ class BlockContent extends Block
         return "site-content";
     }
 
-    public function getContentId()
+    public function getContent(Request $request, array $params)
     {
-        return "content";
-    }
-
-    protected function content(Request $request, array $params)
-    {
-        $page = $params[0];
-
-        if (!($page instanceof Page)) {
-            $page = $this->pageManager->getUser($page);
-        }
-
-        if (!$page) {
-            return null;
-        }
-
-        if ($page instanceof IBeLoggedMust && !is_logged()) {
-            throw new UnauthorizedException();
-        }
-
-        if ($page instanceof IBeLoggedCannot && is_logged()) {
-            throw new AccessProhibitedException();
-        }
-
-        return $page->getContent($request);
+        return (string) $this->pageResolver->resolveUser($params[0])->getContent($request);
     }
 }

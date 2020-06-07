@@ -46,11 +46,10 @@ class TransactionService
 
         // TODO Find a way to return all payment platforms along with wallet
 
-//        collect($paymentPlatforms)
-//            ->filter(function (PaymentPlatform $paymentPlatform) {
-//
-//            });
-
+        //        collect($paymentPlatforms)
+        //            ->filter(function (PaymentPlatform $paymentPlatform) {
+        //
+        //            });
 
         $paymentMethods = collect($this->paymentMethodFactory->createAll())
             ->filter(function (IPaymentMethod $paymentMethod) use ($purchase) {

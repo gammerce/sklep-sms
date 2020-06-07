@@ -65,7 +65,9 @@ class PaymentPlatformRepository
     public function findMany(array $ids)
     {
         $keys = implode(",", array_fill(0, count($ids), "?"));
-        $statement = $this->db->statement("SELECT * FROM `ss_payment_platforms` WHERE `id` IN ({$keys})");
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_payment_platforms` WHERE `id` IN ({$keys})"
+        );
         $statement->execute($ids);
 
         return collect($statement)

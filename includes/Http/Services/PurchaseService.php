@@ -80,8 +80,11 @@ class PurchaseService
                 Purchase::PAYMENT_SMS_CODE => $smsCode,
             ]);
 
-        $purchase->getPaymentPlatformSelect()
-            ->setSmsPaymentPlatform($server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId());
+        $purchase
+            ->getPaymentPlatformSelect()
+            ->setSmsPaymentPlatform(
+                $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId()
+            );
 
         if ($price) {
             $purchase->setUsingPrice($price);

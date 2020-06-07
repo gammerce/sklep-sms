@@ -32,10 +32,16 @@ class PurchaseFactory
             ->when($this->settings->getSmsPlatformId(), function (PaymentPlatformSelect $select) {
                 $select->setSmsPaymentPlatform($this->settings->getSmsPlatformId());
             })
-            ->when($this->settings->getDirectBillingPlatformId(), function (PaymentPlatformSelect $select) {
-                $select->setDirectBillingPaymentPlatform($this->settings->getDirectBillingPlatformId());
+            ->when($this->settings->getDirectBillingPlatformId(), function (
+                PaymentPlatformSelect $select
+            ) {
+                $select->setDirectBillingPaymentPlatform(
+                    $this->settings->getDirectBillingPlatformId()
+                );
             })
-            ->when($this->settings->getTransferPlatformId(), function (PaymentPlatformSelect $select) {
+            ->when($this->settings->getTransferPlatformId(), function (
+                PaymentPlatformSelect $select
+            ) {
                 $select->setTransferPaymentPlatforms([$this->settings->getTransferPlatformId()]);
             });
 

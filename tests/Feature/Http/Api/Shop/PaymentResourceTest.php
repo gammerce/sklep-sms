@@ -62,7 +62,8 @@ class PaymentResourceTest extends HttpTestCase
             ])
             ->setPromoCode($promoCode);
 
-        $this->purchase->getPaymentPlatformSelect()
+        $this->purchase
+            ->getPaymentPlatformSelect()
             ->setSmsPaymentPlatform($smsPlatform->getId())
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());

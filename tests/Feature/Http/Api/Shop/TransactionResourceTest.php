@@ -48,7 +48,8 @@ class TransactionResourceTest extends HttpTestCase
             Purchase::PAYMENT_PRICE_SMS => 2500,
         ]);
 
-        $purchase->getPaymentPlatformSelect()
+        $purchase
+            ->getPaymentPlatformSelect()
             ->setSmsPaymentPlatform($smsPlatform->getId())
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
@@ -113,7 +114,8 @@ class TransactionResourceTest extends HttpTestCase
             ])
             ->setPromoCode($promoCode);
 
-        $purchase->getPaymentPlatformSelect()
+        $purchase
+            ->getPaymentPlatformSelect()
             ->setSmsPaymentPlatform($smsPlatform->getId())
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());
@@ -170,7 +172,8 @@ class TransactionResourceTest extends HttpTestCase
             Purchase::PAYMENT_PRICE_SMS => 2500,
         ]);
 
-        $purchase->getPaymentPlatformSelect()
+        $purchase
+            ->getPaymentPlatformSelect()
             ->setSmsPaymentPlatform($smsPlatform->getId())
             ->setTransferPaymentPlatforms([$transferPlatform->getId()])
             ->setDirectBillingPaymentPlatform($directBillingPlatform->getId());

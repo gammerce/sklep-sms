@@ -1,29 +1,40 @@
 <?php
 namespace App\Http\Controllers\Api\Shop;
 
-use App\Managers\BlockManager;
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\ForbiddenException;
+use App\Exceptions\UnauthorizedException;
+use App\View\Blocks\BlockResolver;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class BrickResource
 {
-    public function get($bricks, Request $request, BlockManager $blockManager)
+    public function get($bricks, Request $request, BlockResolver $blockResolver)
     {
-        $brickList = explode(",", $bricks);
-
         $data = [];
+        $brickList = explode(",", $bricks);
 
         foreach ($brickList as $brick) {
             $fragments = explode(":", $brick);
-            $brickName = $fragments[0];
-            $block = $blockManager->get($brickName);
+            $blockId = $fragments[0];
 
-            if ($block) {
-                $contentId = $block->getContentId();
+            $content = null;
+            $class = null;
+
+            try {
+                $block = $blockResolver->resolve($blockId);
                 $content = $block->getContent($request, array_slice($fragments, 1));
-                $data[$contentId]["content"] = $content !== null ? strval($content) : null;
-                $data[$contentId]["class"] = $content ? $block->getContentClass() : "";
+                $class = $block->getContentClass();
+            } catch (UnauthorizedException $e) {
+                //
+            } catch (ForbiddenException $e) {
+                //
+            } catch (EntityNotFoundException $e) {
+                //
             }
+
+            $data[$blockId] = compact("content", "class");
         }
 
         return new JsonResponse($data);

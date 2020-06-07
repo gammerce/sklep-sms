@@ -73,8 +73,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
                 Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
 
-        $purchase->getPaymentPlatformSelect()
-            ->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);

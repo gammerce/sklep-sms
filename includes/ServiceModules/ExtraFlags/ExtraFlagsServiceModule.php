@@ -387,7 +387,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             }
 
             if ($server->getTransferPlatformId()) {
-                $paymentPlatformSelect->setTransferPaymentPlatforms([$server->getTransferPlatformId()]);
+                $paymentPlatformSelect->setTransferPaymentPlatforms([
+                    $server->getTransferPlatformId(),
+                ]);
             }
         }
 

@@ -100,8 +100,7 @@ trait MakePurchaseConcern
             ])
             ->setUsingPrice($price);
 
-        $purchase->getPaymentPlatformSelect()
-            ->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseDataValidate($purchase)->validateOrFail();
 
@@ -184,8 +183,7 @@ trait MakePurchaseConcern
             Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
         ]);
 
-        $purchase->getPaymentPlatformSelect()
-            ->setSmsPaymentPlatform($paymentPlatform->getId());
+        $purchase->getPaymentPlatformSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseFormValidate($purchase, $attributes);
 
