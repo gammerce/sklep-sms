@@ -77,7 +77,7 @@ class DirectBillingChargeWallet implements IChargeWallet
     public function getOptionView(PaymentPlatform $paymentPlatform)
     {
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => get_charge_wallet_option(PaymentMethod::DIRECT_BILLING(), $paymentPlatform),
+            "value" => make_charge_wallet_option(PaymentMethod::DIRECT_BILLING(), $paymentPlatform),
             "text" => "Direct Billing",
         ]);
         $body = $this->template->render("shop/services/charge_wallet/direct_billing_body", [

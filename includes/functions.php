@@ -903,7 +903,7 @@ function multiply($a, $b)
  * @param PaymentPlatform $paymentPlatform
  * @return string
  */
-function get_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
+function make_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
 {
     return $paymentMethod . "," . $paymentPlatform->getId();
 }

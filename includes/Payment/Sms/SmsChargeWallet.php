@@ -115,7 +115,7 @@ class SmsChargeWallet implements IChargeWallet
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => get_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),
+            "value" => make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),
             "text" => "SMS",
         ]);
 

@@ -76,7 +76,7 @@ class TransferChargeWallet implements IChargeWallet
     public function getOptionView(PaymentPlatform $paymentPlatform)
     {
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => get_charge_wallet_option(PaymentMethod::TRANSFER(), $paymentPlatform),
+            "value" => make_charge_wallet_option(PaymentMethod::TRANSFER(), $paymentPlatform),
             "text" => $this->lang->t("payment_option_transfer", $paymentPlatform->getName()),
         ]);
         $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
