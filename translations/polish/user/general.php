@@ -79,6 +79,7 @@ return [
     'payment_log' => 'Historia płatności',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
+    'payment_option_transfer' => 'Przelew ({1})',
     'payment_rejected' => 'Płatność odrzucona',
     'payment_sms' => 'SMS',
     'payment_success' => 'Płatność zaakceptowana',

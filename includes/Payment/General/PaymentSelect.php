@@ -12,8 +12,8 @@ class PaymentSelect
     /** @var int|null */
     private $directBillingPaymentPlatform;
 
-    /** @var PaymentMethod|null */
-    private $allowedPaymentMethod;
+    /** @var PaymentOption|null */
+    private $allowedPaymentOption;
 
     /**
      * @return PaymentOption[]
@@ -41,8 +41,8 @@ class PaymentSelect
 
         return collect($output)
             ->filter(function (PaymentOption $paymentOption) {
-                return $this->allowedPaymentMethod === null ||
-                    $this->allowedPaymentMethod->equals($paymentOption->getPaymentMethod());
+                return $this->allowedPaymentOption === null ||
+                    payment_option_equals($paymentOption, $this->allowedPaymentOption);
             })
             ->all();
     }
@@ -78,25 +78,21 @@ class PaymentSelect
     }
 
     /**
-     * @param PaymentMethod $paymentMethod
+     * @param PaymentOption $paymentOption
      */
-    public function allowPaymentMethod(PaymentMethod $paymentMethod)
+    public function allowPaymentOption(PaymentOption $paymentOption)
     {
-        $this->allowedPaymentMethod = $paymentMethod;
+        $this->allowedPaymentOption = $paymentOption;
     }
 
     /**
-     * @param PaymentMethod|null $paymentMethod
-     * @param int|null $paymentPlatformId
+     * @param PaymentOption $paymentOption
      * @return bool
      */
-    public function contains(PaymentMethod $paymentMethod = null, $paymentPlatformId = null)
+    public function contains(PaymentOption $paymentOption)
     {
         foreach ($this->all() as $item) {
-            if (
-                $item->getPaymentMethod()->equals($paymentMethod) &&
-                $item->getPaymentPlatformId() === $paymentPlatformId
-            ) {
+            if (payment_option_equals($paymentOption, $item)) {
                 return true;
             }
         }

@@ -34,15 +34,15 @@ class PaymentResource
         $paymentMethod = as_payment_method($request->request->get("method"));
         $smsCode = trim($request->request->get("sms_code"));
 
-        if (!$purchase->getPaymentSelect()->contains($paymentMethod, $paymentPlatformId)) {
+        $paymentOption = new PaymentOption($paymentMethod, $paymentPlatformId);
+
+        if (!$purchase->getPaymentSelect()->contains($paymentOption)) {
             return new ErrorApiResponse("Invalid payment option");
         }
 
-        $purchase
-            ->setPaymentOption(new PaymentOption($paymentMethod, $paymentPlatformId))
-            ->setPayment([
-                Purchase::PAYMENT_SMS_CODE => $smsCode,
-            ]);
+        $purchase->setPaymentOption($paymentOption)->setPayment([
+            Purchase::PAYMENT_SMS_CODE => $smsCode,
+        ]);
 
         try {
             $paymentResult = $paymentService->makePayment($purchase);

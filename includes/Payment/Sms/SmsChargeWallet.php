@@ -5,6 +5,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SmsPriceExistsRule;
 use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Models\Transaction;
@@ -78,7 +79,6 @@ class SmsChargeWallet implements IChargeWallet
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $smsPrice,
         ]);
-        $purchase->getPaymentSelect()->allowPaymentMethod(PaymentMethod::SMS());
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
                 $smsPrice,
@@ -106,18 +106,16 @@ class SmsChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView()
+    public function getOptionView(PaymentPlatform $paymentPlatform)
     {
-        $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $this->settings->getSmsPlatformId()
-        );
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
         if (!($paymentModule instanceof SupportSms)) {
-            return null;
+            throw new UnexpectedValueException("Payment module does not support sms");
         }
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => PaymentMethod::SMS(),
+            "value" => get_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),
             "text" => "SMS",
         ]);
 

@@ -1,17 +1,17 @@
 import { hideAndDisable, show, showAndEnable } from "../../../general/global";
 
 $(document).ready(function($) {
-    const form = $("#form_purchase");
-    // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
-    form.find("[name=method]").prop("checked", false);
+    // Unselect method in case of clicking "back" in the browser
+    $("#form_purchase")
+        .find("[name=payment_option]")
+        .prop("checked", false);
 });
 
-// Zmiana sposobu doładowania
-$(document).delegate("#form_purchase [name=method]", "change", function() {
+$(document).delegate("#form_purchase [name=payment_option]", "change", function() {
     const form = $(this).closest("form");
-    const type = $(this).val();
+    const [paymentMethod] = String($(this).val()).split(",");
 
     hideAndDisable(form.find("[data-type]"));
-    showAndEnable(form.find(`[data-type=${type}]`));
+    showAndEnable(form.find(`[data-type=${paymentMethod}]`));
     show(form.find(".form-footer"));
 });

@@ -5,6 +5,7 @@ use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\Transaction;
 use App\Payment\General\PaymentMethod;
@@ -60,7 +61,6 @@ class DirectBillingChargeWallet implements IChargeWallet
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price,
         ]);
-        $purchase->getPaymentSelect()->allowPaymentMethod(PaymentMethod::DIRECT_BILLING());
     }
 
     public function getTransactionView(Transaction $transaction)
@@ -74,14 +74,10 @@ class DirectBillingChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView()
+    public function getOptionView(PaymentPlatform $paymentPlatform)
     {
-        if (!$this->settings->getDirectBillingPlatformId()) {
-            return null;
-        }
-
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => PaymentMethod::DIRECT_BILLING(),
+            "value" => get_charge_wallet_option(PaymentMethod::DIRECT_BILLING(), $paymentPlatform),
             "text" => "Direct Billing",
         ]);
         $body = $this->template->render("shop/services/charge_wallet/direct_billing_body", [

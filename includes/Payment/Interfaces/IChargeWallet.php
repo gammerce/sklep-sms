@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Interfaces;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\Transaction;
 
@@ -20,9 +21,10 @@ interface IChargeWallet
     public function getTransactionView(Transaction $transaction);
 
     /**
-     * @return array|null
+     * @param PaymentPlatform $paymentPlatform
+     * @return array
      */
-    public function getOptionView();
+    public function getOptionView(PaymentPlatform $paymentPlatform);
 
     /**
      * @param Purchase $purchase

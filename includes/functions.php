@@ -1,9 +1,11 @@
 <?php
 
 use App\Loggers\FileLogger;
+use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
@@ -894,4 +896,25 @@ function multiply($a, $b)
     }
 
     return $a * $b;
+}
+
+/**
+ * @param PaymentMethod $paymentMethod
+ * @param PaymentPlatform $paymentPlatform
+ * @return string
+ */
+function get_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
+{
+    return $paymentMethod . "," . $paymentPlatform->getId();
+}
+
+/**
+ * @param PaymentOption $a
+ * @param PaymentOption $b
+ * @return bool
+ */
+function payment_option_equals(PaymentOption $a, PaymentOption $b)
+{
+    return $a->getPaymentPlatformId() === $b->getPaymentPlatformId() &&
+        $a->getPaymentMethod()->equals($b->getPaymentMethod());
 }

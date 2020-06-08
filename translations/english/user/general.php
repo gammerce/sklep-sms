@@ -78,6 +78,7 @@ return [
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
+    'payment_option_transfer' => 'Transfer ({1})',
     'payment_rejected' => 'Payment rejected',
     'payment_sms' => 'SMS',
     'payment_success' => 'Payment success',
