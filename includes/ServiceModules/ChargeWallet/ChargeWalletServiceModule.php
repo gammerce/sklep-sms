@@ -99,16 +99,27 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
      */
     private function getPaymentOptions()
     {
-        $output = [
-            new PaymentOption(PaymentMethod::SMS(), $this->settings->getSmsPlatformId()),
-            new PaymentOption(
+        $output = [];
+
+        if ($this->settings->getSmsPlatformId()) {
+            $output[] = new PaymentOption(
+                PaymentMethod::SMS(),
+                $this->settings->getSmsPlatformId()
+            );
+        }
+
+        if ($this->settings->getDirectBillingPlatformId()) {
+            $output[] = new PaymentOption(
                 PaymentMethod::DIRECT_BILLING(),
                 $this->settings->getDirectBillingPlatformId()
-            ),
-        ];
+            );
+        }
 
-        foreach ([$this->settings->getTransferPlatformId()] as $platformId) {
-            $output[] = new PaymentOption(PaymentMethod::TRANSFER(), $platformId);
+        if ($this->settings->getTransferPlatformId()) {
+            $output[] = new PaymentOption(
+                PaymentMethod::TRANSFER(),
+                $this->settings->getTransferPlatformId()
+            );
         }
 
         return $output;
