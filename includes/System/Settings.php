@@ -89,20 +89,6 @@ class Settings implements ArrayAccess
     /**
      * @return string[]
      */
-    public function getTransferPlatformId()
-    {
-        $transferPlatformValue = array_get($this->data, "transfer_platform");
-        $paymentPlatformIds = explode(",", $transferPlatformValue);
-        return collect($paymentPlatformIds)
-            ->map(function ($platformId) {
-                return as_int($platformId);
-            })
-            ->all();
-    }
-
-    /**
-     * @return string[]
-     */
     public function getTransferPlatformIds()
     {
         $transferPlatformValue = array_get($this->data, "transfer_platform");
