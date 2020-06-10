@@ -22,9 +22,6 @@ use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
 use UnexpectedValueException;
 
-// TODO Display more detailed information on payment box (sms, transfer, paypal etc.)
-// TODO Allow multiple transfer platforms
-
 class ChargeWalletServiceModule extends ServiceModule implements IServicePurchaseWeb, IBeLoggedMust
 {
     const MODULE_ID = "charge_wallet";
@@ -115,11 +112,8 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             );
         }
 
-        if ($this->settings->getTransferPlatformId()) {
-            $output[] = new PaymentOption(
-                PaymentMethod::TRANSFER(),
-                $this->settings->getTransferPlatformId()
-            );
+        foreach ($this->settings->getTransferPlatformIds() as $paymentPlatformId) {
+            $output[] = new PaymentOption(PaymentMethod::TRANSFER(), $paymentPlatformId);
         }
 
         return $output;

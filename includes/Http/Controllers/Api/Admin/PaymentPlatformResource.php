@@ -33,9 +33,9 @@ class PaymentPlatformResource
         );
         $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $filteredData);
 
-        $databaseLogger->logWithActor('log_payment_platform_edited', $paymentPlatform->getId());
+        $databaseLogger->logWithActor("log_payment_platform_edited", $paymentPlatform->getId());
 
-        return new SuccessApiResponse($lang->t('payment_platform_updated'));
+        return new SuccessApiResponse($lang->t("payment_platform_updated"));
     }
 
     public function delete(
@@ -52,10 +52,10 @@ class PaymentPlatformResource
 
         if (
             $settings->getSmsPlatformId() === $paymentPlatform->getId() ||
-            $settings->getTransferPlatformId() === $paymentPlatform->getId() ||
+            in_array($paymentPlatform->getId(), $settings->getTransferPlatformIds(), true) ||
             $settings->getDirectBillingPlatformId() === $paymentPlatform->getId()
         ) {
-            return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
+            return new ErrorApiResponse($lang->t("delete_payment_platform_settings_constraint"));
         }
 
         $occupiedPlatforms = collect($serverManager->getServers())->flatMap(function (
@@ -65,12 +65,12 @@ class PaymentPlatformResource
         });
 
         if ($occupiedPlatforms->includes($paymentPlatform->getId())) {
-            return new ErrorApiResponse($lang->t('delete_payment_platform_server_constraint'));
+            return new ErrorApiResponse($lang->t("delete_payment_platform_server_constraint"));
         }
 
         $paymentPlatformRepository->delete($paymentPlatform->getId());
-        $databaseLogger->logWithActor('log_payment_platform_deleted', $paymentPlatformId);
+        $databaseLogger->logWithActor("log_payment_platform_deleted", $paymentPlatformId);
 
-        return new SuccessApiResponse($lang->t('payment_platform_deleted'));
+        return new SuccessApiResponse($lang->t("payment_platform_deleted"));
     }
 }

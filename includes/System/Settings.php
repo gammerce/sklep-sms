@@ -87,11 +87,35 @@ class Settings implements ArrayAccess
     }
 
     /**
-     * @return string|null
+     * @return string[]
      */
     public function getTransferPlatformId()
     {
-        return as_int(array_get($this->data, "transfer_platform"));
+        $transferPlatformValue = array_get($this->data, "transfer_platform");
+        $paymentPlatformIds = explode(",", $transferPlatformValue);
+        return collect($paymentPlatformIds)
+            ->map(function ($platformId) {
+                return as_int($platformId);
+            })
+            ->all();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getTransferPlatformIds()
+    {
+        $transferPlatformValue = array_get($this->data, "transfer_platform");
+
+        if (!$transferPlatformValue) {
+            return [];
+        }
+
+        return collect(explode(",", $transferPlatformValue))
+            ->map(function ($platformId) {
+                return as_int($platformId);
+            })
+            ->all();
     }
 
     /**

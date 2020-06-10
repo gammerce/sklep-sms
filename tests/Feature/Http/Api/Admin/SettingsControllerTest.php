@@ -63,6 +63,6 @@ class SettingsControllerTest extends HttpTestCase
             $directBillingPaymentPlatform->getId(),
             $settings->getDirectBillingPlatformId()
         );
-        $this->assertSame($transferPaymentPlatform->getId(), $settings->getTransferPlatformId());
+        $this->assertSame([$transferPaymentPlatform->getId()], $settings->getTransferPlatformIds());
     }
 }

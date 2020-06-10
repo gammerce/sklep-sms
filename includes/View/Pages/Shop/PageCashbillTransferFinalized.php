@@ -1,14 +1,12 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Exceptions\InvalidConfigException;
 use App\Managers\PaymentModuleManager;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseInformation;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\Verification\PaymentModules\Cashbill;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -46,30 +44,8 @@ class PageCashbillTransferFinalized extends Page
 
     public function getContent(Request $request)
     {
-        $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $this->settings->getTransferPlatformId()
-        );
-
-        if (!($paymentModule instanceof Cashbill)) {
-            throw new InvalidConfigException(
-                "Invalid payment platform in shop settings [{$this->settings->getTransferPlatformId()}]."
-            );
-        }
-
-        $sign = $request->query->get("sign");
-        $service = $request->query->get("service");
         $status = $request->query->get("status");
         $orderId = $request->query->get("orderid");
-
-        if (
-            !$paymentModule->checkSign($request->query->all(), $paymentModule->getKey(), $sign) ||
-            $service != $paymentModule->getService()
-        ) {
-            return $this->template->render("shop/components/general/header", [
-                "title" => $this->getTitle($request),
-                "subtitle" => $this->lang->t("transfer_unverified"),
-            ]);
-        }
 
         if (strtoupper($status) != "OK") {
             return $this->template->render("shop/components/general/header", [

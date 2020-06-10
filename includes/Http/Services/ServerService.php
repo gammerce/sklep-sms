@@ -12,6 +12,8 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Services\ServerServiceService;
 
+// TODO Allow server for more than one transfer payment
+
 class ServerService
 {
     /** @var ServerServiceService */

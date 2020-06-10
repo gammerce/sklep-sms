@@ -101,7 +101,7 @@ class SettingsController
             'signature' => $validated['signature'],
             'sms_platform' => $validated['sms_platform'],
             'theme' => $validated['theme'],
-            'transfer_platform' => $validated['transfer_platform'],
+            'transfer_platform' => implode(",", to_array($validated['transfer_platform'])),
             'user_edit_service' => $validated['user_edit_service'],
             'vat' => $validated['vat'],
         ];

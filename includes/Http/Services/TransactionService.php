@@ -53,6 +53,7 @@ class TransactionService
             $paymentOptionsViews[] = [
                 "method" => $paymentOption->getPaymentMethod(),
                 "payment_platform_id" => $paymentPlatform ? $paymentPlatform->getId() : null,
+                "name" => $paymentPlatform ? $paymentPlatform->getName() : null,
                 "details" => $paymentMethod->getPaymentDetails($purchase, $paymentPlatform),
             ];
         }

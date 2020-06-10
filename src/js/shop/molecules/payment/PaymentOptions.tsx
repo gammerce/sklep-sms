@@ -39,6 +39,7 @@ export const PaymentOption: FunctionComponent<Props> = (props) => {
     if (paymentOption.method === PaymentMethod.Transfer) {
         return (
             <PaymentMethodTransfer
+                name={paymentOption.name}
                 price={paymentOption.details.price}
                 oldPrice={paymentOption.details.old_price}
                 onPay={onPay}

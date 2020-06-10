@@ -68,6 +68,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "sms",
                         "payment_platform_id" => $smsPlatform->getId(),
+                        "name" => $smsPlatform->getName(),
                         "details" => [
                             "price" => "30.75 PLN",
                             "sms_code" => "abc123",
@@ -77,6 +78,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "direct_billing",
                         "payment_platform_id" => $directBillingPlatform->getId(),
+                        "name" => $directBillingPlatform->getName(),
                         "details" => [
                             "price" => "12.00 PLN",
                         ],
@@ -84,6 +86,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
+                        "name" => $transferPlatform->getName(),
                         "details" => [
                             "price" => "10.00 PLN",
                         ],
@@ -91,6 +94,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "wallet",
                         "payment_platform_id" => null,
+                        "name" => null,
                         "details" => [
                             "price" => "10.00 PLN",
                         ],
@@ -150,6 +154,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "direct_billing",
                         "payment_platform_id" => $directBillingPlatform->getId(),
+                        "name" => $directBillingPlatform->getName(),
                         "details" => [
                             "price" => "8.40 PLN",
                             "old_price" => "12.00",
@@ -158,6 +163,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
+                        "name" => $transferPlatform->getName(),
                         "details" => [
                             "price" => "7.00 PLN",
                             "old_price" => "10.00",
@@ -166,6 +172,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "wallet",
                         "payment_platform_id" => null,
+                        "name" => null,
                         "details" => [
                             "price" => "7.00 PLN",
                             "old_price" => "10.00",
@@ -220,6 +227,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "sms",
                         "payment_platform_id" => $smsPlatform->getId(),
+                        "name" => $smsPlatform->getName(),
                         "details" => [
                             "price" => "30.75 PLN",
                             "sms_code" => "abc123",
@@ -229,6 +237,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "direct_billing",
                         "payment_platform_id" => $directBillingPlatform->getId(),
+                        "name" => $directBillingPlatform->getName(),
                         "details" => [
                             "price" => "12.00 PLN",
                         ],
@@ -236,6 +245,7 @@ class TransactionResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
+                        "name" => $transferPlatform->getName(),
                         "details" => [
                             "price" => "10.00 PLN",
                         ],

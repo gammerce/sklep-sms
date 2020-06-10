@@ -39,9 +39,7 @@ class PurchaseFactory
             );
         }
 
-        if ($this->settings->getTransferPlatformId()) {
-            $paymentSelect->setTransferPaymentPlatforms([$this->settings->getTransferPlatformId()]);
-        }
+        $paymentSelect->setTransferPaymentPlatforms($this->settings->getTransferPlatformIds());
 
         return $purchase;
     }

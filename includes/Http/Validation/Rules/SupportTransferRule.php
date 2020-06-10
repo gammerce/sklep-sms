@@ -18,10 +18,12 @@ class SupportTransferRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
+        foreach (to_array($value) as $item) {
+            $paymentModule = $this->paymentModuleManager->getByPlatformId($item);
 
-        if (!($paymentModule instanceof SupportTransfer)) {
-            return [$this->lang->t('no_transfer_platform')];
+            if (!($paymentModule instanceof SupportTransfer)) {
+                return [$this->lang->t('no_transfer_platform')];
+            }
         }
 
         return [];
