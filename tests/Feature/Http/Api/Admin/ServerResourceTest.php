@@ -4,6 +4,7 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\Repositories\ServerRepository;
 use App\Verification\PaymentModules\Cashbill;
 use App\Verification\PaymentModules\SimPay;
+use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerResourceTest extends HttpTestCase
@@ -27,8 +28,11 @@ class ServerResourceTest extends HttpTestCase
         $smsPaymentPlatform = $this->factory->paymentPlatform([
             "module" => SimPay::MODULE_ID,
         ]);
-        $transferPaymentPlatform = $this->factory->paymentPlatform([
+        $transferPaymentPlatform1 = $this->factory->paymentPlatform([
             "module" => Cashbill::MODULE_ID,
+        ]);
+        $transferPaymentPlatform2 = $this->factory->paymentPlatform([
+            "module" => TPay::MODULE_ID,
         ]);
 
         // when
@@ -37,7 +41,10 @@ class ServerResourceTest extends HttpTestCase
             "ip" => "192.168.0.2",
             "port" => "27016",
             "sms_platform" => $smsPaymentPlatform->getId(),
-            "transfer_platform" => [$transferPaymentPlatform->getId()],
+            "transfer_platform" => [
+                $transferPaymentPlatform1->getId(),
+                $transferPaymentPlatform2->getId(),
+            ],
         ]);
 
         // then
@@ -50,7 +57,7 @@ class ServerResourceTest extends HttpTestCase
         $this->assertSame("27016", $freshServer->getPort());
         $this->assertSame($smsPaymentPlatform->getId(), $freshServer->getSmsPlatformId());
         $this->assertSame(
-            [$transferPaymentPlatform->getId()],
+            [$transferPaymentPlatform1->getId(), $transferPaymentPlatform2->getId()],
             $freshServer->getTransferPlatformIds()
         );
     }
