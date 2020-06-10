@@ -37,7 +37,7 @@ class ServerCollectionTest extends HttpTestCase
             "ip" => "192.168.0.1",
             "port" => "27015",
             "sms_platform" => $smsPaymentPlatform->getId(),
-            "transfer_platform" => $transferPaymentPlatform->getId(),
+            "transfer_platform" => [$transferPaymentPlatform->getId()],
         ]);
 
         // then
@@ -49,7 +49,7 @@ class ServerCollectionTest extends HttpTestCase
         $this->assertSame("192.168.0.1", $server->getIp());
         $this->assertSame("27015", $server->getPort());
         $this->assertSame($smsPaymentPlatform->getId(), $server->getSmsPlatformId());
-        $this->assertSame($transferPaymentPlatform->getId(), $server->getTransferPlatformId());
+        $this->assertSame([$transferPaymentPlatform->getId()], $server->getTransferPlatformIds());
     }
 
     /** @test */

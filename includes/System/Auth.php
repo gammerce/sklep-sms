@@ -52,9 +52,7 @@ class Auth
      */
     public function loginUser(Request $request, User $user)
     {
-        if (!$user->exists()) {
-            throw new UnexpectedValueException("Given user is not logged in");
-        }
+        assert($user->exists());
 
         $this->userManager->setUser($user);
         $request->getSession()->set("uid", $user->getId());
@@ -67,9 +65,7 @@ class Auth
      */
     public function loginAdmin(Request $request, User $user)
     {
-        if (!$user->exists()) {
-            throw new UnexpectedValueException("Given user is not logged in");
-        }
+        assert($user->exists());
 
         $session = $request->getSession();
 

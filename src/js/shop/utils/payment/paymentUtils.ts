@@ -9,6 +9,7 @@ import { PaymentMethod } from "../../types/transaction";
 export const purchaseService = async (
     transactionId: string,
     method: PaymentMethod,
+    paymentPlatformId: number | undefined,
     body: Dict = {}
 ) => {
     if (loader.blocked) {
@@ -19,6 +20,7 @@ export const purchaseService = async (
         loader.show();
         await makePayment(transactionId, {
             method,
+            payment_platform_id: paymentPlatformId,
             ...body,
         });
     } catch (e) {

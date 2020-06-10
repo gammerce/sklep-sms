@@ -24,7 +24,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
     private $price;
 
     /** @var string */
-    private $serviceId = 'vip';
+    private $serviceId = "vip";
 
     protected function setUp()
     {
@@ -41,12 +41,12 @@ class PurchaseResourceSmsTest extends HttpTestCase
             "sms_platform_id" => $paymentPlatform->getId(),
         ]);
         $this->factory->serverService([
-            'server_id' => $this->server->getId(),
-            'service_id' => $this->serviceId,
+            "server_id" => $this->server->getId(),
+            "service_id" => $this->serviceId,
         ]);
         $this->price = $this->factory->price([
-            'service_id' => $this->serviceId,
-            'server_id' => $this->server->getId(),
+            "service_id" => $this->serviceId,
+            "server_id" => $this->server->getId(),
         ]);
     }
 
@@ -57,33 +57,33 @@ class PurchaseResourceSmsTest extends HttpTestCase
         /** @var BoughtServiceRepository $boughtServiceRepository */
         $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
 
-        $authData = 'test';
-        $password = 'test123';
-        $smsCode = 'ABCD12EF';
+        $authData = "test";
+        $password = "test123";
+        $smsCode = "ABCD12EF";
         $type = ExtraFlagType::TYPE_NICK;
 
         $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'service_id' => $this->serviceId,
-                'server_id' => $this->server->getId(),
-                'type' => $type,
-                'auth_data' => $authData,
-                'password' => $password,
-                'sms_code' => $smsCode,
-                'method' => PaymentMethod::SMS(),
-                'price_id' => $this->price->getId(),
-                'ip' => "192.0.2.1",
-                'sign' => $sign,
+                "service_id" => $this->serviceId,
+                "server_id" => $this->server->getId(),
+                "type" => $type,
+                "auth_data" => $authData,
+                "password" => $password,
+                "sms_code" => $smsCode,
+                "method" => PaymentMethod::SMS(),
+                "price_id" => $this->price->getId(),
+                "ip" => "192.0.2.1",
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
@@ -105,43 +105,43 @@ class PurchaseResourceSmsTest extends HttpTestCase
     public function purchase_using_sms_accept_application_assoc()
     {
         // given
-        $authData = 'test';
-        $password = 'test123';
-        $smsCode = 'ABCD12EF';
+        $authData = "test";
+        $password = "test123";
+        $smsCode = "ABCD12EF";
         $type = ExtraFlagType::TYPE_NICK;
 
         $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'service_id' => $this->serviceId,
-                'server_id' => $this->server->getId(),
-                'type' => $type,
-                'auth_data' => $authData,
-                'password' => $password,
-                'sms_code' => $smsCode,
-                'method' => PaymentMethod::SMS(),
-                'price_id' => $this->price->getId(),
-                'ip' => "192.0.2.1",
-                'sign' => $sign,
+                "service_id" => $this->serviceId,
+                "server_id" => $this->server->getId(),
+                "type" => $type,
+                "auth_data" => $authData,
+                "password" => $password,
+                "sms_code" => $smsCode,
+                "method" => PaymentMethod::SMS(),
+                "price_id" => $this->price->getId(),
+                "ip" => "192.0.2.1",
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'Accept' => 'application/assoc',
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "Accept" => "application/assoc",
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $data = implode("\n", [
-            'status:purchased',
-            'text:Usługa została prawidłowo zakupiona.',
-            'bsid:\d+',
+            "status:purchased",
+            "text:Usługa została prawidłowo zakupiona.",
+            "bsid:\d+",
         ]);
         $this->assertRegExp("#^$data$#", $response->getContent());
     }
@@ -150,31 +150,31 @@ class PurchaseResourceSmsTest extends HttpTestCase
     public function fails_with_invalid_data_passed()
     {
         // given
-        $authData = 'a';
-        $smsCode = 'ABCD12EF';
+        $authData = "a";
+        $smsCode = "ABCD12EF";
         $type = ExtraFlagType::TYPE_NICK;
 
         $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
 
         // when
         $response = $this->post(
-            '/api/server/purchase',
+            "/api/server/purchase",
             [
-                'service_id' => $this->serviceId,
-                'server_id' => $this->server->getId(),
-                'type' => $type,
-                'auth_data' => $authData,
-                'password' => '1',
-                'sms_code' => $smsCode,
-                'method' => PaymentMethod::SMS(),
-                'price_id' => $this->price->getId(),
-                'sign' => $sign,
+                "service_id" => $this->serviceId,
+                "server_id" => $this->server->getId(),
+                "type" => $type,
+                "auth_data" => $authData,
+                "password" => "1",
+                "sms_code" => $smsCode,
+                "method" => PaymentMethod::SMS(),
+                "price_id" => $this->price->getId(),
+                "sign" => $sign,
             ],
             [
-                'token' => $this->server->getToken(),
+                "token" => $this->server->getToken(),
             ],
             [
-                'User-Agent' => Server::TYPE_AMXMODX,
+                "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
 

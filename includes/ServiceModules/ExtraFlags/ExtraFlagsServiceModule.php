@@ -31,6 +31,7 @@ use App\Models\UserService;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\UserServiceRepository;
@@ -380,16 +381,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $server = $this->serverManager->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
 
         if ($server) {
+            $paymentPlatformSelect = $purchase->getPaymentSelect();
+
             if ($server->getSmsPlatformId()) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_PLATFORM_SMS => $server->getSmsPlatformId(),
-                ]);
+                $paymentPlatformSelect->setSmsPaymentPlatform($server->getSmsPlatformId());
             }
 
-            if ($server->getTransferPlatformId()) {
-                $purchase->setPayment([
-                    Purchase::PAYMENT_PLATFORM_TRANSFER => $server->getTransferPlatformId(),
-                ]);
+            if ($server->getTransferPlatformIds()) {
+                $paymentPlatformSelect->setTransferPaymentPlatforms(
+                    $server->getTransferPlatformIds()
+                );
             }
         }
 
@@ -484,7 +485,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
@@ -611,8 +612,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $purchasingUser = $this->userManager->getUser($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser))
             ->setServiceId($this->service->getId())
+            ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
             ->setOrder([
@@ -630,9 +631,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $services = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
@@ -730,9 +729,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $forever = (bool) array_get($body, "forever");
 
@@ -783,9 +780,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceDeletePost(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
@@ -799,9 +794,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $serviceInfo = [
             "types" => "",
@@ -879,9 +872,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $server = $this->serverManager->getServer($userService->getServerId());
 
@@ -899,9 +890,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $validator = new Validator($body, [
             "password" => [

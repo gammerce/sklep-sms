@@ -28,16 +28,16 @@ class ServerResource
 
         $serverRepository->update(
             $serverId,
-            $validated['name'],
-            $validated['ip'],
-            $validated['port'],
-            $validated['sms_platform'],
-            $validated['transfer_platform']
+            $validated["name"],
+            $validated["ip"],
+            $validated["port"],
+            $validated["sms_platform"],
+            $validated["transfer_platform"]
         );
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
-        $databaseLogger->logWithActor('log_server_edited', $serverId);
+        $databaseLogger->logWithActor("log_server_edited", $serverId);
 
-        return new SuccessApiResponse($lang->t('server_edit'));
+        return new SuccessApiResponse($lang->t("server_edit"));
     }
 
     public function delete(
@@ -52,17 +52,17 @@ class ServerResource
             $deleted = $serverRepository->delete($serverId);
         } catch (PDOException $e) {
             if (get_error_code($e) === 1451) {
-                return new ErrorApiResponse($lang->t('delete_server_constraint_fails'));
+                return new ErrorApiResponse($lang->t("delete_server_constraint_fails"));
             }
 
             throw $e;
         }
 
         if ($deleted) {
-            $databaseLogger->logWithActor('log_server_deleted', $serverId);
-            return new SuccessApiResponse($lang->t('delete_server'));
+            $databaseLogger->logWithActor("log_server_deleted", $serverId);
+            return new SuccessApiResponse($lang->t("delete_server"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_server'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_server"), 0);
     }
 }

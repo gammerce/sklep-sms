@@ -39,7 +39,7 @@ class SettingsControllerTest extends HttpTestCase
             "shop_url" => "https://example.com",
             "sms_platform" => $smsPaymentPlatform->getId(),
             "theme" => "fusion",
-            "transfer_platform" => $transferPaymentPlatform->getId(),
+            "transfer_platform" => [$transferPaymentPlatform->getId()],
             "user_edit_service" => 1,
             "vat" => 1.23,
         ]);
@@ -63,6 +63,6 @@ class SettingsControllerTest extends HttpTestCase
             $directBillingPaymentPlatform->getId(),
             $settings->getDirectBillingPlatformId()
         );
-        $this->assertSame($transferPaymentPlatform->getId(), $settings->getTransferPlatformId());
+        $this->assertSame([$transferPaymentPlatform->getId()], $settings->getTransferPlatformIds());
     }
 }

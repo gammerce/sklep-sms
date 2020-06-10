@@ -1,8 +1,12 @@
 <?php
 namespace App\View\Html;
 
+use App\Support\Whenable;
+
 class DOMElement implements I_ToHtml
 {
+    use Whenable;
+
     /** @var string */
     protected $name;
 
@@ -175,20 +179,6 @@ class DOMElement implements I_ToHtml
     public function setName($name)
     {
         $this->name = (string) $name;
-        return $this;
-    }
-
-    /**
-     * @param bool $condition
-     * @param callable $callback
-     * @return $this
-     */
-    public function when($condition, callable $callback)
-    {
-        if ($condition) {
-            call_user_func($callback, $this);
-        }
-
         return $this;
     }
 

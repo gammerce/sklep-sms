@@ -50,15 +50,10 @@ class BlockUserButtons extends Block
 
     public function getContentClass()
     {
-        return is_logged() ? "user-buttons" : "loginarea";
+        return $this->auth->check() ? "user-buttons" : "loginarea";
     }
 
-    public function getContentId()
-    {
-        return "user_buttons";
-    }
-
-    protected function content(Request $request, array $params)
+    public function getContent(Request $request, array $params)
     {
         if (!$this->auth->check()) {
             return $this->template->render("shop/layout/loginarea");

@@ -2,6 +2,7 @@
 namespace App\Payment\Sms;
 
 use App\Managers\PaymentModuleManager;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
@@ -39,11 +40,9 @@ class SmsPaymentMethod implements IPaymentMethod
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function getPaymentDetails(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
-        );
+        $smsPaymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
         if (!($smsPaymentModule instanceof SupportSms)) {
             return null;
@@ -60,25 +59,14 @@ class SmsPaymentMethod implements IPaymentMethod
         ]);
     }
 
-    public function isAvailable(Purchase $purchase)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        if (
-            !$purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS) ||
-            $this->smsPriceService->getPrice($purchase) === null ||
-            $purchase->getPayment(Purchase::PAYMENT_DISABLED_SMS)
-        ) {
-            return false;
-        }
-
-        $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
-        );
+        $smsPaymentModule = $this->paymentModuleManager->get($paymentPlatform);
+        $price = $this->smsPriceService->getPrice($purchase);
 
         return $smsPaymentModule instanceof SupportSms &&
-            $this->smsPriceService->isPriceAvailable(
-                $this->smsPriceService->getPrice($purchase),
-                $smsPaymentModule
-            );
+            $price !== null &&
+            $this->smsPriceService->isPriceAvailable($price, $smsPaymentModule);
     }
 
     /**
@@ -90,7 +78,7 @@ class SmsPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
+            $purchase->getPaymentOption()->getPaymentPlatformId()
         );
 
         if (!($paymentModule instanceof SupportSms)) {

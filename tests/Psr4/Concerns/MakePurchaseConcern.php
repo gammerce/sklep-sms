@@ -10,6 +10,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
@@ -94,12 +95,13 @@ trait MakePurchaseConcern
                 "password" => $attributes["password"],
                 "passwordr" => $attributes["password"],
             ])
+            ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
                 Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
             ])
             ->setUsingPrice($price);
+
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseDataValidate($purchase)->validateOrFail();
 
@@ -177,11 +179,14 @@ trait MakePurchaseConcern
         /** @var MybbExtraGroupsServiceModule $serviceModule */
         $serviceModule = $serviceModuleManager->get($service->getId());
 
-        $purchase = (new Purchase(new User()))->setServiceId($service->getId())->setPayment([
-            Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
-            Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
-            Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
-        ]);
+        $purchase = (new Purchase(new User()))
+            ->setServiceId($service->getId())
+            ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
+            ->setPayment([
+                Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],
+            ]);
+
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         $serviceModule->purchaseFormValidate($purchase, $attributes);
 

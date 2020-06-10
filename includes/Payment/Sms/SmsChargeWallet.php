@@ -5,6 +5,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SmsPriceExistsRule;
 use App\Http\Validation\Validator;
 use App\Managers\PaymentModuleManager;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Models\Transaction;
@@ -16,6 +17,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use UnexpectedValueException;
 
 class SmsChargeWallet implements IChargeWallet
 {
@@ -67,16 +69,13 @@ class SmsChargeWallet implements IChargeWallet
         $smsPrice = $validated["sms_price"];
 
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_SMS)
+            $purchase->getPaymentOption()->getPaymentPlatformId()
         );
 
-        if (!($smsPaymentModule instanceof SupportSms)) {
-            return;
-        }
+        assert($smsPaymentModule instanceof SupportSms);
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $smsPrice,
-            Purchase::PAYMENT_DISABLED_SMS => false,
         ]);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
@@ -105,18 +104,13 @@ class SmsChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView()
+    public function getOptionView(PaymentPlatform $paymentPlatform)
     {
-        $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $this->settings->getSmsPlatformId()
-        );
-
-        if (!($paymentModule instanceof SupportSms)) {
-            return null;
-        }
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+        assert($paymentModule instanceof SupportSms);
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => PaymentMethod::SMS(),
+            "value" => make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),
             "text" => "SMS",
         ]);
 

@@ -4,12 +4,11 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Managers\ServiceModuleManager;
-use App\Models\Purchase;
 use App\Payment\General\PurchaseDataService;
+use App\Payment\General\PurchaseFactory;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Services\UserServiceAccessService;
 use App\System\Auth;
-use App\System\Settings;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -19,10 +18,10 @@ class PurchaseCollection
         Request $request,
         TranslationManager $translationManager,
         Auth $auth,
-        Settings $settings,
         ServiceModuleManager $serviceModuleManager,
         PurchaseDataService $purchaseDataService,
-        UserServiceAccessService $userServiceAccessService
+        UserServiceAccessService $userServiceAccessService,
+        PurchaseFactory $purchaseFactory
     ) {
         $lang = $translationManager->user();
         $user = $auth->user();
@@ -38,29 +37,8 @@ class PurchaseCollection
             return new ApiResponse("no_permission", $lang->t("service_no_permission"), 0);
         }
 
-        $purchase = (new Purchase($user))->setServiceId($serviceModule->service->getId());
-
-        if ($user->getEmail()) {
-            $purchase->setEmail($user->getEmail());
-        }
-
-        if ($settings->getSmsPlatformId()) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $settings->getSmsPlatformId(),
-            ]);
-        }
-
-        if ($settings->getTransferPlatformId()) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $settings->getTransferPlatformId(),
-            ]);
-        }
-
-        if ($settings->getDirectBillingPlatformId()) {
-            $purchase->setPayment([
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $settings->getDirectBillingPlatformId(),
-            ]);
-        }
+        $purchase = $purchaseFactory->create($user);
+        $purchase->setServiceId($serviceModule->service->getId());
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseDataService->storePurchase($purchase);

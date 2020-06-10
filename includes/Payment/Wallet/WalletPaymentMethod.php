@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Wallet;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
@@ -8,6 +9,7 @@ use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\Payment\Transfer\TransferPriceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
+use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -22,26 +24,30 @@ class WalletPaymentMethod implements IPaymentMethod
     /** @var TransferPriceService */
     private $transferPriceService;
 
+    /** @var Auth */
+    private $auth;
+
     public function __construct(
         TranslationManager $translationManager,
         TransferPriceService $transferPriceService,
-        WalletPaymentService $walletPaymentService
+        WalletPaymentService $walletPaymentService,
+        Auth $auth
     ) {
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
         $this->transferPriceService = $transferPriceService;
+        $this->auth = $auth;
     }
 
-    public function getPaymentDetails(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        return is_logged() &&
-            $this->transferPriceService->getPrice($purchase) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_WALLET);
+        $price = $this->transferPriceService->getPrice($purchase);
+        return $this->auth->check() && $price !== null;
     }
 
     /**

@@ -8,7 +8,7 @@ class IntegerRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!my_is_integer($value)) {
-            return [$this->lang->t('field_integer')];
+            return [$this->lang->t("field_integer")];
         }
 
         return [];

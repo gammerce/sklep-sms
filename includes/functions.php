@@ -1,9 +1,11 @@
 <?php
 
 use App\Loggers\FileLogger;
+use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
@@ -46,27 +48,12 @@ function get_row_limit($page, $rowLimit = 0)
     return [($page - 1) * $rowLimit, $rowLimit];
 }
 
-/* User functions */
-/**
- * Sprawddza czy użytkownik jest zalogowany
- *
- * @return bool
- */
-function is_logged()
-{
-    /** @var Auth $auth */
-    $auth = app()->make(Auth::class);
-
-    return $auth->check();
-}
-
 /**
  * @param string $privilege
  * @param User $user
- *
  * @return bool
  */
-function has_privileges($privilege, $user = null)
+function has_privileges($privilege, User $user = null)
 {
     if (!$user) {
         /** @var Auth $auth */
@@ -106,6 +93,12 @@ function has_privileges($privilege, $user = null)
     return $user->hasPrivilege($privilege);
 }
 
+/**
+ * @param string $name
+ * @param string $content
+ * @param array $data
+ * @return DOMElement
+ */
 function create_dom_element($name, $content = "", $data = [])
 {
     $element = new DOMElement($name, $content);
@@ -117,6 +110,10 @@ function create_dom_element($name, $content = "", $data = [])
     return $element;
 }
 
+/**
+ * @param string $platform
+ * @return string
+ */
 function get_platform($platform)
 {
     /** @var TranslationManager $translationManager */
@@ -134,16 +131,24 @@ function get_platform($platform)
     return $platform;
 }
 
+/**
+ * @param string $platform
+ * @return bool
+ */
 function is_server_platform($platform)
 {
     return in_array($platform, [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD]);
 }
 
+/**
+ * @param Request|null $request
+ * @return string|null
+ */
 function get_ip(Request $request = null)
 {
     $request = $request ?: app()->make(Request::class);
 
-    if ($request->server->has('HTTP_CF_CONNECTING_IP')) {
+    if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
         $cfIpRanges = [
             "103.21.244.0/22",
             "103.22.200.0/22",
@@ -162,20 +167,19 @@ function get_ip(Request $request = null)
         ];
 
         foreach ($cfIpRanges as $range) {
-            if (ip_in_range($request->server->get('REMOTE_ADDR'), $range)) {
-                return $request->server->get('HTTP_CF_CONNECTING_IP');
+            if (ip_in_range($request->server->get("REMOTE_ADDR"), $range)) {
+                return $request->server->get("HTTP_CF_CONNECTING_IP");
             }
         }
     }
 
-    return $request->server->get('REMOTE_ADDR');
+    return $request->server->get("REMOTE_ADDR");
 }
 
 /**
  * Returns sms cost net by number
  *
  * @param string $number
- *
  * @return int
  */
 function get_sms_cost($number)
@@ -240,6 +244,10 @@ function is_steam_id_valid($steamId)
     return !!preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamId);
 }
 
+/**
+ * @param int $seconds
+ * @return string
+ */
 function seconds_to_time($seconds)
 {
     /** @var TranslationManager $translationManager */
@@ -254,6 +262,10 @@ function seconds_to_time($seconds)
         ->format("%a {$lang->t('days')} {$lang->t('and')} %h {$lang->t('hours')}");
 }
 
+/**
+ * @param string $string
+ * @return string[]
+ */
 function custom_mb_str_split($string)
 {
     return preg_split('/(?<!^)(?!$)/u', $string);
@@ -379,6 +391,11 @@ function starts_with($haystack, $needle)
     return substr($haystack, 0, strlen($needle)) === (string) $needle;
 }
 
+/**
+ * @param string $string
+ * @param string $needle
+ * @return bool
+ */
 function str_contains($string, $needle)
 {
     return strpos($string, $needle) !== false;
@@ -406,11 +423,20 @@ function my_is_integer($val)
     return strlen($val) && trim($val) === strval(intval($val));
 }
 
+/**
+ * @param mixed $array
+ * @param mixed $key
+ * @param mixed $default
+ * @return mixed|null
+ */
 function array_get($array, $key, $default = null)
 {
     return isset($array[$key]) ? $array[$key] : $default;
 }
 
+/**
+ * @return Request
+ */
 function captureRequest()
 {
     $queryAttributes = [];
@@ -418,22 +444,34 @@ function captureRequest()
         $queryAttributes[$key] = urldecode($value);
     }
 
-    $request = Symfony\Component\HttpFoundation\Request::createFromGlobals();
+    $request = Request::createFromGlobals();
     $request->query->replace($queryAttributes);
 
     return $request;
 }
 
+/**
+ * @param PDOException $e
+ * @return int
+ */
 function get_error_code(PDOException $e)
 {
     return $e->errorInfo[1];
 }
 
+/**
+ * @param mixed $items
+ * @return Collection
+ */
 function collect($items = [])
 {
     return new Collection($items);
 }
 
+/**
+ * @param array $array
+ * @return bool
+ */
 function is_list(array $array)
 {
     if (empty($array)) {
@@ -597,7 +635,11 @@ function price_to_int($value)
     return (int) str_replace(".", "", number_format($value, 2));
 }
 
-// https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
+/**
+ * @param $path
+ * @return mixed|null
+ * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
+ */
 function get_class_from_file($path)
 {
     $fp = fopen($path, 'r');
@@ -626,38 +668,59 @@ function get_class_from_file($path)
     return null;
 }
 
-if (!function_exists('is_iterable')) {
+if (!function_exists("is_iterable")) {
+    /**
+     * @param mixed $value
+     * @return bool
+     */
     function is_iterable($value)
     {
         return is_array($value) || $value instanceof Traversable;
     }
 }
 
+/**
+ * @return bool
+ */
 function is_debug()
 {
-    $debug = getenv('APP_DEBUG');
-    return $debug === '1' || $debug === 'true' || $debug === 1;
+    $debug = getenv("APP_DEBUG");
+    return $debug === "1" || $debug === "true" || $debug === 1;
 }
 
+/**
+ * @return bool
+ */
 function is_testing()
 {
-    return getenv('APP_ENV') === 'testing';
+    return getenv("APP_ENV") === "testing";
 }
 
+/**
+ * @return bool
+ */
 function is_demo()
 {
-    return getenv('APP_ENV') === 'demo';
+    return getenv("APP_ENV") === "demo";
 }
 
+/**
+ * @param mixed $value
+ * @return bool
+ */
 function has_value($value)
 {
     if (is_array($value) || is_object($value)) {
         return !!$value;
     }
 
-    return strlen($value);
+    return strlen($value) > 0;
 }
 
+/**
+ * @param string $text
+ * @param array $data
+ */
 function log_info($text, array $data = [])
 {
     /** @var FileLogger $logger */
@@ -688,6 +751,10 @@ function map_to_params($data)
     return [$params, $values];
 }
 
+/**
+ * @param mixed $items
+ * @return array
+ */
 function to_array($items)
 {
     if ($items instanceof Traversable) {
@@ -829,4 +896,43 @@ function multiply($a, $b)
     }
 
     return $a * $b;
+}
+
+/**
+ * @param PaymentMethod $paymentMethod
+ * @param PaymentPlatform $paymentPlatform
+ * @return string
+ */
+function make_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
+{
+    return $paymentMethod . "," . $paymentPlatform->getId();
+}
+
+/**
+ * @param PaymentOption $a
+ * @param PaymentOption $b
+ * @return bool
+ */
+function payment_option_equals(PaymentOption $a, PaymentOption $b)
+{
+    return $a->getPaymentPlatformId() === $b->getPaymentPlatformId() &&
+        $a->getPaymentMethod()->equals($b->getPaymentMethod());
+}
+
+/**
+ * @param string $list
+ * @param string $delimiter
+ * @return array
+ */
+function explode_int_list($list, $delimiter = ",")
+{
+    if ($list === "" || $list === null) {
+        return [];
+    }
+
+    return collect(explode($delimiter, $list))
+        ->map(function ($value) {
+            return (int) $value;
+        })
+        ->all();
 }

@@ -1,6 +1,6 @@
 const sprintf = (text: string, ...args: any[]): string => {
     for (const [index, arg] of args.entries()) {
-        text = text.replace(`{${index}}`, arg);
+        text = text.replace(`{${index + 1}}`, arg);
     }
 
     return text;

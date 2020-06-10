@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Shop;
 
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
@@ -17,6 +18,15 @@ class PaymentResourceTest extends HttpTestCase
 {
     /** @var Purchase */
     private $purchase;
+
+    /** @var PaymentPlatform */
+    private $directBillingPlatform;
+
+    /** @var PaymentPlatform */
+    private $smsPlatform;
+
+    /** @var PaymentPlatform */
+    private $transferPlatform;
 
     protected function setUp()
     {
@@ -37,13 +47,13 @@ class PaymentResourceTest extends HttpTestCase
             "quantity" => 5,
             "sms_price" => 500,
         ]);
-        $smsPaymentPlatform = $this->factory->paymentPlatform([
+        $this->smsPlatform = $this->factory->paymentPlatform([
             "module" => Pukawka::MODULE_ID,
         ]);
-        $transferPaymentPlatform = $this->factory->paymentPlatform([
+        $this->transferPlatform = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,
         ]);
-        $directBillingPaymentPlatform = $this->factory->paymentPlatform([
+        $this->directBillingPlatform = $this->factory->paymentPlatform([
             "module" => SimPay::MODULE_ID,
         ]);
 
@@ -53,9 +63,6 @@ class PaymentResourceTest extends HttpTestCase
                 Purchase::PAYMENT_PRICE_SMS => 500,
                 Purchase::PAYMENT_PRICE_TRANSFER => 500,
                 Purchase::PAYMENT_PRICE_DIRECT_BILLING => 500,
-                Purchase::PAYMENT_PLATFORM_SMS => $smsPaymentPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $transferPaymentPlatform->getId(),
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $directBillingPaymentPlatform->getId(),
             ])
             ->setOrder([
                 Purchase::ORDER_QUANTITY => 5,
@@ -64,6 +71,12 @@ class PaymentResourceTest extends HttpTestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPromoCode($promoCode);
+
+        $this->purchase
+            ->getPaymentSelect()
+            ->setSmsPaymentPlatform($this->smsPlatform->getId())
+            ->setTransferPaymentPlatforms([$this->transferPlatform->getId()])
+            ->setDirectBillingPaymentPlatform($this->directBillingPlatform->getId());
 
         $purchaseDataService->storePurchase($this->purchase);
     }
@@ -74,6 +87,7 @@ class PaymentResourceTest extends HttpTestCase
         // when
         $response = $this->post("/api/payment/{$this->purchase->getId()}", [
             "method" => PaymentMethod::SMS(),
+            "payment_platform_id" => $this->smsPlatform->getId(),
         ]);
 
         // then
@@ -110,6 +124,7 @@ class PaymentResourceTest extends HttpTestCase
         // when
         $response = $this->post("/api/payment/{$this->purchase->getId()}", [
             "method" => PaymentMethod::TRANSFER(),
+            "payment_platform_id" => $this->transferPlatform->getId(),
         ]);
 
         // then
@@ -143,6 +158,7 @@ class PaymentResourceTest extends HttpTestCase
         // when
         $response = $this->post("/api/payment/{$this->purchase->getId()}", [
             "method" => PaymentMethod::DIRECT_BILLING(),
+            "payment_platform_id" => $this->directBillingPlatform->getId(),
         ]);
 
         // then

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\DefaultSmsPlatformRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SupportSmsRule;
@@ -40,14 +41,14 @@ class ServerService
                 "ip" => trim(array_get($body, "ip")),
                 "port" => trim(array_get($body, "port")),
                 "sms_platform" => as_int(array_get($body, "sms_platform")),
-                "transfer_platform" => as_int(array_get($body, "transfer_platform")),
+                "transfer_platform" => array_get($body, "transfer_platform"),
             ]),
             [
                 "name" => [new RequiredRule()],
                 "ip" => [new RequiredRule()],
                 "port" => [new RequiredRule()],
                 "sms_platform" => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
-                "transfer_platform" => [new SupportTransferRule()],
+                "transfer_platform" => [new ArrayRule(), new SupportTransferRule()],
             ]
         );
     }

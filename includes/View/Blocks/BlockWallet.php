@@ -60,12 +60,7 @@ class BlockWallet extends Block implements IBeLoggedMust
         return "wallet-status";
     }
 
-    public function getContentId()
-    {
-        return "wallet";
-    }
-
-    protected function content(Request $request, array $params)
+    public function getContent(Request $request, array $params)
     {
         $user = $this->auth->user();
         $balance = $this->priceTextService->getPlainPrice($user->getWallet());

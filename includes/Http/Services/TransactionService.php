@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Services;
 
+use App\Managers\PaymentModuleManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PaymentMethodFactory;
-use App\Payment\Interfaces\IPaymentMethod;
+use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePromoCode;
+use App\Verification\Abstracts\SupportTransfer;
 
 class TransactionService
 {
@@ -15,29 +17,68 @@ class TransactionService
     /** @var PaymentMethodFactory */
     private $paymentMethodFactory;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         ServiceModuleManager $serviceModuleManager,
-        PaymentMethodFactory $paymentMethodFactory
+        PaymentMethodFactory $paymentMethodFactory,
+        PaymentModuleManager $paymentModuleManager,
+        PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->serviceModuleManager = $serviceModuleManager;
         $this->paymentMethodFactory = $paymentMethodFactory;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
+    /**
+     * @param Purchase $purchase
+     * @return array
+     */
     public function getTransactionDetails(Purchase $purchase)
     {
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
+        $paymentOptions = $purchase->getPaymentSelect()->all();
+        $paymentOptionsViews = [];
 
-        $paymentMethods = collect($this->paymentMethodFactory->createAll())
-            ->filter(function (IPaymentMethod $paymentMethod) use ($purchase) {
-                return $paymentMethod->isAvailable($purchase);
-            })
-            ->mapWithKeys(function (IPaymentMethod $paymentMethod) use ($purchase) {
-                return $paymentMethod->getPaymentDetails($purchase);
-            })
-            ->all();
+        foreach ($paymentOptions as $paymentOption) {
+            $paymentMethod = $this->paymentMethodFactory->create(
+                $paymentOption->getPaymentMethod()
+            );
+            $paymentPlatform = $this->paymentPlatformRepository->get(
+                $paymentOption->getPaymentPlatformId()
+            );
+
+            if (!$paymentMethod->isAvailable($purchase, $paymentPlatform)) {
+                continue;
+            }
+
+            $paymentPlatformId = null;
+            $name = null;
+
+            if ($paymentPlatform) {
+                $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+                if ($paymentModule instanceof SupportTransfer) {
+                    $name = $paymentModule::getName();
+                }
+
+                $paymentPlatformId = $paymentPlatform->getId();
+            }
+
+            $paymentOptionsViews[] = [
+                "method" => $paymentOption->getPaymentMethod(),
+                "payment_platform_id" => $paymentPlatformId,
+                "name" => $name,
+                "details" => $paymentMethod->getPaymentDetails($purchase, $paymentPlatform),
+            ];
+        }
 
         $output = [
-            "payment_methods" => $paymentMethods,
+            "payment_options" => $paymentOptionsViews,
         ];
 
         if ($serviceModule instanceof IServicePromoCode) {

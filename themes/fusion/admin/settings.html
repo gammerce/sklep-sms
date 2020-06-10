@@ -218,9 +218,8 @@
             <div class="field-body">
                 <div class="field is-grouped">
                     <div class="control">
-                        <div class="select is-small">
-                            <select id="transfer_platform" name="transfer_platform">
-                                <option value="">{$lang->t('none')}</option>
+                        <div class="select is-multiple is-small">
+                            <select id="transfer_platform" name="transfer_platform[]" multiple>
                                 {$transferPlatforms}
                             </select>
                         </div>
@@ -272,9 +271,10 @@
                         <input
                             id="vat"
                             name="vat"
-                            type="text"
+                            type="number"
                             value="{{ $settings->getVat() }}"
                             class="input is-small"
+                            step="0.01"
                             maxlength="256"
                         />
                     </p>

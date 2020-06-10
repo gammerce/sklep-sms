@@ -3,8 +3,10 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
+use App\Http\Responses\ErrorApiResponse;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
@@ -28,11 +30,17 @@ class PaymentResource
             throw new EntityNotFoundException();
         }
 
-        $method = as_payment_method($request->request->get("method"));
+        $paymentPlatformId = as_int($request->request->get("payment_platform_id"));
+        $paymentMethod = as_payment_method($request->request->get("method"));
         $smsCode = trim($request->request->get("sms_code"));
 
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => $method,
+        $paymentOption = new PaymentOption($paymentMethod, $paymentPlatformId);
+
+        if (!$purchase->getPaymentSelect()->contains($paymentOption)) {
+            return new ErrorApiResponse("Invalid payment option");
+        }
+
+        $purchase->setPaymentOption($paymentOption)->setPayment([
             Purchase::PAYMENT_SMS_CODE => $smsCode,
         ]);
 

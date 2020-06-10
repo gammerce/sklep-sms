@@ -27,18 +27,6 @@ class ChargeWalletFactory
     }
 
     /**
-     * @return IChargeWallet[]
-     */
-    public function createAll()
-    {
-        return collect($this->paymentMethodsClasses)
-            ->map(function ($class) {
-                return $this->app->make($class);
-            })
-            ->all();
-    }
-
-    /**
      * @param PaymentMethod $paymentMethod
      * @return IChargeWallet
      * @throws UnexpectedValueException

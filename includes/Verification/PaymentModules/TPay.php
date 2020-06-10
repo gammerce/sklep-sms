@@ -39,14 +39,14 @@ class TPay extends PaymentModule implements SupportTransfer
         $this->accountId = $this->getData("account_id");
     }
 
+    public static function getName()
+    {
+        return "TPay";
+    }
+
     public static function getDataFields()
     {
         return [new DataField("key"), new DataField("account_id")];
-    }
-
-    public static function getSmsNumbers()
-    {
-        return [];
     }
 
     public function prepareTransfer($price, Purchase $purchase)
@@ -59,7 +59,7 @@ class TPay extends PaymentModule implements SupportTransfer
             "method" => "POST",
             "id" => $this->accountId,
             "kwota" => $price,
-            "opis" => $purchase->getDesc(),
+            "opis" => $purchase->getDescription(),
             "crc" => $crc,
             "md5sum" => md5($this->accountId . $price . $crc . $this->key),
             "imie" => $purchase->user->getForename(),

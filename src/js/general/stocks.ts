@@ -1,4 +1,5 @@
 import { element_with_data_module } from "./global";
+import { Dict } from "../shop/types/general";
 
 export const get_random_string = function(length: number = 8): string {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -21,4 +22,8 @@ export const service_module_act_can = function(name: string, a: JQuery): JQuery 
 
 export const trimSlashes = function(text: string): string {
     return text.replace(/^\/|\/$/g, "");
+};
+
+export const getFormData = function(node: JQuery): Dict {
+    return Object.fromEntries(node.serializeArray().map(item => [item.name, item.value]));
 };

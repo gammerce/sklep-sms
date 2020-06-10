@@ -87,11 +87,11 @@ class Settings implements ArrayAccess
     }
 
     /**
-     * @return string|null
+     * @return string[]
      */
-    public function getTransferPlatformId()
+    public function getTransferPlatformIds()
     {
-        return as_int(array_get($this->data, "transfer_platform"));
+        return explode_int_list(array_get($this->data, "transfer_platform"), ",");
     }
 
     /**

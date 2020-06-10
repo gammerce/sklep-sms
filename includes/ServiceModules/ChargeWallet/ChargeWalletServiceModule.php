@@ -9,11 +9,14 @@ use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\ChargeWalletFactory;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\Wallet\WalletPaymentService;
+use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
 use App\System\Auth;
+use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
@@ -41,6 +44,12 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     /** @var WalletPaymentService */
     private $walletPaymentService;
 
+    /** @var PaymentPlatformRepository */
+    private $paymentPlatformRepository;
+
+    /** @var Settings */
+    private $settings;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -53,6 +62,8 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->chargeWalletFactory = $this->app->make(ChargeWalletFactory::class);
         $this->walletPaymentService = $this->app->make(WalletPaymentService::class);
+        $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
+        $this->settings = $this->app->make(Settings::class);
     }
 
     public function purchaseFormGet(array $query)
@@ -60,8 +71,12 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $paymentMethodOptions = [];
         $paymentMethodBodies = [];
 
-        foreach ($this->chargeWalletFactory->createAll() as $paymentMethod) {
-            $result = $paymentMethod->getOptionView();
+        foreach ($this->getPaymentOptions() as $paymentOption) {
+            $paymentMethod = $this->chargeWalletFactory->create($paymentOption->getPaymentMethod());
+            $paymentPlatform = $this->paymentPlatformRepository->get(
+                $paymentOption->getPaymentPlatformId()
+            );
+            $result = $paymentMethod->getOptionView($paymentPlatform);
 
             if ($result) {
                 $paymentMethodOptions[] = $result[0];
@@ -76,37 +91,64 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         ]);
     }
 
+    /**
+     * @return PaymentOption[]
+     */
+    private function getPaymentOptions()
+    {
+        $output = [];
+
+        if ($this->settings->getSmsPlatformId()) {
+            $output[] = new PaymentOption(
+                PaymentMethod::SMS(),
+                $this->settings->getSmsPlatformId()
+            );
+        }
+
+        if ($this->settings->getDirectBillingPlatformId()) {
+            $output[] = new PaymentOption(
+                PaymentMethod::DIRECT_BILLING(),
+                $this->settings->getDirectBillingPlatformId()
+            );
+        }
+
+        foreach ($this->settings->getTransferPlatformIds() as $paymentPlatformId) {
+            $output[] = new PaymentOption(PaymentMethod::TRANSFER(), $paymentPlatformId);
+        }
+
+        return $output;
+    }
+
     public function purchaseFormValidate(Purchase $purchase, array $body)
     {
         if (!$this->auth->check()) {
             throw new UnauthorizedException();
         }
 
-        try {
-            $method = new PaymentMethod(array_get($body, "method"));
-            $paymentMethod = $this->chargeWalletFactory->create($method);
-        } catch (UnexpectedValueException $e) {
+        $paymentOption = as_string(array_get($body, "payment_option"));
+        $exploded = explode(",", $paymentOption);
+        $paymentMethod = as_payment_method(array_get($exploded, 0));
+        $paymentPlatformId = as_int(array_get($exploded, 1));
+
+        $paymentOption = new PaymentOption($paymentMethod, $paymentPlatformId);
+
+        if (!$purchase->getPaymentSelect()->contains($paymentOption)) {
             throw new ValidationException([
-                "method" => "Invalid value",
+                "payment_option" => "Invalid payment option",
             ]);
         }
 
-        $purchase->setServiceId($this->service->getId());
-        $purchase->setPayment([
-            Purchase::PAYMENT_METHOD => $method,
-            Purchase::PAYMENT_DISABLED_DIRECT_BILLING => true,
-            Purchase::PAYMENT_DISABLED_SMS => true,
-            Purchase::PAYMENT_DISABLED_TRANSFER => true,
-            Purchase::PAYMENT_DISABLED_WALLET => true,
-        ]);
+        $purchase->getPaymentSelect()->allowPaymentOption($paymentOption);
 
-        $paymentMethod->setup($purchase, $body);
+        $purchase->setServiceId($this->service->getId())->setPaymentOption($paymentOption);
+
+        $this->chargeWalletFactory->create($paymentMethod)->setup($purchase, $body);
     }
 
     public function orderDetails(Purchase $purchase)
     {
         $paymentMethod = $this->chargeWalletFactory->create(
-            $purchase->getPayment(Purchase::PAYMENT_METHOD)
+            $purchase->getPaymentOption()->getPaymentMethod()
         );
 
         $price = $paymentMethod->getPrice($purchase);
@@ -131,7 +173,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            (string) $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,

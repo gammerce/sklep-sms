@@ -62,7 +62,7 @@ class ServerRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
-    public function create($name, $ip, $port, $smsPlatformId, $transferPlatformId)
+    public function create($name, $ip, $port, $smsPlatformId, array $transferPlatformIds)
     {
         $token = $this->generateToken();
 
@@ -71,12 +71,19 @@ class ServerRepository
                 "INSERT INTO `ss_servers` " .
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `transfer_platform` = ?, `token` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatformId, $transferPlatformId, $token]);
+            ->execute([
+                $name,
+                $ip,
+                $port,
+                $smsPlatformId,
+                implode(",", $transferPlatformIds),
+                $token,
+            ]);
 
         return $this->get($this->db->lastId());
     }
 
-    public function update($id, $name, $ip, $port, $smsPlatformId, $transferPlatformId)
+    public function update($id, $name, $ip, $port, $smsPlatformId, array $transferPlatformIds)
     {
         $this->db
             ->statement(
@@ -84,7 +91,7 @@ class ServerRepository
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `transfer_platform` = ? " .
                     "WHERE `id` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatformId, $transferPlatformId, $id]);
+            ->execute([$name, $ip, $port, $smsPlatformId, implode(",", $transferPlatformIds), $id]);
     }
 
     public function delete($id)
@@ -127,7 +134,7 @@ class ServerRepository
             $data["ip"],
             $data["port"],
             as_int($data["sms_platform"]),
-            as_int($data["transfer_platform"]),
+            explode_int_list($data["transfer_platform"], ","),
             $data["type"],
             $data["version"],
             as_datetime_string($data["last_active_at"]),

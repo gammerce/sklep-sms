@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Payment\DirectBilling\DirectBillingPaymentMethod;
 use App\Payment\DirectBilling\DirectBillingPaymentService;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -65,12 +66,13 @@ class DirectBillingPaymentServiceTest extends TestCase
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
             ])
-            ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::DIRECT_BILLING(),
-                Purchase::PAYMENT_PLATFORM_DIRECT_BILLING => $paymentPlatform->getId(),
-            ])
+            ->setPaymentOption(
+                new PaymentOption(PaymentMethod::DIRECT_BILLING(), $paymentPlatform->getId())
+            )
             ->setUsingPrice($price)
             ->setServiceId($serviceId);
+
+        $purchase->getPaymentSelect()->setDirectBillingPaymentPlatform($paymentPlatform->getId());
 
         // when
         $directBillingPaymentMethod->pay($purchase, $serviceModule);

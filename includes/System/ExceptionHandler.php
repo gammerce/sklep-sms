@@ -1,7 +1,7 @@
 <?php
 namespace App\System;
 
-use App\Exceptions\AccessProhibitedException;
+use App\Exceptions\ForbiddenException;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidServiceModuleException;
@@ -45,7 +45,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         InvalidConfigException::class,
         LicenseException::class,
         UnauthorizedException::class,
-        AccessProhibitedException::class,
+        ForbiddenException::class,
         ValidationException::class,
     ];
 
@@ -78,8 +78,8 @@ class ExceptionHandler implements ExceptionHandlerContract
             return $this->responseFactory->createUnauthorized($request);
         }
 
-        if ($e instanceof AccessProhibitedException) {
-            return $this->renderAccessProhibitedException($request);
+        if ($e instanceof ForbiddenException) {
+            return $this->renderForbiddenException($request);
         }
 
         if ($e instanceof InvalidServiceModuleException) {
@@ -173,7 +173,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         return true;
     }
 
-    private function renderAccessProhibitedException(Request $request)
+    private function renderForbiddenException(Request $request)
     {
         $requestHelper = new RequestHelper($request);
 

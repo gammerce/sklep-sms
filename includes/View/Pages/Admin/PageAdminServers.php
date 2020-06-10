@@ -170,7 +170,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             })
             ->map(function (PaymentPlatform $paymentPlatform) use ($server) {
                 $isSelected =
-                    $server && $paymentPlatform->getId() == $server->getTransferPlatformId();
+                    $server &&
+                    in_array($paymentPlatform->getId(), $server->getTransferPlatformIds(), true);
                 return create_dom_element("option", $paymentPlatform->getName(), [
                     "value" => $paymentPlatform->getId(),
                     "selected" => $isSelected ? "selected" : "",
