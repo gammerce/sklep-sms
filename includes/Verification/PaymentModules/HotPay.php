@@ -80,7 +80,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         $amount = price_to_int(array_get($body, "KWOTA"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
+            ->setStatus($this->isTransferValid($body))
             ->setOrderId(array_get($body, "ID_PLATNOSCI"))
             ->setCost($amount)
             ->setIncome($amount)
@@ -109,7 +109,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         $income = price_to_int(array_get($body, "KWOTA"));
 
         return (new FinalizedPayment())
-            ->setStatus(true) // TODO Do it in a safe manner
+            ->setStatus($this->isDirectBillingValid($body))
             ->setOrderId(array_get($body, "ID_PLATNOSCI"))
             ->setCost($cost)
             ->setIncome($income)
@@ -144,7 +144,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         return $this->getData("transfer_hash");
     }
 
-    private function isPaymentValid(array $body)
+    private function isTransferValid(array $body)
     {
         $hashElements = [
             $this->getTransferHash(),
@@ -157,5 +157,11 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         $hash = hash("sha256", implode(";", $hashElements));
 
         return $hash === array_get($body, "HASH") && array_get($body, "STATUS") === "SUCCESS";
+    }
+
+    private function isDirectBillingValid(array $body)
+    {
+        // TODO Improve it
+        return array_get($body, "STATUS") == 1;
     }
 }
