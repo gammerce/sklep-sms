@@ -21,7 +21,7 @@ interface BasePaymentOption {
 export interface DirectBillingPaymentOption extends BasePaymentOption {
     method: PaymentMethod.DirectBilling;
     payment_platform_id: number;
-    name: string;
+    name: undefined;
     details: {
         price: string;
         old_price?: string;
@@ -31,7 +31,7 @@ export interface DirectBillingPaymentOption extends BasePaymentOption {
 export interface SmsPaymentOption extends BasePaymentOption {
     method: PaymentMethod.Sms;
     payment_platform_id: number;
-    name: string;
+    name: undefined;
     details: {
         price: string;
         old_price?: string;

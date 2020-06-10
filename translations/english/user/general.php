@@ -71,7 +71,7 @@ return [
         'In order to change password to your account, enter new password and type it again.',
     'pay_direct_billing' => 'Pay by Direct Billing',
     'pay_sms' => 'Pay by SMS',
-    'pay_transfer' => 'Pay by transfer',
+    'pay_transfer' => 'Pay with {1}',
     'pay_wallet' => 'Pay by wallet',
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Payment for service: {1}',

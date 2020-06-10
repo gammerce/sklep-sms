@@ -482,9 +482,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userServiceDeletePost(UserService $userService)
     {
-        if (!($userService instanceof MybbExtraGroupsUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof MybbExtraGroupsUserService);
 
         $mybbUser = $this->findMybbUser($userService->getMybbUid());
 
@@ -595,9 +593,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        if (!($userService instanceof MybbExtraGroupsUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof MybbExtraGroupsUserService);
 
         $username = $this->mybbRepository->findUsernameByUid($userService->getMybbUid());
 

@@ -72,7 +72,7 @@ return [
         'W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.',
     'pay_direct_billing' => 'Płacę z Direct Billing',
     'pay_sms' => 'Płacę SMSem',
-    'pay_transfer' => 'Płacę przelewem',
+    'pay_transfer' => 'Płacę z {1}',
     'pay_wallet' => 'Płacę z portfela',
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',

@@ -56,12 +56,17 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
         $this->url = $urlGenerator;
 
-        $this->userId = $this->getData('api');
-        $this->smsCode = $this->getData('sms_text');
-        $this->serviceId = $this->getData('service_id');
-        $this->shopId = $this->getData('shop_id');
-        $this->hash = $this->getData('hash');
+        $this->userId = $this->getData("api");
+        $this->smsCode = $this->getData("sms_text");
+        $this->serviceId = $this->getData("service_id");
+        $this->shopId = $this->getData("shop_id");
+        $this->hash = $this->getData("hash");
         $this->fileLogger = $fileLogger;
+    }
+
+    public static function getName()
+    {
+        return "MicroSMS";
     }
 
     public static function getDataFields()
@@ -111,7 +116,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
         $content = $response->json();
 
-        if (strlen(array_get($content, 'error'))) {
+        if (strlen(array_get($content, "error"))) {
             $this->fileLogger->error(
                 "MicroSMS sms. Error {$content['error']['errorCode']} - {$content['error']['message']}"
             );

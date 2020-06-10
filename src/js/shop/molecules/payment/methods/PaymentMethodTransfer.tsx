@@ -26,7 +26,7 @@ export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
                 </div>
                 <footer className="card-footer">
                     <a id="pay_transfer" className="card-footer-item" onClick={onPay}>
-                        {__('pay_transfer')}
+                        {__('pay_transfer', name)}
                     </a>
                 </footer>
             </div>

@@ -631,9 +631,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $services = collect($this->serviceManager->getServices())
             ->filter(function (Service $service) {
@@ -731,9 +729,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $forever = (bool) array_get($body, "forever");
 
@@ -784,9 +780,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceDeletePost(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
@@ -800,9 +794,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEditFormGet(UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $serviceInfo = [
             "types" => "",
@@ -880,9 +872,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $server = $this->serverManager->getServer($userService->getServerId());
 
@@ -900,9 +890,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userOwnServiceEdit(array $body, UserService $userService)
     {
-        if (!($userService instanceof ExtraFlagUserService)) {
-            throw new UnexpectedValueException();
-        }
+        assert($userService instanceof ExtraFlagUserService);
 
         $validator = new Validator($body, [
             "password" => [

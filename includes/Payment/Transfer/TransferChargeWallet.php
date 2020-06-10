@@ -5,6 +5,7 @@ use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\Managers\PaymentModuleManager;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\Transaction;
@@ -14,6 +15,7 @@ use App\Services\PriceTextService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\Verification\Abstracts\SupportTransfer;
 
 class TransferChargeWallet implements IChargeWallet
 {
@@ -29,8 +31,12 @@ class TransferChargeWallet implements IChargeWallet
     /** @var TransferPriceService */
     private $transferPriceService;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         Template $template,
+        PaymentModuleManager $paymentModuleManager,
         PriceTextService $priceTextService,
         TransferPriceService $transferPriceService,
         TranslationManager $translationManager
@@ -39,6 +45,7 @@ class TransferChargeWallet implements IChargeWallet
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
         $this->transferPriceService = $transferPriceService;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     public function setup(Purchase $purchase, array $body)
@@ -75,9 +82,12 @@ class TransferChargeWallet implements IChargeWallet
 
     public function getOptionView(PaymentPlatform $paymentPlatform)
     {
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+        assert($paymentModule instanceof SupportTransfer);
+
         $option = $this->template->render("shop/services/charge_wallet/option", [
             "value" => make_charge_wallet_option(PaymentMethod::TRANSFER(), $paymentPlatform),
-            "text" => $this->lang->t("payment_option_transfer", $paymentPlatform->getName()),
+            "text" => $this->lang->t("payment_option_transfer", $paymentModule::getName()),
         ]);
         $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
             "type" => PaymentMethod::TRANSFER(),

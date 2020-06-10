@@ -72,9 +72,7 @@ class SmsChargeWallet implements IChargeWallet
             $purchase->getPaymentOption()->getPaymentPlatformId()
         );
 
-        if (!($smsPaymentModule instanceof SupportSms)) {
-            throw new UnexpectedValueException("Payment module doesn't support sms");
-        }
+        assert($smsPaymentModule instanceof SupportSms);
 
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_SMS => $smsPrice,
@@ -109,10 +107,7 @@ class SmsChargeWallet implements IChargeWallet
     public function getOptionView(PaymentPlatform $paymentPlatform)
     {
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
-
-        if (!($paymentModule instanceof SupportSms)) {
-            throw new UnexpectedValueException("Payment module does not support sms");
-        }
+        assert($paymentModule instanceof SupportSms);
 
         $option = $this->template->render("shop/services/charge_wallet/option", [
             "value" => make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),

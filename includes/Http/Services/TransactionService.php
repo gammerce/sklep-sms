@@ -1,11 +1,13 @@
 <?php
 namespace App\Http\Services;
 
+use App\Managers\PaymentModuleManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Payment\General\PaymentMethodFactory;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePromoCode;
+use App\Verification\Abstracts\SupportTransfer;
 
 class TransactionService
 {
@@ -18,14 +20,19 @@ class TransactionService
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var PaymentModuleManager */
+    private $paymentModuleManager;
+
     public function __construct(
         ServiceModuleManager $serviceModuleManager,
         PaymentMethodFactory $paymentMethodFactory,
+        PaymentModuleManager $paymentModuleManager,
         PaymentPlatformRepository $paymentPlatformRepository
     ) {
         $this->serviceModuleManager = $serviceModuleManager;
         $this->paymentMethodFactory = $paymentMethodFactory;
         $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->paymentModuleManager = $paymentModuleManager;
     }
 
     /**
@@ -50,10 +57,22 @@ class TransactionService
                 continue;
             }
 
+            $paymentPlatformId = null;
+            $name = null;
+
+            if ($paymentPlatform) {
+                $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+                if ($paymentModule instanceof SupportTransfer) {
+                    $name = $paymentModule::getName();
+                }
+
+                $paymentPlatformId = $paymentPlatform->getId();
+            }
+
             $paymentOptionsViews[] = [
                 "method" => $paymentOption->getPaymentMethod(),
-                "payment_platform_id" => $paymentPlatform ? $paymentPlatform->getId() : null,
-                "name" => $paymentPlatform ? $paymentPlatform->getName() : null,
+                "payment_platform_id" => $paymentPlatformId,
+                "name" => $name,
                 "details" => $paymentMethod->getPaymentDetails($purchase, $paymentPlatform),
             ];
         }

@@ -7,6 +7,11 @@ use App\Models\Purchase;
 interface SupportTransfer
 {
     /**
+     * @return string
+     */
+    public static function getName();
+
+    /**
      * @param int $price
      * @param Purchase $purchase
      * @return array
