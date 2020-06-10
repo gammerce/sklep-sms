@@ -83,6 +83,7 @@ return [
     'email_taken' => 'Podany e-mail jest już zajęty.',
     'expires' => 'Wygasa',
     'expires_help' => 'Zostaw pole puste, aby ustawić na zawsze.',
+    'field_array' => 'Pole musi być listą.',
     'field_integer' => 'Pole musi być liczbą całkowitą.',
     'free_of_charge' => 'Darmowy',
     'generate' => 'Generuj',

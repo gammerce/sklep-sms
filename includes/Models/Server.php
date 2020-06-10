@@ -24,8 +24,8 @@ class Server
     /** @var int|null */
     private $smsPlatformId;
 
-    /** @var int|null */
-    private $transferPlatformId;
+    /** @var int[] */
+    private $transferPlatformIds;
 
     /** @var string */
     private $version;
@@ -42,7 +42,7 @@ class Server
         $ip,
         $port,
         $smsPlatformId,
-        $transferPlatformId,
+        array $transferPlatformIds,
         $type,
         $version,
         $lastActiveAt,
@@ -53,58 +53,88 @@ class Server
         $this->ip = $ip;
         $this->port = $port;
         $this->smsPlatformId = $smsPlatformId;
-        $this->transferPlatformId = $transferPlatformId;
+        $this->transferPlatformIds = $transferPlatformIds;
         $this->type = $type;
         $this->version = $version;
         $this->lastActiveAt = $lastActiveAt;
         $this->token = $token;
     }
 
+    /**
+     * @return int
+     */
     public function getId()
     {
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->name;
     }
 
+    /**
+     * @return string
+     */
     public function getIp()
     {
         return $this->ip;
     }
 
+    /**
+     * @return string
+     */
     public function getPort()
     {
         return $this->port;
     }
 
+    /**
+     * @return string
+     */
     public function getType()
     {
         return $this->type;
     }
 
+    /**
+     * @return int|null
+     */
     public function getSmsPlatformId()
     {
         return $this->smsPlatformId;
     }
 
-    public function getTransferPlatformId()
+    /**
+     * @return int[]
+     */
+    public function getTransferPlatformIds()
     {
-        return $this->transferPlatformId;
+        return $this->transferPlatformIds;
     }
 
+    /**
+     * @return string
+     */
     public function getVersion()
     {
         return $this->version;
     }
 
+    /**
+     * @return string|null
+     */
     public function getLastActiveAt()
     {
         return $this->lastActiveAt;
     }
 
+    /**
+     * @return string|null
+     */
     public function getToken()
     {
         return $this->token;

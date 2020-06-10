@@ -107,7 +107,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
             "module" => TPay::MODULE_ID,
         ]);
         $server = $this->factory->server([
-            "transfer_platform_id" => $paymentPlatform->getId(),
+            "transfer_platform_ids" => [$paymentPlatform->getId()],
         ]);
         $this->factory->serverService([
             "server_id" => $server->getId(),

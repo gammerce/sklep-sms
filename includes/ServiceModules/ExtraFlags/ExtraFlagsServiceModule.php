@@ -387,10 +387,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 $paymentPlatformSelect->setSmsPaymentPlatform($server->getSmsPlatformId());
             }
 
-            if ($server->getTransferPlatformId()) {
-                $paymentPlatformSelect->setTransferPaymentPlatforms([
-                    $server->getTransferPlatformId(),
-                ]);
+            if ($server->getTransferPlatformIds()) {
+                $paymentPlatformSelect->setTransferPaymentPlatforms(
+                    $server->getTransferPlatformIds()
+                );
             }
         }
 

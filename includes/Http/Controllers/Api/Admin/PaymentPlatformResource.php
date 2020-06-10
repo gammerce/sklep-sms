@@ -61,7 +61,7 @@ class PaymentPlatformResource
         $occupiedPlatforms = collect($serverManager->getServers())->flatMap(function (
             Server $server
         ) {
-            return [$server->getSmsPlatformId(), $server->getTransferPlatformId()];
+            return array_merge([$server->getSmsPlatformId()], $server->getTransferPlatformIds());
         });
 
         if ($occupiedPlatforms->includes($paymentPlatform->getId())) {

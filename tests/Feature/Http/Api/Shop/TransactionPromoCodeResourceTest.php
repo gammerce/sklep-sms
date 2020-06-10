@@ -75,7 +75,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "direct_billing",
                         "payment_platform_id" => $directBillingPlatform->getId(),
-                        "name" => $directBillingPlatform->getName(),
+                        "name" => null,
                         "details" => [
                             "price" => "8.40 PLN",
                             "old_price" => "12.00",
@@ -84,7 +84,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
-                        "name" => $transferPlatform->getName(),
+                        "name" => TPay::getName(),
                         "details" => [
                             "price" => "7.00 PLN",
                             "old_price" => "10.00",
@@ -159,7 +159,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "sms",
                         "payment_platform_id" => $smsPlatform->getId(),
-                        "name" => $smsPlatform->getName(),
+                        "name" => null,
                         "details" => [
                             "price" => "0.00 PLN",
                             "old_price" => "30.75",
@@ -170,7 +170,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "direct_billing",
                         "payment_platform_id" => $directBillingPlatform->getId(),
-                        "name" => $directBillingPlatform->getName(),
+                        "name" => null,
                         "details" => [
                             "price" => "0.00 PLN",
                             "old_price" => "12.00",
@@ -179,7 +179,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
-                        "name" => $transferPlatform->getName(),
+                        "name" => TPay::getName(),
                         "details" => [
                             "price" => "0.00 PLN",
                             "old_price" => "10.00",
@@ -274,7 +274,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
                     [
                         "method" => "transfer",
                         "payment_platform_id" => $transferPlatform->getId(),
-                        "name" => $transferPlatform->getName(),
+                        "name" => TPay::getName(),
                         "details" => [
                             "price" => "10.00 PLN",
                         ],

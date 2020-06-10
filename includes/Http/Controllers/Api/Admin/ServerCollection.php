@@ -23,17 +23,17 @@ class ServerCollection
         $validated = $validator->validateOrFail();
 
         $server = $serverRepository->create(
-            $validated['name'],
-            $validated['ip'],
-            $validated['port'],
-            $validated['sms_platform'],
-            $validated['transfer_platform']
+            $validated["name"],
+            $validated["ip"],
+            $validated["port"],
+            $validated["sms_platform"],
+            $validated["transfer_platform"] ?: []
         );
         $serverId = $server->getId();
         $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
-        $databaseLogger->logWithActor('log_server_added', $serverId);
+        $databaseLogger->logWithActor("log_server_added", $serverId);
 
-        return new SuccessApiResponse($lang->t('server_added'), [
+        return new SuccessApiResponse($lang->t("server_added"), [
             "data" => [
                 "id" => $server->getId(),
                 "token" => $server->getToken(),

@@ -918,3 +918,21 @@ function payment_option_equals(PaymentOption $a, PaymentOption $b)
     return $a->getPaymentPlatformId() === $b->getPaymentPlatformId() &&
         $a->getPaymentMethod()->equals($b->getPaymentMethod());
 }
+
+/**
+ * @param string $list
+ * @param string $delimiter
+ * @return array
+ */
+function explode_int_list($list, $delimiter = ",")
+{
+    if ($list === "" || $list === null) {
+        return [];
+    }
+
+    return collect(explode($delimiter, $list))
+        ->map(function ($value) {
+            return (int) $value;
+        })
+        ->all();
+}

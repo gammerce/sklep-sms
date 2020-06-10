@@ -25,19 +25,19 @@ class ServerResourceTest extends HttpTestCase
         $server = $this->factory->server();
 
         $smsPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => SimPay::MODULE_ID,
+            "module" => SimPay::MODULE_ID,
         ]);
         $transferPaymentPlatform = $this->factory->paymentPlatform([
-            'module' => Cashbill::MODULE_ID,
+            "module" => Cashbill::MODULE_ID,
         ]);
 
         // when
         $response = $this->put("/api/admin/servers/{$server->getId()}", [
-            'name' => 'My Example2',
-            'ip' => '192.168.0.2',
-            'port' => '27016',
-            'sms_platform' => $smsPaymentPlatform->getId(),
-            'transfer_platform' => $transferPaymentPlatform->getId(),
+            "name" => "My Example2",
+            "ip" => "192.168.0.2",
+            "port" => "27016",
+            "sms_platform" => $smsPaymentPlatform->getId(),
+            "transfer_platform" => [$transferPaymentPlatform->getId()],
         ]);
 
         // then
@@ -49,7 +49,10 @@ class ServerResourceTest extends HttpTestCase
         $this->assertSame("192.168.0.2", $freshServer->getIp());
         $this->assertSame("27016", $freshServer->getPort());
         $this->assertSame($smsPaymentPlatform->getId(), $freshServer->getSmsPlatformId());
-        $this->assertSame($transferPaymentPlatform->getId(), $freshServer->getTransferPlatformId());
+        $this->assertSame(
+            [$transferPaymentPlatform->getId()],
+            $freshServer->getTransferPlatformIds()
+        );
     }
 
     /** @test */
