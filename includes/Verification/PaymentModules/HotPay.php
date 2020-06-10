@@ -3,14 +3,22 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Payment\General\PaymentResult;
+use App\Payment\General\PaymentResultType;
 use App\Verification\Abstracts\PaymentModule;
+use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
 
-class HotPay extends PaymentModule implements SupportSms, SupportTransfer
+/**
+ * @link https://hotpay.pl/documentation_v3/tech_directbilling.pdf
+ * @link https://hotpay.pl/documentation_v3/tech_paybylink.pdf
+ * @link https://hotpay.pl/documentation_v3/tech_smspremium.pdf
+ */
+class HotPay extends PaymentModule implements SupportSms, SupportTransfer, SupportDirectBilling
 {
     const MODULE_ID = "hotpay";
 
@@ -27,6 +35,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             new DataField("sms_secret"),
             new DataField("transfer_hash"),
             new DataField("transfer_secret"),
+            new DataField("direct_billing_secret"),
         ];
     }
 
@@ -56,15 +65,12 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 
     public function prepareTransfer($price, Purchase $purchase)
     {
-        $price /= 100;
-        $control = $purchase->getId();
-
         return [
             "url" => "https://platnosc.hotpay.pl",
             "method" => "POST",
             "SEKRET" => $this->getTransferSecret(),
-            "KWOTA" => $price,
-            "ID_ZAMOWIENIA" => $control,
+            "KWOTA" => $price / 100,
+            "ID_ZAMOWIENIA" => $purchase->getId(),
             "EMAIL" => $purchase->getEmail(),
         ];
     }
@@ -83,6 +89,36 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             ->setOutput("OK");
     }
 
+    public function prepareDirectBilling($price, Purchase $purchase)
+    {
+        return new PaymentResult(PaymentResultType::EXTERNAL(), [
+            "method" => "POST",
+            "url" => "https://directbilling.hotpay.pl",
+            "SEKRET" => $this->getDirectBillingSecret(),
+            "KWOTA" => $price / 100,
+            "PRZEKIEROWANIE_SUKCESS" => $this->url->to("/page/payment_success"),
+            "PRZEKIEROWANIE_BLAD" => $this->url->to("/page/payment_error"),
+            "ID_ZAMOWIENIA" => $purchase->getId(),
+        ]);
+    }
+
+    public function finalizeDirectBilling(array $query, array $body)
+    {
+        // TODO cost should not be equal income
+        $cost = price_to_int(array_get($body, "KWOTA"));
+        $income = price_to_int(array_get($body, "KWOTA"));
+
+        return (new FinalizedPayment())
+            ->setStatus(true) // TODO Do it in a safe manner
+            ->setOrderId(array_get($body, "ID_PLATNOSCI"))
+            ->setCost($cost)
+            ->setIncome($income)
+            ->setTransactionId(array_get($body, "ID_ZAMOWIENIA"))
+            ->setExternalServiceId(array_get($body, "ID_PLATNOSCI"))
+            ->setTestMode(false)
+            ->setOutput("OK");
+    }
+
     public function getSmsCode()
     {
         return $this->getData("sms_text");
@@ -96,6 +132,11 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
     private function getTransferSecret()
     {
         return $this->getData("transfer_secret");
+    }
+
+    private function getDirectBillingSecret()
+    {
+        return $this->getData("direct_billing_secret");
     }
 
     private function getTransferHash()

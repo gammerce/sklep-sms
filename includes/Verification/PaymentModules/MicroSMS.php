@@ -25,9 +25,6 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
 
-    /** @var UrlGenerator */
-    private $url;
-
     /** @var string */
     private $serviceId;
 
@@ -48,13 +45,11 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
     public function __construct(
         Requester $requester,
-        UrlGenerator $urlGenerator,
+        UrlGenerator $url,
         PaymentPlatform $paymentPlatform,
         FileLogger $fileLogger
     ) {
-        parent::__construct($requester, $paymentPlatform);
-
-        $this->url = $urlGenerator;
+        parent::__construct($requester, $paymentPlatform, $url);
 
         $this->userId = $this->getData("api");
         $this->smsCode = $this->getData("sms_text");

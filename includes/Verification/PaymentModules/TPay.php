@@ -29,12 +29,12 @@ class TPay extends PaymentModule implements SupportTransfer
 
     public function __construct(
         Requester $requester,
-        UrlGenerator $urlGenerator,
+        UrlGenerator $url,
         PaymentPlatform $paymentPlatform
     ) {
         parent::__construct($requester, $paymentPlatform);
 
-        $this->url = $urlGenerator;
+        $this->url = $url;
         $this->key = $this->getData("key");
         $this->accountId = $this->getData("account_id");
     }

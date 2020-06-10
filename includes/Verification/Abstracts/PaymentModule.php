@@ -3,6 +3,7 @@ namespace App\Verification\Abstracts;
 
 use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
 use App\Verification\DataField;
 
 abstract class PaymentModule
@@ -15,10 +16,14 @@ abstract class PaymentModule
     /** @var PaymentPlatform */
     protected $paymentPlatform;
 
-    public function __construct(Requester $requester, PaymentPlatform $paymentPlatform)
+    /** @var UrlGenerator */
+    protected $url;
+
+    public function __construct(Requester $requester, PaymentPlatform $paymentPlatform, UrlGenerator $url)
     {
         $this->requester = $requester;
         $this->paymentPlatform = $paymentPlatform;
+        $this->url = $url;
     }
 
     /**

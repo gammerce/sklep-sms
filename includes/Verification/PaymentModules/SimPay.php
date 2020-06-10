@@ -34,9 +34,6 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     /** @var FileLogger */
     private $fileLogger;
 
-    /** @var UrlGenerator */
-    private $url;
-
     /** @var Translator */
     private $lang;
 
@@ -50,8 +47,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         TranslationManager $translationManager,
         PaymentPlatform $paymentPlatform
     ) {
-        parent::__construct($requester, $paymentPlatform);
-        $this->url = $url;
+        parent::__construct($requester, $paymentPlatform, $url);
         $this->fileLogger = $fileLogger;
         $this->lang = $translationManager->user();
     }
