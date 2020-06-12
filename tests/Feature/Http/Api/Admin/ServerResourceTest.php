@@ -2,7 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\ServerRepository;
-use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -29,7 +29,7 @@ class ServerResourceTest extends HttpTestCase
             "module" => SimPay::MODULE_ID,
         ]);
         $transferPaymentPlatform1 = $this->factory->paymentPlatform([
-            "module" => Cashbill::MODULE_ID,
+            "module" => CashBill::MODULE_ID,
         ]);
         $transferPaymentPlatform2 = $this->factory->paymentPlatform([
             "module" => TPay::MODULE_ID,

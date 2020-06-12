@@ -1,11 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
-use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -22,24 +18,11 @@ class Gosetti extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "gosetti";
 
-    /** @var FileLogger */
-    private $fileLogger;
-
     /** @var string */
     private $smsCode;
 
     /** @var array */
     private $numbers = [];
-
-    public function __construct(
-        Requester $requester,
-        FileLogger $fileLogger,
-        UrlGenerator $url,
-        PaymentPlatform $paymentPlatform
-    ) {
-        parent::__construct($requester, $paymentPlatform, $url);
-        $this->fileLogger = $fileLogger;
-    }
 
     public static function getDataFields()
     {
@@ -67,9 +50,9 @@ class Gosetti extends PaymentModule implements SupportSms
     {
         $this->tryToFetchSmsData();
 
-        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2CheckCode.php', [
-            'UserId' => $this->getAccountId(),
-            'Code' => $returnCode,
+        $response = $this->requester->get("https://gosetti.pl/Api/SmsApiV2CheckCode.php", [
+            "UserId" => $this->getAccountId(),
+            "Code" => $returnCode,
         ]);
 
         if (!$response) {
@@ -84,15 +67,15 @@ class Gosetti extends PaymentModule implements SupportSms
 
         $content = strval(floatval($content));
 
-        if ($content == '0') {
+        if ($content == "0") {
             throw new BadCodeException();
         }
 
-        if ($content == '-1') {
+        if ($content == "-1") {
             throw new WrongCredentialsException();
         }
 
-        if ($content == '-2' || $content == '-3') {
+        if ($content == "-2" || $content == "-3") {
             throw new ExternalErrorException();
         }
 
@@ -121,7 +104,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
     private function getAccountId()
     {
-        return $this->getData('account_id');
+        return $this->getData("account_id");
     }
 
     private function tryToFetchSmsData()
@@ -133,7 +116,7 @@ class Gosetti extends PaymentModule implements SupportSms
 
     private function fetchSmsData()
     {
-        $response = $this->requester->get('https://gosetti.pl/Api/SmsApiV2GetData.php');
+        $response = $this->requester->get("https://gosetti.pl/Api/SmsApiV2GetData.php");
 
         if (!$response) {
             $this->fileLogger->error("Could not get gosetti sms data.");
@@ -143,11 +126,11 @@ class Gosetti extends PaymentModule implements SupportSms
         $data = $response->json();
 
         // GOSetti provides SMS code in the response
-        $this->smsCode = $data['Code'];
+        $this->smsCode = $data["Code"];
 
-        foreach ($data['Numbers'] as $numberData) {
-            $this->numbers[strval(floatval($numberData['TopUpAmount']))] = strval(
-                $numberData['Number']
+        foreach ($data["Numbers"] as $numberData) {
+            $this->numbers[strval(floatval($numberData["TopUpAmount"]))] = strval(
+                $numberData["Number"]
             );
         }
     }

@@ -22,36 +22,36 @@ class GetPay extends PaymentModule implements SupportSms
 
     public static function getDataFields()
     {
-        return [new DataField('api'), new DataField('api_secret'), new DataField('sms_text')];
+        return [new DataField("api"), new DataField("api_secret"), new DataField("sms_text")];
     }
 
     public static function getSmsNumbers()
     {
         return [
-            new SmsNumber('7143'),
-            new SmsNumber('7243'),
-            new SmsNumber('73550'),
-            new SmsNumber('74550'),
-            new SmsNumber('75550'),
-            new SmsNumber('7643'),
-            new SmsNumber('7943'),
-            new SmsNumber('91909'),
-            new SmsNumber('92505'),
+            new SmsNumber("7143"),
+            new SmsNumber("7243"),
+            new SmsNumber("73550"),
+            new SmsNumber("74550"),
+            new SmsNumber("75550"),
+            new SmsNumber("7643"),
+            new SmsNumber("7943"),
+            new SmsNumber("91909"),
+            new SmsNumber("92505"),
         ];
     }
 
     public function verifySms($returnCode, $number)
     {
         $options = [
-            'http' => [
-                'header' => 'Content-Type: application/json',
-                'method' => 'POST',
-                'content' => json_encode([
-                    'apiKey' => $this->getData('api'),
-                    'apiSecret' => $this->getData('api_secret'),
-                    'number' => $number,
-                    'code' => $returnCode,
-                    'unlimited' => false,
+            "http" => [
+                "header" => "Content-Type: application/json",
+                "method" => "POST",
+                "content" => json_encode([
+                    "apiKey" => $this->getData("api"),
+                    "apiSecret" => $this->getData("api_secret"),
+                    "number" => $number,
+                    "code" => $returnCode,
+                    "unlimited" => false,
                 ]),
             ],
         ];
@@ -59,7 +59,7 @@ class GetPay extends PaymentModule implements SupportSms
         $context = stream_context_create($options);
         $result = json_decode(
             file_get_contents(
-                'https://getpay.pl/panel/app/common/resource/ApiResource.php',
+                "https://getpay.pl/panel/app/common/resource/ApiResource.php",
                 false,
                 $context
             )
@@ -92,6 +92,6 @@ class GetPay extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return $this->getData("sms_text");
     }
 }

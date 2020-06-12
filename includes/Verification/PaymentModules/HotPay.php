@@ -42,8 +42,8 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public static function getSmsNumbers()
     {
         return [
-            // TODO Implement it
-        ];
+                // TODO Implement it
+            ];
     }
 
     public function verifySms($returnCode, $number)

@@ -10,7 +10,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\System\Application;
-use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
@@ -97,7 +97,7 @@ class HeartServiceProvider
 
     private function registerPaymentModules(PaymentModuleManager $paymentModuleManager)
     {
-        $paymentModuleManager->register(Cashbill::class);
+        $paymentModuleManager->register(CashBill::class);
         $paymentModuleManager->register(Cssetti::class);
         $paymentModuleManager->register(GetPay::class);
         $paymentModuleManager->register(Gosetti::class);

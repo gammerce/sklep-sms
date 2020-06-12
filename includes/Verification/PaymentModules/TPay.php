@@ -2,10 +2,7 @@
 namespace App\Verification\PaymentModules;
 
 use App\Models\FinalizedPayment;
-use App\Models\PaymentPlatform;
 use App\Models\Purchase;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
@@ -17,27 +14,6 @@ use App\Verification\DataField;
 class TPay extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "transferuj";
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var string */
-    private $accountId;
-
-    /** @var string */
-    private $key;
-
-    public function __construct(
-        Requester $requester,
-        UrlGenerator $url,
-        PaymentPlatform $paymentPlatform
-    ) {
-        parent::__construct($requester, $paymentPlatform);
-
-        $this->url = $url;
-        $this->key = $this->getData("key");
-        $this->accountId = $this->getData("account_id");
-    }
 
     public static function getName()
     {
@@ -57,11 +33,11 @@ class TPay extends PaymentModule implements SupportTransfer
         return [
             "url" => "https://secure.transferuj.pl",
             "method" => "POST",
-            "id" => $this->accountId,
+            "id" => $this->getAccountId(),
             "kwota" => $price,
             "opis" => $purchase->getDescription(),
             "crc" => $crc,
-            "md5sum" => md5($this->accountId . $price . $crc . $this->key),
+            "md5sum" => md5($this->getAccountId() . $price . $crc . $this->getKey()),
             "imie" => $purchase->user->getForename(),
             "nazwisko" => $purchase->user->getSurname(),
             "email" => $purchase->getEmail(),
@@ -107,8 +83,20 @@ class TPay extends PaymentModule implements SupportTransfer
             return false;
         }
 
-        $sign = md5($this->accountId . $transactionId . $transactionAmount . $crc . $this->key);
+        $sign = md5(
+            $this->getAccountId() . $transactionId . $transactionAmount . $crc . $this->getKey()
+        );
 
         return $md5sum === $sign;
+    }
+
+    private function getKey()
+    {
+        return $this->getData("key");
+    }
+
+    private function getAccountId()
+    {
+        return $this->getData("account_id");
     }
 }

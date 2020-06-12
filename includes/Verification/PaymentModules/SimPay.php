@@ -1,18 +1,12 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
 use App\Models\FinalizedPayment;
-use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -31,26 +25,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
 
-    /** @var FileLogger */
-    private $fileLogger;
-
-    /** @var Translator */
-    private $lang;
-
     /** @var string[] */
     private $allowedIps;
-
-    public function __construct(
-        Requester $requester,
-        UrlGenerator $url,
-        FileLogger $fileLogger,
-        TranslationManager $translationManager,
-        PaymentPlatform $paymentPlatform
-    ) {
-        parent::__construct($requester, $paymentPlatform, $url);
-        $this->fileLogger = $fileLogger;
-        $this->lang = $translationManager->user();
-    }
 
     public static function getDataFields()
     {

@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\Abstracts;
 
+use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
@@ -19,11 +20,19 @@ abstract class PaymentModule
     /** @var UrlGenerator */
     protected $url;
 
-    public function __construct(Requester $requester, PaymentPlatform $paymentPlatform, UrlGenerator $url)
-    {
+    /** @var FileLogger */
+    protected $fileLogger;
+
+    public function __construct(
+        Requester $requester,
+        PaymentPlatform $paymentPlatform,
+        UrlGenerator $url,
+        FileLogger $fileLogger
+    ) {
         $this->requester = $requester;
         $this->paymentPlatform = $paymentPlatform;
         $this->url = $url;
+        $this->fileLogger = $fileLogger;
     }
 
     /**

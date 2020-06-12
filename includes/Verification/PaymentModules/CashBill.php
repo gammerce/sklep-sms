@@ -13,7 +13,7 @@ use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Results\SmsSuccessResult;
 
-class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
+class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "cashbill";
 
