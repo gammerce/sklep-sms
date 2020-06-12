@@ -9,7 +9,7 @@ use App\Verification\DataField;
 
 abstract class PaymentModule
 {
-    const MODULE_ID = '';
+    const MODULE_ID = "";
 
     /** @var Requester */
     protected $requester;
@@ -36,6 +36,14 @@ abstract class PaymentModule
     }
 
     /**
+     * @return string
+     */
+    public static function getName()
+    {
+        return __(static::MODULE_ID);
+    }
+
+    /**
      * @param mixed $key
      * @return mixed
      */
@@ -50,10 +58,5 @@ abstract class PaymentModule
     public static function getDataFields()
     {
         return [];
-    }
-
-    public function getModuleId()
-    {
-        return $this::MODULE_ID;
     }
 }

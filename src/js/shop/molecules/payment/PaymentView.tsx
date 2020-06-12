@@ -70,6 +70,7 @@ export const PaymentView: FunctionComponent = () => {
 
     const paymentOptions = transaction.payment_options.map(paymentOption => (
         <PaymentOption
+            key={`${paymentOption.method}#${paymentOption.payment_platform_id}`}
             paymentOption={paymentOption}
             onPay={(body) => onPay(paymentOption.method, paymentOption.payment_platform_id, body)}
         />

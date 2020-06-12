@@ -15,11 +15,6 @@ class TPay extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "transferuj";
 
-    public static function getName()
-    {
-        return "TPay";
-    }
-
     public static function getDataFields()
     {
         return [new DataField("key"), new DataField("account_id")];

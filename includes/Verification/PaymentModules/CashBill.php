@@ -17,11 +17,6 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "cashbill";
 
-    public static function getName()
-    {
-        return "CashBill";
-    }
-
     public static function getDataFields()
     {
         return [new DataField("sms_text"), new DataField("key"), new DataField("service")];

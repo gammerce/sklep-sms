@@ -12,6 +12,8 @@ interface Props {
 export const PaymentMethodWallet: FunctionComponent<Props> = (props) => {
     const {price, oldPrice, onPay} = props;
 
+    const onPayClick = () => onPay();
+
     return (
         <div className="payment-type-wrapper">
             <div className="card">
@@ -24,7 +26,7 @@ export const PaymentMethodWallet: FunctionComponent<Props> = (props) => {
                     <PaymentPrice price={price} oldPrice={oldPrice} />
                 </div>
                 <footer className="card-footer">
-                    <a id="pay_wallet" className="card-footer-item" onClick={onPay}>
+                    <a id="pay_wallet" className="card-footer-item" onClick={onPayClick}>
                         {__('pay_wallet')}
                     </a>
                 </footer>

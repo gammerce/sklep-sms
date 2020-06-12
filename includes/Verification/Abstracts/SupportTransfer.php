@@ -3,18 +3,15 @@ namespace App\Verification\Abstracts;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Payment\Exceptions\PaymentProcessingException;
 
 interface SupportTransfer
 {
     /**
-     * @return string
-     */
-    public static function getName();
-
-    /**
      * @param int $price
      * @param Purchase $purchase
      * @return array
+     * @throws PaymentProcessingException
      */
     public function prepareTransfer($price, Purchase $purchase);
 

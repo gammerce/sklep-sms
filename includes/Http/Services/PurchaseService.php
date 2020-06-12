@@ -15,6 +15,8 @@ use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\System\Auth;
 use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use UnexpectedValueException;
 
 class PurchaseService
@@ -31,16 +33,21 @@ class PurchaseService
     /** @var Settings */
     private $settings;
 
+    /** @var Translator */
+    private $lang;
+
     public function __construct(
         PaymentService $paymentService,
         Auth $auth,
         PriceRepository $priceRepository,
-        Settings $settings
+        Settings $settings,
+        TranslationManager $translationManager
     ) {
         $this->paymentService = $paymentService;
         $this->auth = $auth;
         $this->priceRepository = $priceRepository;
         $this->settings = $settings;
+        $this->lang = $translationManager->user();
     }
 
     /**
@@ -72,6 +79,7 @@ class PurchaseService
 
         $purchase = (new Purchase($user))
             ->setServiceId($serviceModule->service->getId())
+            ->setDescription($this->lang->t("payment_for_service", $serviceModule->service->getNameI18n()))
             ->setEmail($email)
             ->setPaymentOption($paymentOption)
             ->setOrder([

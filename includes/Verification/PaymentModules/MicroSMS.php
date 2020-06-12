@@ -21,11 +21,6 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
 
-    public static function getName()
-    {
-        return "MicroSMS";
-    }
-
     public static function getDataFields()
     {
         return [

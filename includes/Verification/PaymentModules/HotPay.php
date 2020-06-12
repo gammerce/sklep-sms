@@ -22,11 +22,6 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
 {
     const MODULE_ID = "hotpay";
 
-    public static function getName()
-    {
-        return "HotPay";
-    }
-
     public static function getDataFields()
     {
         return [

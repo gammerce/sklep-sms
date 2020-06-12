@@ -24,6 +24,7 @@ export const purchaseService = async (
             ...body,
         });
     } catch (e) {
+        console.error(e);
         sthWentWrong();
     } finally {
         loader.hide();

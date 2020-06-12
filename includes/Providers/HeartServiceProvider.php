@@ -19,6 +19,7 @@ use App\Verification\PaymentModules\Hostplay;
 use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
+use App\Verification\PaymentModules\PayPal;
 use App\Verification\PaymentModules\Profitsms;
 use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
@@ -106,6 +107,7 @@ class HeartServiceProvider
         $paymentModuleManager->register(HotPay::class);
         $paymentModuleManager->register(MicroSMS::class);
         $paymentModuleManager->register(OneShotOneKill::class);
+        $paymentModuleManager->register(PayPal::class);
         $paymentModuleManager->register(Profitsms::class);
         $paymentModuleManager->register(Pukawka::class);
         $paymentModuleManager->register(SimPay::class);
