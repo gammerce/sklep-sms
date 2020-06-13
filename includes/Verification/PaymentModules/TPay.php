@@ -28,17 +28,19 @@ class TPay extends PaymentModule implements SupportTransfer
         return [
             "url" => "https://secure.transferuj.pl",
             "method" => "POST",
-            "id" => $this->getAccountId(),
-            "kwota" => $price,
-            "opis" => $purchase->getDescription(),
-            "crc" => $crc,
-            "md5sum" => md5($this->getAccountId() . $price . $crc . $this->getKey()),
-            "imie" => $purchase->user->getForename(),
-            "nazwisko" => $purchase->user->getSurname(),
-            "email" => $purchase->getEmail(),
-            "pow_url" => $this->url->to("/page/tpay_success"),
-            "pow_url_blad" => $this->url->to("/page/payment_error"),
-            "wyn_url" => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
+            "data" => [
+                "id" => $this->getAccountId(),
+                "kwota" => $price,
+                "opis" => $purchase->getDescription(),
+                "crc" => $crc,
+                "md5sum" => md5($this->getAccountId() . $price . $crc . $this->getKey()),
+                "imie" => $purchase->user->getForename(),
+                "nazwisko" => $purchase->user->getSurname(),
+                "email" => $purchase->getEmail(),
+                "pow_url" => $this->url->to("/page/tpay_success"),
+                "pow_url_blad" => $this->url->to("/page/payment_error"),
+                "wyn_url" => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
+            ]
         ];
     }
 

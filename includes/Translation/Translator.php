@@ -50,11 +50,17 @@ class Translator
         $this->setLanguage($lang);
     }
 
+    /**
+     * @return string
+     */
     public function getCurrentLanguage()
     {
         return $this->language;
     }
 
+    /**
+     * @return string
+     */
     public function getCurrentLanguageShort()
     {
         return $this->langList[$this->getCurrentLanguage()];

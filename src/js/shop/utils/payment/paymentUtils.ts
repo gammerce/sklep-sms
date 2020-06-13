@@ -53,12 +53,11 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
         });
     } else if (result.return_id === "external") {
         const method = result.data.method;
-        delete result.data.method;
 
         if (method === "GET") {
-            redirectToExternalWithGet(result);
+            redirectToExternalWithGet(result.data);
         } else if (method === "POST") {
-            redirectToExternalWithPost(result);
+            redirectToExternalWithPost(result.data);
         } else {
             console.error("Invalid method specified by PaymentModule");
             sthWentWrong();
@@ -69,22 +68,20 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
     infobox.showInfo(result.text, result.positive);
 };
 
-const redirectToExternalWithPost = (response: any) => {
+const redirectToExternalWithPost = (result: any) => {
     const form = $("<form>", {
-        action: response.data.url,
+        action: result.url,
         method: "POST",
     });
 
-    for (const [key, value] of Object.entries(response.data)) {
-        if (key !== "url") {
-            form.append(
-                $("<input>", {
-                    type: "hidden",
-                    name: key,
-                    value: value,
-                })
-            );
-        }
+    for (const [key, value] of Object.entries(result.data)) {
+        form.append(
+            $("<input>", {
+                type: "hidden",
+                name: key,
+                value: value,
+            })
+        );
     }
 
     // It doesn't work with firefox without it
@@ -93,8 +90,12 @@ const redirectToExternalWithPost = (response: any) => {
     form.submit();
 };
 
-const redirectToExternalWithGet = (response: any) => {
-    const url = response.data.url;
-    delete response.data.url;
-    window.location.href = url + "?" + $.param(response.data);
+const redirectToExternalWithGet = (result: any) => {
+    const query = $.param(result.data || {});
+    const url = result.url + (query ? `?${query}` : "");
+
+    const aNode = document.createElement("a");
+    aNode.href = url;
+    document.body.appendChild(aNode);
+    aNode.click();
 };

@@ -82,23 +82,25 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         return [
             "url" => "https://pay.cashbill.pl/form/pay.php",
             "method" => "POST",
-            "service" => $this->getService(),
-            "desc" => $purchase->getDescription(),
-            "forname" => $purchase->user->getForename(),
-            "surname" => $purchase->user->getSurname(),
-            "email" => $purchase->getEmail(),
-            "amount" => $price,
-            "userdata" => $userData,
-            "sign" => md5(
-                $this->getService() .
-                    $price .
-                    $purchase->getDescription() .
-                    $userData .
-                    $purchase->user->getForename() .
-                    $purchase->user->getSurname() .
-                    $purchase->getEmail() .
-                    $this->getKey()
-            ),
+            "data" => [
+                "service" => $this->getService(),
+                "desc" => $purchase->getDescription(),
+                "forname" => $purchase->user->getForename(),
+                "surname" => $purchase->user->getSurname(),
+                "email" => $purchase->getEmail(),
+                "amount" => $price,
+                "userdata" => $userData,
+                "sign" => md5(
+                    $this->getService() .
+                        $price .
+                        $purchase->getDescription() .
+                        $userData .
+                        $purchase->user->getForename() .
+                        $purchase->user->getSurname() .
+                        $purchase->getEmail() .
+                        $this->getKey()
+                ),
+            ]
         ];
     }
 

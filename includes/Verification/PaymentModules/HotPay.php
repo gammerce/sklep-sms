@@ -63,10 +63,12 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         return [
             "url" => "https://platnosc.hotpay.pl",
             "method" => "POST",
-            "SEKRET" => $this->getTransferSecret(),
-            "KWOTA" => $price / 100,
-            "ID_ZAMOWIENIA" => $purchase->getId(),
-            "EMAIL" => $purchase->getEmail(),
+            "data" => [
+                "SEKRET" => $this->getTransferSecret(),
+                "KWOTA" => $price / 100,
+                "ID_ZAMOWIENIA" => $purchase->getId(),
+                "EMAIL" => $purchase->getEmail(),
+            ],
         ];
     }
 
@@ -89,11 +91,13 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         return new PaymentResult(PaymentResultType::EXTERNAL(), [
             "method" => "POST",
             "url" => "https://directbilling.hotpay.pl",
-            "SEKRET" => $this->getDirectBillingSecret(),
-            "KWOTA" => $price / 100,
-            "PRZEKIEROWANIE_SUKCESS" => $this->url->to("/page/payment_success"),
-            "PRZEKIEROWANIE_BLAD" => $this->url->to("/page/payment_error"),
-            "ID_ZAMOWIENIA" => $purchase->getId(),
+            "data" => [
+                "SEKRET" => $this->getDirectBillingSecret(),
+                "KWOTA" => $price / 100,
+                "PRZEKIEROWANIE_SUKCESS" => $this->url->to("/page/payment_success"),
+                "PRZEKIEROWANIE_BLAD" => $this->url->to("/page/payment_error"),
+                "ID_ZAMOWIENIA" => $purchase->getId(),
+            ]
         ]);
     }
 

@@ -1,8 +1,15 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
+use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
@@ -12,6 +19,25 @@ class PayPal extends PaymentModule implements SupportTransfer
     const MODULE_ID = "paypal";
     private $payPalDomain = "https://api.sandbox.paypal.com";
 
+    /** @var Settings */
+    private $settings;
+
+    /** @var Translator */
+    private $lang;
+
+    public function __construct(
+        Requester $requester,
+        PaymentPlatform $paymentPlatform,
+        UrlGenerator $url,
+        FileLogger $fileLogger,
+        Settings $settings,
+        TranslationManager $translationManager
+    ) {
+        parent::__construct($requester, $paymentPlatform, $url, $fileLogger);
+        $this->settings = $settings;
+        $this->lang = $translationManager->user();
+    }
+
     public static function getDataFields()
     {
         return [new DataField("client_id"), new DataField("secret")];
@@ -19,17 +45,10 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public function prepareTransfer($price, Purchase $purchase)
     {
-        $credentials = base64_encode("{$this->getClientId()}:{$this->getSecret()}");
+        // TODO Listen to CHECKOUT.ORDER.APPROVED
 
-        //        $response = $this->requester->post(
-        //            "{$this->payPalDomain}/v1/oauth2/token",
-        //            "grant_type=client_credentials",
-        //            [
-        //                "Authorization" => "Basic {$credentials}",
-        //            ]
-        //        );
-        //
-        //        $accessToken = array_get($response->json(), "access_token");
+        $price /= 100;
+        $credentials = base64_encode("{$this->getClientId()}:{$this->getSecret()}");
 
         $response = $this->requester->post(
             "{$this->payPalDomain}/v2/checkout/orders",
@@ -38,31 +57,20 @@ class PayPal extends PaymentModule implements SupportTransfer
                 "purchase_units" => [
                     [
                         "amount" => [
-                            "currency_code" => "PLN",
-                            "value" => "100.00",
+                            "currency_code" => $this->settings->getCurrency(),
+                            "value" => $price,
                         ],
+                        "description" => $purchase->getDescription(),
+                        "custom_id" => $purchase->getId(),
                     ],
                 ],
                 "application_context" => [
-                    "purchase_id" => $purchase->getId(),
+                    "return_url" => $this->url->to("/page/payment_success"),
+                    "cancel_url" => $this->url->to("/page/payment_error"),
+                    "locale" => $this->lang->getCurrentLanguageShort(),
+                    "shipping_preference" => "NO_SHIPPING",
+                    "user_action" => "PAY_NOW",
                 ],
-                //                "payer"          => [
-                //                    "payment_method" => "paypal",
-                //                ],
-                //                "transactions"   => [
-                //                    [
-                //                        "amount"      => [
-                //                            "total"    => "30.11",
-                //                            "currency" => "PLN", // TODO Get it from settings
-                //                        ],
-                //                        "description" => $purchase->getDescription(),
-                //                        "custom"      => $purchase->getId(),
-                //                    ],
-                //                ],
-                //                "redirect_urls"  => [
-                //                    "return_url" => $this->url->to("/page/payment_success"),
-                //                    "cancel_url" => $this->url->to("/page/payment_error"),
-                //                ],
             ]),
             [
                 "Authorization" => "Basic $credentials",
