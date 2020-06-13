@@ -79,7 +79,9 @@ class PurchaseService
 
         $purchase = (new Purchase($user))
             ->setServiceId($serviceModule->service->getId())
-            ->setDescription($this->lang->t("payment_for_service", $serviceModule->service->getNameI18n()))
+            ->setDescription(
+                $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())
+            )
             ->setEmail($email)
             ->setPaymentOption($paymentOption)
             ->setOrder([

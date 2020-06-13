@@ -37,9 +37,12 @@ class PurchaseCollection
             return new ApiResponse("no_permission", $lang->t("service_no_permission"), 0);
         }
 
-        $purchase = $purchaseFactory->create($user)
+        $purchase = $purchaseFactory
+            ->create($user)
             ->setServiceId($serviceModule->service->getId())
-            ->setDescription($lang->t("payment_for_service", $serviceModule->service->getNameI18n()));
+            ->setDescription(
+                $lang->t("payment_for_service", $serviceModule->service->getNameI18n())
+            );
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseDataService->storePurchase($purchase);
