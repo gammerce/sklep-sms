@@ -97,7 +97,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
                 "PRZEKIEROWANIE_SUKCESS" => $this->url->to("/page/payment_success"),
                 "PRZEKIEROWANIE_BLAD" => $this->url->to("/page/payment_error"),
                 "ID_ZAMOWIENIA" => $purchase->getId(),
-            ]
+            ],
         ]);
     }
 

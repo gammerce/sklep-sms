@@ -100,7 +100,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
                         $purchase->getEmail() .
                         $this->getKey()
                 ),
-            ]
+            ],
         ];
     }
 

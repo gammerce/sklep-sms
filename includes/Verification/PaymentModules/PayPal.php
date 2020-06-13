@@ -2,6 +2,7 @@
 namespace App\Verification\PaymentModules;
 
 use App\Loggers\FileLogger;
+use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
@@ -100,7 +101,34 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public function finalizeTransfer(array $query, array $body)
     {
-        // TODO: Implement finalizeTransfer() method.
+        $id = array_dot_get($body, "id");
+        $eventType = array_dot_get($body, "event_type");
+        $status = array_dot_get($body, "resource.status");
+        $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
+
+        if ($eventType !== "CHECKOUT.ORDER.APPROVED") {
+            throw new PaymentProcessingException("Invalid event type", $body);
+        }
+
+        if ($status !== "APPROVED") {
+            throw new PaymentProcessingException("Invalid resource status", $body);
+        }
+
+        $purchaseUnit = $purchaseUnits[0];
+        $transactionId = array_dot_get($purchaseUnit, "custom_id");
+        $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
+
+        // TODO Implement webhook validation
+
+        return (new FinalizedPayment())
+            ->setStatus($this->isPaymentValid($body))
+            ->setOrderId($id)
+            ->setCost($amount)
+            ->setIncome($amount)
+            ->setTransactionId($transactionId)
+            ->setExternalServiceId($id)
+            ->setTestMode(false)
+            ->setOutput("OK");
     }
 
     private function getClientId()
