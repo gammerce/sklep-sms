@@ -13,6 +13,7 @@ use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
@@ -75,8 +76,8 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             throw new UnknownErrorException();
         }
 
-        if ($content['connect'] === false) {
-            $errorCode = $content['data']['errorCode'];
+        if ($content["connect"] === false) {
+            $errorCode = $content["data"]["errorCode"];
 
             if ($errorCode == 1) {
                 throw new BadCodeException();
@@ -88,7 +89,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             throw new UnknownErrorException();
         }
 
-        if ($content['data']['status'] == 1) {
+        if ($content["data"]["status"] == 1) {
             return new SmsSuccessResult();
         }
 
@@ -118,25 +119,25 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
-        $isTest = strtolower(array_get($body, "test")) === "true";
-        $amount = price_to_int(array_get($body, "amountPay"));
+        $isTest = strtolower($request->request->get("test")) === "true";
+        $amount = price_to_int($request->request->get("amountPay"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
-            ->setOrderId(array_get($body, "orderID"))
+            ->setStatus($this->isPaymentValid($request))
+            ->setOrderId($request->request->get("orderID"))
             ->setCost($amount)
             ->setIncome($amount)
-            ->setTransactionId(array_get($body, "control"))
+            ->setTransactionId($request->request->get("control"))
             ->setTestMode($isTest)
             ->setOutput("OK");
     }
 
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
-        $userId = array_get($body, "userid");
-        $status = strtolower(array_get($body, "status"));
+        $userId = $request->request->get("userid");
+        $status = strtolower($request->request->get("status"));
         $ip = get_ip();
 
         if ($status !== "true") {

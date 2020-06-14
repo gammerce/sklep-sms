@@ -7,14 +7,12 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
-use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class TransferController
 {
@@ -35,10 +33,7 @@ class TransferController
             );
         }
 
-        $finalizedPayment = $paymentModule->finalizeTransfer(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $finalizedPayment = $paymentModule->finalizeTransfer($request);
 
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);

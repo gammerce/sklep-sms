@@ -9,12 +9,10 @@ use App\Payment\DirectBilling\DirectBillingPaymentService;
 use App\Payment\DirectBilling\DirectBillingPriceService;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
-use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Verification\Abstracts\SupportDirectBilling;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class DirectBillingController
 {
@@ -35,10 +33,7 @@ class DirectBillingController
             );
         }
 
-        $finalizedPayment = $paymentModule->finalizeDirectBilling(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $finalizedPayment = $paymentModule->finalizeDirectBilling($request);
 
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);

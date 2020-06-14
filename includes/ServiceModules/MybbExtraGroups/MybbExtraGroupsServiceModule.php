@@ -51,7 +51,6 @@ use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use Exception;
 use PDOException;
-use UnexpectedValueException;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,

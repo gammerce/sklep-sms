@@ -12,6 +12,7 @@ use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @link https://hotpay.pl/documentation_v3/tech_directbilling.pdf
@@ -72,16 +73,16 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         ];
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int(array_get($body, "KWOTA"));
+        $amount = price_to_int($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isTransferValid($body))
-            ->setOrderId(array_get($body, "ID_PLATNOSCI"))
+            ->setStatus($this->isTransferValid($request))
+            ->setOrderId($request->request->get("ID_PLATNOSCI"))
             ->setCost($amount)
             ->setIncome($amount)
-            ->setTransactionId(array_get($body, "ID_ZAMOWIENIA"))
+            ->setTransactionId($request->request->get("ID_ZAMOWIENIA"))
             ->setTestMode(false);
     }
 
@@ -100,19 +101,19 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         ]);
     }
 
-    public function finalizeDirectBilling(array $query, array $body)
+    public function finalizeDirectBilling(Request $request)
     {
         // TODO cost should not be equal income
-        $cost = price_to_int(array_get($body, "KWOTA"));
-        $income = price_to_int(array_get($body, "KWOTA"));
+        $cost = price_to_int($request->request->get("KWOTA"));
+        $income = price_to_int($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isDirectBillingValid($body))
-            ->setOrderId(array_get($body, "ID_PLATNOSCI"))
+            ->setStatus($this->isDirectBillingValid($request))
+            ->setOrderId($request->request->get("ID_PLATNOSCI"))
             ->setCost($cost)
             ->setIncome($income)
-            ->setTransactionId(array_get($body, "ID_ZAMOWIENIA"))
-            ->setExternalServiceId(array_get($body, "ID_PLATNOSCI"))
+            ->setTransactionId($request->request->get("ID_ZAMOWIENIA"))
+            ->setExternalServiceId($request->request->get("ID_PLATNOSCI"))
             ->setTestMode(false);
     }
 
@@ -141,24 +142,25 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         return $this->getData("transfer_hash");
     }
 
-    private function isTransferValid(array $body)
+    private function isTransferValid(Request $request)
     {
         $hashElements = [
             $this->getTransferHash(),
-            array_get($body, "KWOTA"),
-            array_get($body, "ID_PLATNOSCI"),
-            array_get($body, "ID_ZAMOWIENIA"),
-            array_get($body, "STATUS"),
-            array_get($body, "SEKRET"),
+            $request->request->get("KWOTA"),
+            $request->request->get("ID_PLATNOSCI"),
+            $request->request->get("ID_ZAMOWIENIA"),
+            $request->request->get("STATUS"),
+            $request->request->get("SEKRET"),
         ];
         $hash = hash("sha256", implode(";", $hashElements));
 
-        return $hash === array_get($body, "HASH") && array_get($body, "STATUS") === "SUCCESS";
+        return $hash === $request->request->get("HASH") &&
+            $request->request->get("STATUS") === "SUCCESS";
     }
 
-    private function isDirectBillingValid(array $body)
+    private function isDirectBillingValid(Request $request)
     {
         // TODO Improve it
-        return array_get($body, "STATUS") == 1;
+        return $request->request->get("STATUS") == 1;
     }
 }

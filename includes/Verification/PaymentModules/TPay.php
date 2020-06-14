@@ -6,6 +6,7 @@ use App\Models\Purchase;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Created by MilyGosc.
@@ -44,34 +45,34 @@ class TPay extends PaymentModule implements SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
         // e.g. "40.80"
-        $amount = price_to_int(array_get($body, "tr_amount"));
+        $amount = price_to_int($request->request->get("tr_amount"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
-            ->setOrderId(array_get($body, "tr_id"))
+            ->setStatus($this->isPaymentValid($request))
+            ->setOrderId($request->request->get("tr_id"))
             ->setCost($amount)
             ->setIncome($amount)
-            ->setTransactionId(array_get($body, "tr_crc"))
-            ->setExternalServiceId(array_get($body, "id"))
-            ->setTestMode(array_get($body, "test_mode", false))
+            ->setTransactionId($request->request->get("tr_crc"))
+            ->setExternalServiceId($request->request->get("id"))
+            ->setTestMode($request->request->get("test_mode", false))
             ->setOutput("TRUE");
     }
 
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
         $isMd5Valid = $this->isMd5Valid(
-            array_get($body, "md5sum"),
-            number_format(array_get($body, "tr_amount"), 2, ".", ""),
-            array_get($body, "tr_crc"),
-            array_get($body, "tr_id")
+            $request->request->get("md5sum"),
+            number_format($request->request->get("tr_amount"), 2, ".", ""),
+            $request->request->get("tr_crc"),
+            $request->request->get("tr_id")
         );
 
         return $isMd5Valid &&
-            array_get($body, "tr_status") === "TRUE" &&
-            array_get($body, "tr_error") === "none";
+            $request->request->get("tr_status") === "TRUE" &&
+            $request->request->get("tr_error") === "none";
     }
 
     private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)

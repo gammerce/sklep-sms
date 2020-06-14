@@ -4,7 +4,6 @@ namespace App\System;
 use App\Managers\UserManager;
 use App\Models\User;
 use Symfony\Component\HttpFoundation\Request;
-use UnexpectedValueException;
 
 class Auth
 {

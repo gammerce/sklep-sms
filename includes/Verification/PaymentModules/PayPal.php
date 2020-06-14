@@ -14,6 +14,7 @@ use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
+use Symfony\Component\HttpFoundation\Request;
 
 class PayPal extends PaymentModule implements SupportTransfer
 {
@@ -46,13 +47,12 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public static function processDataFields(array $data)
     {
+        // TODO Register webhook: CHECKOUT.ORDER.APPROVED
         return $data;
     }
 
     public function prepareTransfer($price, Purchase $purchase)
     {
-        // TODO Listen to CHECKOUT.ORDER.APPROVED
-
         $price /= 100;
 
         $response = $this->requester->post(
@@ -103,15 +103,17 @@ class PayPal extends PaymentModule implements SupportTransfer
         throw new PaymentProcessingException("error", "Approve url not found");
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
+        $body = $request->request->all();
+
         $id = array_dot_get($body, "id");
         $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
         $purchaseUnit = $purchaseUnits[0];
         $transactionId = array_dot_get($purchaseUnit, "custom_id");
         $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
 
-        $status = $this->isPaymentValid($body);
+        $status = $this->isPaymentValid($request);
 
         if ($status) {
             $this->capturePayment();
@@ -128,11 +130,12 @@ class PayPal extends PaymentModule implements SupportTransfer
     }
 
     /**
-     * @param array $body
+     * @param Request $request
      * @return bool
      */
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
+        $body = $request->request->all();
         $eventType = array_dot_get($body, "event_type");
         $status = array_dot_get($body, "resource.status");
 
