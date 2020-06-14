@@ -73,17 +73,13 @@ class TransferPaymentServiceTest extends TestCase
         // when
         $paymentResult = $transferPaymentMethod->pay($purchase, $serviceModule);
         $finalizedPayment = $paymentModule->finalizeTransfer(
-            Request::create(
-                "",
-                "POST",
-                [
-                    "tr_id" => "abc",
-                    "tr_amount" => $paymentResult->getData()["kwota"],
-                    "tr_crc" => $paymentResult->getData()["crc"],
-                    "id" => "tpay",
-                    "md5sum" => "xyz",
-                ]
-            )
+            Request::create("", "POST", [
+                "tr_id" => "abc",
+                "tr_amount" => $paymentResult->getData()["kwota"],
+                "tr_crc" => $paymentResult->getData()["crc"],
+                "id" => "tpay",
+                "md5sum" => "xyz",
+            ])
         );
         $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
         $transferPaymentService->finalizePurchase($purchase, $finalizedPayment);

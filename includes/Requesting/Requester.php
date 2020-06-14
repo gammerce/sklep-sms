@@ -79,7 +79,7 @@ class Requester
      * @param int $timeout
      * @return Response|bool
      */
-    protected function curl(
+    private function curl(
         $method,
         $url,
         array $query = [],
@@ -125,7 +125,7 @@ class Requester
         return new Response($httpCode, $response);
     }
 
-    protected function formatHeaders(array $headers)
+    private function formatHeaders(array $headers)
     {
         $output = [];
 
