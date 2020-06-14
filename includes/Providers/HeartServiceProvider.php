@@ -50,7 +50,7 @@ use App\View\Pages\Admin\PageAdminUpdateServers;
 use App\View\Pages\Admin\PageAdminUpdateWeb;
 use App\View\Pages\Admin\PageAdminUsers;
 use App\View\Pages\Admin\PageAdminUserService;
-use App\View\Pages\Shop\PageCashbillTransferFinalized;
+use App\View\Pages\Shop\PageCashBillTransferFinalized;
 use App\View\Pages\Shop\PageChangePassword;
 use App\View\Pages\Shop\PageContact;
 use App\View\Pages\Shop\PageForgottenPassword;
@@ -117,7 +117,7 @@ class HeartServiceProvider
 
     private function registerPages(PageManager $pageManager)
     {
-        $pageManager->registerUser(PageCashbillTransferFinalized::class);
+        $pageManager->registerUser(PageCashBillTransferFinalized::class);
         $pageManager->registerUser(PageChangePassword::class);
         $pageManager->registerUser(PageContact::class);
         $pageManager->registerUser(PageForgottenPassword::class);

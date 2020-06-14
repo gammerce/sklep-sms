@@ -10,7 +10,7 @@ use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
-class PageCashbillTransferFinalized extends Page
+class PageCashBillTransferFinalized extends Page
 {
     const PAGE_ID = "transfer_finalized";
 

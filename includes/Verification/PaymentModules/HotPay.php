@@ -82,8 +82,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
             ->setCost($amount)
             ->setIncome($amount)
             ->setTransactionId(array_get($body, "ID_ZAMOWIENIA"))
-            ->setTestMode(false)
-            ->setOutput("OK");
+            ->setTestMode(false);
     }
 
     public function prepareDirectBilling($price, Purchase $purchase)
@@ -114,8 +113,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
             ->setIncome($income)
             ->setTransactionId(array_get($body, "ID_ZAMOWIENIA"))
             ->setExternalServiceId(array_get($body, "ID_PLATNOSCI"))
-            ->setTestMode(false)
-            ->setOutput("OK");
+            ->setTestMode(false);
     }
 
     public function getSmsCode()

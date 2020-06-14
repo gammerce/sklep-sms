@@ -7,12 +7,14 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
+use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Verification\Abstracts\SupportTransfer;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class TransferController
 {
@@ -75,25 +77,5 @@ class TransferController
         } finally {
             return new PlainResponse($finalizedPayment->getOutput());
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldAction(
-        Request $request,
-        PaymentModuleManager $paymentModuleManager,
-        ExternalPaymentService $externalPaymentService,
-        TransferPaymentService $transferPaymentService,
-        DatabaseLogger $databaseLogger
-    ) {
-        return $this->action(
-            $request->query->get("service"),
-            $request,
-            $paymentModuleManager,
-            $externalPaymentService,
-            $transferPaymentService,
-            $databaseLogger
-        );
     }
 }

@@ -49,7 +49,6 @@ class PayPal extends PaymentModule implements SupportTransfer
         // TODO Listen to CHECKOUT.ORDER.APPROVED
 
         $price /= 100;
-        $credentials = base64_encode("{$this->getClientId()}:{$this->getSecret()}");
 
         $response = $this->requester->post(
             "{$this->payPalDomain}/v2/checkout/orders",
@@ -74,7 +73,7 @@ class PayPal extends PaymentModule implements SupportTransfer
                 ],
             ]),
             [
-                "Authorization" => "Basic $credentials",
+                "Authorization" => "Basic {$this->getCredentials()}",
                 "Content-Type" => "application/json",
             ]
         );
@@ -102,42 +101,106 @@ class PayPal extends PaymentModule implements SupportTransfer
     public function finalizeTransfer(array $query, array $body)
     {
         $id = array_dot_get($body, "id");
-        $eventType = array_dot_get($body, "event_type");
-        $status = array_dot_get($body, "resource.status");
         $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
-
-        if ($eventType !== "CHECKOUT.ORDER.APPROVED") {
-            throw new PaymentProcessingException("Invalid event type", $body);
-        }
-
-        if ($status !== "APPROVED") {
-            throw new PaymentProcessingException("Invalid resource status", $body);
-        }
-
         $purchaseUnit = $purchaseUnits[0];
         $transactionId = array_dot_get($purchaseUnit, "custom_id");
         $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
 
-        // TODO Implement webhook validation
+        $status = $this->isPaymentValid($body);
+
+        if ($status) {
+            $this->capturePayment();
+        }
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
+            ->setStatus($status)
             ->setOrderId($id)
             ->setCost($amount)
             ->setIncome($amount)
             ->setTransactionId($transactionId)
             ->setExternalServiceId($id)
-            ->setTestMode(false)
-            ->setOutput("OK");
+            ->setTestMode($this->isTestMode());
     }
 
+    /**
+     * @param array $body
+     * @return bool
+     */
+    private function isPaymentValid(array $body)
+    {
+        $eventType = array_dot_get($body, "event_type");
+        $status = array_dot_get($body, "resource.status");
+
+        if ($eventType !== "CHECKOUT.ORDER.APPROVED") {
+            $this->fileLogger->error("PayPal | Invalid event type", $body);
+            return false;
+        }
+
+        if ($status !== "APPROVED") {
+            $this->fileLogger->error("PayPal | Invalid resource status", $body);
+            return false;
+        }
+
+        $response = $this->requester->post(
+            "/v1/notifications/verify-webhook-signature",
+            [
+                "auth_algo" => "",
+                "cert_url" => "",
+                "transmission_id" => "",
+                "transmission_sig" => "",
+                "transmission_time" => "",
+                "webhook_id" => "",
+                "webhook_event" => $body,
+            ],
+            [
+                "Authorization" => "Basic {$this->getCredentials()}",
+                "Content-Type" => "application/json",
+            ]
+        );
+        $result = $response->json();
+
+        if (array_get($result, "verification_status") !== "SUCCESS") {
+            $this->fileLogger->error("PayPal | Signature verification failed", $body);
+            return false;
+        }
+
+        return true;
+    }
+
+    private function capturePayment()
+    {
+        // TODO Implement it
+    }
+
+    /**
+     * @return string
+     */
+    private function getCredentials()
+    {
+        return base64_encode("{$this->getClientId()}:{$this->getSecret()}");
+    }
+
+    /**
+     * @return string
+     */
     private function getClientId()
     {
         return $this->getData("client_id");
     }
 
+    /**
+     * @return string
+     */
     private function getSecret()
     {
         return $this->getData("secret");
+    }
+
+    /**
+     * @return bool
+     */
+    private function isTestMode()
+    {
+        return str_contains($this->payPalDomain, "sandbox");
     }
 }
