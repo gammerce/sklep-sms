@@ -6,6 +6,7 @@ use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Verification\DataField;
+use App\Verification\Exceptions\ProcessDataFieldsException;
 
 abstract class PaymentModule
 {
@@ -58,5 +59,15 @@ abstract class PaymentModule
     public static function getDataFields()
     {
         return [];
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     * @throws ProcessDataFieldsException
+     */
+    public static function processDataFields(array $data)
+    {
+        return $data;
     }
 }

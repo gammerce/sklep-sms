@@ -8,6 +8,7 @@ use App\Http\Services\PaymentPlatformService;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\PaymentPlatformRepository;
 use App\Translation\TranslationManager;
+use App\Verification\Exceptions\ProcessDataFieldsException;
 use Symfony\Component\HttpFoundation\Request;
 
 class PaymentPlatformCollection
@@ -25,20 +26,24 @@ class PaymentPlatformCollection
         $data = $request->request->get("data") ?: [];
 
         try {
-            $filteredData = $paymentPlatformService->getValidatedData($moduleId, $data);
+            $processedData = $paymentPlatformService->processDataFields($moduleId, $data);
         } catch (InvalidPaymentModuleException $e) {
             throw new ValidationException([
                 "module" => $lang->t("invalid_payment_module"),
             ]);
+        } catch (ProcessDataFieldsException $e) {
+            throw new ValidationException([
+                "module" => $e->getMessage(),
+            ]);
         }
 
-        $paymentPlatform = $repository->create($name, $moduleId, $filteredData);
+        $paymentPlatform = $repository->create($name, $moduleId, $processedData);
 
-        $databaseLogger->logWithActor('log_payment_platform_added', $paymentPlatform->getId());
+        $databaseLogger->logWithActor("log_payment_platform_added", $paymentPlatform->getId());
 
-        return new SuccessApiResponse($lang->t('payment_platform_added'), [
-            'data' => [
-                'id' => $paymentPlatform->getId(),
+        return new SuccessApiResponse($lang->t("payment_platform_added"), [
+            "data" => [
+                "id" => $paymentPlatform->getId(),
             ],
         ]);
     }

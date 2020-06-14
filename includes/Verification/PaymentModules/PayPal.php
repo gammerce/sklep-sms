@@ -44,6 +44,11 @@ class PayPal extends PaymentModule implements SupportTransfer
         return [new DataField("client_id"), new DataField("secret")];
     }
 
+    public static function processDataFields(array $data)
+    {
+        return $data;
+    }
+
     public function prepareTransfer($price, Purchase $purchase)
     {
         // TODO Listen to CHECKOUT.ORDER.APPROVED
