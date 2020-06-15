@@ -61,7 +61,7 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public static function getDataFields()
     {
-        return [new DataField("client_id"), new DataField("secret")];
+        return [new DataField("client_id"), new DataField("secret"), new DataField("webhook_id")];
     }
 
     public function prepareTransfer($price, Purchase $purchase)
