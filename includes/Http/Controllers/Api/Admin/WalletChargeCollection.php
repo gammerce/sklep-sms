@@ -13,6 +13,7 @@ use App\Managers\UserManager;
 use App\Models\Purchase;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\Services\PriceTextService;
 use App\System\Auth;
@@ -66,9 +67,9 @@ class WalletChargeCollection
         // Kupujemy usługę
         $purchase = (new Purchase($editedUser))
             ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::ADMIN(),
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
+            ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setOrder([
                 Purchase::ORDER_QUANTITY => $quantity,
             ])

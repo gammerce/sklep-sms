@@ -110,7 +110,7 @@ class Factory
                 "ip" => $this->faker->ipv4,
                 "port" => $this->faker->numberBetween(1000, 20000),
                 "sms_platform_id" => null,
-                "transfer_platform_id" => null,
+                "transfer_platform_ids" => [],
             ],
             $attributes
         );
@@ -120,7 +120,7 @@ class Factory
             $attributes["ip"],
             $attributes["port"],
             $attributes["sms_platform_id"],
-            $attributes["transfer_platform_id"]
+            $attributes["transfer_platform_ids"]
         );
     }
 

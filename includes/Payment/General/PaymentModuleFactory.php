@@ -16,6 +16,6 @@ class PaymentModuleFactory
 
     public function create($paymentModuleClass, PaymentPlatform $paymentPlatform)
     {
-        return $this->app->makeWith($paymentModuleClass, compact('paymentPlatform'));
+        return $this->app->makeWith($paymentModuleClass, compact("paymentPlatform"));
     }
 }

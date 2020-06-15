@@ -1,7 +1,9 @@
 <?php
 namespace App\Http\Services;
 
+use App\Exceptions\InvalidPaymentModuleException;
 use App\Managers\PaymentModuleManager;
+use App\Verification\Exceptions\ProcessDataFieldsException;
 
 class PaymentPlatformService
 {
@@ -13,8 +15,17 @@ class PaymentPlatformService
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function getValidatedData($moduleId, array $data)
+    /**
+     * @param string $moduleId
+     * @param array $data
+     * @return array
+     * @throws InvalidPaymentModuleException
+     * @throws ProcessDataFieldsException
+     */
+    public function processDataFields($moduleId, array $data)
     {
+        $moduleClass = $this->paymentModuleManager->getClass($moduleId);
+
         $filteredData = [];
         $dataFields = $this->paymentModuleManager->dataFields($moduleId);
 
@@ -22,6 +33,6 @@ class PaymentPlatformService
             $filteredData[$dataField->getId()] = array_get($data, $dataField->getId());
         }
 
-        return $filteredData;
+        return $moduleClass::processDataFields($filteredData);
     }
 }

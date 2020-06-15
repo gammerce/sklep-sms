@@ -1,26 +1,23 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\PaymentOption;
+use App\Payment\General\PaymentSelect;
+
 class Purchase
 {
-    const PAYMENT_DISABLED_DIRECT_BILLING = "no_direct_billing";
-    const PAYMENT_DISABLED_SMS = "no_sms";
-    const PAYMENT_DISABLED_TRANSFER = "no_transfer";
-    const PAYMENT_DISABLED_WALLET = "no_wallet";
-    const PAYMENT_METHOD = "method";
-    const PAYMENT_PAYMENT_ID = "payment_id";
-    const PAYMENT_PLATFORM_DIRECT_BILLING = "direct_billing_platform";
-    const PAYMENT_PLATFORM_SMS = "sms_platform";
-    const PAYMENT_PLATFORM_TRANSFER = "transfer_platform";
     const PAYMENT_PRICE_DIRECT_BILLING = "direct_billing_price";
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
+    const PAYMENT_PAYMENT_ID = "payment_id";
     const PAYMENT_SMS_CODE = "sms_code";
 
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
 
-    /** @var string */
+    /**
+     * @var string
+     */
     private $id;
 
     /**
@@ -30,11 +27,27 @@ class Purchase
      */
     private $serviceId;
 
-    /** @var User */
+    /**
+     * @var User
+     */
     public $user;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     */
     private $email;
+
+    /**
+     * List of available payment platforms
+     *
+     * @var PaymentSelect
+     */
+    private $paymentSelect;
+
+    /**
+     * @var PaymentOption|null
+     */
+    private $paymentOption;
 
     /**
      * Payment details like method, sms_code et.c
@@ -59,7 +72,7 @@ class Purchase
      * Purchase description ( useful for transfer payments )
      * @var string|null
      */
-    private $desc;
+    private $description;
 
     /**
      * Attempt to finalize purchase has been made
@@ -79,6 +92,7 @@ class Purchase
     {
         $this->user = $user;
         $this->id = generate_id(32);
+        $this->paymentSelect = new PaymentSelect();
     }
 
     public function getServiceId()
@@ -169,19 +183,27 @@ class Purchase
     /**
      * @return string
      */
-    public function getDesc()
+    public function getDescription()
     {
-        return $this->desc;
+        return $this->description;
     }
 
     /**
-     * @param string $desc
+     * @param string $description
      * @return Purchase
      */
-    public function setDesc($desc)
+    public function setDescription($description)
     {
-        $this->desc = $desc;
+        $this->description = $description;
         return $this;
+    }
+
+    /**
+     * @return PaymentSelect
+     */
+    public function getPaymentSelect()
+    {
+        return $this->paymentSelect;
     }
 
     /**
@@ -252,5 +274,23 @@ class Purchase
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return PaymentOption|null
+     */
+    public function getPaymentOption()
+    {
+        return $this->paymentOption;
+    }
+
+    /**
+     * @param PaymentOption $paymentOption
+     * @return Purchase
+     */
+    public function setPaymentOption(PaymentOption $paymentOption)
+    {
+        $this->paymentOption = $paymentOption;
+        return $this;
     }
 }

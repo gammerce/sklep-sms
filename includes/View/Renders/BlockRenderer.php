@@ -1,33 +1,46 @@
 <?php
 namespace App\View\Renders;
 
-use App\Managers\BlockManager;
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\ForbiddenException;
+use App\Exceptions\UnauthorizedException;
+use App\View\Blocks\BlockResolver;
+use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockRenderer
 {
-    /** @var BlockManager */
-    private $blockManager;
+    /** @var BlockResolver */
+    private $blockResolver;
 
-    public function __construct(BlockManager $blockManager)
+    public function __construct(BlockResolver $blockResolver)
     {
-        $this->blockManager = $blockManager;
+        $this->blockResolver = $blockResolver;
     }
 
+    /**
+     * @param string $blockId
+     * @param Request $request
+     * @param array $params
+     * @return DOMElement|null
+     * @throws EntityNotFoundException
+     */
     public function render($blockId, Request $request, array $params = [])
     {
-        $block = $this->blockManager->get($blockId);
-
-        if (!$block) {
-            return "";
+        try {
+            $block = $this->blockResolver->resolve($blockId);
+        } catch (EntityNotFoundException $e) {
+            return null;
+        } catch (ForbiddenException $e) {
+            return null;
+        } catch (UnauthorizedException $e) {
+            return null;
         }
 
-        $content = $block->getContent($request, $params);
-
-        return create_dom_element("div", new RawHtml($content), [
-            'id' => $block->getContentId(),
-            'class' => $content !== null ? $block->getContentClass() : "",
+        return create_dom_element("div", new RawHtml($block->getContent($request, $params)), [
+            "id" => $blockId,
+            "class" => $block->getContentClass(),
         ]);
     }
 }

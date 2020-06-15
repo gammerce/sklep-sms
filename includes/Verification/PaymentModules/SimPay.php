@@ -1,18 +1,12 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
 use App\Models\FinalizedPayment;
-use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -23,6 +17,7 @@ use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @link https://docs.simpay.pl/
@@ -31,30 +26,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
 
-    /** @var FileLogger */
-    private $fileLogger;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var Translator */
-    private $lang;
-
     /** @var string[] */
     private $allowedIps;
-
-    public function __construct(
-        Requester $requester,
-        UrlGenerator $url,
-        FileLogger $fileLogger,
-        TranslationManager $translationManager,
-        PaymentPlatform $paymentPlatform
-    ) {
-        parent::__construct($requester, $paymentPlatform);
-        $this->url = $url;
-        $this->fileLogger = $fileLogger;
-        $this->lang = $translationManager->user();
-    }
 
     public static function getDataFields()
     {
@@ -168,17 +141,17 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new PaymentProcessingException("error", "SimPay response. $status: $message");
     }
 
-    public function finalizeDirectBilling(array $query, array $body)
+    public function finalizeDirectBilling(Request $request)
     {
         $this->tryToFetchIps();
 
-        $id = array_get($body, "id");
-        $valueGross = price_to_int(array_get($body, "valuenet_gross"));
-        $valuePartner = price_to_int(array_get($body, "valuepartner"));
-        $control = array_get($body, "control");
+        $id = $request->request->get("id");
+        $valueGross = price_to_int($request->request->get("valuenet_gross"));
+        $valuePartner = price_to_int($request->request->get("valuepartner"));
+        $control = $request->request->get("control");
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
+            ->setStatus($this->isPaymentValid($request))
             ->setOrderId($id)
             ->setCost($valueGross)
             ->setIncome($valuePartner)
@@ -239,31 +212,30 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     }
 
     /**
-     * @param array $body
+     * @param Request $request
      * @return bool
      */
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
-        $status = array_get($body, "status");
-        $sign = array_get($body, "sign");
+        $status = $request->request->get("status");
 
         return in_array(get_ip(), $this->allowedIps, true) &&
             $status === "ORDER_PAYED" &&
-            $this->isSignValid($sign, $body);
+            $this->isSignValid($request);
     }
 
     /**
-     * @param string $sign
-     * @param array $body
+     * @param Request $request
      * @return bool
      */
-    private function isSignValid($sign, array $body)
+    private function isSignValid(Request $request)
     {
-        $id = array_get($body, "id");
-        $status = array_get($body, "status");
-        $valueNet = array_get($body, "valuenet");
-        $valuePartner = array_get($body, "valuepartner");
-        $control = array_get($body, "control");
+        $sign = $request->request->get("sign");
+        $id = $request->request->get("id");
+        $status = $request->request->get("status");
+        $valueNet = $request->request->get("valuenet");
+        $valuePartner = $request->request->get("valuepartner");
+        $control = $request->request->get("control");
 
         $calculatedSign = hash(
             "sha256",

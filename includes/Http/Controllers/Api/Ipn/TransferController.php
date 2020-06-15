@@ -5,7 +5,6 @@ use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\PlainResponse;
 use App\Loggers\DatabaseLogger;
 use App\Managers\PaymentModuleManager;
-use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
@@ -34,10 +33,7 @@ class TransferController
             );
         }
 
-        $finalizedPayment = $paymentModule->finalizeTransfer(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $finalizedPayment = $paymentModule->finalizeTransfer($request);
 
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
@@ -54,7 +50,7 @@ class TransferController
         } catch (InvalidPaidAmountException $e) {
             $logger->log(
                 "log_external_payment_invalid_amount",
-                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost(),
                 $transferPriceService->getPrice($purchase)
@@ -62,7 +58,7 @@ class TransferController
         } catch (PaymentRejectedException $e) {
             $logger->log(
                 "log_external_payment_not_accepted",
-                $purchase->getPayment(Purchase::PAYMENT_METHOD),
+                $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
                 $finalizedPayment->getCost() / 100,
                 $finalizedPayment->getExternalServiceId()
@@ -76,25 +72,5 @@ class TransferController
         } finally {
             return new PlainResponse($finalizedPayment->getOutput());
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldAction(
-        Request $request,
-        PaymentModuleManager $paymentModuleManager,
-        ExternalPaymentService $externalPaymentService,
-        TransferPaymentService $transferPaymentService,
-        DatabaseLogger $databaseLogger
-    ) {
-        return $this->action(
-            $request->query->get("service"),
-            $request,
-            $paymentModuleManager,
-            $externalPaymentService,
-            $transferPaymentService,
-            $databaseLogger
-        );
     }
 }

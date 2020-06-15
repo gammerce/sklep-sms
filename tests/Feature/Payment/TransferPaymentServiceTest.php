@@ -6,6 +6,7 @@ use App\Managers\ServiceModuleManager;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\Transfer\TransferPaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Repositories\PaymentTransferRepository;
@@ -14,6 +15,7 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
+use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -59,25 +61,25 @@ class TransferPaymentServiceTest extends TestCase
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
             ])
-            ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::TRANSFER(),
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $paymentPlatform->getId(),
-            ])
+            ->setPaymentOption(
+                new PaymentOption(PaymentMethod::TRANSFER(), $paymentPlatform->getId())
+            )
             ->setUsingPrice($price)
             ->setServiceId($serviceModule->service->getId())
-            ->setDesc("Description");
+            ->setDescription("Description");
+
+        $purchase->getPaymentSelect()->setTransferPaymentPlatforms([$paymentPlatform->getId()]);
 
         // when
         $paymentResult = $transferPaymentMethod->pay($purchase, $serviceModule);
         $finalizedPayment = $paymentModule->finalizeTransfer(
-            [],
-            [
+            Request::create("", "POST", [
                 "tr_id" => "abc",
-                "tr_amount" => $paymentResult->getData()["kwota"],
-                "tr_crc" => $paymentResult->getData()["crc"],
+                "tr_amount" => $paymentResult->getData()["data"]["kwota"],
+                "tr_crc" => $paymentResult->getData()["data"]["crc"],
                 "id" => "tpay",
                 "md5sum" => "xyz",
-            ]
+            ])
         );
         $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
         $transferPaymentService->finalizePurchase($purchase, $finalizedPayment);

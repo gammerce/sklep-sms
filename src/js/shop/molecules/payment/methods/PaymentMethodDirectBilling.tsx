@@ -1,19 +1,18 @@
-import React, {FunctionComponent} from "react";
-import {__} from "../../../../general/i18n";
-import {Dict} from "../../../types/general";
-import {PaymentMethod} from "../../../types/transaction";
-import {PaymentPrice} from "../../../components/PaymentPrice";
+import React, { FunctionComponent } from "react";
+import { __ } from "../../../../general/i18n";
+import { Dict } from "../../../types/general";
+import { PaymentPrice } from "../../../components/PaymentPrice";
 
 interface Props {
     price: string;
     oldPrice?: string;
-    onPay(method: PaymentMethod, body?: Dict);
+    onPay(body?: Dict);
 }
 
 export const PaymentMethodDirectBilling: FunctionComponent<Props> = (props) => {
     const {price, oldPrice, onPay} = props;
 
-    const onPayClick = () => onPay(PaymentMethod.DirectBilling);
+    const onPayClick = () => onPay();
 
     return (
         <div className="payment-type-wrapper">

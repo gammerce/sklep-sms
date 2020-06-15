@@ -6,10 +6,10 @@ class SmsSuccessResult
     /** @var bool */
     private $free;
 
-    /** @var int */
+    /** @var int|null */
     private $income;
 
-    public function __construct($free = false, $income = 0)
+    public function __construct($free = false, $income = null)
     {
         $this->free = $free;
         $this->income = $income;
@@ -24,7 +24,7 @@ class SmsSuccessResult
     }
 
     /**
-     * @return int
+     * @return int|null
      */
     public function getIncome()
     {

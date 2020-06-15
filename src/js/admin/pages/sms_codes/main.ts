@@ -1,6 +1,6 @@
 import { clearAndHideActionBox, refreshAdminContent, showActionBox } from "../../utils/utils";
 import { loader } from "../../../general/loader";
-import { get_random_string } from "../../../general/stocks";
+import { get_random_string, getFormData } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
@@ -24,10 +24,10 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/sms_codes/" + smsCodeId),
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -46,16 +46,12 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-// Dodanie kodu SMS
+// Add SMS code
 $(document).delegate("#form_sms_code_add", "submit", function(e) {
     e.preventDefault();
     loader.show();
 
-    const formData = Object.fromEntries(
-        $(this)
-            .serializeArray()
-            .map(item => [item.name, item.value])
-    );
+    const formData = getFormData($(this));
 
     $.ajax({
         type: "POST",
@@ -65,10 +61,10 @@ $(document).delegate("#form_sms_code_add", "submit", function(e) {
             sms_price: formData.sms_price,
             expires_at: formData.forever ? null : formData.expires_at,
         },
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

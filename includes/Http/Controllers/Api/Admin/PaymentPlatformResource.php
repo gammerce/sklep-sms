@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Exceptions\ValidationException;
 use App\Http\Responses\ErrorApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Services\PaymentPlatformService;
@@ -10,6 +11,7 @@ use App\Models\Server;
 use App\Repositories\PaymentPlatformRepository;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\Verification\Exceptions\ProcessDataFieldsException;
 use Symfony\Component\HttpFoundation\Request;
 
 class PaymentPlatformResource
@@ -27,15 +29,22 @@ class PaymentPlatformResource
         $data = $request->request->get("data") ?: [];
 
         $paymentPlatform = $paymentPlatformRepository->getOrFail($paymentPlatformId);
-        $filteredData = $paymentPlatformService->getValidatedData(
-            $paymentPlatform->getModuleId(),
-            $data
-        );
-        $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $filteredData);
 
-        $databaseLogger->logWithActor('log_payment_platform_edited', $paymentPlatform->getId());
+        try {
+            $processedData = $paymentPlatformService->processDataFields(
+                $paymentPlatform->getModuleId(),
+                $data
+            );
+        } catch (ProcessDataFieldsException $e) {
+            throw new ValidationException([
+                "module" => $e->getMessage(),
+            ]);
+        }
 
-        return new SuccessApiResponse($lang->t('payment_platform_updated'));
+        $paymentPlatformRepository->update($paymentPlatform->getId(), $name, $processedData);
+        $databaseLogger->logWithActor("log_payment_platform_edited", $paymentPlatform->getId());
+
+        return new SuccessApiResponse($lang->t("payment_platform_updated"));
     }
 
     public function delete(
@@ -52,25 +61,25 @@ class PaymentPlatformResource
 
         if (
             $settings->getSmsPlatformId() === $paymentPlatform->getId() ||
-            $settings->getTransferPlatformId() === $paymentPlatform->getId() ||
+            in_array($paymentPlatform->getId(), $settings->getTransferPlatformIds(), true) ||
             $settings->getDirectBillingPlatformId() === $paymentPlatform->getId()
         ) {
-            return new ErrorApiResponse($lang->t('delete_payment_platform_settings_constraint'));
+            return new ErrorApiResponse($lang->t("delete_payment_platform_settings_constraint"));
         }
 
         $occupiedPlatforms = collect($serverManager->getServers())->flatMap(function (
             Server $server
         ) {
-            return [$server->getSmsPlatformId(), $server->getTransferPlatformId()];
+            return array_merge([$server->getSmsPlatformId()], $server->getTransferPlatformIds());
         });
 
         if ($occupiedPlatforms->includes($paymentPlatform->getId())) {
-            return new ErrorApiResponse($lang->t('delete_payment_platform_server_constraint'));
+            return new ErrorApiResponse($lang->t("delete_payment_platform_server_constraint"));
         }
 
         $paymentPlatformRepository->delete($paymentPlatform->getId());
-        $databaseLogger->logWithActor('log_payment_platform_deleted', $paymentPlatformId);
+        $databaseLogger->logWithActor("log_payment_platform_deleted", $paymentPlatformId);
 
-        return new SuccessApiResponse($lang->t('payment_platform_deleted'));
+        return new SuccessApiResponse($lang->t("payment_platform_deleted"));
     }
 }

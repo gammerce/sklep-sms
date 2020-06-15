@@ -38,15 +38,15 @@ return [
         'Zaakceptowano płatność. Metoda [{1}] ID zakupu [{2}] ID transakcji: [{3}] Kwota: [{4}] Usługa: [{5}]',
     'log_external_payment_invalid_amount' =>
         'Zapłacona kwota różni się od kwoty zakupu. Metoda: [{1}] ID: [{2}] Zapłacona kwota: [{3}] Oczekiwana kwota: [{4}]',
-    'log_external_payment_not_accepted' =>
-        'Nieudana autoryzacja transakcji. Metoda [{1}] ID transakcji [{2}] Kwota: [{3}] Usługa: [{4}]',
     'log_external_payment_invalid_module' =>
         'Płatność: [{1}] została zaakceptowana, jednakże moduł usługi [{2}] nie implementuje interfejsu IServicePurchase.',
+    'log_external_payment_no_transaction_file' =>
+        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi transakcji.',
+    'log_external_payment_not_accepted' =>
+        'Nieudana autoryzacja transakcji. Metoda [{1}] ID transakcji [{2}] Kwota: [{3}] Usługa: [{4}]',
     'log_new_account' => 'Założono nowe konto. ID: [{1}] Nazwa Użytkownika: [{2}], IP: [{3}]',
     'log_password_changed' => 'Użytkownik zmienił swoje hasło.',
     'log_purchase_code' => 'Wykorzystano kod [{1}] do zakupu usługi. ID płatności: [{2}]',
-    'log_external_payment_no_transaction_file' =>
-        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi transakcji.',
     'log_reset_key_email' =>
         'Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: [{1}][{2}] E-mail: [{3}] Dane formularza. Nazwa użytkownika: [{4}] E-mail: [{5}]',
     'log_reset_pass' => 'Zresetowano hasło. ID Użytkownika: {1}.',
@@ -72,17 +72,18 @@ return [
         'W celu zmiany hasła do swojego konta, podaj nowe hasło, a następnie wpisz je ponownie.',
     'pay_direct_billing' => 'Płacę z Direct Billing',
     'pay_sms' => 'Płacę SMSem',
-    'pay_transfer' => 'Płacę przelewem',
+    'pay_transfer' => 'Płacę z {1}',
     'pay_wallet' => 'Płacę z portfela',
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Płatność za usługę: {1}',
     'payment_log' => 'Historia płatności',
     'payment_method_unavailable' =>
         'Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.',
+    'payment_option_transfer' => 'Przelew ({1})',
     'payment_rejected' => 'Płatność odrzucona',
     'payment_sms' => 'SMS',
     'payment_success' => 'Płatność zaakceptowana',
-    'payment_transfer' => 'Przelew',
+    'payment_transfer' => 'Przelew ({1})',
     'payment_wallet' => 'Portfel',
     'price' => 'Cena',
     'profile' => 'Profil',
@@ -145,8 +146,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'transfer_finalized' => 'Transakcja sfinalizowana',
     'transfer_transfer' => 'Przelew',
     'transfer_unavailable' => 'Nie można dokonać płatności za pomocą przelewu.',
-    'transfer_unverified' =>
-        'Niestety, ale nie udało się zweryfikować poprawności danych przelewu.',
     'type_code' => 'Wprowadź kod promocyjny',
     'type_setinfo' => 'Wpisz w konsoli: setinfo _ss "{1}"',
     'use_code' => 'Użyj',

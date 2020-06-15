@@ -5,6 +5,7 @@ use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
+use Symfony\Component\HttpFoundation\Request;
 
 interface SupportDirectBilling
 {
@@ -17,9 +18,8 @@ interface SupportDirectBilling
     public function prepareDirectBilling($price, Purchase $purchase);
 
     /**
-     * @param array $query
-     * @param array $body
+     * @param Request $request
      * @return FinalizedPayment
      */
-    public function finalizeDirectBilling(array $query, array $body);
+    public function finalizeDirectBilling(Request $request);
 }

@@ -1,9 +1,9 @@
 <?php
 namespace App\View\Blocks;
 
-use App\View\Html\I_ToHtml;
-use App\View\Interfaces\IBeLoggedCannot;
-use App\View\Interfaces\IBeLoggedMust;
+use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\ForbiddenException;
+use App\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class Block
@@ -11,30 +11,15 @@ abstract class Block
     /**
      * @param Request $request
      * @param array $params
-     *
-     * @return I_ToHtml|string|null
+     * @return string
+     * @throws UnauthorizedException
+     * @throws ForbiddenException
+     * @throws EntityNotFoundException
      */
-    public function getContent(Request $request, array $params)
-    {
-        if (
-            ($this instanceof IBeLoggedMust && !is_logged()) ||
-            ($this instanceof IBeLoggedCannot && is_logged())
-        ) {
-            return null;
-        }
-
-        return $this->content($request, $params);
-    }
+    abstract public function getContent(Request $request, array $params);
 
     /**
-     * @param Request $request
-     * @param array $params
-     *
-     * @return I_ToHtml|string
+     * @return string
      */
-    abstract protected function content(Request $request, array $params);
-
-    abstract public function getContentId();
-
     abstract public function getContentClass();
 }

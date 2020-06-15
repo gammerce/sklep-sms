@@ -1,26 +1,26 @@
-import React, {FunctionComponent} from "react";
-import {__} from "../../../../general/i18n";
-import {Dict} from "../../../types/general";
-import {PaymentMethod} from "../../../types/transaction";
-import {PaymentPrice} from "../../../components/PaymentPrice";
+import React, { FunctionComponent } from "react";
+import { __ } from "../../../../general/i18n";
+import { Dict } from "../../../types/general";
+import { PaymentPrice } from "../../../components/PaymentPrice";
 
 interface Props {
+    name: string;
     price: string;
     oldPrice?: string;
-    onPay(method: PaymentMethod, body?: Dict);
+    onPay(body?: Dict);
 }
 
 export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
-    const {price, oldPrice, onPay} = props;
+    const {price, oldPrice, name, onPay} = props;
 
-    const onPayClick = () => onPay(PaymentMethod.Transfer);
+    const onPayClick = () => onPay();
 
     return (
         <div className="payment-type-wrapper">
             <div className="card">
                 <header className="card-header">
                     <p className="card-header-title">
-                        {__('payment_transfer')}
+                        {__('payment_transfer', name)}
                     </p>
                 </header>
                 <div className="card-content">
@@ -28,7 +28,7 @@ export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
                 </div>
                 <footer className="card-footer">
                     <a id="pay_transfer" className="card-footer-item" onClick={onPayClick}>
-                        {__('pay_transfer')}
+                        {__('pay_transfer', name)}
                     </a>
                 </footer>
             </div>

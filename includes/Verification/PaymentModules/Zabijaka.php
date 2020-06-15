@@ -76,6 +76,6 @@ class Zabijaka extends PaymentModule implements SupportSms
 
     private function getApi()
     {
-        return $this->getData('api');
+        return $this->getData("api");
     }
 }

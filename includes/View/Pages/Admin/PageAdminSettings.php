@@ -78,24 +78,22 @@ class PageAdminSettings extends PageAdmin
             $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
             if ($paymentModule instanceof SupportSms) {
-                $smsPlatforms[] = $this->createPaymentPlatformOption(
-                    $paymentPlatform,
-                    $this->settings->getSmsPlatformId()
-                );
+                $smsPlatforms[] = $this->createPaymentPlatformOption($paymentPlatform, [
+                    $this->settings->getSmsPlatformId(),
+                ]);
             }
 
             if ($paymentModule instanceof SupportTransfer) {
                 $transferPlatforms[] = $this->createPaymentPlatformOption(
                     $paymentPlatform,
-                    $this->settings->getTransferPlatformId()
+                    $this->settings->getTransferPlatformIds()
                 );
             }
 
             if ($paymentModule instanceof SupportDirectBilling) {
-                $directBillingPlatforms[] = $this->createPaymentPlatformOption(
-                    $paymentPlatform,
-                    $this->settings->getDirectBillingPlatformId()
-                );
+                $directBillingPlatforms[] = $this->createPaymentPlatformOption($paymentPlatform, [
+                    $this->settings->getDirectBillingPlatformId(),
+                ]);
             }
         }
 
@@ -164,11 +162,15 @@ class PageAdminSettings extends PageAdmin
             ->addContent($noOption);
     }
 
-    private function createPaymentPlatformOption(PaymentPlatform $paymentPlatform, $currentId)
-    {
+    private function createPaymentPlatformOption(
+        PaymentPlatform $paymentPlatform,
+        array $currentIds
+    ) {
+        $selected = in_array($paymentPlatform->getId(), $currentIds);
+
         return create_dom_element("option", $paymentPlatform->getName(), [
             "value" => $paymentPlatform->getId(),
-            "selected" => $paymentPlatform->getId() === $currentId ? "selected" : "",
+            "selected" => $selected ? "selected" : "",
         ]);
     }
 

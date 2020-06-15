@@ -60,12 +60,7 @@ class BlockWallet extends Block implements IBeLoggedMust
         return "wallet-status";
     }
 
-    public function getContentId()
-    {
-        return "wallet";
-    }
-
-    protected function content(Request $request, array $params)
+    public function getContent(Request $request, array $params)
     {
         $user = $this->auth->user();
         $balance = $this->priceTextService->getPlainPrice($user->getWallet());
@@ -88,9 +83,9 @@ class BlockWallet extends Block implements IBeLoggedMust
             $chargeWalletButton = "";
         }
 
-        return $this->template->render("shop/layout/wallet", [
-            "chargeWalletButton" => $chargeWalletButton,
-            "balance" => $balance,
-        ]);
+        return $this->template->render(
+            "shop/layout/wallet",
+            compact("chargeWalletButton", "balance")
+        );
     }
 }

@@ -38,10 +38,10 @@ class Profitsms extends PaymentModule implements SupportSms
 
     public function verifySms($returnCode, $number)
     {
-        $response = $this->requester->get('http://profitsms.pl/check.php', [
-            'apiKey' => $this->getApi(),
-            'code' => $returnCode,
-            'smsNr' => $number,
+        $response = $this->requester->get("http://profitsms.pl/check.php", [
+            "apiKey" => $this->getApi(),
+            "code" => $returnCode,
+            "smsNr" => $number,
         ]);
 
         if (!$response) {
@@ -49,9 +49,9 @@ class Profitsms extends PaymentModule implements SupportSms
         }
 
         $content = $response->getBody();
-        $raport = explode('|', $content);
+        $raport = explode("|", $content);
 
-        switch ($raport['0']) {
+        switch ($raport["0"]) {
             case 1:
                 return new SmsSuccessResult();
 
@@ -64,11 +64,11 @@ class Profitsms extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return $this->getData('sms_text');
+        return $this->getData("sms_text");
     }
 
     private function getApi()
     {
-        return $this->getData('api');
+        return $this->getData("api");
     }
 }

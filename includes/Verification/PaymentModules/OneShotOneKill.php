@@ -1,10 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
-use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
-use App\Requesting\Requester;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -20,18 +17,6 @@ use App\Verification\Results\SmsSuccessResult;
 class OneShotOneKill extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "1s1k";
-
-    /** @var FileLogger */
-    private $fileLogger;
-
-    public function __construct(
-        Requester $requester,
-        PaymentPlatform $paymentPlatform,
-        FileLogger $fileLogger
-    ) {
-        parent::__construct($requester, $paymentPlatform);
-        $this->fileLogger = $fileLogger;
-    }
 
     public static function getDataFields()
     {
@@ -62,11 +47,11 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
     public function verifySms($returnCode, $number)
     {
-        $response = $this->requester->get('http://www.1shot1kill.pl/api', [
-            'type' => 'sms',
-            'key' => $this->getApi(),
-            'sms_code' => $returnCode,
-            'comment' => '',
+        $response = $this->requester->get("http://www.1shot1kill.pl/api", [
+            "type" => "sms",
+            "key" => $this->getApi(),
+            "sms_code" => $returnCode,
+            "comment" => "",
         ]);
 
         if (!$response) {
@@ -78,9 +63,9 @@ class OneShotOneKill extends PaymentModule implements SupportSms
             throw new ServerErrorException();
         }
 
-        switch ($content['status']) {
-            case 'ok':
-                $responseNumber = $this->getSmsNumberByProvision(price_to_int($content['amount']));
+        switch ($content["status"]) {
+            case "ok":
+                $responseNumber = $this->getSmsNumberByProvision(price_to_int($content["amount"]));
 
                 if ($responseNumber === null) {
                     $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
@@ -93,20 +78,20 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
                 throw new BadNumberException(get_sms_cost($responseNumber));
 
-            case 'fail':
+            case "fail":
                 throw new BadCodeException();
 
-            case 'error':
-                switch ($content['desc']) {
-                    case 'internal api error':
+            case "error":
+                switch ($content["desc"]) {
+                    case "internal api error":
                         throw new ExternalErrorException();
 
-                    case 'wrong api type':
-                    case 'wrong api key':
+                    case "wrong api type":
+                    case "wrong api key":
                         throw new WrongCredentialsException();
                 }
 
-                throw new UnknownErrorException($content['desc']);
+                throw new UnknownErrorException($content["desc"]);
 
             default:
                 throw new UnknownErrorException();
@@ -115,12 +100,12 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
     public function getSmsCode()
     {
-        return 'SHOT';
+        return "SHOT";
     }
 
     private function getApi()
     {
-        return $this->getData('api');
+        return $this->getData("api");
     }
 
     /**

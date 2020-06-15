@@ -38,12 +38,12 @@ return [
         'Payment\'s been accepted. Method: [{1}] Purchase ID: [{2}] Transaction ID: [{3}] Amount: [{4}] Service: [{5}]',
     'log_external_payment_invalid_amount' =>
         'Paid amount differs from purchase amount. Method: [{1}] ID: [{2}] Paid amount: [{3}] Expected amount: [{4}]',
-    'log_external_payment_not_accepted' =>
-        'Transaction authorization failure. MEthod: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
-    'log_external_payment_no_transaction_file' =>
-        'Payment: [{1}] was accepted, but there was no file with transaction data.',
     'log_external_payment_invalid_module' =>
         'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
+    'log_external_payment_no_transaction_file' =>
+        'Payment: [{1}] was accepted, but there was no file with transaction data.',
+    'log_external_payment_not_accepted' =>
+        'Transaction authorization failure. Method: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
     'log_new_account' => 'Create new account. ID: [{1}] User name: [{2}], IP: [{3}]',
     'log_password_changed' => 'User has changed their password.',
     'log_purchase_code' => 'Service code [{1}] was used to purchase service. Payment ID: [{2}]',
@@ -71,17 +71,18 @@ return [
         'In order to change password to your account, enter new password and type it again.',
     'pay_direct_billing' => 'Pay by Direct Billing',
     'pay_sms' => 'Pay by SMS',
-    'pay_transfer' => 'Pay by transfer',
+    'pay_transfer' => 'Pay with {1}',
     'pay_wallet' => 'Pay by wallet',
     'payment_direct_billing' => 'Direct Billing',
     'payment_for_service' => 'Payment for service: {1}',
     'payment_log' => 'Payment log',
     'payment_method_unavailable' =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',
+    'payment_option_transfer' => 'Transfer ({1})',
     'payment_rejected' => 'Payment rejected',
     'payment_sms' => 'SMS',
     'payment_success' => 'Payment success',
-    'payment_transfer' => 'Bank Transfer',
+    'payment_transfer' => 'Transfer ({1})',
     'payment_wallet' => 'Wallet',
     'price' => 'Price',
     'profile' => 'Profile',
@@ -144,7 +145,6 @@ You can now profit from many add-ons.',
     'transfer_finalized' => 'Transaction finalized',
     'transfer_transfer' => 'Transfer',
     'transfer_unavailable' => 'Payment by transfer is unavailable.',
-    'transfer_unverified' => 'Unfortunately, transfer data failed to be verified correctly.',
     'type_code' => 'Enter the promo code',
     'type_setinfo' => 'Type in the console: setinfo _ss "{1}"',
     'use_code' => 'Apply',

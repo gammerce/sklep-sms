@@ -16,11 +16,11 @@ $(document).delegate("#form_purchase", "submit", function(e) {
     $.ajax({
         type: "POST",
         url: buildUrl("/api/purchases"),
-        data: $("#form_purchase").serialize(),
+        data: $(this).serialize(),
         complete: function() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -28,7 +28,7 @@ $(document).delegate("#form_purchase", "submit", function(e) {
             }
 
             if (content.return_id === "warnings") {
-                showWarnings($("#form_purchase"), content.warnings);
+                showWarnings($(this), content.warnings);
             } else if (content.return_id === "ok") {
                 goToPayment(content.transaction_id);
             }
@@ -45,16 +45,16 @@ $(document).delegate("#form_purchase", "submit", function(e) {
 
 // Show service long description
 $(document).delegate("#show_service_desc", "click", function() {
-    var serviceId = $("#form_purchase [name=service_id]").val();
+    const serviceId = $("#form_purchase [name=service_id]").val();
 
     loader.show();
     $.ajax({
         type: "GET",
-        url: buildUrl("/api/services/" + serviceId + "/long_description"),
-        complete: function() {
+        url: buildUrl(`/api/services/${serviceId}/long_description`),
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             window_info.create("80%", "80%", content);
         },
         error: handleErrorResponse,

@@ -20,11 +20,11 @@ class PaymentService
     /** @var PaymentMethodFactory */
     private $paymentMethodFactory;
 
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
+
+    /** @var ServiceModuleManager */
+    private $serviceModuleManager;
 
     public function __construct(
         TranslationManager $translationManager,
@@ -55,7 +55,7 @@ class PaymentService
 
         try {
             $paymentMethod = $this->paymentMethodFactory->create(
-                $purchase->getPayment(Purchase::PAYMENT_METHOD)
+                $purchase->getPaymentOption()->getPaymentMethod()
             );
         } catch (UnexpectedValueException $e) {
             throw new PaymentProcessingException(

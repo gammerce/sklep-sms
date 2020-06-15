@@ -29,18 +29,6 @@ class PaymentMethodFactory
     }
 
     /**
-     * @return IPaymentMethod[]
-     */
-    public function createAll()
-    {
-        return collect($this->paymentMethodsClasses)
-            ->mapWithKeys(function ($class) {
-                return $this->app->make($class);
-            })
-            ->all();
-    }
-
-    /**
      * @param PaymentMethod $paymentMethod
      * @return IPaymentMethod
      * @throws UnexpectedValueException

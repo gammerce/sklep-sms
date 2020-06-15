@@ -2,8 +2,8 @@
 namespace App\Payment\Transfer;
 
 use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceManager;
 use App\Models\FinalizedPayment;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
@@ -16,9 +16,6 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
-    /** @var ServiceManager */
-    private $serviceManager;
-
     /** @var Translator */
     private $lang;
 
@@ -32,29 +29,27 @@ class TransferPaymentMethod implements IPaymentMethod
     private $transferPriceService;
 
     public function __construct(
-        ServiceManager $serviceManager,
         TranslationManager $translationManager,
         TransferPaymentService $transferPaymentService,
         TransferPriceService $transferPriceService,
         PaymentModuleManager $paymentModuleManager
     ) {
-        $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
         $this->paymentModuleManager = $paymentModuleManager;
         $this->transferPaymentService = $transferPaymentService;
         $this->transferPriceService = $transferPriceService;
     }
 
-    public function getPaymentDetails(Purchase $purchase)
+    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
-        return $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER) &&
-            $this->transferPriceService->getPrice($purchase) !== null &&
-            !$purchase->getPayment(Purchase::PAYMENT_DISABLED_TRANSFER);
+        $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
+        $price = $this->transferPriceService->getPrice($purchase);
+        return $paymentModule instanceof SupportTransfer && $price !== null;
     }
 
     /**
@@ -66,7 +61,7 @@ class TransferPaymentMethod implements IPaymentMethod
     public function pay(Purchase $purchase, IServicePurchase $serviceModule)
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
-            $purchase->getPayment(Purchase::PAYMENT_PLATFORM_TRANSFER)
+            $purchase->getPaymentOption()->getPaymentPlatformId()
         );
 
         $price = $this->transferPriceService->getPrice($purchase);
@@ -84,9 +79,6 @@ class TransferPaymentMethod implements IPaymentMethod
                 $this->lang->t("payment_method_unavailable")
             );
         }
-
-        $service = $this->serviceManager->getService($purchase->getServiceId());
-        $purchase->setDesc($this->lang->t("payment_for_service", $service->getNameI18n()));
 
         if ($price === 0) {
             return $this->makeSyncPayment($purchase);

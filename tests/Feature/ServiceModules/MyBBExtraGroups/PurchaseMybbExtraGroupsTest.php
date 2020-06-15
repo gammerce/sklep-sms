@@ -4,6 +4,7 @@ namespace Tests\Feature\ServiceModules\MyBBExtraGroups;
 use App\Models\Purchase;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
@@ -68,11 +69,12 @@ class PurchaseMybbExtraGroupsTest extends TestCase
             ->setOrder([
                 "username" => "seek",
             ])
+            ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_SMS => $paymentPlatform->getId(),
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
-                Purchase::PAYMENT_METHOD => PaymentMethod::SMS(),
             ]);
+
+        $purchase->getPaymentSelect()->setSmsPaymentPlatform($paymentPlatform->getId());
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
@@ -142,9 +144,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
             ->setOrder([
                 "username" => "seek",
             ])
-            ->setPayment([
-                Purchase::PAYMENT_METHOD => PaymentMethod::WALLET(),
-            ]);
+            ->setPaymentOption(new PaymentOption(PaymentMethod::WALLET()));
 
         // when
         $paymentResult = $this->paymentService->makePayment($purchase);
