@@ -45,7 +45,7 @@ class TemplateResource
                 throw new UnauthorizedException();
             }
 
-            $user = $this->userManager->getUser($request->query->get("user_id"));
+            $user = $this->userManager->get($request->query->get("user_id"));
             $wallet = $user ? $this->priceTextService->getPriceText($user->getWallet()) : null;
 
             return [

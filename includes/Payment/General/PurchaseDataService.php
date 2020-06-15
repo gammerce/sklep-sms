@@ -55,7 +55,7 @@ class PurchaseDataService
             $this->fileSystem->get($this->path->to("data/transactions/$transactionId"))
         );
 
-        if ($purchase && $purchase->isAttempted()) {
+        if (!$purchase || $purchase->isAttempted()) {
             return null;
         }
 

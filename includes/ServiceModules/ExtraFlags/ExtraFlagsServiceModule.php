@@ -609,7 +609,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $admin = $this->auth->user();
         $paymentId = $this->adminPaymentService->payByAdmin($admin);
 
-        $purchasingUser = $this->userManager->getUser($validated["user_id"]);
+        $purchasingUser = $this->userManager->get($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser))
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))

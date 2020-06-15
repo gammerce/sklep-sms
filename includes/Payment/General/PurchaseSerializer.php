@@ -1,23 +1,23 @@
 <?php
 namespace App\Payment\General;
 
+use App\Managers\UserManager;
 use App\Models\Purchase;
 use App\Models\User;
 use App\PromoCode\PromoCodeService;
-use App\Repositories\UserRepository;
 
 class PurchaseSerializer
 {
-    /** @var UserRepository */
-    private $userRepository;
-
     /** @var PromoCodeService */
     private $promoCodeService;
 
-    public function __construct(UserRepository $userRepository, PromoCodeService $promoCodeService)
+    /** @var UserManager */
+    private $userManager;
+
+    public function __construct(PromoCodeService $promoCodeService, UserManager $userManager)
     {
-        $this->userRepository = $userRepository;
         $this->promoCodeService = $promoCodeService;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -49,7 +49,7 @@ class PurchaseSerializer
         }
 
         // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->userRepository->get($purchase->user->getId()) ?: new User();
+        $purchase->user = $this->userManager->get($purchase->user->getId()) ?: new User();
 
         // Refresh promo code in case somebody else used it in a meantime
         $promoCode = $purchase->getPromoCode();

@@ -29,7 +29,7 @@ class UserResource
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
-        $editedUser = $userManager->getUser($userId);
+        $editedUser = $userManager->get($userId);
 
         $validator = new Validator(
             array_merge($request->request->all(), [

@@ -12,6 +12,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\ServerRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
@@ -74,10 +75,13 @@ class PageAdminPlayersFlags extends PageAdmin
             })
             ->map(function (PlayerFlag $playerFlag) {
                 $server = $this->serverManager->getServer($playerFlag->getServerId());
+                $serverEntry = $server
+                    ? new ServerRef($server->getId(), $server->getName())
+                    : new NoneText();
 
                 $bodyRow = (new BodyRow())
                     ->setDbId($playerFlag->getId())
-                    ->addCell(new Cell(new ServerRef($server->getId(), $server->getName())))
+                    ->addCell(new Cell($serverEntry))
                     ->addCell(new Cell($playerFlag->getAuthData()));
 
                 foreach (PlayerFlag::FLAGS as $flag) {

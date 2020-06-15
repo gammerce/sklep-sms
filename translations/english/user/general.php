@@ -41,7 +41,7 @@ return [
     'log_external_payment_invalid_module' =>
         'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
     'log_external_payment_no_transaction_file' =>
-        'Payment: [{1}] was accepted, but there was no file with transaction data.',
+        'There is no file [{1}] with transaction data for payment: [{2}]',
     'log_external_payment_not_accepted' =>
         'Transaction authorization failure. Method: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
     'log_new_account' => 'Create new account. ID: [{1}] User name: [{2}], IP: [{3}]',
@@ -82,6 +82,9 @@ return [
     'payment_rejected' => 'Payment rejected',
     'payment_sms' => 'SMS',
     'payment_success' => 'Payment success',
+    'payment_success_subtitle' => 'Thank you! Your payment has been successfully completed.',
+    'payment_success_content' =>
+        'You will receive the service after confirmation of payment by the operator. It takes up to 15 minutes.',
     'payment_transfer' => 'Transfer ({1})',
     'payment_wallet' => 'Wallet',
     'price' => 'Price',

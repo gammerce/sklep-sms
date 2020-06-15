@@ -28,7 +28,7 @@ class LogInController
             return new ApiResponse("no_data", $lang->t("no_login_password"), false);
         }
 
-        $user = $userManager->getUserByLogin($username, $password);
+        $user = $userManager->getByLogin($username, $password);
         if ($user) {
             $auth->loginUser($request, $user);
             return new ApiResponse("logged_in", $lang->t("login_success"), true);

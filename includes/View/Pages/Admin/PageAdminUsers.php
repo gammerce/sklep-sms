@@ -195,7 +195,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "edit":
-                $user = $this->userManager->getUser($query["user_id"]);
+                $user = $this->userManager->get($query["user_id"]);
 
                 $groups = collect($this->groupManager->getGroups())
                     ->map(function (Group $group) use ($user) {
@@ -224,14 +224,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 ]);
 
             case "charge_wallet":
-                $user = $this->userManager->getUser($query["user_id"]);
+                $user = $this->userManager->get($query["user_id"]);
                 return $this->template->render(
                     "admin/action_boxes/user_charge_wallet",
                     compact("user")
                 );
 
             case "change_password":
-                $user = $this->userManager->getUser($query["user_id"]);
+                $user = $this->userManager->get($query["user_id"]);
                 return $this->template->render(
                     "admin/action_boxes/user_change_password",
                     compact("user")

@@ -61,7 +61,7 @@ class AdminAuthController
 
         // Let's try to login to ACP
         if ($request->request->has("username") && $request->request->has("password")) {
-            $user = $userManager->getUserByLogin(
+            $user = $userManager->getByLogin(
                 $request->request->get("username"),
                 $request->request->get("password")
             );

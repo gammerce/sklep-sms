@@ -28,14 +28,14 @@ class PaymentTransferRepository
         return null;
     }
 
-    public function create($id, $income, $transferService, $ip, $platform, $free)
+    public function create($id, $income, $cost, $transferService, $ip, $platform, $free)
     {
         $this->db
             ->statement(
                 "INSERT INTO `ss_payment_transfer` " .
-                    "SET `id` = ?, `income` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
+                    "SET `id` = ?, `income` = ?, `cost` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
-            ->execute([$id, $income, $transferService, $ip, $platform, $free ? 1 : 0]);
+            ->execute([$id, $income, $cost, $transferService, $ip, $platform, $free ? 1 : 0]);
 
         return $this->get($id);
     }
@@ -45,6 +45,7 @@ class PaymentTransferRepository
         return new PaymentTransfer(
             $data["id"],
             (int) $data["income"],
+            (int) $data["cost"],
             $data["transfer_service"],
             $data["ip"],
             $data["platform"],

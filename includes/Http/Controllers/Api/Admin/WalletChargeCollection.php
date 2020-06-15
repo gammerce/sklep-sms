@@ -55,7 +55,7 @@ class WalletChargeCollection
             throw new InvalidServiceModuleException();
         }
 
-        $editedUser = $userManager->getUser($userId);
+        $editedUser = $userManager->get($userId);
         $quantity = price_to_int($validated["quantity"]);
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera

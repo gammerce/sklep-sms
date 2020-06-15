@@ -9,6 +9,7 @@ use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
+use App\Payment\General\PaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Verification\Abstracts\SupportTransfer;
@@ -40,6 +41,7 @@ class TransferController
         } catch (LackOfValidPurchaseDataException $e) {
             $logger->log(
                 "log_external_payment_no_transaction_file",
+                $finalizedPayment->getTransactionId(),
                 $finalizedPayment->getOrderId()
             );
             return new PlainResponse($finalizedPayment->getOutput());
@@ -69,8 +71,8 @@ class TransferController
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
-        } finally {
-            return new PlainResponse($finalizedPayment->getOutput());
         }
+
+        return new PlainResponse($finalizedPayment->getOutput());
     }
 }

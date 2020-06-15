@@ -22,6 +22,7 @@ class PaymentTransferRepositoryTest extends TestCase
         $paymentTransfer = $this->paymentTransferRepository->create(
             "test",
             1,
+            2,
             "a",
             "b",
             "c",
@@ -31,6 +32,7 @@ class PaymentTransferRepositoryTest extends TestCase
         // then
         $this->assertSame("test", $paymentTransfer->getId());
         $this->assertSame(1, $paymentTransfer->getIncome());
+        $this->assertSame(2, $paymentTransfer->getCost());
         $this->assertSame("a", $paymentTransfer->getTransferService());
         $this->assertSame("b", $paymentTransfer->getIp());
         $this->assertSame("c", $paymentTransfer->getPlatform());
@@ -41,7 +43,15 @@ class PaymentTransferRepositoryTest extends TestCase
     public function creates_free_payment()
     {
         // when
-        $paymentTransfer = $this->paymentTransferRepository->create("test", 1, "a", "b", "c", true);
+        $paymentTransfer = $this->paymentTransferRepository->create(
+            "test",
+            1,
+            1,
+            "a",
+            "b",
+            "c",
+            true
+        );
 
         // then
         $this->assertTrue($paymentTransfer->isFree());

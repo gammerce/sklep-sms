@@ -113,7 +113,6 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
             ->setCost($cost)
             ->setIncome($income)
             ->setTransactionId($request->request->get("ID_ZAMOWIENIA"))
-            ->setExternalServiceId($request->request->get("ID_PLATNOSCI"))
             ->setTestMode(false);
     }
 

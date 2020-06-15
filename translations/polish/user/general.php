@@ -41,7 +41,7 @@ return [
     'log_external_payment_invalid_module' =>
         'Płatność: [{1}] została zaakceptowana, jednakże moduł usługi [{2}] nie implementuje interfejsu IServicePurchase.',
     'log_external_payment_no_transaction_file' =>
-        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi transakcji.',
+        'Nie znaleziono pliku [{1}] z danymi transakcji dla płatności: [{2}]',
     'log_external_payment_not_accepted' =>
         'Nieudana autoryzacja transakcji. Metoda [{1}] ID transakcji [{2}] Kwota: [{3}] Usługa: [{4}]',
     'log_new_account' => 'Założono nowe konto. ID: [{1}] Nazwa Użytkownika: [{2}], IP: [{3}]',
@@ -83,6 +83,9 @@ return [
     'payment_rejected' => 'Płatność odrzucona',
     'payment_sms' => 'SMS',
     'payment_success' => 'Płatność zaakceptowana',
+    'payment_success_subtitle' => 'Dziękujemy! Twoja płatność zakończyła się pomyślnie.',
+    'payment_success_content' =>
+        'Swoją usługę otrzymasz po potwierdzeniu płatności przez operatora. Potrwa to do 15 minut.',
     'payment_transfer' => 'Przelew ({1})',
     'payment_wallet' => 'Portfel',
     'price' => 'Cena',
