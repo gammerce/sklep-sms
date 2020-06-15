@@ -64,14 +64,14 @@ class ChargeWalletTest extends HttpTestCase
         $response = $this->post("/api/ipn/transfer/{$paymentPlatform->getId()}", [
             "tr_id" => 1,
             "tr_amount" => "40.80",
-            "tr_crc" => $json["data"]["crc"],
+            "tr_crc" => $json["data"]["data"]["crc"],
             "id" => 1,
             "test_mode" => 1,
             "md5sum" => md5(
                 array_get($paymentPlatform->getData(), "account_id") .
                     "1" .
                     "40.80" .
-                    $json["data"]["crc"] .
+                    $json["data"]["data"]["crc"] .
                     ""
             ),
             "tr_status" => "TRUE",

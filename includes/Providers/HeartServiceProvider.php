@@ -104,10 +104,10 @@ class HeartServiceProvider
         $paymentModuleManager->register(Gosetti::class);
         $paymentModuleManager->register(Homepay::class);
         $paymentModuleManager->register(Hostplay::class);
-        $paymentModuleManager->register(HotPay::class);
+        //        $paymentModuleManager->register(HotPay::class);
         $paymentModuleManager->register(MicroSMS::class);
         $paymentModuleManager->register(OneShotOneKill::class);
-        $paymentModuleManager->register(PayPal::class);
+        //        $paymentModuleManager->register(PayPal::class);
         $paymentModuleManager->register(Profitsms::class);
         $paymentModuleManager->register(Pukawka::class);
         $paymentModuleManager->register(SimPay::class);

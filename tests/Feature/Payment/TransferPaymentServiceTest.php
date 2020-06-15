@@ -75,8 +75,8 @@ class TransferPaymentServiceTest extends TestCase
         $finalizedPayment = $paymentModule->finalizeTransfer(
             Request::create("", "POST", [
                 "tr_id" => "abc",
-                "tr_amount" => $paymentResult->getData()["kwota"],
-                "tr_crc" => $paymentResult->getData()["crc"],
+                "tr_amount" => $paymentResult->getData()["data"]["kwota"],
+                "tr_crc" => $paymentResult->getData()["data"]["crc"],
                 "id" => "tpay",
                 "md5sum" => "xyz",
             ])

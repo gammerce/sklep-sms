@@ -146,13 +146,13 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $response = $this->post("/api/ipn/transfer/{$paymentPlatform->getId()}", [
             "tr_id" => 1,
             "tr_amount" => "39.99",
-            "tr_crc" => $json["data"]["crc"],
+            "tr_crc" => $json["data"]["data"]["crc"],
             "id" => 1,
             "md5sum" => md5(
                 array_get($paymentPlatform->getData(), "account_id") .
                     "1" .
                     "39.99" .
-                    $json["data"]["crc"] .
+                    $json["data"]["data"]["crc"] .
                     ""
             ),
             "tr_status" => "TRUE",
