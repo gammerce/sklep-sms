@@ -17,6 +17,7 @@ class PaymentModuleManager
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
+    /** @var array */
     private $classes = [];
 
     public function __construct(
@@ -48,13 +49,25 @@ class PaymentModuleManager
     /**
      * @param string $moduleId
      * @return DataField[]
+     * @throws InvalidPaymentModuleException
      */
     public function dataFields($moduleId)
+    {
+        $className = $this->getClass($moduleId);
+        return $className::getDataFields();
+    }
+
+    /**
+     * @param string $moduleId
+     * @return string|null
+     * @throws InvalidPaymentModuleException
+     */
+    public function getClass($moduleId)
     {
         $className = array_get($this->classes, $moduleId);
 
         if ($className) {
-            return $className::getDataFields();
+            return $className;
         }
 
         throw new InvalidPaymentModuleException();

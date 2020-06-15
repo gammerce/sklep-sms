@@ -38,12 +38,12 @@ return [
         'Payment\'s been accepted. Method: [{1}] Purchase ID: [{2}] Transaction ID: [{3}] Amount: [{4}] Service: [{5}]',
     'log_external_payment_invalid_amount' =>
         'Paid amount differs from purchase amount. Method: [{1}] ID: [{2}] Paid amount: [{3}] Expected amount: [{4}]',
-    'log_external_payment_not_accepted' =>
-        'Transaction authorization failure. MEthod: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
-    'log_external_payment_no_transaction_file' =>
-        'Payment: [{1}] was accepted, but there was no file with transaction data.',
     'log_external_payment_invalid_module' =>
         'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
+    'log_external_payment_no_transaction_file' =>
+        'Payment: [{1}] was accepted, but there was no file with transaction data.',
+    'log_external_payment_not_accepted' =>
+        'Transaction authorization failure. Method: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
     'log_new_account' => 'Create new account. ID: [{1}] User name: [{2}], IP: [{3}]',
     'log_password_changed' => 'User has changed their password.',
     'log_purchase_code' => 'Service code [{1}] was used to purchase service. Payment ID: [{2}]',

@@ -1,8 +1,8 @@
 <?php
 namespace App\System;
 
-use App\Exceptions\ForbiddenException;
 use App\Exceptions\EntityNotFoundException;
+use App\Exceptions\ForbiddenException;
 use App\Exceptions\InvalidConfigException;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Exceptions\LicenseException;

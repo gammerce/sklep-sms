@@ -12,15 +12,11 @@ use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Results\SmsSuccessResult;
+use Symfony\Component\HttpFoundation\Request;
 
-class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
+class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "cashbill";
-
-    public static function getName()
-    {
-        return "CashBill";
-    }
 
     public static function getDataFields()
     {
@@ -87,74 +83,73 @@ class Cashbill extends PaymentModule implements SupportSms, SupportTransfer
         return [
             "url" => "https://pay.cashbill.pl/form/pay.php",
             "method" => "POST",
-            "service" => $this->getService(),
-            "desc" => $purchase->getDescription(),
-            "forname" => $purchase->user->getForename(),
-            "surname" => $purchase->user->getSurname(),
-            "email" => $purchase->getEmail(),
-            "amount" => $price,
-            "userdata" => $userData,
-            "sign" => md5(
-                $this->getService() .
-                    $price .
-                    $purchase->getDescription() .
-                    $userData .
-                    $purchase->user->getForename() .
-                    $purchase->user->getSurname() .
-                    $purchase->getEmail() .
-                    $this->getKey()
-            ),
+            "data" => [
+                "service" => $this->getService(),
+                "desc" => $purchase->getDescription(),
+                "forname" => $purchase->user->getForename(),
+                "surname" => $purchase->user->getSurname(),
+                "email" => $purchase->getEmail(),
+                "amount" => $price,
+                "userdata" => $userData,
+                "sign" => md5(
+                    $this->getService() .
+                        $price .
+                        $purchase->getDescription() .
+                        $userData .
+                        $purchase->user->getForename() .
+                        $purchase->user->getSurname() .
+                        $purchase->getEmail() .
+                        $this->getKey()
+                ),
+            ],
         ];
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int($body["amount"]);
+        $amount = price_to_int($request->request->get("amount"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
-            ->setOrderId($body["orderid"])
+            ->setStatus($this->isPaymentValid($request))
+            ->setOrderId($request->request->get("orderid"))
             ->setCost($amount)
             ->setIncome($amount)
-            ->setTransactionId($body["userdata"])
-            ->setExternalServiceId($body["service"])
+            ->setTransactionId($request->request->get("userdata"))
+            ->setExternalServiceId($request->request->get("service"))
             ->setOutput("OK");
     }
 
     /**
-     * @param array $body
+     * @param Request $request
      * @return bool
      */
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
-        return $this->checkSign($body, $this->getKey(), $body["sign"]) &&
-            strtoupper($body["status"]) == "OK" &&
-            $body["service"] == $this->getService();
+        return $this->checkSign($request) &&
+            strtoupper($request->request->get("status")) === "OK" &&
+            $request->request->get("service") == $this->getService();
     }
 
     /**
-     * Funkcja sprawdzajaca poprawnosc sygnatury
-     * przy płatnościach za pomocą przelewu
-     *
-     * @param $data - dane
-     * @param $key - klucz do hashowania
-     * @param $sign - hash danych
-     *
+     * @param Request $request
      * @return bool
      */
-    public function checkSign(array $data, $key, $sign)
+    private function checkSign(Request $request)
     {
         $calculatedSign = md5(
-            $data["service"] .
-                $data["orderid"] .
-                $data["amount"] .
-                $data["userdata"] .
-                $data["status"] .
-                $key
+            $request->request->get("service") .
+                $request->request->get("orderid") .
+                $request->request->get("amount") .
+                $request->request->get("userdata") .
+                $request->request->get("status") .
+                $this->getKey()
         );
-        return $calculatedSign == $sign;
+        return $calculatedSign === $request->request->get("sign");
     }
 
+    /**
+     * @return string
+     */
     public function getSmsCode()
     {
         return $this->getData("sms_text");

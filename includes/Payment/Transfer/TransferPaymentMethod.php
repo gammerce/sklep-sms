@@ -2,7 +2,6 @@
 namespace App\Payment\Transfer;
 
 use App\Managers\PaymentModuleManager;
-use App\Managers\ServiceManager;
 use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
@@ -17,9 +16,6 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
-    /** @var ServiceManager */
-    private $serviceManager;
-
     /** @var Translator */
     private $lang;
 
@@ -33,13 +29,11 @@ class TransferPaymentMethod implements IPaymentMethod
     private $transferPriceService;
 
     public function __construct(
-        ServiceManager $serviceManager,
         TranslationManager $translationManager,
         TransferPaymentService $transferPaymentService,
         TransferPriceService $transferPriceService,
         PaymentModuleManager $paymentModuleManager
     ) {
-        $this->serviceManager = $serviceManager;
         $this->lang = $translationManager->user();
         $this->paymentModuleManager = $paymentModuleManager;
         $this->transferPaymentService = $transferPaymentService;
@@ -85,9 +79,6 @@ class TransferPaymentMethod implements IPaymentMethod
                 $this->lang->t("payment_method_unavailable")
             );
         }
-
-        $service = $this->serviceManager->getService($purchase->getServiceId());
-        $purchase->setDescription($this->lang->t("payment_for_service", $service->getNameI18n()));
 
         if ($price === 0) {
             return $this->makeSyncPayment($purchase);

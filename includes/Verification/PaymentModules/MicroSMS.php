@@ -1,13 +1,9 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
 use App\Models\FinalizedPayment;
-use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
-use App\Requesting\Requester;
-use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -17,6 +13,7 @@ use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Results\SmsSuccessResult;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @see https://microsms.pl/documents/dokumentacja_przelewy_microsms.pdf
@@ -24,50 +21,6 @@ use App\Verification\Results\SmsSuccessResult;
 class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var string */
-    private $serviceId;
-
-    /** @var string */
-    private $smsCode;
-
-    /** @var string */
-    private $shopId;
-
-    /** @var string */
-    private $userId;
-
-    /** @var string */
-    private $hash;
-
-    /** @var FileLogger */
-    private $fileLogger;
-
-    public function __construct(
-        Requester $requester,
-        UrlGenerator $urlGenerator,
-        PaymentPlatform $paymentPlatform,
-        FileLogger $fileLogger
-    ) {
-        parent::__construct($requester, $paymentPlatform);
-
-        $this->url = $urlGenerator;
-
-        $this->userId = $this->getData("api");
-        $this->smsCode = $this->getData("sms_text");
-        $this->serviceId = $this->getData("service_id");
-        $this->shopId = $this->getData("shop_id");
-        $this->hash = $this->getData("hash");
-        $this->fileLogger = $fileLogger;
-    }
-
-    public static function getName()
-    {
-        return "MicroSMS";
-    }
 
     public static function getDataFields()
     {
@@ -100,10 +53,10 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
     public function verifySms($returnCode, $number)
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
-            "userid" => $this->userId,
+            "userid" => $this->getUserId(),
             "number" => $number,
             "code" => $returnCode,
-            "serviceid" => $this->serviceId,
+            "serviceid" => $this->getServiceId(),
         ]);
 
         if (!$response) {
@@ -123,8 +76,8 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             throw new UnknownErrorException();
         }
 
-        if ($content['connect'] === false) {
-            $errorCode = $content['data']['errorCode'];
+        if ($content["connect"] === false) {
+            $errorCode = $content["data"]["errorCode"];
 
             if ($errorCode == 1) {
                 throw new BadCodeException();
@@ -136,7 +89,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             throw new UnknownErrorException();
         }
 
-        if ($content['data']['status'] == 1) {
+        if ($content["data"]["status"] == 1) {
             return new SmsSuccessResult();
         }
 
@@ -147,40 +100,44 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
     {
         $price /= 100;
         $control = $purchase->getId();
-        $signature = hash("sha256", $this->shopId . $this->hash . $price);
+        $signature = hash("sha256", $this->getShopId() . $this->getHash() . $price);
 
         return [
             "url" => "https://microsms.pl/api/bankTransfer/",
             "method" => "GET",
-            "shopid" => $this->shopId,
-            "signature" => $signature,
-            "amount" => $price,
-            "control" => $control,
-            "return_urlc" => $this->url->to("/api/ipn/transfer/{$this->paymentPlatform->getId()}"),
-            "return_url" => $this->url->to("/page/payment_success"),
-            "description" => $purchase->getDescription(),
+            "data" => [
+                "shopid" => $this->getShopId(),
+                "signature" => $signature,
+                "amount" => $price,
+                "control" => $control,
+                "return_urlc" => $this->url->to(
+                    "/api/ipn/transfer/{$this->paymentPlatform->getId()}"
+                ),
+                "return_url" => $this->url->to("/page/payment_success"),
+                "description" => $purchase->getDescription(),
+            ],
         ];
     }
 
-    public function finalizeTransfer(array $query, array $body)
+    public function finalizeTransfer(Request $request)
     {
-        $isTest = strtolower(array_get($body, "test")) === "true";
-        $amount = price_to_int(array_get($body, "amountPay"));
+        $isTest = strtolower($request->request->get("test")) === "true";
+        $amount = price_to_int($request->request->get("amountPay"));
 
         return (new FinalizedPayment())
-            ->setStatus($this->isPaymentValid($body))
-            ->setOrderId(array_get($body, "orderID"))
+            ->setStatus($this->isPaymentValid($request))
+            ->setOrderId($request->request->get("orderID"))
             ->setCost($amount)
             ->setIncome($amount)
-            ->setTransactionId(array_get($body, "control"))
+            ->setTransactionId($request->request->get("control"))
             ->setTestMode($isTest)
             ->setOutput("OK");
     }
 
-    private function isPaymentValid(array $body)
+    private function isPaymentValid(Request $request)
     {
-        $userId = array_get($body, "userid");
-        $status = strtolower(array_get($body, "status"));
+        $userId = $request->request->get("userid");
+        $status = strtolower($request->request->get("status"));
         $ip = get_ip();
 
         if ($status !== "true") {
@@ -188,9 +145,9 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             return false;
         }
 
-        if ($userId != $this->userId) {
+        if ($userId != $this->getUserId()) {
             $this->fileLogger->error(
-                "MicroSMS transfer. Invalid userId, expected [{$this->userId}], actual [{$userId}]"
+                "MicroSMS transfer. Invalid userId, expected [{$this->getUserId()}], actual [{$userId}]"
             );
             return false;
         }
@@ -216,6 +173,26 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
     public function getSmsCode()
     {
-        return $this->smsCode;
+        return $this->getData("sms_text");
+    }
+
+    private function getUserId()
+    {
+        return $this->getData("api");
+    }
+
+    private function getServiceId()
+    {
+        return $this->getData("service_id");
+    }
+
+    private function getShopId()
+    {
+        return $this->getData("shop_id");
+    }
+
+    private function getHash()
+    {
+        return $this->getData("hash");
     }
 }

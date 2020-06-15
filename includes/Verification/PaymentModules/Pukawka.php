@@ -44,10 +44,10 @@ class Pukawka extends PaymentModule implements SupportSms
     {
         $this->tryToFetch();
 
-        $response = $this->requester->get('https://admin.pukawka.pl/api/', [
-            'keyapi' => $this->getApi(),
-            'type' => 'sms',
-            'code' => $returnCode,
+        $response = $this->requester->get("https://admin.pukawka.pl/api/", [
+            "keyapi" => $this->getApi(),
+            "type" => "sms",
+            "code" => $returnCode,
         ]);
 
         if (!$response) {
@@ -57,26 +57,26 @@ class Pukawka extends PaymentModule implements SupportSms
         $body = $response->json();
 
         if (!empty($body)) {
-            if ($body['error']) {
-                if ($body['error'] === "wrong_api_key") {
+            if ($body["error"]) {
+                if ($body["error"] === "wrong_api_key") {
                     throw new WrongCredentialsException();
                 }
 
-                throw new ExternalErrorException($body['error']);
+                throw new ExternalErrorException($body["error"]);
             }
 
-            if ($body['status'] == 'ok') {
-                $kwota = str_replace(',', '.', $body['kwota']);
+            if ($body["status"] == "ok") {
+                $kwota = str_replace(",", ".", $body["kwota"]);
                 foreach ($this->rates as $s) {
-                    if (str_replace(',', '.', $s['wartosc']) != $kwota) {
+                    if (str_replace(",", ".", $s["wartosc"]) != $kwota) {
                         continue;
                     }
 
-                    if ($s['numer'] == $number) {
+                    if ($s["numer"] == $number) {
                         return new SmsSuccessResult();
                     }
 
-                    throw new BadNumberException(get_sms_cost($s['numer']));
+                    throw new BadNumberException(get_sms_cost($s["numer"]));
                 }
 
                 throw new UnknownErrorException();
@@ -95,7 +95,7 @@ class Pukawka extends PaymentModule implements SupportSms
 
     private function getApi()
     {
-        return $this->getData('api');
+        return $this->getData("api");
     }
 
     private function tryToFetch()
@@ -107,9 +107,9 @@ class Pukawka extends PaymentModule implements SupportSms
 
     private function fetchRates()
     {
-        $response = $this->requester->get('https://admin.pukawka.pl/api/', [
-            'keyapi' => $this->getApi(),
-            'type' => 'sms_table',
+        $response = $this->requester->get("https://admin.pukawka.pl/api/", [
+            "keyapi" => $this->getApi(),
+            "type" => "sms_table",
         ]);
         $this->rates = $response ? $response->json() : null;
     }

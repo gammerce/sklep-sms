@@ -201,13 +201,6 @@ class RoutesManager
                     'uses' => DirectBillingController::class . '@action',
                 ]);
 
-                /**
-                 * @deprecated
-                 */
-                $r->addRoute(['GET', 'POST'], '/transfer_finalize.php', [
-                    'uses' => TransferController::class . '@oldAction',
-                ]);
-
                 $r->addGroup(
                     [
                         "middlewares" => [

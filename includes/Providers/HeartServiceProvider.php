@@ -10,14 +10,16 @@ use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\System\Application;
-use App\Verification\PaymentModules\Cashbill;
+use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
+use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
+use App\Verification\PaymentModules\PayPal;
 use App\Verification\PaymentModules\Profitsms;
 use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
@@ -48,7 +50,7 @@ use App\View\Pages\Admin\PageAdminUpdateServers;
 use App\View\Pages\Admin\PageAdminUpdateWeb;
 use App\View\Pages\Admin\PageAdminUsers;
 use App\View\Pages\Admin\PageAdminUserService;
-use App\View\Pages\Shop\PageCashbillTransferFinalized;
+use App\View\Pages\Shop\PageCashBillTransferFinalized;
 use App\View\Pages\Shop\PageChangePassword;
 use App\View\Pages\Shop\PageContact;
 use App\View\Pages\Shop\PageForgottenPassword;
@@ -96,14 +98,16 @@ class HeartServiceProvider
 
     private function registerPaymentModules(PaymentModuleManager $paymentModuleManager)
     {
-        $paymentModuleManager->register(Cashbill::class);
+        $paymentModuleManager->register(CashBill::class);
         $paymentModuleManager->register(Cssetti::class);
         $paymentModuleManager->register(GetPay::class);
         $paymentModuleManager->register(Gosetti::class);
         $paymentModuleManager->register(Homepay::class);
         $paymentModuleManager->register(Hostplay::class);
+        //        $paymentModuleManager->register(HotPay::class);
         $paymentModuleManager->register(MicroSMS::class);
         $paymentModuleManager->register(OneShotOneKill::class);
+        //        $paymentModuleManager->register(PayPal::class);
         $paymentModuleManager->register(Profitsms::class);
         $paymentModuleManager->register(Pukawka::class);
         $paymentModuleManager->register(SimPay::class);
@@ -113,7 +117,7 @@ class HeartServiceProvider
 
     private function registerPages(PageManager $pageManager)
     {
-        $pageManager->registerUser(PageCashbillTransferFinalized::class);
+        $pageManager->registerUser(PageCashBillTransferFinalized::class);
         $pageManager->registerUser(PageChangePassword::class);
         $pageManager->registerUser(PageContact::class);
         $pageManager->registerUser(PageForgottenPassword::class);

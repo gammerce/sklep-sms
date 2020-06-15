@@ -85,12 +85,13 @@ class TransferChargeWallet implements IChargeWallet
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportTransfer);
 
+        $paymentOptionId = make_charge_wallet_option(PaymentMethod::TRANSFER(), $paymentPlatform);
         $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => make_charge_wallet_option(PaymentMethod::TRANSFER(), $paymentPlatform),
+            "value" => $paymentOptionId,
             "text" => $this->lang->t("payment_option_transfer", $paymentModule::getName()),
         ]);
         $body = $this->template->render("shop/services/charge_wallet/transfer_body", [
-            "type" => PaymentMethod::TRANSFER(),
+            "option" => $paymentOptionId,
         ]);
 
         return [$option, $body];

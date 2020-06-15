@@ -33,10 +33,7 @@ class DirectBillingController
             );
         }
 
-        $finalizedPayment = $paymentModule->finalizeDirectBilling(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $finalizedPayment = $paymentModule->finalizeDirectBilling($request);
 
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);

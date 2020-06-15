@@ -15,6 +15,7 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\ServiceModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\TPay;
+use Symfony\Component\HttpFoundation\Request;
 use Tests\Psr4\TestCases\TestCase;
 
 class TransferPaymentServiceTest extends TestCase
@@ -72,14 +73,13 @@ class TransferPaymentServiceTest extends TestCase
         // when
         $paymentResult = $transferPaymentMethod->pay($purchase, $serviceModule);
         $finalizedPayment = $paymentModule->finalizeTransfer(
-            [],
-            [
+            Request::create("", "POST", [
                 "tr_id" => "abc",
-                "tr_amount" => $paymentResult->getData()["kwota"],
-                "tr_crc" => $paymentResult->getData()["crc"],
+                "tr_amount" => $paymentResult->getData()["data"]["kwota"],
+                "tr_crc" => $paymentResult->getData()["data"]["crc"],
                 "id" => "tpay",
                 "md5sum" => "xyz",
-            ]
+            ])
         );
         $finalizedPayment->setStatus(true); // Mark as if checking md5sum was correct
         $transferPaymentService->finalizePurchase($purchase, $finalizedPayment);

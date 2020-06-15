@@ -33,10 +33,7 @@ class TransferController
             );
         }
 
-        $finalizedPayment = $paymentModule->finalizeTransfer(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $finalizedPayment = $paymentModule->finalizeTransfer($request);
 
         try {
             $purchase = $externalPaymentService->restorePurchase($finalizedPayment);
@@ -75,25 +72,5 @@ class TransferController
         } finally {
             return new PlainResponse($finalizedPayment->getOutput());
         }
-    }
-
-    /**
-     * @deprecated
-     */
-    public function oldAction(
-        Request $request,
-        PaymentModuleManager $paymentModuleManager,
-        ExternalPaymentService $externalPaymentService,
-        TransferPaymentService $transferPaymentService,
-        DatabaseLogger $databaseLogger
-    ) {
-        return $this->action(
-            $request->query->get("service"),
-            $request,
-            $paymentModuleManager,
-            $externalPaymentService,
-            $transferPaymentService,
-            $databaseLogger
-        );
     }
 }

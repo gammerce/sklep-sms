@@ -435,6 +435,25 @@ function array_get($array, $key, $default = null)
 }
 
 /**
+ * @param array $array
+ * @param string $key
+ * @param mixed $default
+ * @return mixed
+ */
+function array_dot_get($array, $key, $default = null)
+{
+    foreach (explode(".", $key) as $segment) {
+        if (!isset($array[$segment])) {
+            return $default;
+        }
+
+        $array = $array[$segment];
+    }
+
+    return $array;
+}
+
+/**
  * @return Request
  */
 function captureRequest()

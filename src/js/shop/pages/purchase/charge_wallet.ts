@@ -9,9 +9,9 @@ $(document).ready(function($) {
 
 $(document).delegate("#form_purchase [name=payment_option]", "change", function() {
     const form = $(this).closest("form");
-    const [paymentMethod] = String($(this).val()).split(",");
+    const option = $(this).val();
 
-    hideAndDisable(form.find("[data-type]"));
-    showAndEnable(form.find(`[data-type=${paymentMethod}]`));
+    hideAndDisable(form.find("[data-option]"));
+    showAndEnable(form.find(`[data-option="${option}"]`));
     show(form.find(".form-footer"));
 });

@@ -1,10 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
-use App\Loggers\FileLogger;
-use App\Models\PaymentPlatform;
 use App\Models\SmsNumber;
-use App\Requesting\Requester;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -21,23 +18,11 @@ class Cssetti extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "cssetti";
 
-    /** @var FileLogger */
-    private $fileLogger;
-
     /** @var string */
     private $smsCode;
 
     /** @var array */
     private $numbers = [];
-
-    public function __construct(
-        Requester $requester,
-        FileLogger $fileLogger,
-        PaymentPlatform $paymentPlatform
-    ) {
-        parent::__construct($requester, $paymentPlatform);
-        $this->fileLogger = $fileLogger;
-    }
 
     public static function getDataFields()
     {
