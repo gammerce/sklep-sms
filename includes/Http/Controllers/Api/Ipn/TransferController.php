@@ -40,7 +40,8 @@ class TransferController
         } catch (LackOfValidPurchaseDataException $e) {
             $logger->log(
                 "log_external_payment_no_transaction_file",
-                $finalizedPayment->getOrderId()
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getTransactionId()
             );
             return new PlainResponse($finalizedPayment->getOutput());
         }
