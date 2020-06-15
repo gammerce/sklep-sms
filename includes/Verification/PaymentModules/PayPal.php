@@ -120,7 +120,7 @@ class PayPal extends PaymentModule implements SupportTransfer
     {
         $body = $request->request->all();
 
-        $id = array_dot_get($body, "id");
+        $id = array_dot_get($body, "resource.id");
         $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
         $purchaseUnit = $purchaseUnits[0];
         $transactionId = array_dot_get($purchaseUnit, "custom_id");
@@ -134,7 +134,6 @@ class PayPal extends PaymentModule implements SupportTransfer
             ->setCost($amount)
             ->setIncome($amount)
             ->setTransactionId($transactionId)
-            ->setExternalServiceId($id)
             ->setTestMode($this->isTestMode());
     }
 
@@ -158,17 +157,27 @@ class PayPal extends PaymentModule implements SupportTransfer
             return false;
         }
 
+        return $this->verifyRequest($request);
+    }
+
+    /**
+     * @param Request $request
+     * @return bool
+     */
+    private function verifyRequest(Request $request)
+    {
+        $verifyBody = [
+            "auth_algo" => $request->headers->get("PAYPAL-AUTH-ALGO"),
+            "cert_url" => $request->headers->get("PAYPAL-CERT-URL"),
+            "transmission_id" => $request->headers->get("PAYPAL-TRANSMISSION-ID"),
+            "transmission_sig" => $request->headers->get("PAYPAL-TRANSMISSION-SIG"),
+            "transmission_time" => $request->headers->get("PAYPAL-TRANSMISSION-TIME"),
+            "webhook_id" => $this->getWebhookId(),
+            "webhook_event" => $request->request->all(),
+        ];
         $response = $this->requester->post(
             "{$this->getPayPalDomain()}/v1/notifications/verify-webhook-signature",
-            [
-                "auth_algo" => $request->headers->get("PAYPAL-AUTH-ALGO"),
-                "cert_url" => $request->headers->get("PAYPAL-CERT-URL"),
-                "transmission_id" => $request->headers->get("PAYPAL-TRANSMISSION-ID"),
-                "transmission_sig" => $request->headers->get("PAYPAL-TRANSMISSION-SIG"),
-                "transmission_time" => $request->headers->get("PAYPAL-TRANSMISSION-TIME"),
-                "webhook_id" => $this->getWebhookId(),
-                "webhook_event" => $body,
-            ],
+            json_encode($verifyBody),
             [
                 "Authorization" => "Basic {$this->getCredentials()}",
                 "Content-Type" => "application/json",
@@ -177,7 +186,10 @@ class PayPal extends PaymentModule implements SupportTransfer
         $result = $response->json();
 
         if (array_get($result, "verification_status") !== "SUCCESS") {
-            $this->fileLogger->error("PayPal | Signature verification failed", $body);
+            $this->fileLogger->error(
+                "PayPal | Signature verification failed",
+                compact("verifyBody", "result")
+            );
             return false;
         }
 

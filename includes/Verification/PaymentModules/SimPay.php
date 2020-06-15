@@ -156,7 +156,6 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ->setCost($valueGross)
             ->setIncome($valuePartner)
             ->setTransactionId($control)
-            ->setExternalServiceId($id)
             ->setTestMode(false)
             ->setOutput("OK");
     }
