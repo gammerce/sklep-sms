@@ -19,7 +19,6 @@ use Symfony\Component\HttpFoundation\Request;
 class PayPal extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "paypal";
-    private $payPalDomain = "https://api.sandbox.paypal.com";
 
     /** @var Settings */
     private $settings;
@@ -40,15 +39,29 @@ class PayPal extends PaymentModule implements SupportTransfer
         $this->lang = $translationManager->user();
     }
 
+    /**
+     * @return string
+     */
+    private static function getPayPalDomain()
+    {
+        if (static::isTestMode()) {
+            return "https://api.sandbox.paypal.com";
+        }
+
+        return "https://api.paypal.com";
+    }
+
+    /**
+     * @return bool
+     */
+    private static function isTestMode()
+    {
+        return true;
+    }
+
     public static function getDataFields()
     {
         return [new DataField("client_id"), new DataField("secret")];
-    }
-
-    public static function processDataFields(array $data)
-    {
-        // TODO Register webhook: CHECKOUT.ORDER.APPROVED
-        return $data;
     }
 
     public function prepareTransfer($price, Purchase $purchase)
@@ -56,7 +69,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         $price /= 100;
 
         $response = $this->requester->post(
-            "{$this->payPalDomain}/v2/checkout/orders",
+            "{$this->getPayPalDomain()}/v2/checkout/orders",
             json_encode([
                 "intent" => "CAPTURE",
                 "purchase_units" => [
@@ -146,7 +159,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         }
 
         $response = $this->requester->post(
-            "{$this->payPalDomain}/v1/notifications/verify-webhook-signature",
+            "{$this->getPayPalDomain()}/v1/notifications/verify-webhook-signature",
             [
                 "auth_algo" => $request->headers->get("PAYPAL-AUTH-ALGO"),
                 "cert_url" => $request->headers->get("PAYPAL-CERT-URL"),
@@ -178,7 +191,7 @@ class PayPal extends PaymentModule implements SupportTransfer
     private function capturePayment($orderId)
     {
         $response = $this->requester->post(
-            "{$this->payPalDomain}/v2/checkout/orders/{$orderId}/capture",
+            "{$this->getPayPalDomain()}/v2/checkout/orders/{$orderId}/capture",
             [],
             [
                 "Authorization" => "Basic {$this->getCredentials()}",
@@ -224,15 +237,6 @@ class PayPal extends PaymentModule implements SupportTransfer
      */
     private function getWebhookId()
     {
-        // TODO Implement it
-        return "";
-    }
-
-    /**
-     * @return bool
-     */
-    private function isTestMode()
-    {
-        return str_contains($this->payPalDomain, "sandbox");
+        return $this->getData("webhook_id");
     }
 }
