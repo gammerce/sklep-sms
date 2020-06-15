@@ -41,7 +41,7 @@ return [
     'log_external_payment_invalid_module' =>
         'Payment: [{1}] was accepted, but service module [{2}] doesn\'t implement IServicePurchase interface.',
     'log_external_payment_no_transaction_file' =>
-        'Payment: [{1}] was accepted, but there was no file with transaction data.',
+        'Payment: [{1}] was accepted, but there was no file [{2}] with transaction data.',
     'log_external_payment_not_accepted' =>
         'Transaction authorization failure. Method: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]',
     'log_new_account' => 'Create new account. ID: [{1}] User name: [{2}], IP: [{3}]',

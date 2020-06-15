@@ -41,7 +41,7 @@ return [
     'log_external_payment_invalid_module' =>
         'Płatność: [{1}] została zaakceptowana, jednakże moduł usługi [{2}] nie implementuje interfejsu IServicePurchase.',
     'log_external_payment_no_transaction_file' =>
-        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku z danymi transakcji.',
+        'Płatność: [{1}] została zaakceptowana, jednakże nie znaleziono pliku [{2}] z danymi transakcji.',
     'log_external_payment_not_accepted' =>
         'Nieudana autoryzacja transakcji. Metoda [{1}] ID transakcji [{2}] Kwota: [{3}] Usługa: [{4}]',
     'log_new_account' => 'Założono nowe konto. ID: [{1}] Nazwa Użytkownika: [{2}], IP: [{3}]',
