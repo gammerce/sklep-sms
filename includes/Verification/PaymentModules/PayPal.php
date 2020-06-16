@@ -56,7 +56,7 @@ class PayPal extends PaymentModule implements SupportTransfer
      */
     private static function isTestMode()
     {
-        return false;
+        return is_demo();
     }
 
     public static function getDataFields()
