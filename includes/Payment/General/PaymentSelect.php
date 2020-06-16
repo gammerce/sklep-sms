@@ -98,11 +98,11 @@ class PaymentSelect
     }
 
     /**
-     * @param PaymentOption $paymentOption
+     * @param PaymentMethod $paymentMethod
      */
-    public function disallowPaymentOption(PaymentOption $paymentOption)
+    public function disallowPaymentMethod(PaymentMethod $paymentMethod)
     {
-        $this->disallowedPaymentMethods[] = $paymentOption;
+        $this->disallowedPaymentMethods[] = $paymentMethod;
     }
 
     /**
