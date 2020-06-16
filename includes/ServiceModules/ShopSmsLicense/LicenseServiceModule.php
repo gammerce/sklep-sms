@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
 use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseDataService;
 use App\Repositories\UserServiceRepository;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
@@ -256,8 +257,8 @@ class LicenseServiceModule extends ServiceModule implements
         $purchase->setEmail($validated["email"]);
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost($costDaily, $validated["amount"]),
-            Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
+        $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
     public function orderDetails(Purchase $purchase)
@@ -324,7 +325,7 @@ class LicenseServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
@@ -502,12 +503,15 @@ class LicenseServiceModule extends ServiceModule implements
                 ],
             ])
             ->setPayment([
-                Purchase::PAYMENT_PLATFORM_TRANSFER => $this->settings->getTransferPlatformId(),
                 Purchase::PAYMENT_PRICE_TRANSFER => intval(
                     $costData["surcharge"] * $costData["bargain"]
                 ),
-                Purchase::PAYMENT_DISABLED_SMS => true,
             ]);
+
+        $purchase
+            ->getPaymentSelect()
+            ->setTransferPaymentPlatforms($this->settings->getTransferPlatformIds())
+            ->disallowPaymentMethod(PaymentMethod::SMS());
 
         $this->purchaseDataService->storePurchase($purchase);
 

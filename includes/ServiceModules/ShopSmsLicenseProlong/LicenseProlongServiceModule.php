@@ -13,6 +13,7 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
+use App\Payment\General\PaymentMethod;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -122,8 +123,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ]);
         $purchase->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
-            Purchase::PAYMENT_DISABLED_SMS => true,
         ]);
+        $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
     public function orderDetails(Purchase $purchase)
@@ -168,7 +169,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
-            $purchase->getPayment(Purchase::PAYMENT_METHOD),
+            (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
             0,
