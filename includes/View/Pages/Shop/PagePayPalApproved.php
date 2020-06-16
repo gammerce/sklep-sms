@@ -118,6 +118,17 @@ class PagePayPalApproved extends Page
     {
         $finalizedPayment = $paymentModule->finalizeTransfer($request);
 
+        if (!$finalizedPayment->isSuccessful()) {
+            $this->logger->log(
+                "log_external_payment_not_accepted",
+                PaymentMethod::TRANSFER(),
+                $finalizedPayment->getOrderId(),
+                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getExternalServiceId()
+            );
+            return false;
+        }
+
         try {
             $purchase = $this->externalPaymentService->restorePurchase($finalizedPayment);
         } catch (LackOfValidPurchaseDataException $e) {
