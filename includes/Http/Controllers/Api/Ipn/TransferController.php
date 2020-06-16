@@ -70,8 +70,8 @@ class TransferController
                 $finalizedPayment->getOrderId(),
                 $purchase->getServiceId()
             );
-        } finally {
-            return new PlainResponse($finalizedPayment->getOutput());
         }
+
+        return new PlainResponse($finalizedPayment->getOutput());
     }
 }
