@@ -15,6 +15,9 @@ class PaymentSelect
     /** @var PaymentOption|null */
     private $allowedPaymentOption;
 
+    /** @var PaymentOption[] */
+    private $disallowedPaymentOptions = [];
+
     /**
      * @return PaymentOption[]
      */
@@ -43,6 +46,15 @@ class PaymentSelect
             ->filter(function (PaymentOption $paymentOption) {
                 return $this->allowedPaymentOption === null ||
                     payment_option_equals($paymentOption, $this->allowedPaymentOption);
+            })
+            ->filter(function (PaymentOption $paymentOption) {
+                foreach ($this->disallowedPaymentOptions as $disallowedPaymentOption) {
+                    if (payment_option_equals($paymentOption, $disallowedPaymentOption)) {
+                        return false;
+                    }
+                }
+
+                return true;
             })
             ->all();
     }
@@ -83,6 +95,14 @@ class PaymentSelect
     public function allowPaymentOption(PaymentOption $paymentOption)
     {
         $this->allowedPaymentOption = $paymentOption;
+    }
+
+    /**
+     * @param PaymentOption $paymentOption
+     */
+    public function disallowPaymentOption(PaymentOption $paymentOption)
+    {
+        $this->disallowedPaymentOptions[] = $paymentOption;
     }
 
     /**
