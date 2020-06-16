@@ -9,6 +9,9 @@ class PaymentTransfer
     /** @var int */
     private $income;
 
+    /** @var int */
+    private $cost;
+
     /** @var string */
     private $transferService;
 
@@ -21,10 +24,11 @@ class PaymentTransfer
     /** @var bool */
     private $free;
 
-    public function __construct($id, $income, $transferService, $ip, $platform, $free)
+    public function __construct($id, $income, $cost, $transferService, $ip, $platform, $free)
     {
         $this->id = $id;
         $this->income = $income;
+        $this->cost = $cost;
         $this->transferService = $transferService;
         $this->ip = $ip;
         $this->platform = $platform;
@@ -45,6 +49,14 @@ class PaymentTransfer
     public function getIncome()
     {
         return $this->income;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCost()
+    {
+        return $this->cost;
     }
 
     /**

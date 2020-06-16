@@ -48,9 +48,8 @@ class PageCashBillTransferFinalized extends Page
             "action" => "web",
         ]);
 
-        return $this->template->render("shop/pages/transfer_finalized", [
+        return $this->template->render("shop/pages/payment_success", [
             "title" => $this->getTitle($request),
-            "subtitle" => $this->lang->t("payment_success"),
             "content" => $content,
         ]);
     }

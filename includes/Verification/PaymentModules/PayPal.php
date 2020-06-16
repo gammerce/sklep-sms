@@ -56,7 +56,7 @@ class PayPal extends PaymentModule implements SupportTransfer
      */
     private static function isTestMode()
     {
-        return false;
+        return true;
     }
 
     public static function getDataFields()
@@ -126,12 +126,16 @@ class PayPal extends PaymentModule implements SupportTransfer
         $status = array_get($result, "status") === "COMPLETED";
         $purchaseUnits = array_dot_get($result, "purchase_units", []);
         $purchaseUnit = $purchaseUnits[0];
-        $transactionId = array_dot_get($purchaseUnit, "custom_id");
         $capture = array_dot_get($purchaseUnit, "payments.captures", [])[0];
-        $cost = array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value");
-        $income = array_dot_get($capture, "seller_receivable_breakdown.net_amount.value");
+        $transactionId = array_dot_get($capture, "custom_id");
+        $cost = price_to_int(
+            array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value")
+        );
+        $income = price_to_int(
+            array_dot_get($capture, "seller_receivable_breakdown.net_amount.value")
+        );
 
-        if (!$status) {
+        if (!$status || !$transactionId) {
             $this->fileLogger->error("PayPal | Order capture failed", $result);
         }
 
@@ -143,27 +147,6 @@ class PayPal extends PaymentModule implements SupportTransfer
             ->setTransactionId($transactionId)
             ->setTestMode($this->isTestMode());
     }
-
-    //    public function finalizeTransfer(Request $request)
-    //    {
-    //        $body = $request->request->all();
-    //
-    //        $id = array_dot_get($body, "resource.id");
-    //        $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
-    //        $purchaseUnit = $purchaseUnits[0];
-    //        $transactionId = array_dot_get($purchaseUnit, "custom_id");
-    //        $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
-    //
-    //        $status = $this->isPaymentValid($request) && $this->capturePayment($id);
-    //
-    //        return (new FinalizedPayment())
-    //            ->setStatus($status)
-    //            ->setOrderId($id)
-    //            ->setCost($amount)
-    //            ->setIncome($amount)
-    //            ->setTransactionId($transactionId)
-    //            ->setTestMode($this->isTestMode());
-    //    }
 
     /**
      * @param string $orderId

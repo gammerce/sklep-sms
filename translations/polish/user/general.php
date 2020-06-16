@@ -83,6 +83,9 @@ return [
     'payment_rejected' => 'Płatność odrzucona',
     'payment_sms' => 'SMS',
     'payment_success' => 'Płatność zaakceptowana',
+    'payment_success_subtitle' => 'Dziękujemy! Twoja płatność zakończyła się pomyślnie.',
+    'payment_success_content' =>
+        'Swoją usługę otrzymasz po potwierdzeniu płatności przez operatora. Potrwa to do 15 minut.',
     'payment_transfer' => 'Przelew ({1})',
     'payment_wallet' => 'Portfel',
     'price' => 'Cena',

@@ -12,6 +12,7 @@ use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseInformation;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
+use App\Repositories\PaymentTransferRepository;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportTransfer;
@@ -41,6 +42,9 @@ class PagePayPalApproved extends Page
     /** @var TransferPriceService */
     private $transferPriceService;
 
+    /** @var PaymentTransferRepository */
+    private $paymentTransferRepository;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
@@ -49,7 +53,8 @@ class PagePayPalApproved extends Page
         ExternalPaymentService $externalPaymentService,
         DatabaseLogger $logger,
         TransferPaymentService $transferPaymentService,
-        TransferPriceService $transferPriceService
+        TransferPriceService $transferPriceService,
+        PaymentTransferRepository $paymentTransferRepository
     ) {
         parent::__construct($template, $translationManager);
 
@@ -59,6 +64,7 @@ class PagePayPalApproved extends Page
         $this->logger = $logger;
         $this->transferPaymentService = $transferPaymentService;
         $this->transferPriceService = $transferPriceService;
+        $this->paymentTransferRepository = $paymentTransferRepository;
     }
 
     public function getTitle(Request $request)
@@ -76,19 +82,14 @@ class PagePayPalApproved extends Page
             return $this->template->render("shop/pages/payment_error");
         }
 
-        $content = $this->purchaseInformation->get([
-            "payment" => PaymentMethod::TRANSFER(),
-            "purchase_id" => $token,
-            "action" => "web",
-        ]);
+        $paymentTransfer = $this->paymentTransferRepository->get($token);
 
         // Do NOT capture payment twice.
         // Additionally do NOT display purchase info for security purposes.
-        if ($content) {
-            return $this->template->render("shop/pages/transfer_finalized", [
+        if ($paymentTransfer) {
+            return $this->template->render("shop/pages/payment_success", [
                 "title" => $this->getTitle($request),
-                "subtitle" => $this->lang->t("payment_success"),
-                "content" => "",
+                "content" => "SUCCESS",
             ]);
         }
 
@@ -98,13 +99,12 @@ class PagePayPalApproved extends Page
 
         $content = $this->purchaseInformation->get([
             "payment" => PaymentMethod::TRANSFER(),
-            "purchase_id" => $token,
+            "payment_id" => $token,
             "action" => "web",
         ]);
 
-        return $this->template->render("shop/pages/transfer_finalized", [
+        return $this->template->render("shop/pages/payment_success", [
             "title" => $this->getTitle($request),
-            "subtitle" => $this->lang->t("payment_success"),
             "content" => $content,
         ]);
     }
