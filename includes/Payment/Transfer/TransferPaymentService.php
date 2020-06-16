@@ -69,6 +69,7 @@ class TransferPaymentService
         $paymentTransfer = $this->paymentTransferRepository->create(
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getIncome(),
+            $finalizedPayment->getCost(),
             $finalizedPayment->getExternalServiceId(),
             $purchase->user->getLastIp(),
             $purchase->user->getPlatform(),

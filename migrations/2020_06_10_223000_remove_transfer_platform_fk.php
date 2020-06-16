@@ -13,6 +13,8 @@ class RemoveTransferPlatformFk extends Migration
             "ALTER TABLE `ss_servers` MODIFY `transfer_platform` VARCHAR(255) NOT NULL",
             "ALTER TABLE `ss_payment_transfer` MODIFY `id` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
             "ALTER TABLE `ss_bought_services` MODIFY `payment_id` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+            "ALTER TABLE `ss_payment_transfer` ADD `cost` INT(11) NOT NULL",
+            "UPDATE `ss_payment_transfer` SET `cost` = `income`",
         ]);
     }
 }
