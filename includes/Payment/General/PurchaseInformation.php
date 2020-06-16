@@ -40,14 +40,14 @@ class PurchaseInformation
         $queryParticle = new QueryParticle();
 
         // Wyszukujemy po id zakupu
-        if (isset($data['purchase_id'])) {
-            $queryParticle->add("t.id = ?", [$data['purchase_id']]);
+        if (isset($data["purchase_id"])) {
+            $queryParticle->add("t.id = ?", [$data["purchase_id"]]);
         }
         // Wyszukujemy po id płatności
-        elseif (isset($data['payment']) && isset($data['payment_id'])) {
+        elseif (isset($data["payment"]) && isset($data["payment_id"])) {
             $queryParticle->add("t.payment = ? AND t.payment_id = ?", [
-                $data['payment'],
-                $data['payment_id'],
+                $data["payment"],
+                $data["payment_id"],
             ]);
         } else {
             return "";
@@ -67,7 +67,7 @@ class PurchaseInformation
         $serviceModule = $this->serviceModuleManager->get($transaction->getServiceId());
 
         return $serviceModule instanceof IServicePurchaseWeb
-            ? $serviceModule->purchaseInfo($data['action'], $transaction)
+            ? $serviceModule->purchaseInfo($data["action"], $transaction)
             : "";
     }
 }

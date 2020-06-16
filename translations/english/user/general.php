@@ -82,6 +82,9 @@ return [
     'payment_rejected' => 'Payment rejected',
     'payment_sms' => 'SMS',
     'payment_success' => 'Payment success',
+    'payment_success_subtitle' => 'Thank you! Your payment has been successfully completed.',
+    'payment_success_content' =>
+        'You will receive the service after confirmation of payment by the operator. It takes up to 15 minutes.',
     'payment_transfer' => 'Transfer ({1})',
     'payment_wallet' => 'Wallet',
     'price' => 'Price',

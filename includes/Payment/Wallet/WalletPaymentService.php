@@ -19,13 +19,13 @@ class WalletPaymentService
      * @param User $user
      * @return int
      */
-    public function payWithWallet($cost, $user)
+    public function payWithWallet($cost, User $user)
     {
         if ($cost > $user->getWallet()) {
             throw new NotEnoughFundsException();
         }
 
-        $this->chargeWallet($user->getId(), -$cost);
+        $this->chargeWallet($user, -$cost);
 
         $this->db
             ->statement("INSERT INTO `ss_payment_wallet` SET `cost` = ?, `ip` = ?, `platform` = ?")
@@ -35,13 +35,15 @@ class WalletPaymentService
     }
 
     /**
-     * @param int $userId
+     * @param User $user
      * @param int $quantity
      */
-    public function chargeWallet($userId, $quantity)
+    public function chargeWallet(User $user, $quantity)
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
-            ->execute([$quantity, $userId]);
+            ->execute([$quantity, $user->getId()]);
+
+        $user->setWallet($user->getWallet() + $quantity);
     }
 }

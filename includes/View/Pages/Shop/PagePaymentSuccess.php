@@ -15,6 +15,9 @@ class PagePaymentSuccess extends Page
 
     public function getContent(Request $request)
     {
-        return $this->template->render("shop/pages/payment_success");
+        return $this->template->render("shop/pages/payment_success", [
+            "title" => $this->getTitle($request),
+            "content" => "",
+        ]);
     }
 }

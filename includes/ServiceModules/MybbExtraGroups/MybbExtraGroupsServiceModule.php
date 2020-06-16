@@ -569,7 +569,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         // Add payment info
         $paymentId = $this->adminPaymentService->payByAdmin($user);
 
-        $purchase = (new Purchase($this->userManager->getUser($validated["user_id"])))
+        $purchase = (new Purchase($this->userManager->get($validated["user_id"])))
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([

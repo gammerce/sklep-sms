@@ -42,7 +42,7 @@ class Auth
 
     public function setUserById($userId)
     {
-        $this->user = $this->userManager->getUser($userId);
+        $this->user = $this->userManager->get($userId);
     }
 
     /**
@@ -53,7 +53,7 @@ class Auth
     {
         assert($user->exists());
 
-        $this->userManager->setUser($user);
+        $this->userManager->set($user);
         $request->getSession()->set("uid", $user->getId());
         $this->user = $user;
     }
