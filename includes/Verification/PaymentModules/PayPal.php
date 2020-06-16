@@ -61,7 +61,7 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public static function getDataFields()
     {
-        return [new DataField("client_id"), new DataField("secret"), new DataField("webhook_id")];
+        return [new DataField("client_id"), new DataField("secret")];
     }
 
     public function prepareTransfer($price, Purchase $purchase)
@@ -83,7 +83,9 @@ class PayPal extends PaymentModule implements SupportTransfer
                     ],
                 ],
                 "application_context" => [
-                    "return_url" => $this->url->to("/page/payment_success"),
+                    "return_url" => $this->url->to("/page/paypal_approved", [
+                        "platform" => $this->paymentPlatform->getId(),
+                    ]),
                     "cancel_url" => $this->url->to("/page/payment_error"),
                     "locale" => $this->lang->getCurrentLanguageShort(),
                     "shipping_preference" => "NO_SHIPPING",
@@ -118,87 +120,54 @@ class PayPal extends PaymentModule implements SupportTransfer
 
     public function finalizeTransfer(Request $request)
     {
-        $body = $request->request->all();
+        $token = $request->query->get("token");
+        $result = $this->capturePayment($token);
 
-        $id = array_dot_get($body, "resource.id");
-        $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
+        $status = array_get($result, "status") === "COMPLETED";
+        $purchaseUnits = array_dot_get($result, "purchase_units", []);
         $purchaseUnit = $purchaseUnits[0];
         $transactionId = array_dot_get($purchaseUnit, "custom_id");
-        $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
+        $capture = array_dot_get($purchaseUnit, "payments.captures", [])[0];
+        $cost = array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value");
+        $income = array_dot_get($capture, "seller_receivable_breakdown.net_amount.value");
 
-        $status = $this->isPaymentValid($request) && $this->capturePayment($id);
+        if (!$status) {
+            $this->fileLogger->error("PayPal | Order capture failed", $result);
+        }
 
         return (new FinalizedPayment())
             ->setStatus($status)
-            ->setOrderId($id)
-            ->setCost($amount)
-            ->setIncome($amount)
+            ->setOrderId($token)
+            ->setCost($cost)
+            ->setIncome($income)
             ->setTransactionId($transactionId)
             ->setTestMode($this->isTestMode());
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    private function isPaymentValid(Request $request)
-    {
-        $body = $request->request->all();
-        $eventType = array_dot_get($body, "event_type");
-        $status = array_dot_get($body, "resource.status");
-
-        if ($eventType !== "CHECKOUT.ORDER.APPROVED") {
-            $this->fileLogger->error("PayPal | Invalid event type", $body);
-            return false;
-        }
-
-        if ($status !== "APPROVED") {
-            $this->fileLogger->error("PayPal | Invalid resource status", $body);
-            return false;
-        }
-
-        return $this->verifyRequest($request);
-    }
-
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    private function verifyRequest(Request $request)
-    {
-        $verifyBody = [
-            "auth_algo" => $request->headers->get("PAYPAL-AUTH-ALGO"),
-            "cert_url" => $request->headers->get("PAYPAL-CERT-URL"),
-            "transmission_id" => $request->headers->get("PAYPAL-TRANSMISSION-ID"),
-            "transmission_sig" => $request->headers->get("PAYPAL-TRANSMISSION-SIG"),
-            "transmission_time" => $request->headers->get("PAYPAL-TRANSMISSION-TIME"),
-            "webhook_id" => $this->getWebhookId(),
-            "webhook_event" => $request->request->all(),
-        ];
-        $response = $this->requester->post(
-            "{$this->getPayPalDomain()}/v1/notifications/verify-webhook-signature",
-            json_encode($verifyBody),
-            [
-                "Authorization" => "Basic {$this->getCredentials()}",
-                "Content-Type" => "application/json",
-            ]
-        );
-        $result = $response->json();
-
-        if (array_get($result, "verification_status") !== "SUCCESS") {
-            $this->fileLogger->error(
-                "PayPal | Signature verification failed",
-                compact("verifyBody", "result")
-            );
-            return false;
-        }
-
-        return true;
-    }
+    //    public function finalizeTransfer(Request $request)
+    //    {
+    //        $body = $request->request->all();
+    //
+    //        $id = array_dot_get($body, "resource.id");
+    //        $purchaseUnits = array_dot_get($body, "resource.purchase_units", []);
+    //        $purchaseUnit = $purchaseUnits[0];
+    //        $transactionId = array_dot_get($purchaseUnit, "custom_id");
+    //        $amount = price_to_int(array_dot_get($purchaseUnit, "amount.value"));
+    //
+    //        $status = $this->isPaymentValid($request) && $this->capturePayment($id);
+    //
+    //        return (new FinalizedPayment())
+    //            ->setStatus($status)
+    //            ->setOrderId($id)
+    //            ->setCost($amount)
+    //            ->setIncome($amount)
+    //            ->setTransactionId($transactionId)
+    //            ->setTestMode($this->isTestMode());
+    //    }
 
     /**
      * @param string $orderId
-     * @return bool
+     * @return array
      */
     private function capturePayment($orderId)
     {
@@ -210,14 +179,7 @@ class PayPal extends PaymentModule implements SupportTransfer
                 "Content-Type" => "application/json",
             ]
         );
-        $result = $response->json();
-
-        if (array_get($result, "status") !== "COMPLETED") {
-            $this->fileLogger->error("PayPal | Order capture failed", $result);
-            return false;
-        }
-
-        return true;
+        return $response ? $response->json() : null;
     }
 
     /**
@@ -242,13 +204,5 @@ class PayPal extends PaymentModule implements SupportTransfer
     private function getSecret()
     {
         return $this->getData("secret");
-    }
-
-    /**
-     * @return string
-     */
-    private function getWebhookId()
-    {
-        return $this->getData("webhook_id");
     }
 }
