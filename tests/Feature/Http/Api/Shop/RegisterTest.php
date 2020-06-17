@@ -89,8 +89,7 @@ class RegisterTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "email" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Podany e-mail jest już zajęty.</li></ul>",
+                "email" => ["Podany e-mail jest już zajęty."],
             ],
             $json["warnings"]
         );

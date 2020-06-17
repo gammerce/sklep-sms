@@ -12,12 +12,14 @@ $(document).delegate("#form_purchase", "submit", function(e) {
         return;
     }
 
+    const that = this;
+
     loader.show();
     $.ajax({
         type: "POST",
         url: buildUrl("/api/purchases"),
         data: $(this).serialize(),
-        complete: function() {
+        complete() {
             loader.hide();
         },
         success(content) {
@@ -28,7 +30,7 @@ $(document).delegate("#form_purchase", "submit", function(e) {
             }
 
             if (content.return_id === "warnings") {
-                showWarnings($(this), content.warnings);
+                showWarnings($(that), content.warnings);
             } else if (content.return_id === "ok") {
                 goToPayment(content.transaction_id);
             }

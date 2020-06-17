@@ -96,13 +96,23 @@ export const isShown = function(node: JQuery): boolean {
 };
 
 export const showWarnings = function(form: JQuery, warnings: Dict) {
-    for (const [name, element] of Object.entries(warnings)) {
+    for (const [name, messages] of Object.entries(warnings)) {
         const inputElement = form.find(`[name="${name}"]`);
-        const appendedElement = Array.isArray(element) ? element.join("<br />") : element;
-        const field = inputElement.closest(".field");
+        const field = inputElement.parents(".field").last();
+
+        const ul = $("<ul>", {
+            class: "form_warning help is-danger",
+        });
+
+        for (const text of messages) {
+            const li = $("<li>").text(text);
+            ul.append(li);
+        }
 
         inputElement.addClass("is-danger");
-        field.append(appendedElement);
+        field.append(ul);
+
+        console.log(form, ul);
 
         if ((inputElement as any).effect) {
             (inputElement as any).effect("highlight", 1000);

@@ -61,10 +61,8 @@ class PasswordResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "old_pass" =>
-                    '<ul class="form_warning help is-danger"><li >Stare hasło jest nieprawidłowe.</li></ul>',
-                "pass" =>
-                    '<ul class="form_warning help is-danger"><li >Pole musi się składać z co najmniej 6 znaków.</li></ul>',
+                "old_pass" => ["Stare hasło jest nieprawidłowe."],
+                "pass" => ["Pole musi się składać z co najmniej 6 znaków."],
             ],
             $json["warnings"]
         );

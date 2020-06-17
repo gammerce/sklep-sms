@@ -234,8 +234,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             [
                 "return_id" => "warnings",
                 "warnings" => [
-                    "promo_code" =>
-                        "<ul class=\"form_warning help is-danger\"><li >Nieprawidłowy kod promocyjny</li></ul>",
+                    "promo_code" => ["Nieprawidłowy kod promocyjny"],
                 ],
             ],
             $json

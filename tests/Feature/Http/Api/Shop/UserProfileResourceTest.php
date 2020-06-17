@@ -65,10 +65,8 @@ class UserProfileResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "username" =>
-                    '<ul class="form_warning help is-danger"><li >Podana nazwa użytkownika jest już zajęta.</li></ul>',
-                "steam_id" =>
-                    '<ul class="form_warning help is-danger"><li >Podany SteamID jest już przypisany do innego konta.</li></ul>',
+                "username" => ["Podana nazwa użytkownika jest już zajęta."],
+                "steam_id" => ["Podany SteamID jest już przypisany do innego konta."],
             ],
             $json["warnings"]
         );
