@@ -201,12 +201,9 @@ class UserServiceResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "auth_data" =>
-                    '<ul class="form_warning help is-danger"><li >Wprowadzony adres IP jest nieprawidłowy.</li></ul>',
-                "expire" =>
-                    '<ul class="form_warning help is-danger"><li >Pole nie może być puste.</li></ul>',
-                "server_id" =>
-                    '<ul class="form_warning help is-danger"><li >Pole nie może być puste.</li></ul>',
+                "auth_data" => ["Wprowadzony adres IP jest nieprawidłowy."],
+                "expire" => ["Pole nie może być puste."],
+                "server_id" => ["Pole nie może być puste."],
             ],
             $json["warnings"]
         );

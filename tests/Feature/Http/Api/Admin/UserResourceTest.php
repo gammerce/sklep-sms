@@ -80,12 +80,9 @@ class UserResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "email" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Podany e-mail jest już zajęty.</li></ul>",
-                "steam_id" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Podany SteamID jest już przypisany do innego konta.</li></ul>",
-                "username" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Podana nazwa użytkownika jest już zajęta.</li></ul>",
+                "email" => ["Podany e-mail jest już zajęty."],
+                "steam_id" => ["Podany SteamID jest już przypisany do innego konta."],
+                "username" => ["Podana nazwa użytkownika jest już zajęta."],
             ],
             $json["warnings"]
         );

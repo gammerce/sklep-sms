@@ -6,8 +6,6 @@ use App\Routing\UrlGenerator;
 use App\Services\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
-use App\View\Html\Li;
-use App\View\Html\Ul;
 use App\View\Renders\ErrorRenderer;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -142,22 +140,10 @@ class ResponseFactory
 
     private function formatWarnings(array $warnings)
     {
-        $output = [];
-
-        foreach ($warnings as $brick => $warning) {
-            if ($warning) {
-                $items = collect($warning)
-                    ->map(function ($text) {
-                        return new Li($text);
-                    })
-                    ->all();
-
-                $help = new Ul($items);
-                $help->addClass("form_warning help is-danger");
-                $output[$brick] = $help->toHtml();
-            }
-        }
-
-        return $output;
+        return collect($warnings)
+            ->mapWithKeys(function ($value) {
+                return to_array($value);
+            })
+            ->all();
     }
 }

@@ -98,10 +98,8 @@ class UserServiceResourceTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertEquals(
             [
-                "auth_data" =>
-                    '<ul class="form_warning help is-danger"><li >Wprowadzony adres IP jest nieprawidłowy.</li></ul>',
-                "password" =>
-                    '<ul class="form_warning help is-danger"><li >Pole musi się składać z co najmniej 6 znaków.</li></ul>',
+                "auth_data" => ["Wprowadzony adres IP jest nieprawidłowy."],
+                "password" => ["Pole musi się składać z co najmniej 6 znaków."],
             ],
             $json["warnings"]
         );

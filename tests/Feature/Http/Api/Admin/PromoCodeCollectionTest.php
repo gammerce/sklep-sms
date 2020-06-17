@@ -75,18 +75,12 @@ class PromoCodeCollectionTest extends HttpTestCase
         $this->assertSame("warnings", $json["return_id"]);
         $this->assertSame(
             [
-                "code" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Pole nie może być puste.</li></ul>",
-                "quantity_type" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Nieprawidłowa wartość</li></ul>",
-                "quantity" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Pole musi być liczbą całkowitą.</li></ul>",
-                "user_id" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Podane ID użytkownika nie jest przypisane do żadnego konta.</li></ul>",
-                "server_id" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Brak serwera o takim ID.</li></ul>",
-                "service_id" =>
-                    "<ul class=\"form_warning help is-danger\"><li >Taka usługa nie istnieje.</li></ul>",
+                "code" => ["Pole nie może być puste."],
+                "quantity_type" => ["Nieprawidłowa wartość"],
+                "quantity" => ["Pole musi być liczbą całkowitą."],
+                "user_id" => ["Podane ID użytkownika nie jest przypisane do żadnego konta."],
+                "server_id" => ["Brak serwera o takim ID."],
+                "service_id" => ["Taka usługa nie istnieje."],
             ],
             $json["warnings"]
         );
