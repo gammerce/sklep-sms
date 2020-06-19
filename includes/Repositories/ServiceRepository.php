@@ -72,7 +72,7 @@ class ServiceRepository
         $order = 1,
         array $data = [],
         $types = 0,
-        $flags = ''
+        $flags = ""
     ) {
         $this->db
             ->statement(
@@ -83,9 +83,9 @@ class ServiceRepository
             ->execute([
                 $id,
                 $name,
-                $shortDescription ?: '',
-                $description ?: '',
-                $tag ?: '',
+                $shortDescription ?: "",
+                $description ?: "",
+                $tag ?: "",
                 $module,
                 implode(";", $groups),
                 $order,
@@ -119,9 +119,9 @@ class ServiceRepository
         $statement->execute([
             $newId,
             $name,
-            $shortDescription ?: '',
-            $description ?: '',
-            $tag ?: '',
+            $shortDescription ?: "",
+            $description ?: "",
+            $tag ?: "",
             implode(";", $groups),
             $order,
             json_encode($data),
@@ -144,17 +144,17 @@ class ServiceRepository
     private function mapToModel(array $data)
     {
         return new Service(
-            $data['id'],
-            $data['name'],
-            $data['short_description'],
-            $data['description'],
-            $data['types'],
-            $data['tag'],
-            $data['module'],
-            $data['groups'] ? explode(";", $data['groups']) : [],
-            strtolower($data['flags']),
-            $data['order'],
-            json_decode($data['data'], true)
+            $data["id"],
+            $data["name"],
+            $data["short_description"],
+            $data["description"],
+            $data["types"],
+            $data["tag"],
+            $data["module"],
+            explode_int_list($data["groups"], ";"),
+            strtolower($data["flags"]),
+            $data["order"],
+            json_decode($data["data"], true)
         );
     }
 }

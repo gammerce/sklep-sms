@@ -7,6 +7,7 @@ use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -51,7 +52,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
     public function getPrivilege()
     {
-        return "view_player_flags";
+        return Permission::VIEW_PLAYER_FLAGS();
     }
 
     public function getTitle(Request $request)

@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\GroupRepository;
+use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class GroupCollectionTest extends HttpTestCase
@@ -25,7 +26,7 @@ class GroupCollectionTest extends HttpTestCase
         // when
         $response = $this->post("/api/admin/groups", [
             "name" => "example",
-            "view_player_flags" => true,
+            "permissions" => ["view_player_flags", "manage_logs"],
         ]);
 
         // then
@@ -36,31 +37,7 @@ class GroupCollectionTest extends HttpTestCase
         $this->assertNotNull($group);
         $this->assertSame("example", $group->getName());
         $this->assertEquals(
-            [
-                "acp" => false,
-                "manage_settings" => false,
-                "view_groups" => false,
-                "manage_groups" => false,
-                "view_player_flags" => true,
-                "view_user_services" => false,
-                "manage_user_services" => false,
-                "view_income" => false,
-                "view_users" => false,
-                "manage_users" => false,
-                "view_sms_codes" => false,
-                "manage_sms_codes" => false,
-                "view_promo_codes" => false,
-                "manage_promo_codes" => false,
-                "view_antispam_questions" => false,
-                "manage_antispam_questions" => false,
-                "view_services" => false,
-                "manage_services" => false,
-                "view_servers" => false,
-                "manage_servers" => false,
-                "view_logs" => false,
-                "manage_logs" => false,
-                "update" => false,
-            ],
+            [Permission::VIEW_PLAYER_FLAGS(), Permission::MANAGE_LOGS()],
             $group->getPermissions()
         );
     }

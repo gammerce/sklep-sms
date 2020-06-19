@@ -39,6 +39,7 @@ use App\Support\QueryParticle;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -286,7 +287,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                     ->addCell(new Cell($row["service"]))
                     ->addCell(new Cell($row["mybb_uid"]))
                     ->addCell(new ExpirationCell($row["expire"]))
-                    ->setDeleteAction(has_privileges("manage_user_services"))
+                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
                     ->setEditAction(false);
             })
             ->all();

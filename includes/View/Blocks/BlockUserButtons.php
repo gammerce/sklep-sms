@@ -8,6 +8,7 @@ use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
 
 class BlockUserButtons extends Block
@@ -61,7 +62,7 @@ class BlockUserButtons extends Block
 
         $user = $this->auth->user();
 
-        if (has_privileges("acp", $user)) {
+        if ($user->can(Permission::ACP())) {
             $acpButton = $this->template->render("shop/components/navbar/navigation_item_icon", [
                 "icon" => "fa-user-shield",
                 "link" => $this->url->to("/admin"),

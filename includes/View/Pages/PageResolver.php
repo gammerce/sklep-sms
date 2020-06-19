@@ -41,7 +41,7 @@ class PageResolver
             throw new EntityNotFoundException();
         }
 
-        if (!has_privileges($page->getPrivilege(), $this->auth->user())) {
+        if ($this->auth->user()->cannot($page->getPrivilege())) {
             throw new ForbiddenException();
         }
 

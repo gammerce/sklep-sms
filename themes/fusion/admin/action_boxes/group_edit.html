@@ -34,7 +34,24 @@
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
-        {$privileges}
+
+        <tr>
+            <td>
+                <label for="permissions">{{ __('permissions') }}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-multiple is-small">
+                            <select id="permissions" name="permissions[]" size="8" multiple>
+                                {!! $permissions !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
         <tr>
             <td colspan="2" class="line"></td>
         </tr>

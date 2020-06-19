@@ -10,6 +10,7 @@ use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -61,7 +62,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_sms_codes";
+        return Permission::VIEW_SMS_CODES();
     }
 
     public function getTitle(Request $request)
@@ -94,7 +95,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                         )
                     )
                     ->addCell(new ExpirationDateCell($smsCode->getExpiresAt()))
-                    ->setDeleteAction(has_privileges("manage_sms_codes"));
+                    ->setDeleteAction(can(Permission::MANAGE_SMS_CODES()));
             })
             ->all();
 
@@ -108,7 +109,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_sms_codes")) {
+        if (can(Permission::MANAGE_SMS_CODES())) {
             $button = (new Input())
                 ->setParam("id", "sms_code_button_add")
                 ->setParam("type", "button")
@@ -123,7 +124,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_sms_codes")) {
+        if (cannot(Permission::MANAGE_SMS_CODES())) {
             throw new UnauthorizedException();
         }
 

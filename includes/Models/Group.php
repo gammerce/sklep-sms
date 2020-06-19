@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\User\Permission;
+
 class Group
 {
     /** @var int */
@@ -9,7 +11,7 @@ class Group
     /** @var string */
     private $name;
 
-    /** @var array */
+    /** @var Permission[] */
     private $permissions;
 
     public function __construct($id, $name, array $permissions)
@@ -36,7 +38,7 @@ class Group
     }
 
     /**
-     * @return array
+     * @return Permission[]
      */
     public function getPermissions()
     {
@@ -44,11 +46,17 @@ class Group
     }
 
     /**
-     * @param $permission
+     * @param Permission $permission
      * @return bool
      */
-    public function hasPermission($permission)
+    public function hasPermission(Permission $permission)
     {
-        return !!array_get($this->permissions, $permission);
+        foreach ($this->permissions as $lookup) {
+            if ($lookup->equals($permission)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

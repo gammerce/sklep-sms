@@ -3,6 +3,7 @@ namespace App\System;
 
 use App\Managers\UserManager;
 use App\Models\User;
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
 
 class Auth
@@ -68,7 +69,7 @@ class Auth
 
         $session = $request->getSession();
 
-        if ($user && has_privileges("acp", $user)) {
+        if ($user && $user->can(Permission::ACP())) {
             $session->set("uid", $user->getId());
             $this->user = $user;
         } else {

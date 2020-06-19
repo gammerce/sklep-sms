@@ -16,22 +16,22 @@ trait FileSystemConcern
 
         $serviceDescriptionService = $this->app->makeWith(
             ServiceDescriptionService::class,
-            compact('fileSystem')
+            compact("fileSystem")
         );
         $this->app->instance(ServiceDescriptionService::class, $serviceDescriptionService);
 
-        $envCreator = $this->app->makeWith(EnvCreator::class, compact('fileSystem'));
+        $envCreator = $this->app->makeWith(EnvCreator::class, compact("fileSystem"));
         $this->app->instance(EnvCreator::class, $envCreator);
 
-        $oldShop = $this->app->makeWith(SetupManager::class, compact('fileSystem'));
+        $oldShop = $this->app->makeWith(SetupManager::class, compact("fileSystem"));
         $this->app->instance(SetupManager::class, $oldShop);
 
-        $oldShop = $this->app->makeWith(OldShop::class, compact('fileSystem'));
+        $oldShop = $this->app->makeWith(OldShop::class, compact("fileSystem"));
         $this->app->instance(OldShop::class, $oldShop);
 
         $purchaseDataService = $this->app->makeWith(
             PurchaseDataService::class,
-            compact('fileSystem')
+            compact("fileSystem")
         );
         $this->app->instance(PurchaseDataService::class, $purchaseDataService);
 

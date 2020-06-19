@@ -2,6 +2,7 @@
 namespace App\Providers;
 
 use App\Cache\FileCache;
+use App\Loggers\DatabaseLogger;
 use App\Managers\BlockManager;
 use App\Managers\GroupManager;
 use App\Managers\PageManager;
@@ -15,6 +16,7 @@ use App\Managers\WebsiteHeader;
 use App\Support\Database;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
+use App\Support\Mailer;
 use App\Support\Path;
 use App\System\Application;
 use App\System\Auth;
@@ -35,6 +37,7 @@ class AppServiceProvider
 
         $this->registerDatabase($app);
         $this->registerCache($app);
+        $this->registerMailer($app);
 
         $app->singleton(Auth::class);
         $app->singleton(BlockManager::class);
@@ -60,23 +63,38 @@ class AppServiceProvider
     {
         $app->singleton(Database::class, function () {
             return new Database(
-                getenv('DB_HOST'),
-                getenv('DB_PORT') ?: 3306,
-                getenv('DB_USERNAME'),
-                getenv('DB_PASSWORD'),
-                getenv('DB_DATABASE')
+                getenv("DB_HOST"),
+                getenv("DB_PORT") ?: 3306,
+                getenv("DB_USERNAME"),
+                getenv("DB_PASSWORD"),
+                getenv("DB_DATABASE")
             );
         });
     }
 
     private function registerCache(Application $app)
     {
-        $app->bind(FileCache::class, function () use ($app) {
+        $app->bind(FileCache::class, function (Application $app) {
             /** @var Path $path */
             $path = $app->make(Path::class);
 
-            return new FileCache($app->make(FileSystemContract::class), $path->to('data/cache'));
+            return new FileCache($app->make(FileSystemContract::class), $path->to("data/cache"));
         });
         $app->bind(CacheInterface::class, FileCache::class);
+    }
+
+    private function registerMailer(Application $app)
+    {
+        $app->bind(Mailer::class, function (Application $app) {
+            $config = [
+                "Host" => getenv("MAIL_HOST"),
+                "Password" => getenv("MAIL_PASSWORD"),
+            ];
+            return new Mailer(
+                $app->make(Settings::class),
+                $app->make(DatabaseLogger::class),
+                $config
+            );
+        });
     }
 }

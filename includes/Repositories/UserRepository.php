@@ -1,17 +1,23 @@
 <?php
 namespace App\Repositories;
 
+use App\Managers\GroupManager;
 use App\Models\User;
 use App\Support\Database;
+use App\User\Permission;
 
 class UserRepository
 {
     /** @var Database */
     private $db;
 
-    public function __construct(Database $db)
+    /** @var GroupManager */
+    private $groupManager;
+
+    public function __construct(Database $db, GroupManager $groupManager)
     {
         $this->db = $db;
+        $this->groupManager = $groupManager;
     }
 
     public function create(
@@ -235,6 +241,8 @@ class UserRepository
 
     public function mapToModel(array $data)
     {
+        $groupsIds = explode_int_list($data["groups"], ";");
+
         return new User(
             as_int($data["uid"]),
             $data["username"],
@@ -244,13 +252,29 @@ class UserRepository
             $data["forename"],
             $data["surname"],
             $data["steam_id"],
-            explode(";", $data["groups"]),
+            $groupsIds,
             $data["regdate"],
             $data["lastactiv"],
             (int) $data["wallet"],
             $data["regip"],
             $data["lastip"],
-            $data["reset_password_key"]
+            $data["reset_password_key"],
+            $this->gatherPermissions($groupsIds)
         );
+    }
+
+    /**
+     * @param int[] $groupsIds
+     * @return Permission[]
+     */
+    private function gatherPermissions(array $groupsIds)
+    {
+        return collect($groupsIds)
+            ->flatMap(function ($groupId) {
+                $group = $this->groupManager->get($groupId);
+                return $group->getPermissions();
+            })
+            ->unique()
+            ->all();
     }
 }

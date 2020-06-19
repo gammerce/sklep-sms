@@ -13,6 +13,7 @@ use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\ServiceModule;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -51,7 +52,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_services";
+        return Permission::VIEW_SERVICES();
     }
 
     public function getTitle(Request $request)
@@ -74,8 +75,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($service->getShortDescription()))
                     ->addCell(new Cell($service->getDescription()))
                     ->addCell(new Cell($service->getOrder()))
-                    ->setDeleteAction(has_privileges("manage_services"))
-                    ->setEditAction(has_privileges("manage_services"))
+                    ->setDeleteAction(can(Permission::MANAGE_SERVICES()))
+                    ->setEditAction(can(Permission::MANAGE_SERVICES()))
                     ->when($recordId === $service->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
@@ -92,7 +93,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_services")) {
+        if (can(Permission::MANAGE_SERVICES())) {
             $button = (new Input())
                 ->setParam("id", "service_button_add")
                 ->setParam("type", "button")
@@ -107,11 +108,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_services")) {
+        if (cannot(Permission::MANAGE_SERVICES())) {
             throw new UnauthorizedException();
         }
 
-        $groups = collect($this->groupManager->getGroups())
+        $groups = collect($this->groupManager->all())
             ->map(function (Group $group) {
                 return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
                     "value" => $group->getId(),

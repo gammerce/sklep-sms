@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\Group;
 use App\Support\Database;
+use App\User\Permission;
 
 class GroupRepository
 {
@@ -14,15 +15,9 @@ class GroupRepository
         $this->db = $db;
     }
 
-    public function getFields()
+    public function getPermissions()
     {
-        $statement = $this->db->query("DESCRIBE ss_groups");
-
-        return collect($statement)
-            ->map(function (array $row) {
-                return $row["Field"];
-            })
-            ->all();
+        return Permission::values();
     }
 
     /**
@@ -39,6 +34,10 @@ class GroupRepository
             ->all();
     }
 
+    /**
+     * @param int $id
+     * @return Group|null
+     */
     public function get($id)
     {
         if ($id) {
@@ -53,53 +52,53 @@ class GroupRepository
         return null;
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_groups` WHERE `id` = ?");
         $statement->execute([$id]);
-
         return !!$statement->rowCount();
     }
 
-    public function create($name, array $data)
+    /**
+     * @param string $name
+     * @param Permission[] $permissions
+     * @return Group
+     */
+    public function create($name, array $permissions)
     {
-        $data["name"] = $name;
-
-        list($params, $values) = map_to_params($data);
-        $params = implode(", ", $params);
-
-        $statement = $this->db->statement("INSERT INTO `ss_groups` SET {$params}");
-        $statement->execute($values);
-
+        $statement = $this->db->statement(
+            "INSERT INTO `ss_groups` SET `name` = ?, `permissions` = ?"
+        );
+        $statement->execute([$name, implode(",", $permissions)]);
         return $this->get($this->db->lastId());
     }
 
-    public function update($id, array $data)
+    /**
+     * @param int $id
+     * @param string $name
+     * @param Permission[] $permissions
+     * @return bool
+     */
+    public function update($id, $name, array $permissions)
     {
-        if (!$data) {
-            return false;
-        }
-
-        list($params, $values) = map_to_params($data);
-        $params = implode(", ", $params);
-
-        $statement = $this->db->statement("UPDATE `ss_groups` SET {$params} WHERE `id` = ?");
-        $statement->execute(array_merge($values, [$id]));
-
+        $statement = $this->db->statement(
+            "UPDATE `ss_groups` SET `name` = ?, `permissions` = ? WHERE `id` = ?"
+        );
+        $statement->execute([$name, implode(",", $permissions), $id]);
         return !!$statement->rowCount();
     }
 
+    /**
+     * @param array $data
+     * @return Group
+     */
     private function mapToModel(array $data)
     {
-        $permissions = collect($data)
-            ->filter(function ($value, $key) {
-                return !in_array($key, ["id", "name"], true);
-            })
-            ->mapWithKeys(function ($value) {
-                return !!$value;
-            })
-            ->all();
-
-        return new Group(as_int($data['id']), as_string($data['name']), $permissions);
+        $permissions = as_permission_list(explode(",", $data["permissions"]) ?: []);
+        return new Group(as_int($data["id"]), as_string($data["name"]), $permissions);
     }
 }

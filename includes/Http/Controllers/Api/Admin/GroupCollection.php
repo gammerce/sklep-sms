@@ -17,18 +17,9 @@ class GroupCollection
     ) {
         $lang = $translationManager->user();
         $name = $request->request->get("name");
+        $permissions = $request->request->get("permissions");
 
-        $set = collect($groupRepository->getFields())
-            ->filter(function ($fieldName) {
-                return !in_array($fieldName, ["id", "name"], true);
-            })
-            ->flatMap(function ($fieldName) use ($request) {
-                return ["`$fieldName`" => $request->request->get($fieldName) ?: 0];
-            })
-            ->all();
-
-        $group = $groupRepository->create($name, $set);
-
+        $group = $groupRepository->create($name, as_permission_list($permissions));
         $databaseLogger->logWithActor("log_group_added", $group->getId());
 
         return new SuccessApiResponse($lang->t("group_add"), [

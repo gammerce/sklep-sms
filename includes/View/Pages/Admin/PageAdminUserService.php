@@ -13,6 +13,7 @@ use App\ServiceModules\ServiceModule;
 use App\Services\UserServiceService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\Div;
 use App\View\Html\Input;
 use App\View\Html\Option;
@@ -49,7 +50,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_user_services";
+        return Permission::VIEW_USER_SERVICES();
     }
 
     public function getTitle(Request $request)
@@ -85,8 +86,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $wrapper->setTitle($this->getTitle($request));
         $wrapper->addButton($this->createModuleSelectBox($subPage));
 
-        // Przycisk dodajacy nowa usluge użytkownikowi
-        if (has_privileges("manage_user_services")) {
+        if (can(Permission::MANAGE_USER_SERVICES())) {
             $button = (new Input())
                 ->setParam("id", "user_service_button_add")
                 ->setParam("type", "button")
@@ -100,7 +100,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_user_services")) {
+        if (cannot(Permission::MANAGE_USER_SERVICES())) {
             throw new UnauthorizedException();
         }
 

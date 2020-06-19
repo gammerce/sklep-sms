@@ -12,6 +12,7 @@ use App\System\Application;
 use App\System\Auth;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Renders\BlockRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -46,13 +47,13 @@ class AdminController
 
         $content = $blockRenderer->render(BlockAdminContent::BLOCK_ID, $request, [$page]);
 
-        if (has_privileges("view_player_flags")) {
+        if ($user->can(Permission::VIEW_PLAYER_FLAGS())) {
             $pid = "players_flags";
             $name = $lang->t($pid);
             $playersFlagsLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_user_services")) {
+        if ($user->can(Permission::VIEW_USER_SERVICES())) {
             $pid = "";
             foreach ($serviceModuleManager->all() as $serviceModule) {
                 if ($serviceModule instanceof IServiceUserServiceAdminDisplay) {
@@ -64,13 +65,13 @@ class AdminController
             $userServiceLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_income")) {
+        if ($user->can(Permission::VIEW_INCOME())) {
             $pid = "income";
             $name = $lang->t($pid);
             $incomeLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("manage_settings")) {
+        if ($user->can(Permission::MANAGE_SETTINGS())) {
             $pid = "settings";
             $name = $lang->t($pid);
             $settingsLink = $template->render("admin/page_link", compact("pid", "name"));
@@ -84,49 +85,49 @@ class AdminController
             $pricingLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_users")) {
+        if ($user->can(Permission::VIEW_USERS())) {
             $pid = "users";
             $name = $lang->t($pid);
             $usersLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_groups")) {
+        if ($user->can(Permission::VIEW_GROUPS())) {
             $pid = "groups";
             $name = $lang->t($pid);
             $groupsLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_servers")) {
+        if ($user->can(Permission::VIEW_SERVERS())) {
             $pid = "servers";
             $name = $lang->t($pid);
             $serversLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_services")) {
+        if ($user->can(Permission::VIEW_SERVICES())) {
             $pid = "services";
             $name = $lang->t($pid);
             $servicesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_sms_codes")) {
+        if ($user->can(Permission::VIEW_SMS_CODES())) {
             $pid = "sms_codes";
             $name = $lang->t($pid);
             $smsCodesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_promo_codes")) {
+        if ($user->can(Permission::VIEW_PROMO_CODES())) {
             $pid = "promo_codes";
             $name = $lang->t($pid);
             $promoCodesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_antispam_questions")) {
+        if ($user->can(Permission::VIEW_ANTISPAM_QUESTIONS())) {
             $pid = "antispam_questions";
             $name = $lang->t($pid);
             $antispamQuestionsLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if (has_privileges("view_logs")) {
+        if ($user->can(Permission::VIEW_LOGS())) {
             $pid = "logs";
             $name = $lang->t($pid);
             $logsLink = $template->render("admin/page_link", compact("pid", "name"));

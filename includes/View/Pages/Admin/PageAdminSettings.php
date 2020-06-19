@@ -10,6 +10,7 @@ use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\User\Permission;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -60,7 +61,7 @@ class PageAdminSettings extends PageAdmin
 
     public function getPrivilege()
     {
-        return "manage_settings";
+        return Permission::MANAGE_SETTINGS();
     }
 
     public function getTitle(Request $request)

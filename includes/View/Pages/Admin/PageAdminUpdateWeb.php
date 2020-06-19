@@ -5,6 +5,7 @@ use App\Support\Template;
 use App\Support\Version;
 use App\System\Application;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUpdateWeb extends PageAdmin
@@ -31,7 +32,7 @@ class PageAdminUpdateWeb extends PageAdmin
 
     public function getPrivilege()
     {
-        return "update";
+        return Permission::UPDATE();
     }
 
     public function getTitle(Request $request)

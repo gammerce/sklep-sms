@@ -14,6 +14,7 @@ use App\Support\Database;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -72,7 +73,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_promo_codes";
+        return Permission::VIEW_PROMO_CODES();
     }
 
     public function getTitle(Request $request)
@@ -101,7 +102,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new ExpirationDateCell($promoCode->getExpiresAt()))
                     ->addCell(new DateTimeCell($promoCode->getCreatedAt()))
                     ->addAction($this->createViewButton())
-                    ->setDeleteAction(has_privileges("manage_promo_codes"));
+                    ->setDeleteAction(can(Permission::MANAGE_PROMO_CODES()));
             })
             ->all();
 
@@ -117,7 +118,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_promo_codes")) {
+        if (can(Permission::MANAGE_PROMO_CODES())) {
             $addButton = $this->createAddButton();
             $wrapper->addButton($addButton);
         }
@@ -141,7 +142,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_promo_codes")) {
+        if (cannot(Permission::MANAGE_PROMO_CODES())) {
             throw new UnauthorizedException();
         }
 

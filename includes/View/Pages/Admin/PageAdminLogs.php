@@ -5,6 +5,7 @@ use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -38,7 +39,7 @@ class PageAdminLogs extends PageAdmin
 
     public function getPrivilege()
     {
-        return "view_logs";
+        return Permission::VIEW_LOGS();
     }
 
     public function getTitle(Request $request)
@@ -78,8 +79,8 @@ class PageAdminLogs extends PageAdmin
                 return (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($div))
-                    ->addCell(new DateTimeCell($row["timestamp"], "date"))
-                    ->setDeleteAction(has_privileges("manage_logs"));
+                    ->addCell(new DateTimeCell($row["timestamp"]))
+                    ->setDeleteAction(can(Permission::MANAGE_LOGS()));
             })
             ->all();
 

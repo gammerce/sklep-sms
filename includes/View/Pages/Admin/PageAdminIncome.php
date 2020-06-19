@@ -8,6 +8,7 @@ use App\Models\Server;
 use App\Services\PriceTextService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\HeadCell;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -61,7 +62,7 @@ class PageAdminIncome extends PageAdmin
 
     public function getPrivilege()
     {
-        return "view_income";
+        return Permission::VIEW_INCOME();
     }
 
     public function getTitle(Request $request)

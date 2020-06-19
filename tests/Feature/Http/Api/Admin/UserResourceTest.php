@@ -45,7 +45,7 @@ class UserResourceTest extends HttpTestCase
         $this->assertSame("", $freshUser->getForename());
         $this->assertSame("", $freshUser->getSurname());
         $this->assertNull($freshUser->getSteamId());
-        $this->assertSame(["1"], $freshUser->getGroups());
+        $this->assertSame([1], $freshUser->getGroups());
         $this->assertSame("myabc", $freshUser->getUsername());
         $this->assertSame(2000, $freshUser->getWallet());
     }
