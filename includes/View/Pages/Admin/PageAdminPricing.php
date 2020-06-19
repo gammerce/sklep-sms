@@ -14,11 +14,13 @@ use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\NoneText;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -75,7 +77,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "manage_settings";
+        return Permission::MANAGE_SETTINGS();
     }
 
     public function getTitle(Request $request)
@@ -107,24 +109,24 @@ EOF
                     $server = $this->serverManager->getServer($price->getServerId());
                     $serverEntry = $server
                         ? new ServerRef($server->getId(), $server->getName())
-                        : "n/a";
+                        : new NoneText();
                 }
 
                 $service = $this->serviceManager->getService($price->getServiceId());
                 $serviceEntry = $service
                     ? new ServiceRef($service->getId(), $service->getName())
-                    : "n/a";
+                    : new NoneText();
 
                 $quantity = $price->isForever() ? $this->lang->t("forever") : $price->getQuantity();
                 $smsPrice = $price->hasSmsPrice()
                     ? $this->priceTextService->getPriceGrossText($price->getSmsPrice())
-                    : "n/a";
+                    : new NoneText();
                 $transferPrice = $price->hasTransferPrice()
                     ? $this->priceTextService->getPriceText($price->getTransferPrice())
-                    : "n/a";
+                    : new NoneText();
                 $directBillingPrice = $price->hasDirectBillingPrice()
                     ? $this->priceTextService->getPriceText($price->getDirectBillingPrice())
-                    : "n/a";
+                    : new NoneText();
 
                 return (new BodyRow())
                     ->setDbId($price->getId())
@@ -168,7 +170,7 @@ EOF
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_settings")) {
+        if (cannot(Permission::MANAGE_SETTINGS())) {
             throw new UnauthorizedException();
         }
 

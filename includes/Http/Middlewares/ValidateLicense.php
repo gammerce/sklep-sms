@@ -5,6 +5,7 @@ use App\Exceptions\LicenseException;
 use App\System\Application;
 use App\System\Auth;
 use App\System\License;
+use App\User\Permission;
 use Closure;
 use Raven_Client;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,9 +52,9 @@ class ValidateLicense implements MiddlewareContract
     {
         $user = $this->auth->user();
 
-        if (has_privileges("manage_settings", $user)) {
-            $user->removePrivileges();
-            $user->setPrivileges([
+        if ($user->can(Permission::MANAGE_SETTINGS())) {
+            $user->removePermissions();
+            $user->setPermissions([
                 "acp" => true,
                 "manage_settings" => true,
             ]);

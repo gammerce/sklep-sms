@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Managers\UserManager;
 use App\Services\PriceTextService;
 use App\Support\Template;
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,7 +42,7 @@ class TemplateResource
         $email = $request->query->get("email");
 
         if ($templateName === "admin_user_wallet") {
-            if (!has_privileges("manage_users")) {
+            if (cannot(Permission::MANAGE_USERS())) {
                 throw new UnauthorizedException();
             }
 

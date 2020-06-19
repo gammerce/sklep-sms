@@ -13,6 +13,7 @@ use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -67,7 +68,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_users";
+        return Permission::VIEW_USERS();
     }
 
     public function getTitle(Request $request)
@@ -122,7 +123,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->map(function (User $user) use ($recordId) {
                 $groups = collect($user->getGroups())
                     ->map(function ($groupId) {
-                        return $this->groupManager->getGroup($groupId);
+                        return $this->groupManager->get($groupId);
                     })
                     ->filter(function ($group) {
                         return !!$group;
@@ -148,8 +149,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     )
                     ->addAction($this->createChargeButton())
                     ->addAction($this->createPasswordButton())
-                    ->setDeleteAction(has_privileges("manage_users"))
-                    ->setEditAction(has_privileges("manage_users"))
+                    ->setDeleteAction(can(Permission::MANAGE_USERS()))
+                    ->setEditAction(can(Permission::MANAGE_USERS()))
                     ->when($recordId === $user->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
@@ -189,7 +190,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_users")) {
+        if (cannot(Permission::MANAGE_USERS())) {
             throw new UnauthorizedException();
         }
 
@@ -197,7 +198,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             case "edit":
                 $user = $this->userManager->get($query["user_id"]);
 
-                $groups = collect($this->groupManager->getGroups())
+                $groups = collect($this->groupManager->all())
                     ->map(function (Group $group) use ($user) {
                         return create_dom_element(
                             "option",

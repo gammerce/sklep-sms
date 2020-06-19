@@ -1,7 +1,7 @@
 <?php
 namespace App\Models;
 
-use App\Managers\GroupManager;
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
 
 class User
@@ -30,8 +30,8 @@ class User
     /** @var string|null */
     private $steamId;
 
-    /** @var array */
-    private $groups = [];
+    /** @var int[] */
+    private $groups;
 
     /** @var string */
     private $regDate;
@@ -51,8 +51,8 @@ class User
     /** @var string */
     private $resetPasswordKey;
 
-    /** @var array */
-    private $privileges = [];
+    /** @var Permission[] */
+    private $permissions;
 
     /** @var string */
     private $platform;
@@ -72,13 +72,11 @@ class User
         $wallet = null,
         $regIp = null,
         $lastIp = null,
-        $resetPasswordKey = null
+        $resetPasswordKey = null,
+        array $permissions = []
     ) {
         /** @var Request $request */
         $request = app()->make(Request::class);
-
-        /** @var GroupManager $groupManager */
-        $groupManager = app()->make(GroupManager::class);
 
         $this->id = $id;
         $this->username = $username;
@@ -95,19 +93,12 @@ class User
         $this->regIp = $regIp;
         $this->lastIp = $lastIp ?: get_ip();
         $this->resetPasswordKey = $resetPasswordKey;
-        $this->platform = $request->headers->get('User-Agent', '');
-
-        if ($this->groups) {
-            foreach ($this->groups as $groupId) {
-                $group = $groupManager->getGroup($groupId);
-
-                if ($group) {
-                    foreach ($group->getPermissions() as $privilege => $value) {
-                        $this->privileges[$privilege] = !!$value;
-                    }
-                }
-            }
-        }
+        $this->platform = $request->headers->get("User-Agent", "");
+        $this->permissions = collect($permissions)
+            ->flatMap(function (Permission $permission) {
+                return [$permission->getKey() => $permission];
+            })
+            ->all();
     }
 
     public function exists()
@@ -292,39 +283,47 @@ class User
     }
 
     /**
-     * @param string $key
-     *
+     * @param Permission $permission
      * @return boolean
      */
-    public function hasPrivilege($key)
+    public function can(Permission $permission)
     {
-        return array_get($this->privileges, $key, false);
+        return array_key_exists($permission->getKey(), $this->permissions);
+    }
+
+    /**
+     * @param Permission $permission
+     * @return bool
+     */
+    public function cannot(Permission $permission)
+    {
+        return !$this->can($permission);
     }
 
     /**
      * @return array
      */
-    public function getPrivileges()
+    public function getPermissions()
     {
-        return $this->privileges;
+        return $this->permissions;
     }
 
     /**
-     * @param array $privileges
+     * @param array $permissions
      */
-    public function setPrivileges($privileges)
+    public function setPermissions($permissions)
     {
-        foreach ($privileges as $key => $value) {
-            $this->privileges[$key] = $value;
+        foreach ($permissions as $key => $value) {
+            $this->permissions[$key] = $value;
         }
     }
 
     /**
-     * Removes all privileges
+     * Removes all permissions
      */
-    public function removePrivileges()
+    public function removePermissions()
     {
-        $this->privileges = [];
+        $this->permissions = [];
     }
 
     /**

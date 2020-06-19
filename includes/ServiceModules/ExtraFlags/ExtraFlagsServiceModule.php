@@ -60,6 +60,7 @@ use App\Support\QueryParticle;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -288,8 +289,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
                     ->addCell(new Cell($row["auth_data"]))
                     ->addCell(new ExpirationCell($row["expire"]))
-                    ->setDeleteAction(has_privileges("manage_user_services"))
-                    ->setEditAction(has_privileges("manage_user_services"));
+                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
+                    ->setEditAction(can(Permission::MANAGE_USER_SERVICES()));
             })
             ->all();
 

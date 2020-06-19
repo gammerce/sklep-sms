@@ -5,17 +5,24 @@ use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
 use App\Support\Path;
+use App\User\Permission;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
+    /**
+     * @return Permission
+     */
     public function getPrivilege()
     {
-        return "acp";
+        return Permission::ACP();
     }
 
+    /**
+     * @return string
+     */
     public function getPagePath()
     {
         return "/admin/{$this->getId()}";

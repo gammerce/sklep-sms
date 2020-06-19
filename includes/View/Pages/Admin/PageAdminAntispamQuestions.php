@@ -7,6 +7,7 @@ use App\Repositories\AntiSpamQuestionRepository;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -46,7 +47,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
     public function getPrivilege()
     {
-        return "view_antispam_questions";
+        return Permission::VIEW_ANTISPAM_QUESTIONS();
     }
 
     public function getTitle(Request $request)
@@ -68,8 +69,8 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
                     ->setDbId($row["id"])
                     ->addCell(new Cell(new RawHtml($row["question"])))
                     ->addCell(new Cell($row["answers"]))
-                    ->setDeleteAction(has_privileges("manage_antispam_questions"))
-                    ->setEditAction(has_privileges("manage_antispam_questions"));
+                    ->setDeleteAction(can(Permission::MANAGE_ANTISPAM_QUESTIONS()))
+                    ->setEditAction(can(Permission::MANAGE_ANTISPAM_QUESTIONS()));
             })
             ->all();
 
@@ -82,7 +83,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_antispam_questions")) {
+        if (can(Permission::MANAGE_ANTISPAM_QUESTIONS())) {
             $button = (new Input())
                 ->setParam("id", "antispam_question_button_add")
                 ->setParam("type", "button")
@@ -97,7 +98,7 @@ class PageAdminAntispamQuestions extends PageAdmin implements IPageAdminActionBo
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_antispam_questions")) {
+        if (cannot(Permission::MANAGE_ANTISPAM_QUESTIONS())) {
             throw new UnauthorizedException();
         }
 

@@ -14,6 +14,7 @@ use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
 use Symfony\Component\HttpFoundation\Request;
@@ -49,11 +50,11 @@ function get_row_limit($page, $rowLimit = 0)
 }
 
 /**
- * @param string $privilege
+ * @param Permission $permission
  * @param User $user
  * @return bool
  */
-function has_privileges($privilege, User $user = null)
+function can(Permission $permission, User $user = null)
 {
     if (!$user) {
         /** @var Auth $auth */
@@ -61,53 +62,28 @@ function has_privileges($privilege, User $user = null)
         $user = $auth->user();
     }
 
-    $adminPrivileges = [
-        "manage_settings",
-        "view_groups",
-        "manage_groups",
-        "view_player_flags",
-        "view_user_services",
-        "manage_user_services",
-        "view_income",
-        "view_users",
-        "manage_users",
-        "view_sms_codes",
-        "manage_sms_codes",
-        "view_promo_codes",
-        "manage_promo_codes",
-        "view_antispam_questions",
-        "manage_antispam_questions",
-        "view_services",
-        "manage_services",
-        "view_servers",
-        "manage_servers",
-        "view_logs",
-        "manage_logs",
-        "update",
-    ];
+    return $user->can($permission);
+}
 
-    if (in_array($privilege, $adminPrivileges)) {
-        return $user->hasPrivilege('acp') && $user->hasPrivilege($privilege);
-    }
-
-    return $user->hasPrivilege($privilege);
+/**
+ * @param Permission $permission
+ * @param User|null $user
+ * @return bool
+ */
+function cannot(Permission $permission, User $user = null)
+{
+    return !can($permission, $user);
 }
 
 /**
  * @param string $name
  * @param string $content
- * @param array $data
+ * @param array $params
  * @return DOMElement
  */
-function create_dom_element($name, $content = "", $data = [])
+function create_dom_element($name, $content = "", array $params = [])
 {
-    $element = new DOMElement($name, $content);
-
-    foreach ($data as $key => $value) {
-        $element->setParam($key, $value);
-    }
-
-    return $element;
+    return new DOMElement($name, $content, $params);
 }
 
 /**
@@ -655,6 +631,26 @@ function price_to_int($value)
 }
 
 /**
+ * @param Permission[] $permissions
+ * @return array
+ */
+function as_permission_list($permissions)
+{
+    return collect($permissions)
+        ->map(function ($permission) {
+            try {
+                return new Permission($permission);
+            } catch (UnexpectedValueException $e) {
+                return null;
+            }
+        })
+        ->filter(function ($permission) {
+            return $permission;
+        })
+        ->all();
+}
+
+/**
  * @param $path
  * @return mixed|null
  * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
@@ -780,7 +776,15 @@ function to_array($items)
         return iterator_to_array($items);
     }
 
-    return (array) $items;
+    if (is_array($items)) {
+        return $items;
+    }
+
+    if ($items === null) {
+        return [];
+    }
+
+    return [$items];
 }
 
 /**

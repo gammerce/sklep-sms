@@ -19,14 +19,18 @@ class DOMElement implements I_ToHtml
     /**
      * @param string $tag
      * @param I_ToHtml|I_ToHtml[]|string|string[]|null $content
+     * @param array $params
      */
-    public function __construct($tag, $content = null)
+    public function __construct($tag, $content = null, array $params = [])
     {
         $this->name = $tag;
 
-        $items = is_array($content) ? $content : [$content];
-        foreach ($items as $item) {
+        foreach (to_array($content) as $item) {
             $this->addContent($item);
+        }
+
+        foreach ($params as $key => $value) {
+            $this->setParam($key, $value);
         }
     }
 
