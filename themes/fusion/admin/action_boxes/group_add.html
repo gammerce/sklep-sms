@@ -1,12 +1,12 @@
 <form id="form_group_add" class="action_box">
     <div class="service_main_info">
-        {$lang->t('add_group')}
+        {{ __('add_group') }}
     </div>
     <table>
         <tr>
             <td>
                 <label for="name" class="required">
-                    {$lang->t('name')}
+                    {{ __('name') }}
                 </label>
             </td>
             <td>
@@ -20,13 +20,30 @@
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
-        {$privileges}
+
+        <tr>
+            <td>
+                <label for="permissions">{{ __('permissions') }}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-multiple is-small">
+                            <select id="permissions" name="permissions[]" size="8" multiple>
+                                {!! $permissions !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
         <tr>
             <td colspan="2">
-                <input type="submit" value="{$lang->t('add')}" class="button w100" />
+                <input type="submit" value="{{ __('add') }}" class="button w100" />
             </td>
         </tr>
     </table>

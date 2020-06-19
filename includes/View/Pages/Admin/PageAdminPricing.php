@@ -14,6 +14,7 @@ use App\Services\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -75,7 +76,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "manage_settings";
+        return Permission::MANAGE_SETTINGS();
     }
 
     public function getTitle(Request $request)
@@ -168,7 +169,7 @@ EOF
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_settings")) {
+        if (cannot(Permission::MANAGE_SETTINGS())) {
             throw new UnauthorizedException();
         }
 

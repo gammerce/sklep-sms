@@ -13,11 +13,11 @@ class UsersTest extends HttpTestCase
         $this->factory->user();
 
         // when
-        $response = $this->get('/admin/users');
+        $response = $this->get("/admin/users");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Użytkownicy', $response->getContent());
     }
 }

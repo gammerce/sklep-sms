@@ -15,6 +15,7 @@ use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\BodyRow;
@@ -70,7 +71,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "manage_servers";
+        return Permission::VIEW_SERVERS();
     }
 
     public function getTitle(Request $request)
@@ -94,9 +95,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($server->getType() ?: "n/a"))
                     ->addCell(new Cell($server->getVersion() ?: "n/a"))
                     ->addCell(new Cell($server->getLastActiveAt() ?: "n/a"))
-                    ->addAction($this->createRegenerateTokenButton())
-                    ->setDeleteAction(has_privileges("manage_servers"))
-                    ->setEditAction(has_privileges("manage_servers"))
+
+                    ->setDeleteAction(can(Permission::MANAGE_SERVERS()))
+                    ->setEditAction(can(Permission::MANAGE_SERVERS()))
+                    ->when(can(Permission::MANAGE_SERVERS()), function (BodyRow $bodyRow) {
+                        $bodyRow->addAction($this->createRegenerateTokenButton());
+                    })
                     ->when($recordId === $server->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
@@ -114,7 +118,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_servers")) {
+        if (can(Permission::MANAGE_SERVERS())) {
             $wrapper->addButton($this->createAddButton());
         }
 
@@ -139,7 +143,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_servers")) {
+        if (cannot(Permission::MANAGE_SERVERS())) {
             throw new UnauthorizedException();
         }
 

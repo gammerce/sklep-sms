@@ -193,7 +193,7 @@ return [
     'privilege_manage_groups' => 'Groups management',
     'privilege_manage_logs' => 'Logs management',
     'privilege_manage_promo_codes' => 'Promo codes management',
-    'privilege_manage_servers' => 'Services management',
+    'privilege_manage_servers' => 'Servers management',
     'privilege_manage_services' => 'Services management',
     'privilege_manage_settings' => 'Settings management',
     'privilege_manage_sms_codes' => 'SMS codes management',

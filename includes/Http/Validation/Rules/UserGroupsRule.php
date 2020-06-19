@@ -22,7 +22,7 @@ class UserGroupsRule extends BaseRule
         }
 
         foreach ($value as $gid) {
-            if (!$this->groupManager->getGroup($gid)) {
+            if (!$this->groupManager->get($gid)) {
                 return [$this->lang->t('wrong_group')];
             }
         }

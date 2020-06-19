@@ -86,6 +86,7 @@ use App\Http\Middlewares\ValidateLicense;
 use App\Install\ShopState;
 use App\System\Application;
 use App\System\Settings;
+use App\User\Permission;
 use Exception;
 use FastRoute\Dispatcher;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -344,7 +345,7 @@ class RoutesManager
                     StartAdminSession::class,
                     SetLanguage::class,
                     AuthorizeUser::class,
-                    [RequireAuthorized::class, "acp"],
+                    [RequireAuthorized::class, Permission::ACP()],
                     ValidateLicense::class,
                     UpdateUserActivity::class,
                 ],
@@ -356,52 +357,62 @@ class RoutesManager
                 ]);
 
                 $r->put('/api/admin/users/{userId}/password', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_users"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_USERS()]],
                     'uses' => UserPasswordResource::class . '@put',
                 ]);
 
                 $r->put('/api/admin/users/{userId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_users"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_USERS()]],
                     'uses' => UserResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/users/{userId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_users"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_USERS()]],
                     'uses' => UserResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/user_services/add_form', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_USER_SERVICES()],
+                    ],
                     'uses' => UserServiceAddFormController::class . '@get',
                 ]);
 
                 $r->post('/api/admin/services/{serviceId}/user_services', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_USER_SERVICES()],
+                    ],
                     'uses' => UserServiceCollection::class . '@post',
                 ]);
 
                 $r->post('/api/admin/promo_codes', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_PROMO_CODES()]],
                     'uses' => PromoCodeCollection::class . '@post',
                 ]);
 
                 $r->delete('/api/admin/promo_codes/{promoCodeId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_promo_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_PROMO_CODES()]],
                     'uses' => PromoCodeResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/services/{serviceId}/modules/{moduleId}/extra_fields', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_USER_SERVICES()],
+                    ],
                     'uses' => ServiceModuleExtraFieldsController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/user_services/{userServiceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_USER_SERVICES()],
+                    ],
                     'uses' => AdminUserServiceResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/user_services/{userServiceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_user_services"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_USER_SERVICES()],
+                    ],
                     'uses' => AdminUserServiceResource::class . '@delete',
                 ]);
 
@@ -411,127 +422,133 @@ class RoutesManager
                 ]);
 
                 $r->post('/api/admin/users/{userId}/wallet/charge', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_users"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_USERS()]],
                     'uses' => WalletChargeCollection::class . '@post',
                 ]);
 
                 $r->post('/api/admin/sms_codes', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_sms_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SMS_CODES()]],
                     'uses' => SmsCodeCollection::class . '@post',
                 ]);
 
                 $r->delete('/api/admin/sms_codes/{smsCodeId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_sms_codes"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SMS_CODES()]],
                     'uses' => SmsCodeResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/payment_platforms', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PaymentPlatformCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/payment_platforms/{paymentPlatformId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PaymentPlatformResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/payment_platforms/{paymentPlatformId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PaymentPlatformResource::class . '@delete',
                 ]);
 
                 $r->get('/api/admin/payment_modules/{paymentModuleId}/add_form', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PaymentModuleAddFormController::class . '@get',
                 ]);
 
                 $r->put('/api/admin/settings', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => SettingsController::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/logs/{logId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_logs"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_LOGS()]],
                     'uses' => LogResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/groups', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_groups"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_GROUPS()]],
                     'uses' => GroupCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/groups/{groupId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_groups"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_GROUPS()]],
                     'uses' => GroupResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/groups/{groupId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_groups"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_GROUPS()]],
                     'uses' => GroupResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/antispam_questions', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_antispam_questions"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
+                    ],
                     'uses' => AntiSpamQuestionCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/antispam_questions/{antispamQuestionId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_antispam_questions"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
+                    ],
                     'uses' => AntispamQuestionResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/antispam_questions/{antispamQuestionId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_antispam_questions"]],
+                    'middlewares' => [
+                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
+                    ],
                     'uses' => AntispamQuestionResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/prices', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PriceCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/prices/{priceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PriceResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/prices/{priceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_settings"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     'uses' => PriceResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/servers', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_servers"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVERS()]],
                     'uses' => ServerCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/servers/{serverId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_servers"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVERS()]],
                     'uses' => ServerResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/servers/{serverId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_servers"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVERS()]],
                     'uses' => ServerResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/servers/{serverId}/token', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_servers"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVERS()]],
                     'uses' => ServerTokenController::class . '@post',
                 ]);
 
                 $r->post('/api/admin/services', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_services"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVICES()]],
                     'uses' => ServiceCollection::class . '@post',
                 ]);
 
                 $r->put('/api/admin/services/{serviceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_services"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVICES()]],
                     'uses' => ServiceResource::class . '@put',
                 ]);
 
                 $r->delete('/api/admin/services/{serviceId}', [
-                    'middlewares' => [[RequireAuthorized::class, "manage_services"]],
+                    'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_SERVICES()]],
                     'uses' => ServiceResource::class . '@delete',
                 ]);
 
@@ -612,8 +629,8 @@ class RoutesManager
     private function handleFoundRoute($routeInfo, Request $request)
     {
         /** @var string[] $middlewares */
-        $middlewares = array_merge([JsonBody::class], array_get($routeInfo[1], 'middlewares', []));
-        $controllerMethod = $routeInfo[1]['uses'];
+        $middlewares = array_merge([JsonBody::class], array_get($routeInfo[1], "middlewares", []));
+        $controllerMethod = $routeInfo[1]["uses"];
 
         return (new Pipeline($this->app))
             ->send($request)

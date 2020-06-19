@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\Api\Admin;
 
 use App\Models\Group;
 use App\Repositories\GroupRepository;
+use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class GroupResourceTest extends HttpTestCase
@@ -18,7 +19,6 @@ class GroupResourceTest extends HttpTestCase
         parent::setUp();
 
         $this->groupRepository = $this->app->make(GroupRepository::class);
-
         $this->group = $this->factory->group();
     }
 
@@ -30,8 +30,8 @@ class GroupResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/admin/groups/{$this->group->getId()}", [
-            'name' => 'example2',
-            'view_groups' => true,
+            "name" => "example2",
+            "permissions" => ["view_groups"],
         ]);
 
         // then
@@ -40,7 +40,7 @@ class GroupResourceTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $freshGroup = $this->groupRepository->get($this->group->getId());
         $this->assertSame("example2", $freshGroup->getName());
-        $this->assertTrue($freshGroup->hasPermission('view_groups'));
+        $this->assertTrue($freshGroup->hasPermission(Permission::VIEW_GROUPS()));
     }
 
     /** @test */

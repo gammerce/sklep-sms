@@ -7,11 +7,13 @@ use App\Repositories\GroupRepository;
 use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -45,7 +47,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege()
     {
-        return "view_groups";
+        return Permission::VIEW_GROUPS();
     }
 
     public function getTitle(Request $request)
@@ -66,8 +68,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 return (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($row["name"]))
-                    ->setDeleteAction(has_privileges("manage_groups"))
-                    ->setEditAction(has_privileges("manage_groups"));
+                    ->setDeleteAction(can(Permission::MANAGE_GROUPS()))
+                    ->setEditAction(can(Permission::MANAGE_GROUPS()));
             })
             ->all();
 
@@ -79,7 +81,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (has_privileges("manage_groups")) {
+        if (can(Permission::MANAGE_GROUPS())) {
             $button = (new Input())
                 ->setParam("id", "group_button_add")
                 ->setParam("type", "button")
@@ -94,7 +96,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query)
     {
-        if (!has_privileges("manage_groups")) {
+        if (cannot(Permission::MANAGE_GROUPS())) {
             throw new UnauthorizedException();
         }
 
@@ -114,40 +116,32 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $group = null;
         }
 
-        $privileges = "";
-        foreach ($this->groupRepository->getFields() as $fieldName) {
-            if (in_array($fieldName, ["id", "name"])) {
-                continue;
-            }
+        $permissions = collect($this->groupRepository->getPermissions())
+            ->map(function (Permission $permission) use ($group) {
+                $option = new Option(
+                    $this->lang->t("privilege_{$permission->getValue()}"),
+                    $permission->getValue()
+                );
 
-            $values = create_dom_element("option", to_upper($this->lang->t("no")), [
-                "value" => 0,
-                "selected" => $group && $group->hasPermission($fieldName) ? "" : "selected",
-            ]);
+                if ($group && $group->hasPermission($permission)) {
+                    $option->setParam("selected", "selected");
+                }
 
-            $values .= create_dom_element("option", to_upper($this->lang->t("yes")), [
-                "value" => 1,
-                "selected" => $group && $group->hasPermission($fieldName) ? "selected" : "",
-            ]);
-
-            $privileges .= $this->template->render("admin/tr_text_select", [
-                "name" => $fieldName,
-                "text" => $this->lang->t("privilege_" . $fieldName),
-                "values" => $values,
-            ]);
-        }
+                return $option;
+            })
+            ->join();
 
         switch ($boxId) {
             case "add":
                 return $this->template->render(
                     "admin/action_boxes/group_add",
-                    compact("privileges")
+                    compact("permissions")
                 );
 
             case "edit":
                 return $this->template->render(
                     "admin/action_boxes/group_edit",
-                    compact("privileges", "group")
+                    compact("permissions", "group")
                 );
 
             default:
