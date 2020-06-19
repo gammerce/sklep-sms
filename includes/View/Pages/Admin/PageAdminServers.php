@@ -23,6 +23,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Link;
+use App\View\Html\NoneText;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -92,9 +93,9 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     ->setDbId($server->getId())
                     ->addCell(new Cell($server->getName(), "name"))
                     ->addCell(new Cell($server->getIp() . ":" . $server->getPort()))
-                    ->addCell(new Cell($server->getType() ?: "n/a"))
-                    ->addCell(new Cell($server->getVersion() ?: "n/a"))
-                    ->addCell(new Cell($server->getLastActiveAt() ?: "n/a"))
+                    ->addCell(new Cell($server->getType() ?: new NoneText()))
+                    ->addCell(new Cell($server->getVersion() ?: new NoneText()))
+                    ->addCell(new Cell($server->getLastActiveAt() ?: new NoneText()))
 
                     ->setDeleteAction(can(Permission::MANAGE_SERVERS()))
                     ->setEditAction(can(Permission::MANAGE_SERVERS()))
