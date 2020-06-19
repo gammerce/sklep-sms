@@ -35,11 +35,11 @@ class Mailer
 
     private function signedSend($email, $name, $subject, $text)
     {
-        ////////// USTAWIENIA //////////
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
+        // Recipient's email address
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
         $name = htmlspecialchars($name);
-        $senderEmail = $this->settings['sender_email'];
-        $senderName = $this->settings['sender_email_name'];
+        $senderEmail = $this->settings["sender_email"];
+        $senderName = $this->settings["sender_email_name"];
 
         if (!strlen($email)) {
             return "wrong_email";
@@ -49,13 +49,13 @@ class Mailer
 
         try {
             $mail->isSMTP();
-            $mail->XMailer = ' ';
-            $mail->CharSet = 'UTF-8';
-            $mail->Host = $this->config['Host'];
+            $mail->XMailer = " ";
+            $mail->CharSet = "UTF-8";
+            $mail->Host = $this->config["Host"];
             $mail->SMTPAuth = true;
             $mail->Username = $senderEmail;
-            $mail->Password = $this->config['Password'];
-            $mail->SMTPSecure = 'tls';
+            $mail->Password = $this->config["Password"];
+            $mail->SMTPSecure = "tls";
             $mail->Port = 587;
 
             //Recipients
@@ -69,7 +69,7 @@ class Mailer
 
             $mail->send();
 
-            $this->logger->log('log_email_was_sent', $email, $text);
+            $this->logger->log("log_email_was_sent", $email, $text);
 
             return "sent";
         } catch (Exception $e) {
@@ -79,14 +79,11 @@ class Mailer
 
     private function simpleSend($email, $name, $subject, $text)
     {
-        /** @var Settings $settings */
-        $settings = app()->make(Settings::class);
-
-        ////////// USTAWIENIA //////////
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL); // Adres e-mail adresata
+        // Recipient's email address
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
         $name = htmlspecialchars($name);
-        $senderEmail = $settings['sender_email'];
-        $senderName = $settings['sender_email_name'];
+        $senderEmail = $this->settings["sender_email"];
+        $senderName = $this->settings["sender_email_name"];
 
         if (!strlen($email)) {
             return "wrong_email";
@@ -101,19 +98,20 @@ class Mailer
         $header .= "X-Priority: 1 (Highest)\n";
         $header .= "X-MSMail-Priority: High\n";
         $header .= "Importance: High\n";
-        $header .= "Return-Path: {$senderEmail}\n"; // Return path for errors
+        $header .= "Return-Path: {$senderEmail}\n"; // Return email for errors
 
         if (!mail($email, $subject, $text, $header)) {
             return "not_sent";
         }
 
-        $this->logger->log('log_email_was_sent', $email, $text);
+        $this->logger->log("log_email_was_sent", $email, $text);
 
         return "sent";
     }
 
-    protected function shouldUseSignedSend()
+    private function shouldUseSignedSend()
     {
-        return class_exists(PHPMailer::class) && !empty($this->config);
+        return strlen(array_get($this->config, "Host")) &&
+            strlen(array_get($this->config, "Password"));
     }
 }

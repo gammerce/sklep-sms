@@ -8,10 +8,10 @@ class Path
 
     public function __construct($basePath)
     {
-        $this->basePath = realpath($basePath);
+        $this->basePath = $basePath;
     }
 
-    public function to($path = '')
+    public function to($path = "")
     {
         if (!strlen($path)) {
             return $this->basePath;

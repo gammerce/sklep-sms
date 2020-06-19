@@ -20,7 +20,7 @@ class EnvCreator
 
     public function create($host, $port, $db, $user, $password)
     {
-        $path = $this->path->to('confidential/.env');
+        $path = $this->path->to("confidential/.env");
         $content = $this->getContent($host, $port, $db, $user, $password);
         $this->fileSystem->put($path, $content);
         $this->fileSystem->setPermissions($path, 0777);
@@ -28,15 +28,15 @@ class EnvCreator
 
     private function getContent($host, $port, $db, $user, $password)
     {
-        return "DB_HOST=$host" .
-            PHP_EOL .
-            "DB_PORT=$port" .
-            PHP_EOL .
-            "DB_DATABASE=$db" .
-            PHP_EOL .
-            "DB_USERNAME=$user" .
-            PHP_EOL .
-            "DB_PASSWORD=$password" .
-            PHP_EOL;
+        return <<<EOL
+DB_HOST=$host
+DB_PORT=$port
+DB_DATABASE=$db
+DB_USERNAME=$user
+DB_PASSWORD=$password
+
+MAIL_HOST=
+MAIL_PASSWORD=
+EOL;
     }
 }

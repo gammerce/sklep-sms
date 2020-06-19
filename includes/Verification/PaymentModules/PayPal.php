@@ -42,9 +42,9 @@ class PayPal extends PaymentModule implements SupportTransfer
     /**
      * @return string
      */
-    private static function getPayPalDomain()
+    private function getPayPalDomain()
     {
-        if (static::isTestMode()) {
+        if ($this->isTestMode()) {
             return "https://api.sandbox.paypal.com";
         }
 
@@ -54,7 +54,7 @@ class PayPal extends PaymentModule implements SupportTransfer
     /**
      * @return bool
      */
-    private static function isTestMode()
+    private function isTestMode()
     {
         return is_demo();
     }
@@ -124,9 +124,10 @@ class PayPal extends PaymentModule implements SupportTransfer
         $result = $this->capturePayment($token);
 
         $status = array_get($result, "status") === "COMPLETED";
-        $purchaseUnits = array_dot_get($result, "purchase_units", []);
+        $purchaseUnits = array_dot_get($result, "purchase_units") ?: [[]];
         $purchaseUnit = $purchaseUnits[0];
-        $capture = array_dot_get($purchaseUnit, "payments.captures", [])[0];
+        $captures = array_dot_get($purchaseUnit, "payments.captures") ?: [[]];
+        $capture = $captures[0];
         $transactionId = array_dot_get($capture, "custom_id");
         $cost = price_to_int(
             array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value")

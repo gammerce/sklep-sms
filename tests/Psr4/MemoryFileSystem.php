@@ -31,8 +31,8 @@ class MemoryFileSystem implements FileSystemContract
         $formattedPath = $this->formatPath($path);
 
         $this->fileSystem[$formattedPath] = [
-            'type' => 'd',
-            'mode' => $mode,
+            "type" => "d",
+            "mode" => $mode,
         ];
     }
 
@@ -41,9 +41,9 @@ class MemoryFileSystem implements FileSystemContract
         $formattedPath = $this->formatPath($path);
 
         $this->fileSystem[$formattedPath] = [
-            'type' => 'f',
-            'content' => $contents,
-            'mode' => 0755,
+            "type" => "f",
+            "content" => $contents,
+            "mode" => 0755,
         ];
     }
 
@@ -52,7 +52,7 @@ class MemoryFileSystem implements FileSystemContract
         $formattedPath = $this->formatPath($path);
 
         if ($this->isFile($formattedPath)) {
-            return $this->fileSystem[$formattedPath]['content'];
+            return $this->fileSystem[$formattedPath]["content"];
         }
 
         throw new Exception("File does not exist at path {$formattedPath}");
@@ -66,13 +66,13 @@ class MemoryFileSystem implements FileSystemContract
     public function isFile($path)
     {
         $formattedPath = $this->formatPath($path);
-        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]['type'] === 'f';
+        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]["type"] === "f";
     }
 
     public function isDirectory($path)
     {
         $formattedPath = $this->formatPath($path);
-        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]['type'] === 'd';
+        return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]["type"] === "d";
     }
 
     public function size($path)
@@ -94,7 +94,7 @@ class MemoryFileSystem implements FileSystemContract
         $formattedPath = $this->formatPath($path);
 
         if ($this->exists($formattedPath)) {
-            $this->fileSystem[$formattedPath]['mode'] = $mode;
+            $this->fileSystem[$formattedPath]["mode"] = $mode;
             return true;
         }
 
@@ -104,7 +104,7 @@ class MemoryFileSystem implements FileSystemContract
     public function getPermissions($path)
     {
         $formattedPath = $this->formatPath($path);
-        return $this->exists($formattedPath) ? $this->fileSystem[$formattedPath]['mode'] : false;
+        return $this->exists($formattedPath) ? $this->fileSystem[$formattedPath]["mode"] : false;
     }
 
     public function scanDirectory($path)

@@ -43,7 +43,7 @@ class Application extends Container
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
         $this->bind(Path::class, function () {
-            return new Path($this->basePath);
+            return new Path(realpath($this->basePath));
         });
     }
 
