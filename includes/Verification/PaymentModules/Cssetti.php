@@ -7,13 +7,20 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
-use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\CustomErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 
+/**
+ * -3	Pole UserId lub Code nie zostało podane
+ * -2	Pole UserId lub Code zawiera niedozwoloną wartość
+ * -1	Użytkownik o podanym UserId nie został znaleziony
+ * 0	Podany kod SMS jest nieprawidłowy
+ * > 0	Podany kod SMS jest prawidłowy, konto zostało zasilone, a kod wykorzystany. Zwrócona wartość to kwota doładowania (TopUpAmount)
+ */
 class Cssetti extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "cssetti";
@@ -75,7 +82,7 @@ class Cssetti extends PaymentModule implements SupportSms
         }
 
         if ($content == "-2" || $content == "-3") {
-            throw new ExternalErrorException();
+            throw new CustomErrorException("Pole UserId lub Code jest błędne.");
         }
 
         if (floatval($content) > 0) {

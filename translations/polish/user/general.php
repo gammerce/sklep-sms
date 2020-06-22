@@ -31,7 +31,7 @@ return [
     'languages' => 'Języki',
     'log_accepted_sms_code' => 'Zaakceptowana kod SMS [{1}] Treść: [{2}] Numer: [{3}]',
     'log_add_code_to_reuse' =>
-        'Dodano kod do tabeli kodów do wykorzystania. Kod: [{1}] Kwota SMS: [{2}] Pczekiwana kwota SMS: [{3}]',
+        'Dodano kod do tabeli kodów do wykorzystania. Kod: [{1}] Kwota SMS: [{2}] Oczekiwana kwota SMS: [{3}]',
     'log_bad_sms_code_used' =>
         'Transakcja SMS nie powiodła się. Użyto kodu zwrotnego: [{1}] Treść: [{2}] Numer: [{3}] Kod błędu: [{4}]',
     'log_external_payment_accepted' =>
@@ -126,10 +126,9 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     'sms_info_bad_code' => 'Wprowadzono błędny kod zwrotny.',
     'sms_info_bad_number' =>
         'Kod jest dobry, lecz niestety został uzyskany poprzez wysłanie SMSa na inny numer.',
+    'sms_info_custom_error' => 'Coś poszło nie tak. Szczegóły: {1}',
     'sms_info_external_error' =>
         'Wystąpił nieznanny błąd po stronie API. Skontaktuj się z właścicielem sklepu.',
-    'sms_info_insufficient_data' =>
-        'Nieprawidłowo skonfigurowana metoda płatności. Skontaktuj się z właścicielem sklepu.',
     'sms_info_no_connection' => 'Nie można się połączyć ze skryptem weryfikacyjnym.',
     'sms_info_server_error' =>
         'Wystąpił krytyczny błąd po stronie API. Skontaktuj się z właścicielem sklepu.',

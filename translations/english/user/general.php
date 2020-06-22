@@ -125,9 +125,8 @@ You can now profit from many add-ons.',
     'sms_info_bad_code' => 'Given return code is incorrect.',
     'sms_info_bad_number' =>
         'Code is OK, but unfortunately obtained by sending SMS on different number.',
+    'sms_info_custom_error' => 'Something went wrong. Details: {1}',
     'sms_info_external_error' => 'Unknown error occurred on the API side.',
-    'sms_info_insufficient_data' =>
-        'Not all the necessary data were given in payment configuration.',
     'sms_info_no_connection' => 'No connection to the verification script.',
     'sms_info_server_error' =>
         'Something bad happened on the API side. Report the error to the shop owner.',

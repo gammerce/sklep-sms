@@ -7,6 +7,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\CustomErrorException;
 use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
@@ -62,7 +63,7 @@ class Pukawka extends PaymentModule implements SupportSms
                     throw new WrongCredentialsException();
                 }
 
-                throw new ExternalErrorException($body["error"]);
+                throw new CustomErrorException($body["error"]);
             }
 
             if ($body["status"] == "ok") {
