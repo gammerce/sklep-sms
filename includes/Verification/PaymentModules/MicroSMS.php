@@ -33,7 +33,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("71480", 48),
