@@ -99,7 +99,7 @@ class BoughtServiceService
 
         $returnMessage = $this->sendEmail($serviceId, $authData, $email, $boughtService);
 
-        $service = $this->serviceManager->getService($serviceId);
+        $service = $this->serviceManager->get($serviceId);
         $server = $this->serverManager->getServer($serverId);
         $quantity = $forever ? $this->lang->t("forever") : "{$quantity} {$service->getTag()}";
 

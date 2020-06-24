@@ -56,7 +56,7 @@ class PageMain extends Page
 
     public function getContent(Request $request)
     {
-        $services = collect($this->serviceManager->getServices())
+        $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&

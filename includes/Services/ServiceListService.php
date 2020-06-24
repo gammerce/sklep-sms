@@ -33,7 +33,7 @@ class ServiceListService
      */
     public function getWebSupportedForUser(User $user)
     {
-        return collect($this->serviceManager->getServices())
+        return collect($this->serviceManager->all())
             ->filter(function (Service $service) use ($user) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule &&

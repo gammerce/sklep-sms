@@ -75,7 +75,7 @@ class BlockUserButtons extends Block
         // TODO Remove along with retro theme
         if (
             $this->userServiceAccessService->canUserUseService(
-                $this->serviceManager->getService("charge_wallet"),
+                $this->serviceManager->get("charge_wallet"),
                 $user
             )
         ) {

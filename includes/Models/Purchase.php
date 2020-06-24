@@ -95,6 +95,9 @@ class Purchase
         $this->paymentSelect = new PaymentSelect();
     }
 
+    /**
+     * @return string|null
+     */
     public function getServiceId()
     {
         return $this->serviceId;

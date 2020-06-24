@@ -634,7 +634,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         assert($userService instanceof ExtraFlagUserService);
 
-        $services = collect($this->serviceManager->getServices())
+        $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
 

@@ -55,7 +55,7 @@ class ServerService
 
     public function updateServerServiceAffiliations($serverId, array $body)
     {
-        $serversServices = collect($this->serviceManager->getServices())
+        $serversServices = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 return $this->serviceModuleManager->get($service->getId()) instanceof
                     IServicePurchaseExternal;

@@ -23,29 +23,29 @@ class ServiceManager
      *
      * @return Service[]
      */
-    public function getServices()
+    public function all()
     {
         if (!$this->servicesFetched) {
-            $this->fetchServices();
+            $this->fetch();
         }
 
         return $this->services;
     }
 
     /**
-     * @param $serviceId
+     * @param string $serviceId
      * @return Service|null
      */
-    public function getService($serviceId)
+    public function get($serviceId)
     {
         if (!$this->servicesFetched) {
-            $this->fetchServices();
+            $this->fetch();
         }
 
         return array_get($this->services, $serviceId, null);
     }
 
-    private function fetchServices()
+    private function fetch()
     {
         foreach ($this->serviceRepository->all() as $service) {
             $this->services[$service->getId()] = $service;

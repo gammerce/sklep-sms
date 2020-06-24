@@ -1,11 +1,16 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\FileLogger;
+use App\Managers\ServiceManager;
 use App\Models\FinalizedPayment;
+use App\Models\PaymentPlatform;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
+use App\Requesting\Requester;
+use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -26,6 +31,20 @@ use Symfony\Component\HttpFoundation\Request;
 class HotPay extends PaymentModule implements SupportSms, SupportTransfer, SupportDirectBilling
 {
     const MODULE_ID = "hotpay";
+
+    /** @var ServiceManager */
+    private $serviceManager;
+
+    public function __construct(
+        Requester $requester,
+        PaymentPlatform $paymentPlatform,
+        UrlGenerator $url,
+        FileLogger $fileLogger,
+        ServiceManager $serviceManager
+    ) {
+        parent::__construct($requester, $paymentPlatform, $url, $fileLogger);
+        $this->serviceManager = $serviceManager;
+    }
 
     public static function getDataFields()
     {
@@ -91,6 +110,9 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
 
     public function prepareTransfer($price, Purchase $purchase)
     {
+        $service = $this->serviceManager->get($purchase->getServiceId());
+        assert($service);
+
         return [
             "url" => "https://platnosc.hotpay.pl",
             "method" => "POST",
@@ -98,6 +120,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
                 "SEKRET" => $this->getTransferSecret(),
                 "KWOTA" => $price / 100,
                 "ID_ZAMOWIENIA" => $purchase->getId(),
+                "NAZWA_USLUGI" => $service->getNameI18n(),
                 "EMAIL" => $purchase->getEmail(),
             ],
         ];
