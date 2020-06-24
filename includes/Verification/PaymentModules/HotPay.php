@@ -60,7 +60,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
 
         $result = $response->json();
         $netValue = array_get($result, "netto");
-//        $grossValue = array_get($result, "brutto");
+        //        $grossValue = array_get($result, "brutto");
         $firstUsage = array_get($result, "aktywacja") === "1";
         $status = array_get($result, "status");
         $message = array_get($result, "tresc");

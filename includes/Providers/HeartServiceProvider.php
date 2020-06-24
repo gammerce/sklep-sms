@@ -16,6 +16,7 @@ use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
+use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\PaymentModules\PayPal;
@@ -103,7 +104,7 @@ class HeartServiceProvider
         $paymentModuleManager->register(Gosetti::class);
         $paymentModuleManager->register(Homepay::class);
         $paymentModuleManager->register(Hostplay::class);
-        $paymentModuleManager->register(HotPay::class);
+        //        $paymentModuleManager->register(HotPay::class);
         $paymentModuleManager->register(MicroSMS::class);
         $paymentModuleManager->register(OneShotOneKill::class);
         $paymentModuleManager->register(PayPal::class);
