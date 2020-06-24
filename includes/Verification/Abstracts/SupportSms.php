@@ -10,7 +10,7 @@ interface SupportSms
     /**
      * @return SmsNumber[]
      */
-    public static function getSmsNumbers();
+    public function getSmsNumbers();
 
     /**
      * Weryfikacja kodu zwrotnego otrzymanego poprzez wyslanie SMSa na dany numer

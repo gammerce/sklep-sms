@@ -2,8 +2,6 @@
 namespace App\Routing;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Http\Controllers\Api\Admin\AntiSpamQuestionCollection;
-use App\Http\Controllers\Api\Admin\AntispamQuestionResource;
 use App\Http\Controllers\Api\Admin\GroupCollection;
 use App\Http\Controllers\Api\Admin\GroupResource;
 use App\Http\Controllers\Api\Admin\LogResource;
@@ -479,27 +477,6 @@ class RoutesManager
                 $r->delete('/api/admin/groups/{groupId}', [
                     'middlewares' => [[RequireAuthorized::class, Permission::MANAGE_GROUPS()]],
                     'uses' => GroupResource::class . '@delete',
-                ]);
-
-                $r->post('/api/admin/antispam_questions', [
-                    'middlewares' => [
-                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
-                    ],
-                    'uses' => AntiSpamQuestionCollection::class . '@post',
-                ]);
-
-                $r->put('/api/admin/antispam_questions/{antispamQuestionId}', [
-                    'middlewares' => [
-                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
-                    ],
-                    'uses' => AntispamQuestionResource::class . '@put',
-                ]);
-
-                $r->delete('/api/admin/antispam_questions/{antispamQuestionId}', [
-                    'middlewares' => [
-                        [RequireAuthorized::class, Permission::MANAGE_ANTISPAM_QUESTIONS()],
-                    ],
-                    'uses' => AntispamQuestionResource::class . '@delete',
                 ]);
 
                 $r->post('/api/admin/prices', [

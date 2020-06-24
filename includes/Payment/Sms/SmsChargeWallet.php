@@ -113,7 +113,7 @@ class SmsChargeWallet implements IChargeWallet
             "text" => "SMS",
         ]);
 
-        $smsList = collect($paymentModule::getSmsNumbers())
+        $smsList = collect($paymentModule->getSmsNumbers())
             ->map(function (SmsNumber $smsNumber) {
                 return create_dom_element(
                     "option",

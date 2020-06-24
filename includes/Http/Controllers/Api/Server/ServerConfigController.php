@@ -58,7 +58,7 @@ class ServerConfigController
             );
         }
 
-        $smsNumbers = $smsModule::getSmsNumbers();
+        $smsNumbers = $smsModule->getSmsNumbers();
         $services = collect($serverDataService->getServices($server->getId()))->filter(function (
             Service $service
         ) use ($userServiceAccessService) {

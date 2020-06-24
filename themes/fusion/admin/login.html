@@ -1,23 +1,23 @@
 <!DOCTYPE html>
 <html>
     <head>
-        {$header}
+        {!! $header !!}
     </head>
     <body>
         <div class="has-text-centered">
             <form id="form_admin_login" class="card" action="{{ $action }}" method="POST">
                 <header class="card-header">
                     <p class="card-header-title title is-4">
-                        {$lang->t('sign_in')}
+                        {{ __('sign_in') }}
                     </p>
                 </header>
 
                 <div class="card-content">
-                    {$warning}
+                    {!! $warning !!}
 
                     <div class="field">
                         <label class="label has-text-black" for="username">
-                            {$lang->t('username')}
+                            {{ __('username') }}
                         </label>
 
                         <div class="control">
@@ -35,7 +35,7 @@
 
                     <div class="field">
                         <label class="label has-text-black" for="password">
-                            {$lang->t('password')}
+                            {{ __('password') }}
                         </label>
 
                         <div class="control">
@@ -54,7 +54,7 @@
                     <div class="field action-buttons">
                         <div class="control is-expanded">
                             <button class="button w100">
-                                {$lang->t('sign_in')}
+                                {{ __('sign_in') }}
                             </button>
                         </div>
                     </div>

@@ -1,13 +1,13 @@
 <?php
 namespace App\Requesting;
 
-class Response
+final class Response
 {
     /** @var int */
-    protected $statusCode;
+    private $statusCode;
 
     /** @var string */
-    protected $body;
+    private $body;
 
     public function __construct($statusCode, $body)
     {

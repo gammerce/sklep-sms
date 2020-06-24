@@ -36,7 +36,7 @@ class Homepay extends PaymentModule implements SupportSms
         ];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7055"),

@@ -23,7 +23,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("70567"),

@@ -27,7 +27,10 @@ export const getAndSetTemplate = function(
             }
 
             element.html(content.template);
-            onSuccessFunction();
+
+            if (onSuccessFunction) {
+                onSuccessFunction();
+            }
         },
         error(error) {
             handleErrorResponse();

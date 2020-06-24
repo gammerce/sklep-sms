@@ -20,7 +20,7 @@ class Hostplay extends PaymentModule implements SupportSms
         return [new DataField("user_id")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7055", 34),
@@ -101,7 +101,7 @@ class Hostplay extends PaymentModule implements SupportSms
      */
     private function getSmsNumberByProvision($price)
     {
-        foreach (Hostplay::getSmsNumbers() as $smsNumber) {
+        foreach ($this->getSmsNumbers() as $smsNumber) {
             if ($smsNumber->getProvision() === $price) {
                 return $smsNumber->getNumber();
             }

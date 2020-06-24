@@ -121,12 +121,6 @@ class AdminController
             $promoCodesLink = $template->render("admin/page_link", compact("pid", "name"));
         }
 
-        if ($user->can(Permission::VIEW_ANTISPAM_QUESTIONS())) {
-            $pid = "antispam_questions";
-            $name = $lang->t($pid);
-            $antispamQuestionsLink = $template->render("admin/page_link", compact("pid", "name"));
-        }
-
         if ($user->can(Permission::VIEW_LOGS())) {
             $pid = "logs";
             $name = $lang->t($pid);
@@ -146,7 +140,6 @@ class AdminController
             $template->render(
                 "admin/index",
                 compact(
-                    "antispamQuestionsLink",
                     "content",
                     "currentVersion",
                     "groupsLink",

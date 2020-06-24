@@ -11,10 +11,10 @@ $(document).delegate("#register", "submit", function(e) {
         type: "POST",
         url: buildUrl("/api/register"),
         data: $(this).serialize(),
-        complete: function() {
+        complete() {
             loader.hide();
         },
-        success: function(content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -31,14 +31,13 @@ $(document).delegate("#register", "submit", function(e) {
                 });
 
                 refreshBlocks("logged_info,wallet,user_buttons,services_buttons");
-            } else {
-                if (content.return_id === "warnings") {
-                    showWarnings($("#register"), content.warnings);
-                }
+            } else if (content.return_id === "warnings") {
+                showWarnings($("#register"), content.warnings);
 
-                $("#register [headers=as_question]").html(content.antispam.question);
-                $("#register [name=as_id]").val(content.antispam.id);
-                $("#register [name=as_answer]").val("");
+                if (content.warnings["h-captcha-response"]) {
+                    // @ts-ignore
+                    hcaptcha.reset();
+                }
             }
 
             infobox.showInfo(content.text, content.positive);

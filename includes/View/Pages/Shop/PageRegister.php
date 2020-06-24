@@ -1,7 +1,6 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
@@ -12,16 +11,16 @@ class PageRegister extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = "register";
 
-    /** @var Database */
-    private $db;
+    /** @var string */
+    private $siteKey;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        Database $db
+        $siteKey
     ) {
         parent::__construct($template, $translationManager);
-        $this->db = $db;
+        $this->siteKey = $siteKey;
     }
 
     public function getTitle(Request $request)
@@ -31,13 +30,8 @@ class PageRegister extends Page implements IBeLoggedCannot
 
     public function getContent(Request $request)
     {
-        $antispamQuestion = $this->db
-            ->query("SELECT * FROM `ss_antispam_questions` ORDER BY RAND() LIMIT 1")
-            ->fetch();
-
-        $session = $request->getSession();
-        $session->set("asid", $antispamQuestion["id"]);
-
-        return $this->template->render("shop/pages/register", compact("antispamQuestion"));
+        return $this->template->render("shop/pages/register", [
+            "siteKey" => $this->siteKey,
+        ]);
     }
 }
