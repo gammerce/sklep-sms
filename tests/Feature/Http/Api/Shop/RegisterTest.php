@@ -12,14 +12,15 @@ class RegisterTest extends HttpTestCase
     {
         parent::setUp();
 
-        $this->requesterMock->shouldReceive("post")
+        $this->requesterMock
+            ->shouldReceive("post")
             ->withArgs([
                 "https://license.sklep-sms.pl/v1/captcha",
                 [
                     "response" => "example",
                     "remoteip" => "127.0.0.1",
                 ],
-                Mockery::any()
+                Mockery::any(),
             ])
             ->andReturn(new Response(200, json_encode(["success" => true])));
     }
