@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Models\SmsNumber;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Verification\Abstracts\PaymentModule;
@@ -10,7 +11,10 @@ use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
-use App\Verification\Exceptions\UnknownErrorException;
+use App\Verification\Exceptions\BadCodeException;
+use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\CustomErrorException;
+use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Results\SmsSuccessResult;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -26,7 +30,6 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public static function getDataFields()
     {
         return [
-            // TODO Should it stay here?
             new DataField("sms_text"),
             new DataField("sms_secret"),
             new DataField("transfer_hash"),
@@ -38,25 +41,52 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public function getSmsNumbers()
     {
         return [
-                // TODO Implement it
-            ];
+            // TODO Implement it
+            new SmsNumber("71480"),
+            new SmsNumber("72480"),
+        ];
     }
 
     public function verifySms($returnCode, $number)
     {
-        $response = $this->requester->get("https://api.hotpay.pl/check_sms.php", [
+        $response = $this->requester->get("https://apiv2.hotpay.pl/v1/sms/sprawdz", [
             "sekret" => $this->getSmsSecret(),
             "kod_sms" => $returnCode,
         ]);
 
-        $result = $response->json();
+        if (!$response) {
+            throw new NoConnectionException();
+        }
 
-        if ($result["status"] === "SUKCESS") {
+        $result = $response->json();
+        $netValue = array_get($result, "netto");
+        //        $grossValue = array_get($result, "brutto");
+        $firstUsage = array_get($result, "aktywacja") === "1";
+        $status = array_get($result, "status");
+        $message = array_get($result, "tresc");
+
+        if ($status === "SUKCESS") {
+            if (!$firstUsage) {
+                throw new BadCodeException();
+            }
+
+            if (!$this->isValidNumber($number, $netValue)) {
+                throw new BadNumberException(price_to_int($netValue));
+            }
+
             return new SmsSuccessResult();
         }
 
-        // TODO Handle different types of errors
-        throw new UnknownErrorException();
+        if ($status === "ERROR" && $message === "BLEDNA TRESC SMS") {
+            throw new BadCodeException();
+        }
+
+        throw new CustomErrorException("{$status} {$message}");
+    }
+
+    private function isValidNumber($number, $netValue)
+    {
+        return get_sms_cost($number) === price_to_int($netValue);
     }
 
     public function prepareTransfer($price, Purchase $purchase)
