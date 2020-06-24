@@ -734,9 +734,9 @@ function has_value($value)
 
 /**
  * @param string $text
- * @param array $data
+ * @param mixed $data
  */
-function log_info($text, array $data = [])
+function log_info($text, $data = null)
 {
     /** @var FileLogger $logger */
     $logger = app()->make(FileLogger::class);

@@ -23,22 +23,39 @@ class FileLogger
         $this->path = $path;
     }
 
-    public function error($message, array $data = [])
+    /**
+     * @param string $message
+     * @param mixed $data
+     */
+    public function error($message, $data = null)
     {
         $this->log($this->path->to('data/logs/errors.log'), $message, $data);
     }
 
-    public function info($message, array $data = [])
+    /**
+     * @param string $message
+     * @param mixed $data
+     */
+    public function info($message, $data = null)
     {
         $this->log($this->path->to('data/logs/info.log'), $message, $data);
     }
 
-    public function install($message, array $data = [])
+    /**
+     * @param string $message
+     * @param mixed $data
+     */
+    public function install($message, $data = null)
     {
         $this->log($this->path->to('data/logs/install.log'), $message, $data);
     }
 
-    private function log($file, $message, array $data = [])
+    /**
+     * @param string $file
+     * @param string $message
+     * @param mixed $data
+     */
+    private function log($file, $message, $data)
     {
         $dataText = $data ? " | " . json_encode($data) : "";
         $text = date($this->settings->getDateFormat()) . ": " . $message . $dataText;
