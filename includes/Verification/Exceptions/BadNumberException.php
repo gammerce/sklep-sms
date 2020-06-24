@@ -9,7 +9,11 @@ class BadNumberException extends SmsPaymentException
 {
     protected $errorCode = "bad_number";
 
-    /** @var int|null */
+    /**
+     * Sms net price in grosze
+     *
+     * @var int|null
+     */
     public $smsPrice;
 
     public function __construct($smsPrice)

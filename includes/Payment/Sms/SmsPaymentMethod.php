@@ -12,6 +12,7 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use App\Verification\Exceptions\CustomErrorException;
 use App\Verification\Exceptions\SmsPaymentException;
 
 class SmsPaymentMethod implements IPaymentMethod
@@ -104,6 +105,11 @@ class SmsPaymentMethod implements IPaymentMethod
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $price,
                 $purchase->user
+            );
+        } catch (CustomErrorException $e) {
+            throw new PaymentProcessingException(
+                $e->getErrorCode(),
+                $this->lang->t("sms_info_custom_error", $e->getMessage())
             );
         } catch (SmsPaymentException $e) {
             throw new PaymentProcessingException(

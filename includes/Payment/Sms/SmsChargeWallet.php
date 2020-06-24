@@ -108,11 +108,6 @@ class SmsChargeWallet implements IChargeWallet
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportSms);
 
-        $option = $this->template->render("shop/services/charge_wallet/option", [
-            "value" => make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform),
-            "text" => "SMS",
-        ]);
-
         $smsList = collect($paymentModule->getSmsNumbers())
             ->map(function (SmsNumber $smsNumber) {
                 return create_dom_element(
@@ -129,9 +124,14 @@ class SmsChargeWallet implements IChargeWallet
             })
             ->join();
 
+        $paymentOptionId = make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform);
+        $option = $this->template->render("shop/services/charge_wallet/option", [
+            "value" => $paymentOptionId,
+            "text" => "SMS",
+        ]);
         $body = $this->template->render("shop/services/charge_wallet/sms_body", [
             "smsList" => $smsList,
-            "type" => PaymentMethod::SMS(),
+            "option" => $paymentOptionId,
         ]);
 
         return [$option, $body];

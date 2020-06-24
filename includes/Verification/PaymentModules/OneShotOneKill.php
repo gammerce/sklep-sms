@@ -7,6 +7,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\BadNumberException;
+use App\Verification\Exceptions\CustomErrorException;
 use App\Verification\Exceptions\ExternalErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\ServerErrorException;
@@ -91,7 +92,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
                         throw new WrongCredentialsException();
                 }
 
-                throw new UnknownErrorException($content["desc"]);
+                throw new CustomErrorException($content["desc"]);
 
             default:
                 throw new UnknownErrorException();

@@ -12,7 +12,7 @@ use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
-use App\Verification\Exceptions\ExternalErrorException;
+use App\Verification\Exceptions\CustomErrorException;
 use App\Verification\Exceptions\NoConnectionException;
 use App\Verification\Exceptions\UnknownErrorException;
 use App\Verification\Exceptions\WrongCredentialsException;
@@ -102,7 +102,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
                     throw new BadCodeException();
             }
 
-            throw new ExternalErrorException($content["error"][0]["error_name"]);
+            throw new CustomErrorException($content["error"][0]["error_name"]);
         }
 
         throw new UnknownErrorException();
