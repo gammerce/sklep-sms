@@ -30,7 +30,6 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public static function getDataFields()
     {
         return [
-            // TODO Should it stay here?
             new DataField("sms_text"),
             new DataField("sms_secret"),
             new DataField("transfer_hash"),
