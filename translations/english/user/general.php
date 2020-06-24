@@ -3,7 +3,6 @@
 return [
     'admin' => 'Admin',
     'answer' => 'Answer',
-    'antispam_question' => 'Antispam question',
     'available_services' => 'Available services',
     'change_password' => 'Change password',
     'change_password_subtitle' =>

@@ -49,17 +49,6 @@ class Validator
         return $this->validated();
     }
 
-    public function validateOrFailWith(array $data)
-    {
-        $warnings = $this->validate();
-
-        if ($warnings->isPopulated()) {
-            throw new ValidationException($warnings, $data);
-        }
-
-        return $this->validated();
-    }
-
     public function validated()
     {
         return collect(array_keys($this->rules))

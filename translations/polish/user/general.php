@@ -3,7 +3,6 @@
 return [
     'admin' => 'Admin',
     'answer' => 'Odpowiedź',
-    'antispam_question' => 'Pytanie Antyspamowe',
     'available_services' => 'Dostępne usługi',
     'change_password' => 'Zmiana hasła',
     'change_password_subtitle' =>

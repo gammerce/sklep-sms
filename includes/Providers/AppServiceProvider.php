@@ -18,6 +18,7 @@ use App\Support\FileSystem;
 use App\Support\FileSystemContract;
 use App\Support\Mailer;
 use App\Support\Path;
+use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
 use App\System\ExternalConfigProvider;
@@ -26,6 +27,7 @@ use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
+use App\View\Pages\Shop\PageRegister;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -38,6 +40,7 @@ class AppServiceProvider
         $this->registerDatabase($app);
         $this->registerCache($app);
         $this->registerMailer($app);
+        $this->registerPageRegister($app);
 
         $app->singleton(Auth::class);
         $app->singleton(BlockManager::class);
@@ -77,7 +80,6 @@ class AppServiceProvider
         $app->bind(FileCache::class, function (Application $app) {
             /** @var Path $path */
             $path = $app->make(Path::class);
-
             return new FileCache($app->make(FileSystemContract::class), $path->to("data/cache"));
         });
         $app->bind(CacheInterface::class, FileCache::class);
@@ -94,6 +96,19 @@ class AppServiceProvider
                 $app->make(Settings::class),
                 $app->make(DatabaseLogger::class),
                 $config
+            );
+        });
+    }
+
+    private function registerPageRegister(Application $app)
+    {
+        $app->bind(PageRegister::class, function (Application $app) {
+            /** @var ExternalConfigProvider $configProvider */
+            $configProvider = $app->make(ExternalConfigProvider::class);
+            return new PageRegister(
+                $app->make(Template::class),
+                $app->make(TranslationManager::class),
+                $configProvider->captchaSiteKey()
             );
         });
     }
