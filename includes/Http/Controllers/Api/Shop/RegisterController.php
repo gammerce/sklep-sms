@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Responses\ApiResponse;
-use App\Http\Validation\Rules\AntiSpamQuestionRule;
+use App\Http\Validation\Rules\CaptchaRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\PasswordRule;
@@ -14,7 +14,6 @@ use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
-use App\Repositories\AntiSpamQuestionRepository;
 use App\Repositories\UserRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -26,28 +25,10 @@ class RegisterController
         Request $request,
         TranslationManager $translationManager,
         UserRepository $userRepository,
-        AntiSpamQuestionRepository $antiSpamQuestionRepository,
         Auth $auth,
         DatabaseLogger $logger
     ) {
-        $session = $request->getSession();
         $lang = $translationManager->user();
-
-        $antispamQuestionId = $request->request->get("as_id");
-
-        // Get new antispam question
-        $data = [];
-        $antispamQuestion = $antiSpamQuestionRepository->findRandom();
-        $data["antispam"]["question"] = $antispamQuestion->getQuestion();
-        $data["antispam"]["id"] = $antispamQuestion->getId();
-
-        // Is antispam question correct
-        if (!$session->has("asid") || $antispamQuestionId != $session->get("asid")) {
-            return new ApiResponse("wrong_sign", $lang->t("wrong_sign"), 0, $data);
-        }
-
-        // Let's store antispam question id in session
-        $session->set("asid", $antispamQuestion->getId());
 
         $validator = new Validator(
             [
@@ -59,8 +40,7 @@ class RegisterController
                 "forename" => trim($request->request->get("forename")),
                 "surname" => trim($request->request->get("surname")),
                 "steam_id" => trim($request->request->get("steam_id")),
-                "as_answer" => $request->request->get("as_answer"),
-                "as_id" => $antispamQuestionId,
+                "h-captcha-response" => $request->request->get("h-captcha-response"),
             ],
             [
                 "username" => [new RequiredRule(), new UsernameRule(), new UniqueUsernameRule()],
@@ -74,11 +54,11 @@ class RegisterController
                 "forename" => [],
                 "surname" => [],
                 "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule()],
-                "as_answer" => [new AntiSpamQuestionRule()],
+                "h-captcha-response" => [new RequiredRule(), new CaptchaRule()],
             ]
         );
 
-        $validated = $validator->validateOrFailWith($data);
+        $validated = $validator->validateOrFail();
 
         $createdUser = $userRepository->create(
             $validated["username"],
@@ -101,6 +81,6 @@ class RegisterController
             $createdUser->getRegIp()
         );
 
-        return new ApiResponse("registered", $lang->t("register_success"), 1, $data);
+        return new ApiResponse("registered", $lang->t("register_success"), 1);
     }
 }

@@ -21,8 +21,6 @@ class RefactorGroups extends Migration
             "manage_sms_codes",
             "view_promo_codes",
             "manage_promo_codes",
-            "view_antispam_questions",
-            "manage_antispam_questions",
             "view_services",
             "manage_services",
             "view_servers",

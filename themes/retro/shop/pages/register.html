@@ -143,45 +143,11 @@
                     </div>
                 </div>
             </dd>
-
-            <dt>{$lang->t('antispam_question')}</dt>
-            <dd>
-                <table class="register_antispam">
-                    <tr>
-                        <td>
-                            <label class="label">{$lang->t('question')}</label>
-                        </td>
-                        <td headers="as_question">{$antispamQuestion['question']}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <label for="as_answer" class="label">{$lang->t('answer')}</label>
-                        </td>
-                        <td>
-                            <div class="field">
-                                <div class="control">
-                                    <input
-                                        id="as_answer"
-                                        name="as_answer"
-                                        type="text"
-                                        class="input is-small"
-                                        maxlength="64"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <input
-                                name="as_id"
-                                type="hidden"
-                                value="{{ $antispamQuestion['id'] }}"
-                            />
-                        </td>
-                    </tr>
-                </table>
-            </dd>
         </dl>
 
         <input type="reset" value="{$lang->t('clear')}" class="button" />
         <input type="submit" value="{$lang->t('create_account')}" class="button is-success" />
     </form>
 </div>
+
+<script src="https://hcaptcha.com/1/api.js" async defer></script>

@@ -18,8 +18,6 @@ use MyCLabs\Enum\Enum;
  * @method static Permission MANAGE_SMS_CODES()
  * @method static Permission VIEW_PROMO_CODES()
  * @method static Permission MANAGE_PROMO_CODES()
- * @method static Permission VIEW_ANTISPAM_QUESTIONS()
- * @method static Permission MANAGE_ANTISPAM_QUESTIONS()
  * @method static Permission VIEW_SERVICES()
  * @method static Permission MANAGE_SERVICES()
  * @method static Permission VIEW_SERVERS()
@@ -44,8 +42,6 @@ final class Permission extends Enum
     const MANAGE_SMS_CODES = "manage_sms_codes";
     const VIEW_PROMO_CODES = "view_promo_codes";
     const MANAGE_PROMO_CODES = "manage_promo_codes";
-    const VIEW_ANTISPAM_QUESTIONS = "view_antispam_questions";
-    const MANAGE_ANTISPAM_QUESTIONS = "manage_antispam_questions";
     const VIEW_SERVICES = "view_services";
     const MANAGE_SERVICES = "manage_services";
     const VIEW_SERVERS = "view_servers";
