@@ -37,6 +37,11 @@ class ExternalConfigProvider
         return $this->getConfig("sentry_dsn");
     }
 
+    public function captchaSiteKey()
+    {
+        return $this->getConfig("hcaptcha_sitekey");
+    }
+
     public function getConfig($key)
     {
         if (!$this->fetched()) {

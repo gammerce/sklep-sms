@@ -9,7 +9,6 @@ use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\ExternalPaymentService;
-use App\Payment\General\PaymentMethod;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Verification\Abstracts\SupportTransfer;

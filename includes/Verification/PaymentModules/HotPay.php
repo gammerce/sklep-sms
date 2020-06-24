@@ -38,7 +38,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
         ];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             // TODO Implement it

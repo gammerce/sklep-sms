@@ -112,8 +112,6 @@ export const showWarnings = function(form: JQuery, warnings: Dict) {
         inputElement.addClass("is-danger");
         field.append(ul);
 
-        console.log(form, ul);
-
         if ((inputElement as any).effect) {
             (inputElement as any).effect("highlight", 1000);
         }

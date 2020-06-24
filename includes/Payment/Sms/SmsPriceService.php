@@ -40,7 +40,7 @@ class SmsPriceService
             return true;
         }
 
-        $smsNumbers = $paymentModule::getSmsNumbers();
+        $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
             if ($smsNumber->getPrice() === $smsPrice) {
@@ -58,7 +58,7 @@ class SmsPriceService
      */
     public function getNumber($smsPrice, SupportSms $paymentModule)
     {
-        $smsNumbers = $paymentModule::getSmsNumbers();
+        $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
             if ($smsNumber->getPrice() === $smsPrice) {
@@ -76,7 +76,7 @@ class SmsPriceService
      */
     public function getProvision($smsPrice, SupportSms $paymentModule)
     {
-        $smsNumbers = $paymentModule::getSmsNumbers();
+        $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
             if ($smsNumber->getPrice() === $smsPrice) {

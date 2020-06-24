@@ -16,7 +16,6 @@ use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
-use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\PaymentModules\PayPal;
@@ -31,7 +30,6 @@ use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
-use App\View\Pages\Admin\PageAdminAntispamQuestions;
 use App\View\Pages\Admin\PageAdminBoughtServices;
 use App\View\Pages\Admin\PageAdminGroups;
 use App\View\Pages\Admin\PageAdminIncome;
@@ -142,7 +140,6 @@ class HeartServiceProvider
 
     private function registerAdminPages(PageManager $pageManager)
     {
-        $pageManager->registerAdmin(PageAdminAntispamQuestions::class);
         $pageManager->registerAdmin(PageAdminBoughtServices::class);
         $pageManager->registerAdmin(PageAdminGroups::class);
         $pageManager->registerAdmin(PageAdminIncome::class);

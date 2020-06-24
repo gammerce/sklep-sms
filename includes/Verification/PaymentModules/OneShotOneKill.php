@@ -24,7 +24,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         return [new DataField("api")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7136", 65),
@@ -115,7 +115,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
      */
     private function getSmsNumberByProvision($price)
     {
-        foreach (OneShotOneKill::getSmsNumbers() as $smsNumber) {
+        foreach ($this->getSmsNumbers() as $smsNumber) {
             if ($smsNumber->getProvision() === $price) {
                 return $smsNumber->getNumber();
             }

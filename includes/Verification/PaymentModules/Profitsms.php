@@ -19,7 +19,7 @@ class Profitsms extends PaymentModule implements SupportSms
         return [new DataField("api"), new DataField("sms_text")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7055"),

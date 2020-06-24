@@ -20,7 +20,7 @@ class Zabijaka extends PaymentModule implements SupportSms
         return [new DataField("api")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("71480"),

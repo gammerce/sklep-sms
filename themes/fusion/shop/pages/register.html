@@ -140,27 +140,7 @@
                 </div>
 
                 <div class="column is-full">
-                    <div class="field">
-                        <label for="as_answer" class="label required" headers="as_question">
-                            {!! $antispamQuestion['question'] !!}
-                        </label>
-
-                        <div class="control">
-                            <input
-                                id="as_answer"
-                                name="as_answer"
-                                type="text"
-                                class="input"
-                                maxlength="64"
-                                required
-                            />
-                            <input
-                                name="as_id"
-                                type="hidden"
-                                value="{{ $antispamQuestion['id'] }}"
-                            />
-                        </div>
-                    </div>
+                    <div class="h-captcha" data-sitekey="{{ $siteKey }}"></div>
                 </div>
             </div>
 
@@ -175,3 +155,5 @@
         </form>
     </div>
 </main>
+
+<script src="https://hcaptcha.com/1/api.js" async defer></script>

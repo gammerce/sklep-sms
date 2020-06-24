@@ -36,7 +36,7 @@ class Cssetti extends PaymentModule implements SupportSms
         return [new DataField("account_id")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("71480"),

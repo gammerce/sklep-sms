@@ -108,7 +108,7 @@ class SmsChargeWallet implements IChargeWallet
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportSms);
 
-        $smsList = collect($paymentModule::getSmsNumbers())
+        $smsList = collect($paymentModule->getSmsNumbers())
             ->map(function (SmsNumber $smsNumber) {
                 return create_dom_element(
                     "option",

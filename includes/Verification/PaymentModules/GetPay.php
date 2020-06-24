@@ -25,7 +25,7 @@ class GetPay extends PaymentModule implements SupportSms
         return [new DataField("api"), new DataField("api_secret"), new DataField("sms_text")];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7143"),

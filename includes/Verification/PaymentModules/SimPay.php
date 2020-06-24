@@ -41,7 +41,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         ];
     }
 
-    public static function getSmsNumbers()
+    public function getSmsNumbers()
     {
         return [
             new SmsNumber("7055"),
