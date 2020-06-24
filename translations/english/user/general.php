@@ -159,7 +159,6 @@ You can now profit from many add-ons.',
         'We encourage everyone to <strong>sign up</strong>!<br />You will gain access to the services management panel.',
     'welcome_subtitle' => 'We wish you pleasant shopping.',
     'welcome_title' => 'Welcome to the Sklep SMS!',
-    'wrong_anti_answer' => 'Wrong answer to the antispam question.',
     'wrong_id' => 'Wrong ID',
     'wrong_payment_method' => 'Wrong payment method was chosen.',
     'wrong_reset_key' => 'Reset key incorrect.<br />

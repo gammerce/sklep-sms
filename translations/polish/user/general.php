@@ -160,7 +160,6 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
         'Zachęcamy wszystkich do <strong>zarejestrowania się</strong>!<br />W przypadku problemów, skontaktuj się z nami.',
     'welcome_subtitle' => 'Życzymy udanych zakupów.',
     'welcome_title' => 'Witaj w Sklepie SMS!',
-    'wrong_anti_answer' => 'Błędna odpowiedź na pytanie antyspamowe.',
     'wrong_id' => 'Błędne ID',
     'wrong_payment_method' => 'Wybrano błędny sposób zapłaty.',
     'wrong_reset_key' => 'Kod resetowania hasła jest błędny.<br />
