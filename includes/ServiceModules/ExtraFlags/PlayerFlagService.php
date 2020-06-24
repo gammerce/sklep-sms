@@ -157,7 +157,7 @@ EOF
             // Pobranie hasła, bierzemy je tylko raz na początku
             $password = $password ? $password : $extraFlagUserService->getPassword();
 
-            $service = $this->serviceManager->getService($extraFlagUserService->getServiceId());
+            $service = $this->serviceManager->get($extraFlagUserService->getServiceId());
             $serviceFlags = $service->getFlags();
             foreach (str_split($serviceFlags) as $flag) {
                 // Bierzemy maksa, ponieważ inaczej robią się problemy.

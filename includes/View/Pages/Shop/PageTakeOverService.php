@@ -39,7 +39,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
 
     public function getContent(Request $request)
     {
-        $servicesOptions = collect($this->serviceManager->getServices())
+        $servicesOptions = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 // Service module doesn't allow taking the service over

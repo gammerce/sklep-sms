@@ -148,7 +148,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
         switch ($boxId) {
             case "add":
-                $services = collect($this->serviceManager->getServices())
+                $services = collect($this->serviceManager->all())
                     ->map(function (Service $service) {
                         return new Option($service->getName(), $service->getId());
                     })

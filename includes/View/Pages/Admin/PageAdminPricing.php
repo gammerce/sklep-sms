@@ -112,7 +112,7 @@ EOF
                         : new NoneText();
                 }
 
-                $service = $this->serviceManager->getService($price->getServiceId());
+                $service = $this->serviceManager->get($price->getServiceId());
                 $serviceEntry = $service
                     ? new ServiceRef($service->getId(), $service->getName())
                     : new NoneText();
@@ -180,7 +180,7 @@ EOF
             $price = null;
         }
 
-        $services = collect($this->serviceManager->getServices())
+        $services = collect($this->serviceManager->all())
             ->map(function (Service $service) use ($price) {
                 return create_dom_element(
                     "option",

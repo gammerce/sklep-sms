@@ -114,7 +114,7 @@ class PageAdminBoughtServices extends PageAdmin
                 return $this->transactionRepository->mapToModel($row);
             })
             ->map(function (Transaction $transaction) {
-                $service = $this->serviceManager->getService($transaction->getServiceId());
+                $service = $this->serviceManager->get($transaction->getServiceId());
                 $server = $this->serverManager->getServer($transaction->getServerId());
 
                 $userEntry = $transaction->getUserId()

@@ -184,7 +184,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             })
             ->join();
 
-        $services = collect($this->serviceManager->getServices())
+        $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->get($service->getId());
                 return $serviceModule instanceof IServicePurchaseExternal;

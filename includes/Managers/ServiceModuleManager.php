@@ -54,7 +54,7 @@ class ServiceModuleManager
      */
     public function get($serviceId)
     {
-        $service = $this->serviceManager->getService($serviceId);
+        $service = $this->serviceManager->get($serviceId);
 
         if (!$service) {
             return null;

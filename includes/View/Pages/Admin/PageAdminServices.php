@@ -64,7 +64,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     {
         $recordId = $request->query->get("record");
 
-        $bodyRows = collect($this->serviceManager->getServices())
+        $bodyRows = collect($this->serviceManager->all())
             ->filter(function (Service $service) use ($recordId) {
                 return $recordId === null || $service->getId() === $recordId;
             })
@@ -147,7 +147,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 );
 
             case "edit":
-                $service = $this->serviceManager->getService($query["id"]);
+                $service = $this->serviceManager->get($query["id"]);
 
                 if (strlen($service->getModule())) {
                     $serviceModule = $this->serviceModuleManager->get($service->getId());
