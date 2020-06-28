@@ -16,7 +16,6 @@ use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
 use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
-use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\OneShotOneKill;
 use App\Verification\PaymentModules\PayPal;

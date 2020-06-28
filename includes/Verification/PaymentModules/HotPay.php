@@ -6,7 +6,6 @@ use App\Managers\ServiceManager;
 use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
 use App\Models\Purchase;
-use App\Models\SmsNumber;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
@@ -60,10 +59,8 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public function getSmsNumbers()
     {
         return [
-            // TODO Implement it
-            new SmsNumber("71480"),
-            new SmsNumber("72480"),
-        ];
+                // TODO Implement it
+            ];
     }
 
     public function verifySms($returnCode, $number)
@@ -122,6 +119,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
                 "ID_ZAMOWIENIA" => $purchase->getId(),
                 "NAZWA_USLUGI" => $service->getNameI18n(),
                 "EMAIL" => $purchase->getEmail(),
+                "ADRES_WWW" => $this->url->to("/page/payment_success"),
             ],
         ];
     }
