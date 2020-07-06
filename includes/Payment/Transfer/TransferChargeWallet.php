@@ -55,7 +55,7 @@ class TransferChargeWallet implements IChargeWallet
                 "transfer_price" => array_get($body, "transfer_price"),
             ],
             [
-                "transfer_price" => [new RequiredRule(), new NumberRule(), new MinValueRule(1.01)],
+                "transfer_price" => [new RequiredRule(), new NumberRule(), new MinValueRule(0.01)],
             ]
         );
         $validated = $validator->validateOrFail();
