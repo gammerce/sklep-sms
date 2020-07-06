@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use App\Cache\FileCache;
 use App\Loggers\DatabaseLogger;
+use App\Loggers\FileLogger;
 use App\Managers\BlockManager;
 use App\Managers\GroupManager;
 use App\Managers\PageManager;
@@ -28,6 +29,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Pages\Shop\PageRegister;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -91,10 +93,14 @@ class AppServiceProvider
             $config = [
                 "Host" => getenv("MAIL_HOST"),
                 "Password" => getenv("MAIL_PASSWORD"),
+                "Port" => getenv("MAIL_PORT") ?: 587,
+                "Secure" => getenv("MAIL_SECURE") ?: PHPMailer::ENCRYPTION_STARTTLS,
+                "Username" => getenv("MAIL_USERNAME"),
             ];
             return new Mailer(
                 $app->make(Settings::class),
                 $app->make(DatabaseLogger::class),
+                $app->make(FileLogger::class),
                 $config
             );
         });

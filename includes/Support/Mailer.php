@@ -2,9 +2,11 @@
 namespace App\Support;
 
 use App\Loggers\DatabaseLogger;
+use App\Loggers\FileLogger;
 use App\System\Settings;
 use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
 
 class Mailer
 {
@@ -15,17 +17,33 @@ class Mailer
     private $settings;
 
     /** @var DatabaseLogger */
-    private $logger;
+    private $databaseLogger;
 
-    public function __construct(Settings $settings, DatabaseLogger $logger, array $config = [])
-    {
+    /** @var FileLogger */
+    private $fileLogger;
+
+    public function __construct(
+        Settings $settings,
+        DatabaseLogger $databaseLogger,
+        FileLogger $fileLogger,
+        array $config = []
+    ) {
         $this->settings = $settings;
         $this->config = $config;
-        $this->logger = $logger;
+        $this->databaseLogger = $databaseLogger;
+        $this->fileLogger = $fileLogger;
     }
 
     public function send($email, $name, $subject, $text)
     {
+        // Recipient's email address
+        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
+        $name = htmlspecialchars($name);
+
+        if (!strlen($email)) {
+            return "wrong_email";
+        }
+
         if ($this->shouldUseSignedSend()) {
             return $this->signedSend($email, $name, $subject, $text);
         }
@@ -35,16 +53,6 @@ class Mailer
 
     private function signedSend($email, $name, $subject, $text)
     {
-        // Recipient's email address
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-        $name = htmlspecialchars($name);
-        $senderEmail = $this->settings["sender_email"];
-        $senderName = $this->settings["sender_email_name"];
-
-        if (!strlen($email)) {
-            return "wrong_email";
-        }
-
         $mail = new PHPMailer(true);
 
         try {
@@ -53,58 +61,50 @@ class Mailer
             $mail->CharSet = "UTF-8";
             $mail->Host = $this->config["Host"];
             $mail->SMTPAuth = true;
-            $mail->Username = $senderEmail;
+            $mail->Username = $this->getSenderMail();
             $mail->Password = $this->config["Password"];
-            $mail->SMTPSecure = "tls";
-            $mail->Port = 587;
+            $mail->SMTPSecure = $this->config["Secure"];
+            $mail->Port = $this->config["Port"];
 
-            //Recipients
-            $mail->setFrom($senderEmail, $senderName);
+            $mail->setFrom($this->getSenderMail(), $this->getSenderName());
             $mail->addAddress($email, $name);
 
-            //Content
             $mail->isHTML(true);
             $mail->Subject = $subject;
             $mail->Body = $text;
 
+            if (is_debug()) {
+                $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
+            }
+
             $mail->send();
 
-            $this->logger->log("log_email_was_sent", $email, $text);
-
+            $this->databaseLogger->log("log_email_was_sent", $email, $text);
             return "sent";
         } catch (Exception $e) {
+            $this->fileLogger->error($e->getMessage());
             return "not_sent";
         }
     }
 
     private function simpleSend($email, $name, $subject, $text)
     {
-        // Recipient's email address
-        $email = filter_var($email, FILTER_VALIDATE_EMAIL);
-        $name = htmlspecialchars($name);
-        $senderEmail = $this->settings["sender_email"];
-        $senderName = $this->settings["sender_email_name"];
-
-        if (!strlen($email)) {
-            return "wrong_email";
-        }
-
         $header = "MIME-Version: 1.0\r\n";
         $header .= "Content-Type: text/html; charset=UTF-8\n";
-        $header .= "From: {$senderName} < {$senderEmail} >\n";
+        $header .= "From: {$this->getSenderName()} < {$this->getSenderMail()} >\n";
         $header .= "To: {$name} < {$email} >\n";
-        $header .= "X-Sender: {$senderName} < {$senderEmail} >\n";
+        $header .= "X-Sender: {$this->getSenderName()} < {$this->getSenderMail()} >\n";
         $header .= 'X-Mailer: PHP/' . phpversion();
         $header .= "X-Priority: 1 (Highest)\n";
         $header .= "X-MSMail-Priority: High\n";
         $header .= "Importance: High\n";
-        $header .= "Return-Path: {$senderEmail}\n"; // Return email for errors
+        $header .= "Return-Path: {$this->getSenderMail()}\n"; // Return email for errors
 
         if (!mail($email, $subject, $text, $header)) {
             return "not_sent";
         }
 
-        $this->logger->log("log_email_was_sent", $email, $text);
+        $this->databaseLogger->log("log_email_was_sent", $email, $text);
 
         return "sent";
     }
@@ -113,5 +113,15 @@ class Mailer
     {
         return strlen(array_get($this->config, "Host")) &&
             strlen(array_get($this->config, "Password"));
+    }
+
+    private function getSenderMail()
+    {
+        return $this->config["Username"] ?: $this->settings["sender_email"];
+    }
+
+    private function getSenderName()
+    {
+        return $this->settings["sender_email_name"];
     }
 }

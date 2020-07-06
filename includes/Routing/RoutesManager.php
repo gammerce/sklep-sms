@@ -573,7 +573,7 @@ class RoutesManager
     public function dispatch(Request $request)
     {
         $method = $request->getMethod();
-        $uri = '/' . trim($request->getPathInfo(), '/');
+        $uri = "/" . trim($request->getPathInfo(), "/");
 
         $routeInfo = $this->createDispatcher()->dispatch($method, $uri);
         return $this->handleDispatcherResponse($routeInfo, $request);
@@ -582,7 +582,7 @@ class RoutesManager
     private function handleDispatcherResponse($routeInfo, Request $request)
     {
         if ($this->shouldRedirectToSetup($routeInfo)) {
-            return new RedirectResponse($this->url->to('/setup'));
+            return new RedirectResponse($this->url->to("/setup"));
         }
 
         try {
@@ -595,7 +595,7 @@ class RoutesManager
             case Dispatcher::NOT_FOUND:
                 throw new EntityNotFoundException();
             case Dispatcher::METHOD_NOT_ALLOWED:
-                return new Response('', 405);
+                return new Response("", 405);
             case Dispatcher::FOUND:
                 return $this->handleFoundRoute($routeInfo, $request);
             default:
