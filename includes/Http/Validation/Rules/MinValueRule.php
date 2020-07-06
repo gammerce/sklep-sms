@@ -5,7 +5,7 @@ use App\Http\Validation\BaseRule;
 
 class MinValueRule extends BaseRule
 {
-    /** @var int */
+    /** @var int|float */
     private $value;
 
     public function __construct($value)
@@ -16,8 +16,8 @@ class MinValueRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (as_int($value) < $this->value) {
-            return [$this->lang->t('min_value', $this->value)];
+        if (as_float($value) < $this->value) {
+            return [$this->lang->t("min_value", $this->value)];
         }
 
         return [];
