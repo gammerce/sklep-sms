@@ -11,7 +11,6 @@ use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Verification\Abstracts\PaymentModule;
-use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
@@ -27,7 +26,7 @@ use Symfony\Component\HttpFoundation\Request;
  * @link https://hotpay.pl/documentation_v3/tech_paybylink.pdf
  * @link https://hotpay.pl/documentation_v3/tech_smspremium.pdf
  */
-class HotPay extends PaymentModule implements SupportSms, SupportTransfer, SupportDirectBilling
+class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "hotpay";
 
@@ -48,11 +47,11 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer, Suppo
     public static function getDataFields()
     {
         return [
-            new DataField("sms_text"),
-            new DataField("sms_secret"),
+            //            new DataField("sms_text"),
+            //            new DataField("sms_secret"),
             new DataField("transfer_hash"),
             new DataField("transfer_secret"),
-            new DataField("direct_billing_secret"),
+            //            new DataField("direct_billing_secret"),
         ];
     }
 
