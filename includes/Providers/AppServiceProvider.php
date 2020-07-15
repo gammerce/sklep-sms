@@ -3,6 +3,7 @@ namespace App\Providers;
 
 use App\Cache\FileCache;
 use App\Loggers\DatabaseLogger;
+use App\Loggers\FileLogger;
 use App\Managers\BlockManager;
 use App\Managers\GroupManager;
 use App\Managers\PageManager;
@@ -28,6 +29,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\CurrentPage;
 use App\View\Pages\Shop\PageRegister;
+use PHPMailer\PHPMailer\PHPMailer;
 use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 
@@ -89,12 +91,17 @@ class AppServiceProvider
     {
         $app->bind(Mailer::class, function (Application $app) {
             $config = [
-                "Host" => getenv("MAIL_HOST"),
-                "Password" => getenv("MAIL_PASSWORD"),
+                "host" => getenv("MAIL_HOST"),
+                "password" => getenv("MAIL_PASSWORD"),
+                "port" => getenv("MAIL_PORT") ?: 587,
+                "secure" => getenv("MAIL_SECURE") ?: PHPMailer::ENCRYPTION_STARTTLS,
+                "username" => getenv("MAIL_USERNAME"),
+                "disable_cert_validation" => boolval(getenv("MAIL_DISABLE_CERT_VALIDATION")),
             ];
             return new Mailer(
                 $app->make(Settings::class),
                 $app->make(DatabaseLogger::class),
+                $app->make(FileLogger::class),
                 $config
             );
         });

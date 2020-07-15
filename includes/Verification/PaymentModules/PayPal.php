@@ -101,7 +101,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         $result = $response->json();
 
         if (array_get($result, "status") !== "CREATED") {
-            $this->fileLogger->error("Invalid order creation status", $result);
+            $this->fileLogger->error("Invalid order creation status", compact("result"));
             throw new PaymentProcessingException("error", "Invalid order creation status");
         }
 
@@ -114,7 +114,7 @@ class PayPal extends PaymentModule implements SupportTransfer
             }
         }
 
-        $this->fileLogger->error("Approve url not found", $result);
+        $this->fileLogger->error("Approve url not found", compact("result"));
         throw new PaymentProcessingException("error", "Approve url not found");
     }
 
@@ -137,7 +137,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         );
 
         if (!$status || !$transactionId) {
-            $this->fileLogger->error("PayPal | Order capture failed", $result);
+            $this->fileLogger->error("PayPal | Order capture failed", compact("result"));
         }
 
         return (new FinalizedPayment())
