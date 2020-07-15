@@ -59,12 +59,12 @@ class Mailer
             $mail->isSMTP();
             $mail->XMailer = " ";
             $mail->CharSet = "UTF-8";
-            $mail->Host = $this->config["Host"];
+            $mail->Host = $this->config["host"];
             $mail->SMTPAuth = true;
             $mail->Username = $this->getSenderMail();
-            $mail->Password = $this->config["Password"];
-            $mail->SMTPSecure = $this->config["Secure"];
-            $mail->Port = $this->config["Port"];
+            $mail->Password = $this->config["password"];
+            $mail->SMTPSecure = $this->config["secure"];
+            $mail->Port = $this->config["port"];
 
             $mail->setFrom($this->getSenderMail(), $this->getSenderName());
             $mail->addAddress($email, $name);
@@ -73,8 +73,19 @@ class Mailer
             $mail->Subject = $subject;
             $mail->Body = $text;
 
+            if ($this->config["disable_cert_validation"]) {
+                $mail->SMTPOptions = [
+                    "ssl" => [
+                        "verify_peer" => false,
+                        "verify_peer_name" => false,
+                        "allow_self_signed" => true,
+                    ],
+                ];
+            }
+
             if (is_debug()) {
-                $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
+                $mail->SMTPDebug = SMTP::DEBUG_LOWLEVEL;
+                $mail->Debugoutput = $this->fileLogger;
             }
 
             $mail->send();
@@ -111,13 +122,13 @@ class Mailer
 
     private function shouldUseSignedSend()
     {
-        return strlen(array_get($this->config, "Host")) &&
-            strlen(array_get($this->config, "Password"));
+        return strlen(array_get($this->config, "host")) &&
+            strlen(array_get($this->config, "password"));
     }
 
     private function getSenderMail()
     {
-        return $this->config["Username"] ?: $this->settings["sender_email"];
+        return $this->config["username"] ?: $this->settings["sender_email"];
     }
 
     private function getSenderName()

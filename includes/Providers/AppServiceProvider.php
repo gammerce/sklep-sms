@@ -91,11 +91,12 @@ class AppServiceProvider
     {
         $app->bind(Mailer::class, function (Application $app) {
             $config = [
-                "Host" => getenv("MAIL_HOST"),
-                "Password" => getenv("MAIL_PASSWORD"),
-                "Port" => getenv("MAIL_PORT") ?: 587,
-                "Secure" => getenv("MAIL_SECURE") ?: PHPMailer::ENCRYPTION_STARTTLS,
-                "Username" => getenv("MAIL_USERNAME"),
+                "host" => getenv("MAIL_HOST"),
+                "password" => getenv("MAIL_PASSWORD"),
+                "port" => getenv("MAIL_PORT") ?: 587,
+                "secure" => getenv("MAIL_SECURE") ?: PHPMailer::ENCRYPTION_STARTTLS,
+                "username" => getenv("MAIL_USERNAME"),
+                "disable_cert_validation" => boolval(getenv("MAIL_DISABLE_CERT_VALIDATION")),
             ];
             return new Mailer(
                 $app->make(Settings::class),
