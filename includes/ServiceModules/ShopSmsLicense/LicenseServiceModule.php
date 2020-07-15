@@ -36,6 +36,7 @@ use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
+use App\User\Permission;
 use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -193,7 +194,7 @@ class LicenseServiceModule extends ServiceModule implements
                     ->addCell(new Cell($row["external_license_id"]))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
-                    ->setDeleteAction(has_privileges("manage_user_services"))
+                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
                     ->setEditAction(false);
             })
             ->all();
