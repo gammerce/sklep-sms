@@ -117,7 +117,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         );
 
         $this->userServiceRepository->updateWithModule(
-            $this,
+            $this->getUserServiceTable(),
             $purchase->getOrder("user_service_id"),
             [
                 "cost_daily" => $purchase->getOrder("cost_daily"),
