@@ -5,6 +5,7 @@ use App\Routing\RoutesManager;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use Exception;
+use Throwable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -30,6 +31,12 @@ class Kernel implements KernelContract
             $request->setSession($this->app->make(Session::class));
             return $this->routesManager->dispatch($request);
         } catch (Exception $e) {
+            /** @var ExceptionHandlerContract $handler */
+            $handler = $this->app->make(ExceptionHandlerContract::class);
+            $handler->report($e);
+            return $handler->render($request, $e);
+        } catch (Throwable $e) {
+            // PHP 7.x+ support
             /** @var ExceptionHandlerContract $handler */
             $handler = $this->app->make(ExceptionHandlerContract::class);
             $handler->report($e);

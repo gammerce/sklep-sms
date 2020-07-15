@@ -2,11 +2,21 @@
 namespace App\System;
 
 use Exception;
+use Throwable;
 use Symfony\Component\HttpFoundation\Request;
 
 interface ExceptionHandlerContract
 {
-    public function report(Exception $e);
+    /**
+     * @param Exception|Throwable $e
+     * @return void
+     */
+    public function report($e);
 
-    public function render(Request $request, Exception $e);
+    /**
+     * @param Request $request
+     * @param Exception|Throwable $e
+     * @return mixed
+     */
+    public function render(Request $request, $e);
 }

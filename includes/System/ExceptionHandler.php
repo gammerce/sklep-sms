@@ -22,6 +22,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
@@ -63,7 +64,12 @@ class ExceptionHandler implements ExceptionHandlerContract
         $this->responseFactory = $apiResponseFactory;
     }
 
-    public function render(Request $request, Exception $e)
+    /**
+     * @param Request $request
+     * @param Exception|Throwable $e
+     * @return mixed
+     */
+    public function render(Request $request, $e)
     {
         if ($e instanceof EntityNotFoundException) {
             return $this->responseFactory->createError(
@@ -130,7 +136,11 @@ class ExceptionHandler implements ExceptionHandlerContract
         );
     }
 
-    public function report(Exception $e)
+    /**
+     * @param Exception|Throwable $e
+     * @return void
+     */
+    public function report($e)
     {
         if (!$this->shouldReport($e)) {
             return;
@@ -144,14 +154,21 @@ class ExceptionHandler implements ExceptionHandlerContract
         }
     }
 
-    private function reportToSentry(Exception $e)
+    /**
+     * @param Exception|Throwable $e
+     */
+    private function reportToSentry($e)
     {
         /** @var Raven_Client $client */
         $client = $this->app->make(Raven_Client::class);
         $client->captureException($e);
     }
 
-    private function getExceptionDetails(Exception $e)
+    /**
+     * @param Exception|Throwable $e
+     * @return array
+     */
+    private function getExceptionDetails($e)
     {
         return [
             "message" => $e->getMessage(),
@@ -162,7 +179,11 @@ class ExceptionHandler implements ExceptionHandlerContract
         ];
     }
 
-    private function shouldReport(Exception $e)
+    /**
+     * @param Exception|Throwable $e
+     * @return bool
+     */
+    private function shouldReport($e)
     {
         foreach ($this->dontReport as $type) {
             if ($e instanceof $type) {
