@@ -18,12 +18,9 @@ export const PaymentView: FunctionComponent = () => {
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
 
-    useEffect(
-        () => {
-            fetchTransaction().catch(handleError);
-        },
-        []
-    );
+    useEffect(() => {
+        fetchTransaction().catch(handleError);
+    }, []);
 
     const fetchTransaction = async () => {
         const result = await api.getTransaction(transactionId);
@@ -43,7 +40,10 @@ export const PaymentView: FunctionComponent = () => {
             const e: AxiosError = error;
 
             if (e.response.status === 422) {
-                return infobox.showInfo(e.response.data.warnings?.promo_code ?? __("sth_went_wrong") , false);
+                return infobox.showInfo(
+                    e.response.data.warnings?.promo_code ?? __("sth_went_wrong"),
+                    false
+                );
             }
 
             infobox.showInfo(e.response.data.text, false);
@@ -72,14 +72,13 @@ export const PaymentView: FunctionComponent = () => {
         <PaymentOption
             key={`${paymentOption.method}#${paymentOption.payment_platform_id}`}
             paymentOption={paymentOption}
-            onPay={(body) => onPay(paymentOption.method, paymentOption.payment_platform_id, body)}
+            onPay={body => onPay(paymentOption.method, paymentOption.payment_platform_id, body)}
         />
     ));
 
     return (
         <div className="columns">
-            {
-                acceptsPromoCode &&
+            {acceptsPromoCode && (
                 <div className="column is-one-third">
                     <PromoCodeBox
                         promoCode={transaction.promo_code}
@@ -87,12 +86,10 @@ export const PaymentView: FunctionComponent = () => {
                         onPromoCodeRemove={removePromoCode}
                     />
                 </div>
-            }
+            )}
             <div className="column">
-                <div className="payment-options-box">
-                    {paymentOptions}
-                </div>
+                <div className="payment-options-box">{paymentOptions}</div>
             </div>
         </div>
     );
-}
+};

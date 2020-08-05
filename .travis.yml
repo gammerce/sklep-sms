@@ -9,6 +9,9 @@ php:
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.cache/pip
+    - $HOME/.cache/pre-commit
+    - $HOME/.cache/yarn
 
 services:
   - mysql
@@ -26,13 +29,14 @@ before_install:
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
+  - pip install pre-commit
   - composer install --no-interaction
   - composer dump
   - yarn install
   - php artisan test:setup
 
 script:
-  - yarn pretty
+  - pre-commit run --all-files -c .pre-commit-config-ci.yaml
   - NODE_ENV=production yarn build
   - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 

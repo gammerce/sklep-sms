@@ -13,8 +13,8 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
-    const {price, oldPrice, smsCode, smsNumber, onPay} = props;
+export const PaymentMethodSms: FunctionComponent<Props> = props => {
+    const { price, oldPrice, smsCode, smsNumber, onPay } = props;
     const [returnCode, setReturnCode] = useState<string>("");
     const [detailsVisible, setDetailsVisible] = useState<boolean>(false);
 
@@ -36,23 +36,23 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
         <div className="payment-type-wrapper">
             <div className="card">
                 <header className="card-header">
-                    <p className="card-header-title">
-                        {__('payment_sms')}
-                    </p>
+                    <p className="card-header-title">{__("payment_sms")}</p>
                 </header>
                 <div className="card-content">
                     <div>
-                        <PaymentPrice price={price} oldPrice={oldPrice}/>
+                        <PaymentPrice price={price} oldPrice={oldPrice} />
                     </div>
 
-                    <div className={classNames("sms-details", {
-                        "is-hidden": !detailsVisible,
-                    })}>
-                        <h1 className="title is-5">{__('sms_send_sms')}</h1>
+                    <div
+                        className={classNames("sms-details", {
+                            "is-hidden": !detailsVisible,
+                        })}
+                    >
+                        <h1 className="title is-5">{__("sms_send_sms")}</h1>
 
                         <div className="field is-horizontal">
                             <div className="field-label">
-                                <label className="label">{__('sms_text')}</label>
+                                <label className="label">{__("sms_text")}</label>
                             </div>
                             <div className="field-body">
                                 <span className="is-family-monospace">{smsCode}</span>
@@ -61,7 +61,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
 
                         <div className="field is-horizontal">
                             <div className="field-label">
-                                <label className="label">{__('sms_number')}</label>
+                                <label className="label">{__("sms_number")}</label>
                             </div>
                             <div className="field-body">
                                 <span className="is-family-monospace">{smsNumber}</span>
@@ -71,7 +71,7 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                         <div className="field is-horizontal">
                             <div className="field-label">
                                 <label className="label required" htmlFor="sms_code">
-                                    {__('sms_return_code')}
+                                    {__("sms_return_code")}
                                 </label>
                             </div>
                             <div className="field-body">
@@ -94,10 +94,10 @@ export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
                 </div>
                 <footer className="card-footer">
                     <a id="pay_sms" className="card-footer-item" onClick={onPayClick}>
-                        {__('pay_sms')}
+                        {__("pay_sms")}
                     </a>
                 </footer>
             </div>
         </div>
     );
-}
+};
