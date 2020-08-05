@@ -11,6 +11,7 @@ cache:
     - $HOME/.composer/cache
     - $HOME/.cache/pip
     - $HOME/.cache/pre-commit
+    - $HOME/.cache/yarn
 
 services:
   - mysql
