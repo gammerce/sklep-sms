@@ -9,6 +9,8 @@ php:
 cache:
   directories:
     - $HOME/.composer/cache
+    - $HOME/.cache/pip
+    - $HOME/.cache/pre-commit
 
 services:
   - mysql
@@ -26,6 +28,7 @@ before_install:
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
 install:
+  - pip install pre-commit
   - composer install --no-interaction
   - composer dump
   - yarn install
