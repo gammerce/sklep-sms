@@ -32,7 +32,7 @@ install:
   - php artisan test:setup
 
 script:
-  - yarn pretty
+  - pre-commit run --all-files -c .pre-commit-config-ci.yaml
   - NODE_ENV=production yarn build
   - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
