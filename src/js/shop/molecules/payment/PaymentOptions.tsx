@@ -11,8 +11,8 @@ interface Props {
     onPay(body?: Dict): void;
 }
 
-export const PaymentOption: FunctionComponent<Props> = (props) => {
-    const {paymentOption, onPay} = props;
+export const PaymentOption: FunctionComponent<Props> = props => {
+    const { paymentOption, onPay } = props;
 
     if (paymentOption.method === PaymentMethod.DirectBilling) {
         return (

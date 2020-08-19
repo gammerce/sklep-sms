@@ -1,5 +1,5 @@
-import React, {ChangeEvent, FunctionComponent, useEffect, useState} from "react";
-import {__} from "../../../general/i18n";
+import React, { ChangeEvent, FunctionComponent, useEffect, useState } from "react";
+import { __ } from "../../../general/i18n";
 
 interface Props {
     promoCode?: string;
@@ -7,8 +7,8 @@ interface Props {
     onPromoCodeRemove(): Promise<void>;
 }
 
-export const PromoCodeBox: FunctionComponent<Props> = (props) => {
-    const {promoCode: transactionPromoCode, onPromoCodeApply, onPromoCodeRemove} = props;
+export const PromoCodeBox: FunctionComponent<Props> = props => {
+    const { promoCode: transactionPromoCode, onPromoCodeApply, onPromoCodeRemove } = props;
     const [promoCode, setPromoCode] = useState<string>(transactionPromoCode);
 
     useEffect(() => setPromoCode(transactionPromoCode), [transactionPromoCode]);
@@ -19,7 +19,9 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
     return (
         <div className="promo-code-box">
             <div className="field">
-                <label className="label" htmlFor="promo_code">{__("promo_code")}</label>
+                <label className="label" htmlFor="promo_code">
+                    {__("promo_code")}
+                </label>
                 <div className="control">
                     <div className="field has-addons">
                         <div className="control">
@@ -33,35 +35,33 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                                 disabled={!!transactionPromoCode}
                             />
                         </div>
-                        {
-                            !transactionPromoCode &&
+                        {!transactionPromoCode && (
                             <div className="control">
                                 <button
                                     className="button is-primary"
                                     onClick={applyPromoCode}
                                     disabled={!promoCode}
                                 >
-                                        <span className="icon">
-                                            <i className="fas fa-tag" />
-                                        </span>
+                                    <span className="icon">
+                                        <i className="fas fa-tag" />
+                                    </span>
                                     <span>{__("use_code")}</span>
                                 </button>
                             </div>
-                        }
-                        {
-                            !!transactionPromoCode &&
+                        )}
+                        {!!transactionPromoCode && (
                             <div className="control">
                                 <button className="button is-primary" onClick={onPromoCodeRemove}>
-                                        <span className="icon">
-                                            <i className="fas fa-trash" />
-                                        </span>
+                                    <span className="icon">
+                                        <i className="fas fa-trash" />
+                                    </span>
                                     <span>{__("remove")}</span>
                                 </button>
                             </div>
-                        }
+                        )}
                     </div>
                 </div>
             </div>
         </div>
     );
-}
+};

@@ -124,10 +124,12 @@ class PagePurchase extends Page
             $this->websiteHeader->addScript($this->url->versioned($pathFile));
         }
 
-        $moduleId = $this->getServiceModule($request)->getModuleId();
-        $pathFile = $path . $moduleId . ".js";
-        if ($this->fileSystem->exists($this->path->to($pathFile))) {
-            $this->websiteHeader->addScript($this->url->versioned($pathFile));
+        $serviceModule = $this->getServiceModule($request);
+        if ($serviceModule) {
+            $pathFile = $path . $serviceModule->getModuleId() . ".js";
+            if ($this->fileSystem->exists($this->path->to($pathFile))) {
+                $this->websiteHeader->addScript($this->url->versioned($pathFile));
+            }
         }
     }
 

@@ -9,8 +9,8 @@ interface Props {
     onPay(body?: Dict): void;
 }
 
-export const PaymentMethodWallet: FunctionComponent<Props> = (props) => {
-    const {price, oldPrice, onPay} = props;
+export const PaymentMethodWallet: FunctionComponent<Props> = props => {
+    const { price, oldPrice, onPay } = props;
 
     const onPayClick = () => onPay();
 
@@ -18,19 +18,17 @@ export const PaymentMethodWallet: FunctionComponent<Props> = (props) => {
         <div className="payment-type-wrapper">
             <div className="card">
                 <header className="card-header">
-                    <p className="card-header-title">
-                        {__('payment_wallet')}
-                    </p>
+                    <p className="card-header-title">{__("payment_wallet")}</p>
                 </header>
                 <div className="card-content">
                     <PaymentPrice price={price} oldPrice={oldPrice} />
                 </div>
                 <footer className="card-footer">
                     <a id="pay_wallet" className="card-footer-item" onClick={onPayClick}>
-                        {__('pay_wallet')}
+                        {__("pay_wallet")}
                     </a>
                 </footer>
             </div>
         </div>
     );
-}
+};

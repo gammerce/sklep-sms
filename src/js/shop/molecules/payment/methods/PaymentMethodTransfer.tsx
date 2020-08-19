@@ -10,8 +10,8 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
-    const {price, oldPrice, name, onPay} = props;
+export const PaymentMethodTransfer: FunctionComponent<Props> = props => {
+    const { price, oldPrice, name, onPay } = props;
 
     const onPayClick = () => onPay();
 
@@ -19,19 +19,17 @@ export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
         <div className="payment-type-wrapper">
             <div className="card">
                 <header className="card-header">
-                    <p className="card-header-title">
-                        {__('payment_transfer', name)}
-                    </p>
+                    <p className="card-header-title">{__("payment_transfer", name)}</p>
                 </header>
                 <div className="card-content">
                     <PaymentPrice price={price} oldPrice={oldPrice} />
                 </div>
                 <footer className="card-footer">
                     <a id="pay_transfer" className="card-footer-item" onClick={onPayClick}>
-                        {__('pay_transfer', name)}
+                        {__("pay_transfer", name)}
                     </a>
                 </footer>
             </div>
         </div>
     );
-}
+};

@@ -3,8 +3,6 @@
   "license": "GPL-3.0",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "pretty": "prettier '{includes,migrations,src,tests,themes,translations}/**/*.{php,js,ts,css,scss,html}' --check",
-    "pretty:fix": "yarn pretty --write",
     "watch": "webpack --watch --config webpack.config.js"
   },
   "dependencies": {

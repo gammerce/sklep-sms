@@ -9,8 +9,8 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodDirectBilling: FunctionComponent<Props> = (props) => {
-    const {price, oldPrice, onPay} = props;
+export const PaymentMethodDirectBilling: FunctionComponent<Props> = props => {
+    const { price, oldPrice, onPay } = props;
 
     const onPayClick = () => onPay();
 
@@ -18,19 +18,17 @@ export const PaymentMethodDirectBilling: FunctionComponent<Props> = (props) => {
         <div className="payment-type-wrapper">
             <div className="card">
                 <header className="card-header">
-                    <p className="card-header-title">
-                        {__('payment_direct_billing')}
-                    </p>
+                    <p className="card-header-title">{__("payment_direct_billing")}</p>
                 </header>
                 <div className="card-content">
                     <PaymentPrice price={price} oldPrice={oldPrice} />
                 </div>
                 <footer className="card-footer">
                     <a id="pay_direct_billing" className="card-footer-item" onClick={onPayClick}>
-                        {__('pay_direct_billing')}
+                        {__("pay_direct_billing")}
                     </a>
                 </footer>
             </div>
         </div>
     );
-}
+};
