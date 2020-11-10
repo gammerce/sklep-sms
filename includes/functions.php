@@ -117,13 +117,11 @@ function is_server_platform($platform)
 }
 
 /**
- * @param Request|null $request
+ * @param Request $request
  * @return string|null
  */
-function get_ip(Request $request = null)
+function get_ip(Request $request)
 {
-    $request = $request ?: app()->make(Request::class);
-
     if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
         $cfIpRanges = [
             "103.21.244.0/22",

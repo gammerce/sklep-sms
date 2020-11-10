@@ -88,7 +88,8 @@ class InstallController
             $migrator->setup(
                 $validated['license_token'],
                 $validated['admin_username'],
-                $validated['admin_password']
+                $validated['admin_password'],
+                get_ip($request)
             );
             $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
         } catch (Exception $e) {
