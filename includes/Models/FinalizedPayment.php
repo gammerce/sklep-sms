@@ -29,9 +29,9 @@ class FinalizedPayment
     /**
      * How much money is received
      *
-     * @var int
+     * @var Money
      */
-    private $income = 0;
+    private $income;
 
     /**
      * Filename of transaction
@@ -193,7 +193,7 @@ class FinalizedPayment
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getIncome()
     {
@@ -201,12 +201,12 @@ class FinalizedPayment
     }
 
     /**
-     * @param int $income
+     * @param int|Money $income
      * @return $this
      */
     public function setIncome($income)
     {
-        $this->income = (int) $income;
+        $this->income = new Money($income);
         return $this;
     }
 }
