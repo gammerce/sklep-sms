@@ -64,7 +64,7 @@ class Purchase
     private $order = [];
 
     /**
-     * @var PromoCode
+     * @var PromoCode|null
      */
     private $promoCode;
 
@@ -104,15 +104,15 @@ class Purchase
 
     /**
      * @param User $user
-     * @param string $platform
      * @param string $ip
+     * @param string $platform
      */
-    public function __construct(User $user, $platform, $ip)
+    public function __construct(User $user, $ip, $platform)
     {
-        $this->user = $user;
-        $this->platform = $platform;
-        $this->ip = $ip;
         $this->id = generate_id(32);
+        $this->user = $user;
+        $this->ip = $ip;
+        $this->platform = $platform;
         $this->paymentSelect = new PaymentSelect();
     }
 
@@ -154,6 +154,14 @@ class Purchase
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderList()
+    {
+        return $this->order;
     }
 
     /**
@@ -291,7 +299,7 @@ class Purchase
     }
 
     /**
-     * @return PromoCode
+     * @return PromoCode|null
      */
     public function getPromoCode()
     {
