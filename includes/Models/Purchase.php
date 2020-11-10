@@ -75,11 +75,18 @@ class Purchase
     private $description;
 
     /**
-     * Platform at which a purchase was made
+     * Platform from which the purchase was made
      *
      * @var string
      */
     private $platform;
+
+    /**
+     * IP from which the purchase was made
+     *
+     * @var string
+     */
+    private $ip;
 
     /**
      * Attempt to finalize purchase has been made
@@ -98,11 +105,14 @@ class Purchase
     /**
      * @param User $user
      * @param string $platform
+     * @param string $ip
      */
-    public function __construct(User $user, $platform)
+    public function __construct(User $user, $platform, $ip = null)
     {
         $this->user = $user;
         $this->platform = $platform;
+        // TODO Remove it
+        $this->ip = $ip ?: $user->getLastIp();
         $this->id = generate_id(32);
         $this->paymentSelect = new PaymentSelect();
     }
@@ -219,6 +229,14 @@ class Purchase
     public function getPlatform()
     {
         return $this->platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddressIp()
+    {
+        return $this->ip;
     }
 
     /**

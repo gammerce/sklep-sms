@@ -105,6 +105,7 @@ class SmsPaymentMethod implements IPaymentMethod
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
                 $price,
                 $purchase->user,
+                $purchase->getAddressIp(),
                 $purchase->getPlatform()
             );
         } catch (CustomErrorException $e) {

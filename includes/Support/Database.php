@@ -101,7 +101,7 @@ class Database
 
     public function lastId()
     {
-        return $this->pdo->lastInsertId();
+        return (int) $this->pdo->lastInsertId();
     }
 
     public function startTransaction()

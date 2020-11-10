@@ -71,7 +71,7 @@ class TransferPaymentService
             $finalizedPayment->getIncome(),
             $finalizedPayment->getCost(),
             $finalizedPayment->getExternalServiceId(),
-            $purchase->user->getLastIp(),
+            $purchase->getAddressIp(),
             $purchase->getPlatform(),
             $finalizedPayment->isTestMode()
         );

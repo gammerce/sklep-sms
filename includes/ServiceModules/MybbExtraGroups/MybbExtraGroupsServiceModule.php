@@ -408,7 +408,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
-            $purchase->user->getLastIp(),
+            $purchase->getAddressIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
@@ -570,7 +570,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $user = $this->userManager->get($validated["user_id"]);
 
         // Add payment info
-        $paymentId = $this->adminPaymentService->payByAdmin($admin, get_platform($request));
+        $paymentId = $this->adminPaymentService->payByAdmin(
+            $admin,
+            get_ip($request),
+            get_platform($request)
+        );
 
         $purchase = (new Purchase($user, get_platform($request)))
             ->setServiceId($this->service->getId())

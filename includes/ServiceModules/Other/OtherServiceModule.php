@@ -56,7 +56,7 @@ class OtherServiceModule extends ServiceModule implements
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
-            $purchase->user->getLastIp(),
+            $purchase->getAddressIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
