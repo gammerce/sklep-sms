@@ -39,6 +39,7 @@ class AuthorizeServer implements MiddlewareContract
     {
         $token = $request->query->get("token");
         $steamId = $request->headers->get("Authorization");
+        $ip = $request->get("ip");
 
         $server = $this->serverRepository->findByToken($token);
 
@@ -51,6 +52,9 @@ class AuthorizeServer implements MiddlewareContract
         if ($steamId) {
             $user = $this->userRepository->findBySteamId($steamId);
             if ($user) {
+                // TODO Write test that verifies that IP is updated in a DB
+                $user->setLastIp($ip);
+                $this->userRepository->touch($user);
                 $this->auth->setUser($user);
             }
         }

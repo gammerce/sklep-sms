@@ -68,8 +68,7 @@ class WalletChargeCollection
             get_platform($request)
         );
 
-        // Kupujemy usługę
-        $purchase = (new Purchase($editedUser, get_platform($request)))
+        $purchase = (new Purchase($editedUser, get_ip($request), get_platform($request)))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])

@@ -79,10 +79,7 @@ class PurchaseService
         $paymentOption = $this->getPaymentOption($paymentMethod, $paymentPlatformId);
         $price = $this->priceRepository->get($priceId);
 
-        $user = $this->auth->user();
-        $user->setLastIp($ip);
-
-        $purchase = (new Purchase($user, $platform))
+        $purchase = (new Purchase($this->auth->user(), $ip, $platform))
             ->setServiceId($serviceModule->service->getId())
             ->setDescription(
                 $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())

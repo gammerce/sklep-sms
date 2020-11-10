@@ -576,7 +576,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             get_platform($request)
         );
 
-        $purchase = (new Purchase($user, get_platform($request)))
+        $purchase = (new Purchase($user, get_ip($request), get_platform($request)))
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([

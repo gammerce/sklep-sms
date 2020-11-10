@@ -58,7 +58,7 @@ class PaymentServiceTest extends TestCase
             "quantity" => 20,
         ]);
 
-        $purchase = (new Purchase(new User(), "example"))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -107,7 +107,7 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = (new Purchase(new User(), "example"))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -155,7 +155,7 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = (new Purchase(new User(), "example"))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -189,7 +189,7 @@ class PaymentServiceTest extends TestCase
             "quantity" => null,
         ]);
 
-        $purchase = (new Purchase(new User(), "example"))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,

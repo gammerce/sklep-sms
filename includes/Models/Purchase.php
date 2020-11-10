@@ -107,12 +107,11 @@ class Purchase
      * @param string $platform
      * @param string $ip
      */
-    public function __construct(User $user, $platform, $ip = null)
+    public function __construct(User $user, $platform, $ip)
     {
         $this->user = $user;
         $this->platform = $platform;
-        // TODO Remove it
-        $this->ip = $ip ?: $user->getLastIp();
+        $this->ip = $ip;
         $this->id = generate_id(32);
         $this->paymentSelect = new PaymentSelect();
     }

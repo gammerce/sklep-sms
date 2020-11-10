@@ -84,7 +84,7 @@ class User
         $this->lastActive = $lastActive;
         $this->wallet = $wallet;
         $this->regIp = $regIp;
-        $this->lastIp = $lastIp ?: get_ip();
+        $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
         $this->permissions = collect($permissions)
             ->flatMap(function (Permission $permission) {

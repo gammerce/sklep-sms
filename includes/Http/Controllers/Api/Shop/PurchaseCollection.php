@@ -38,7 +38,7 @@ class PurchaseCollection
         }
 
         $purchase = $purchaseFactory
-            ->create($user, get_platform($request))
+            ->create($user, get_ip($request), get_platform($request))
             ->setServiceId($serviceModule->service->getId())
             ->setDescription(
                 $lang->t("payment_for_service", $serviceModule->service->getNameI18n())
