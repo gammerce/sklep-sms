@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\PaymentTransfer;
 use App\Support\Database;
+use App\Support\Money;
 
 class PaymentTransferRepository
 {
@@ -44,8 +45,8 @@ class PaymentTransferRepository
     {
         return new PaymentTransfer(
             $data["id"],
-            (int) $data["income"],
-            (int) $data["cost"],
+            new Money($data["income"]),
+            new Money($data["cost"]),
             $data["transfer_service"],
             $data["ip"],
             $data["platform"],

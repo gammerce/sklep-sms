@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Managers\GroupManager;
 use App\Models\User;
 use App\Support\Database;
+use App\Support\Money;
 use App\User\Permission;
 
 class UserRepository
@@ -255,7 +256,7 @@ class UserRepository
             $groupsIds,
             $data["regdate"],
             $data["lastactiv"],
-            (int) $data["wallet"],
+            new Money($data["wallet"]),
             $data["regip"],
             $data["lastip"],
             $data["reset_password_key"],

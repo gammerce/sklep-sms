@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\SmsCode;
 use App\Support\Database;
+use App\Support\Money;
 use DateTime;
 
 class SmsCodeRepository
@@ -74,7 +75,7 @@ class SmsCodeRepository
         return new SmsCode(
             (int) $data["id"],
             $data["code"],
-            (int) $data["sms_price"],
+            new Money($data["sms_price"]),
             (bool) $data["free"],
             as_datetime($data["expires_at"])
         );

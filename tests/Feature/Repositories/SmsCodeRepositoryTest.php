@@ -27,7 +27,7 @@ class SmsCodeRepositoryTest extends TestCase
 
         // then
         $this->assertSame("ABCD", $smsCode->getCode());
-        $this->assertSame(50, $smsCode->getSmsPrice());
+        $this->assertSame(50, $smsCode->getSmsPrice()->asInt());
         $this->assertTrue($smsCode->isFree());
         $this->assertSame($date->getTimestamp(), $smsCode->getExpiresAt()->getTimestamp());
     }
@@ -40,7 +40,7 @@ class SmsCodeRepositoryTest extends TestCase
 
         // then
         $this->assertSame("ABCD", $smsCode->getCode());
-        $this->assertSame(100, $smsCode->getSmsPrice());
+        $this->assertSame(100, $smsCode->getSmsPrice()->asInt());
         $this->assertTrue($smsCode->isFree());
         $this->assertNull($smsCode->getExpiresAt());
     }

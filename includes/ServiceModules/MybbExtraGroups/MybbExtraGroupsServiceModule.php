@@ -430,9 +430,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $quantity = $transaction->isForever()
             ? $this->lang->t("forever")
             : $transaction->getQuantity() . " " . $this->service->getTag();
-        $cost = $transaction->getCost()
-            ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t("none");
+        $cost =
+            $this->priceTextService->getPriceText($transaction->getCost()) ?:
+            $this->lang->t("none");
 
         if ($action === "email") {
             return $this->template->renderNoComments(

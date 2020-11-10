@@ -31,8 +31,8 @@ class PaymentTransferRepositoryTest extends TestCase
 
         // then
         $this->assertSame("test", $paymentTransfer->getId());
-        $this->assertSame(1, $paymentTransfer->getIncome());
-        $this->assertSame(2, $paymentTransfer->getCost());
+        $this->assertSame(1, $paymentTransfer->getIncome()->asInt());
+        $this->assertSame(2, $paymentTransfer->getCost()->asInt());
         $this->assertSame("a", $paymentTransfer->getTransferService());
         $this->assertSame("b", $paymentTransfer->getIp());
         $this->assertSame("c", $paymentTransfer->getPlatform());

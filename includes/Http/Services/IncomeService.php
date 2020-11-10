@@ -52,7 +52,8 @@ class IncomeService
                 $data[$date][$serverId] = 0;
             }
 
-            $data[$date][$serverId] += $transaction->getIncome();
+            // Income is never null because we ensure it in SQL query above
+            $data[$date][$serverId] += $transaction->getIncome()->asInt();
         }
 
         return $data;

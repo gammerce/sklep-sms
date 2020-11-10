@@ -492,6 +492,19 @@ function is_list(array $array)
 
 /**
  * @param mixed $value
+ * @return Money|null
+ */
+function as_money($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return new Money($value);
+}
+
+/**
+ * @param mixed $value
  * @return int|null
  */
 function as_int($value)

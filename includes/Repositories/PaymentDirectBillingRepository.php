@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use App\Models\PaymentDirectBilling;
 use App\Support\Database;
+use App\Support\Money;
 
 class PaymentDirectBillingRepository
 {
@@ -63,8 +64,8 @@ class PaymentDirectBillingRepository
         return new PaymentDirectBilling(
             (int) $data["id"],
             (string) $data["external_id"],
-            (int) $data["income"],
-            (int) $data["cost"],
+            new Money($data["income"]),
+            new Money($data["cost"]),
             (string) $data["ip"],
             (string) $data["platform"],
             (bool) $data["free"]

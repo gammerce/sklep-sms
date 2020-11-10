@@ -517,9 +517,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ? $this->lang->t("forever")
             : "{$transaction->getQuantity()} {$this->service->getTag()}";
 
-        $cost = $transaction->getCost()
-            ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t("none");
+        $cost =
+            $this->priceTextService->getPriceText($transaction->getCost()) ?:
+            $this->lang->t("none");
 
         $server = $this->serverManager->getServer($transaction->getServerId());
 
