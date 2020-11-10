@@ -38,10 +38,10 @@ class SmsNumber
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getPrice()
     {
-        return get_sms_cost($this->smsNumber)->asInt();
+        return get_sms_cost($this->smsNumber);
     }
 }

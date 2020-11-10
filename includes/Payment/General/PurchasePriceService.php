@@ -103,7 +103,7 @@ class PurchasePriceService
             return collect($smsModule->getSmsNumbers())->some(function (SmsNumber $smsNumber) use (
                 $price
             ) {
-                return $smsNumber->getPrice() === $price->getSmsPrice();
+                return $smsNumber->getPrice()->equals($price->getSmsPrice());
             });
         }
 

@@ -118,7 +118,7 @@ class SmsChargeWallet implements IChargeWallet
                         $this->priceTextService->getPriceText($smsNumber->getProvision())
                     ),
                     [
-                        "value" => $smsNumber->getPrice(),
+                        "value" => $smsNumber->getPrice()->asInt(),
                     ]
                 );
             })

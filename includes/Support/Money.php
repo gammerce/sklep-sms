@@ -52,12 +52,16 @@ class Money
     }
 
     /**
-     * @param Money $money
+     * @param Money|int $money
      * @return bool
      */
-    public function equals(Money $money)
+    public function equals($money)
     {
-        return $this->value === $money->value;
+        if ($money instanceof Money) {
+            return $money->asInt() === $this->value;
+        }
+
+        return $this->value === $money;
     }
 
     /**

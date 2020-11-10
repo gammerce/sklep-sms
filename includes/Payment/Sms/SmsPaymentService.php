@@ -61,13 +61,13 @@ class SmsPaymentService
 
         $smsNumber = $this->smsPriceService->getNumber($price, $paymentModule);
 
-        $result = $this->tryToUseSmsCode($code, $smsNumber->getPrice());
+        $result = $this->tryToUseSmsCode($code, $smsNumber->getPrice()->asInt());
         if ($result) {
             return $this->storePaymentSms(
                 $paymentModule,
                 $result,
                 $code,
-                $smsNumber->getPrice(),
+                $smsNumber->getPrice()->asInt(),
                 $smsNumber->getNumber(),
                 $ip,
                 $platform
@@ -83,7 +83,7 @@ class SmsPaymentService
                 $this->addSmsCodeToBeReused(
                     $code,
                     $smsPrice->asInt(),
-                    $smsNumber->getPrice(),
+                    $smsNumber->getPrice()->asInt(),
                     $user
                 );
             }
@@ -105,7 +105,7 @@ class SmsPaymentService
             $paymentModule,
             $result,
             $code,
-            $smsNumber->getPrice(),
+            $smsNumber->getPrice()->asInt(),
             $smsNumber->getNumber(),
             $ip,
             $platform

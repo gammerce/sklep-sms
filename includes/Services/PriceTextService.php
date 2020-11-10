@@ -22,20 +22,26 @@ class PriceTextService
     }
 
     /**
-     * @param int|null $price
+     * @param Money|int|null $price
      * @return string
      */
     public function getPriceGrossText($price)
     {
-        return $price !== null
-            ? number_format(($price / 100.0) * $this->settings->getVat(), 2) .
-                    " " .
-                    $this->settings->getCurrency()
-            : null;
+        if ($price === null) {
+            return null;
+        }
+
+        if ($price instanceof Money) {
+            $price = $price->asInt();
+        }
+
+        return number_format(($price / 100.0) * $this->settings->getVat(), 2) .
+            " " .
+            $this->settings->getCurrency();
     }
 
     /**
-     * @param int|Money|null $price
+     * @param Money|int|null $price
      * @return string
      */
     public function getPriceText($price)

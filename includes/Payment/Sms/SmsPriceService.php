@@ -44,7 +44,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equals($smsPrice)) {
                 return true;
             }
         }
@@ -62,7 +62,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equals($smsPrice)) {
                 return $smsNumber;
             }
         }
@@ -80,7 +80,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equals($smsPrice)) {
                 return $smsNumber->getProvision();
             }
         }
