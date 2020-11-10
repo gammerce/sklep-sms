@@ -42,7 +42,7 @@ class TransactionResourceTest extends HttpTestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase($user))->setServiceId("vip")->setPayment([
+        $purchase = (new Purchase($user, "example"))->setServiceId("vip")->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
             Purchase::PAYMENT_PRICE_SMS => 2500,
@@ -125,7 +125,7 @@ class TransactionResourceTest extends HttpTestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($user, "example"))
             ->setServiceId("vip")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
@@ -201,7 +201,7 @@ class TransactionResourceTest extends HttpTestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase(new User()))->setServiceId("vip")->setPayment([
+        $purchase = (new Purchase(new User(), "example"))->setServiceId("vip")->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
             Purchase::PAYMENT_PRICE_SMS => 2500,

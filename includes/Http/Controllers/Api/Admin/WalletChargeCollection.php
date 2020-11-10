@@ -65,7 +65,7 @@ class WalletChargeCollection
         $paymentId = $adminPaymentService->payByAdmin($user, get_platform($request));
 
         // Kupujemy usługę
-        $purchase = (new Purchase($editedUser))
+        $purchase = (new Purchase($editedUser, get_platform($request)))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])

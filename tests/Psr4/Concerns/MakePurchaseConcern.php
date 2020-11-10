@@ -85,7 +85,7 @@ trait MakePurchaseConcern
         /** @var ExtraFlagsServiceModule $serviceModule */
         $serviceModule = $serviceModuleManager->get($serviceId);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "example"))
             ->setServiceId($serviceId)
             ->setEmail($attributes["email"])
             ->setOrder([
@@ -179,7 +179,7 @@ trait MakePurchaseConcern
         /** @var MybbExtraGroupsServiceModule $serviceModule */
         $serviceModule = $serviceModuleManager->get($service->getId());
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "example"))
             ->setServiceId($service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([

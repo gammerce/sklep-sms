@@ -44,7 +44,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($user, "example"))
             ->setServiceId("vip")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
@@ -128,7 +128,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($user, "example"))
             ->setServiceId("vip")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
@@ -214,7 +214,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
             "module" => TPay::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase(new User()))->setServiceId("vip")->setPayment([
+        $purchase = (new Purchase(new User(), "example"))->setServiceId("vip")->setPayment([
             Purchase::PAYMENT_PRICE_TRANSFER => 1000,
         ]);
 
@@ -250,7 +250,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         ]);
         $promoCode = $this->factory->promoCode();
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "example"))
             ->setServiceId("vip")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,

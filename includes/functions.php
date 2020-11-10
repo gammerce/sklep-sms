@@ -153,15 +153,13 @@ function get_ip(Request $request = null)
 }
 
 /**
- * Returns request platform
+ * Provide request platform
  *
- * @param Request|null $request
+ * @param Request $request
  * @return string
  */
-function get_platform(Request $request = null)
+function get_platform(Request $request)
 {
-    /** @var Request $request */
-    $request = $request ?: app()->make(Request::class);
     return $request->headers->get("User-Agent", "");
 }
 

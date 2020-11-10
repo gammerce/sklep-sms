@@ -51,7 +51,8 @@ class PurchaseResource
             $paymentResult = $purchaseService->purchase(
                 $serviceModule,
                 $server,
-                $request->request->all()
+                $request->request->all(),
+                get_platform($request)
             );
         } catch (ValidationException $e) {
             $warnings = $this->formatWarnings($e->warnings);

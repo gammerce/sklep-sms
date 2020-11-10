@@ -546,7 +546,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userServiceAdminAdd(Request $request)
     {
-        $user = $this->auth->user();
+        $admin = $this->auth->user();
         $forever = (bool) $request->request->get("forever");
 
         $validator = new Validator(
@@ -567,11 +567,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
 
         $validated = $validator->validateOrFail();
+        $user = $this->userManager->get($validated["user_id"]);
 
         // Add payment info
-        $paymentId = $this->adminPaymentService->payByAdmin($user, get_platform($request));
+        $paymentId = $this->adminPaymentService->payByAdmin($admin, get_platform($request));
 
-        $purchase = (new Purchase($this->userManager->get($validated["user_id"])))
+        $purchase = (new Purchase($user, get_platform($request)))
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
@@ -586,8 +587,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor(
             "log_user_service_added",
-            $user->getUsername(),
-            $user->getId(),
+            $admin->getUsername(),
+            $admin->getId(),
             $boughtServiceId
         );
     }

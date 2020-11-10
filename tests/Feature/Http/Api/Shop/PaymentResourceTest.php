@@ -57,7 +57,7 @@ class PaymentResourceTest extends HttpTestCase
             "module" => SimPay::MODULE_ID,
         ]);
 
-        $this->purchase = (new Purchase(new User()))
+        $this->purchase = (new Purchase(new User(), "example"))
             ->setServiceId("vip")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_SMS => 500,

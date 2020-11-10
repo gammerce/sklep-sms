@@ -62,7 +62,7 @@ class DirectBillingPaymentServiceTest extends TestCase
             "direct_billing_price" => 190,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,

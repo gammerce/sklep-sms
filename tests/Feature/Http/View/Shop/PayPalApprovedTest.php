@@ -40,7 +40,7 @@ class PayPalApprovedTest extends HttpTestCase
         $paymentToken = "abc123";
 
         $user = $this->factory->user();
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($user, "example"))
             ->setServiceId("charge_wallet")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 500,

@@ -95,10 +95,14 @@ class Purchase
      */
     private $isDeleted = false;
 
-    public function __construct(User $user)
+    /**
+     * @param User $user
+     * @param string $platform
+     */
+    public function __construct(User $user, $platform)
     {
         $this->user = $user;
-        $this->platform = $user->getPlatform();
+        $this->platform = $platform;
         $this->id = generate_id(32);
         $this->paymentSelect = new PaymentSelect();
     }
