@@ -24,7 +24,7 @@ class Money
      */
     public static function fromPrice($price)
     {
-        return new Money((int) price_to_int($price));
+        return new Money(price_to_int($price));
     }
 
     /**
@@ -51,6 +51,18 @@ class Money
         return number_format($this->asFloat(), 2);
     }
 
+    /**
+     * @param Money $money
+     * @return bool
+     */
+    public function equals(Money $money)
+    {
+        return $this->value === $money->value;
+    }
+
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->asPrice();

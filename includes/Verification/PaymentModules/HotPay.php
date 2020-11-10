@@ -87,7 +87,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             }
 
             if (!$this->isValidNumber($number, $netValue)) {
-                throw new BadNumberException(price_to_int($netValue));
+                throw new BadNumberException(Money::fromPrice($netValue));
             }
 
             return new SmsSuccessResult();
@@ -102,7 +102,9 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isValidNumber($number, $netValue)
     {
-        return get_sms_cost($number) === price_to_int($netValue);
+        $numberMoney = get_sms_cost($number);
+        $netMoney = Money::fromPrice($netValue);
+        return $numberMoney->equals($netMoney);
     }
 
     public function prepareTransfer($price, Purchase $purchase)

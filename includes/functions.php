@@ -9,6 +9,7 @@ use App\Payment\General\PaymentOption;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
+use App\Support\Money;
 use App\Support\QueryParticle;
 use App\System\Application;
 use App\System\Auth;
@@ -165,25 +166,26 @@ function get_platform(Request $request)
  * Returns sms cost net by number
  *
  * @param string $number
- * @return int
+ * @return Money
  */
 function get_sms_cost($number)
 {
     if (strlen($number) < 4) {
-        return 0;
+        return new Money(0);
     }
 
     if ($number[0] == "7") {
-        return $number[1] == "0" ? 50 : intval($number[1]) * 100;
+        return $number[1] == "0" ? new Money(50) : new Money(intval($number[1]) * 100);
     }
 
     if ($number[0] == "9") {
-        return intval($number[1] . $number[2]) * 100;
+        return new Money(intval($number[1] . $number[2]) * 100);
     }
 
-    return 0;
+    return new Money(0);
 }
 
+// TODO It should accept Money
 /**
  * Returns sms provision from given net price
  *

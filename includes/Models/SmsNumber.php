@@ -12,7 +12,7 @@ class SmsNumber
     public function __construct($smsNumber, $provision = null)
     {
         $this->smsNumber = $smsNumber;
-        $this->provision = $provision ?: get_sms_provision(get_sms_cost($smsNumber));
+        $this->provision = $provision ?: get_sms_provision(get_sms_cost($smsNumber)->asInt());
     }
 
     /**
@@ -31,11 +31,12 @@ class SmsNumber
         return $this->provision;
     }
 
+    // TODO It should return Money
     /**
      * @return int
      */
     public function getPrice()
     {
-        return get_sms_cost($this->smsNumber);
+        return get_sms_cost($this->smsNumber)->asInt();
     }
 }

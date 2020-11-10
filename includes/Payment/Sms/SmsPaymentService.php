@@ -77,8 +77,15 @@ class SmsPaymentService
         try {
             $result = $paymentModule->verifySms($code, $smsNumber->getNumber());
         } catch (BadNumberException $e) {
-            if ($e->smsPrice !== null) {
-                $this->addSmsCodeToBeReused($code, $e->smsPrice, $smsNumber->getPrice(), $user);
+            $smsPrice = $e->getSmsPrice();
+
+            if ($smsPrice->asInt()) {
+                $this->addSmsCodeToBeReused(
+                    $code,
+                    $smsPrice->asInt(),
+                    $smsNumber->getPrice(),
+                    $user
+                );
             }
 
             throw $e;
