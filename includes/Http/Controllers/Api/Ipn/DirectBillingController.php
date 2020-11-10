@@ -61,7 +61,7 @@ class DirectBillingController
                 "log_external_payment_not_accepted",
                 $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getCost(),
                 $finalizedPayment->getExternalServiceId()
             );
         } catch (InvalidServiceModuleException $e) {

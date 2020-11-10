@@ -123,7 +123,7 @@ class PagePayPalApproved extends Page
                 "log_external_payment_not_accepted",
                 PaymentMethod::TRANSFER(),
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getCost(),
                 $finalizedPayment->getExternalServiceId()
             );
             return false;
@@ -156,7 +156,7 @@ class PagePayPalApproved extends Page
                 "log_external_payment_not_accepted",
                 $purchase->getPaymentOption()->getPaymentMethod(),
                 $finalizedPayment->getOrderId(),
-                $finalizedPayment->getCost() / 100,
+                $finalizedPayment->getCost(),
                 $finalizedPayment->getExternalServiceId()
             );
             return false;

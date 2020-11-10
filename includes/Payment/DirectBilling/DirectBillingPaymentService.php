@@ -59,7 +59,8 @@ class DirectBillingPaymentService
         }
 
         if (
-            $finalizedPayment->getCost() !== $this->directBillingPriceService->getPrice($purchase)
+            $finalizedPayment->getCost()->asInt() !==
+            $this->directBillingPriceService->getPrice($purchase)
         ) {
             throw new InvalidPaidAmountException();
         }
@@ -72,7 +73,7 @@ class DirectBillingPaymentService
         $paymentDirectBilling = $this->paymentDirectBillingRepository->create(
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getIncome(),
-            $finalizedPayment->getCost(),
+            $finalizedPayment->getCost()->asInt(),
             $purchase->getAddressIp(),
             $purchase->getPlatform(),
             $finalizedPayment->isTestMode()
@@ -97,7 +98,7 @@ class DirectBillingPaymentService
             $purchase->getPaymentOption()->getPaymentMethod(),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getCost() / 100,
+            $finalizedPayment->getCost(),
             $finalizedPayment->getExternalServiceId()
         );
 
