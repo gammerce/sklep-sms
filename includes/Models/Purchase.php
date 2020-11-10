@@ -75,6 +75,13 @@ class Purchase
     private $description;
 
     /**
+     * Platform at which a purchase was made
+     *
+     * @var string
+     */
+    private $platform;
+
+    /**
      * Attempt to finalize purchase has been made
      *
      * @var bool
@@ -91,6 +98,7 @@ class Purchase
     public function __construct(User $user)
     {
         $this->user = $user;
+        $this->platform = $user->getPlatform();
         $this->id = generate_id(32);
         $this->paymentSelect = new PaymentSelect();
     }
@@ -199,6 +207,14 @@ class Purchase
     {
         $this->description = $description;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPlatform()
+    {
+        return $this->platform;
     }
 
     /**

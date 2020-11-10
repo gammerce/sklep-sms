@@ -73,6 +73,7 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
+use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class ExtraFlagsServiceModule extends ServiceModule implements
@@ -408,7 +409,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             [
                 "auth_data" => [new RequiredRule(), new ExtraFlagAuthDataRule()],
                 "email" => [
-                    is_server_platform($purchase->user->getPlatform()) ? null : new RequiredRule(),
+                    is_server_platform($purchase->getPlatform()) ? null : new RequiredRule(),
                     new EmailRule(),
                 ],
                 "password" => [
@@ -584,15 +585,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(array $body)
+    public function userServiceAdminAdd(Request $request)
     {
-        $forever = (bool) array_get($body, "forever");
+        $forever = (bool) $request->request->get("forever");
 
         $validator = new Validator(
-            array_merge($body, [
-                "quantity" => as_int(array_get($body, "quantity")),
-                "server_id" => as_int(array_get($body, "server_id")),
-                "user_id" => as_int(array_get($body, "user_id")),
+            array_merge($request->request->all(), [
+                "quantity" => as_int($request->request->get("quantity")),
+                "server_id" => as_int($request->request->get("server_id")),
+                "user_id" => as_int($request->request->get("user_id")),
             ]),
             [
                 "email" => [new EmailRule()],
@@ -608,7 +609,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $validated = $validator->validateOrFail();
 
         $admin = $this->auth->user();
-        $paymentId = $this->adminPaymentService->payByAdmin($admin);
+        $paymentId = $this->adminPaymentService->payByAdmin($admin, get_platform($request));
 
         $purchasingUser = $this->userManager->get($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser))

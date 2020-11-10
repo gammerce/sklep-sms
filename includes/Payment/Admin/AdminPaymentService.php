@@ -16,13 +16,14 @@ class AdminPaymentService
 
     /**
      * @param User $admin
+     * @param string $platform
      * @return int|string
      */
-    public function payByAdmin(User $admin)
+    public function payByAdmin(User $admin, $platform)
     {
         $this->db
             ->statement("INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) VALUES (?, ?, ?)")
-            ->execute([$admin->getId(), $admin->getLastIp(), $admin->getPlatform()]);
+            ->execute([$admin->getId(), $admin->getLastIp(), $platform]);
 
         return $this->db->lastId();
     }

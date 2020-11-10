@@ -90,7 +90,7 @@ function create_dom_element($name, $content = "", array $params = [])
  * @param string $platform
  * @return string
  */
-function get_platform($platform)
+function translate_platform($platform)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -150,6 +150,19 @@ function get_ip(Request $request = null)
     }
 
     return $request->server->get("REMOTE_ADDR");
+}
+
+/**
+ * Returns request platform
+ *
+ * @param Request|null $request
+ * @return string
+ */
+function get_platform(Request $request = null)
+{
+    /** @var Request $request */
+    $request = $request ?: app()->make(Request::class);
+    return $request->headers->get("User-Agent", "");
 }
 
 /**

@@ -41,9 +41,10 @@ class SmsPaymentService
      * @param string|null $code
      * @param int $price
      * @param User $user
+     * @param string $platform
      * @return int
      */
-    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user, $platform)
     {
         if ($price === 0) {
             return $this->storePaymentSms(
@@ -52,7 +53,8 @@ class SmsPaymentService
                 $code,
                 $price,
                 "",
-                $user
+                $user,
+                $platform
             );
         }
 
@@ -66,7 +68,8 @@ class SmsPaymentService
                 $code,
                 $smsNumber->getPrice(),
                 $smsNumber->getNumber(),
-                $user
+                $user,
+                $platform
             );
         }
 
@@ -96,7 +99,8 @@ class SmsPaymentService
             $code,
             $smsNumber->getPrice(),
             $smsNumber->getNumber(),
-            $user
+            $user,
+            $platform
         );
         $this->logger->logWithUser(
             $user,
@@ -116,6 +120,7 @@ class SmsPaymentService
      * @param number|null $price
      * @param string|null $number
      * @param User $user
+     * @param string $platform
      * @return string
      */
     private function storePaymentSms(
@@ -124,7 +129,8 @@ class SmsPaymentService
         $code,
         $price,
         $number,
-        User $user
+        User $user,
+        $platform
     ) {
         $this->db
             ->statement(
@@ -138,7 +144,7 @@ class SmsPaymentService
                 $smsPaymentModule->getSmsCode(),
                 $number,
                 $user->getLastIp(),
-                $user->getPlatform(),
+                $platform,
                 $result->isFree() ? 1 : 0,
             ]);
 

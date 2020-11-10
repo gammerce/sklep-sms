@@ -52,6 +52,7 @@ use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use Exception;
 use PDOException;
+use Symfony\Component\HttpFoundation\Request;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
@@ -543,14 +544,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(array $body)
+    public function userServiceAdminAdd(Request $request)
     {
         $user = $this->auth->user();
-        $forever = (bool) array_get($body, "forever");
+        $forever = (bool) $request->request->get("forever");
 
         $validator = new Validator(
-            array_merge($body, [
-                "quantity" => as_int(array_get($body, "quantity")),
+            array_merge($request->request->all(), [
+                "quantity" => as_int($request->request->get("quantity")),
             ]),
             [
                 "quantity" => $forever
@@ -568,7 +569,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $validated = $validator->validateOrFail();
 
         // Add payment info
-        $paymentId = $this->adminPaymentService->payByAdmin($user);
+        $paymentId = $this->adminPaymentService->payByAdmin($user, get_platform($request));
 
         $purchase = (new Purchase($this->userManager->get($validated["user_id"])))
             ->setServiceId($this->service->getId())
