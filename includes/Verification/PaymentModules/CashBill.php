@@ -4,6 +4,7 @@ namespace App\Verification\PaymentModules;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -107,7 +108,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int($request->request->get("amount"));
+        $amount = Money::fromPrice($request->request->get("amount"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isPaymentValid($request))

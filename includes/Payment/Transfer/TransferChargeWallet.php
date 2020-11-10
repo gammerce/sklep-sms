@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -72,7 +73,7 @@ class TransferChargeWallet implements IChargeWallet
     public function getTransactionView(Transaction $transaction)
     {
         $quantity = $this->priceTextService->getPriceText(
-            price_to_int($transaction->getQuantity())
+            Money::fromPrice($transaction->getQuantity())
         );
         return $this->template->renderNoComments(
             "shop/services/charge_wallet/web_purchase_info_transfer",

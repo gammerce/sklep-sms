@@ -2,6 +2,7 @@
 namespace App\Verification\PaymentModules;
 
 use App\Models\SmsNumber;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -54,7 +55,7 @@ class Hostplay extends PaymentModule implements SupportSms
         }
 
         $content = $response->json();
-        $responseNumber = $this->getSmsNumberByProvision(price_to_int($content["kwota"]));
+        $responseNumber = $this->getSmsNumberByProvision(Money::fromPrice($content["kwota"]));
 
         if (strtoupper($content["status"]) === "OK") {
             if ($responseNumber == $number) {
@@ -96,13 +97,13 @@ class Hostplay extends PaymentModule implements SupportSms
     }
 
     /**
-     * @param int $price
+     * @param Money $price
      * @return string|null
      */
-    private function getSmsNumberByProvision($price)
+    private function getSmsNumberByProvision(Money $price)
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
-            if ($smsNumber->getProvision() === $price) {
+            if ($smsNumber->getProvision() === $price->asInt()) {
                 return $smsNumber->getNumber();
             }
         }

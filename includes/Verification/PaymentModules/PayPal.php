@@ -8,6 +8,7 @@ use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
+use App\Support\Money;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -129,10 +130,10 @@ class PayPal extends PaymentModule implements SupportTransfer
         $captures = array_dot_get($purchaseUnit, "payments.captures") ?: [[]];
         $capture = $captures[0];
         $transactionId = array_dot_get($capture, "custom_id");
-        $cost = price_to_int(
+        $cost = Money::fromPrice(
             array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value")
         );
-        $income = price_to_int(
+        $income = Money::fromPrice(
             array_dot_get($capture, "seller_receivable_breakdown.net_amount.value")
         );
 

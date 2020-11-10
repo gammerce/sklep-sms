@@ -10,6 +10,7 @@ use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -125,7 +126,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int($request->request->get("KWOTA"));
+        $amount = Money::fromPrice($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isTransferValid($request))
@@ -154,8 +155,8 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
     public function finalizeDirectBilling(Request $request)
     {
         // TODO cost should not be equal income
-        $cost = price_to_int($request->request->get("KWOTA"));
-        $income = price_to_int($request->request->get("KWOTA"));
+        $cost = Money::fromPrice($request->request->get("KWOTA"));
+        $income = Money::fromPrice($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isDirectBillingValid($request))

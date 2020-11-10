@@ -7,6 +7,7 @@ use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -146,8 +147,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $this->tryToFetchIps();
 
         $id = $request->request->get("id");
-        $valueGross = price_to_int($request->request->get("valuenet_gross"));
-        $valuePartner = price_to_int($request->request->get("valuepartner"));
+        $valueGross = Money::fromPrice($request->request->get("valuenet_gross"));
+        $valuePartner = Money::fromPrice($request->request->get("valuepartner"));
         $control = $request->request->get("control");
 
         return (new FinalizedPayment())

@@ -24,14 +24,7 @@ class Money
      */
     public static function fromPrice($price)
     {
-        if ($price === null || $price === "") {
-            $price = 0;
-        }
-
-        // We do it that way because of the floating point issues
-        $value = (int) str_replace(".", "", number_format($price, 2));
-
-        return new Money($value);
+        return new Money((int) price_to_int($price));
     }
 
     /**

@@ -58,10 +58,9 @@ class WalletChargeCollection
         $editedUser = $userManager->get($userId);
         $quantity = price_to_int($validated["quantity"]);
 
-        // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
+        // Make sure wallet value is non-negative after top-up
         $quantity = max($quantity, -$editedUser->getWallet()->asInt());
 
-        // Dodawanie informacji o płatności do bazy
         $paymentId = $adminPaymentService->payByAdmin(
             $user,
             get_ip($request),

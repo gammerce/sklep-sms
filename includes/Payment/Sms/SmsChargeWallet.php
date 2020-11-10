@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -87,7 +88,7 @@ class SmsChargeWallet implements IChargeWallet
     public function getTransactionView(Transaction $transaction)
     {
         $quantity = $this->priceTextService->getPriceText(
-            price_to_int($transaction->getQuantity())
+            Money::fromPrice($transaction->getQuantity())
         );
         $desc = $this->lang->t("wallet_was_charged", $quantity);
 

@@ -3,6 +3,7 @@ namespace App\Verification\PaymentModules;
 
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\DataField;
@@ -48,7 +49,7 @@ class TPay extends PaymentModule implements SupportTransfer
     public function finalizeTransfer(Request $request)
     {
         // e.g. "40.80"
-        $amount = price_to_int($request->request->get("tr_amount"));
+        $amount = Money::fromPrice($request->request->get("tr_amount"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isPaymentValid($request))
