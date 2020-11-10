@@ -59,7 +59,7 @@ class WalletChargeCollection
         $quantity = price_to_int($validated["quantity"]);
 
         // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
-        $quantity = max($quantity, -$editedUser->getWallet());
+        $quantity = max($quantity, -$editedUser->getWallet()->asInt());
 
         // Dodawanie informacji o płatności do bazy
         $paymentId = $adminPaymentService->payByAdmin(

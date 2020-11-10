@@ -28,7 +28,7 @@ class WalletChargeCollectionTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("charged", $json["return_id"]);
         $freshUser = $userRepository->get($user->getId());
-        $this->assertSame(1100, $freshUser->getWallet());
+        $this->assertSame(1100, $freshUser->getWallet()->asInt());
     }
 
     /** @test */

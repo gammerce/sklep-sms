@@ -24,7 +24,7 @@ class WalletPaymentService
      */
     public function payWithWallet($cost, User $user, $ip, $platform)
     {
-        if ($cost > $user->getWallet()) {
+        if ($cost > $user->getWallet()->asInt()) {
             throw new NotEnoughFundsException();
         }
 
@@ -47,6 +47,6 @@ class WalletPaymentService
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
             ->execute([$quantity, $user->getId()]);
 
-        $user->setWallet($user->getWallet() + $quantity);
+        $user->setWallet($user->getWallet()->asInt() + $quantity);
     }
 }

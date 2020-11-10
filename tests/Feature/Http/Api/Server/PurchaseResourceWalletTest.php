@@ -97,7 +97,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $this->assertSameEnum(PaymentMethod::WALLET(), $boughtService->getMethod());
 
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertEquals(9900, $freshUser->getWallet());
+        $this->assertEquals(9900, $freshUser->getWallet()->asInt());
         $this->assertEquals($this->ip, $freshUser->getLastIp());
     }
 
@@ -144,7 +144,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
         );
 
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertEquals(99, $freshUser->getWallet());
+        $this->assertEquals(99, $freshUser->getWallet()->asInt());
     }
 
     /** @test */
@@ -235,6 +235,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
             $json
         );
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertEquals(10000, $freshUser->getWallet());
+        $this->assertEquals(10000, $freshUser->getWallet()->asInt());
     }
 }

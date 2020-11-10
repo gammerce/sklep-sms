@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Service;
+use App\Support\Money;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -34,14 +35,20 @@ class PriceTextService
     }
 
     /**
-     * @param int|null $price
+     * @param int|Money|null $price
      * @return string
      */
     public function getPriceText($price)
     {
-        return $price !== null
-            ? number_format($price / 100.0, 2) . " " . $this->settings->getCurrency()
-            : null;
+        if ($price === null) {
+            return null;
+        }
+
+        if ($price instanceof Money) {
+            return $price->asPrice() . " " . $this->settings->getCurrency();
+        }
+
+        return number_format($price / 100.0, 2) . " " . $this->settings->getCurrency();
     }
 
     /**

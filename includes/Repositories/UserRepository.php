@@ -67,7 +67,7 @@ class UserRepository
                 (string) $user->getSurname(),
                 (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
-                (int) $user->getWallet(),
+                $user->getWallet()->asInt(),
                 $user->getSteamId() ?: null,
                 $user->getId(),
             ]);

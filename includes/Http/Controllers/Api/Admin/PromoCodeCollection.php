@@ -46,9 +46,9 @@ class PromoCodeCollection
         $quantityType = new QuantityType($validated["quantity_type"]);
 
         if ($quantityType->equals(QuantityType::FIXED())) {
-            $quantity = Money::fromPrice($validated["quantity"]);
+            $quantity = Money::fromPrice($validated["quantity"])->asInt();
         } else {
-            $quantity = Money::fromInt($validated["quantity"]);
+            $quantity = as_int($validated["quantity"]);
         }
 
         $usageLimit = as_int($validated["usage_limit"]);
@@ -64,7 +64,7 @@ class PromoCodeCollection
         $promoCode = $promoCodeRepository->create(
             $code,
             $quantityType,
-            $quantity->asInt(),
+            $quantity,
             $usageLimit,
             $expiresAt,
             $serviceId,

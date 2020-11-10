@@ -79,7 +79,7 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertSame(4080, $freshUser->getWallet());
+        $this->assertSame(4080, $freshUser->getWallet()->asInt());
     }
 
     /** @test */
@@ -135,7 +135,7 @@ class ChargeWalletTest extends HttpTestCase
         $response = $this->post("/api/ipn/direct-billing/{$paymentPlatform->getId()}", $ipnBody);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertSame(150, $freshUser->getWallet());
+        $this->assertSame(150, $freshUser->getWallet()->asInt());
     }
 
     /** @test */
@@ -168,6 +168,6 @@ class ChargeWalletTest extends HttpTestCase
         ]);
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertSame(326, $freshUser->getWallet());
+        $this->assertSame(326, $freshUser->getWallet()->asInt());
     }
 }
