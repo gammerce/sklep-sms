@@ -185,16 +185,19 @@ function get_sms_cost($number)
     return new Money(0);
 }
 
-// TODO It should accept Money
 /**
  * Returns sms provision from given net price
  *
- * @param int $smsPrice
- * @return int
+ * @param Money|int $smsPrice
+ * @return Money
  */
 function get_sms_provision($smsPrice)
 {
-    return (int) ceil($smsPrice / 2);
+    if ($smsPrice instanceof Money) {
+        $smsPrice = $smsPrice->asInt();
+    }
+
+    return new Money(ceil($smsPrice / 2));
 }
 
 function hash_password($password, $salt)

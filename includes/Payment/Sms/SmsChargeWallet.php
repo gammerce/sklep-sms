@@ -78,10 +78,9 @@ class SmsChargeWallet implements IChargeWallet
             Purchase::PAYMENT_PRICE_SMS => $smsPrice,
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
-                $smsPrice,
-                $smsPaymentModule
-            ),
+            Purchase::ORDER_QUANTITY => $this->smsPriceService
+                ->getProvision($smsPrice, $smsPaymentModule)
+                ->asInt(),
         ]);
     }
 
@@ -99,7 +98,7 @@ class SmsChargeWallet implements IChargeWallet
                 "smsNumber" => $transaction->getSmsNumber(),
                 "smsText" => $transaction->getSmsText(),
                 "smsCode" => $transaction->getSmsCode(),
-                "cost" => $this->priceTextService->getPriceText($transaction->getCost() ?: 0),
+                "cost" => $this->priceTextService->getPriceText($transaction->getCost()),
             ]
         );
     }

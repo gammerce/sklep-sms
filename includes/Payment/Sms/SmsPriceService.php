@@ -5,6 +5,7 @@ use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\PromoCode\PromoCodeService;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 
@@ -72,7 +73,7 @@ class SmsPriceService
     /**
      * @param int $smsPrice
      * @param SupportSms $paymentModule
-     * @return int
+     * @return Money
      */
     public function getProvision($smsPrice, SupportSms $paymentModule)
     {

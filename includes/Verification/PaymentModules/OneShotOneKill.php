@@ -119,7 +119,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     private function getSmsNumberByProvision(Money $price)
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
-            if ($smsNumber->getProvision() === $price->asInt()) {
+            if ($smsNumber->getProvision()->equals($price)) {
                 return $smsNumber->getNumber();
             }
         }

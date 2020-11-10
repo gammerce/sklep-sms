@@ -266,7 +266,6 @@ class Transaction
         return $this->platform;
     }
 
-    // TODO Change it to Money
     /**
      * @return int
      */
@@ -275,7 +274,6 @@ class Transaction
         return $this->income;
     }
 
-    // TODO Change it to Money
     /**
      * @return int
      */

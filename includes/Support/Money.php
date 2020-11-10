@@ -7,7 +7,7 @@ class Money
     private $value;
 
     /**
-     * @param Money|string|int|null $value
+     * @param Money|string|float|int|null $value
      */
     public function __construct($value)
     {

@@ -147,7 +147,7 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($price, $smsPaymentModule),
+                $this->smsPriceService->getProvision($price, $smsPaymentModule)->asInt(),
                 $this->smsPriceService->getGross($price),
                 $smsPaymentModule->getSmsCode(),
                 $number,
