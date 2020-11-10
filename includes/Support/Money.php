@@ -9,7 +9,7 @@ class Money
     /**
      * @param int|Money $value
      */
-    public function __construct($value)
+    private function __construct($value)
     {
         if ($value instanceof Money) {
             $this->value = $value->asInt();
@@ -30,6 +30,19 @@ class Money
 
         // We do it that way because of the floating point issues
         $value = (int) str_replace(".", "", number_format($price, 2));
+
+        return new Money($value);
+    }
+
+    /**
+     * @param int $value
+     * @return Money|null
+     */
+    public static function fromInt($value)
+    {
+        if ($value === null || $value === "") {
+            return null;
+        }
 
         return new Money($value);
     }

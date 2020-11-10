@@ -63,7 +63,8 @@ class FinalizedPayment
 
     public function __construct()
     {
-        $this->cost = new Money(0);
+        $this->cost = Money::fromInt(0);
+        $this->income = Money::fromInt(0);
     }
 
     /**
@@ -116,7 +117,7 @@ class FinalizedPayment
      */
     public function setCost($cost)
     {
-        $this->cost = new Money($cost);
+        $this->cost = Money::fromInt($cost);
         return $this;
     }
 
@@ -206,7 +207,7 @@ class FinalizedPayment
      */
     public function setIncome($income)
     {
-        $this->income = new Money($income);
+        $this->income = Money::fromInt($income);
         return $this;
     }
 }

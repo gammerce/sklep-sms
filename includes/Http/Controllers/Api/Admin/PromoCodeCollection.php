@@ -15,6 +15,7 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
+use App\Support\Money;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -45,9 +46,9 @@ class PromoCodeCollection
         $quantityType = new QuantityType($validated["quantity_type"]);
 
         if ($quantityType->equals(QuantityType::FIXED())) {
-            $quantity = price_to_int($validated["quantity"]);
+            $quantity = Money::fromPrice($validated["quantity"]);
         } else {
-            $quantity = as_int($validated["quantity"]);
+            $quantity = Money::fromInt($validated["quantity"]);
         }
 
         $usageLimit = as_int($validated["usage_limit"]);
@@ -63,7 +64,7 @@ class PromoCodeCollection
         $promoCode = $promoCodeRepository->create(
             $code,
             $quantityType,
-            $quantity,
+            $quantity->asInt(),
             $usageLimit,
             $expiresAt,
             $serviceId,
