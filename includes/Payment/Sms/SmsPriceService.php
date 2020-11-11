@@ -31,13 +31,13 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
      * @return bool
      */
-    public function isPriceAvailable($smsPrice, SupportSms $paymentModule)
+    public function isPriceAvailable(Money $smsPrice, SupportSms $paymentModule)
     {
-        if ($smsPrice === 0) {
+        if ($smsPrice->equal(0)) {
             return true;
         }
 
@@ -53,7 +53,7 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money|int $smsPrice
      * @param SupportSms $paymentModule
      * @return SmsNumber|null
      */
@@ -99,11 +99,11 @@ class SmsPriceService
 
     /**
      * @param Purchase $purchase
-     * @return int|null
+     * @return Money|null
      */
     public function getPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
 
         if ($price === null) {
             return null;
@@ -115,7 +115,7 @@ class SmsPriceService
 
             // We should return value only if a discount covers 100% of a price
             if ($discountedPrice->equal(0)) {
-                return 0;
+                return new Money(0);
             }
 
             // Sms payment should not be available if promo code is applied
@@ -131,7 +131,7 @@ class SmsPriceService
      */
     public function getOldAndNewPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {

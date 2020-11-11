@@ -103,7 +103,7 @@ class SmsPaymentMethod implements IPaymentMethod
             $paymentId = $this->smsPaymentService->payWithSms(
                 $paymentModule,
                 $purchase->getPayment(Purchase::PAYMENT_SMS_CODE),
-                $price,
+                $price->asInt(),
                 $purchase->user,
                 $purchase->getAddressIp(),
                 $purchase->getPlatform()

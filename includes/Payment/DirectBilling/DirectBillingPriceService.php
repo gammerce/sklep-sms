@@ -47,7 +47,7 @@ class DirectBillingPriceService
      */
     public function getOldAndNewPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {
@@ -55,7 +55,7 @@ class DirectBillingPriceService
 
             return [
                 "price" => $this->priceTextService->getPriceText($discountedPrice),
-                "old_price" => $this->priceTextService->getPlainPrice($price),
+                "old_price" => $price->asPrice(),
             ];
         }
 

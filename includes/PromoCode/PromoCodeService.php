@@ -71,10 +71,10 @@ class PromoCodeService
 
     /**
      * @param PromoCode $promoCode
-     * @param Money|int $price
+     * @param Money $price
      * @return Money
      */
-    public function applyDiscount(PromoCode $promoCode, $price)
+    public function applyDiscount(PromoCode $promoCode, Money $price)
     {
         switch ($promoCode->getQuantityType()) {
             case QuantityType::FIXED():

@@ -125,7 +125,7 @@ class SmsPaymentService
      * @param SupportSms $smsPaymentModule
      * @param SmsSuccessResult $result
      * @param string|null $code
-     * @param number|null $price
+     * @param int|null $price
      * @param string|null $number
      * @param string $ip
      * @param string $platform
