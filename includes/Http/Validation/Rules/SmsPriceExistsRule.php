@@ -17,7 +17,7 @@ class SmsPriceExistsRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!$this->smsPriceRepository->exists($value)) {
+        if (!$this->smsPriceRepository->exists(as_money($value))) {
             return [$this->lang->t('invalid_price')];
         }
 

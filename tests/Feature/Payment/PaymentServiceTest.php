@@ -11,6 +11,7 @@ use App\Payment\General\PaymentService;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\SmsCodeRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\Support\Money;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\Pukawka;
 use DateTime;
@@ -58,7 +59,7 @@ class PaymentServiceTest extends TestCase
             "quantity" => 20,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -99,7 +100,11 @@ class PaymentServiceTest extends TestCase
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
         ]);
-        $smsCode = $smsCodeRepository->create("QWERTY", 200, false);
+        $smsCode = $this->factory->smsCode([
+            "code" => "QWERTY",
+            "sms_price" => new Money(200),
+            "free" => false,
+        ]);
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
@@ -107,7 +112,7 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -141,13 +146,15 @@ class PaymentServiceTest extends TestCase
 
         $this->mockCSSSettiGetData();
 
-        /** @var SmsCodeRepository $smsCodeRepository */
-        $smsCodeRepository = $this->app->make(SmsCodeRepository::class);
-
         $paymentPlatform = $this->factory->paymentPlatform([
             "module" => Cssetti::MODULE_ID,
         ]);
-        $smsCodeRepository->create("QWERTY", 200, false, new DateTime("2020-02-02 10:00:00"));
+        $this->factory->smsCode([
+            "code" => "QWERTY",
+            "sms_price" => new Money(200),
+            "free" => false,
+            "expires" => new DateTime("2020-02-02 10:00:00"),
+        ]);
         $serviceId = "vip";
         $server = $this->factory->server();
         $price = $this->factory->price([
@@ -155,7 +162,7 @@ class PaymentServiceTest extends TestCase
             "sms_price" => 200,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -189,7 +196,7 @@ class PaymentServiceTest extends TestCase
             "quantity" => null,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,

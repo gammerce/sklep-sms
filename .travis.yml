@@ -30,6 +30,7 @@ before_install:
 
 install:
   - pip install pre-commit
+  - composer self-update --1
   - composer install --no-interaction
   - composer dump
   - yarn install

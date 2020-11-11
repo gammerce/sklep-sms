@@ -24,7 +24,7 @@ class DatabaseSetup
         $this->db->createDatabaseIfNotExists('sklep_sms_test');
         $this->db->selectDb('sklep_sms_test');
         $this->db->dropAllTables();
-        $this->databaseMigration->setup('abc123', 'admin', 'abc123');
+        $this->databaseMigration->setup('abc123', 'admin', 'abc123', '192.0.2.1');
     }
 
     public function run()
@@ -33,7 +33,7 @@ class DatabaseSetup
         $this->db->createDatabaseIfNotExists('sklep_sms');
         $this->db->selectDb('sklep_sms');
         $this->db->dropAllTables();
-        $this->databaseMigration->setup('abc123', 'admin', 'abc123');
+        $this->databaseMigration->setup('abc123', 'admin', 'abc123', '192.0.2.1');
         $this->db->query(
             "INSERT INTO `ss_payment_platforms` (name, module) VALUES ('cssetti', 'cssetti')"
         );

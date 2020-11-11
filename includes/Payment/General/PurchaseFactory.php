@@ -17,11 +17,13 @@ class PurchaseFactory
 
     /**
      * @param User $user
+     * @param string $ip
+     * @param string $platform
      * @return Purchase
      */
-    public function create(User $user)
+    public function create(User $user, $ip, $platform)
     {
-        $purchase = new Purchase($user);
+        $purchase = new Purchase($user, $ip, $platform);
 
         if ($user->getEmail()) {
             $purchase->setEmail($user->getEmail());

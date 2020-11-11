@@ -5,6 +5,7 @@ use App\Http\Validation\BaseRule;
 use App\Loggers\FileLogger;
 use App\Requesting\Requester;
 use App\System\Settings;
+use Symfony\Component\HttpFoundation\Request;
 
 class CaptchaRule extends BaseRule
 {
@@ -31,7 +32,7 @@ class CaptchaRule extends BaseRule
             "https://license.sklep-sms.pl/v1/captcha",
             [
                 "response" => $value,
-                "remoteip" => get_ip(),
+                "remoteip" => get_ip(app()->make(Request::class)),
             ],
             [
                 "Authorization" => $this->settings->getLicenseToken(),

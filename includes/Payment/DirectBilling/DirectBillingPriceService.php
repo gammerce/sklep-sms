@@ -4,6 +4,7 @@ namespace App\Payment\DirectBilling;
 use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
 use App\Services\PriceTextService;
+use App\Support\Money;
 
 class DirectBillingPriceService
 {
@@ -23,11 +24,11 @@ class DirectBillingPriceService
 
     /**
      * @param Purchase $purchase
-     * @return int|null
+     * @return Money|null
      */
     public function getPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         if ($price === null) {
             return null;
         }
@@ -46,7 +47,7 @@ class DirectBillingPriceService
      */
     public function getOldAndNewPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {
@@ -54,7 +55,7 @@ class DirectBillingPriceService
 
             return [
                 "price" => $this->priceTextService->getPriceText($discountedPrice),
-                "old_price" => $this->priceTextService->getPlainPrice($price),
+                "old_price" => $price->asPrice(),
             ];
         }
 

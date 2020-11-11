@@ -1,8 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
 use App\User\Permission;
-use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
@@ -39,7 +39,7 @@ class User
     /** @var string */
     private $lastActive;
 
-    /** @var int */
+    /** @var Money */
     private $wallet;
 
     /** @var string */
@@ -54,9 +54,6 @@ class User
     /** @var Permission[] */
     private $permissions;
 
-    /** @var string */
-    private $platform;
-
     public function __construct(
         $id = null,
         $username = null,
@@ -69,15 +66,12 @@ class User
         $groups = [],
         $regDate = null,
         $lastActive = null,
-        $wallet = null,
+        Money $wallet = null,
         $regIp = null,
         $lastIp = null,
         $resetPasswordKey = null,
         array $permissions = []
     ) {
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
@@ -89,11 +83,10 @@ class User
         $this->groups = $groups;
         $this->regDate = $regDate;
         $this->lastActive = $lastActive;
-        $this->wallet = $wallet;
+        $this->wallet = new Money($wallet);
         $this->regIp = $regIp;
-        $this->lastIp = $lastIp ?: get_ip();
+        $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
-        $this->platform = $request->headers->get("User-Agent", "");
         $this->permissions = collect($permissions)
             ->flatMap(function (Permission $permission) {
                 return [$permission->getKey() => $permission];
@@ -227,7 +220,7 @@ class User
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getWallet()
     {
@@ -235,11 +228,11 @@ class User
     }
 
     /**
-     * @param int $wallet
+     * @param Money|int $wallet
      */
     public function setWallet($wallet)
     {
-        $this->wallet = $wallet;
+        $this->wallet = new Money($wallet);
     }
 
     /**
@@ -324,22 +317,6 @@ class User
     public function removePermissions()
     {
         $this->permissions = [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getPlatform()
-    {
-        return $this->platform;
-    }
-
-    /**
-     * @param string $platform
-     */
-    public function setPlatform($platform)
-    {
-        $this->platform = $platform;
     }
 
     /**

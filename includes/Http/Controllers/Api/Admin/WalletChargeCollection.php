@@ -58,14 +58,16 @@ class WalletChargeCollection
         $editedUser = $userManager->get($userId);
         $quantity = price_to_int($validated["quantity"]);
 
-        // Zmiana wartości quantity, aby stan konta nie zszedł poniżej zera
-        $quantity = max($quantity, -$editedUser->getWallet());
+        // Make sure wallet value is non-negative after top-up
+        $quantity = max($quantity, -$editedUser->getWallet()->asInt());
 
-        // Dodawanie informacji o płatności do bazy
-        $paymentId = $adminPaymentService->payByAdmin($user);
+        $paymentId = $adminPaymentService->payByAdmin(
+            $user,
+            get_ip($request),
+            get_platform($request)
+        );
 
-        // Kupujemy usługę
-        $purchase = (new Purchase($editedUser))
+        $purchase = (new Purchase($editedUser, get_ip($request), get_platform($request)))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])

@@ -125,6 +125,7 @@ return [
     'log_service_deleted' => 'Service has been deleted. ID: {1}',
     'log_service_edited' => 'Service has been edited. ID: {1}',
     'log_settings_edited' => 'Shop settings has been edited.',
+    'log_sms_code_added' => 'SMS code has been added. Code: {1}, Amount: {2}',
     'log_sms_code_deleted' => 'SMS code has been deleted. ID: {1}',
     'log_user_deleted' => 'User has been deleted. ID: {1}',
     'log_user_edited' => 'User has been edited. ID: {1}',

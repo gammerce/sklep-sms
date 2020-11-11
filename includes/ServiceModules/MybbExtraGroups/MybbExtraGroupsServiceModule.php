@@ -52,6 +52,7 @@ use App\View\Html\Wrapper;
 use App\View\Renders\PurchasePriceRenderer;
 use Exception;
 use PDOException;
+use Symfony\Component\HttpFoundation\Request;
 
 class MybbExtraGroupsServiceModule extends ServiceModule implements
     IServiceAdminManage,
@@ -352,9 +353,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if ($quantityPrice) {
             $purchase->setPayment([
-                Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
-                Purchase::PAYMENT_PRICE_TRANSFER => $quantityPrice->transferPrice,
-                Purchase::PAYMENT_PRICE_DIRECT_BILLING => $quantityPrice->directBillingPrice,
+                Purchase::PAYMENT_PRICE_SMS => as_int($quantityPrice->smsPrice),
+                Purchase::PAYMENT_PRICE_TRANSFER => as_int($quantityPrice->transferPrice),
+                Purchase::PAYMENT_PRICE_DIRECT_BILLING => as_int(
+                    $quantityPrice->directBillingPrice
+                ),
             ]);
         }
     }
@@ -407,7 +410,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
-            $purchase->user->getLastIp(),
+            $purchase->getAddressIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
             $this->service->getId(),
@@ -429,9 +432,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $quantity = $transaction->isForever()
             ? $this->lang->t("forever")
             : $transaction->getQuantity() . " " . $this->service->getTag();
-        $cost = $transaction->getCost()
-            ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t("none");
+        $cost =
+            $this->priceTextService->getPriceText($transaction->getCost()) ?:
+            $this->lang->t("none");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
@@ -543,14 +546,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(array $body)
+    public function userServiceAdminAdd(Request $request)
     {
-        $user = $this->auth->user();
-        $forever = (bool) array_get($body, "forever");
+        $admin = $this->auth->user();
+        $forever = (bool) $request->request->get("forever");
 
         $validator = new Validator(
-            array_merge($body, [
-                "quantity" => as_int(array_get($body, "quantity")),
+            array_merge($request->request->all(), [
+                "quantity" => as_int($request->request->get("quantity")),
             ]),
             [
                 "quantity" => $forever
@@ -566,11 +569,16 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
 
         $validated = $validator->validateOrFail();
+        $user = $this->userManager->get($validated["user_id"]);
 
         // Add payment info
-        $paymentId = $this->adminPaymentService->payByAdmin($user);
+        $paymentId = $this->adminPaymentService->payByAdmin(
+            $admin,
+            get_ip($request),
+            get_platform($request)
+        );
 
-        $purchase = (new Purchase($this->userManager->get($validated["user_id"])))
+        $purchase = (new Purchase($user, get_ip($request), get_platform($request)))
             ->setServiceId($this->service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
@@ -585,8 +593,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor(
             "log_user_service_added",
-            $user->getUsername(),
-            $user->getId(),
+            $admin->getUsername(),
+            $admin->getId(),
             $boughtServiceId
         );
     }

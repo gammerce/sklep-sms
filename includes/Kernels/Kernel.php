@@ -5,10 +5,10 @@ use App\Routing\RoutesManager;
 use App\System\Application;
 use App\System\ExceptionHandlerContract;
 use Exception;
-use Throwable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Throwable;
 
 class Kernel implements KernelContract
 {

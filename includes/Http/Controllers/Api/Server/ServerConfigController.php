@@ -86,7 +86,7 @@ class ServerConfigController
             return [
                 "i" => $price->getId(),
                 "s" => $price->getServiceId(),
-                "p" => $price->getSmsPrice(),
+                "p" => as_int($price->getSmsPrice()),
                 // Replace null with -1 cause it's easier to handle it by plugins
                 "q" => $price->getQuantity() !== null ? $price->getQuantity() : -1,
                 // Replace null with 0 cause it's easier to handle it by plugins

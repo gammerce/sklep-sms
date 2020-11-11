@@ -67,6 +67,7 @@ use App\Http\Controllers\View\IndexController;
 use App\Http\Controllers\View\LanguageJsController;
 use App\Http\Controllers\View\SetupController;
 use App\Http\Middlewares\AuthorizeServer;
+use App\Http\Middlewares\AuthorizeServerUser;
 use App\Http\Middlewares\AuthorizeUser;
 use App\Http\Middlewares\BlockOnInvalidLicense;
 use App\Http\Middlewares\JsonBody;
@@ -152,7 +153,7 @@ class RoutesManager
 
                 $r->addGroup(
                     [
-                        "middlewares" => [AuthorizeServer::class],
+                        "middlewares" => [AuthorizeServer::class, AuthorizeServerUser::class],
                     ],
                     function (RouteCollector $r) {
                         $r->post('/api/server/purchase', [

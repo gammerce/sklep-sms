@@ -1,22 +1,22 @@
 <?php
 namespace App\ServiceModules\Interfaces;
 
+use Symfony\Component\HttpFoundation\Request;
+
 /**
- * Obsługa dodawania usług użytkownika w PA
+ * Handle adding user service in ACP
  */
 interface IServiceUserServiceAdminAdd
 {
     /**
-     * Metoda sprawdza dane formularza podczas dodawania użytkownikowi usługi w PA
-     * i gdy wszystko jest okej, to ją dodaje.
+     * Validate form and add user service
      *
-     * @param array $body
+     * @param Request $request
      */
-    public function userServiceAdminAdd(array $body);
+    public function userServiceAdminAdd(Request $request);
 
     /**
-     * Metoda powinna zwrócić dodatkowe pola do uzupełnienia przez admina
-     * podczas dodawania usługi użytkownikowi
+     * Provide additional user service add form fields
      *
      * @return string
      */

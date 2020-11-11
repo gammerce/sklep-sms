@@ -36,7 +36,7 @@ class PriceCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $price = $this->priceRepository->get($json['data']['id']);
         $this->assertNotNull($price);
-        $this->assertSame(200, $price->getSmsPrice());
+        $this->assertEqualsMoney(200, $price->getSmsPrice());
         $this->assertSame(20, $price->getQuantity());
         $this->assertSame($server->getId(), $price->getServerId());
         $this->assertSame('vip', $price->getServiceId());

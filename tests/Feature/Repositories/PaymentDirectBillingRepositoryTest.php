@@ -32,8 +32,8 @@ class PaymentDirectBillingRepositoryTest extends TestCase
 
         // then
         $this->assertSame("test", $paymentTransfer->getExternalId());
-        $this->assertSame(1, $paymentTransfer->getIncome());
-        $this->assertSame(2, $paymentTransfer->getCost());
+        $this->assertEqualsMoney(1, $paymentTransfer->getIncome());
+        $this->assertEqualsMoney(2, $paymentTransfer->getCost());
         $this->assertSame("192.0.2.1", $paymentTransfer->getIp());
         $this->assertSame("platform", $paymentTransfer->getPlatform());
         $this->assertFalse($paymentTransfer->isFree());

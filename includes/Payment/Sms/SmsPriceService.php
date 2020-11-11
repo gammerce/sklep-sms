@@ -5,6 +5,7 @@ use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\PromoCode\PromoCodeService;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;
 
@@ -30,20 +31,20 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
      * @return bool
      */
-    public function isPriceAvailable($smsPrice, SupportSms $paymentModule)
+    public function isPriceAvailable(Money $smsPrice, SupportSms $paymentModule)
     {
-        if ($smsPrice === 0) {
+        if ($smsPrice->equal(0)) {
             return true;
         }
 
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return true;
             }
         }
@@ -52,16 +53,16 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
      * @return SmsNumber|null
      */
-    public function getNumber($smsPrice, SupportSms $paymentModule)
+    public function getNumber(Money $smsPrice, SupportSms $paymentModule)
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return $smsNumber;
             }
         }
@@ -70,16 +71,16 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
-     * @return int
+     * @return Money
      */
-    public function getProvision($smsPrice, SupportSms $paymentModule)
+    public function getProvision(Money $smsPrice, SupportSms $paymentModule)
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice() === $smsPrice) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return $smsNumber->getProvision();
             }
         }
@@ -88,21 +89,21 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
-     * @return int
+     * @param Money $smsPrice
+     * @return Money
      */
-    public function getGross($smsPrice)
+    public function getGross(Money $smsPrice)
     {
-        return (int) ceil($smsPrice * $this->settings->getVat());
+        return new Money(ceil($smsPrice->asInt() * $this->settings->getVat()));
     }
 
     /**
      * @param Purchase $purchase
-     * @return int|null
+     * @return Money|null
      */
     public function getPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
 
         if ($price === null) {
             return null;
@@ -112,8 +113,9 @@ class SmsPriceService
         if ($promoCode) {
             $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
 
-            if ($discountedPrice === 0) {
-                return 0;
+            // We should return value only if a discount covers 100% of a price
+            if ($discountedPrice->equal(0)) {
+                return new Money(0);
             }
 
             // Sms payment should not be available if promo code is applied
@@ -129,7 +131,7 @@ class SmsPriceService
      */
     public function getOldAndNewPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_SMS);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {

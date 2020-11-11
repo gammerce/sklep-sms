@@ -5,6 +5,9 @@ class PlatformCell extends Cell
 {
     public function __construct($platform)
     {
-        parent::__construct((new Div(get_platform($platform)))->addClass("one_line"), "platform");
+        parent::__construct(
+            (new Div(translate_platform($platform)))->addClass("one_line"),
+            "platform"
+        );
     }
 }

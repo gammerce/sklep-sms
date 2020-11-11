@@ -9,6 +9,7 @@ use App\Payment\General\PaymentOption;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
+use App\Support\Money;
 use App\Support\QueryParticle;
 use App\System\Application;
 use App\System\Auth;
@@ -90,7 +91,7 @@ function create_dom_element($name, $content = "", array $params = [])
  * @param string $platform
  * @return string
  */
-function get_platform($platform)
+function translate_platform($platform)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -117,13 +118,11 @@ function is_server_platform($platform)
 }
 
 /**
- * @param Request|null $request
+ * @param Request $request
  * @return string|null
  */
-function get_ip(Request $request = null)
+function get_ip(Request $request)
 {
-    $request = $request ?: app()->make(Request::class);
-
     if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
         $cfIpRanges = [
             "103.21.244.0/22",
@@ -153,37 +152,48 @@ function get_ip(Request $request = null)
 }
 
 /**
+ * Provide request platform
+ *
+ * @param Request $request
+ * @return string
+ */
+function get_platform(Request $request)
+{
+    return $request->headers->get("User-Agent", "");
+}
+
+/**
  * Returns sms cost net by number
  *
  * @param string $number
- * @return int
+ * @return Money
  */
 function get_sms_cost($number)
 {
     if (strlen($number) < 4) {
-        return 0;
+        return new Money(0);
     }
 
     if ($number[0] == "7") {
-        return $number[1] == "0" ? 50 : intval($number[1]) * 100;
+        return $number[1] == "0" ? new Money(50) : new Money(intval($number[1]) * 100);
     }
 
     if ($number[0] == "9") {
-        return intval($number[1] . $number[2]) * 100;
+        return new Money(intval($number[1] . $number[2]) * 100);
     }
 
-    return 0;
+    return new Money(0);
 }
 
 /**
  * Returns sms provision from given net price
  *
- * @param int $smsPrice
- * @return int
+ * @param Money $smsPrice
+ * @return Money
  */
-function get_sms_provision($smsPrice)
+function get_sms_provision(Money $smsPrice)
 {
-    return (int) ceil($smsPrice / 2);
+    return new Money(ceil($smsPrice->asInt() / 2));
 }
 
 function hash_password($password, $salt)
@@ -478,12 +488,29 @@ function is_list(array $array)
 
 /**
  * @param mixed $value
+ * @return Money|null
+ */
+function as_money($value)
+{
+    if ($value === null || $value === "") {
+        return null;
+    }
+
+    return new Money($value);
+}
+
+/**
+ * @param mixed $value
  * @return int|null
  */
 function as_int($value)
 {
     if ($value === null || $value === "") {
         return null;
+    }
+
+    if ($value instanceof Money) {
+        return $value->asInt();
     }
 
     return (int) $value;
@@ -499,6 +526,10 @@ function as_float($value)
         return null;
     }
 
+    if ($value instanceof Money) {
+        return $value->asFloat();
+    }
+
     return (float) $value;
 }
 
@@ -510,6 +541,10 @@ function as_string($value)
 {
     if ($value === null) {
         return null;
+    }
+
+    if ($value instanceof Money) {
+        return $value->asPrice();
     }
 
     return (string) $value;

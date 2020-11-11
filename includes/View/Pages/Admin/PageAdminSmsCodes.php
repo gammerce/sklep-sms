@@ -8,6 +8,7 @@ use App\Repositories\SmsCodeRepository;
 use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
 use App\Support\Database;
+use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
@@ -131,10 +132,10 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         switch ($boxId) {
             case "add":
                 $smsPrices = collect($this->smsPriceRepository->all())
-                    ->map(function ($smsPrice) {
+                    ->map(function (Money $smsPrice) {
                         return new Option(
                             $this->priceTextService->getPriceGrossText($smsPrice),
-                            $smsPrice
+                            $smsPrice->asInt()
                         );
                     })
                     ->join();

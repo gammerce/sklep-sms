@@ -54,13 +54,18 @@ class PurchaseService
      * @param IServicePurchaseExternal|ServiceModule $serviceModule
      * @param Server $server
      * @param array $body
+     * @param string $platform
      * @return PaymentResult
      * @throws ValidationException
      * @throws PaymentProcessingException
      * @throws InvalidServiceModuleException
      */
-    public function purchase(IServicePurchaseExternal $serviceModule, Server $server, array $body)
-    {
+    public function purchase(
+        IServicePurchaseExternal $serviceModule,
+        Server $server,
+        array $body,
+        $platform
+    ) {
         $type = as_int(array_get($body, "type"));
         $authData = trim(array_get($body, "auth_data"));
         $password = array_get($body, "password");
@@ -74,10 +79,7 @@ class PurchaseService
         $paymentOption = $this->getPaymentOption($paymentMethod, $paymentPlatformId);
         $price = $this->priceRepository->get($priceId);
 
-        $user = $this->auth->user();
-        $user->setLastIp($ip);
-
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($this->auth->user(), $ip, $platform))
             ->setServiceId($serviceModule->service->getId())
             ->setDescription(
                 $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())

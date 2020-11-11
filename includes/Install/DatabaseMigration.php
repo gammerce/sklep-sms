@@ -23,7 +23,13 @@ class DatabaseMigration
         $this->migrationFiles = $migrationFiles;
     }
 
-    public function setup($token, $adminUsername, $adminPassword)
+    /**
+     * @param string $token
+     * @param string $adminUsername
+     * @param string $adminPassword
+     * @param string $ip
+     */
+    public function setup($token, $adminUsername, $adminPassword, $ip)
     {
         foreach ($this->migrationFiles->getMigrations() as $migration) {
             $this->migrate($migration);
@@ -44,7 +50,7 @@ class DatabaseMigration
                 "INSERT INTO `ss_users` " .
                     "SET `username` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
             )
-            ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, get_ip()]);
+            ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, $ip]);
     }
 
     public function update()

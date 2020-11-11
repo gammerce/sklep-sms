@@ -36,7 +36,7 @@ class PriceResourceTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $freshPrice = $this->priceRepository->get($price->getId());
         $this->assertNotNull($freshPrice);
-        $this->assertSame(300, $freshPrice->getSmsPrice());
+        $this->assertEqualsMoney(300, $freshPrice->getSmsPrice());
         $this->assertSame(30, $freshPrice->getQuantity());
         $this->assertNull($freshPrice->getServerId());
         $this->assertSame('vippro', $freshPrice->getServiceId());

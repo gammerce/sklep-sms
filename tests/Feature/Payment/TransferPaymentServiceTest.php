@@ -56,7 +56,7 @@ class TransferPaymentServiceTest extends TestCase
             "transfer_price" => 4080,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
@@ -87,6 +87,6 @@ class TransferPaymentServiceTest extends TestCase
         // then
         $paymentTransfer = $paymentTransferRepository->get($finalizedPayment->getOrderId());
         $this->assertNotNull($paymentTransfer);
-        $this->assertEquals(4080, $paymentTransfer->getIncome());
+        $this->assertEqualsMoney(4080, $paymentTransfer->getIncome());
     }
 }

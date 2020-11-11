@@ -23,7 +23,7 @@ class UserServiceCollection
             throw new InvalidServiceModuleException();
         }
 
-        $serviceModule->userServiceAdminAdd($request->request->all());
+        $serviceModule->userServiceAdminAdd($request);
 
         return new ApiResponse("ok", $lang->t('service_added_correctly'), true);
     }

@@ -10,6 +10,7 @@ use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
 use App\ServiceModules\Interfaces\IServicePurchase;
+use App\Support\Money;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;
@@ -80,7 +81,7 @@ class TransferPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($price === 0) {
+        if ($price->equal(0)) {
             return $this->makeSyncPayment($purchase);
         } else {
             return $this->makeAsyncPayment($paymentModule, $price, $purchase);
@@ -106,8 +107,18 @@ class TransferPaymentMethod implements IPaymentMethod
         return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 
-    private function makeAsyncPayment(SupportTransfer $paymentModule, $price, Purchase $purchase)
-    {
+    /**
+     * @param SupportTransfer $paymentModule
+     * @param Money $price
+     * @param Purchase $purchase
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     */
+    private function makeAsyncPayment(
+        SupportTransfer $paymentModule,
+        Money $price,
+        Purchase $purchase
+    ) {
         $data = $paymentModule->prepareTransfer($price, $purchase);
         return new PaymentResult(PaymentResultType::EXTERNAL(), $data);
     }

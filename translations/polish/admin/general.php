@@ -127,7 +127,7 @@ return [
     'log_service_deleted' => 'Usunięto usługę. ID: {1}',
     'log_service_edited' => 'Wyedytowano usługę. ID: {1}',
     'log_settings_edited' => 'Wyedytowano ustawienia sklepu.',
-    'log_sms_code_added' => 'Dodano kod SMS. Kod: {1}, Taryfa: {2}',
+    'log_sms_code_added' => 'Dodano kod SMS. Kod: {1}, Wartość: {2}',
     'log_sms_code_deleted' => 'Usunięto kod SMS. ID: {1}',
     'log_user_deleted' => 'Usunięto użytkownika. ID: {1}',
     'log_user_edited' => 'Wyedytowano użytkownika. ID: {1}',

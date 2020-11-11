@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Models\Service;
+use App\Support\Money;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -21,27 +22,34 @@ class PriceTextService
     }
 
     /**
-     * @param int|null $price
+     * @param Money|null $price
      * @return string
      */
-    public function getPriceGrossText($price)
+    public function getPriceGrossText(Money $price = null)
     {
-        return $price !== null
-            ? number_format(($price / 100.0) * $this->settings->getVat(), 2) .
-                    " " .
-                    $this->settings->getCurrency()
-            : null;
+        if ($price === null) {
+            return null;
+        }
+
+        $grossValue = ($price->asInt() / 100.0) * $this->settings->getVat();
+        return number_format($grossValue, 2) . " " . $this->settings->getCurrency();
     }
 
     /**
-     * @param int|null $price
+     * @param Money|int|null $price
      * @return string
      */
     public function getPriceText($price)
     {
-        return $price !== null
-            ? number_format($price / 100.0, 2) . " " . $this->settings->getCurrency()
-            : null;
+        if ($price === null) {
+            return null;
+        }
+
+        if ($price instanceof Money) {
+            return $price->asPrice() . " " . $this->settings->getCurrency();
+        }
+
+        return number_format($price / 100.0, 2) . " " . $this->settings->getCurrency();
     }
 
     /**
@@ -54,14 +62,17 @@ class PriceTextService
     }
 
     /**
-     * @param int|null $price
+     * @param Money|null $price
      * @return string
      */
-    public function getPlainPriceGross($price)
+    public function getPlainPriceGross(Money $price)
     {
-        return $price !== null
-            ? number_format(($price / 100.0) * $this->settings->getVat(), 2)
-            : null;
+        if ($price === null) {
+            return null;
+        }
+
+        $grossValue = ($price->asInt() / 100.0) * $this->settings->getVat();
+        return number_format($grossValue, 2);
     }
 
     /**

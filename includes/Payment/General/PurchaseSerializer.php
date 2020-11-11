@@ -3,8 +3,8 @@ namespace App\Payment\General;
 
 use App\Managers\UserManager;
 use App\Models\Purchase;
-use App\Models\User;
 use App\PromoCode\PromoCodeService;
+use ReflectionClass;
 
 class PurchaseSerializer
 {
@@ -26,39 +26,48 @@ class PurchaseSerializer
      */
     public function serialize(Purchase $purchase)
     {
-        return serialize($purchase);
+        $clonedPurchase = clone $purchase;
+        $reflectionClass = new ReflectionClass(Purchase::class);
+
+        $userProperty = $reflectionClass->getProperty('user');
+        $userProperty->setValue($clonedPurchase, $purchase->user->getId());
+
+        if ($purchase->getPromoCode()) {
+            $promoCodeProperty = $reflectionClass->getProperty('promoCode');
+            $promoCodeProperty->setAccessible(true);
+            $promoCodeProperty->setValue($clonedPurchase, $purchase->getPromoCode()->getCode());
+        }
+
+        return serialize($clonedPurchase);
     }
 
     /**
-     * @param $content
+     * @param string $content
      * @return Purchase|null
      */
     public function deserialize($content)
     {
-        return $this->enhancePurchase(unserialize($content));
-    }
+        /** @var Purchase $purchase */
+        $purchase = unserialize($content);
 
-    /**
-     * @param mixed $purchase
-     * @return Purchase|null
-     */
-    private function enhancePurchase($purchase)
-    {
-        if (!$purchase instanceof Purchase) {
+        if (!($purchase instanceof Purchase)) {
             return null;
         }
 
-        // Fix: Refresh user to avoid bugs linked with user wallet
-        $purchase->user = $this->userManager->get($purchase->user->getId()) ?: new User();
+        $reflectionClass = new ReflectionClass(Purchase::class);
+        $userProperty = $reflectionClass->getProperty('user');
+        $userId = $userProperty->getValue($purchase);
 
-        // Refresh promo code in case somebody else used it in a meantime
-        $promoCode = $purchase->getPromoCode();
-        if ($promoCode) {
-            $freshPromoCode = $this->promoCodeService->findApplicablePromoCode(
-                $promoCode->getCode(),
-                $purchase
-            );
-            $purchase->setPromoCode($freshPromoCode);
+        $promoCodeProperty = $reflectionClass->getProperty('promoCode');
+        $promoCodeProperty->setAccessible(true);
+        $code = $promoCodeProperty->getValue($purchase);
+
+        $user = $this->userManager->get($userId);
+        $purchase->user = $user;
+
+        if ($code) {
+            $promoCode = $this->promoCodeService->findApplicablePromoCode($code, $purchase);
+            $purchase->setPromoCode($promoCode);
         }
 
         return $purchase;

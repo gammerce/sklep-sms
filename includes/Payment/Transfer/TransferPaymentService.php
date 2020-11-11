@@ -57,7 +57,9 @@ class TransferPaymentService
             throw new PaymentRejectedException();
         }
 
-        if ($finalizedPayment->getCost() !== $this->transferPriceService->getPrice($purchase)) {
+        if (
+            $finalizedPayment->getCost()->notEqual($this->transferPriceService->getPrice($purchase))
+        ) {
             throw new InvalidPaidAmountException();
         }
 
@@ -68,11 +70,11 @@ class TransferPaymentService
 
         $paymentTransfer = $this->paymentTransferRepository->create(
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getIncome(),
-            $finalizedPayment->getCost(),
+            $finalizedPayment->getIncome()->asInt(),
+            $finalizedPayment->getCost()->asInt(),
             $finalizedPayment->getExternalServiceId(),
-            $purchase->user->getLastIp(),
-            $purchase->user->getPlatform(),
+            $purchase->getAddressIp(),
+            $purchase->getPlatform(),
             $finalizedPayment->isTestMode()
         );
 
@@ -88,7 +90,7 @@ class TransferPaymentService
             $purchase->getPaymentOption()->getPaymentMethod(),
             $boughtServiceId,
             $finalizedPayment->getOrderId(),
-            $finalizedPayment->getCost() / 100,
+            $finalizedPayment->getCost(),
             $finalizedPayment->getExternalServiceId()
         );
 

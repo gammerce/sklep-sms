@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Unit\Application;
+namespace Tests\Unit\System;
 
 use Tests\Psr4\TestCases\TestCase;
 
