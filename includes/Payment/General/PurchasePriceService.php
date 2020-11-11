@@ -51,17 +51,17 @@ class PurchasePriceService
             $item = array_get($output, $quantity, new QuantityPrice($quantity));
 
             if ($this->isAvailableUsingDirectBilling($price)) {
-                $item->directBillingPrice = $price->getDirectBillingPrice();
+                $item->directBillingPrice = as_int($price->getDirectBillingPrice());
                 $item->directBillingDiscount = $price->getDiscount();
             }
 
             if ($this->isAvailableUsingSms($price, $server)) {
-                $item->smsPrice = $price->getSmsPrice();
+                $item->smsPrice = as_int($price->getSmsPrice());
                 $item->smsDiscount = $price->getDiscount();
             }
 
             if ($this->isAvailableUsingWallet($price)) {
-                $item->transferPrice = $price->getTransferPrice();
+                $item->transferPrice = as_int($price->getTransferPrice());
                 $item->transferDiscount = $price->getDiscount();
             }
 

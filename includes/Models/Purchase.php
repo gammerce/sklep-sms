@@ -261,9 +261,9 @@ class Purchase
     public function setUsingPrice(Price $price)
     {
         $this->setPayment([
-            Purchase::PAYMENT_PRICE_SMS => $price->getSmsPrice(),
-            Purchase::PAYMENT_PRICE_TRANSFER => $price->getTransferPrice(),
-            Purchase::PAYMENT_PRICE_DIRECT_BILLING => $price->getDirectBillingPrice(),
+            Purchase::PAYMENT_PRICE_SMS => as_int($price->getSmsPrice()),
+            Purchase::PAYMENT_PRICE_TRANSFER => as_int($price->getTransferPrice()),
+            Purchase::PAYMENT_PRICE_DIRECT_BILLING => as_int($price->getDirectBillingPrice()),
         ]);
         $this->setOrder([
             Purchase::ORDER_QUANTITY => $price->getQuantity(),

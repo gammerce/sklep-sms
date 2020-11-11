@@ -153,12 +153,12 @@ class TestCase extends BaseTestCase
     }
 
     /**
-     * @param Money|int $expected
-     * @param Money|int $value
+     * @param Money|int|null $expected
+     * @param Money|int|null $value
      */
     protected function assertEqualsMoney($expected, $value)
     {
-        $this->assertEquals(new Money($expected), new Money($value));
+        $this->assertEquals(as_money($expected), as_money($value));
     }
 
     private function databaseHas($table, array $data)

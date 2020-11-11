@@ -509,6 +509,10 @@ function as_int($value)
         return null;
     }
 
+    if ($value instanceof Money) {
+        return $value->asInt();
+    }
+
     return (int) $value;
 }
 
@@ -522,6 +526,10 @@ function as_float($value)
         return null;
     }
 
+    if ($value instanceof Money) {
+        return $value->asFloat();
+    }
+
     return (float) $value;
 }
 
@@ -533,6 +541,10 @@ function as_string($value)
 {
     if ($value === null) {
         return null;
+    }
+
+    if ($value instanceof Money) {
+        return $value->asPrice();
     }
 
     return (string) $value;

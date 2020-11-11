@@ -230,10 +230,10 @@ EOF
 
             case "edit":
                 $directBillingPrice = $price->hasDirectBillingPrice()
-                    ? $price->getDirectBillingPrice() / 100
+                    ? $price->getDirectBillingPrice()->asFloat()
                     : null;
                 $transferPrice = $price->hasTransferPrice()
-                    ? $price->getTransferPrice() / 100
+                    ? $price->getTransferPrice()->asFloat()
                     : null;
 
                 return $this->template->render(
