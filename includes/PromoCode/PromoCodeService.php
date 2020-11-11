@@ -78,14 +78,14 @@ class PromoCodeService
     {
         switch ($promoCode->getQuantityType()) {
             case QuantityType::FIXED():
-                return new Money(max(0, $price - $promoCode->getQuantity()));
+                return new Money(max(0, $price->asInt() - $promoCode->getQuantity()));
 
             case QuantityType::PERCENTAGE():
                 $multiplier = (100 - $promoCode->getQuantity()) / 100;
-                return new Money(max(0, ceil($price * $multiplier)));
+                return new Money(max(0, ceil($price->asInt() * $multiplier)));
 
             default:
-                return new Money($price);
+                return $price;
         }
     }
 }
