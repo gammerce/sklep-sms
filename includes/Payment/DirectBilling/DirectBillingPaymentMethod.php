@@ -84,11 +84,11 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($price === 0) {
+        if ($price->equal(0)) {
             return $this->makeSyncPayment($purchase);
         }
 
-        return $paymentModule->prepareDirectBilling($price, $purchase);
+        return $paymentModule->prepareDirectBilling($price->asInt(), $purchase);
     }
 
     private function makeSyncPayment(Purchase $purchase)

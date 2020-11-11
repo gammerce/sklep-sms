@@ -4,6 +4,7 @@ namespace App\Payment\DirectBilling;
 use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
 use App\Services\PriceTextService;
+use App\Support\Money;
 
 class DirectBillingPriceService
 {
@@ -23,18 +24,18 @@ class DirectBillingPriceService
 
     /**
      * @param Purchase $purchase
-     * @return int|null
+     * @return Money|null
      */
     public function getPrice(Purchase $purchase)
     {
-        $price = $purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING);
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         if ($price === null) {
             return null;
         }
 
         $promoCode = $purchase->getPromoCode();
         if ($promoCode) {
-            return $this->promoCodeService->applyDiscount($promoCode, $price)->asInt();
+            return $this->promoCodeService->applyDiscount($promoCode, $price);
         }
 
         return $price;

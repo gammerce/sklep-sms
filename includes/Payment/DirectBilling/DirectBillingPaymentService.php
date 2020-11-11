@@ -59,8 +59,9 @@ class DirectBillingPaymentService
         }
 
         if (
-            $finalizedPayment->getCost()->asInt() !==
-            $this->directBillingPriceService->getPrice($purchase)
+            $finalizedPayment
+                ->getCost()
+                ->notEqual($this->directBillingPriceService->getPrice($purchase))
         ) {
             throw new InvalidPaidAmountException();
         }
