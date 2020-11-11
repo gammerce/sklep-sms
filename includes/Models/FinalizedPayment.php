@@ -112,7 +112,7 @@ class FinalizedPayment
     }
 
     /**
-     * @param int|Money $cost
+     * @param Money|int $cost
      * @return $this
      */
     public function setCost($cost)
@@ -202,7 +202,7 @@ class FinalizedPayment
     }
 
     /**
-     * @param int|Money $income
+     * @param Money|int $income
      * @return $this
      */
     public function setIncome($income)

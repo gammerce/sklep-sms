@@ -5,6 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
 use App\Support\Database;
+use App\Support\Money;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\SmsPaymentException;
@@ -147,7 +148,7 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($price, $smsPaymentModule)->asInt(),
+                $this->smsPriceService->getProvision(new Money($price), $smsPaymentModule)->asInt(),
                 $this->smsPriceService->getGross($price),
                 $smsPaymentModule->getSmsCode(),
                 $number,

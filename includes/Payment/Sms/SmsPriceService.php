@@ -71,11 +71,11 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
      * @return Money
      */
-    public function getProvision($smsPrice, SupportSms $paymentModule)
+    public function getProvision(Money $smsPrice, SupportSms $paymentModule)
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 

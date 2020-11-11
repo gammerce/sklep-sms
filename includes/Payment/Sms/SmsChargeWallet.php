@@ -66,7 +66,7 @@ class SmsChargeWallet implements IChargeWallet
             ]
         );
         $validated = $validator->validateOrFail();
-        $smsPrice = $validated["sms_price"];
+        $smsPrice = as_money($validated["sms_price"]);
 
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()
@@ -75,7 +75,7 @@ class SmsChargeWallet implements IChargeWallet
         assert($smsPaymentModule instanceof SupportSms);
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_SMS => $smsPrice,
+            Purchase::PAYMENT_PRICE_SMS => $smsPrice->asInt(),
         ]);
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $this->smsPriceService
