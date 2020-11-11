@@ -126,6 +126,10 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
         $response = $this->requester->post("https://simpay.pl/db/api", $body);
 
+        if (!$response) {
+            throw new PaymentProcessingException("error", "SimPay connection error");
+        }
+
         $result = $response->json();
         $status = array_get($result, "status");
         $message = array_get($result, "message");
