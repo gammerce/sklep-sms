@@ -22,22 +22,17 @@ class PriceTextService
     }
 
     /**
-     * @param Money|int|null $price
+     * @param Money|null $price
      * @return string
      */
-    public function getPriceGrossText($price)
+    public function getPriceGrossText(Money $price)
     {
         if ($price === null) {
             return null;
         }
 
-        if ($price instanceof Money) {
-            $price = $price->asInt();
-        }
-
-        return number_format(($price / 100.0) * $this->settings->getVat(), 2) .
-            " " .
-            $this->settings->getCurrency();
+        $grossValue = ($price->asInt() / 100.0) * $this->settings->getVat();
+        return number_format($grossValue, 2) . " " . $this->settings->getCurrency();
     }
 
     /**
@@ -76,7 +71,8 @@ class PriceTextService
             return null;
         }
 
-        return number_format(($price->asInt() / 100.0) * $this->settings->getVat(), 2);
+        $grossValue = ($price->asInt() / 100.0) * $this->settings->getVat();
+        return number_format($grossValue, 2);
     }
 
     /**

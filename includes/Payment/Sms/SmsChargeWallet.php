@@ -66,7 +66,7 @@ class SmsChargeWallet implements IChargeWallet
             ]
         );
         $validated = $validator->validateOrFail();
-        $smsPrice = as_money($validated["sms_price"]);
+        $smsPrice = new Money($validated["sms_price"]);
 
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()

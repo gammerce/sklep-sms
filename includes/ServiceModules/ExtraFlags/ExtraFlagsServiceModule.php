@@ -371,9 +371,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($quantityPrice) {
             $purchase->setPayment([
-                Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
-                Purchase::PAYMENT_PRICE_TRANSFER => $quantityPrice->transferPrice,
-                Purchase::PAYMENT_PRICE_DIRECT_BILLING => $quantityPrice->directBillingPrice,
+                Purchase::PAYMENT_PRICE_SMS => as_int($quantityPrice->smsPrice),
+                Purchase::PAYMENT_PRICE_TRANSFER => as_int($quantityPrice->transferPrice),
+                Purchase::PAYMENT_PRICE_DIRECT_BILLING => as_int(
+                    $quantityPrice->directBillingPrice
+                ),
             ]);
         }
     }

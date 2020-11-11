@@ -66,7 +66,7 @@ class User
         $groups = [],
         $regDate = null,
         $lastActive = null,
-        $wallet = null,
+        Money $wallet = null,
         $regIp = null,
         $lastIp = null,
         $resetPasswordKey = null,
