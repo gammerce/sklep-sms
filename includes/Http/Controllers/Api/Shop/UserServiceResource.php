@@ -51,12 +51,9 @@ class UserServiceResource
             );
         }
 
-        $result = $serviceModule->userOwnServiceEdit(
-            array_merge($request->request->all(), [
-                "id" => $userServiceId,
-            ]),
-            $userService
-        );
+        // Ugly hack to ensure backward compatibility
+        $request->request->set("id", $userServiceId);
+        $result = $serviceModule->userOwnServiceEdit($request, $userService);
 
         if (is_array($result)) {
             return new ApiResponse(
