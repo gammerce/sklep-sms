@@ -2,6 +2,7 @@
 namespace Tests\Psr4\TestCases;
 
 use App\Support\Database;
+use App\Support\Money;
 use App\System\Application;
 use App\System\License;
 use App\System\Settings;
@@ -149,6 +150,15 @@ class TestCase extends BaseTestCase
     protected function assertSameEnum(Enum $expected, Enum $value)
     {
         $this->assertTrue($expected->equals($value), "$expected does not equal $value");
+    }
+
+    /**
+     * @param Money|int $expected
+     * @param Money|int $value
+     */
+    protected function assertEqualsMoney($expected, $value)
+    {
+        $this->assertEquals(new Money($expected), new Money($value));
     }
 
     private function databaseHas($table, array $data)

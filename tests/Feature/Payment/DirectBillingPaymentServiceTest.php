@@ -96,8 +96,8 @@ class DirectBillingPaymentServiceTest extends TestCase
             $finalizedPayment->getOrderId()
         );
         $this->assertNotNull($payment);
-        $this->assertSame(120, $payment->getIncome()->asInt());
-        $this->assertSame(190, $payment->getCost()->asInt());
+        $this->assertEqualsMoney(120, $payment->getIncome());
+        $this->assertEqualsMoney(190, $payment->getCost());
         $this->assertFalse($payment->isFree());
     }
 }

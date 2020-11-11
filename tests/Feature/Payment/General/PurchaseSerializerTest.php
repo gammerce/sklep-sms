@@ -57,7 +57,7 @@ class PurchaseSerializerTest extends TestCase
         $deserializedPurchase = $this->purchaseSerializer->deserialize($serializedPurchase);
 
         // then
-        $this->assertSame(56, $deserializedPurchase->user->getWallet()->asInt());
+        $this->assertEqualsMoney(56, $deserializedPurchase->user->getWallet());
     }
 
     /** @test */
