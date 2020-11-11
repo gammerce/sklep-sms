@@ -113,7 +113,8 @@ class SmsPriceService
         if ($promoCode) {
             $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
 
-            if ($discountedPrice === 0) {
+            // We should return value only if a discount covers 100% of a price
+            if ($discountedPrice->equals(0)) {
                 return 0;
             }
 

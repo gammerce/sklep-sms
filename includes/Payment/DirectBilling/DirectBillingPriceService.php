@@ -34,7 +34,7 @@ class DirectBillingPriceService
 
         $promoCode = $purchase->getPromoCode();
         if ($promoCode) {
-            return $this->promoCodeService->applyDiscount($promoCode, $price);
+            return $this->promoCodeService->applyDiscount($promoCode, $price)->asInt();
         }
 
         return $price;
