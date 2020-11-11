@@ -2,28 +2,27 @@
 namespace App\ServiceModules\Interfaces;
 
 use App\Models\UserService;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Obsluga edycji usług użytkownika przez użytkownika
+ * Handle editing user service by an owner
  */
 interface IServiceUserOwnServicesEdit
 {
     /**
-     * Metoda powinna zwrócić formularz do edycji danych usługi przez użytkownika.
+     * Provide user service edit form
      *
-     * @param UserService $userService Dane edytowanej usługi
-     *
+     * @param UserService $userService
      * @return string
      */
     public function userOwnServiceEditFormGet(UserService $userService);
 
     /**
-     * Metoda sprawdza dane formularza, podczas edycji usługi użytkownika przez użytkownika
-     * i gdy wszystko jest okej, to ją edytuje.
+     * Validate form and edit user service
      *
-     * @param array $body
+     * @param Request $request
      * @param UserService $userService
      * @return bool|array
      */
-    public function userOwnServiceEdit(array $body, UserService $userService);
+    public function userOwnServiceEdit(Request $request, UserService $userService);
 }

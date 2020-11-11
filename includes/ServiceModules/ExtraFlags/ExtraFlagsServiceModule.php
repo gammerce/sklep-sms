@@ -896,11 +896,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function userOwnServiceEdit(array $body, UserService $userService)
+    public function userOwnServiceEdit(Request $request, UserService $userService)
     {
         assert($userService instanceof ExtraFlagUserService);
 
-        $validator = new Validator($body, [
+        $validator = new Validator($request->request->all(), [
             "password" => [
                 new ExtraFlagPasswordRule(),
                 new PasswordRule(),

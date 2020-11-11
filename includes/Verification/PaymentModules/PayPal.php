@@ -97,7 +97,7 @@ class PayPal extends PaymentModule implements SupportTransfer
             ]
         );
 
-        $result = $response->json();
+        $result = $response ? $response->json() : null;
 
         if (array_get($result, "status") !== "CREATED") {
             $this->fileLogger->error("Invalid order creation status", compact("result"));
