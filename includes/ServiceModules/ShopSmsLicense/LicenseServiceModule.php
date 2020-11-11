@@ -467,31 +467,26 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function userOwnServiceEdit(array $body, UserService $userService)
+    public function userOwnServiceEdit(Request $request, UserService $userService)
     {
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
         }
 
-        $validator = new Validator(
-            array_merge($body, [
-                "email" => array_get($body, "email"),
-            ]),
-            [
-                "id" => [],
-                "email" => [new RequiredRule(), new EmailRule()],
-                "engines" => [new LicenseEnginesRule()],
-                "password" => [new PasswordRule()],
-                "platform_amxmodx" => [],
-                "platform_sourcemod" => [],
-            ]
-        );
+        $validator = new Validator($request->request->all(), [
+            "id" => [],
+            "email" => [new RequiredRule(), new EmailRule()],
+            "engines" => [new LicenseEnginesRule()],
+            "password" => [new PasswordRule()],
+            "platform_amxmodx" => [],
+            "platform_sourcemod" => [],
+        ]);
 
         $validated = $validator->validateOrFail();
 
         $costData = $this->getCostUserEdit($validated, $userService);
 
-        $purchase = (new Purchase($this->auth->user()))
+        $purchase = (new Purchase($this->auth->user(), get_ip($request), get_platform($request)))
             ->setServiceId("ss_license_edit")
             ->setEmail($validated["email"])
             ->setOrder([
