@@ -22,9 +22,8 @@ class TPay extends PaymentModule implements SupportTransfer
         return [new DataField("key"), new DataField("account_id")];
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
-        $price /= 100;
         $crc = $purchase->getId();
 
         return [
@@ -32,10 +31,10 @@ class TPay extends PaymentModule implements SupportTransfer
             "method" => "POST",
             "data" => [
                 "id" => $this->getAccountId(),
-                "kwota" => $price,
+                "kwota" => $price->asPrice(),
                 "opis" => $purchase->getDescription(),
                 "crc" => $crc,
-                "md5sum" => md5($this->getAccountId() . $price . $crc . $this->getKey()),
+                "md5sum" => md5($this->getAccountId() . $price->asPrice() . $crc . $this->getKey()),
                 "imie" => $purchase->user->getForename(),
                 "nazwisko" => $purchase->user->getSurname(),
                 "email" => $purchase->getEmail(),

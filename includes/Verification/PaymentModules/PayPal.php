@@ -65,10 +65,8 @@ class PayPal extends PaymentModule implements SupportTransfer
         return [new DataField("client_id"), new DataField("secret")];
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
-        $price /= 100;
-
         $response = $this->requester->post(
             "{$this->getPayPalDomain()}/v2/checkout/orders",
             json_encode([
@@ -77,7 +75,7 @@ class PayPal extends PaymentModule implements SupportTransfer
                     [
                         "amount" => [
                             "currency_code" => $this->settings->getCurrency(),
-                            "value" => $price,
+                            "value" => $price->asPrice(),
                         ],
                         "description" => $purchase->getDescription(),
                         "custom_id" => $purchase->getId(),

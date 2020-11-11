@@ -119,7 +119,7 @@ class TransferPaymentMethod implements IPaymentMethod
         Money $price,
         Purchase $purchase
     ) {
-        $data = $paymentModule->prepareTransfer($price->asInt(), $purchase);
+        $data = $paymentModule->prepareTransfer($price, $purchase);
         return new PaymentResult(PaymentResultType::EXTERNAL(), $data);
     }
 }

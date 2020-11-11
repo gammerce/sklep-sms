@@ -107,7 +107,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         return $numberMoney->equal($netMoney);
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
         $service = $this->serviceManager->get($purchase->getServiceId());
         assert($service);
@@ -117,7 +117,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             "method" => "POST",
             "data" => [
                 "SEKRET" => $this->getTransferSecret(),
-                "KWOTA" => $price / 100,
+                "KWOTA" => $price->asPrice(),
                 "ID_ZAMOWIENIA" => $purchase->getId(),
                 "NAZWA_USLUGI" => $service->getNameI18n(),
                 "EMAIL" => $purchase->getEmail(),
