@@ -44,7 +44,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice()->equals($smsPrice)) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return true;
             }
         }
@@ -62,7 +62,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice()->equals($smsPrice)) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return $smsNumber;
             }
         }
@@ -80,7 +80,7 @@ class SmsPriceService
         $smsNumbers = $paymentModule->getSmsNumbers();
 
         foreach ($smsNumbers as $smsNumber) {
-            if ($smsNumber->getPrice()->equals($smsPrice)) {
+            if ($smsNumber->getPrice()->equal($smsPrice)) {
                 return $smsNumber->getProvision();
             }
         }
@@ -114,7 +114,7 @@ class SmsPriceService
             $discountedPrice = $this->promoCodeService->applyDiscount($promoCode, $price);
 
             // We should return value only if a discount covers 100% of a price
-            if ($discountedPrice->equals(0)) {
+            if ($discountedPrice->equal(0)) {
                 return 0;
             }
 

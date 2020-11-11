@@ -103,7 +103,7 @@ class Hostplay extends PaymentModule implements SupportSms
     private function getSmsNumberByProvision(Money $price)
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
-            if ($smsNumber->getProvision()->equals($price)) {
+            if ($smsNumber->getProvision()->equal($price)) {
                 return $smsNumber->getNumber();
             }
         }

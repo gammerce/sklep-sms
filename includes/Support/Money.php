@@ -55,13 +55,22 @@ class Money
      * @param Money|int $money
      * @return bool
      */
-    public function equals($money)
+    public function equal($money)
     {
         if ($money instanceof Money) {
             return $money->asInt() === $this->value;
         }
 
         return $this->value === $money;
+    }
+
+    /**
+     * @param Money|int $money
+     * @return bool
+     */
+    public function notEqual($money)
+    {
+        return !$this->equal($money);
     }
 
     /**

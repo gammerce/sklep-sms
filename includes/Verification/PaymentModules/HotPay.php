@@ -104,7 +104,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
     {
         $numberMoney = get_sms_cost($number);
         $netMoney = Money::fromPrice($netValue);
-        return $numberMoney->equals($netMoney);
+        return $numberMoney->equal($netMoney);
     }
 
     public function prepareTransfer($price, Purchase $purchase)

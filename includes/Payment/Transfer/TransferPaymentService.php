@@ -58,8 +58,7 @@ class TransferPaymentService
         }
 
         if (
-            $finalizedPayment->getCost()->asInt() !==
-            $this->transferPriceService->getPrice($purchase)
+            $finalizedPayment->getCost()->notEqual($this->transferPriceService->getPrice($purchase))
         ) {
             throw new InvalidPaidAmountException();
         }

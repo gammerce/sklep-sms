@@ -80,10 +80,10 @@ class TransferPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($price === 0) {
+        if ($price->equal(0)) {
             return $this->makeSyncPayment($purchase);
         } else {
-            return $this->makeAsyncPayment($paymentModule, $price, $purchase);
+            return $this->makeAsyncPayment($paymentModule, $price->asInt(), $purchase);
         }
     }
 
@@ -106,6 +106,13 @@ class TransferPaymentMethod implements IPaymentMethod
         return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 
+    /**
+     * @param SupportTransfer $paymentModule
+     * @param int $price
+     * @param Purchase $purchase
+     * @return PaymentResult
+     * @throws PaymentProcessingException
+     */
     private function makeAsyncPayment(SupportTransfer $paymentModule, $price, Purchase $purchase)
     {
         $data = $paymentModule->prepareTransfer($price, $purchase);
