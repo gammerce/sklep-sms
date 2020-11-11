@@ -98,6 +98,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         $freshUser = $this->userRepository->get($user->getId());
         $this->assertEquals(9900, $freshUser->getWallet());
+        $this->assertEquals($this->ip, $freshUser->getLastIp());
     }
 
     /** @test */

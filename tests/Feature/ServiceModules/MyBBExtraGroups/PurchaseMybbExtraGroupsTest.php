@@ -63,7 +63,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
             "module" => Cssetti::MODULE_ID,
         ]);
 
-        $purchase = (new Purchase(new User()))
+        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setServiceId($service->getId())
             ->setUsingPrice($price)
             ->setOrder([
@@ -138,7 +138,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
             "quantity" => null,
         ]);
 
-        $purchase = (new Purchase($user))
+        $purchase = (new Purchase($user, "192.0.2.1", "example"))
             ->setServiceId($service->getId())
             ->setUsingPrice($price)
             ->setOrder([

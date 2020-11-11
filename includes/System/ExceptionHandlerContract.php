@@ -2,8 +2,8 @@
 namespace App\System;
 
 use Exception;
-use Throwable;
 use Symfony\Component\HttpFoundation\Request;
+use Throwable;
 
 interface ExceptionHandlerContract
 {

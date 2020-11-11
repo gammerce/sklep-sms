@@ -2,7 +2,6 @@
 namespace App\Models;
 
 use App\User\Permission;
-use Symfony\Component\HttpFoundation\Request;
 
 class User
 {
@@ -54,9 +53,6 @@ class User
     /** @var Permission[] */
     private $permissions;
 
-    /** @var string */
-    private $platform;
-
     public function __construct(
         $id = null,
         $username = null,
@@ -75,9 +71,6 @@ class User
         $resetPasswordKey = null,
         array $permissions = []
     ) {
-        /** @var Request $request */
-        $request = app()->make(Request::class);
-
         $this->id = $id;
         $this->username = $username;
         $this->password = $password;
@@ -91,9 +84,8 @@ class User
         $this->lastActive = $lastActive;
         $this->wallet = $wallet;
         $this->regIp = $regIp;
-        $this->lastIp = $lastIp ?: get_ip();
+        $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
-        $this->platform = $request->headers->get("User-Agent", "");
         $this->permissions = collect($permissions)
             ->flatMap(function (Permission $permission) {
                 return [$permission->getKey() => $permission];
@@ -324,22 +316,6 @@ class User
     public function removePermissions()
     {
         $this->permissions = [];
-    }
-
-    /**
-     * @return string
-     */
-    public function getPlatform()
-    {
-        return $this->platform;
-    }
-
-    /**
-     * @param string $platform
-     */
-    public function setPlatform($platform)
-    {
-        $this->platform = $platform;
     }
 
     /**

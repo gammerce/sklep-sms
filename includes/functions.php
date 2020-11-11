@@ -90,7 +90,7 @@ function create_dom_element($name, $content = "", array $params = [])
  * @param string $platform
  * @return string
  */
-function get_platform($platform)
+function translate_platform($platform)
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -117,13 +117,11 @@ function is_server_platform($platform)
 }
 
 /**
- * @param Request|null $request
+ * @param Request $request
  * @return string|null
  */
-function get_ip(Request $request = null)
+function get_ip(Request $request)
 {
-    $request = $request ?: app()->make(Request::class);
-
     if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
         $cfIpRanges = [
             "103.21.244.0/22",
@@ -150,6 +148,17 @@ function get_ip(Request $request = null)
     }
 
     return $request->server->get("REMOTE_ADDR");
+}
+
+/**
+ * Provide request platform
+ *
+ * @param Request $request
+ * @return string
+ */
+function get_platform(Request $request)
+{
+    return $request->headers->get("User-Agent", "");
 }
 
 /**

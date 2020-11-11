@@ -73,8 +73,8 @@ class DirectBillingPaymentService
             $finalizedPayment->getOrderId(),
             $finalizedPayment->getIncome(),
             $finalizedPayment->getCost(),
-            $purchase->user->getLastIp(),
-            $purchase->user->getPlatform(),
+            $purchase->getAddressIp(),
+            $purchase->getPlatform(),
             $finalizedPayment->isTestMode()
         );
 

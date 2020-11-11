@@ -62,10 +62,13 @@ class WalletChargeCollection
         $quantity = max($quantity, -$editedUser->getWallet());
 
         // Dodawanie informacji o płatności do bazy
-        $paymentId = $adminPaymentService->payByAdmin($user);
+        $paymentId = $adminPaymentService->payByAdmin(
+            $user,
+            get_ip($request),
+            get_platform($request)
+        );
 
-        // Kupujemy usługę
-        $purchase = (new Purchase($editedUser))
+        $purchase = (new Purchase($editedUser, get_ip($request), get_platform($request)))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])

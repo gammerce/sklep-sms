@@ -64,7 +64,7 @@ class Purchase
     private $order = [];
 
     /**
-     * @var PromoCode
+     * @var PromoCode|null
      */
     private $promoCode;
 
@@ -73,6 +73,20 @@ class Purchase
      * @var string|null
      */
     private $description;
+
+    /**
+     * Platform from which the purchase was made
+     *
+     * @var string
+     */
+    private $platform;
+
+    /**
+     * IP from which the purchase was made
+     *
+     * @var string
+     */
+    private $ip;
 
     /**
      * Attempt to finalize purchase has been made
@@ -88,10 +102,17 @@ class Purchase
      */
     private $isDeleted = false;
 
-    public function __construct(User $user)
+    /**
+     * @param User $user
+     * @param string $ip
+     * @param string $platform
+     */
+    public function __construct(User $user, $ip, $platform)
     {
-        $this->user = $user;
         $this->id = generate_id(32);
+        $this->user = $user;
+        $this->ip = $ip;
+        $this->platform = $platform;
         $this->paymentSelect = new PaymentSelect();
     }
 
@@ -133,6 +154,14 @@ class Purchase
         }
 
         return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrderList()
+    {
+        return $this->order;
     }
 
     /**
@@ -202,6 +231,22 @@ class Purchase
     }
 
     /**
+     * @return string
+     */
+    public function getPlatform()
+    {
+        return $this->platform;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAddressIp()
+    {
+        return $this->ip;
+    }
+
+    /**
      * @return PaymentSelect
      */
     public function getPaymentSelect()
@@ -254,7 +299,7 @@ class Purchase
     }
 
     /**
-     * @return PromoCode
+     * @return PromoCode|null
      */
     public function getPromoCode()
     {

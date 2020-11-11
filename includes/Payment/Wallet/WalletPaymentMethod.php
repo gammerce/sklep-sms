@@ -75,7 +75,12 @@ class WalletPaymentMethod implements IPaymentMethod
         }
 
         try {
-            $paymentId = $this->walletPaymentService->payWithWallet($price, $purchase->user);
+            $paymentId = $this->walletPaymentService->payWithWallet(
+                $price,
+                $purchase->user,
+                $purchase->getAddressIp(),
+                $purchase->getPlatform()
+            );
         } catch (NotEnoughFundsException $e) {
             throw new PaymentProcessingException("no_money", $this->lang->t("not_enough_money"));
         }

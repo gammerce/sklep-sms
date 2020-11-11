@@ -41,9 +41,11 @@ class SmsPaymentService
      * @param string|null $code
      * @param int $price
      * @param User $user
+     * @param string $ip
+     * @param string $platform
      * @return int
      */
-    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user)
+    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user, $ip, $platform)
     {
         if ($price === 0) {
             return $this->storePaymentSms(
@@ -52,7 +54,8 @@ class SmsPaymentService
                 $code,
                 $price,
                 "",
-                $user
+                $ip,
+                $platform
             );
         }
 
@@ -66,7 +69,8 @@ class SmsPaymentService
                 $code,
                 $smsNumber->getPrice(),
                 $smsNumber->getNumber(),
-                $user
+                $ip,
+                $platform
             );
         }
 
@@ -96,7 +100,8 @@ class SmsPaymentService
             $code,
             $smsNumber->getPrice(),
             $smsNumber->getNumber(),
-            $user
+            $ip,
+            $platform
         );
         $this->logger->logWithUser(
             $user,
@@ -115,7 +120,8 @@ class SmsPaymentService
      * @param string|null $code
      * @param number|null $price
      * @param string|null $number
-     * @param User $user
+     * @param string $ip
+     * @param string $platform
      * @return string
      */
     private function storePaymentSms(
@@ -124,7 +130,8 @@ class SmsPaymentService
         $code,
         $price,
         $number,
-        User $user
+        $ip,
+        $platform
     ) {
         $this->db
             ->statement(
@@ -137,8 +144,8 @@ class SmsPaymentService
                 $this->smsPriceService->getGross($price),
                 $smsPaymentModule->getSmsCode(),
                 $number,
-                $user->getLastIp(),
-                $user->getPlatform(),
+                $ip,
+                $platform,
                 $result->isFree() ? 1 : 0,
             ]);
 

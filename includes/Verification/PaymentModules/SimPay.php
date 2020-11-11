@@ -218,7 +218,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     {
         $status = $request->request->get("status");
 
-        return in_array(get_ip(), $this->allowedIps, true) &&
+        return in_array(get_ip($request), $this->allowedIps, true) &&
             $status === "ORDER_PAYED" &&
             $this->isSignValid($request);
     }

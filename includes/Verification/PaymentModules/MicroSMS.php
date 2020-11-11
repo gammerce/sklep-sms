@@ -138,7 +138,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
     {
         $userId = $request->request->get("userid");
         $status = strtolower($request->request->get("status"));
-        $ip = get_ip();
+        $ip = get_ip($request);
 
         if ($status !== "true") {
             $this->fileLogger->error("MicroSMS transfer. Invalid status [{$status}]");
