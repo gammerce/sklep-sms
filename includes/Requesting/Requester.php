@@ -18,7 +18,7 @@ class Requester
      * @param array  $query
      * @param array  $headers
      * @param int    $timeout
-     * @return Response|bool
+     * @return Response|null
      */
     public function get($url, array $query = [], array $headers = [], $timeout = 10)
     {
@@ -29,7 +29,7 @@ class Requester
      * @param string $url
      * @param mixed $body
      * @param array $headers
-     * @return Response|bool
+     * @return Response|null
      */
     public function post($url, $body = [], array $headers = [])
     {
@@ -40,7 +40,7 @@ class Requester
      * @param string $url
      * @param mixed $body
      * @param array $headers
-     * @return Response|bool
+     * @return Response|null
      */
     public function patch($url, $body = [], array $headers = [])
     {
@@ -51,7 +51,7 @@ class Requester
      * @param string $url
      * @param mixed $body
      * @param array $headers
-     * @return Response|bool
+     * @return Response|null
      */
     public function put($url, $body = [], array $headers = [])
     {
@@ -62,8 +62,7 @@ class Requester
      * @param string $url
      * @param array $query
      * @param array $headers
-     * @return Response
-     * @return Response|bool
+     * @return Response|null
      */
     public function delete($url, array $query = [], array $headers = [])
     {
@@ -77,7 +76,7 @@ class Requester
      * @param mixed $body
      * @param array $headers
      * @param int $timeout
-     * @return Response|bool
+     * @return Response|null
      */
     private function curl(
         $method,
@@ -116,7 +115,7 @@ class Requester
                 "error" => curl_error($curl),
                 "error_no" => curl_errno($curl),
             ]);
-            return false;
+            return null;
         }
 
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
@@ -125,6 +124,10 @@ class Requester
         return new Response($httpCode, $response);
     }
 
+    /**
+     * @param array $headers
+     * @return array
+     */
     private function formatHeaders(array $headers)
     {
         $output = [];
