@@ -67,20 +67,16 @@ class PriceTextService
     }
 
     /**
-     * @param Money|int|null $price
+     * @param Money|null $price
      * @return string
      */
-    public function getPlainPriceGross($price)
+    public function getPlainPriceGross(Money $price)
     {
         if ($price === null) {
             return null;
         }
 
-        if ($price instanceof Money) {
-            $price = $price->asInt();
-        }
-
-        return number_format(($price / 100.0) * $this->settings->getVat(), 2);
+        return number_format(($price->asInt() / 100.0) * $this->settings->getVat(), 2);
     }
 
     /**

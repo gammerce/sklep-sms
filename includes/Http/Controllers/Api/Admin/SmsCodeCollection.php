@@ -31,7 +31,7 @@ class SmsCodeCollection
         $validated = $validator->validateOrFail();
 
         $code = as_string($validated["code"]);
-        $smsPrice = as_int($validated["sms_price"]);
+        $smsPrice = as_money($validated["sms_price"]);
         $expiresAt = as_datetime($validated["expires_at"]);
 
         if ($expiresAt) {

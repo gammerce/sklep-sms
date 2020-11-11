@@ -192,7 +192,7 @@ class SmsPaymentService
         Money $expectedSmsPrice,
         User $user
     ) {
-        $this->smsCodeRepository->create($code, $smsPrice->asInt(), false);
+        $this->smsCodeRepository->create($code, $smsPrice, false);
 
         $this->logger->logWithUser(
             $user,

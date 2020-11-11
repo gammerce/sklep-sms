@@ -76,7 +76,7 @@ class WalletPaymentMethod implements IPaymentMethod
 
         try {
             $paymentId = $this->walletPaymentService->payWithWallet(
-                $price->asInt(),
+                $price,
                 $purchase->user,
                 $purchase->getAddressIp(),
                 $purchase->getPlatform()

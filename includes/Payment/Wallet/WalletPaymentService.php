@@ -3,6 +3,7 @@ namespace App\Payment\Wallet;
 
 use App\Models\User;
 use App\Support\Database;
+use App\Support\Money;
 
 class WalletPaymentService
 {
@@ -15,24 +16,24 @@ class WalletPaymentService
     }
 
     /**
-     * @param int $cost
+     * @param Money $cost
      * @param User $user
      * @param string $ip
      * @param string $platform
      * @return int
      * @throws NotEnoughFundsException
      */
-    public function payWithWallet($cost, User $user, $ip, $platform)
+    public function payWithWallet(Money $cost, User $user, $ip, $platform)
     {
-        if ($cost > $user->getWallet()->asInt()) {
+        if ($cost->asInt() > $user->getWallet()->asInt()) {
             throw new NotEnoughFundsException();
         }
 
-        $this->chargeWallet($user, -$cost);
+        $this->chargeWallet($user, -$cost->asInt());
 
         $this->db
             ->statement("INSERT INTO `ss_payment_wallet` SET `cost` = ?, `ip` = ?, `platform` = ?")
-            ->execute([$cost, $ip, $platform]);
+            ->execute([$cost->asInt(), $ip, $platform]);
 
         return $this->db->lastId();
     }
@@ -47,6 +48,6 @@ class WalletPaymentService
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
             ->execute([$quantity, $user->getId()]);
 
-        $user->setWallet($user->getWallet()->asInt() + $quantity);
+        $user->setWallet($user->getWallet()->add($quantity));
     }
 }

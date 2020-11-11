@@ -2,6 +2,7 @@
 namespace Tests\Feature\Repositories;
 
 use App\Repositories\SmsCodeRepository;
+use App\Support\Money;
 use DateTime;
 use Tests\Psr4\TestCases\TestCase;
 
@@ -23,7 +24,7 @@ class SmsCodeRepositoryTest extends TestCase
         $date = new DateTime();
 
         // when
-        $smsCode = $this->smsCodeRepository->create("ABCD", 50, true, $date);
+        $smsCode = $this->smsCodeRepository->create("ABCD", new Money(50), true, $date);
 
         // then
         $this->assertSame("ABCD", $smsCode->getCode());
@@ -36,7 +37,7 @@ class SmsCodeRepositoryTest extends TestCase
     public function creates_sms_code_forever()
     {
         // when
-        $smsCode = $this->smsCodeRepository->create("ABCD", 100, true, null);
+        $smsCode = $this->smsCodeRepository->create("ABCD", new Money(100), true, null);
 
         // then
         $this->assertSame("ABCD", $smsCode->getCode());

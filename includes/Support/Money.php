@@ -74,6 +74,18 @@ class Money
     }
 
     /**
+     * @param Money|int $money
+     * @return Money
+     */
+    public function add($money)
+    {
+        if ($money instanceof Money) {
+            $money = $money->asInt();
+        }
+        return new Money($this->value + $money);
+    }
+
+    /**
      * @return string
      */
     public function __toString()

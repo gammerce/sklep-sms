@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Models\SmsCode;
 use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
 use App\Repositories\LogRepository;
@@ -19,6 +20,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbUserService;
 use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
+use App\Support\Money;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -321,6 +323,10 @@ class Factory
         return $this->logRepository->create($attributes["text"]);
     }
 
+    /**
+     * @param array $attributes
+     * @return SmsCode
+     */
     public function smsCode(array $attributes = [])
     {
         $attributes = array_merge(
@@ -328,14 +334,16 @@ class Factory
                 "code" => $this->faker->word,
                 "sms_price" => 100,
                 "free" => false,
+                "expires" => null,
             ],
             $attributes
         );
 
         return $this->smsCodeRepository->create(
             $attributes["code"],
-            $attributes["sms_price"],
-            $attributes["free"]
+            new Money($attributes["sms_price"]),
+            $attributes["free"],
+            $attributes["expires"]
         );
     }
 
