@@ -232,9 +232,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(array $body)
+    public function userServiceAdminAdd(Request $request)
     {
-        $validator = new Validator($body, [
+        $validator = new Validator($request->request->all(), [
             "amount" => [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
             "identifier" => [new RequiredRule(), new LicenseProlongableRule()],
         ]);
@@ -242,9 +242,13 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $validated = $validator->validateOrFail();
 
         $admin = $this->auth->user();
-        $paymentId = $this->adminPaymentService->payByAdmin($admin);
+        $paymentId = $this->adminPaymentService->payByAdmin(
+            $admin,
+            get_ip($request),
+            get_platform($request)
+        );
 
-        $purchase = new Purchase($admin);
+        $purchase = new Purchase($admin, get_ip($request), get_platform($request));
         $purchase->setServiceId($this->service->getId());
         $purchase->setPayment([
             "method" => "admin",

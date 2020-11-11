@@ -48,6 +48,7 @@ use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
 use Exception;
+use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
 class LicenseServiceModule extends ServiceModule implements
@@ -393,7 +394,7 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(array $body)
+    public function userServiceAdminAdd(Request $request)
     {
         return [
             "status" => "ok",
