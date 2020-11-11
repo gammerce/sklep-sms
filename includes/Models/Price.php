@@ -9,10 +9,10 @@ class Price
     private $id;
 
     /** @var string */
-    private $service;
+    private $serviceId;
 
     /** @var int|null */
-    private $server;
+    private $serverId;
 
     /** @var Money|null */
     private $smsPrice;
@@ -36,16 +36,16 @@ class Price
     public function __construct(
         $id,
         $serviceId,
-        $serverId,
-        $smsPrice,
-        $transferPrice,
-        $directBillingPrice,
-        $quantity,
-        $discount
+        $serverId = null,
+        Money $smsPrice = null,
+        Money $transferPrice = null,
+        Money $directBillingPrice = null,
+        $quantity = null,
+        $discount = null
     ) {
         $this->id = $id;
-        $this->service = $serviceId;
-        $this->server = $serverId;
+        $this->serviceId = $serviceId;
+        $this->serverId = $serverId;
         $this->smsPrice = $smsPrice;
         $this->transferPrice = $transferPrice;
         $this->directBillingPrice = $directBillingPrice;
@@ -66,7 +66,7 @@ class Price
      */
     public function getServiceId()
     {
-        return $this->service;
+        return $this->serviceId;
     }
 
     /**
@@ -74,7 +74,7 @@ class Price
      */
     public function getServerId()
     {
-        return $this->server;
+        return $this->serverId;
     }
 
     /**
@@ -154,7 +154,7 @@ class Price
      */
     public function isForEveryServer()
     {
-        return $this->server === null;
+        return $this->serverId === null;
     }
 
     /**

@@ -142,8 +142,8 @@ EOF
             as_string($data["service_id"]),
             as_int($data["server_id"]),
             as_money($data["sms_price"]),
-            as_int($data["transfer_price"]),
-            as_int($data["direct_billing_price"]),
+            as_money($data["transfer_price"]),
+            as_money($data["direct_billing_price"]),
             as_int($data["quantity"]),
             as_int($data["discount"])
         );
