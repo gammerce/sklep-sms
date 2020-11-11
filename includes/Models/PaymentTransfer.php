@@ -1,15 +1,17 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
+
 class PaymentTransfer
 {
     /** @var string */
     private $id;
 
-    /** @var int */
+    /** @var Money */
     private $income;
 
-    /** @var int */
+    /** @var Money */
     private $cost;
 
     /** @var string */
@@ -24,8 +26,15 @@ class PaymentTransfer
     /** @var bool */
     private $free;
 
-    public function __construct($id, $income, $cost, $transferService, $ip, $platform, $free)
-    {
+    public function __construct(
+        $id,
+        Money $income,
+        Money $cost,
+        $transferService,
+        $ip,
+        $platform,
+        $free
+    ) {
         $this->id = $id;
         $this->income = $income;
         $this->cost = $cost;
@@ -44,7 +53,7 @@ class PaymentTransfer
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getIncome()
     {
@@ -52,7 +61,7 @@ class PaymentTransfer
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getCost()
     {

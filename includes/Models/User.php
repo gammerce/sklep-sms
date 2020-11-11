@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
 use App\User\Permission;
 
 class User
@@ -38,7 +39,7 @@ class User
     /** @var string */
     private $lastActive;
 
-    /** @var int */
+    /** @var Money */
     private $wallet;
 
     /** @var string */
@@ -65,7 +66,7 @@ class User
         $groups = [],
         $regDate = null,
         $lastActive = null,
-        $wallet = null,
+        Money $wallet = null,
         $regIp = null,
         $lastIp = null,
         $resetPasswordKey = null,
@@ -82,7 +83,7 @@ class User
         $this->groups = $groups;
         $this->regDate = $regDate;
         $this->lastActive = $lastActive;
-        $this->wallet = $wallet;
+        $this->wallet = new Money($wallet);
         $this->regIp = $regIp;
         $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
@@ -219,7 +220,7 @@ class User
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getWallet()
     {
@@ -227,11 +228,11 @@ class User
     }
 
     /**
-     * @param int $wallet
+     * @param Money|int $wallet
      */
     public function setWallet($wallet)
     {
-        $this->wallet = $wallet;
+        $this->wallet = new Money($wallet);
     }
 
     /**

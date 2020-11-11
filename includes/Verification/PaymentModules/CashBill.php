@@ -4,6 +4,7 @@ namespace App\Verification\PaymentModules;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -75,9 +76,8 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         throw new NoConnectionException();
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
-        $price /= 100;
         $userData = $purchase->getId();
 
         return [
@@ -89,11 +89,11 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
                 "forname" => $purchase->user->getForename(),
                 "surname" => $purchase->user->getSurname(),
                 "email" => $purchase->getEmail(),
-                "amount" => $price,
+                "amount" => $price->asPrice(),
                 "userdata" => $userData,
                 "sign" => md5(
                     $this->getService() .
-                        $price .
+                        $price->asPrice() .
                         $purchase->getDescription() .
                         $userData .
                         $purchase->user->getForename() .
@@ -107,7 +107,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int($request->request->get("amount"));
+        $amount = Money::fromPrice($request->request->get("amount"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isPaymentValid($request))

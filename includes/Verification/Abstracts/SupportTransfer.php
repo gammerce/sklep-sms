@@ -4,17 +4,18 @@ namespace App\Verification\Abstracts;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
+use App\Support\Money;
 use Symfony\Component\HttpFoundation\Request;
 
 interface SupportTransfer
 {
     /**
-     * @param int $price
+     * @param Money $price
      * @param Purchase $purchase
      * @return array
      * @throws PaymentProcessingException
      */
-    public function prepareTransfer($price, Purchase $purchase);
+    public function prepareTransfer(Money $price, Purchase $purchase);
 
     /**
      * @param Request $request

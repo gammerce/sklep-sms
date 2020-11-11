@@ -7,6 +7,7 @@ use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
@@ -108,9 +109,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new UnknownErrorException();
     }
 
-    public function prepareDirectBilling($price, Purchase $purchase)
+    public function prepareDirectBilling(Money $price, Purchase $purchase)
     {
-        $price /= 100;
         $serviceId = $this->getDirectBillingServiceId();
         $control = $purchase->getId();
         $apiKey = $this->getDirectBillingApiKey();
@@ -120,8 +120,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             "control" => $control,
             "complete" => $this->url->to("/page/payment_success"),
             "failure" => $this->url->to("/page/payment_error"),
-            "amount_gross" => $price,
-            "sign" => hash("sha256", $serviceId . $price . $control . $apiKey),
+            "amount_gross" => $price->asPrice(),
+            "sign" => hash("sha256", $serviceId . $price->asPrice() . $control . $apiKey),
         ];
 
         $response = $this->requester->post("https://simpay.pl/db/api", $body);
@@ -146,8 +146,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         $this->tryToFetchIps();
 
         $id = $request->request->get("id");
-        $valueGross = price_to_int($request->request->get("valuenet_gross"));
-        $valuePartner = price_to_int($request->request->get("valuepartner"));
+        $valueGross = Money::fromPrice($request->request->get("valuenet_gross"));
+        $valuePartner = Money::fromPrice($request->request->get("valuepartner"));
         $control = $request->request->get("control");
 
         return (new FinalizedPayment())

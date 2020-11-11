@@ -12,6 +12,7 @@ use App\Models\Transaction;
 use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -65,7 +66,7 @@ class SmsChargeWallet implements IChargeWallet
             ]
         );
         $validated = $validator->validateOrFail();
-        $smsPrice = $validated["sms_price"];
+        $smsPrice = new Money($validated["sms_price"]);
 
         $smsPaymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()
@@ -74,20 +75,19 @@ class SmsChargeWallet implements IChargeWallet
         assert($smsPaymentModule instanceof SupportSms);
 
         $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_SMS => $smsPrice,
+            Purchase::PAYMENT_PRICE_SMS => $smsPrice->asInt(),
         ]);
         $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $this->smsPriceService->getProvision(
-                $smsPrice,
-                $smsPaymentModule
-            ),
+            Purchase::ORDER_QUANTITY => $this->smsPriceService
+                ->getProvision($smsPrice, $smsPaymentModule)
+                ->asInt(),
         ]);
     }
 
     public function getTransactionView(Transaction $transaction)
     {
         $quantity = $this->priceTextService->getPriceText(
-            price_to_int($transaction->getQuantity())
+            Money::fromPrice($transaction->getQuantity())
         );
         $desc = $this->lang->t("wallet_was_charged", $quantity);
 
@@ -98,7 +98,7 @@ class SmsChargeWallet implements IChargeWallet
                 "smsNumber" => $transaction->getSmsNumber(),
                 "smsText" => $transaction->getSmsText(),
                 "smsCode" => $transaction->getSmsCode(),
-                "cost" => $this->priceTextService->getPriceText($transaction->getCost() ?: 0),
+                "cost" => $this->priceTextService->getPriceText($transaction->getCost()),
             ]
         );
     }
@@ -118,7 +118,7 @@ class SmsChargeWallet implements IChargeWallet
                         $this->priceTextService->getPriceText($smsNumber->getProvision())
                     ),
                     [
-                        "value" => $smsNumber->getPrice(),
+                        "value" => $smsNumber->getPrice()->asInt(),
                     ]
                 );
             })

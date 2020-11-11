@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
+
 class FinalizedPayment
 {
     /**
@@ -20,16 +22,16 @@ class FinalizedPayment
     /**
      * Payment value gross
      *
-     * @var int
+     * @var Money
      */
-    private $cost = 0;
+    private $cost;
 
     /**
      * How much money is received
      *
-     * @var int
+     * @var Money
      */
-    private $income = 0;
+    private $income;
 
     /**
      * Filename of transaction
@@ -58,6 +60,12 @@ class FinalizedPayment
      * @var bool
      */
     private $testMode = false;
+
+    public function __construct()
+    {
+        $this->cost = new Money(0);
+        $this->income = new Money(0);
+    }
 
     /**
      * @return bool
@@ -96,7 +104,7 @@ class FinalizedPayment
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getCost()
     {
@@ -104,12 +112,12 @@ class FinalizedPayment
     }
 
     /**
-     * @param int $cost
+     * @param Money|int $cost
      * @return $this
      */
     public function setCost($cost)
     {
-        $this->cost = (int) $cost;
+        $this->cost = new Money($cost);
         return $this;
     }
 
@@ -186,7 +194,7 @@ class FinalizedPayment
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getIncome()
     {
@@ -194,12 +202,12 @@ class FinalizedPayment
     }
 
     /**
-     * @param int $income
+     * @param Money|int $income
      * @return $this
      */
     public function setIncome($income)
     {
-        $this->income = (int) $income;
+        $this->income = new Money($income);
         return $this;
     }
 }

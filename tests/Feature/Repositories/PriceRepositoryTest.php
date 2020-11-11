@@ -27,10 +27,10 @@ class PriceRepositoryTest extends TestCase
         // then
         $this->assertSame("vip", $price->getServiceId());
         $this->assertSame($server->getId(), $price->getServerId());
-        $this->assertSame(1, $price->getSmsPrice());
+        $this->assertEqualsMoney(1, $price->getSmsPrice());
         $this->assertTrue($price->hasSmsPrice());
-        $this->assertSame(10, $price->getTransferPrice());
-        $this->assertSame(15, $price->getDirectBillingPrice());
+        $this->assertEqualsMoney(10, $price->getTransferPrice());
+        $this->assertEqualsMoney(15, $price->getDirectBillingPrice());
         $this->assertTrue($price->hasTransferPrice());
         $this->assertSame(100, $price->getQuantity());
     }
@@ -56,7 +56,7 @@ class PriceRepositoryTest extends TestCase
         $this->assertNull($price->getTransferPrice());
         $this->assertNull($price->getDirectBillingPrice());
         $this->assertFalse($price->hasTransferPrice());
-        $this->assertSame(2, $price->getSmsPrice());
+        $this->assertEqualsMoney(2, $price->getSmsPrice());
     }
 
     /** @test */
@@ -70,6 +70,6 @@ class PriceRepositoryTest extends TestCase
         $this->assertNull($price->getSmsPrice());
         $this->assertNull($price->getDirectBillingPrice());
         $this->assertFalse($price->hasSmsPrice());
-        $this->assertSame(10, $price->getTransferPrice());
+        $this->assertEqualsMoney(10, $price->getTransferPrice());
     }
 }

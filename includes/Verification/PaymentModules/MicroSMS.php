@@ -4,6 +4,7 @@ namespace App\Verification\PaymentModules;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -96,11 +97,10 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         throw new UnknownErrorException();
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
-        $price /= 100;
         $control = $purchase->getId();
-        $signature = hash("sha256", $this->getShopId() . $this->getHash() . $price);
+        $signature = hash("sha256", $this->getShopId() . $this->getHash() . $price->asPrice());
 
         return [
             "url" => "https://microsms.pl/api/bankTransfer/",
@@ -108,7 +108,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             "data" => [
                 "shopid" => $this->getShopId(),
                 "signature" => $signature,
-                "amount" => $price,
+                "amount" => $price->asPrice(),
                 "control" => $control,
                 "return_urlc" => $this->url->to(
                     "/api/ipn/transfer/{$this->paymentPlatform->getId()}"
@@ -122,7 +122,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
     public function finalizeTransfer(Request $request)
     {
         $isTest = strtolower($request->request->get("test")) === "true";
-        $amount = price_to_int($request->request->get("amountPay"));
+        $amount = Money::fromPrice($request->request->get("amountPay"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isPaymentValid($request))

@@ -4,6 +4,7 @@ namespace App\PromoCode;
 use App\Models\PromoCode;
 use App\Models\Purchase;
 use App\Repositories\PromoCodeRepository;
+use App\Support\Money;
 use DateTime;
 
 class PromoCodeService
@@ -70,18 +71,18 @@ class PromoCodeService
 
     /**
      * @param PromoCode $promoCode
-     * @param int $price
-     * @return int
+     * @param Money $price
+     * @return Money
      */
-    public function applyDiscount(PromoCode $promoCode, $price)
+    public function applyDiscount(PromoCode $promoCode, Money $price)
     {
         switch ($promoCode->getQuantityType()) {
             case QuantityType::FIXED():
-                return max(0, $price - $promoCode->getQuantity());
+                return new Money(max(0, $price->asInt() - $promoCode->getQuantity()));
 
             case QuantityType::PERCENTAGE():
                 $multiplier = (100 - $promoCode->getQuantity()) / 100;
-                return max(0, ceil($price * $multiplier));
+                return new Money(max(0, ceil($price->asInt() * $multiplier)));
 
             default:
                 return $price;

@@ -1,27 +1,29 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
+
 class QuantityPrice
 {
     /** @var int */
     private $quantity;
 
-    /** @var int */
+    /** @var int|null */
     public $directBillingDiscount;
 
-    /** @var int */
+    /** @var Money|null */
     public $directBillingPrice;
 
-    /** @var int */
+    /** @var int|null */
     public $smsDiscount;
 
-    /** @var int */
+    /** @var Money|null */
     public $smsPrice;
 
-    /** @var int */
+    /** @var int|null */
     public $transferDiscount;
 
-    /** @var int */
+    /** @var Money|null */
     public $transferPrice;
 
     public function __construct($quantity)

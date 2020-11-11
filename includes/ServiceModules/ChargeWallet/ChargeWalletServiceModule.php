@@ -15,6 +15,7 @@ use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
+use App\Support\Money;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -187,7 +188,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     public function purchaseInfo($action, Transaction $transaction)
     {
         $quantity = $this->priceTextService->getPriceText(
-            price_to_int($transaction->getQuantity())
+            Money::fromPrice($transaction->getQuantity())
         );
 
         if ($action === "web") {

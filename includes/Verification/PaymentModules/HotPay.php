@@ -10,6 +10,7 @@ use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
@@ -86,7 +87,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             }
 
             if (!$this->isValidNumber($number, $netValue)) {
-                throw new BadNumberException(price_to_int($netValue));
+                throw new BadNumberException(Money::fromPrice($netValue));
             }
 
             return new SmsSuccessResult();
@@ -101,10 +102,12 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 
     private function isValidNumber($number, $netValue)
     {
-        return get_sms_cost($number) === price_to_int($netValue);
+        $numberMoney = get_sms_cost($number);
+        $netMoney = Money::fromPrice($netValue);
+        return $numberMoney->equal($netMoney);
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
         $service = $this->serviceManager->get($purchase->getServiceId());
         assert($service);
@@ -114,7 +117,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             "method" => "POST",
             "data" => [
                 "SEKRET" => $this->getTransferSecret(),
-                "KWOTA" => $price / 100,
+                "KWOTA" => $price->asPrice(),
                 "ID_ZAMOWIENIA" => $purchase->getId(),
                 "NAZWA_USLUGI" => $service->getNameI18n(),
                 "EMAIL" => $purchase->getEmail(),
@@ -125,7 +128,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 
     public function finalizeTransfer(Request $request)
     {
-        $amount = price_to_int($request->request->get("KWOTA"));
+        $amount = Money::fromPrice($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isTransferValid($request))
@@ -154,8 +157,8 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
     public function finalizeDirectBilling(Request $request)
     {
         // TODO cost should not be equal income
-        $cost = price_to_int($request->request->get("KWOTA"));
-        $income = price_to_int($request->request->get("KWOTA"));
+        $cost = Money::fromPrice($request->request->get("KWOTA"));
+        $income = Money::fromPrice($request->request->get("KWOTA"));
 
         return (new FinalizedPayment())
             ->setStatus($this->isDirectBillingValid($request))

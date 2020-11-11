@@ -5,6 +5,7 @@ use App\Loggers\DatabaseLogger;
 use App\Models\User;
 use App\Repositories\SmsCodeRepository;
 use App\Support\Database;
+use App\Support\Money;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Exceptions\BadNumberException;
 use App\Verification\Exceptions\SmsPaymentException;
@@ -38,16 +39,22 @@ class SmsPaymentService
 
     /**
      * @param SupportSms $paymentModule
-     * @param string|null $code
-     * @param int $price
+     * @param string $code
+     * @param Money $price
      * @param User $user
      * @param string $ip
      * @param string $platform
      * @return int
      */
-    public function payWithSms(SupportSms $paymentModule, $code, $price, User $user, $ip, $platform)
-    {
-        if ($price === 0) {
+    public function payWithSms(
+        SupportSms $paymentModule,
+        $code,
+        Money $price,
+        User $user,
+        $ip,
+        $platform
+    ) {
+        if ($price->equal(0)) {
             return $this->storePaymentSms(
                 $paymentModule,
                 new SmsSuccessResult(false, 0),
@@ -77,8 +84,10 @@ class SmsPaymentService
         try {
             $result = $paymentModule->verifySms($code, $smsNumber->getNumber());
         } catch (BadNumberException $e) {
-            if ($e->smsPrice !== null) {
-                $this->addSmsCodeToBeReused($code, $e->smsPrice, $smsNumber->getPrice(), $user);
+            $smsPrice = $e->getSmsPrice();
+
+            if ($smsPrice->asInt()) {
+                $this->addSmsCodeToBeReused($code, $smsPrice, $smsNumber->getPrice(), $user);
             }
 
             throw $e;
@@ -117,9 +126,9 @@ class SmsPaymentService
     /**
      * @param SupportSms $smsPaymentModule
      * @param SmsSuccessResult $result
-     * @param string|null $code
-     * @param number|null $price
-     * @param string|null $number
+     * @param string $code
+     * @param Money $price
+     * @param string $number
      * @param string $ip
      * @param string $platform
      * @return string
@@ -128,7 +137,7 @@ class SmsPaymentService
         SupportSms $smsPaymentModule,
         SmsSuccessResult $result,
         $code,
-        $price,
+        Money $price,
         $number,
         $ip,
         $platform
@@ -140,8 +149,8 @@ class SmsPaymentService
             )
             ->execute([
                 $code,
-                $this->smsPriceService->getProvision($price, $smsPaymentModule),
-                $this->smsPriceService->getGross($price),
+                $this->smsPriceService->getProvision($price, $smsPaymentModule)->asInt(),
+                $this->smsPriceService->getGross($price)->asInt(),
                 $smsPaymentModule->getSmsCode(),
                 $number,
                 $ip,
@@ -154,10 +163,10 @@ class SmsPaymentService
 
     /**
      * @param string $code
-     * @param int $smsPrice
+     * @param Money $smsPrice
      * @return SmsSuccessResult|null
      */
-    private function tryToUseSmsCode($code, $smsPrice)
+    private function tryToUseSmsCode($code, Money $smsPrice)
     {
         $smsCode = $this->smsCodeRepository->findByCodeAndPrice($code, $smsPrice);
 
@@ -173,12 +182,16 @@ class SmsPaymentService
 
     /**
      * @param string $code
-     * @param int $smsPrice
-     * @param int $expectedSmsPrice
+     * @param Money $smsPrice
+     * @param Money $expectedSmsPrice
      * @param User $user
      */
-    private function addSmsCodeToBeReused($code, $smsPrice, $expectedSmsPrice, User $user)
-    {
+    private function addSmsCodeToBeReused(
+        $code,
+        Money $smsPrice,
+        Money $expectedSmsPrice,
+        User $user
+    ) {
         $this->smsCodeRepository->create($code, $smsPrice, false);
 
         $this->logger->logWithUser(

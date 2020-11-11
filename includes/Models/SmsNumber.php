@@ -1,18 +1,24 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
+
 class SmsNumber
 {
     /** @var string */
     private $smsNumber;
 
-    /** @var int */
+    /** @var Money */
     private $provision;
 
+    /**
+     * @param string $smsNumber
+     * @param Money|int|null $provision
+     */
     public function __construct($smsNumber, $provision = null)
     {
         $this->smsNumber = $smsNumber;
-        $this->provision = $provision ?: get_sms_provision(get_sms_cost($smsNumber));
+        $this->provision = new Money($provision ?: get_sms_provision(get_sms_cost($smsNumber)));
     }
 
     /**
@@ -24,7 +30,7 @@ class SmsNumber
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getProvision()
     {
@@ -32,7 +38,7 @@ class SmsNumber
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getPrice()
     {

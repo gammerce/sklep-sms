@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Payment\General\PaymentMethod;
+use App\Support\Money;
 
 class Transaction
 {
@@ -50,10 +51,10 @@ class Transaction
     /** @var string */
     private $platform;
 
-    /** @var int */
+    /** @var Money|null */
     private $income;
 
-    /** @var int */
+    /** @var Money|null */
     private $cost;
 
     /** @var int */
@@ -267,7 +268,7 @@ class Transaction
     }
 
     /**
-     * @return int
+     * @return Money|null
      */
     public function getIncome()
     {
@@ -275,7 +276,7 @@ class Transaction
     }
 
     /**
-     * @return int
+     * @return Money|null
      */
     public function getCost()
     {

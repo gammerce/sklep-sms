@@ -8,6 +8,7 @@ use App\Models\Purchase;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
+use App\Support\Money;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -64,10 +65,8 @@ class PayPal extends PaymentModule implements SupportTransfer
         return [new DataField("client_id"), new DataField("secret")];
     }
 
-    public function prepareTransfer($price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase)
     {
-        $price /= 100;
-
         $response = $this->requester->post(
             "{$this->getPayPalDomain()}/v2/checkout/orders",
             json_encode([
@@ -76,7 +75,7 @@ class PayPal extends PaymentModule implements SupportTransfer
                     [
                         "amount" => [
                             "currency_code" => $this->settings->getCurrency(),
-                            "value" => $price,
+                            "value" => $price->asPrice(),
                         ],
                         "description" => $purchase->getDescription(),
                         "custom_id" => $purchase->getId(),
@@ -129,10 +128,10 @@ class PayPal extends PaymentModule implements SupportTransfer
         $captures = array_dot_get($purchaseUnit, "payments.captures") ?: [[]];
         $capture = $captures[0];
         $transactionId = array_dot_get($capture, "custom_id");
-        $cost = price_to_int(
+        $cost = Money::fromPrice(
             array_dot_get($capture, "seller_receivable_breakdown.gross_amount.value")
         );
-        $income = price_to_int(
+        $income = Money::fromPrice(
             array_dot_get($capture, "seller_receivable_breakdown.net_amount.value")
         );
 

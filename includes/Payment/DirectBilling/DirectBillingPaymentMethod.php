@@ -84,7 +84,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
             );
         }
 
-        if ($price === 0) {
+        if ($price->equal(0)) {
             return $this->makeSyncPayment($purchase);
         }
 

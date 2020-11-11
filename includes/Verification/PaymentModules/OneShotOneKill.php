@@ -2,6 +2,7 @@
 namespace App\Verification\PaymentModules;
 
 use App\Models\SmsNumber;
+use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
@@ -66,7 +67,9 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 
         switch ($content["status"]) {
             case "ok":
-                $responseNumber = $this->getSmsNumberByProvision(price_to_int($content["amount"]));
+                $responseNumber = $this->getSmsNumberByProvision(
+                    Money::fromPrice($content["amount"])
+                );
 
                 if ($responseNumber === null) {
                     $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
@@ -110,13 +113,13 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     }
 
     /**
-     * @param int $price
+     * @param Money $price
      * @return string|null
      */
-    private function getSmsNumberByProvision($price)
+    private function getSmsNumberByProvision(Money $price)
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
-            if ($smsNumber->getProvision() === $price) {
+            if ($smsNumber->getProvision()->equal($price)) {
                 return $smsNumber->getNumber();
             }
         }

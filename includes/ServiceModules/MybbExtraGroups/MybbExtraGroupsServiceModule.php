@@ -353,9 +353,11 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         if ($quantityPrice) {
             $purchase->setPayment([
-                Purchase::PAYMENT_PRICE_SMS => $quantityPrice->smsPrice,
-                Purchase::PAYMENT_PRICE_TRANSFER => $quantityPrice->transferPrice,
-                Purchase::PAYMENT_PRICE_DIRECT_BILLING => $quantityPrice->directBillingPrice,
+                Purchase::PAYMENT_PRICE_SMS => as_int($quantityPrice->smsPrice),
+                Purchase::PAYMENT_PRICE_TRANSFER => as_int($quantityPrice->transferPrice),
+                Purchase::PAYMENT_PRICE_DIRECT_BILLING => as_int(
+                    $quantityPrice->directBillingPrice
+                ),
             ]);
         }
     }
@@ -430,9 +432,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $quantity = $transaction->isForever()
             ? $this->lang->t("forever")
             : $transaction->getQuantity() . " " . $this->service->getTag();
-        $cost = $transaction->getCost()
-            ? $this->priceTextService->getPriceText($transaction->getCost())
-            : $this->lang->t("none");
+        $cost =
+            $this->priceTextService->getPriceText($transaction->getCost()) ?:
+            $this->lang->t("none");
 
         if ($action === "email") {
             return $this->template->renderNoComments(

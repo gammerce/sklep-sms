@@ -12,6 +12,7 @@ use App\Repositories\PriceRepository;
 use App\Repositories\SmsPriceRepository;
 use App\Services\PriceTextService;
 use App\Support\Database;
+use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
@@ -207,14 +208,14 @@ EOF
             ->join();
 
         $smsPrices = collect($this->smsPriceRepository->all())
-            ->map(function ($smsPrice) use ($price) {
+            ->map(function (Money $smsPrice) use ($price) {
                 return create_dom_element(
                     "option",
                     $this->priceTextService->getPriceGrossText($smsPrice),
                     [
-                        "value" => $smsPrice,
+                        "value" => $smsPrice->asInt(),
                         "selected" =>
-                            $price && $price->getSmsPrice() === $smsPrice ? "selected" : "",
+                            $price && $smsPrice->equal($price->getSmsPrice()) ? "selected" : "",
                     ]
                 );
             })
@@ -229,10 +230,10 @@ EOF
 
             case "edit":
                 $directBillingPrice = $price->hasDirectBillingPrice()
-                    ? $price->getDirectBillingPrice() / 100
+                    ? $price->getDirectBillingPrice()->asFloat()
                     : null;
                 $transferPrice = $price->hasTransferPrice()
-                    ? $price->getTransferPrice() / 100
+                    ? $price->getTransferPrice()->asFloat()
                     : null;
 
                 return $this->template->render(

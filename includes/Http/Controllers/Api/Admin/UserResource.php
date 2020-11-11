@@ -15,6 +15,7 @@ use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Managers\UserManager;
 use App\Repositories\UserRepository;
+use App\Support\Money;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -58,7 +59,7 @@ class UserResource
         $editedUser->setSteamId($validated["steam_id"]);
         $editedUser->setSurname($validated["surname"]);
         $editedUser->setUsername($validated["username"]);
-        $editedUser->setWallet(price_to_int($validated["wallet"]));
+        $editedUser->setWallet(Money::fromPrice($validated["wallet"]));
 
         $userRepository->update($editedUser);
 

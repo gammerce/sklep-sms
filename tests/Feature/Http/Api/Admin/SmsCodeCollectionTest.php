@@ -35,7 +35,7 @@ class SmsCodeCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $smsCode = $this->smsCodeRepository->get($json["data"]["id"]);
         $this->assertSame("SDSAD", $smsCode->getCode());
-        $this->assertSame(400, $smsCode->getSmsPrice());
+        $this->assertEqualsMoney(400, $smsCode->getSmsPrice());
         $this->assertTrue($smsCode->isFree());
         $this->assertSame("2020-02-02 23:59", as_datetime_string($smsCode->getExpiresAt()));
     }
@@ -59,7 +59,7 @@ class SmsCodeCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $smsCode = $this->smsCodeRepository->get($json["data"]["id"]);
         $this->assertSame("POI123", $smsCode->getCode());
-        $this->assertSame(200, $smsCode->getSmsPrice());
+        $this->assertEqualsMoney(200, $smsCode->getSmsPrice());
         $this->assertNull($smsCode->getExpiresAt());
     }
 }

@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Support\Money;
+
 class PaymentDirectBilling
 {
     /** @var int */
@@ -9,10 +11,10 @@ class PaymentDirectBilling
     /** @var string */
     private $externalId;
 
-    /** @var int */
+    /** @var Money */
     private $income;
 
-    /** @var int */
+    /** @var Money */
     private $cost;
 
     /** @var string */
@@ -24,7 +26,7 @@ class PaymentDirectBilling
     /** @var bool */
     private $free;
 
-    public function __construct($id, $externalId, $income, $cost, $ip, $platform, $free)
+    public function __construct($id, $externalId, Money $income, Money $cost, $ip, $platform, $free)
     {
         $this->id = $id;
         $this->externalId = $externalId;
@@ -52,7 +54,7 @@ class PaymentDirectBilling
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getIncome()
     {
@@ -60,7 +62,7 @@ class PaymentDirectBilling
     }
 
     /**
-     * @return int
+     * @return Money
      */
     public function getCost()
     {
