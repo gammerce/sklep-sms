@@ -53,11 +53,11 @@ class SmsPriceService
     }
 
     /**
-     * @param Money|int $smsPrice
+     * @param Money $smsPrice
      * @param SupportSms $paymentModule
      * @return SmsNumber|null
      */
-    public function getNumber($smsPrice, SupportSms $paymentModule)
+    public function getNumber(Money $smsPrice, SupportSms $paymentModule)
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 
@@ -89,12 +89,12 @@ class SmsPriceService
     }
 
     /**
-     * @param int $smsPrice
-     * @return int
+     * @param Money $smsPrice
+     * @return Money
      */
-    public function getGross($smsPrice)
+    public function getGross(Money $smsPrice)
     {
-        return (int) ceil($smsPrice * $this->settings->getVat());
+        return new Money(ceil($smsPrice->asInt() * $this->settings->getVat()));
     }
 
     /**

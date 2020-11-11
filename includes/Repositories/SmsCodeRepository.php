@@ -30,12 +30,17 @@ class SmsCodeRepository
         return null;
     }
 
-    public function findByCodeAndPrice($code, $smsPrice)
+    /**
+     * @param string $code
+     * @param Money $smsPrice
+     * @return SmsCode|null
+     */
+    public function findByCodeAndPrice($code, Money $smsPrice)
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ? AND (`expires_at` IS NULL OR `expires_at` > NOW())"
         );
-        $statement->execute([$code, $smsPrice]);
+        $statement->execute([$code, $smsPrice->asInt()]);
 
         if ($data = $statement->fetch()) {
             return $this->mapToModel($data);
