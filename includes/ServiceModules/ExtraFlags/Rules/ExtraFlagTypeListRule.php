@@ -16,7 +16,7 @@ class ExtraFlagTypeListRule extends BaseRule
 
         foreach ($value as $type) {
             if (!($type & $allowedTypes)) {
-                return [$this->lang->t('wrong_type_chosen')];
+                return [$this->lang->t("wrong_type_chosen")];
             }
         }
 

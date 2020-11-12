@@ -20,7 +20,7 @@ class ResetPasswordTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Zresetuj hasło', $response->getContent());
+        $this->assertContains("Zresetuj hasło", $response->getContent());
     }
 
     /** @test */
@@ -31,6 +31,6 @@ class ResetPasswordTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Kod resetowania hasła jest błędny', $response->getContent());
+        $this->assertContains("Kod resetowania hasła jest błędny", $response->getContent());
     }
 }

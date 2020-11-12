@@ -39,30 +39,30 @@ class Zabijaka extends PaymentModule implements SupportSms
     public function verifySms($returnCode, $number)
     {
         $xml = simplexml_load_file(
-            'http://api.zabijaka.pl/1.1' .
-                '/' .
+            "http://api.zabijaka.pl/1.1" .
+                "/" .
                 urlencode($this->getApi()) .
-                '/sms' .
-                '/' .
+                "/sms" .
+                "/" .
                 round(get_sms_cost($number) / 100) .
-                '/' .
+                "/" .
                 urlencode($returnCode) .
-                '/sms.xml/add'
+                "/sms.xml/add"
         );
 
         if (!$xml) {
             throw new NoConnectionException();
         }
 
-        if ($xml->error == '2') {
+        if ($xml->error == "2") {
             throw new BadCodeException();
         }
 
-        if ($xml->error == '1') {
+        if ($xml->error == "1") {
             throw new WrongCredentialsException();
         }
 
-        if ($xml->success == '1') {
+        if ($xml->success == "1") {
             return new SmsSuccessResult();
         }
 

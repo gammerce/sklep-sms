@@ -28,15 +28,15 @@ class CssettiTest extends TestCase
         $paymentModuleManager = $this->app->make(PaymentModuleManager::class);
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            'module' => Cssetti::MODULE_ID,
+            "module" => Cssetti::MODULE_ID,
         ]);
 
         $this->cssetti = $paymentModuleManager->get($paymentPlatform);
 
         $smsDataResponse = $this->loadFixture("cssetti_sms_api_v2_get_data");
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2GetData.php'])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(new Response(200, $smsDataResponse));
     }
 
@@ -45,8 +45,8 @@ class CssettiTest extends TestCase
     {
         // given
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "1"));
 
         // when
@@ -66,8 +66,8 @@ class CssettiTest extends TestCase
         $this->expectException(BadCodeException::class);
 
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "0"));
 
         // when
@@ -83,8 +83,8 @@ class CssettiTest extends TestCase
         $this->expectException(WrongCredentialsException::class);
 
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "-1"));
 
         // when
@@ -100,8 +100,8 @@ class CssettiTest extends TestCase
         $this->expectException(ServerErrorException::class);
 
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "foo"));
 
         // when
@@ -117,8 +117,8 @@ class CssettiTest extends TestCase
         $this->expectException(BadNumberException::class);
 
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "5"));
 
         // when
@@ -134,8 +134,8 @@ class CssettiTest extends TestCase
         $this->expectException(BadNumberException::class);
 
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://cssetti.pl/Api/SmsApiV2CheckCode.php', Mockery::any()])
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2CheckCode.php", Mockery::any()])
             ->andReturn(new Response(200, "3"));
 
         // when

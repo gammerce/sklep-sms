@@ -8,6 +8,6 @@ class RequiredRule extends BaseRule implements EmptyRule
 {
     public function validate($attribute, $value, array $data)
     {
-        return has_value($value) ? [] : [$this->lang->t('field_no_empty')];
+        return has_value($value) ? [] : [$this->lang->t("field_no_empty")];
     }
 }

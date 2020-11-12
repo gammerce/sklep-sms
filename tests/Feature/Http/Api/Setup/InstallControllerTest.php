@@ -28,11 +28,11 @@ class InstallControllerTest extends TestCase
     {
         $this->app = $this->createApplication();
         $this->db = new Database(
-            getenv('DB_HOST'),
-            getenv('DB_PORT') ?: 3306,
-            getenv('DB_USERNAME'),
-            getenv('DB_PASSWORD'),
-            getenv('DB_DATABASE')
+            getenv("DB_HOST"),
+            getenv("DB_PORT") ?: 3306,
+            getenv("DB_USERNAME"),
+            getenv("DB_PASSWORD"),
+            getenv("DB_DATABASE")
         );
         $this->mockFileSystem();
         $this->mockShopState();
@@ -52,10 +52,10 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => getenv('DB_PASSWORD'),
+            "db_host" => getenv("DB_HOST"),
+            "db_port" => getenv("DB_PORT") ?: 3306,
+            "db_user" => getenv("DB_USERNAME"),
+            "db_password" => getenv("DB_PASSWORD"),
             "db_db" => $this->dbName,
             "license_token" => "abc123",
             "admin_username" => "root",
@@ -74,9 +74,9 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
+            "db_host" => getenv("DB_HOST"),
+            "db_port" => getenv("DB_PORT") ?: 3306,
+            "db_user" => getenv("DB_USERNAME"),
             "db_password" => "blahblah",
             "db_db" => $this->dbName,
             "license_token" => "abc123",
@@ -97,10 +97,10 @@ class InstallControllerTest extends TestCase
     {
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => getenv('DB_PASSWORD'),
+            "db_host" => getenv("DB_HOST"),
+            "db_port" => getenv("DB_PORT") ?: 3306,
+            "db_user" => getenv("DB_USERNAME"),
+            "db_password" => getenv("DB_PASSWORD"),
             "db_db" => $this->dbName,
         ]);
 
@@ -120,10 +120,10 @@ class InstallControllerTest extends TestCase
 
         // when
         $response = $this->post("/api/install", [
-            "db_host" => getenv('DB_HOST'),
-            "db_port" => getenv('DB_PORT') ?: 3306,
-            "db_user" => getenv('DB_USERNAME'),
-            "db_password" => getenv('DB_PASSWORD'),
+            "db_host" => getenv("DB_HOST"),
+            "db_port" => getenv("DB_PORT") ?: 3306,
+            "db_user" => getenv("DB_USERNAME"),
+            "db_password" => getenv("DB_PASSWORD"),
             "db_db" => $this->dbName,
             "license_token" => "abc123",
             "admin_username" => "root",

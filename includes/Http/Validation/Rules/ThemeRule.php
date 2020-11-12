@@ -24,9 +24,9 @@ class ThemeRule extends BaseRule
     {
         if (
             !$this->fileSystem->isDirectory($this->path->to("themes/$value")) ||
-            $value[0] === '.'
+            $value[0] === "."
         ) {
-            return [$this->lang->t('no_theme')];
+            return [$this->lang->t("no_theme")];
         }
 
         return [];

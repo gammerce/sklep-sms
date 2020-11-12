@@ -22,19 +22,19 @@ class RequirementsStore
     {
         return [
             [
-                'text' => "PHP v5.6.0 lub wyżej",
-                'value' => version_compare(PHP_VERSION, "5.6.0") >= 0,
-                'must-be' => false,
+                "text" => "PHP v5.6.0 lub wyżej",
+                "value" => version_compare(PHP_VERSION, "5.6.0") >= 0,
+                "must-be" => false,
             ],
             [
-                'text' => "Moduł CURL",
-                'value' => extension_loaded('curl'),
-                'must-be' => true,
+                "text" => "Moduł CURL",
+                "value" => extension_loaded("curl"),
+                "must-be" => true,
             ],
             [
-                'text' => "Moduł PDO",
-                'value' => extension_loaded('pdo') && extension_loaded('pdo_mysql'),
-                'must-be' => true,
+                "text" => "Moduł PDO",
+                "value" => extension_loaded("pdo") && extension_loaded("pdo_mysql"),
+                "must-be" => true,
             ],
         ];
     }

@@ -29,7 +29,7 @@ class UserResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/admin/users/{$this->user->getId()}", [
-            "email" => 'example@example.com',
+            "email" => "example@example.com",
             "groups" => [1],
             "username" => "myabc",
             "wallet" => 20,
@@ -60,9 +60,9 @@ class UserResourceTest extends HttpTestCase
         $username = "my_username";
         $email = "example@example.com";
         $this->factory->user([
-            'steam_id' => $steamId,
-            'username' => $username,
-            'email' => $email,
+            "steam_id" => $steamId,
+            "username" => $username,
+            "email" => $email,
         ]);
 
         // when

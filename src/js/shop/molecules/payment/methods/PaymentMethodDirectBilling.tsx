@@ -9,7 +9,7 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodDirectBilling: FunctionComponent<Props> = props => {
+export const PaymentMethodDirectBilling: FunctionComponent<Props> = (props) => {
     const { price, oldPrice, onPay } = props;
 
     const onPayClick = () => onPay();

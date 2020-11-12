@@ -8,7 +8,7 @@ class HeadCell extends DOMElement
         parent::__construct("th", $content);
 
         if ($headers) {
-            $this->setParam('headers', $headers);
+            $this->setParam("headers", $headers);
         }
     }
 }

@@ -44,9 +44,7 @@
 
                     <hr />
 
-                    <p class="menu-label">
-                        {{ $lang->t('main') }}
-                    </p>
+                    <p class="menu-label">{{ $lang->t('main') }}</p>
                     <ul class="menu-list">
                         <li>
                             <a href="{{ $url->to('/admin/home') }}">{$lang->t('main_page')}</a>
@@ -55,30 +53,22 @@
                         {$pricingLink}
                     </ul>
 
-                    <p class="menu-label">
-                        {$lang->t('users_services')}
-                    </p>
+                    <p class="menu-label">{$lang->t('users_services')}</p>
                     <ul class="menu-list">
                         {$userServiceLink} {$playersFlagsLink}
                     </ul>
 
-                    <p class="menu-label">
-                        {$lang->t('users')}
-                    </p>
+                    <p class="menu-label">{$lang->t('users')}</p>
                     <ul class="menu-list">
                         {$usersLink} {$groupsLink}
                     </ul>
 
-                    <p class="menu-label">
-                        {$lang->t('additions')}
-                    </p>
+                    <p class="menu-label">{$lang->t('additions')}</p>
                     <ul class="menu-list">
                         {$incomeLink} {$promoCodesLink} {$smsCodesLink}
                     </ul>
 
-                    <p class="menu-label">
-                        {$lang->t('logs')}
-                    </p>
+                    <p class="menu-label">{$lang->t('logs')}</p>
                     <ul class="menu-list">
                         <li>
                             <a href="{{ $url->to('/admin/bought_services') }}">
@@ -86,18 +76,14 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ $url->to('/admin/payments') }}">
-                                {$lang->t('payments')}
-                            </a>
+                            <a href="{{ $url->to('/admin/payments') }}"> {$lang->t('payments')} </a>
                         </li>
                         {$logsLink}
                     </ul>
                 </aside>
             </div>
 
-            <div class="main-content">
-                {$content}
-            </div>
+            <div class="main-content">{$content}</div>
         </div>
     </body>
 </html>

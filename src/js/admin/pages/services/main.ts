@@ -4,23 +4,20 @@ import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../.
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 // Kliknięcie dodania usługi
-$(document).delegate("#service_button_add", "click", function() {
+$(document).delegate("#service_button_add", "click", function () {
     showActionBox(window.currentPage, "add");
 });
 
 // Kliknięcie edycji usługi
-$(document).delegate(".table-structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function () {
     showActionBox(window.currentPage, "edit", {
-        id: $(this)
-            .closest("tr")
-            .find("td[headers=id]")
-            .text(),
+        id: $(this).closest("tr").find("td[headers=id]").text(),
     });
 });
 
 // Change service module
 var serviceExtraFlags;
-$(document).delegate(".action_box [name=module]", "change", function() {
+$(document).delegate(".action_box [name=module]", "change", function () {
     var moduleId = $(this).val();
 
     if (!moduleId && serviceExtraFlags) {
@@ -34,7 +31,7 @@ $(document).delegate(".action_box [name=module]", "change", function() {
         "GET",
         `/api/admin/services/${serviceId}/modules/${moduleId}/extra_fields`,
         {},
-        function(content) {
+        function (content) {
             if (serviceExtraFlags) {
                 serviceExtraFlags.remove();
             }
@@ -46,7 +43,7 @@ $(document).delegate(".action_box [name=module]", "change", function() {
 });
 
 // Delete service
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     var rowId = $(this).closest("tr");
     var serviceId = rowId.children("td[headers=id]").text();
     var serviceName = rowId.children("td[headers=name]").text();
@@ -60,10 +57,10 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/services/" + serviceId),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -83,17 +80,17 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 });
 
 // Add service
-$(document).delegate("#form_service_add", "submit", function(e) {
+$(document).delegate("#form_service_add", "submit", function (e) {
     e.preventDefault();
     loader.show();
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/services"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -118,22 +115,20 @@ $(document).delegate("#form_service_add", "submit", function(e) {
 });
 
 // Edit service
-$(document).delegate("#form_service_edit", "submit", function(e) {
+$(document).delegate("#form_service_edit", "submit", function (e) {
     e.preventDefault();
 
-    var serviceId = $(this)
-        .find("[name=id]")
-        .val();
+    var serviceId = $(this).find("[name=id]").val();
 
     loader.show();
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/services/" + serviceId),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

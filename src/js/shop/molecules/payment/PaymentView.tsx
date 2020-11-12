@@ -68,11 +68,11 @@ export const PaymentView: FunctionComponent = () => {
 
     const acceptsPromoCode = transaction.promo_code !== undefined;
 
-    const paymentOptions = transaction.payment_options.map(paymentOption => (
+    const paymentOptions = transaction.payment_options.map((paymentOption) => (
         <PaymentOption
             key={`${paymentOption.method}#${paymentOption.payment_platform_id}`}
             paymentOption={paymentOption}
-            onPay={body => onPay(paymentOption.method, paymentOption.payment_platform_id, body)}
+            onPay={(body) => onPay(paymentOption.method, paymentOption.payment_platform_id, body)}
         />
     ));
 

@@ -12,11 +12,11 @@ class SettingsTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/settings');
+        $response = $this->get("/admin/settings");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Ustawienia sklepu', $response->getContent());
     }
 }

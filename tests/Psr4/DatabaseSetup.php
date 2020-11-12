@@ -21,19 +21,19 @@ class DatabaseSetup
     public function runForTests()
     {
         $this->db->connectWithoutDb();
-        $this->db->createDatabaseIfNotExists('sklep_sms_test');
-        $this->db->selectDb('sklep_sms_test');
+        $this->db->createDatabaseIfNotExists("sklep_sms_test");
+        $this->db->selectDb("sklep_sms_test");
         $this->db->dropAllTables();
-        $this->databaseMigration->setup('abc123', 'admin', 'abc123', '192.0.2.1');
+        $this->databaseMigration->setup("abc123", "admin", "abc123", "192.0.2.1");
     }
 
     public function run()
     {
         $this->db->connectWithoutDb();
-        $this->db->createDatabaseIfNotExists('sklep_sms');
-        $this->db->selectDb('sklep_sms');
+        $this->db->createDatabaseIfNotExists("sklep_sms");
+        $this->db->selectDb("sklep_sms");
         $this->db->dropAllTables();
-        $this->databaseMigration->setup('abc123', 'admin', 'abc123', '192.0.2.1');
+        $this->databaseMigration->setup("abc123", "admin", "abc123", "192.0.2.1");
         $this->db->query(
             "INSERT INTO `ss_payment_platforms` (name, module) VALUES ('cssetti', 'cssetti')"
         );

@@ -10,8 +10,8 @@ class PurchaseResource
     {
         return new PlainResponse(
             $purchaseInformation->get([
-                'purchase_id' => $purchaseId,
-                'action' => "web",
+                "purchase_id" => $purchaseId,
+                "action" => "web",
             ])
         );
     }

@@ -29,7 +29,7 @@ class UrlGenerator
      */
     public function to($path, array $query = [])
     {
-        $url = rtrim($this->getShopUrl(), '/') . '/' . trim($path, '/');
+        $url = rtrim($this->getShopUrl(), "/") . "/" . trim($path, "/");
 
         if (!empty($query)) {
             $url .= "?" . http_build_query($query);

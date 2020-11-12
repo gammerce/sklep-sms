@@ -14,11 +14,11 @@ class PricingTest extends HttpTestCase
         $this->factory->price();
 
         // when
-        $response = $this->get('/admin/pricing');
+        $response = $this->get("/admin/pricing");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Cennik', $response->getContent());
     }
 }

@@ -24,15 +24,15 @@ class PasswordForgottenControllerTest extends HttpTestCase
         /** @var MockInterface $mailer */
         $mailer = $this->app->make(Mailer::class);
         $mailer
-            ->shouldReceive('send')
+            ->shouldReceive("send")
             ->once()
-            ->andReturn('sent');
+            ->andReturn("sent");
 
         $user = $this->factory->user();
 
         // when
         $response = $this->post("/api/password/forgotten", [
-            'email' => $user->getEmail(),
+            "email" => $user->getEmail(),
         ]);
 
         // then
@@ -48,15 +48,15 @@ class PasswordForgottenControllerTest extends HttpTestCase
         /** @var MockInterface $mailer */
         $mailer = $this->app->make(Mailer::class);
         $mailer
-            ->shouldReceive('send')
+            ->shouldReceive("send")
             ->once()
-            ->andReturn('sent');
+            ->andReturn("sent");
 
         $user = $this->factory->user();
 
         // when
         $response = $this->post("/api/password/forgotten", [
-            'username' => $user->getUsername(),
+            "username" => $user->getUsername(),
         ]);
 
         // then
@@ -70,8 +70,8 @@ class PasswordForgottenControllerTest extends HttpTestCase
     {
         // when
         $response = $this->post("/api/password/forgotten", [
-            'email' => 'asd',
-            'username' => 'asd',
+            "email" => "asd",
+            "username" => "asd",
         ]);
 
         // then

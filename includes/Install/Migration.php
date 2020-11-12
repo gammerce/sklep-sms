@@ -42,14 +42,14 @@ abstract class Migration
         $this->executeQueries($queries);
     }
 
-    protected function splitSQLFile($path, $delimiter = ';')
+    protected function splitSQLFile($path, $delimiter = ";")
     {
         $queries = [];
 
-        $path = fopen($path, 'r');
+        $path = fopen($path, "r");
 
         if (is_resource($path) !== true) {
-            throw new InvalidArgumentException('Invalid path to queries');
+            throw new InvalidArgumentException("Invalid path to queries");
         }
 
         $query = [];
@@ -57,8 +57,8 @@ abstract class Migration
         while (feof($path) === false) {
             $query[] = fgets($path);
 
-            if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                $query = trim(implode('', $query));
+            if (preg_match("~" . preg_quote($delimiter, "~") . '\s*$~iS', end($query)) === 1) {
+                $query = trim(implode("", $query));
                 $queries[] = $query;
             }
 

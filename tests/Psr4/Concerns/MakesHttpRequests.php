@@ -27,13 +27,13 @@ trait MakesHttpRequests
 
     protected function get($uri, array $query = [], array $headers = [])
     {
-        return $this->call('GET', $uri, $query, [], $headers);
+        return $this->call("GET", $uri, $query, [], $headers);
     }
 
     protected function getJson($uri, array $query = [], array $headers = [])
     {
         return $this->call(
-            'GET',
+            "GET",
             $uri,
             $query,
             [],
@@ -43,18 +43,18 @@ trait MakesHttpRequests
 
     protected function post($uri, array $body = [], array $query = [], array $headers = [])
     {
-        return $this->call('POST', $uri, $query, $body, $headers);
+        return $this->call("POST", $uri, $query, $body, $headers);
     }
 
     protected function put($uri, array $body = [], array $query = [], array $headers = [])
     {
-        return $this->call('PUT', $uri, $query, $body, $headers);
+        return $this->call("PUT", $uri, $query, $body, $headers);
     }
 
     protected function putJson($uri, array $body = [], array $query = [], array $headers = [])
     {
         return $this->call(
-            'PUT',
+            "PUT",
             $uri,
             $query,
             $body,
@@ -64,21 +64,21 @@ trait MakesHttpRequests
 
     protected function delete($uri, array $query = [], array $headers = [])
     {
-        return $this->call('DELETE', $uri, $query, [], $headers);
+        return $this->call("DELETE", $uri, $query, [], $headers);
     }
 
     protected function decodeJsonResponse(Response $response)
     {
         $decoded = json_decode($response->getContent(), true);
         if (array_get($decoded, "return_id") === "stack_trace") {
-            var_dump($decoded['stack_trace']);
+            var_dump($decoded["stack_trace"]);
         }
         return $decoded;
     }
 
     protected function prepareUrlForRequest($uri)
     {
-        return 'http://localhost/' . ltrim($uri, "/");
+        return "http://localhost/" . ltrim($uri, "/");
     }
 
     private function castValuesToString(array $data)

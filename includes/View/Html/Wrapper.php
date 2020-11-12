@@ -21,7 +21,7 @@ class Wrapper extends Div
     public function __construct()
     {
         parent::__construct();
-        $this->addClass('table-structure');
+        $this->addClass("table-structure");
     }
 
     public function toHtml()
@@ -37,15 +37,15 @@ class Wrapper extends Div
         $buttons = new Div();
 
         if ($this->search) {
-            $searchText = $request->get('search');
+            $searchText = $request->get("search");
             $buttons->addContent(
-                new RawHtml($template->render("admin/form_search", compact('searchText')))
+                new RawHtml($template->render("admin/form_search", compact("searchText")))
             );
         }
 
         foreach ($this->buttons as $button) {
             $buttons->addContent($button);
-            $buttons->addContent(' ');
+            $buttons->addContent(" ");
         }
 
         $pageTitle = $template->render("admin/page_title", [

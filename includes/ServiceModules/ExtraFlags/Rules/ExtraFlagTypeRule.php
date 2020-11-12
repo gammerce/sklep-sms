@@ -11,7 +11,7 @@ class ExtraFlagTypeRule extends BaseRule
         $allowedTypes = ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID;
 
         if (!($value & $allowedTypes)) {
-            return [$this->lang->t('wrong_type_chosen')];
+            return [$this->lang->t("wrong_type_chosen")];
         }
 
         return [];

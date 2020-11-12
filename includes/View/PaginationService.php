@@ -33,7 +33,7 @@ class PaginationService
 
     public function createPagination($all, $currentPage, $script, $query, $rowLimit = 0)
     {
-        $rowLimit = $rowLimit ? $rowLimit : $this->settings['row_limit'];
+        $rowLimit = $rowLimit ? $rowLimit : $this->settings["row_limit"];
 
         // Wszystkich elementow jest mniej niz wymagana ilsoc na jednej stronie
         if ($all <= $rowLimit) {

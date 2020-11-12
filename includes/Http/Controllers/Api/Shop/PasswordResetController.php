@@ -22,30 +22,30 @@ class PasswordResetController
 
         $validator = new Validator(
             [
-                'code' => $request->request->get('code'),
-                'pass' => $request->request->get('pass'),
-                'pass_repeat' => $request->request->get('pass_repeat'),
+                "code" => $request->request->get("code"),
+                "pass" => $request->request->get("pass"),
+                "pass_repeat" => $request->request->get("pass_repeat"),
             ],
             [
-                'code' => [new RequiredRule()],
-                'pass' => [new RequiredRule(), new PasswordRule()],
+                "code" => [new RequiredRule()],
+                "pass" => [new RequiredRule(), new PasswordRule()],
             ]
         );
 
         $validated = $validator->validateOrFail();
 
-        $resetKey = $validated['code'];
-        $pass = $validated['pass'];
+        $resetKey = $validated["code"];
+        $pass = $validated["pass"];
 
         $user = $userRepository->findByResetKey($resetKey);
 
         if (!$user) {
-            return new ApiResponse("wrong_sign", $lang->t('wrong_sign'), 0);
+            return new ApiResponse("wrong_sign", $lang->t("wrong_sign"), 0);
         }
 
         $userRepository->updatePassword($user->getId(), $pass);
-        $logger->log('log_reset_pass', $user->getId());
+        $logger->log("log_reset_pass", $user->getId());
 
-        return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
+        return new ApiResponse("password_changed", $lang->t("password_changed"), 1);
     }
 }

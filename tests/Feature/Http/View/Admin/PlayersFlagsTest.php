@@ -21,11 +21,11 @@ class ExtraFlagsTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->get('/admin/players_flags');
+        $response = $this->get("/admin/players_flags");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Flagi graczy', $response->getContent());
     }
 }

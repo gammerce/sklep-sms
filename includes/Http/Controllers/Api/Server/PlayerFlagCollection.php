@@ -15,16 +15,16 @@ class PlayerFlagCollection
         ServerAuth $serverAuth,
         ServerDataService $serverDataService
     ) {
-        $acceptHeader = AcceptHeader::fromString($request->headers->get('Accept'));
+        $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $server = $serverAuth->server();
 
         $playersFlags = $serverDataService->getPlayersFlags($server->getId());
         $playerFlagItems = collect($playersFlags)->map(function (array $item) {
             return [
-                't' => $item['type'],
-                'a' => $item['auth_data'],
-                'p' => $item['password'],
-                'f' => $item['flags'],
+                "t" => $item["type"],
+                "a" => $item["auth_data"],
+                "p" => $item["password"],
+                "f" => $item["flags"],
             ];
         });
 

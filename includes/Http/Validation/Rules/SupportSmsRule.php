@@ -21,7 +21,7 @@ class SupportSmsRule extends BaseRule
         $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
 
         if (!($paymentModule instanceof SupportSms)) {
-            return [$this->lang->t('no_sms_platform')];
+            return [$this->lang->t("no_sms_platform")];
         }
 
         return [];

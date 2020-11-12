@@ -52,6 +52,6 @@ class BlockServicesButtons extends Block
             })
             ->join();
 
-        return $this->template->render("shop/layout/services_buttons", compact('services'));
+        return $this->template->render("shop/layout/services_buttons", compact("services"));
     }
 }

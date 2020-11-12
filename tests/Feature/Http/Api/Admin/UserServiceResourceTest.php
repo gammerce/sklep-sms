@@ -216,7 +216,7 @@ class UserServiceResourceTest extends HttpTestCase
         $this->actingAs($this->factory->admin());
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
 
         // when

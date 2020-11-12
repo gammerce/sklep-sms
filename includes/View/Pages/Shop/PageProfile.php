@@ -10,7 +10,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PageProfile extends Page implements IBeLoggedMust
 {
-    const PAGE_ID = 'profile';
+    const PAGE_ID = "profile";
 
     /** @var Auth */
     private $auth;
@@ -26,7 +26,7 @@ class PageProfile extends Page implements IBeLoggedMust
 
     public function getTitle(Request $request)
     {
-        return $this->lang->t('profile');
+        return $this->lang->t("profile");
     }
 
     public function getContent(Request $request)

@@ -11,10 +11,10 @@ class RegulationsTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/page/regulations');
+        $response = $this->get("/page/regulations");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Regulamin', $response->getContent());
+        $this->assertContains("Regulamin", $response->getContent());
     }
 }

@@ -20,7 +20,7 @@ class ServiceModuleExistsRule extends BaseRule
         $serviceModule = $this->serviceModuleManager->getEmpty($value);
 
         if (!$serviceModule) {
-            return [$this->lang->t('wrong_module')];
+            return [$this->lang->t("wrong_module")];
         }
 
         return [];

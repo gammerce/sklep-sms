@@ -55,7 +55,7 @@ class RouteCollector extends BaseRouteCollector
     public function redirect($from, $to, $status = Response::HTTP_FOUND)
     {
         $this->get($from, [
-            'uses' => function () use ($to, $status) {
+            "uses" => function () use ($to, $status) {
                 /** @var UrlGenerator $url */
                 $url = app()->make(UrlGenerator::class);
                 return new RedirectResponse($url->to($to), $status);

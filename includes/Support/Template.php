@@ -143,16 +143,16 @@ class Template
 
     private function addDefaultVariables(array $data)
     {
-        if (!array_key_exists('lang', $data)) {
-            $data['lang'] = $this->lang;
+        if (!array_key_exists("lang", $data)) {
+            $data["lang"] = $this->lang;
         }
 
-        if (!array_key_exists('settings', $data)) {
-            $data['settings'] = $this->settings;
+        if (!array_key_exists("settings", $data)) {
+            $data["settings"] = $this->settings;
         }
 
-        if (!array_key_exists('url', $data)) {
-            $data['url'] = $this->urlGenerator;
+        if (!array_key_exists("url", $data)) {
+            $data["url"] = $this->urlGenerator;
         }
 
         return $data;
@@ -162,7 +162,7 @@ class Template
     {
         return preg_replace(
             ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
-            ['{$e(', ')}', '{$v(', ')}'],
+            ['{$e(', ")}", '{$v(', ")}"],
             $template
         );
     }

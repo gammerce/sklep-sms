@@ -47,8 +47,8 @@ class FileSystem implements FileSystemContract
 
     public function sharedGet($path)
     {
-        $contents = '';
-        $handle = fopen($path, 'rb');
+        $contents = "";
+        $handle = fopen($path, "rb");
         if ($handle) {
             try {
                 if (flock($handle, LOCK_SH)) {

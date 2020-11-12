@@ -24,10 +24,10 @@ class UserProfileResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/profile", [
-            'username' => 'abc',
-            'forename' => 'poq',
-            'surname' => 'wer',
-            'steam_id' => 'STEAM_1:0:22309350',
+            "username" => "abc",
+            "forename" => "poq",
+            "surname" => "wer",
+            "steam_id" => "STEAM_1:0:22309350",
         ]);
 
         // then
@@ -47,16 +47,16 @@ class UserProfileResourceTest extends HttpTestCase
         // given
         $this->actingAs($this->factory->user());
         $this->factory->user([
-            'username' => 'abcaaa',
-            'steam_id' => 'STEAM_1:0:22309350',
+            "username" => "abcaaa",
+            "steam_id" => "STEAM_1:0:22309350",
         ]);
 
         // when
         $response = $this->put("/api/profile", [
-            'username' => 'abcaaa',
-            'forename' => 'poq',
-            'surname' => 'wer',
-            'steam_id' => 'STEAM_1:0:22309350',
+            "username" => "abcaaa",
+            "forename" => "poq",
+            "surname" => "wer",
+            "steam_id" => "STEAM_1:0:22309350",
         ]);
 
         // then

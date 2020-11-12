@@ -20,6 +20,6 @@ class OldShop
 
     public function hasConfigFile()
     {
-        return $this->fileSystem->exists($this->path->to('/includes/config.php'));
+        return $this->fileSystem->exists($this->path->to("/includes/config.php"));
     }
 }

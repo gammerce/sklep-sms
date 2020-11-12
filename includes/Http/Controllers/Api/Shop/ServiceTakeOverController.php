@@ -20,10 +20,10 @@ class ServiceTakeOverController
         $returnData = $serviceModule->serviceTakeOver($request->request->all());
 
         return new ApiResponse(
-            array_get($returnData, 'status'),
-            array_get($returnData, 'text'),
-            array_get($returnData, 'positive'),
-            array_get($returnData, 'data')
+            array_get($returnData, "status"),
+            array_get($returnData, "text"),
+            array_get($returnData, "positive"),
+            array_get($returnData, "data")
         );
     }
 }

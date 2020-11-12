@@ -26,17 +26,17 @@ class UpdateInfo
     public function updateInfo(&$everythingOk, $filesPriv, $filesDel, $modules)
     {
         // Sprawdzamy ustawienia modułuów
-        $serverModules = '';
+        $serverModules = "";
         foreach ($modules as $module) {
-            $title = $module['text'];
-            $status = $module['value'] ? "ok" : "bad";
+            $title = $module["text"];
+            $status = $module["value"] ? "ok" : "bad";
 
             $serverModules .= $this->template->render(
-                'setup/update/module',
-                compact('title', 'status')
+                "setup/update/module",
+                compact("title", "status")
             );
 
-            if (!$module['value'] && $module['must-be']) {
+            if (!$module["value"] && $module["must-be"]) {
                 $everythingOk = false;
             }
         }
@@ -44,12 +44,12 @@ class UpdateInfo
             $text = "Moduły na serwerze";
             $data = $serverModules;
             $serverModules = $this->template->render(
-                'setup/update/update_info_brick',
-                compact('text', 'data')
+                "setup/update/update_info_brick",
+                compact("text", "data")
             );
         }
 
-        $filesPrivileges = '';
+        $filesPrivileges = "";
         foreach ($filesPriv as $file) {
             if (!strlen($file)) {
                 continue;
@@ -63,20 +63,20 @@ class UpdateInfo
             }
 
             $filesPrivileges .= $this->template->render(
-                'setup/update/file',
-                compact('file', 'status')
+                "setup/update/file",
+                compact("file", "status")
             );
         }
         if (strlen($filesPrivileges)) {
             $text = "Uprawnienia do zapisu";
             $data = $filesPrivileges;
             $filesPrivileges = $this->template->render(
-                'setup/update/update_info_brick',
-                compact('text', 'data')
+                "setup/update/update_info_brick",
+                compact("text", "data")
             );
         }
 
-        $filesDelete = '';
+        $filesDelete = "";
         foreach ($filesDel as $file) {
             if (!strlen($file)) {
                 continue;
@@ -89,20 +89,20 @@ class UpdateInfo
                 $everythingOk = false;
             }
 
-            $filesDelete .= $this->template->render('setup/update/file', compact('file', 'status'));
+            $filesDelete .= $this->template->render("setup/update/file", compact("file", "status"));
         }
         if (strlen($filesDelete)) {
             $text = "Pliki do usunięcia";
             $data = $filesDelete;
             $filesDelete = $this->template->render(
-                'setup/update/update_info_brick',
-                compact('text', 'data')
+                "setup/update/update_info_brick",
+                compact("text", "data")
             );
         }
 
         return $this->template->render(
-            'setup/update/update_info',
-            compact('serverModules', 'filesPrivileges', 'filesDelete')
+            "setup/update/update_info",
+            compact("serverModules", "filesPrivileges", "filesDelete")
         );
     }
 }

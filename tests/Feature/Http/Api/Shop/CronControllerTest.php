@@ -10,7 +10,7 @@ class CronControllerTest extends HttpTestCase
     {
         // given
         $this->factory->extraFlagUserService([
-            'server_id' => $this->factory->server()->getId(),
+            "server_id" => $this->factory->server()->getId(),
         ]);
 
         // when

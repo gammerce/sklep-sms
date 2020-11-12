@@ -24,7 +24,7 @@ class UniqueUsernameRule extends BaseRule
         $user = $this->userRepository->findByUsername($value);
 
         if ($user && $user->getId() !== $this->exceptUserId) {
-            return [$this->lang->t('nick_occupied')];
+            return [$this->lang->t("nick_occupied")];
         }
 
         return [];

@@ -25,23 +25,23 @@ class UserServiceEditFormController
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        if (!$settings['user_edit_service']) {
-            return new PlainResponse($lang->t('not_logged'));
+        if (!$settings["user_edit_service"]) {
+            return new PlainResponse($lang->t("not_logged"));
         }
 
         $userService = $userServiceService->findOne($userServiceId);
 
         if (!$userService) {
-            return new PlainResponse($lang->t('dont_play_games'));
+            return new PlainResponse($lang->t("dont_play_games"));
         }
 
         if ($userService->getUserId() !== $user->getId()) {
-            return new PlainResponse($lang->t('dont_play_games'));
+            return new PlainResponse($lang->t("dont_play_games"));
         }
 
         $serviceModule = $serviceModuleManager->get($userService->getServiceId());
         if (!($serviceModule instanceof IServiceUserOwnServicesEdit)) {
-            return new PlainResponse($lang->t('service_cant_be_modified'));
+            return new PlainResponse($lang->t("service_cant_be_modified"));
         }
 
         $buttons = $template->render("shop/components/user_own_services/savencancel");

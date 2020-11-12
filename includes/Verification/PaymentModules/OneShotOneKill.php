@@ -72,7 +72,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
                 );
 
                 if ($responseNumber === null) {
-                    $this->fileLogger->error("1s1k invalid amount [{$content['amount']}]");
+                    $this->fileLogger->error("1s1k invalid amount [{$content["amount"]}]");
                     throw new ServerErrorException();
                 }
 

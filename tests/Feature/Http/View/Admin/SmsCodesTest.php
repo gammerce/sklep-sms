@@ -13,23 +13,23 @@ class SmsCodesTest extends HttpTestCase
 
         for ($i = 0; $i < 10; ++$i) {
             $this->factory->smsCode([
-                'free' => false,
+                "free" => false,
             ]);
         }
 
         for ($i = 0; $i < 16; ++$i) {
             $this->factory->smsCode([
-                'sms_price' => 500,
-                'free' => true,
+                "sms_price" => 500,
+                "free" => true,
             ]);
         }
 
         // when
-        $response = $this->get('/admin/sms_codes');
+        $response = $this->get("/admin/sms_codes");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Darmowe kody SMS', $response->getContent());
     }
 }
