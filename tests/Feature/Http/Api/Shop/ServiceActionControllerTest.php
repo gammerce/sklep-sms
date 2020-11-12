@@ -15,11 +15,11 @@ class ServiceActionControllerTest extends HttpTestCase
 
         $this->server = $this->factory->server();
         $this->factory->serverService([
-            'service_id' => 'vippro',
-            'server_id' => $this->server->getId(),
+            "service_id" => "vippro",
+            "server_id" => $this->server->getId(),
         ]);
         $this->factory->price([
-            'service_id' => 'vippro',
+            "service_id" => "vippro",
         ]);
     }
 
@@ -28,7 +28,7 @@ class ServiceActionControllerTest extends HttpTestCase
     {
         // when
         $response = $this->post("/api/services/vippro/actions/prices_for_server", [
-            'server_id' => $this->server->getId(),
+            "server_id" => $this->server->getId(),
         ]);
 
         // then
@@ -44,7 +44,7 @@ class ServiceActionControllerTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/services/vippro/actions/servers_for_service", [
-            'server_id' => $this->server->getId(),
+            "server_id" => $this->server->getId(),
         ]);
 
         // then

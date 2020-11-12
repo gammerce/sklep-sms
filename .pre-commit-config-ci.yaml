@@ -1,4 +1,4 @@
-- repo: https://github.com/UCD-DART/prettier-plugin-php-pre-commit
+- repo: https://github.com/budziam/prettier-plugin-php-pre-commit
   rev: master
   hooks:
     - id: prettier

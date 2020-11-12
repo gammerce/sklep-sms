@@ -84,7 +84,7 @@ class BodyRow extends Row
         $this->dbId = (string) $dbId;
 
         $cell = new Cell($this->dbId);
-        $cell->setParam('headers', 'id');
+        $cell->setParam("headers", "id");
 
         return $this->addCell($cell);
     }
@@ -119,12 +119,12 @@ class BodyRow extends Row
         }
 
         if ($this->editAction) {
-            $editAction = (new Link($lang->t('edit')))->addClass("dropdown-item edit_row");
+            $editAction = (new Link($lang->t("edit")))->addClass("dropdown-item edit_row");
             $actions->addContent($editAction);
         }
 
         if ($this->deleteAction) {
-            $deleteAction = (new Link($lang->t('delete')))->addClass(
+            $deleteAction = (new Link($lang->t("delete")))->addClass(
                 "dropdown-item delete_row has-text-danger"
             );
             $actions->addContent($deleteAction);

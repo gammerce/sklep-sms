@@ -4,28 +4,22 @@ import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/glo
 import { get_random_string } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
-$(document).delegate("#promo_code_button_add", "click", function() {
+$(document).delegate("#promo_code_button_add", "click", function () {
     showActionBox(window.currentPage, "add");
 });
 
 // Generate code
-$(document).delegate("#form_promo_code_add [name=random_code]", "click", function() {
-    $(this)
-        .closest("form")
-        .find("[name=code]")
-        .val(get_random_string());
+$(document).delegate("#form_promo_code_add [name=random_code]", "click", function () {
+    $(this).closest("form").find("[name=code]").val(get_random_string());
 });
 
-$(document).delegate(".table-structure .view-action", "click", function() {
+$(document).delegate(".table-structure .view-action", "click", function () {
     showActionBox(window.currentPage, "view", {
-        id: $(this)
-            .closest("tr")
-            .find("td[headers=id]")
-            .text(),
+        id: $(this).closest("tr").find("td[headers=id]").text(),
     });
 });
 
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     const rowId = $(this).closest("tr");
     const promoCodeId = rowId.children("td[headers=id]").text();
 
@@ -33,10 +27,10 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     $.ajax({
         type: "DELETE",
         url: buildUrl(`/api/admin/promo_codes/${promoCodeId}`),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -55,7 +49,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-$(document).delegate("#form_promo_code_add", "submit", function(e) {
+$(document).delegate("#form_promo_code_add", "submit", function (e) {
     e.preventDefault();
 
     loader.show();
@@ -63,10 +57,10 @@ $(document).delegate("#form_promo_code_add", "submit", function(e) {
         type: "POST",
         url: buildUrl("/api/admin/promo_codes"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

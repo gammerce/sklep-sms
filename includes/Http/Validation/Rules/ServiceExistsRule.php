@@ -18,7 +18,7 @@ class ServiceExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->serviceRepository->get($value)) {
-            return [$this->lang->t('no_such_service')];
+            return [$this->lang->t("no_such_service")];
         }
 
         return [];

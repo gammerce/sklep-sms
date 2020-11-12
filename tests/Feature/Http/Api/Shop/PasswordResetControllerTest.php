@@ -20,15 +20,15 @@ class PasswordResetControllerTest extends HttpTestCase
     {
         // given
         $user = $this->factory->user([
-            'password' => 'prevpass',
+            "password" => "prevpass",
         ]);
         $resetKey = $this->userRepository->createResetPasswordKey($user->getId());
 
         // when
         $response = $this->post("/api/password/reset", [
-            'code' => $resetKey,
-            'pass' => "abc123",
-            'pass_repeat' => "abc123",
+            "code" => $resetKey,
+            "pass" => "abc123",
+            "pass_repeat" => "abc123",
         ]);
 
         // then
@@ -47,9 +47,9 @@ class PasswordResetControllerTest extends HttpTestCase
     {
         // when
         $response = $this->post("/api/password/reset", [
-            'code' => 'asdsf',
-            'pass' => 'abc123',
-            'pass_repeat' => 'abc123',
+            "code" => "asdsf",
+            "pass" => "abc123",
+            "pass_repeat" => "abc123",
         ]);
 
         // then

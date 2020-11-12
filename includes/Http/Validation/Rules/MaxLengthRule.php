@@ -17,7 +17,7 @@ class MaxLengthRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (strlen($value) > $this->length) {
-            return [$this->lang->t('field_length_max_warn', $this->length)];
+            return [$this->lang->t("field_length_max_warn", $this->length)];
         }
 
         return [];

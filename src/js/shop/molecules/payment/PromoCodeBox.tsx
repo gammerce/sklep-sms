@@ -7,7 +7,7 @@ interface Props {
     onPromoCodeRemove(): Promise<void>;
 }
 
-export const PromoCodeBox: FunctionComponent<Props> = props => {
+export const PromoCodeBox: FunctionComponent<Props> = (props) => {
     const { promoCode: transactionPromoCode, onPromoCodeApply, onPromoCodeRemove } = props;
     const [promoCode, setPromoCode] = useState<string>(transactionPromoCode);
 

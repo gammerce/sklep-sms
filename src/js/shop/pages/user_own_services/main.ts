@@ -4,19 +4,19 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 
 // Click on edit service
-$(document).delegate("#user_own_services .edit_row", "click", function() {
+$(document).delegate("#user_own_services .edit_row", "click", function () {
     const row = $(this).closest("form");
     const card = row.closest(".card");
     const userServiceId = row.data("row");
 
-    restRequest("GET", `/api/user_services/${userServiceId}/edit_form`, {}, function(html) {
+    restRequest("GET", `/api/user_services/${userServiceId}/edit_form`, {}, function (html) {
         row.html(html);
         card.addClass("is-active");
 
-        row.find(".cancel").click(function() {
+        row.find(".cancel").click(function () {
             const userServiceId = row.data("row");
 
-            restRequest("GET", `/api/user_services/${userServiceId}/brick`, {}, function(html) {
+            restRequest("GET", `/api/user_services/${userServiceId}/brick`, {}, function (html) {
                 row.html(html);
                 card.removeClass("is-active");
             });
@@ -25,7 +25,7 @@ $(document).delegate("#user_own_services .edit_row", "click", function() {
 });
 
 // Edit service
-$(document).delegate("#user_own_services .row", "submit", function(e) {
+$(document).delegate("#user_own_services .row", "submit", function (e) {
     e.preventDefault();
 
     const that = $(this);
@@ -37,10 +37,10 @@ $(document).delegate("#user_own_services .row", "submit", function(e) {
         type: "PUT",
         url: buildUrl(`/api/user_services/${userServiceId}`),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

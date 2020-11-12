@@ -13,7 +13,7 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodSms: FunctionComponent<Props> = props => {
+export const PaymentMethodSms: FunctionComponent<Props> = (props) => {
     const { price, oldPrice, smsCode, smsNumber, onPay } = props;
     const [returnCode, setReturnCode] = useState<string>("");
     const [detailsVisible, setDetailsVisible] = useState<boolean>(false);

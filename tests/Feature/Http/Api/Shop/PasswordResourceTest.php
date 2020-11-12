@@ -20,15 +20,15 @@ class PasswordResourceTest extends HttpTestCase
     {
         // given
         $user = $this->factory->user([
-            'password' => 'prevpass',
+            "password" => "prevpass",
         ]);
         $this->actingAs($user);
 
         // when
         $response = $this->put("/api/password", [
-            'old_pass' => 'prevpass',
-            'pass' => 'abc123',
-            'pass_repeat' => 'abc123',
+            "old_pass" => "prevpass",
+            "pass" => "abc123",
+            "pass_repeat" => "abc123",
         ]);
 
         // then
@@ -50,9 +50,9 @@ class PasswordResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/password", [
-            'old_pass' => 'asdsf',
-            'pass' => 'ab',
-            'pass_repeat' => 'ab',
+            "old_pass" => "asdsf",
+            "pass" => "ab",
+            "pass_repeat" => "ab",
         ]);
 
         // then

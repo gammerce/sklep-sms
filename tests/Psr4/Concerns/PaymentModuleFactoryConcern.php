@@ -22,12 +22,12 @@ trait PaymentModuleFactoryConcern
     public function makeVerifySmsSuccessful($paymentModuleClass)
     {
         $this->paymentModuleFactoryMock
-            ->shouldReceive('create')
+            ->shouldReceive("create")
             ->withArgs([$paymentModuleClass, Mockery::any()])
             ->andReturnUsing(function ($className, PaymentPlatform $paymentPlatform) {
-                $paymentModule = $this->app->makeWith($className, compact('paymentPlatform'));
+                $paymentModule = $this->app->makeWith($className, compact("paymentPlatform"));
                 $paymentModuleMock = Mockery::mock($paymentModule)->makePartial();
-                $paymentModuleMock->shouldReceive('verifySms')->andReturn(new SmsSuccessResult());
+                $paymentModuleMock->shouldReceive("verifySms")->andReturn(new SmsSuccessResult());
                 return $paymentModuleMock;
             });
     }
@@ -35,12 +35,12 @@ trait PaymentModuleFactoryConcern
     public function makeVerifySmsUnsuccessful($paymentModuleClass)
     {
         $this->paymentModuleFactoryMock
-            ->shouldReceive('create')
+            ->shouldReceive("create")
             ->withArgs([$paymentModuleClass, Mockery::any()])
             ->andReturnUsing(function ($className, PaymentPlatform $paymentPlatform) {
-                $paymentModule = $this->app->makeWith($className, compact('paymentPlatform'));
+                $paymentModule = $this->app->makeWith($className, compact("paymentPlatform"));
                 $paymentModuleMock = Mockery::mock($paymentModule)->makePartial();
-                $paymentModuleMock->shouldReceive('verifySms')->andThrow(new BadCodeException());
+                $paymentModuleMock->shouldReceive("verifySms")->andThrow(new BadCodeException());
                 return $paymentModuleMock;
             });
     }

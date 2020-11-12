@@ -1,7 +1,5 @@
 <form id="form_user_edit" class="action_box">
-    <div class="service_main_info">
-        {$lang->t('edit_user')}
-    </div>
+    <div class="service_main_info">{$lang->t('edit_user')}</div>
     <table>
         <tr>
             <td>{$lang->t('id')}</td>
@@ -145,9 +143,7 @@
                         />
                     </div>
                     <div class="control">
-                        <a class="button is-static is-small">
-                            {{ $settings->getCurrency() }}
-                        </a>
+                        <a class="button is-static is-small"> {{ $settings->getCurrency() }} </a>
                     </div>
                 </div>
             </td>

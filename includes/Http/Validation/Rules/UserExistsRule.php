@@ -18,7 +18,7 @@ class UserExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->userRepository->get($value)) {
-            return [$this->lang->t('no_account_id')];
+            return [$this->lang->t("no_account_id")];
         }
 
         return [];

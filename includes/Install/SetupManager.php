@@ -30,7 +30,7 @@ class SetupManager
 
     public function markAsFailed()
     {
-        $path = $this->path->to('data/setup_error');
+        $path = $this->path->to("data/setup_error");
         $this->fileSystem->put($path, "");
         $this->fileSystem->setPermissions($path, 0777);
     }
@@ -38,24 +38,24 @@ class SetupManager
     /** @return bool */
     public function hasFailed()
     {
-        return $this->fileSystem->exists($this->path->to('data/setup_error'));
+        return $this->fileSystem->exists($this->path->to("data/setup_error"));
     }
 
     /** @return bool */
     public function isInProgress()
     {
-        return $this->fileSystem->exists($this->path->to('data/setup_progress'));
+        return $this->fileSystem->exists($this->path->to("data/setup_progress"));
     }
 
     private function putInProgress()
     {
-        $path = $this->path->to('data/setup_progress');
+        $path = $this->path->to("data/setup_progress");
         $this->fileSystem->put($path, "");
         $this->fileSystem->setPermissions($path, 0777);
     }
 
     private function removeInProgress()
     {
-        $this->fileSystem->delete($this->path->to('data/setup_progress'));
+        $this->fileSystem->delete($this->path->to("data/setup_progress"));
     }
 }

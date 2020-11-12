@@ -4,7 +4,7 @@ import "core-js";
 import { changeUrl } from "../general/global";
 
 // @ts-ignore
-jQuery.fn.scrollTo = function(elem, speed) {
+jQuery.fn.scrollTo = function (elem, speed) {
     $(this).animate(
         {
             scrollTop: $(this).scrollTop() - $(this).offset().top + $(elem).offset().top,
@@ -15,38 +15,34 @@ jQuery.fn.scrollTo = function(elem, speed) {
 };
 
 // Wyszukiwanie usługi
-$(document).delegate(".table-structure .search", "submit", function(e) {
+$(document).delegate(".table-structure .search", "submit", function (e) {
     e.preventDefault();
 
     changeUrl({
-        search: $(this)
-            .find(".search_text")
-            .val(),
+        search: $(this).find(".search_text").val(),
         page: "",
     });
 });
 
-$(document).delegate(".dropdown", "click", function(e) {
+$(document).delegate(".dropdown", "click", function (e) {
     e.stopImmediatePropagation();
-    $(".dropdown")
-        .not(this)
-        .removeClass("is-active");
+    $(".dropdown").not(this).removeClass("is-active");
     $(this).toggleClass("is-active");
 });
 
-$(document).delegate("#navbar-burger", "click", function() {
+$(document).delegate("#navbar-burger", "click", function () {
     $(this).toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
 });
 
-$(document).delegate("#sidebar-burger", "click", function(e) {
+$(document).delegate("#sidebar-burger", "click", function (e) {
     e.stopImmediatePropagation();
     $(this).toggleClass("is-active");
     $(".sidebar-menu").toggleClass("is-active");
     $("#overlay").toggleClass("is-active");
 });
 
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
     // Close all dropdowns
     $(".dropdown").removeClass("is-active");
 

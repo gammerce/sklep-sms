@@ -3,7 +3,7 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
-$(document).delegate("#register", "submit", function(e) {
+$(document).delegate("#register", "submit", function (e) {
     e.preventDefault();
     loader.show();
 

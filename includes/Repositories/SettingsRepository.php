@@ -30,7 +30,7 @@ class SettingsRepository
         }
 
         foreach (array_keys($values) as $key) {
-            $keys[] = '?';
+            $keys[] = "?";
             $params[] = $key;
         }
 

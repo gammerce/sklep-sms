@@ -123,7 +123,7 @@ class Database
         }
 
         $this->disableForeignKeyConstraints();
-        $this->query('DROP TABLE ' . implode(',', $tables));
+        $this->query("DROP TABLE " . implode(",", $tables));
         $this->enableForeignKeyConstraints();
     }
 
@@ -142,12 +142,12 @@ class Database
 
     public function disableForeignKeyConstraints()
     {
-        $this->query('SET FOREIGN_KEY_CHECKS=0;');
+        $this->query("SET FOREIGN_KEY_CHECKS=0;");
     }
 
     public function enableForeignKeyConstraints()
     {
-        $this->query('SET FOREIGN_KEY_CHECKS=1;');
+        $this->query("SET FOREIGN_KEY_CHECKS=1;");
     }
 
     public function createDatabaseIfNotExists($database)

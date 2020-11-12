@@ -4,17 +4,17 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
 // Wysłanie formularza o reset hasła
-$(document).delegate("#form_reset_password", "submit", function(e) {
+$(document).delegate("#form_reset_password", "submit", function (e) {
     e.preventDefault();
     loader.show();
     $.ajax({
         type: "POST",
         url: buildUrl("/api/password/reset"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

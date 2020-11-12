@@ -18,7 +18,7 @@ class ExtraFlagServiceTypesRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!($this->service->getTypes() & $value)) {
-            return [$this->lang->t('chosen_incorrect_type')];
+            return [$this->lang->t("chosen_incorrect_type")];
         }
 
         return [];

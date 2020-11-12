@@ -118,9 +118,7 @@
                     <div class="control">
                         <div class="select is-fullwidth">
                             <select id="server_id" name="server_id" required>
-                                <option value="">
-                                    {{ __('choose_server') }}
-                                </option>
+                                <option value="">{{ __('choose_server') }}</option>
                                 {!! $servers !!}
                             </select>
                         </div>
@@ -132,17 +130,13 @@
                     <div class="control">
                         <div class="select is-fullwidth">
                             <select id="quantity" name="quantity" required>
-                                <option value="">
-                                    {{ __('choose_quantity') }}
-                                </option>
+                                <option value="">{{ __('choose_quantity') }}</option>
                             </select>
                         </div>
                     </div>
                 </div>
 
-                <div class="column is-full">
-                    {!! $costBox !!}
-                </div>
+                <div class="column is-full">{!! $costBox !!}</div>
             </div>
         </div>
     </div>

@@ -35,8 +35,8 @@ class ServerServiceRepository
             ->execute([$serverId, $serviceId]);
 
         return $this->mapToModel([
-            'server_id' => $serverId,
-            'service_id' => $serviceId,
+            "server_id" => $serverId,
+            "service_id" => $serviceId,
         ]);
     }
 
@@ -60,6 +60,6 @@ class ServerServiceRepository
 
     public function mapToModel(array $data)
     {
-        return new ServerService(as_int($data['server_id']), $data['service_id']);
+        return new ServerService(as_int($data["server_id"]), $data["service_id"]);
     }
 }

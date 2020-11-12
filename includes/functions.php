@@ -46,7 +46,7 @@ function get_row_limit($page, $rowLimit = 0)
 {
     /** @var Settings $settings */
     $settings = app()->make(Settings::class);
-    $rowLimit = $rowLimit ?: $settings['row_limit'];
+    $rowLimit = $rowLimit ?: $settings["row_limit"];
     return [($page - 1) * $rowLimit, $rowLimit];
 }
 
@@ -98,11 +98,11 @@ function translate_platform($platform)
     $lang = $translationManager->user();
 
     if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
-        return $lang->t('amxx_server');
+        return $lang->t("amxx_server");
     }
 
     if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
-        return $lang->t('sm_server');
+        return $lang->t("sm_server");
     }
 
     return $platform;
@@ -203,9 +203,9 @@ function hash_password($password, $salt)
 
 function escape_filename($filename)
 {
-    $filename = str_replace('/', '_', $filename);
-    $filename = str_replace(' ', '_', $filename);
-    $filename = str_replace('.', '_', $filename);
+    $filename = str_replace("/", "_", $filename);
+    $filename = str_replace(" ", "_", $filename);
+    $filename = str_replace(".", "_", $filename);
 
     return $filename;
 }
@@ -245,7 +245,7 @@ function seconds_to_time($seconds)
 
     return $dtF
         ->diff($dtT)
-        ->format("%a {$lang->t('days')} {$lang->t('and')} %h {$lang->t('hours')}");
+        ->format("%a {$lang->t("days")} {$lang->t("and")} %h {$lang->t("hours")}");
 }
 
 /**
@@ -268,7 +268,7 @@ function create_search_query($columns, $search)
         return null;
     }
 
-    $searchLike = '%' . implode('%', custom_mb_str_split($search)) . '%';
+    $searchLike = "%" . implode("%", custom_mb_str_split($search)) . "%";
 
     $params = [];
     $values = [];
@@ -297,29 +297,29 @@ function create_search_query($columns, $search)
 // use one of the above 3 formats.
 function ip_in_range($ip, $range)
 {
-    if (strpos($range, '/') !== false) {
+    if (strpos($range, "/") !== false) {
         // $range is in IP/NETMASK format
-        list($range, $netmask) = explode('/', $range, 2);
-        if (strpos($netmask, '.') !== false) {
+        list($range, $netmask) = explode("/", $range, 2);
+        if (strpos($netmask, ".") !== false) {
             // $netmask is a 255.255.0.0 format
-            $netmask = str_replace('*', '0', $netmask);
+            $netmask = str_replace("*", "0", $netmask);
             $netmaskDec = ip2long($netmask);
 
             return (ip2long($ip) & $netmaskDec) == (ip2long($range) & $netmaskDec);
         } else {
             // $netmask is a CIDR size block
             // fix the range argument
-            $x = explode('.', $range);
+            $x = explode(".", $range);
             while (count($x) < 4) {
-                $x[] = '0';
+                $x[] = "0";
             }
             list($a, $b, $c, $d) = $x;
             $range = sprintf(
                 "%u.%u.%u.%u",
-                empty($a) ? '0' : $a,
-                empty($b) ? '0' : $b,
-                empty($c) ? '0' : $c,
-                empty($d) ? '0' : $d
+                empty($a) ? "0" : $a,
+                empty($b) ? "0" : $b,
+                empty($c) ? "0" : $c,
+                empty($d) ? "0" : $d
             );
             $rangeDec = ip2long($range);
             $ipDec = ip2long($ip);
@@ -335,17 +335,17 @@ function ip_in_range($ip, $range)
         }
     } else {
         // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
-        if (strpos($range, '*') !== false) {
+        if (strpos($range, "*") !== false) {
             // a.b.*.* format
             // Just convert to A-B format by setting * to 0 for A and 255 for B
-            $lower = str_replace('*', '0', $range);
-            $upper = str_replace('*', '255', $range);
+            $lower = str_replace("*", "0", $range);
+            $upper = str_replace("*", "255", $range);
             $range = "$lower-$upper";
         }
 
-        if (strpos($range, '-') !== false) {
+        if (strpos($range, "-") !== false) {
             // A-B format
-            list($lower, $upper) = explode('-', $range, 2);
+            list($lower, $upper) = explode("-", $range, 2);
             $lowerDec = (float) sprintf("%u", ip2long($lower));
             $upperDec = (float) sprintf("%u", ip2long($upper));
             $ipDec = (float) sprintf("%u", ip2long($ip));
@@ -483,7 +483,7 @@ function is_list(array $array)
         return true;
     }
 
-    return ctype_digit(implode('', array_keys($array)));
+    return ctype_digit(implode("", array_keys($array)));
 }
 
 /**
@@ -692,22 +692,22 @@ function as_permission_list($permissions)
  */
 function get_class_from_file($path)
 {
-    $fp = fopen($path, 'r');
-    $buffer = '';
+    $fp = fopen($path, "r");
+    $buffer = "";
     $i = 0;
 
     while (!feof($fp)) {
         $buffer .= fread($fp, 512);
         $tokens = token_get_all($buffer);
 
-        if (strpos($buffer, '{') === false) {
+        if (strpos($buffer, "{") === false) {
             continue;
         }
 
         for (; $i < count($tokens); $i++) {
             if ($tokens[$i][0] === T_CLASS) {
                 for ($j = $i + 1; $j < count($tokens); $j++) {
-                    if ($tokens[$j] === '{') {
+                    if ($tokens[$j] === "{") {
                         return $tokens[$i + 2][1];
                     }
                 }
@@ -874,7 +874,7 @@ function dd(...$vars)
 function generate_uuid4()
 {
     return sprintf(
-        '%04x%04x-%04x-%04x-%04x-%04x%04x%04x',
+        "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
         // 32 bits for "time_low"
         mt_rand(0, 0xffff),
         mt_rand(0, 0xffff),

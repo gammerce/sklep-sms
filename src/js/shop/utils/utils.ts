@@ -5,7 +5,7 @@ import { Dict } from "../types/general";
 
 export const handleError = (e: Error) => console.error(e);
 
-export const getAndSetTemplate = function(
+export const getAndSetTemplate = function (
     element: JQuery,
     template: string,
     data?: any,
@@ -39,7 +39,7 @@ export const getAndSetTemplate = function(
     });
 };
 
-export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
+export const refreshBlocks = function (bricks: string, onSuccessFunction?: any) {
     loader.show();
 
     $.ajax({
@@ -70,6 +70,6 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any) {
 /**
  * Go to payment page
  */
-export const goToPayment = function(transactionId) {
+export const goToPayment = function (transactionId) {
     window.location.href = buildUrl("/page/payment", { tid: transactionId });
 };

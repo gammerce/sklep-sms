@@ -41,11 +41,11 @@ const makePayment = async (transactionId: string, body: Dict): Promise<void> => 
     } else if (result.return_id === "purchased") {
         // Update content window with purchase details
         api.getPurchase(result.bsid)
-            .then(message => $("#page-content").html(message))
+            .then((message) => $("#page-content").html(message))
             .catch(handleError);
 
         // Refresh wallet
-        refreshBlocks("wallet", function() {
+        refreshBlocks("wallet", function () {
             const wallet = $("#wallet");
             if ((wallet as any).effect) {
                 (wallet as any).effect("highlight", "slow");

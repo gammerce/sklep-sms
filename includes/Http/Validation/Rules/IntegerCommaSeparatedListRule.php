@@ -11,7 +11,7 @@ class IntegerCommaSeparatedListRule extends BaseRule
 
         foreach ($groups as $group) {
             if (!my_is_integer($group)) {
-                return [$this->lang->t('group_not_integer')];
+                return [$this->lang->t("group_not_integer")];
                 break;
             }
         }

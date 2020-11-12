@@ -27,7 +27,7 @@ class FileCache implements CacheInterface
             return $default;
         }
 
-        return $payload['data'];
+        return $payload["data"];
     }
 
     public function set($key, $value, $ttl = null)
@@ -50,27 +50,27 @@ class FileCache implements CacheInterface
 
     public function clear()
     {
-        throw new Exception('Not implemented');
+        throw new Exception("Not implemented");
     }
 
     public function getMultiple($keys, $default = null)
     {
-        throw new Exception('Not implemented');
+        throw new Exception("Not implemented");
     }
 
     public function setMultiple($values, $ttl = null)
     {
-        throw new Exception('Not implemented');
+        throw new Exception("Not implemented");
     }
 
     public function deleteMultiple($keys)
     {
-        throw new Exception('Not implemented');
+        throw new Exception("Not implemented");
     }
 
     public function has($key)
     {
-        throw new Exception('Not implemented');
+        throw new Exception("Not implemented");
     }
 
     /**
@@ -120,13 +120,13 @@ class FileCache implements CacheInterface
         // operation that may be performed on this cache on a later operation.
         $time = $expire - time();
 
-        return compact('data', 'time');
+        return compact("data", "time");
     }
 
     private function path($key)
     {
         $parts = array_slice(str_split($hash = sha1($key), 2), 0, 2);
 
-        return $this->directory . '/' . implode('/', $parts) . '/' . $hash;
+        return $this->directory . "/" . implode("/", $parts) . "/" . $hash;
     }
 }

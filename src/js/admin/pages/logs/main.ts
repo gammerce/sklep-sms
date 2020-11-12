@@ -3,7 +3,7 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { refreshAdminContent } from "../../utils/utils";
 import { buildUrl } from "../../../general/global";
 
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     const rowId = $(this).closest("tr");
     const logId = rowId.children("td[headers=id]").text();
 

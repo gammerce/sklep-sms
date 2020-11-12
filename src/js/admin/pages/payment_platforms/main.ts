@@ -3,11 +3,11 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, restRequest, showWarnings } from "../../../general/global";
 
-$(document).delegate("#payment_platform_button_add", "click", function() {
+$(document).delegate("#payment_platform_button_add", "click", function () {
     showActionBox(window.currentPage, "create");
 });
 
-$(document).delegate("#form_payment_platform_add", "submit", function(e) {
+$(document).delegate("#form_payment_platform_add", "submit", function (e) {
     e.preventDefault();
 
     const that = this;
@@ -41,7 +41,7 @@ $(document).delegate("#form_payment_platform_add", "submit", function(e) {
 });
 
 let formPaymentPlatformAddForm: JQuery;
-$(document).delegate("#form_payment_platform_add [name=module]", "change", function() {
+$(document).delegate("#form_payment_platform_add [name=module]", "change", function () {
     const paymentModuleId = $(this).val();
 
     if (!paymentModuleId && formPaymentPlatformAddForm) {
@@ -49,7 +49,7 @@ $(document).delegate("#form_payment_platform_add [name=module]", "change", funct
         return;
     }
 
-    restRequest("GET", `/api/admin/payment_modules/${paymentModuleId}/add_form`, {}, function(
+    restRequest("GET", `/api/admin/payment_modules/${paymentModuleId}/add_form`, {}, function (
         content
     ) {
         if (formPaymentPlatformAddForm) {
@@ -62,22 +62,17 @@ $(document).delegate("#form_payment_platform_add [name=module]", "change", funct
 });
 
 // EDIT
-$(document).delegate(".table-structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function () {
     showActionBox(window.currentPage, "edit", {
-        id: $(this)
-            .closest("tr")
-            .find("td[headers=id]")
-            .text(),
+        id: $(this).closest("tr").find("td[headers=id]").text(),
     });
 });
 
-$(document).delegate("#form_payment_platform_edit", "submit", function(e) {
+$(document).delegate("#form_payment_platform_edit", "submit", function (e) {
     e.preventDefault();
 
     const that = this;
-    const paymentPlatformId = $(this)
-        .find("[name=id]")
-        .val();
+    const paymentPlatformId = $(this).find("[name=id]").val();
 
     loader.show();
     $.ajax({
@@ -106,7 +101,7 @@ $(document).delegate("#form_payment_platform_edit", "submit", function(e) {
 });
 
 // DELETE
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     const rowId = $(this).closest("tr");
     const paymentPlatformId = rowId.children("td[headers=id]").text();
     const paymentPlatformName = rowId.children("td[headers=name]").text();

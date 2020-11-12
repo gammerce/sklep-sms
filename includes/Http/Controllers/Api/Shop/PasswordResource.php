@@ -26,15 +26,15 @@ class PasswordResource
         $user = $auth->user();
 
         $validator = new Validator($request->request->all(), [
-            'old_pass' => [new RequiredRule(), new UserPasswordRule($user)],
-            'pass' => [new RequiredRule(), new PasswordRule(), new ConfirmedRule()],
+            "old_pass" => [new RequiredRule(), new UserPasswordRule($user)],
+            "pass" => [new RequiredRule(), new PasswordRule(), new ConfirmedRule()],
         ]);
 
         $validated = $validator->validateOrFail();
 
-        $userRepository->updatePassword($user->getId(), $validated['pass']);
+        $userRepository->updatePassword($user->getId(), $validated["pass"]);
         $logger->logWithActor("log_password_changed");
 
-        return new ApiResponse("password_changed", $lang->t('password_changed'), 1);
+        return new ApiResponse("password_changed", $lang->t("password_changed"), 1);
     }
 }

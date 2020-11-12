@@ -30,14 +30,14 @@ class InstallController
         Application $app
     ) {
         $validator = new Validator($request->request->all(), [
-            'admin_password' => [new RequiredRule()],
-            'admin_username' => [new RequiredRule()],
-            'license_token' => [new RequiredRule()],
-            'db_host' => [],
-            'db_port' => [],
-            'db_user' => [],
-            'db_password' => [],
-            'db_db' => [],
+            "admin_password" => [new RequiredRule()],
+            "admin_username" => [new RequiredRule()],
+            "license_token" => [new RequiredRule()],
+            "db_host" => [],
+            "db_port" => [],
+            "db_user" => [],
+            "db_password" => [],
+            "db_db" => [],
         ]);
 
         $warnings = $validator->validate();
@@ -45,17 +45,17 @@ class InstallController
         foreach ($requirementsStore->getFilesWithWritePermission() as $file) {
             if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
                 $warnings->add(
-                    'general',
+                    "general",
                     "Ścieżka <b>" . htmlspecialchars($file) . "</b> nie posiada praw do zapisu."
                 );
             }
         }
 
         foreach ($requirementsStore->getModules() as $module) {
-            if (!$module['value'] && $module['must-be']) {
+            if (!$module["value"] && $module["must-be"]) {
                 $warnings->add(
-                    'general',
-                    "Wymaganie: <b>{$module['text']}</b> nie jest spełnione."
+                    "general",
+                    "Wymaganie: <b>{$module["text"]}</b> nie jest spełnione."
                 );
             }
         }
@@ -66,11 +66,11 @@ class InstallController
 
         $validated = $validator->validated();
 
-        $dbHost = $validated['db_host'];
-        $dbPort = $validated['db_port'];
-        $dbUser = $validated['db_user'];
-        $dbPassword = $validated['db_password'];
-        $dbDb = $validated['db_db'];
+        $dbHost = $validated["db_host"];
+        $dbPort = $validated["db_port"];
+        $dbUser = $validated["db_user"];
+        $dbPassword = $validated["db_password"];
+        $dbDb = $validated["db_db"];
 
         try {
             $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
@@ -86,9 +86,9 @@ class InstallController
         try {
             $setupManager->start();
             $migrator->setup(
-                $validated['license_token'],
-                $validated['admin_username'],
-                $validated['admin_password'],
+                $validated["license_token"],
+                $validated["admin_username"],
+                $validated["admin_password"],
                 get_ip($request)
             );
             $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);

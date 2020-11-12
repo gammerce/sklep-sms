@@ -31,11 +31,11 @@ class ServiceResource
         $validator = new Validator(
             array_merge($request->request->all(), [
                 // For backward compatibility. Some service modules use that field.
-                'id' => $serviceId,
+                "id" => $serviceId,
             ]),
             [
-                'id' => [],
-                'new_id' => [new RequiredRule(), new ServiceNotExistsRule($serviceId)],
+                "id" => [],
+                "new_id" => [new RequiredRule(), new ServiceNotExistsRule($serviceId)],
             ]
         );
 
@@ -51,24 +51,24 @@ class ServiceResource
 
         $updated = $serviceRepository->update(
             $serviceId,
-            $validated['new_id'],
-            $validated['name'],
-            $validated['short_description'],
-            $validated['description'],
-            $validated['tag'],
-            $validated['groups'],
-            $validated['order'],
+            $validated["new_id"],
+            $validated["name"],
+            $validated["short_description"],
+            $validated["description"],
+            $validated["tag"],
+            $validated["groups"],
+            $validated["order"],
             array_get($additionalData, "data", []),
             array_get($additionalData, "types", 0),
-            array_get($additionalData, "flags", '')
+            array_get($additionalData, "flags", "")
         );
 
         if ($updated) {
-            $logger->logWithActor('log_service_edited', $serviceId);
-            return new SuccessApiResponse($lang->t('service_edit'));
+            $logger->logWithActor("log_service_edited", $serviceId);
+            return new SuccessApiResponse($lang->t("service_edit"));
         }
 
-        return new ApiResponse("not_edited", $lang->t('service_no_edit'), 0);
+        return new ApiResponse("not_edited", $lang->t("service_no_edit"), 0);
     }
 
     public function delete(
@@ -90,17 +90,17 @@ class ServiceResource
         } catch (PDOException $e) {
             // It is affiliated with something
             if (get_error_code($e) == 1451) {
-                return new ApiResponse("error", $lang->t('delete_service_er_row_is_referenced'), 0);
+                return new ApiResponse("error", $lang->t("delete_service_er_row_is_referenced"), 0);
             }
 
             throw $e;
         }
 
         if ($deleted) {
-            $logger->logWithActor('log_service_deleted', $serviceId);
-            return new SuccessApiResponse($lang->t('delete_service'));
+            $logger->logWithActor("log_service_deleted", $serviceId);
+            return new SuccessApiResponse($lang->t("delete_service"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_service'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_service"), 0);
     }
 }

@@ -17,7 +17,7 @@ class FinalizedPayment
      *
      * @var string
      */
-    private $orderId = '';
+    private $orderId = "";
 
     /**
      * Payment value gross
@@ -38,21 +38,21 @@ class FinalizedPayment
      *
      * @var string
      */
-    private $transactionId = '';
+    private $transactionId = "";
 
     /**
      * Service ID from the external system
      *
      * @var string
      */
-    private $externalServiceId = '';
+    private $externalServiceId = "";
 
     /**
      * What should be displayed as a response
      *
      * @var string
      */
-    private $output = '';
+    private $output = "";
 
     /**
      * Is it test payment

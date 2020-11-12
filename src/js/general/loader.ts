@@ -11,7 +11,7 @@ export const loader = {
             loader.show_task = 0;
         }
 
-        loader.show_task = setTimeout(function() {
+        loader.show_task = setTimeout(function () {
             loader.element = $("<div>", {
                 class: "loader-wrapper",
             }).hide();

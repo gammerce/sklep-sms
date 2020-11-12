@@ -10,7 +10,7 @@ interface Props {
     onPay(body?: Dict);
 }
 
-export const PaymentMethodTransfer: FunctionComponent<Props> = props => {
+export const PaymentMethodTransfer: FunctionComponent<Props> = (props) => {
     const { price, oldPrice, name, onPay } = props;
 
     const onPayClick = () => onPay();

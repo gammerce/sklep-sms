@@ -43,7 +43,7 @@ EOF
 
         $tariffProvision = [];
         foreach ($this->db->query("SELECT * FROM ss_tariffs") as $row) {
-            $tariffProvision[$row['id']] = $row['provision'];
+            $tariffProvision[$row["id"]] = $row["provision"];
         }
 
         $tariffPrice = [];
@@ -57,14 +57,14 @@ VALUES (?, ?, ?, ?, ?)
 EOF
                     )
                     ->execute([
-                        $row['service'],
-                        $row['server'] === -1 ? null : $row['server'],
-                        $this->tariffToSmsPrice($row['tariff']),
-                        array_get($tariffProvision, $row['tariff']),
-                        $row['amount'] === -1 ? null : $row['amount'],
+                        $row["service"],
+                        $row["server"] === -1 ? null : $row["server"],
+                        $this->tariffToSmsPrice($row["tariff"]),
+                        array_get($tariffProvision, $row["tariff"]),
+                        $row["amount"] === -1 ? null : $row["amount"],
                     ]);
 
-                $tariffPrice[$row['tariff']] = $this->db->lastId();
+                $tariffPrice[$row["tariff"]] = $this->db->lastId();
             } catch (PDOException $e) {
                 $this->fileLogger->install("Migrate pricelist error. {$e->getMessage()}");
             }
@@ -89,7 +89,7 @@ EOF
             try {
                 $this->db
                     ->statement("UPDATE ss_service_codes SET `price` = ? WHERE `id` = ?")
-                    ->execute([array_get($tariffPrice, $row['tariff']), $row['id']]);
+                    ->execute([array_get($tariffPrice, $row["tariff"]), $row["id"]]);
             } catch (PDOException $e) {
                 $this->fileLogger->install("Migrate service_code error. {$e->getMessage()}");
             }

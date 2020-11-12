@@ -8,14 +8,14 @@ trait GosettiConcern
     protected function mockGoSettiGetData()
     {
         $this->requesterMock
-            ->shouldReceive('get')
-            ->withArgs(['https://gosetti.pl/Api/SmsApiV2GetData.php'])
+            ->shouldReceive("get")
+            ->withArgs(["https://gosetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(
                 new Response(
                     200,
                     json_encode([
-                        'Code' => 'abc123',
-                        'Numbers' => [],
+                        "Code" => "abc123",
+                        "Numbers" => [],
                     ])
                 )
             );

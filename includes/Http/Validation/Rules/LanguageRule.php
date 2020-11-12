@@ -24,9 +24,9 @@ class LanguageRule extends BaseRule
     {
         if (
             !$this->fileSystem->isDirectory($this->path->to("translations/$value")) ||
-            $value[0] === '.'
+            $value[0] === "."
         ) {
-            return [$this->lang->t('no_language')];
+            return [$this->lang->t("no_language")];
         }
 
         return [];

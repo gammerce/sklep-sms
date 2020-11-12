@@ -72,7 +72,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 
         if (strlen(array_get($content, "error"))) {
             $this->fileLogger->error(
-                "MicroSMS sms. Error {$content['error']['errorCode']} - {$content['error']['message']}"
+                "MicroSMS sms. Error {$content["error"]["errorCode"]} - {$content["error"]["message"]}"
             );
             throw new UnknownErrorException();
         }
@@ -85,7 +85,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             }
 
             $this->fileLogger->error(
-                "MicroSMS sms. DataError [$errorCode] - {$content['data']['message']}"
+                "MicroSMS sms. DataError [$errorCode] - {$content["data"]["message"]}"
             );
             throw new UnknownErrorException();
         }

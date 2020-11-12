@@ -26,10 +26,10 @@ class UserProfileResource
 
         $validator = new Validator(
             [
-                "username" => trim($request->request->get('username')),
-                "forename" => trim($request->request->get('forename')),
-                "surname" => trim($request->request->get('surname')),
-                "steam_id" => trim($request->request->get('steam_id')),
+                "username" => trim($request->request->get("username")),
+                "forename" => trim($request->request->get("forename")),
+                "surname" => trim($request->request->get("surname")),
+                "steam_id" => trim($request->request->get("steam_id")),
             ],
             [
                 "username" => [
@@ -45,13 +45,13 @@ class UserProfileResource
 
         $validated = $validator->validateOrFail();
 
-        $user->setUsername($validated['username']);
-        $user->setForename($validated['forename']);
-        $user->setSurname($validated['surname']);
-        $user->setSteamId($validated['steam_id']);
+        $user->setUsername($validated["username"]);
+        $user->setForename($validated["forename"]);
+        $user->setSurname($validated["surname"]);
+        $user->setSteamId($validated["steam_id"]);
 
         $userRepository->update($user);
 
-        return new SuccessApiResponse($lang->t('profile_edit'));
+        return new SuccessApiResponse($lang->t("profile_edit"));
     }
 }

@@ -4,19 +4,16 @@ import { get_random_string, getFormData } from "../../../general/stocks";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 
-$(document).delegate("#sms_code_button_add", "click", function() {
+$(document).delegate("#sms_code_button_add", "click", function () {
     showActionBox(window.currentPage, "add");
 });
 
-$(document).delegate("#form_sms_code_add [name=random_code]", "click", function() {
-    $(this)
-        .closest("form")
-        .find("[name=code]")
-        .val(get_random_string());
+$(document).delegate("#form_sms_code_add [name=random_code]", "click", function () {
+    $(this).closest("form").find("[name=code]").val(get_random_string());
 });
 
 // Delete sms code
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     var rowId = $(this).closest("tr");
     var smsCodeId = rowId.children("td[headers=id]").text();
 
@@ -47,7 +44,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 });
 
 // Add SMS code
-$(document).delegate("#form_sms_code_add", "submit", function(e) {
+$(document).delegate("#form_sms_code_add", "submit", function (e) {
     e.preventDefault();
     loader.show();
 

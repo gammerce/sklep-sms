@@ -35,7 +35,7 @@ class UpdateController
                 "Aktualizacja nie mogła zostać przeprowadzona. Nie wszystkie warunki są spełnione.",
                 false,
                 [
-                    'update_info' => $updateBody,
+                    "update_info" => $updateBody,
                 ]
             );
         }

@@ -3,14 +3,14 @@
 </div>
 
 <script>
-    Chart.Tooltip.positioners.custom = function(elements, eventPosition) {
+    Chart.Tooltip.positioners.custom = function (elements, eventPosition) {
         return {
             x: eventPosition.x,
             y: 0,
         };
     };
 
-    window.onload = function() {
+    window.onload = function () {
         var ctx = document.getElementById("{{ $id }}").getContext("2d");
         var config = {
             type: "line",

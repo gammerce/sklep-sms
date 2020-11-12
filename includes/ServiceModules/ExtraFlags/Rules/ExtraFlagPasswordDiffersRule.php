@@ -19,9 +19,9 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
-        $type = array_get($data, 'type');
-        $serverId = array_get($data, 'server_id');
-        $authData = array_get($data, 'auth_data');
+        $type = array_get($data, "type");
+        $serverId = array_get($data, "server_id");
+        $authData = array_get($data, "auth_data");
 
         $statement = $this->db->statement(
             "SELECT `password` FROM `$table` " .
@@ -31,7 +31,7 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
         $existingPassword = $statement->fetchColumn();
 
         if ($existingPassword && $existingPassword !== $value) {
-            return [$this->lang->t('existing_service_has_different_password')];
+            return [$this->lang->t("existing_service_has_different_password")];
         }
 
         return [];

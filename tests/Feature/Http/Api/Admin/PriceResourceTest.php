@@ -24,10 +24,10 @@ class PriceResourceTest extends HttpTestCase
 
         // when
         $response = $this->put("/api/admin/prices/{$price->getId()}", [
-            'service_id' => 'vippro',
-            'server_id' => null,
-            'sms_price' => 300,
-            'quantity' => 30,
+            "service_id" => "vippro",
+            "server_id" => null,
+            "sms_price" => 300,
+            "quantity" => 30,
         ]);
 
         // then
@@ -39,7 +39,7 @@ class PriceResourceTest extends HttpTestCase
         $this->assertEqualsMoney(300, $freshPrice->getSmsPrice());
         $this->assertSame(30, $freshPrice->getQuantity());
         $this->assertNull($freshPrice->getServerId());
-        $this->assertSame('vippro', $freshPrice->getServiceId());
+        $this->assertSame("vippro", $freshPrice->getServiceId());
     }
 
     /** @test */
