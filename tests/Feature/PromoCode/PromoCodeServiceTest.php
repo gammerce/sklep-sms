@@ -18,9 +18,6 @@ class PromoCodeServiceTest extends TestCase
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
 
-    /** @var User */
-    private $user;
-
     /** @var Purchase */
     private $purchase;
 
@@ -29,8 +26,7 @@ class PromoCodeServiceTest extends TestCase
         parent::setUp();
         $this->promoCodeService = $this->app->make(PromoCodeService::class);
         $this->promoCodeRepository = $this->app->make(PromoCodeRepository::class);
-        $this->user = $this->factory->user();
-        $this->purchase = new Purchase($this->user, "192.0.2.1", "platform");
+        $this->purchase = new Purchase($this->factory->user(), "192.0.2.1", "platform");
     }
 
     /** @test */
