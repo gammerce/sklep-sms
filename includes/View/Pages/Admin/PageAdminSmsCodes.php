@@ -12,7 +12,6 @@ use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationDateCell;
@@ -40,17 +39,13 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         SmsPriceRepository $smsPriceRepository,
         SmsCodeRepository $smsCodeRepository,
         PriceTextService $priceTextService,
-        Database $db,
-        CurrentPage $currentPage
+        Database $db
     ) {
         parent::__construct($template, $translationManager);
 
@@ -58,7 +53,6 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $this->priceTextService = $priceTextService;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
     }
 
     public function getPrivilege()
@@ -79,7 +73,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                 "WHERE `free` = '1' " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -106,7 +100,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("sms_price")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 

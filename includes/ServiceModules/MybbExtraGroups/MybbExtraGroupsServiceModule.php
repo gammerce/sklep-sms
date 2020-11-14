@@ -40,7 +40,6 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -242,18 +241,15 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->lang->t("mybb_groups");
     }
 
-    public function userServiceAdminDisplayGet(array $query, array $body)
+    public function userServiceAdminDisplayGet(Request $request)
     {
-        /** @var CurrentPage $currentPage */
-        $currentPage = $this->app->make(CurrentPage::class);
-
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
                     ["us.id", "us.user_id", "u.username", "s.name", "usmeg.mybb_uid"],
-                    $query["search"]
+                    $request->query->get("search")
                 )
             );
         }
@@ -271,9 +267,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge($queryParticle->params(), get_row_limit($currentPage->getPageNumber()))
-        );
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -300,7 +294,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("mybb_user")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $query, $rowsCount);
+            ->enablePagination("/admin/user_service", $request, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

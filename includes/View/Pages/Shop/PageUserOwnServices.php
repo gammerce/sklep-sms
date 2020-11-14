@@ -12,7 +12,6 @@ use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
@@ -34,9 +33,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var PaginationService */
     private $paginationService;
 
@@ -51,7 +47,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         Auth $auth,
         Database $db,
         ServiceModuleManager $serviceModuleManager,
-        CurrentPage $currentPage,
         PaginationService $paginationService
     ) {
         parent::__construct($template, $translationManager);
@@ -60,7 +55,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->settings = $settings;
         $this->auth = $auth;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->paginationService = $paginationService;
         $this->serviceModuleManager = $serviceModuleManager;
     }
@@ -107,11 +101,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "LIMIT ?, ?"
             );
             $statement->execute(
-                array_merge(
-                    [$user->getId()],
-                    $moduleIds->all(),
-                    get_row_limit($this->currentPage->getPageNumber(), 4)
-                )
+                array_merge([$user->getId()], $moduleIds->all(), get_row_limit($request, 4))
             );
 
             $userServiceIds = collect($statement)
@@ -162,7 +152,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 
         $paginationContent = $this->paginationService->createPagination(
             $rowsCount,
-            $this->currentPage->getPageNumber(),
+            get_current_page($request),
             $request->getPathInfo(),
             $request->query->all(),
             4

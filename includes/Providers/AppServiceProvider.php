@@ -27,7 +27,6 @@ use App\System\License;
 use App\System\ServerAuth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Pages\Shop\PageRegister;
 use PHPMailer\PHPMailer\PHPMailer;
 use Psr\SimpleCache\CacheInterface;
@@ -46,7 +45,6 @@ class AppServiceProvider
 
         $app->singleton(Auth::class);
         $app->singleton(BlockManager::class);
-        $app->singleton(CurrentPage::class);
         $app->singleton(ExternalConfigProvider::class);
         $app->singleton(GroupManager::class);
         $app->singleton(License::class);

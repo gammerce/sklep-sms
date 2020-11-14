@@ -61,7 +61,6 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -240,19 +239,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->lang->t("extra_flags");
     }
 
-    public function userServiceAdminDisplayGet(array $query, array $body)
+    public function userServiceAdminDisplayGet(Request $request)
     {
-        /** @var CurrentPage $currentPage */
-        $currentPage = $this->app->make(CurrentPage::class);
-        $pageNumber = $currentPage->getPageNumber();
-
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
                     ["us.id", "us.user_id", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                    $query["search"]
+                    $request->query->get("search")
                 )
             );
         }
@@ -274,7 +269,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($pageNumber)));
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -307,7 +302,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $query, $rowsCount);
+            ->enablePagination("/admin/user_service", $request, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

@@ -10,7 +10,6 @@ use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -36,9 +35,6 @@ class PageAdminBoughtServices extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServiceManager */
     private $serviceManager;
 
@@ -50,7 +46,6 @@ class PageAdminBoughtServices extends PageAdmin
         TranslationManager $translationManager,
         TransactionRepository $transactionRepository,
         Database $db,
-        CurrentPage $currentPage,
         ServiceManager $serviceManager,
         ServerManager $serverManager
     ) {
@@ -58,7 +53,6 @@ class PageAdminBoughtServices extends PageAdmin
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
     }
@@ -101,12 +95,7 @@ class PageAdminBoughtServices extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -186,7 +175,7 @@ class PageAdminBoughtServices extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("ip")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

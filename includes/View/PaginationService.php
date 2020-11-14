@@ -31,7 +31,7 @@ class PaginationService
         $this->lang = $translationManager->user();
     }
 
-    public function createPagination($all, $currentPage, $script, $query, $rowLimit = 0)
+    public function createPagination($all, $currentPage, $script, array $query, $rowLimit = 0)
     {
         $rowLimit = $rowLimit ? $rowLimit : $this->settings["row_limit"];
 

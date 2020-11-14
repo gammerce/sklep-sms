@@ -6,7 +6,6 @@ use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -23,18 +22,13 @@ class PageAdminLogs extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        Database $db,
-        CurrentPage $currentPage
+        Database $db
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
     }
 
     public function getPrivilege()
@@ -63,12 +57,7 @@ class PageAdminLogs extends PageAdmin
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` {$where} ORDER BY `id` DESC LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -89,7 +78,7 @@ class PageAdminLogs extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("text")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

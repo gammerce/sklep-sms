@@ -8,7 +8,6 @@ use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -34,9 +33,6 @@ class PageAdminPayments extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var PriceTextService */
     private $priceTextService;
 
@@ -45,14 +41,12 @@ class PageAdminPayments extends PageAdmin
         TranslationManager $translationManager,
         TransactionRepository $transactionRepository,
         PriceTextService $priceTextService,
-        Database $db,
-        CurrentPage $currentPage
+        Database $db
     ) {
         parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->priceTextService = $priceTextService;
     }
 
@@ -108,12 +102,7 @@ class PageAdminPayments extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -165,7 +154,7 @@ class PageAdminPayments extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t("additional")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

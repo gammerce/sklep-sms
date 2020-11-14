@@ -8,7 +8,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -29,20 +28,15 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         GroupRepository $groupRepository,
-        Database $db,
-        CurrentPage $currentPage
+        Database $db
     ) {
         parent::__construct($template, $translationManager);
         $this->groupRepository = $groupRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
     }
 
     public function getPrivilege()
@@ -60,7 +54,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -77,7 +71,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
