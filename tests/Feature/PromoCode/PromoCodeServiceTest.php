@@ -6,6 +6,8 @@ use App\Models\User;
 use App\PromoCode\PromoCodeService;
 use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
+use App\Support\Money;
+use DateTime;
 use Tests\Psr4\TestCases\TestCase;
 
 class PromoCodeServiceTest extends TestCase
@@ -37,6 +39,7 @@ class PromoCodeServiceTest extends TestCase
         // given
         $this->factory->promoCode([
             "code" => "example",
+            "service_id" => null,
         ]);
 
         // when
@@ -69,7 +72,7 @@ class PromoCodeServiceTest extends TestCase
         // given
         $this->factory->promoCode([
             "code" => "example",
-            "expires_at" => "2020-01-01",
+            "expires_at" => new DateTime("-1 minute"),
         ]);
 
         // when
@@ -161,5 +164,37 @@ class PromoCodeServiceTest extends TestCase
 
         // then
         $this->assertNull($foundPromoCode);
+    }
+
+    /** @test */
+    public function apply_fixed_discount()
+    {
+        // given
+        $promoCode = $this->factory->promoCode([
+            "quantity_type" => QuantityType::FIXED(),
+            "quantity" => 315,
+        ]);
+
+        // when
+        $price = $this->promoCodeService->applyDiscount($promoCode, new Money(500));
+
+        // then
+        $this->assertEqualsMoney(185, $price);
+    }
+
+    /** @test */
+    public function apply_percentage_discount()
+    {
+        // given
+        $promoCode = $this->factory->promoCode([
+            "quantity_type" => QuantityType::PERCENTAGE(),
+            "quantity" => 70,
+        ]);
+
+        // when
+        $price = $this->promoCodeService->applyDiscount($promoCode, new Money(500));
+
+        // then
+        $this->assertEqualsMoney(150, $price);
     }
 }

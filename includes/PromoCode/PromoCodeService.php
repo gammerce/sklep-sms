@@ -25,10 +25,6 @@ class PromoCodeService
      */
     public function findApplicablePromoCode($promoCode, Purchase $purchase)
     {
-        if (!strlen($promoCode)) {
-            return null;
-        }
-
         $promoCodeModel = $this->promoCodeRepository->findByCode($promoCode);
 
         if (!$promoCodeModel) {
