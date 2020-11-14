@@ -2,7 +2,7 @@
 namespace App\View\Html;
 
 use App\Translation\TranslationManager;
-use App\View\PaginationService;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class Structure extends DOMElement
@@ -122,18 +122,14 @@ class Structure extends DOMElement
      */
     public function enablePagination($path, Request $request, $count)
     {
-        /** @var PaginationService $paginationService */
-        $paginationService = app()->make(PaginationService::class);
+        /** @var PaginationFactory $paginationFactory */
+        $paginationFactory = app()->make(PaginationFactory::class);
 
-        $pagination = $paginationService->createPagination(
-            $count,
-            get_current_page($request),
-            $path,
-            $request->query->all()
-        );
+        $pagination = $paginationFactory->create($request);
+        $paginationView = $pagination->createView($count, $path);
 
-        if ($pagination) {
-            $cell = new Cell($pagination);
+        if ($paginationView) {
+            $cell = new Cell($paginationView);
             $cell->setParam("colspan", "31");
 
             $row = new Row($cell);
