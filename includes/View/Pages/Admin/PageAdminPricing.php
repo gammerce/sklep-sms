@@ -16,7 +16,6 @@ use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -42,9 +41,6 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     /** @var PriceTextService */
     private $priceTextService;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var Database */
     private $db;
 
@@ -62,7 +58,6 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         PriceRepository $priceRepository,
         SmsPriceRepository $smsPriceRepository,
         PriceTextService $priceTextService,
-        CurrentPage $currentPage,
         Database $db
     ) {
         parent::__construct($template, $translationManager);
@@ -70,7 +65,6 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $this->priceRepository = $priceRepository;
         $this->smsPriceRepository = $smsPriceRepository;
         $this->priceTextService = $priceTextService;
-        $this->currentPage = $currentPage;
         $this->db = $db;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
@@ -96,7 +90,7 @@ ORDER BY `service_id`, `server_id`, `quantity`
 LIMIT ?, ?
 EOF
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -151,7 +145,7 @@ EOF
             ->addHeadCell(new HeadCell($this->lang->t("transfer_price")))
             ->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

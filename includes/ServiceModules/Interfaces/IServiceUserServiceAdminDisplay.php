@@ -2,27 +2,25 @@
 namespace App\ServiceModules\Interfaces;
 
 use App\View\Html\Wrapper;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
- * Obsługa wyświetlania trwających usług użytkowników w PA
- * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
+ * Handle user service in ACP
  */
 interface IServiceUserServiceAdminDisplay
 {
     /**
-     * Zwraca tytuł strony, gdy włączona jest lista usług użytkowników
+     * Provides page title
      *
      * @return string
      */
     public function userServiceAdminDisplayTitleGet();
 
     /**
-     * Zwraca listę usług użytkowników ubraną w ładny obiekt.
+     * Provides list of users' services
      *
-     * @param array $query
-     * @param array $body
-     *
+     * @param Request $request
      * @return Wrapper | string
      */
-    public function userServiceAdminDisplayGet(array $query, array $body);
+    public function userServiceAdminDisplayGet(Request $request);
 }

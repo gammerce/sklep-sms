@@ -2,8 +2,8 @@
 namespace App\View\Html;
 
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\PaginationService;
+use Symfony\Component\HttpFoundation\Request;
 
 class Structure extends DOMElement
 {
@@ -116,23 +116,20 @@ class Structure extends DOMElement
 
     /**
      * @param string $path
-     * @param array $query
+     * @param Request $request
      * @param int $count
      * @return $this
      */
-    public function enablePagination($path, array $query, $count)
+    public function enablePagination($path, Request $request, $count)
     {
         /** @var PaginationService $paginationService */
         $paginationService = app()->make(PaginationService::class);
 
-        /** @var CurrentPage $currentPage */
-        $currentPage = app()->make(CurrentPage::class);
-
         $pagination = $paginationService->createPagination(
             $count,
-            $currentPage->getPageNumber(),
+            get_current_page($request),
             $path,
-            $query
+            $request->query->all()
         );
 
         if ($pagination) {

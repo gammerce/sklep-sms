@@ -11,7 +11,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use App\View\PaginationService;
@@ -36,9 +35,6 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var PaginationService */
     private $paginationService;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
 
@@ -57,7 +53,6 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         Database $db,
         PaginationService $paginationService,
         ServiceModuleManager $serviceModuleManager,
-        CurrentPage $currentPage,
         ServiceManager $serviceManager,
         ServerManager $serverManager
     ) {
@@ -68,7 +63,6 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->auth = $auth;
         $this->db = $db;
         $this->paginationService = $paginationService;
-        $this->currentPage = $currentPage;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
@@ -89,9 +83,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge([$user->getId()], get_row_limit($this->currentPage->getPageNumber(), 10))
-        );
+        $statement->execute(array_merge([$user->getId()], get_row_limit($request, 10)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
@@ -124,7 +116,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 
         $paginationContent = $this->paginationService->createPagination(
             $rowsCount,
-            $this->currentPage->getPageNumber(),
+            get_current_page($request),
             $request->getPathInfo(),
             $request->query->all(),
             10

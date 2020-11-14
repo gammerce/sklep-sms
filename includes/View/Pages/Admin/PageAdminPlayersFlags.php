@@ -8,7 +8,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -26,9 +25,6 @@ class PageAdminPlayersFlags extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServerManager */
     private $serverManager;
 
@@ -39,13 +35,11 @@ class PageAdminPlayersFlags extends PageAdmin
         Template $template,
         TranslationManager $translationManager,
         Database $db,
-        CurrentPage $currentPage,
         ServerManager $serverManager,
         PlayerFlagRepository $playerFlagRepository
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serverManager = $serverManager;
         $this->playerFlagRepository = $playerFlagRepository;
     }
@@ -67,7 +61,7 @@ class PageAdminPlayersFlags extends PageAdmin
                 "ORDER BY `id` DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -103,7 +97,7 @@ class PageAdminPlayersFlags extends PageAdmin
                 )
             )
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         foreach (PlayerFlag::FLAGS as $flag) {
             $table->addHeadCell(new HeadCell($flag));

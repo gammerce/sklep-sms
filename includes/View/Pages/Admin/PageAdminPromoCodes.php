@@ -15,7 +15,6 @@ use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -37,9 +36,6 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServiceManager */
     private $serviceManager;
 
@@ -57,14 +53,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         TranslationManager $translationManager,
         PromoCodeRepository $promoCodeRepository,
         Database $db,
-        CurrentPage $currentPage,
         ServiceManager $serviceManager,
         ServerManager $serverManager,
         Settings $settings
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serviceManager = $serviceManager;
         $this->promoCodeRepository = $promoCodeRepository;
         $this->serverManager = $serverManager;
@@ -86,7 +80,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *" . "FROM `ss_promo_codes` AS sc " . "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -114,7 +108,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("expire")))
             ->addHeadCell(new HeadCell($this->lang->t("created_at")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 

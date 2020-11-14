@@ -11,7 +11,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -35,9 +34,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
 
@@ -47,7 +43,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         PaymentPlatformRepository $paymentPlatformRepository,
         DataFieldService $dataFieldService,
         Database $db,
-        CurrentPage $currentPage,
         PaymentModuleManager $paymentModuleManager
     ) {
         parent::__construct($template, $translationManager);
@@ -55,7 +50,6 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
@@ -80,7 +74,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute(get_row_limit($request));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -102,7 +96,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addHeadCell(new HeadCell($this->lang->t("module")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $request, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))
