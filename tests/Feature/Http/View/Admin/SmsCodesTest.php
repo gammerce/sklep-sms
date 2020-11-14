@@ -11,13 +11,30 @@ class SmsCodesTest extends HttpTestCase
         // given
         $this->actingAs($this->factory->admin());
 
-        for ($i = 0; $i < 10; ++$i) {
-            $this->factory->smsCode([
-                "free" => false,
-            ]);
-        }
+        $this->factory->smsCode([
+            "free" => false,
+        ]);
+        $this->factory->smsCode([
+            "sms_price" => 500,
+            "free" => true,
+        ]);
 
-        for ($i = 0; $i < 16; ++$i) {
+        // when
+        $response = $this->get("/admin/sms_codes");
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertContains("Panel Admina", $response->getContent());
+        $this->assertContains('<div class="title is-4">Darmowe kody SMS', $response->getContent());
+    }
+
+    /** @test */
+    public function it_loads_paginated()
+    {
+        // given
+        $this->actingAs($this->factory->admin());
+
+        for ($i = 0; $i < 40; ++$i) {
             $this->factory->smsCode([
                 "sms_price" => 500,
                 "free" => true,
