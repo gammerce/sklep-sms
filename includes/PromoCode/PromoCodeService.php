@@ -6,6 +6,7 @@ use App\Models\Purchase;
 use App\Repositories\PromoCodeRepository;
 use App\Support\Money;
 use DateTime;
+use UnexpectedValueException;
 
 class PromoCodeService
 {
@@ -85,7 +86,7 @@ class PromoCodeService
                 return new Money(max(0, ceil($price->asInt() * $multiplier)));
 
             default:
-                return $price;
+                throw new UnexpectedValueException();
         }
     }
 }
