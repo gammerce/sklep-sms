@@ -1,7 +1,9 @@
 <?php
 namespace App\View\Pagination;
 
+use App\Routing\UrlGenerator;
 use App\System\Settings;
+use App\Translation\Translator;
 use App\View\Html\Div;
 use App\View\Html\Li;
 use App\View\Html\Link;
@@ -13,12 +15,24 @@ class Pagination
     /** @var Settings */
     private $settings;
 
+    /** @var UrlGenerator */
+    private $url;
+
+    /** @var Translator */
+    private $lang;
+
     /** @var Request */
     private $request;
 
-    public function __construct(Settings $settings, Request $request)
-    {
+    public function __construct(
+        UrlGenerator $url,
+        Settings $settings,
+        Translator $lang,
+        Request $request
+    ) {
         $this->settings = $settings;
+        $this->url = $url;
+        $this->lang = $lang;
         $this->request = $request;
     }
 
@@ -42,6 +56,12 @@ class Pagination
         return max($pageNumber, 1);
     }
 
+    /**
+     * @param int $all
+     * @param string $script
+     * @param int $rowLimit
+     * @return Div|null
+     */
     public function createView($all, $script, $rowLimit = 0)
     {
         $query = $this->request->query->all();
