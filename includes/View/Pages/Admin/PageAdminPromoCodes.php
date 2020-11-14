@@ -198,10 +198,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     private function getQuantityTypeName(QuantityType $quantityType)
     {
         switch ($quantityType) {
-            case QuantityType::FIXED:
+            case QuantityType::FIXED():
                 return $this->settings->getCurrency();
+
             case QuantityType::PERCENTAGE():
                 return "%";
+
             default:
                 throw new UnexpectedValueException();
         }

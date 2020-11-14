@@ -172,16 +172,17 @@ class PromoCode
      */
     public function getQuantityFormatted()
     {
-        if ($this->quantityType->equals(QuantityType::PERCENTAGE())) {
-            return "{$this->quantity}%";
-        }
+        switch ($this->quantityType) {
+            case QuantityType::FIXED():
+                /** @var PriceTextService $priceTextService */
+                $priceTextService = app()->make(PriceTextService::class);
+                return $priceTextService->getPriceText($this->quantity);
 
-        if ($this->quantityType->equals(QuantityType::FIXED())) {
-            /** @var PriceTextService $priceTextService */
-            $priceTextService = app()->make(PriceTextService::class);
-            return $priceTextService->getPriceText($this->quantity);
-        }
+            case QuantityType::PERCENTAGE():
+                return "{$this->quantity}%";
 
-        throw new UnexpectedValueException();
+            default:
+                throw new UnexpectedValueException();
+        }
     }
 }
