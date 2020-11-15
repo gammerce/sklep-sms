@@ -48,6 +48,7 @@ use App\View\Html\NoneText;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use App\View\Renders\PurchasePriceRenderer;
 use Exception;
 use PDOException;
@@ -119,6 +120,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var DatabaseLogger */
     private $logger;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -133,6 +137,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
         $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
+        $this->paginationFactory = $this->app->make(PaginationFactory::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -243,6 +248,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userServiceAdminDisplayGet(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
         if ($request->query->has("search")) {
@@ -267,7 +273,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -294,7 +300,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("mybb_user")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $request, $rowsCount);
+            ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

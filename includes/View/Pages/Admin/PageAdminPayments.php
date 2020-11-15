@@ -21,6 +21,7 @@ use App\View\Html\Structure;
 use App\View\Html\Ul;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPayments extends PageAdmin
@@ -36,18 +37,23 @@ class PageAdminPayments extends PageAdmin
     /** @var PriceTextService */
     private $priceTextService;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         TransactionRepository $transactionRepository,
         PriceTextService $priceTextService,
-        Database $db
+        Database $db,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
         $this->priceTextService = $priceTextService;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getTitle(Request $request)
@@ -61,6 +67,7 @@ class PageAdminPayments extends PageAdmin
         $search = $request->query->get("search");
         $method = as_payment_method($request->query->get("method"));
 
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
         if (strlen($recordId)) {
@@ -102,7 +109,7 @@ class PageAdminPayments extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -154,7 +161,7 @@ class PageAdminPayments extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
             ->addHeadCell(new HeadCell($this->lang->t("additional")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request, $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

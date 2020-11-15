@@ -5,7 +5,6 @@ use App\Models\PaymentPlatform;
 use App\Models\Server;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
-use App\Payment\General\PaymentOption;
 use App\Routing\UrlGenerator;
 use App\Support\Collection;
 use App\Support\Expression;
@@ -35,30 +34,6 @@ function app($abstract = null, array $parameters = [])
     }
 
     return Container::getInstance()->makeWith($abstract, $parameters);
-}
-
-/**
- * @param Request $request
- * @param int $rowLimit
- * @return int[]
- */
-function get_row_limit(Request $request, $rowLimit = 0)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-    $rowLimit = $rowLimit ?: $settings["row_limit"];
-    $page = get_current_page($request);
-    return [($page - 1) * $rowLimit, $rowLimit];
-}
-
-/**
- * @param Request $request
- * @return int
- */
-function get_current_page(Request $request)
-{
-    $pageNumber = (int) $request->get("page", 1);
-    return max($pageNumber, 1);
 }
 
 /**
@@ -975,17 +950,6 @@ function multiply($a, $b)
 function make_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
 {
     return $paymentMethod . "," . $paymentPlatform->getId();
-}
-
-/**
- * @param PaymentOption $a
- * @param PaymentOption $b
- * @return bool
- */
-function payment_option_equals(PaymentOption $a, PaymentOption $b)
-{
-    return $a->getPaymentPlatformId() === $b->getPaymentPlatformId() &&
-        $a->getPaymentMethod()->equals($b->getPaymentMethod());
 }
 
 /**

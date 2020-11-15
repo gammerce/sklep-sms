@@ -13,7 +13,7 @@ use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\View\PaginationService;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PagePaymentLog extends Page implements IBeLoggedMust
@@ -32,8 +32,8 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     /** @var Database */
     private $db;
 
-    /** @var PaginationService */
-    private $paginationService;
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
@@ -51,7 +51,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         TransactionRepository $transactionRepository,
         Auth $auth,
         Database $db,
-        PaginationService $paginationService,
+        PaginationFactory $paginationFactory,
         ServiceModuleManager $serviceModuleManager,
         ServiceManager $serviceManager,
         ServerManager $serverManager
@@ -62,7 +62,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->transactionRepository = $transactionRepository;
         $this->auth = $auth;
         $this->db = $db;
-        $this->paginationService = $paginationService;
+        $this->paginationFactory = $paginationFactory;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
@@ -76,6 +76,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
+        $pagination = $this->paginationFactory->create($request);
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -83,7 +84,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge([$user->getId()], get_row_limit($request, 10)));
+        $statement->execute(array_merge([$user->getId()], $pagination->getSqlLimit(10)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
@@ -114,13 +115,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
         }
 
-        $paginationContent = $this->paginationService->createPagination(
-            $rowsCount,
-            get_current_page($request),
-            $request->getPathInfo(),
-            $request->query->all(),
-            10
-        );
+        $paginationContent = $pagination->createComponent($rowsCount, $request->getPathInfo(), 10);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 
         return $this->template->render(

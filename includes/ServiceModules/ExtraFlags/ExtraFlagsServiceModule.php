@@ -71,6 +71,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use App\View\Renders\PurchasePriceRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -143,6 +144,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var ServiceTakeOverFactory */
     private $serviceTakeOverFactory;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(Service $service = null)
     {
         parent::__construct($service);
@@ -165,6 +169,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);
         $this->priceTextService = $this->app->make(PriceTextService::class);
         $this->serviceTakeOverFactory = $this->app->make(ServiceTakeOverFactory::class);
+        $this->paginationFactory = $this->app->make(PaginationFactory::class);
         /** @var TranslationManager $translationManager */
         $translationManager = $this->app->make(TranslationManager::class);
         $this->lang = $translationManager->user();
@@ -241,6 +246,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function userServiceAdminDisplayGet(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
         if ($request->query->has("search")) {
@@ -269,7 +275,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -302,7 +308,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $request, $rowsCount);
+            ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

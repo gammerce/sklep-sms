@@ -26,6 +26,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
@@ -50,6 +51,9 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
     /** @var ServerManager */
     private $serverManager;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
@@ -58,7 +62,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         PriceRepository $priceRepository,
         SmsPriceRepository $smsPriceRepository,
         PriceTextService $priceTextService,
-        Database $db
+        Database $db,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
@@ -68,6 +73,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $this->db = $db;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -82,6 +88,8 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             <<<EOF
 SELECT SQL_CALC_FOUND_ROWS * 
@@ -90,7 +98,7 @@ ORDER BY `service_id`, `server_id`, `quantity`
 LIMIT ?, ?
 EOF
         );
-        $statement->execute(get_row_limit($request));
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -145,7 +153,7 @@ EOF
             ->addHeadCell(new HeadCell($this->lang->t("transfer_price")))
             ->addHeadCell(new HeadCell($this->lang->t("direct_billing_price")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request, $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))
