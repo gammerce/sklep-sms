@@ -33,7 +33,7 @@ class LocaleService
 
     public function getLocale(Request $request)
     {
-        $queryLocale = $this->resolveLocale($request->query->get('language'));
+        $queryLocale = $this->resolveLocale($request->query->get("language"));
         if ($queryLocale) {
             return $queryLocale;
         }

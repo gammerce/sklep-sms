@@ -35,12 +35,14 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -49,6 +51,7 @@ use App\View\Html\NoneText;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use App\View\Renders\PurchasePriceRenderer;
 use Exception;
 use PDOException;
@@ -120,28 +123,48 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var DatabaseLogger */
     private $logger;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
-        $this->auth = $this->app->make(Auth::class);
-        $this->userManager = $this->app->make(UserManager::class);
-        $this->mybbUserGroupRepository = $this->app->make(MybbUserGroupRepository::class);
-        $this->mybbUserServiceRepository = $this->app->make(MybbUserServiceRepository::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->logger = $this->app->make(DatabaseLogger::class);
-        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
-        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    /** @var Database */
+    private $db;
+
+    public function __construct(
+        AdminPaymentService $adminPaymentService,
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        DatabaseLogger $logger,
+        MybbRepositoryFactory $mybbRepositoryFactory,
+        MybbUserGroupRepository $mybbUserGroupRepository,
+        MybbUserServiceRepository $mybbUserServiceRepository,
+        PaginationFactory $paginationFactory,
+        PriceTextService $priceTextService,
+        PurchasePriceRenderer $purchasePriceRenderer,
+        PurchasePriceService $purchasePriceService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Template $template,
+        TranslationManager $translationManager,
+        UserManager $userManager,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->adminPaymentService = $adminPaymentService;
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->logger = $logger;
+        $this->mybbUserGroupRepository = $mybbUserGroupRepository;
+        $this->mybbUserServiceRepository = $mybbUserServiceRepository;
+        $this->paginationFactory = $paginationFactory;
+        $this->priceTextService = $priceTextService;
+        $this->purchasePriceRenderer = $purchasePriceRenderer;
+        $this->purchasePriceService = $purchasePriceService;
+        $this->userManager = $userManager;
         $this->lang = $translationManager->user();
 
         $this->readServiceData();
 
-        /** @var MybbRepositoryFactory $mybbRepositoryFactory */
-        $mybbRepositoryFactory = $this->app->make(MybbRepositoryFactory::class);
         $this->mybbRepository = $mybbRepositoryFactory->create(
             $this->dbHost,
             $this->dbPort,
@@ -242,18 +265,16 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->lang->t("mybb_groups");
     }
 
-    public function userServiceAdminDisplayGet(array $query, array $body)
+    public function userServiceAdminDisplayGet(Request $request)
     {
-        /** @var CurrentPage $currentPage */
-        $currentPage = $this->app->make(CurrentPage::class);
-
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
                     ["us.id", "us.user_id", "u.username", "s.name", "usmeg.mybb_uid"],
-                    $query["search"]
+                    $request->query->get("search")
                 )
             );
         }
@@ -271,9 +292,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge($queryParticle->params(), get_row_limit($currentPage->getPageNumber()))
-        );
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -300,7 +319,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("mybb_user")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $query, $rowsCount);
+            ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

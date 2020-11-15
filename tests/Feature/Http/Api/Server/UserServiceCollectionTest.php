@@ -21,40 +21,40 @@ class UserServiceCollectionTest extends HttpTestCase
     {
         // given
         $userServiceNick = $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => 'example',
+            "server_id" => $this->server->getId(),
+            "type" => ExtraFlagType::TYPE_NICK,
+            "auth_data" => "example",
         ]);
         $userServiceIp = $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'service_id' => "vippro",
-            'type' => ExtraFlagType::TYPE_IP,
-            'auth_data' => '192.0.2.1',
+            "server_id" => $this->server->getId(),
+            "service_id" => "vippro",
+            "type" => ExtraFlagType::TYPE_IP,
+            "auth_data" => "192.0.2.1",
         ]);
         $userServiceSteamId = $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => 'STEAM_1:0:22309350',
+            "server_id" => $this->server->getId(),
+            "type" => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309350",
         ]);
         $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'service_id' => "vippro",
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => 'STEAM_1:0:22309351',
+            "server_id" => $this->server->getId(),
+            "service_id" => "vippro",
+            "type" => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309351",
         ]);
 
         // when
         $response = $this->get(
-            '/api/server/user_services',
+            "/api/server/user_services",
             [
-                'token' => $this->server->getToken(),
-                'server_id' => $this->server->getId(),
-                'nick' => 'example',
-                'ip' => '192.0.2.1',
-                'steam_id' => 'STEAM_1:0:22309350',
+                "token" => $this->server->getToken(),
+                "server_id" => $this->server->getId(),
+                "nick" => "example",
+                "ip" => "192.0.2.1",
+                "steam_id" => "STEAM_1:0:22309350",
             ],
             [
-                'Accept' => 'application/json',
+                "Accept" => "application/json",
             ]
         );
 
@@ -85,24 +85,24 @@ class UserServiceCollectionTest extends HttpTestCase
     {
         // given
         $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'service_id' => "vippro",
-            'type' => ExtraFlagType::TYPE_SID,
-            'auth_data' => 'STEAM_1:0:22309351',
+            "server_id" => $this->server->getId(),
+            "service_id" => "vippro",
+            "type" => ExtraFlagType::TYPE_SID,
+            "auth_data" => "STEAM_1:0:22309351",
         ]);
 
         // when
         $response = $this->get(
-            '/api/server/user_services',
+            "/api/server/user_services",
             [
-                'token' => $this->server->getToken(),
-                'server_id' => $this->server->getId(),
-                'nick' => 'example',
-                'ip' => '192.0.2.1',
-                'steam_id' => 'STEAM_1:0:22309350',
+                "token" => $this->server->getToken(),
+                "server_id" => $this->server->getId(),
+                "nick" => "example",
+                "ip" => "192.0.2.1",
+                "steam_id" => "STEAM_1:0:22309350",
             ],
             [
-                'Accept' => 'application/json',
+                "Accept" => "application/json",
             ]
         );
 
@@ -119,22 +119,22 @@ class UserServiceCollectionTest extends HttpTestCase
         $userName = "❀zażółć gęślą jaźń ㋛ヅ❤♫";
 
         $userServiceNick = $this->factory->extraFlagUserService([
-            'server_id' => $this->server->getId(),
-            'service_id' => "vippro",
-            'type' => ExtraFlagType::TYPE_NICK,
-            'auth_data' => $userName,
+            "server_id" => $this->server->getId(),
+            "service_id" => "vippro",
+            "type" => ExtraFlagType::TYPE_NICK,
+            "auth_data" => $userName,
         ]);
 
         // when
         $response = $this->get(
-            '/api/server/user_services',
+            "/api/server/user_services",
             [
-                'token' => $this->server->getToken(),
-                'server_id' => $this->server->getId(),
-                'nick' => $userName,
+                "token" => $this->server->getToken(),
+                "server_id" => $this->server->getId(),
+                "nick" => $userName,
             ],
             [
-                'Accept' => 'application/json',
+                "Accept" => "application/json",
             ]
         );
 

@@ -14,13 +14,13 @@ function markAsUpdate() {
         }) as any
     );
 
-    setTimeout(function() {
+    setTimeout(function () {
         window.location.href = window.location.href + "/..";
     }, 4000);
 }
 
-$(document).ready(function($) {
-    $("#form_update").submit(function(e) {
+$(document).ready(function ($) {
+    $("#form_update").submit(function (e) {
         e.preventDefault();
 
         if (loader.blocked) return;
@@ -30,10 +30,10 @@ $(document).ready(function($) {
             type: "POST",
             url: buildUrl("/api/update"),
             data: $(this).serialize(),
-            complete: function() {
+            complete: function () {
                 loader.hide();
             },
-            success: function(content) {
+            success: function (content) {
                 removeFormWarnings();
                 $(".warnings").remove();
 
@@ -48,20 +48,18 @@ $(document).ready(function($) {
                 // Wyświetlenie błędów w formularzu
                 if (content.return_id === "warnings") {
                     $(".update_info").html(content.update_info);
-                    $(".window")
-                        .removeClass("success")
-                        .addClass("danger");
+                    $(".window").removeClass("success").addClass("danger");
                 } else if (content.return_id === "ok") {
                     return markAsUpdate();
                 } else if (content.return_id === "error") {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         location.reload();
                     }, 4000);
                 }
 
                 infobox.showInfo(content.text, content.positive);
             },
-            error: function(error) {
+            error: function (error) {
                 infobox.showInfo("Wystąpił błąd podczas przeprowadzania instalacji.", false);
             },
         });

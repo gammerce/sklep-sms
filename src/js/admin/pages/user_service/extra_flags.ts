@@ -7,7 +7,7 @@ import { get_type_name } from "../../../general/extra_flags";
 //
 
 // Zmiana typu usługi
-$(document).delegate("#form_user_service_add [name=type]", "change", function() {
+$(document).delegate("#form_user_service_add [name=type]", "change", function () {
     const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
@@ -31,7 +31,7 @@ $(document).delegate("#form_user_service_add [name=type]", "change", function() 
 //
 
 // Zmiana usługi przy edycji
-$(document).delegate("#form_user_service_edit [name=service_id]", "change", function() {
+$(document).delegate("#form_user_service_edit [name=service_id]", "change", function () {
     const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
@@ -40,11 +40,7 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
     const serviceId = $(this).val() as string;
 
     if (!serviceId.length) {
-        module
-            .find("[name=server_id]")
-            .children()
-            .not("[value='']")
-            .remove();
+        module.find("[name=server_id]").children().not("[value='']").remove();
         return;
     }
 
@@ -54,13 +50,13 @@ $(document).delegate("#form_user_service_edit [name=service_id]", "change", func
         {
             server_id: module.find("[name=server_id]").val(),
         },
-        function(html) {
+        function (html) {
             module.find("[name=server_id]").html(html);
         }
     );
 });
 
-$(document).delegate("#form_user_service_add [name=forever]", "change", function() {
+$(document).delegate("#form_user_service_add [name=forever]", "change", function () {
     const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
@@ -73,7 +69,7 @@ $(document).delegate("#form_user_service_add [name=forever]", "change", function
     }
 });
 
-$(document).delegate("#form_user_service_edit [name=forever]", "change", function() {
+$(document).delegate("#form_user_service_edit [name=forever]", "change", function () {
     const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;
@@ -87,7 +83,7 @@ $(document).delegate("#form_user_service_edit [name=forever]", "change", functio
 });
 
 // Zmiana typu usługi
-$(document).delegate("#form_user_service_edit [name=type]", "change", function() {
+$(document).delegate("#form_user_service_edit [name=type]", "change", function () {
     const module = service_module_act_can("extra_flags", $(this));
     if (!module) {
         return;

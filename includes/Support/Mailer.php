@@ -105,7 +105,7 @@ class Mailer
         $header .= "From: {$this->getSenderName()} < {$this->getSenderMail()} >\n";
         $header .= "To: {$name} < {$email} >\n";
         $header .= "X-Sender: {$this->getSenderName()} < {$this->getSenderMail()} >\n";
-        $header .= 'X-Mailer: PHP/' . phpversion();
+        $header .= "X-Mailer: PHP/" . phpversion();
         $header .= "X-Priority: 1 (Highest)\n";
         $header .= "X-MSMail-Priority: High\n";
         $header .= "Importance: High\n";

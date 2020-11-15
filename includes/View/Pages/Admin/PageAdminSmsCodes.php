@@ -12,7 +12,6 @@ use App\Support\Money;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationDateCell;
@@ -22,6 +21,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
@@ -40,8 +40,8 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -50,7 +50,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         SmsCodeRepository $smsCodeRepository,
         PriceTextService $priceTextService,
         Database $db,
-        CurrentPage $currentPage
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
@@ -58,7 +58,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $this->priceTextService = $priceTextService;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -73,13 +73,15 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_sms_codes` " .
                 "WHERE `free` = '1' " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -106,7 +108,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("sms_price")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 

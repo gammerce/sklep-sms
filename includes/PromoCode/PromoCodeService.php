@@ -6,6 +6,7 @@ use App\Models\Purchase;
 use App\Repositories\PromoCodeRepository;
 use App\Support\Money;
 use DateTime;
+use UnexpectedValueException;
 
 class PromoCodeService
 {
@@ -24,10 +25,6 @@ class PromoCodeService
      */
     public function findApplicablePromoCode($promoCode, Purchase $purchase)
     {
-        if (!strlen($promoCode)) {
-            return null;
-        }
-
         $promoCodeModel = $this->promoCodeRepository->findByCode($promoCode);
 
         if (!$promoCodeModel) {
@@ -85,7 +82,7 @@ class PromoCodeService
                 return new Money(max(0, ceil($price->asInt() * $multiplier)));
 
             default:
-                return $price;
+                throw new UnexpectedValueException();
         }
     }
 }

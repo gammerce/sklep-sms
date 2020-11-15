@@ -14,7 +14,7 @@ trait ApplicationConcern
      */
     protected function createApplication()
     {
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
+        $app = require __DIR__ . "/../../../bootstrap/app.php";
         $app->singleton(Session::class, function () {
             return new Session(new MockArraySessionStorage());
         });

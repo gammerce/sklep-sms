@@ -21,7 +21,7 @@ class MigrationFiles
 
         foreach ($dir as $fileInfo) {
             if (ends_at($fileInfo->getFilename(), ".php")) {
-                $migrations[] = $fileInfo->getBasename('.php');
+                $migrations[] = $fileInfo->getBasename(".php");
             }
         }
 

@@ -32,7 +32,7 @@ export const action_box = {
         action_box.box.children(".action_box").prepend(action_box.exit);
 
         // Łapiemy uchwyt od kliknięcia
-        action_box.exit.click(function() {
+        action_box.exit.click(function () {
             action_box.hide();
         });
 
@@ -51,7 +51,7 @@ export const action_box = {
     },
 
     hide() {
-        action_box.element.stop().fadeOut("slow", function() {
+        action_box.element.stop().fadeOut("slow", function () {
             action_box.created = false;
             $(this).remove();
         });

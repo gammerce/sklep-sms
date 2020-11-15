@@ -29,7 +29,7 @@ class UserServiceResource
             throw new EntityNotFoundException();
         }
 
-        $serviceId = $request->request->get('service_id', $userService->getServiceId());
+        $serviceId = $request->request->get("service_id", $userService->getServiceId());
 
         $serviceModule = $serviceModuleManager->get($serviceId);
         if (!($serviceModule instanceof IServiceUserServiceAdminEdit)) {
@@ -38,10 +38,10 @@ class UserServiceResource
 
         $result = $serviceModule->userServiceAdminEdit($request->request->all(), $userService);
         if (!$result) {
-            return new ApiResponse('not_edited', $lang->t('not_edited_user_service'), false);
+            return new ApiResponse("not_edited", $lang->t("not_edited_user_service"), false);
         }
 
-        return new ApiResponse('ok', $lang->t('edited_user_service'), true);
+        return new ApiResponse("ok", $lang->t("edited_user_service"), true);
     }
 
     public function delete(
@@ -56,14 +56,14 @@ class UserServiceResource
 
         $userService = $userServiceService->findOne($userServiceId);
         if (!$userService) {
-            return new ApiResponse("no_service", $lang->t('no_service'), 0);
+            return new ApiResponse("no_service", $lang->t("no_service"), 0);
         }
 
         $serviceModule = $serviceModuleManager->get($userService->getServiceId());
-        if ($serviceModule && !$serviceModule->userServiceDelete($userService, 'admin')) {
+        if ($serviceModule && !$serviceModule->userServiceDelete($userService, "admin")) {
             return new ApiResponse(
                 "user_service_cannot_be_deleted",
-                $lang->t('user_service_cannot_be_deleted'),
+                $lang->t("user_service_cannot_be_deleted"),
                 0
             );
         }
@@ -75,10 +75,10 @@ class UserServiceResource
         }
 
         if ($deleted) {
-            $logger->logWithActor('log_user_service_deleted', $userService->getId());
-            return new SuccessApiResponse($lang->t('delete_service'));
+            $logger->logWithActor("log_user_service_deleted", $userService->getId());
+            return new SuccessApiResponse($lang->t("delete_service"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_service'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_service"), 0);
     }
 }

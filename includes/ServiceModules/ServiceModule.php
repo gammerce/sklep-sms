@@ -4,9 +4,7 @@ namespace App\ServiceModules;
 use App\Models\Service;
 use App\Models\UserService;
 use App\Services\ServiceDescriptionService;
-use App\Support\Database;
 use App\Support\Template;
-use App\System\Application;
 
 abstract class ServiceModule
 {
@@ -23,25 +21,20 @@ abstract class ServiceModule
     /** @var Service|null */
     public $service;
 
-    /** @var Application */
-    protected $app;
-
     /** @var Template */
     protected $template;
-
-    /** @var Database */
-    protected $db;
 
     /** @var ServiceDescriptionService */
     protected $serviceDescriptionService;
 
-    public function __construct(Service $service = null)
-    {
+    public function __construct(
+        Template $template,
+        ServiceDescriptionService $serviceDescriptionService,
+        Service $service = null
+    ) {
         $this->service = $service;
-        $this->app = app();
-        $this->template = $this->app->make(Template::class);
-        $this->db = $this->app->make(Database::class);
-        $this->serviceDescriptionService = $this->app->make(ServiceDescriptionService::class);
+        $this->template = $template;
+        $this->serviceDescriptionService = $serviceDescriptionService;
     }
 
     /**

@@ -2,9 +2,7 @@
     <div class="columns is-multiline">
         <div class="column is-half">
             <div class="field">
-                <label for="pass" class="label required">
-                    {{ __('password') }}
-                </label>
+                <label for="pass" class="label required"> {{ __('password') }} </label>
                 <div class="control">
                     <input id="pass" name="pass" type="password" class="input" required />
                 </div>
@@ -30,7 +28,5 @@
     </div>
 
     <input type="hidden" name="code" value="{{ $code }}" />
-    <button class="button is-success" type="submit">
-        {{ __('send') }}
-    </button>
+    <button class="button is-success" type="submit">{{ __('send') }}</button>
 </form>

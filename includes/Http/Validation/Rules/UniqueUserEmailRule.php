@@ -24,7 +24,7 @@ class UniqueUserEmailRule extends BaseRule
         $user = $this->userRepository->findByEmail($value);
 
         if ($user && $user->getId() !== $this->exceptUserId) {
-            return [$this->lang->t('email_occupied')];
+            return [$this->lang->t("email_occupied")];
         }
 
         return [];

@@ -27,18 +27,18 @@ export const infobox = {
         infobox.element.appendTo("body").fadeIn("slow");
 
         // Dodajemy uchwyt kliknięcia
-        infobox.element.click(function() {
+        infobox.element.click(function () {
             infobox.element.remove();
         });
 
         // Tworzymy task usuwajacy info po length milisekundach
-        infobox.hide_task = setTimeout(function() {
+        infobox.hide_task = setTimeout(function () {
             infobox.remove();
         }, length); // <-- time in milliseconds
     },
 
     remove() {
-        infobox.element.stop().fadeOut("slow", function() {
+        infobox.element.stop().fadeOut("slow", function () {
             $(this).remove();
         });
     },

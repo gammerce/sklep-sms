@@ -26,18 +26,18 @@ class PriceCollection
 
         try {
             $price = $priceRepository->create(
-                $validated['service_id'],
-                $validated['server_id'],
-                $validated['sms_price'],
-                $validated['transfer_price'],
-                $validated['direct_billing_price'],
-                $validated['quantity'],
-                $validated['discount']
+                $validated["service_id"],
+                $validated["server_id"],
+                $validated["sms_price"],
+                $validated["transfer_price"],
+                $validated["direct_billing_price"],
+                $validated["quantity"],
+                $validated["discount"]
             );
         } catch (PDOException $e) {
             // Duplication
             if (get_error_code($e) === 1062) {
-                return new ErrorApiResponse($lang->t('create_price_duplication'));
+                return new ErrorApiResponse($lang->t("create_price_duplication"));
             }
 
             throw $e;
@@ -45,9 +45,9 @@ class PriceCollection
 
         $logger->logWithActor("log_price_added", $price->getId());
 
-        return new SuccessApiResponse($lang->t('price_add'), [
-            'data' => [
-                'id' => $price->getId(),
+        return new SuccessApiResponse($lang->t("price_add"), [
+            "data" => [
+                "id" => $price->getId(),
             ],
         ]);
     }

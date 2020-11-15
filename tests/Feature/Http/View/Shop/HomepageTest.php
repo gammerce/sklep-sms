@@ -10,18 +10,18 @@ class HomepageTest extends HttpTestCase
     public function it_loads()
     {
         // when
-        $response = $this->get('/');
+        $response = $this->get("/");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Strona główna', $response->getContent());
+        $this->assertContains("Strona główna", $response->getContent());
     }
 
     /** @test */
     public function not_found()
     {
         // when
-        $response = $this->get('/page/aqw');
+        $response = $this->get("/page/aqw");
 
         // then
         $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());

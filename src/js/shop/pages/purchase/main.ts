@@ -5,7 +5,7 @@ import { window_info } from "../../../general/window";
 import { buildUrl, hide, removeFormWarnings, show, showWarnings } from "../../../general/global";
 
 // Send purchase form
-$(document).delegate("#form_purchase", "submit", function(e) {
+$(document).delegate("#form_purchase", "submit", function (e) {
     e.preventDefault();
 
     if (loader.blocked) {
@@ -46,7 +46,7 @@ $(document).delegate("#form_purchase", "submit", function(e) {
 });
 
 // Show service long description
-$(document).delegate("#show_service_desc", "click", function() {
+$(document).delegate("#show_service_desc", "click", function () {
     const serviceId = $("#form_purchase [name=service_id]").val();
 
     loader.show();
@@ -63,7 +63,7 @@ $(document).delegate("#show_service_desc", "click", function() {
     });
 });
 
-$(document).delegate("#form_purchase [name=quantity]", "change", function() {
+$(document).delegate("#form_purchase [name=quantity]", "change", function () {
     const form = $(this).closest("form");
     const quantity = $(this).val() as string;
 

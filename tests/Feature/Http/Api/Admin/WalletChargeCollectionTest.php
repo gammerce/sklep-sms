@@ -13,7 +13,7 @@ class WalletChargeCollectionTest extends HttpTestCase
         /** @var UserRepository $userRepository */
         $userRepository = $this->app->make(UserRepository::class);
         $user = $this->factory->user([
-            'wallet' => 1000,
+            "wallet" => 1000,
         ]);
 
         $this->actingAs($this->factory->admin());

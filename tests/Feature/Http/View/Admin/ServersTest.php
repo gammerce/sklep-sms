@@ -14,11 +14,11 @@ class ServersTest extends HttpTestCase
         $this->factory->server();
 
         // when
-        $response = $this->get('/admin/servers');
+        $response = $this->get("/admin/servers");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Panel Admina', $response->getContent());
+        $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Serwery', $response->getContent());
     }
 }

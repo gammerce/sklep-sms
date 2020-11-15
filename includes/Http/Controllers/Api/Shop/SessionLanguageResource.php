@@ -9,7 +9,7 @@ class SessionLanguageResource
 {
     public function put(Request $request, LocaleCookieService $localeCookieService)
     {
-        $language = $request->request->get('language');
+        $language = $request->request->get("language");
 
         $response = new Response();
         $localeCookieService->setLocale($response, $language);

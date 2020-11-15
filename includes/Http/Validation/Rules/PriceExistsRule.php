@@ -18,7 +18,7 @@ class PriceExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->priceRepository->get($value)) {
-            return [$this->lang->t('invalid_price')];
+            return [$this->lang->t("invalid_price")];
         }
 
         return [];

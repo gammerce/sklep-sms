@@ -8,7 +8,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -17,6 +16,7 @@ use App\View\Html\NoneText;
 use App\View\Html\ServerRef;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPlayersFlags extends PageAdmin
@@ -26,28 +26,28 @@ class PageAdminPlayersFlags extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServerManager */
     private $serverManager;
 
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Database $db,
-        CurrentPage $currentPage,
         ServerManager $serverManager,
-        PlayerFlagRepository $playerFlagRepository
+        PlayerFlagRepository $playerFlagRepository,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serverManager = $serverManager;
         $this->playerFlagRepository = $playerFlagRepository;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -62,12 +62,14 @@ class PageAdminPlayersFlags extends PageAdmin
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
                 "ORDER BY `id` DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -103,7 +105,7 @@ class PageAdminPlayersFlags extends PageAdmin
                 )
             )
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         foreach (PlayerFlag::FLAGS as $flag) {
             $table->addHeadCell(new HeadCell($flag));

@@ -29,11 +29,11 @@ class PurchaseSerializer
         $clonedPurchase = clone $purchase;
         $reflectionClass = new ReflectionClass(Purchase::class);
 
-        $userProperty = $reflectionClass->getProperty('user');
+        $userProperty = $reflectionClass->getProperty("user");
         $userProperty->setValue($clonedPurchase, $purchase->user->getId());
 
         if ($purchase->getPromoCode()) {
-            $promoCodeProperty = $reflectionClass->getProperty('promoCode');
+            $promoCodeProperty = $reflectionClass->getProperty("promoCode");
             $promoCodeProperty->setAccessible(true);
             $promoCodeProperty->setValue($clonedPurchase, $purchase->getPromoCode()->getCode());
         }
@@ -55,10 +55,10 @@ class PurchaseSerializer
         }
 
         $reflectionClass = new ReflectionClass(Purchase::class);
-        $userProperty = $reflectionClass->getProperty('user');
+        $userProperty = $reflectionClass->getProperty("user");
         $userId = $userProperty->getValue($purchase);
 
-        $promoCodeProperty = $reflectionClass->getProperty('promoCode');
+        $promoCodeProperty = $reflectionClass->getProperty("promoCode");
         $promoCodeProperty->setAccessible(true);
         $code = $promoCodeProperty->getValue($purchase);
 

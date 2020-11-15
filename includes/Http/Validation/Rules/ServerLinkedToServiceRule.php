@@ -36,7 +36,7 @@ class ServerLinkedToServiceRule extends BaseRule
                 $this->service->getId()
             )
         ) {
-            return [$this->lang->t('chosen_incorrect_server')];
+            return [$this->lang->t("chosen_incorrect_server")];
         }
 
         return [];

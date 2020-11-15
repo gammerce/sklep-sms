@@ -55,13 +55,15 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
+use App\Support\Database;
 use App\Support\Expression;
 use App\Support\QueryParticle;
+use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
@@ -72,6 +74,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use App\View\Renders\PurchasePriceRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -144,30 +147,55 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     /** @var ServiceTakeOverFactory */
     private $serviceTakeOverFactory;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
-        $this->auth = $this->app->make(Auth::class);
-        $this->serviceModuleManager = $this->app->make(ServiceModuleManager::class);
-        $this->serverManager = $this->app->make(ServerManager::class);
-        $this->serverServiceManager = $this->app->make(ServerServiceManager::class);
-        $this->serviceManager = $this->app->make(ServiceManager::class);
-        $this->userManager = $this->app->make(UserManager::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->logger = $this->app->make(DatabaseLogger::class);
-        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
-        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->extraFlagUserServiceRepository = $this->app->make(
-            ExtraFlagUserServiceRepository::class
-        );
-        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
-        $this->playerFlagService = $this->app->make(PlayerFlagService::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->serviceTakeOverFactory = $this->app->make(ServiceTakeOverFactory::class);
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    /** @var Database */
+    private $db;
+
+    public function __construct(
+        AdminPaymentService $adminPaymentService,
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        DatabaseLogger $logger,
+        ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
+        PaginationFactory $paginationFactory,
+        PlayerFlagService $playerFlagService,
+        PriceTextService $priceTextService,
+        PurchasePriceRenderer $purchasePriceRenderer,
+        PurchasePriceService $purchasePriceService,
+        ServerManager $serverManager,
+        ServerServiceManager $serverServiceManager,
+        ServiceDescriptionService $serviceDescriptionService,
+        ServiceManager $serviceManager,
+        ServiceModuleManager $serviceModuleManager,
+        ServiceTakeOverFactory $serviceTakeOverFactory,
+        Template $template,
+        TranslationManager $translationManager,
+        UserManager $userManager,
+        UserServiceRepository $userServiceRepository,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->adminPaymentService = $adminPaymentService;
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
+        $this->logger = $logger;
+        $this->paginationFactory = $paginationFactory;
+        $this->playerFlagService = $playerFlagService;
+        $this->priceTextService = $priceTextService;
+        $this->purchasePriceRenderer = $purchasePriceRenderer;
+        $this->purchasePriceService = $purchasePriceService;
+        $this->serverManager = $serverManager;
+        $this->serverServiceManager = $serverServiceManager;
+        $this->serviceManager = $serviceManager;
+        $this->serviceModuleManager = $serviceModuleManager;
+        $this->serviceTakeOverFactory = $serviceTakeOverFactory;
+        $this->userManager = $userManager;
+        $this->userServiceRepository = $userServiceRepository;
         $this->lang = $translationManager->user();
     }
 
@@ -191,8 +219,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->service ? $this->service->getTypes() : 0
         );
 
-        // Pobieramy flagi, jeżeli service nie jest puste
-        // czyli kiedy edytujemy, a nie dodajemy usługę
+        // Get flags when service is not empty
+        // it means we are editing, not adding a service
         $flags = $this->service ? $this->service->getFlags() : "";
 
         return $this->template->renderNoComments(
@@ -240,19 +268,16 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->lang->t("extra_flags");
     }
 
-    public function userServiceAdminDisplayGet(array $query, array $body)
+    public function userServiceAdminDisplayGet(Request $request)
     {
-        /** @var CurrentPage $currentPage */
-        $currentPage = $this->app->make(CurrentPage::class);
-        $pageNumber = $currentPage->getPageNumber();
-
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
                     ["us.id", "us.user_id", "u.username", "srv.name", "s.name", "usef.auth_data"],
-                    $query["search"]
+                    $request->query->get("search")
                 )
             );
         }
@@ -274,7 +299,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($pageNumber)));
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -307,7 +332,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $query, $rowsCount);
+            ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }

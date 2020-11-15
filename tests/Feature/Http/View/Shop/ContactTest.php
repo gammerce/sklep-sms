@@ -11,10 +11,10 @@ class ContactTest extends HttpTestCase
         // given
 
         // when
-        $response = $this->get('/page/contact');
+        $response = $this->get("/page/contact");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Kontakt', $response->getContent());
+        $this->assertContains("Kontakt", $response->getContent());
     }
 }

@@ -10,7 +10,6 @@ use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -24,6 +23,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminBoughtServices extends PageAdmin
@@ -36,31 +36,31 @@ class PageAdminBoughtServices extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var ServiceManager */
     private $serviceManager;
 
     /** @var ServerManager */
     private $serverManager;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         TransactionRepository $transactionRepository,
         Database $db,
-        CurrentPage $currentPage,
         ServiceManager $serviceManager,
-        ServerManager $serverManager
+        ServerManager $serverManager,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
         $this->transactionRepository = $transactionRepository;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getTitle(Request $request)
@@ -72,6 +72,7 @@ class PageAdminBoughtServices extends PageAdmin
     {
         $search = $request->query->get("search");
 
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
         if (strlen($search)) {
@@ -101,12 +102,7 @@ class PageAdminBoughtServices extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -186,7 +182,7 @@ class PageAdminBoughtServices extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("ip")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

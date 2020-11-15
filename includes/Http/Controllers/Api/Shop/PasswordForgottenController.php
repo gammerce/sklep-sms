@@ -29,28 +29,28 @@ class PasswordForgottenController
 
         $validator = new Validator(
             [
-                'username' => trim($request->request->get('username')),
-                'email' => trim($request->request->get('email')),
+                "username" => trim($request->request->get("username")),
+                "email" => trim($request->request->get("email")),
             ],
             [
-                'username' => [new UsernameRule()],
-                'email' => [new EmailRule()],
+                "username" => [new UsernameRule()],
+                "email" => [new EmailRule()],
             ]
         );
 
         $validated = $validator->validateOrFail();
 
         $editedUser =
-            $userRepository->findByEmail($validated['email']) ?:
-            $userRepository->findByUsername($validated['username']);
+            $userRepository->findByEmail($validated["email"]) ?:
+            $userRepository->findByUsername($validated["username"]);
         if (!$editedUser) {
-            return new ApiResponse("sent", $lang->t('email_sent'), 1);
+            return new ApiResponse("sent", $lang->t("email_sent"), 1);
         }
 
         $code = $userRepository->createResetPasswordKey($editedUser->getId());
 
         $link = $url->to("/page/reset_password?code=" . urlencode($code));
-        $text = $template->render("emails/forgotten_password", compact('editedUser', 'link'));
+        $text = $template->render("emails/forgotten_password", compact("editedUser", "link"));
         $ret = $mailer->send(
             $editedUser->getEmail(),
             $editedUser->getUsername(),
@@ -59,23 +59,23 @@ class PasswordForgottenController
         );
 
         if ($ret === "not_sent") {
-            return new ApiResponse("not_sent", $lang->t('keyreset_error'), 0);
+            return new ApiResponse("not_sent", $lang->t("keyreset_error"), 0);
         }
 
         if ($ret === "wrong_email") {
-            return new ApiResponse("wrong_sender_email", $lang->t('wrong_email'), 0);
+            return new ApiResponse("wrong_sender_email", $lang->t("wrong_email"), 0);
         }
 
         if ($ret === "sent") {
             $logger->log(
-                'log_reset_key_email',
+                "log_reset_key_email",
                 $editedUser->getUsername(),
                 $editedUser->getId(),
                 $editedUser->getEmail(),
-                $validated['username'],
-                $validated['email']
+                $validated["username"],
+                $validated["email"]
             );
-            return new ApiResponse("sent", $lang->t('email_sent'), 1);
+            return new ApiResponse("sent", $lang->t("email_sent"), 1);
         }
 
         throw new UnexpectedValueException("Invalid ret value");

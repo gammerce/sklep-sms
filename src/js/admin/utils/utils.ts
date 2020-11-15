@@ -4,7 +4,7 @@ import { handleErrorResponse, sthWentWrong } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
 import { Dict } from "../../shop/types/general";
 
-export const getAndSetTemplate = function(
+export const getAndSetTemplate = function (
     element: JQuery,
     template: string,
     data: any,
@@ -44,7 +44,7 @@ export const getAndSetTemplate = function(
 
 export const refreshAdminContent = () => refreshBlocks(`admincontent:${window.currentPage}`);
 
-export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): void {
+export const refreshBlocks = function (bricks: string, onSuccessFunction?: any): void {
     loader.show();
 
     $.ajax({
@@ -79,8 +79,10 @@ export const refreshBlocks = function(bricks: string, onSuccessFunction?: any): 
  * @param {string} boxId
  * @param {object} data
  */
-export const showActionBox = function(pageId: string, boxId: string, data?: Dict): void {
-    restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function(content) {
+export const showActionBox = function (pageId: string, boxId: string, data?: Dict): void {
+    restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function (
+        content
+    ) {
         // Nie udalo sie prawidlowo pozyskac danych
         if (content.return_id !== "ok") {
             alert(content.text);
@@ -91,7 +93,7 @@ export const showActionBox = function(pageId: string, boxId: string, data?: Dict
     });
 };
 
-export const clearAndHideActionBox = function(): void {
+export const clearAndHideActionBox = function (): void {
     action_box.hide();
     $("#action_box_wrapper_td").html("");
 };

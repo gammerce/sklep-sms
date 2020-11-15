@@ -91,6 +91,10 @@ EOF
         return null;
     }
 
+    /**
+     * @param int $id
+     * @return bool
+     */
     public function delete($id)
     {
         $statement = $this->db->statement("DELETE FROM `ss_promo_codes` WHERE `id` = ?");
@@ -99,6 +103,9 @@ EOF
         return !!$statement->rowCount();
     }
 
+    /**
+     * @param int $id
+     */
     public function useIt($id)
     {
         $this->db
@@ -108,6 +115,10 @@ EOF
             ->execute([$id]);
     }
 
+    /**
+     * @param array $data
+     * @return PromoCode
+     */
     public function mapToModel(array $data)
     {
         return new PromoCode(

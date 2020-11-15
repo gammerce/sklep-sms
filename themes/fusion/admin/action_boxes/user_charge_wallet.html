@@ -1,7 +1,5 @@
 <form id="form_charge_wallet" class="action_box">
-    <div class="service_main_info">
-        {$lang->t('charge_wallet')}
-    </div>
+    <div class="service_main_info">{$lang->t('charge_wallet')}</div>
     <table>
         <tr>
             <td>{$lang->t('username')}</td>
@@ -23,9 +21,7 @@
                         />
                     </div>
                     <div class="control">
-                        <a class="button is-static is-small">
-                            {{ $settings->getCurrency() }}
-                        </a>
+                        <a class="button is-static is-small"> {{ $settings->getCurrency() }} </a>
                     </div>
                 </div>
             </td>

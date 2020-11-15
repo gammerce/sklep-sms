@@ -92,7 +92,7 @@ class PageAdminMain extends PageAdmin
         $notes = $this->getNotes();
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => "",
-            "title" => $this->lang->t('main_page'),
+            "title" => $this->lang->t("main_page"),
         ]);
 
         return $this->template->render("admin/home", compact("bricks", "pageTitle", "notes"));

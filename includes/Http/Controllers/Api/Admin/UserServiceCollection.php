@@ -25,6 +25,6 @@ class UserServiceCollection
 
         $serviceModule->userServiceAdminAdd($request);
 
-        return new ApiResponse("ok", $lang->t('service_added_correctly'), true);
+        return new ApiResponse("ok", $lang->t("service_added_correctly"), true);
     }
 }

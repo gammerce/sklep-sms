@@ -6,7 +6,6 @@ use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -14,6 +13,7 @@ use App\View\Html\Div;
 use App\View\Html\HeadCell;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminLogs extends PageAdmin
@@ -23,18 +23,18 @@ class PageAdminLogs extends PageAdmin
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Database $db,
-        CurrentPage $currentPage
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -51,7 +51,9 @@ class PageAdminLogs extends PageAdmin
     {
         $search = $request->query->get("search");
 
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
+
         if ($search) {
             $queryParticle->extend(
                 create_search_query(["`id`", "`text`", "CAST(`timestamp` as CHAR)"], $search)
@@ -63,12 +65,7 @@ class PageAdminLogs extends PageAdmin
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_logs` {$where} ORDER BY `id` DESC LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -89,7 +86,7 @@ class PageAdminLogs extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("text")))
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

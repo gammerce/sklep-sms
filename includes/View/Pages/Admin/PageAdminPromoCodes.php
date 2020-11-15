@@ -15,7 +15,6 @@ use App\Support\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -27,6 +26,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
 
@@ -36,9 +36,6 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     /** @var Database */
     private $db;
-
-    /** @var CurrentPage */
-    private $currentPage;
 
     /** @var ServiceManager */
     private $serviceManager;
@@ -52,23 +49,26 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     /** @var Settings */
     private $settings;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         PromoCodeRepository $promoCodeRepository,
         Database $db,
-        CurrentPage $currentPage,
         ServiceManager $serviceManager,
         ServerManager $serverManager,
-        Settings $settings
+        Settings $settings,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->serviceManager = $serviceManager;
         $this->promoCodeRepository = $promoCodeRepository;
         $this->serverManager = $serverManager;
         $this->settings = $settings;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -83,10 +83,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS *" . "FROM `ss_promo_codes` AS sc " . "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -114,7 +116,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("expire")))
             ->addHeadCell(new HeadCell($this->lang->t("created_at")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
@@ -198,10 +200,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
     private function getQuantityTypeName(QuantityType $quantityType)
     {
         switch ($quantityType) {
-            case QuantityType::FIXED:
+            case QuantityType::FIXED():
                 return $this->settings->getCurrency();
+
             case QuantityType::PERCENTAGE():
                 return "%";
+
             default:
                 throw new UnexpectedValueException();
         }

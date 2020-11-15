@@ -22,7 +22,7 @@ class ServiceNotExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if ($value !== $this->exceptServiceId && $this->serviceRepository->get($value)) {
-            return [$this->lang->t('id_exist')];
+            return [$this->lang->t("id_exist")];
         }
 
         return [];

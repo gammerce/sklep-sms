@@ -77,8 +77,8 @@ class DatabaseMigration
                 // It means that user has installed shop sms using old codebase,
                 // that is why we want to create migration table for him and also
                 // fake init migration so as not to overwrite his database
-                $this->migrate('2018_01_14_224424_create_migrations');
-                $this->saveExecutedMigration('2018_01_14_230340_init');
+                $this->migrate("2018_01_14_224424_create_migrations");
+                $this->saveExecutedMigration("2018_01_14_230340_init");
 
                 return $this->getLastExecutedMigration();
             }

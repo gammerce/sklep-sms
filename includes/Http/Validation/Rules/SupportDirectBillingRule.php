@@ -21,7 +21,7 @@ class SupportDirectBillingRule extends BaseRule
         $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
-            return [$this->lang->t('no_direct_billing_platform')];
+            return [$this->lang->t("no_direct_billing_platform")];
         }
 
         return [];

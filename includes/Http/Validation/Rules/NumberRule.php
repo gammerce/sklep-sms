@@ -8,7 +8,7 @@ class NumberRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!is_numeric($value)) {
-            return [$this->lang->t('field_must_be_number')];
+            return [$this->lang->t("field_must_be_number")];
         }
 
         return [];

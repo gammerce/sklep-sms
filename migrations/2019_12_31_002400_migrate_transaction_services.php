@@ -12,16 +12,16 @@ class MigrateTransactionServices extends Migration
             "ALTER TABLE `ss_servers` MODIFY `sms_service` VARCHAR(32) CHARACTER SET utf8 COLLATE utf8_bin"
         );
 
-        $smsService = $transferService = '';
+        $smsService = $transferService = "";
         $statement = $this->db->query(
             "SELECT * FROM `ss_settings` WHERE `key` IN ('sms_service', 'transfer_service')"
         );
         foreach ($statement as $row) {
-            if ($row['key'] === "sms_service") {
-                $smsService = $row['value'];
+            if ($row["key"] === "sms_service") {
+                $smsService = $row["value"];
             }
-            if ($row['key'] === "transfer_service") {
-                $transferService = $row['value'];
+            if ($row["key"] === "transfer_service") {
+                $transferService = $row["value"];
             }
         }
 
@@ -30,7 +30,7 @@ class MigrateTransactionServices extends Migration
 
         $statement = $this->db->query("SELECT * FROM `ss_servers`");
         foreach ($statement as $row) {
-            $requiredPlatforms[] = $row['sms_service'];
+            $requiredPlatforms[] = $row["sms_service"];
         }
 
         $statement = $this->db->query("SELECT * FROM `ss_transaction_services`");
@@ -60,13 +60,13 @@ class MigrateTransactionServices extends Migration
         }
 
         /** @var PaymentPlatform|null $newSmsPlatform */
-        $newSmsPlatformId = array_get($paymentPlatforms, $smsService, '');
+        $newSmsPlatformId = array_get($paymentPlatforms, $smsService, "");
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'sms_service'")
             ->execute([$newSmsPlatformId]);
 
         /** @var PaymentPlatform|null $newTransferPlatform */
-        $newTransferPlatformId = array_get($paymentPlatforms, $transferService, '');
+        $newTransferPlatformId = array_get($paymentPlatforms, $transferService, "");
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'transfer_service'")
             ->execute([$newTransferPlatformId]);

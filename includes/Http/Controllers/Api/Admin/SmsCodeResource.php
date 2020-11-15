@@ -20,10 +20,10 @@ class SmsCodeResource
         $deleted = $smsCodeRepository->delete($smsCodeId);
 
         if ($deleted) {
-            $logger->logWithActor('log_sms_code_deleted', $smsCodeId);
-            return new SuccessApiResponse($lang->t('delete_sms_code'));
+            $logger->logWithActor("log_sms_code_deleted", $smsCodeId);
+            return new SuccessApiResponse($lang->t("delete_sms_code"));
         }
 
-        return new ApiResponse("not_deleted", $lang->t('no_delete_sms_code'), 0);
+        return new ApiResponse("not_deleted", $lang->t("no_delete_sms_code"), 0);
     }
 }

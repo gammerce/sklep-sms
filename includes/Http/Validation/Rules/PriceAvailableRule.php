@@ -25,10 +25,10 @@ class PriceAvailableRule extends BaseRule
     {
         $price = $this->priceRepository->get($value);
         $serviceId = $this->service->getId();
-        $serverId = array_get($data, 'server_id');
+        $serverId = array_get($data, "server_id");
 
         if (!$this->isPriceAvailable($serviceId, $serverId, $price)) {
-            return [$this->lang->t('service_not_affordable')];
+            return [$this->lang->t("service_not_affordable")];
         }
 
         return [];

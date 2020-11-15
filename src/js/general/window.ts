@@ -17,13 +17,13 @@ export const window_info = {
 
         window_info.element.appendTo("body").slideDown("slow");
 
-        window_info.exit.click(function() {
+        window_info.exit.click(function () {
             window_info.remove();
         });
     },
 
     remove() {
-        window_info.element.slideUp("normal", function() {
+        window_info.element.slideUp("normal", function () {
             $(this).remove();
         });
     },

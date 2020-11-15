@@ -3,21 +3,18 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/infobox";
 import { buildUrl } from "../../../general/global";
 
-$(document).delegate("#group_button_add", "click", function() {
+$(document).delegate("#group_button_add", "click", function () {
     showActionBox(window.currentPage, "add");
 });
 
-$(document).delegate(".table-structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function () {
     showActionBox(window.currentPage, "edit", {
-        id: $(this)
-            .closest("tr")
-            .find("td[headers=id]")
-            .text(),
+        id: $(this).closest("tr").find("td[headers=id]").text(),
     });
 });
 
 // Delete group
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     var rowId = $(this).closest("tr");
     var groupId = rowId.children("td[headers=id]").text();
 
@@ -25,10 +22,10 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/groups/" + groupId),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -48,7 +45,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
 });
 
 // Add group
-$(document).delegate("#form_group_add", "submit", function(e) {
+$(document).delegate("#form_group_add", "submit", function (e) {
     e.preventDefault();
 
     loader.show();
@@ -56,10 +53,10 @@ $(document).delegate("#form_group_add", "submit", function(e) {
         type: "POST",
         url: buildUrl("/api/admin/groups"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -76,22 +73,20 @@ $(document).delegate("#form_group_add", "submit", function(e) {
 });
 
 // Edit group
-$(document).delegate("#form_group_edit", "submit", function(e) {
+$(document).delegate("#form_group_edit", "submit", function (e) {
     e.preventDefault();
 
-    var groupId = $(this)
-        .find("[name=id]")
-        .val();
+    var groupId = $(this).find("[name=id]").val();
 
     loader.show();
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/groups/" + groupId),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }

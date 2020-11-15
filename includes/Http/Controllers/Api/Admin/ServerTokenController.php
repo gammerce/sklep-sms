@@ -17,7 +17,7 @@ class ServerTokenController
         $lang = $translationManager->user();
 
         $token = $serverRepository->regenerateToken($serverId);
-        $databaseLogger->logWithActor('log_server_token_regenerated', $serverId);
+        $databaseLogger->logWithActor("log_server_token_regenerated", $serverId);
 
         return new SuccessApiResponse($lang->t("server_token_regenerated"), [
             "data" => compact("token"),

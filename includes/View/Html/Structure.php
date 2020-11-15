@@ -2,8 +2,7 @@
 namespace App\View\Html;
 
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
-use App\View\PaginationService;
+use App\View\Pagination\Pagination;
 
 class Structure extends DOMElement
 {
@@ -116,27 +115,16 @@ class Structure extends DOMElement
 
     /**
      * @param string $path
-     * @param array $query
+     * @param Pagination $pagination
      * @param int $count
      * @return $this
      */
-    public function enablePagination($path, array $query, $count)
+    public function enablePagination($path, Pagination $pagination, $count)
     {
-        /** @var PaginationService $paginationService */
-        $paginationService = app()->make(PaginationService::class);
+        $paginationView = $pagination->createComponent($count, $path);
 
-        /** @var CurrentPage $currentPage */
-        $currentPage = app()->make(CurrentPage::class);
-
-        $pagination = $paginationService->createPagination(
-            $count,
-            $currentPage->getPageNumber(),
-            $path,
-            $query
-        );
-
-        if ($pagination) {
-            $cell = new Cell($pagination);
+        if ($paginationView) {
+            $cell = new Cell($paginationView);
             $cell->setParam("colspan", "31");
 
             $row = new Row($cell);

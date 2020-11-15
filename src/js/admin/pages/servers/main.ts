@@ -21,20 +21,17 @@ function showNotification(message) {
     notificationContainer.html(notification as any);
 }
 
-$(document).delegate("#server_button_add", "click", function() {
+$(document).delegate("#server_button_add", "click", function () {
     showActionBox(window.currentPage, "add");
 });
 
-$(document).delegate(".table-structure .edit_row", "click", function() {
+$(document).delegate(".table-structure .edit_row", "click", function () {
     showActionBox(window.currentPage, "edit", {
-        id: $(this)
-            .closest("tr")
-            .find("td[headers=id]")
-            .text(),
+        id: $(this).closest("tr").find("td[headers=id]").text(),
     });
 });
 
-$(document).delegate(".table-structure .regenerate-token", "click", function() {
+$(document).delegate(".table-structure .regenerate-token", "click", function () {
     var rowId = $(this).closest("tr");
     var serverId = rowId.children("td[headers=id]").text();
     var serverName = rowId.children("td[headers=name]").text();
@@ -53,10 +50,10 @@ $(document).delegate(".table-structure .regenerate-token", "click", function() {
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/servers/" + serverId + "/token"),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -71,7 +68,7 @@ $(document).delegate(".table-structure .regenerate-token", "click", function() {
     });
 });
 
-$(document).delegate(".table-structure .delete_row", "click", function() {
+$(document).delegate(".table-structure .delete_row", "click", function () {
     var rowId = $(this).closest("tr");
     var serverId = rowId.children("td[headers=id]").text();
     var serverName = rowId.children("td[headers=name]").text();
@@ -85,10 +82,10 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/servers/" + serverId),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -107,7 +104,7 @@ $(document).delegate(".table-structure .delete_row", "click", function() {
     });
 });
 
-$(document).delegate("#form_server_add", "submit", function(e) {
+$(document).delegate("#form_server_add", "submit", function (e) {
     e.preventDefault();
 
     loader.show();
@@ -115,10 +112,10 @@ $(document).delegate("#form_server_add", "submit", function(e) {
         type: "POST",
         url: buildUrl("/api/admin/servers"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -139,22 +136,20 @@ $(document).delegate("#form_server_add", "submit", function(e) {
 });
 
 // Edit server
-$(document).delegate("#form_server_edit", "submit", function(e) {
+$(document).delegate("#form_server_edit", "submit", function (e) {
     e.preventDefault();
 
-    var serverId = $(this)
-        .find("[name=id]")
-        .val();
+    var serverId = $(this).find("[name=id]").val();
 
     loader.show();
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/servers/" + serverId),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

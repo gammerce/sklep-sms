@@ -11,20 +11,20 @@ class PagePricingActionBoxEditTest extends HttpTestCase
         // give
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
         $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->get("/api/admin/pages/pricing/action_boxes/edit", [
-            'id' => $price->getId(),
+            "id" => $price->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Edytuj cenę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Edytuj cenę", $json["template"]);
     }
 
     /** @test */
@@ -33,18 +33,18 @@ class PagePricingActionBoxEditTest extends HttpTestCase
         // give
         $server = $this->factory->server();
         $price = $this->factory->price([
-            'server_id' => $server->getId(),
+            "server_id" => $server->getId(),
         ]);
         $this->actingAs($this->factory->user());
 
         // when
         $response = $this->getJson("/api/admin/pages/pricing/action_boxes/edit", [
-            'id' => $price->getId(),
+            "id" => $price->getId(),
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

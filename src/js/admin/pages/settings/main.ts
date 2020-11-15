@@ -3,17 +3,17 @@ import { handleErrorResponse, infobox, sthWentWrong } from "../../../general/inf
 import { buildUrl, removeFormWarnings, showWarnings } from "../../../general/global";
 import { refreshAdminContent } from "../../utils/utils";
 
-$(document).delegate("#form_settings_edit", "submit", function(e) {
+$(document).delegate("#form_settings_edit", "submit", function (e) {
     e.preventDefault();
     loader.show();
     $.ajax({
         type: "PUT",
         url: buildUrl("/api/admin/settings"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             removeFormWarnings();
 
             if (!content.return_id) {

@@ -6,8 +6,8 @@ import { loader } from "../general/loader";
 import { buildUrl, removeFormWarnings } from "../general/global";
 import { Dict } from "../shop/types/general";
 
-jQuery(document).ready(function($) {
-    $("#form_install").submit(function(e) {
+jQuery(document).ready(function ($) {
+    $("#form_install").submit(function (e) {
         e.preventDefault();
 
         if (loader.blocked) {
@@ -53,20 +53,20 @@ jQuery(document).ready(function($) {
                         }) as any
                     );
 
-                    setTimeout(function() {
+                    setTimeout(function () {
                         window.location.href = window.location.href + "/..";
                     }, 4000);
 
                     return;
                 } else if (content.return_id === "error") {
-                    setTimeout(function() {
+                    setTimeout(function () {
                         location.reload();
                     }, 4000);
                 }
 
                 infobox.showInfo(content.text, content.positive);
             },
-            error: function(error) {
+            error: function (error) {
                 infobox.showInfo("Wystąpił błąd podczas przeprowadzania instalacji.", false);
             },
         });

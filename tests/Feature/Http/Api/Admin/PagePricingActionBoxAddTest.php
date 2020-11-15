@@ -17,8 +17,8 @@ class PagePricingActionBoxAddTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('ok', $json['return_id']);
-        $this->assertContains("Dodaj cenę", $json['template']);
+        $this->assertEquals("ok", $json["return_id"]);
+        $this->assertContains("Dodaj cenę", $json["template"]);
     }
 
     /** @test */
@@ -34,6 +34,6 @@ class PagePricingActionBoxAddTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertEquals('no_access', $json["return_id"]);
+        $this->assertEquals("no_access", $json["return_id"]);
     }
 }

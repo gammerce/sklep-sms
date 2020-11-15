@@ -7,9 +7,7 @@
                     <h2 class="subtitle is-4">{{ __('welcome_subtitle') }}</h2>
 
                     <div class="section">
-                        <p class="content is-size-5">
-                            {!! __('welcome_message') !!}
-                        </p>
+                        <p class="content is-size-5">{!! __('welcome_message') !!}</p>
 
                         <a class="button is-primary is-medium" href="{{ url('/page/contact') }}">
                             <span class="icon">
@@ -23,13 +21,11 @@
 
             <div class="column">
                 <div class="section has-text-centered">
-                    <div class="title is-3" style="margin-bottom: 2.5rem;">
+                    <div class="title is-3" style="margin-bottom: 2.5rem">
                         {{ __('available_services') }}
                     </div>
 
-                    <div class="buttons services-group">
-                        {!! $services !!}
-                    </div>
+                    <div class="buttons services-group">{!! $services !!}</div>
 
                     <div>
                         <a

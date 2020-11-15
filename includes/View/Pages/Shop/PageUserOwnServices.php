@@ -12,10 +12,9 @@ use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
-use App\View\CurrentPage;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
-use App\View\PaginationService;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageUserOwnServices extends Page implements IBeLoggedMust
@@ -34,11 +33,8 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
-    /** @var PaginationService */
-    private $paginationService;
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
     /** @var ServiceModuleManager */
     private $serviceModuleManager;
@@ -51,8 +47,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         Auth $auth,
         Database $db,
         ServiceModuleManager $serviceModuleManager,
-        CurrentPage $currentPage,
-        PaginationService $paginationService
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
@@ -60,8 +55,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->settings = $settings;
         $this->auth = $auth;
         $this->db = $db;
-        $this->currentPage = $currentPage;
-        $this->paginationService = $paginationService;
+        $this->paginationFactory = $paginationFactory;
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
@@ -73,6 +67,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
+        $pagination = $this->paginationFactory->create($request);
 
         $moduleIds = collect($this->serviceModuleManager->all())
             ->filter(function (ServiceModule $serviceModule) {
@@ -107,11 +102,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "LIMIT ?, ?"
             );
             $statement->execute(
-                array_merge(
-                    [$user->getId()],
-                    $moduleIds->all(),
-                    get_row_limit($this->currentPage->getPageNumber(), 4)
-                )
+                array_merge([$user->getId()], $moduleIds->all(), $pagination->getSqlLimit(4))
             );
 
             $userServiceIds = collect($statement)
@@ -160,13 +151,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $this->lang->t("no_data");
         }
 
-        $paginationContent = $this->paginationService->createPagination(
-            $rowsCount,
-            $this->currentPage->getPageNumber(),
-            $request->getPathInfo(),
-            $request->query->all(),
-            4
-        );
+        $paginationContent = $pagination->createComponent($rowsCount, $request->getPathInfo(), 4);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 
         return $this->template->render(

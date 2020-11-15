@@ -11,7 +11,6 @@ use App\Support\Database;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
@@ -20,6 +19,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
@@ -35,11 +35,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var PaymentModuleManager */
     private $paymentModuleManager;
+
+    /** @var PaginationFactory */
+    private $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -47,16 +47,16 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         PaymentPlatformRepository $paymentPlatformRepository,
         DataFieldService $dataFieldService,
         Database $db,
-        CurrentPage $currentPage,
-        PaymentModuleManager $paymentModuleManager
+        PaymentModuleManager $paymentModuleManager,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
         $this->paymentPlatformRepository = $paymentPlatformRepository;
         $this->dataFieldService = $dataFieldService;
         $this->db = $db;
-        $this->currentPage = $currentPage;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -71,6 +71,8 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $addButton = new Input();
         $addButton->setParam("id", "payment_platform_button_add");
         $addButton->setParam("type", "button");
@@ -80,7 +82,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_payment_platforms` LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($this->currentPage->getPageNumber()));
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -102,7 +104,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addHeadCell(new HeadCell($this->lang->t("module")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request->query->all(), $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

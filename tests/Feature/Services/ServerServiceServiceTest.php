@@ -31,14 +31,14 @@ class ServerServiceServiceTest extends TestCase
         // when
         $this->serverServiceService->updateAffiliations([
             [
-                'server_id' => $serverA->getId(),
-                'service_id' => 'vip',
-                'connect' => true,
+                "server_id" => $serverA->getId(),
+                "service_id" => "vip",
+                "connect" => true,
             ],
             [
-                'server_id' => $serverB->getId(),
-                'service_id' => 'vippro',
-                'connect' => true,
+                "server_id" => $serverB->getId(),
+                "service_id" => "vippro",
+                "connect" => true,
             ],
         ]);
 
@@ -56,33 +56,33 @@ class ServerServiceServiceTest extends TestCase
 
         $this->serverServiceService->updateAffiliations([
             [
-                'server_id' => $serverA->getId(),
-                'service_id' => 'vip',
-                'connect' => true,
+                "server_id" => $serverA->getId(),
+                "service_id" => "vip",
+                "connect" => true,
             ],
             [
-                'server_id' => $serverB->getId(),
-                'service_id' => 'vippro',
-                'connect' => true,
+                "server_id" => $serverB->getId(),
+                "service_id" => "vippro",
+                "connect" => true,
             ],
         ]);
 
         // when
         $this->serverServiceService->updateAffiliations([
             [
-                'server_id' => $serverA->getId(),
-                'service_id' => 'vip',
-                'connect' => false,
+                "server_id" => $serverA->getId(),
+                "service_id" => "vip",
+                "connect" => false,
             ],
             [
-                'server_id' => $serverA->getId(),
-                'service_id' => 'resnick',
-                'connect' => true,
+                "server_id" => $serverA->getId(),
+                "service_id" => "resnick",
+                "connect" => true,
             ],
             [
-                'server_id' => $serverB->getId(),
-                'service_id' => 'vippro',
-                'connect' => true,
+                "server_id" => $serverB->getId(),
+                "service_id" => "vippro",
+                "connect" => true,
             ],
         ]);
 

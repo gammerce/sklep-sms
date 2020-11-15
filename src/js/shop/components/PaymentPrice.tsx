@@ -6,7 +6,7 @@ interface Props {
     oldPrice?: string;
 }
 
-export const PaymentPrice: FunctionComponent<Props> = props => {
+export const PaymentPrice: FunctionComponent<Props> = (props) => {
     const { price, oldPrice } = props;
 
     return (

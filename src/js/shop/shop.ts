@@ -4,7 +4,7 @@ import { loader } from "../general/loader";
 import { buildUrl, restRequest } from "../general/global";
 import { handleErrorResponse, infobox, sthWentWrong } from "../general/infobox";
 
-$(document).ready(function() {
+$(document).ready(function () {
     if (window.f) {
         $(".f-placement").append(atob(window.f));
     }
@@ -13,7 +13,7 @@ $(document).ready(function() {
 });
 
 // Login
-$(document).delegate("#form_login", "submit", function(e) {
+$(document).delegate("#form_login", "submit", function (e) {
     e.preventDefault();
     loader.show();
 
@@ -21,10 +21,10 @@ $(document).delegate("#form_login", "submit", function(e) {
         type: "POST",
         url: buildUrl("/api/login"),
         data: $(this).serialize(),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -51,16 +51,16 @@ $(document).delegate("#form_login", "submit", function(e) {
 });
 
 // Logout
-$(document).delegate("#logout", "click", function(e) {
+$(document).delegate("#logout", "click", function (e) {
     loader.show();
 
     $.ajax({
         type: "POST",
         url: buildUrl("/api/logout"),
-        complete: function() {
+        complete: function () {
             loader.hide();
         },
-        success: function(content) {
+        success: function (content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -81,7 +81,7 @@ $(document).delegate("#logout", "click", function(e) {
 });
 
 // Expand the login form
-$(document).delegate("#loginarea_roll_button", "click", function() {
+$(document).delegate("#loginarea_roll_button", "click", function () {
     var area = $(".loginarea");
     $(".loginarea table")
         .stop()
@@ -90,34 +90,30 @@ $(document).delegate("#loginarea_roll_button", "click", function() {
                 marginLeft: "0px",
             },
             500,
-            function() {
+            function () {
                 $("#user_buttons").css({
                     overflow: area.css("overflow") != "hidden" ? "hidden" : "visible",
                 });
-                $(".loginarea table")
-                    .stop()
-                    .animate(
-                        {
-                            marginLeft: "-220px",
-                        },
-                        500
-                    );
+                $(".loginarea table").stop().animate(
+                    {
+                        marginLeft: "-220px",
+                    },
+                    500
+                );
             }
         );
 });
 
 // Choose a language
-$(document).delegate(".language-item", "click", function() {
-    var langClicked = $(this)
-        .attr("id")
-        .replace("language_", "");
+$(document).delegate(".language-item", "click", function () {
+    var langClicked = $(this).attr("id").replace("language_", "");
 
-    restRequest("PUT", "/api/session/language", { language: langClicked }, function() {
+    restRequest("PUT", "/api/session/language", { language: langClicked }, function () {
         location.reload();
     });
 });
 
-$(document).delegate(".navbar-burger", "click", function() {
+$(document).delegate(".navbar-burger", "click", function () {
     $(this).toggleClass("is-active");
     $(".navbar-menu").toggleClass("is-active");
 });

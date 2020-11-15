@@ -9,11 +9,11 @@ class ExtraFlagPasswordRule extends BaseRule implements EmptyRule
 {
     public function validate($attribute, $value, array $data)
     {
-        $type = array_get($data, 'type');
+        $type = array_get($data, "type");
 
         $allowedTypes = ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP;
         if ($type & $allowedTypes && !strlen($value)) {
-            return [$this->lang->t('field_no_empty')];
+            return [$this->lang->t("field_no_empty")];
         }
 
         return [];

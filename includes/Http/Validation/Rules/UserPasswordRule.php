@@ -18,7 +18,7 @@ class UserPasswordRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (hash_password($value, $this->user->getSalt()) != $this->user->getPassword()) {
-            return [$this->lang->t('old_pass_wrong')];
+            return [$this->lang->t("old_pass_wrong")];
         }
 
         return [];

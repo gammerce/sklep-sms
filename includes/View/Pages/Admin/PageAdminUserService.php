@@ -74,10 +74,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             return $this->lang->t("no_subpage");
         }
 
-        $wrapper = $serviceModule->userServiceAdminDisplayGet(
-            $request->query->all(),
-            $request->request->all()
-        );
+        $wrapper = $serviceModule->userServiceAdminDisplayGet($request);
 
         if (get_class($wrapper) !== Wrapper::class) {
             return $wrapper;

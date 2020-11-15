@@ -19,7 +19,7 @@ class DefaultSmsPlatformRule extends BaseRule implements EmptyRule
     public function validate($attribute, $value, array $data)
     {
         if (!$value && !$this->settings->getSmsPlatformId()) {
-            return [$this->lang->t('no_default_sms_platform')];
+            return [$this->lang->t("no_default_sms_platform")];
         }
 
         return [];

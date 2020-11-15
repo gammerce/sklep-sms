@@ -16,11 +16,11 @@ class ServerServiceService
     public function updateAffiliations(array $data)
     {
         $itemsToCreate = collect($data)->filter(function (array $item) {
-            return $item['connect'];
+            return $item["connect"];
         });
 
         $itemsToDelete = collect($data)->filter(function (array $item) {
-            return !$item['connect'];
+            return !$item["connect"];
         });
 
         if ($itemsToCreate->isPopulated()) {
@@ -32,7 +32,7 @@ class ServerServiceService
 
             $values = $itemsToCreate
                 ->flatMap(function (array $item) {
-                    return [$item['server_id'], $item['service_id']];
+                    return [$item["server_id"], $item["service_id"]];
                 })
                 ->all();
 
@@ -53,7 +53,7 @@ class ServerServiceService
 
             $values = $itemsToDelete
                 ->flatMap(function (array $item) {
-                    return [$item['server_id'], $item['service_id']];
+                    return [$item["server_id"], $item["service_id"]];
                 })
                 ->all();
 
