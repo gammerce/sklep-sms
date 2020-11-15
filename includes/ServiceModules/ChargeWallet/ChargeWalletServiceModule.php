@@ -15,7 +15,9 @@ use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
 use App\Support\Money;
+use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -51,20 +53,28 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     /** @var Settings */
     private $settings;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
-
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function __construct(
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        ChargeWalletFactory $chargeWalletFactory,
+        PaymentPlatformRepository $paymentPlatformRepository,
+        PriceTextService $priceTextService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Settings $settings,
+        Template $template,
+        TranslationManager $translationManager,
+        WalletPaymentService $walletPaymentService,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
         $this->lang = $translationManager->user();
-        $this->auth = $this->app->make(Auth::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->chargeWalletFactory = $this->app->make(ChargeWalletFactory::class);
-        $this->walletPaymentService = $this->app->make(WalletPaymentService::class);
-        $this->paymentPlatformRepository = $this->app->make(PaymentPlatformRepository::class);
-        $this->settings = $this->app->make(Settings::class);
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->chargeWalletFactory = $chargeWalletFactory;
+        $this->paymentPlatformRepository = $paymentPlatformRepository;
+        $this->priceTextService = $priceTextService;
+        $this->settings = $settings;
+        $this->walletPaymentService = $walletPaymentService;
     }
 
     public function purchaseFormGet(array $query)

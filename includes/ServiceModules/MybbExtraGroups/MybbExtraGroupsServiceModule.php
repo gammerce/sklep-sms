@@ -35,7 +35,10 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -123,29 +126,45 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     /** @var PaginationFactory */
     private $paginationFactory;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var Database */
+    private $db;
 
-        $this->auth = $this->app->make(Auth::class);
-        $this->userManager = $this->app->make(UserManager::class);
-        $this->mybbUserGroupRepository = $this->app->make(MybbUserGroupRepository::class);
-        $this->mybbUserServiceRepository = $this->app->make(MybbUserServiceRepository::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->logger = $this->app->make(DatabaseLogger::class);
-        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->purchasePriceService = $this->app->make(PurchasePriceService::class);
-        $this->purchasePriceRenderer = $this->app->make(PurchasePriceRenderer::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->paginationFactory = $this->app->make(PaginationFactory::class);
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function __construct(
+        AdminPaymentService $adminPaymentService,
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        DatabaseLogger $logger,
+        MybbRepositoryFactory $mybbRepositoryFactory,
+        MybbUserGroupRepository $mybbUserGroupRepository,
+        MybbUserServiceRepository $mybbUserServiceRepository,
+        PaginationFactory $paginationFactory,
+        PriceTextService $priceTextService,
+        PurchasePriceRenderer $purchasePriceRenderer,
+        PurchasePriceService $purchasePriceService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Template $template,
+        TranslationManager $translationManager,
+        UserManager $userManager,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->adminPaymentService = $adminPaymentService;
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->logger = $logger;
+        $this->mybbUserGroupRepository = $mybbUserGroupRepository;
+        $this->mybbUserServiceRepository = $mybbUserServiceRepository;
+        $this->paginationFactory = $paginationFactory;
+        $this->priceTextService = $priceTextService;
+        $this->purchasePriceRenderer = $purchasePriceRenderer;
+        $this->purchasePriceService = $purchasePriceService;
+        $this->userManager = $userManager;
         $this->lang = $translationManager->user();
 
         $this->readServiceData();
 
-        /** @var MybbRepositoryFactory $mybbRepositoryFactory */
-        $mybbRepositoryFactory = $this->app->make(MybbRepositoryFactory::class);
         $this->mybbRepository = $mybbRepositoryFactory->create(
             $this->dbHost,
             $this->dbPort,

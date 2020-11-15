@@ -1,29 +1,21 @@
 <?php
 namespace App\View\Pagination;
 
-use App\Routing\UrlGenerator;
-use App\System\Settings;
+use App\System\Application;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
 class PaginationFactory
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var UrlGenerator */
-    private $url;
+    /** @var Application */
+    private $app;
 
     /** @var TranslationManager */
     private $translationManager;
 
-    public function __construct(
-        Settings $settings,
-        UrlGenerator $url,
-        TranslationManager $translationManager
-    ) {
-        $this->settings = $settings;
-        $this->url = $url;
+    public function __construct(Application $app, TranslationManager $translationManager)
+    {
+        $this->app = $app;
         $this->translationManager = $translationManager;
     }
 
@@ -33,11 +25,7 @@ class PaginationFactory
      */
     public function create(Request $request)
     {
-        return new Pagination(
-            $this->url,
-            $this->settings,
-            $this->translationManager->user(),
-            $request
-        );
+        $lang = $this->translationManager->shop();
+        return $this->app->makeWith(Pagination::class, compact("lang", "request"));
     }
 }
