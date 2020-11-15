@@ -13,6 +13,8 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
+use App\Services\ServiceDescriptionService;
+use App\Support\Template;
 
 class OtherServiceModule extends ServiceModule implements
     IServiceCreate,
@@ -24,9 +26,13 @@ class OtherServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct(BoughtServiceService $boughtServiceService, Service $service = null)
-    {
-        parent::__construct($service);
+    public function __construct(
+        BoughtServiceService $boughtServiceService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Template $template,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
         $this->boughtServiceService = $boughtServiceService;
     }
 
