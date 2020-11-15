@@ -24,11 +24,10 @@ class OtherServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    public function __construct(Service $service = null)
+    public function __construct(BoughtServiceService $boughtServiceService, Service $service = null)
     {
         parent::__construct($service);
-
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
+        $this->boughtServiceService = $boughtServiceService;
     }
 
     public function purchaseDataValidate(Purchase $purchase)
