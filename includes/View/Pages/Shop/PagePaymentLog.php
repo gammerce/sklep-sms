@@ -84,7 +84,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge([$user->getId()], $pagination->getRowLimit(10)));
+        $statement->execute(array_merge([$user->getId()], $pagination->getSqlLimit(10)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
@@ -115,7 +115,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
         }
 
-        $paginationContent = $pagination->createView($rowsCount, $request->getPathInfo(), 10);
+        $paginationContent = $pagination->createComponent($rowsCount, $request->getPathInfo(), 10);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 
         return $this->template->render(

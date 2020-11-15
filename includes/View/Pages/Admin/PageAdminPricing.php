@@ -98,7 +98,7 @@ ORDER BY `service_id`, `server_id`, `quantity`
 LIMIT ?, ?
 EOF
         );
-        $statement->execute($pagination->getRowLimit());
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

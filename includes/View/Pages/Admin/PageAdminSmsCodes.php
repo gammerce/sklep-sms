@@ -81,7 +81,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                 "WHERE `free` = '1' " .
                 "LIMIT ?, ?"
         );
-        $statement->execute($pagination->getRowLimit());
+        $statement->execute($pagination->getSqlLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

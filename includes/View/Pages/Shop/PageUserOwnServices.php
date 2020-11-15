@@ -102,7 +102,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "LIMIT ?, ?"
             );
             $statement->execute(
-                array_merge([$user->getId()], $moduleIds->all(), $pagination->getRowLimit(4))
+                array_merge([$user->getId()], $moduleIds->all(), $pagination->getSqlLimit(4))
             );
 
             $userServiceIds = collect($statement)
@@ -151,7 +151,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $this->lang->t("no_data");
         }
 
-        $paginationContent = $pagination->createView($rowsCount, $request->getPathInfo(), 4);
+        $paginationContent = $pagination->createComponent($rowsCount, $request->getPathInfo(), 4);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 
         return $this->template->render(

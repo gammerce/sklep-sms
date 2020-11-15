@@ -121,7 +121,7 @@ class Structure extends DOMElement
      */
     public function enablePagination($path, Pagination $pagination, $count)
     {
-        $paginationView = $pagination->createView($count, $path);
+        $paginationView = $pagination->createComponent($count, $path);
 
         if ($paginationView) {
             $cell = new Cell($paginationView);
