@@ -30,14 +30,16 @@ use App\ServiceModules\ServiceModule;
 use App\ServiceModules\ShopSmsLicense\Rules\LicenseEnginesRule;
 use App\Services\LicenseServerService;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
 use App\Services\UserServiceService;
+use App\Support\Database;
 use App\Support\QueryParticle;
+use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
-use App\View\CurrentPage;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DOMElement;
@@ -47,6 +49,7 @@ use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
 use App\View\Html\Wrapper;
+use App\View\Pagination\PaginationFactory;
 use Exception;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -78,9 +81,6 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var BoughtServiceService */
     private $boughtServiceService;
 
-    /** @var CurrentPage */
-    private $currentPage;
-
     /** @var LicenseServerService */
     private $licenseServerService;
 
@@ -105,24 +105,44 @@ class LicenseServiceModule extends ServiceModule implements
     /** @var Settings */
     private $settings;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var Database */
+    private $db;
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
+    public function __construct(
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        EngineService $engineService,
+        LicenseServerService $licenseServerService,
+        LicenseUserServiceRepository $licenseUserServiceRepository,
+        PaginationFactory $paginationFactory,
+        PriceTextService $priceTextService,
+        PurchaseDataService $purchaseDataService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Settings $settings,
+        Template $template,
+        TranslationManager $translationManager,
+        UserServiceRepository $userServiceRepository,
+        UserServiceService $userServiceService,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->engineService = $engineService;
+        $this->licenseServerService = $licenseServerService;
+        $this->licenseUserServiceRepository = $licenseUserServiceRepository;
+        $this->paginationFactory = $paginationFactory;
+        $this->priceTextService = $priceTextService;
+        $this->purchaseDataService = $purchaseDataService;
+        $this->settings = $settings;
+        $this->userServiceRepository = $userServiceRepository;
+        $this->userServiceService = $userServiceService;
         $this->lang = $translationManager->user();
-        $this->auth = $this->app->make(Auth::class);
-        $this->currentPage = $this->app->make(CurrentPage::class);
-        $this->licenseServerService = $this->app->make(LicenseServerService::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->userServiceService = $this->app->make(UserServiceService::class);
-        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
-        $this->purchaseDataService = $this->app->make(PurchaseDataService::class);
-        $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->engineService = $this->app->make(EngineService::class);
-        $this->settings = $this->app->make(Settings::class);
     }
 
     /**
@@ -139,11 +159,12 @@ class LicenseServiceModule extends ServiceModule implements
         return $this->lang->t("licenses");
     }
 
-    public function userServiceAdminDisplayGet(array $query, array $body)
+    public function userServiceAdminDisplayGet(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
 
-        if (isset($query["search"])) {
+        if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
                     [
@@ -155,7 +176,7 @@ class LicenseServiceModule extends ServiceModule implements
                         "m.identifier",
                         "m.cost_daily",
                     ],
-                    $query["search"]
+                    $request->query->get("search")
                 )
             );
         }
@@ -173,12 +194,7 @@ class LicenseServiceModule extends ServiceModule implements
                 "ORDER BY us.id DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(
-            array_merge(
-                $queryParticle->params(),
-                get_row_limit($this->currentPage->getPageNumber())
-            )
-        );
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -209,7 +225,7 @@ class LicenseServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("cost_daily")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination("/admin/user_service", $query, $rowsCount);
+            ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }
@@ -601,8 +617,8 @@ class LicenseServiceModule extends ServiceModule implements
             }
 
             $dailyCost = $this->getDailyCost(
-                $body['platform_amxmodx'],
-                $body['platform_sourcemod']
+                $body["platform_amxmodx"],
+                $body["platform_sourcemod"]
             );
             $bargainPercentage = $this->getBargainPercentage($daysAmount);
             $bargain = (100 - $bargainPercentage) / 100;
@@ -618,28 +634,28 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         if ($action === "get_cost_user_edit") {
-            $userService = $this->userServiceService->findOne($body['user_service_id']);
+            $userService = $this->userServiceService->findOne($body["user_service_id"]);
 
             if (!($userService instanceof LicenseUserService)) {
                 throw new UnexpectedValueException();
             }
 
             $costData = $this->getCostUserEdit($body, $userService);
-            $costData['surcharge'] = $this->priceTextService->getPlainPrice(
-                $costData['surcharge'] * $costData['bargain']
+            $costData["surcharge"] = $this->priceTextService->getPlainPrice(
+                $costData["surcharge"] * $costData["bargain"]
             );
-            $costData['cost_monthly'] = $this->priceTextService->getPriceText(
-                $costData['cost_monthly'] * $costData['bargain']
+            $costData["cost_monthly"] = $this->priceTextService->getPriceText(
+                $costData["cost_monthly"] * $costData["bargain"]
             );
-            $costData['cost_daily'] = $this->priceTextService->getPriceText(
-                $costData['cost_daily'] * $costData['bargain']
+            $costData["cost_daily"] = $this->priceTextService->getPriceText(
+                $costData["cost_daily"] * $costData["bargain"]
             );
 
             return json_encode($costData);
         }
 
         if ($action === "regenerate_token") {
-            $identifier = array_get($body, 'identifier');
+            $identifier = array_get($body, "identifier");
 
             $statement = $this->db->statement(
                 "SELECT `external_license_id` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
@@ -647,11 +663,11 @@ class LicenseServiceModule extends ServiceModule implements
             $statement->execute([$identifier]);
 
             if (!$statement->rowCount()) {
-                return 'Invalid identifier';
+                return "Invalid identifier";
             }
 
             $row = $statement->fetch();
-            $externalLicenseId = $row['external_license_id'];
+            $externalLicenseId = $row["external_license_id"];
 
             try {
                 $response = $this->licenseServerService->regenerateToken($externalLicenseId);
@@ -660,11 +676,11 @@ class LicenseServiceModule extends ServiceModule implements
             }
 
             return json_encode([
-                'token' => $response['token'],
+                "token" => $response["token"],
             ]);
         }
 
-        return 'no_action';
+        return "no_action";
     }
 
     /**

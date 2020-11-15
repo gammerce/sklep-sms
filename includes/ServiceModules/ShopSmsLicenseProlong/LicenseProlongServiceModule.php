@@ -25,6 +25,9 @@ use App\ServiceModules\ShopSmsLicense\LicenseUserServiceRepository;
 use App\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
 use App\Services\LicenseServerService;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
+use App\Support\Database;
+use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -67,20 +70,33 @@ class LicenseProlongServiceModule extends ServiceModule implements
     /** @var PriceTextService */
     private $priceTextService;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var Database */
+    private $db;
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function __construct(
+        AdminPaymentService $adminPaymentService,
+        Auth $auth,
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        DatabaseLogger $logger,
+        LicenseServerService $licenseServerService,
+        LicenseUserServiceRepository $licenseUserServiceRepository,
+        PriceTextService $priceTextService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Template $template,
+        TranslationManager $translationManager,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->adminPaymentService = $adminPaymentService;
+        $this->auth = $auth;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->licenseServerService = $licenseServerService;
+        $this->licenseUserServiceRepository = $licenseUserServiceRepository;
+        $this->logger = $logger;
+        $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
-        $this->auth = $this->app->make(Auth::class);
-        $this->licenseServerService = $this->app->make(LicenseServerService::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->adminPaymentService = $this->app->make(AdminPaymentService::class);
-        $this->logger = $this->app->make(DatabaseLogger::class);
-        $this->licenseUserServiceRepository = $this->app->make(LicenseUserServiceRepository::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
     }
 
     /**
@@ -94,11 +110,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
     public function purchaseFormGet(array $query)
     {
-        /** @var Request $request */
-        $request = $this->app->make(Request::class);
-
         return $this->template->render("shop/services/shopsms_license_prolong/purchase_form", [
-            "identifier" => $request->query->get("identifier", ""),
+            "identifier" => array_get($query, "identifier", ""),
             "serviceId" => $this->service->getId(),
             "serviceTag" => $this->service->getTag(),
             "user" => $this->auth->user(),

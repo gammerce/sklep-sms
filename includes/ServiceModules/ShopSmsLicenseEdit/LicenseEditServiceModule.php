@@ -15,7 +15,10 @@ use App\ServiceModules\ServiceModule;
 use App\ServiceModules\ShopSmsLicense\EngineService;
 use App\Services\LicenseServerService;
 use App\Services\PriceTextService;
+use App\Services\ServiceDescriptionService;
 use App\Services\UserServiceService;
+use App\Support\Database;
+use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use UnexpectedValueException;
@@ -50,19 +53,31 @@ class LicenseEditServiceModule extends ServiceModule implements
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
-    public function __construct(Service $service = null)
-    {
-        parent::__construct($service);
+    /** @var Database */
+    private $db;
 
-        /** @var TranslationManager $translationManager */
-        $translationManager = $this->app->make(TranslationManager::class);
+    public function __construct(
+        BoughtServiceService $boughtServiceService,
+        Database $db,
+        EngineService $engineService,
+        LicenseServerService $licenseServerService,
+        PriceTextService $priceTextService,
+        ServiceDescriptionService $serviceDescriptionService,
+        Template $template,
+        TranslationManager $translationManager,
+        UserServiceRepository $userServiceRepository,
+        UserServiceService $userServiceService,
+        Service $service = null
+    ) {
+        parent::__construct($template, $serviceDescriptionService, $service);
+        $this->licenseServerService = $licenseServerService;
+        $this->boughtServiceService = $boughtServiceService;
+        $this->db = $db;
+        $this->userServiceService = $userServiceService;
+        $this->priceTextService = $priceTextService;
+        $this->engineService = $engineService;
+        $this->userServiceRepository = $userServiceRepository;
         $this->lang = $translationManager->user();
-        $this->licenseServerService = $this->app->make(LicenseServerService::class);
-        $this->boughtServiceService = $this->app->make(BoughtServiceService::class);
-        $this->userServiceService = $this->app->make(UserServiceService::class);
-        $this->priceTextService = $this->app->make(PriceTextService::class);
-        $this->engineService = $this->app->make(EngineService::class);
-        $this->userServiceRepository = $this->app->make(UserServiceRepository::class);
     }
 
     public function purchaseFormGet(array $query)
