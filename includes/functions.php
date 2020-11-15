@@ -38,30 +38,6 @@ function app($abstract = null, array $parameters = [])
 }
 
 /**
- * @param Request $request
- * @param int $rowLimit
- * @return int[]
- */
-function get_row_limit(Request $request, $rowLimit = 0)
-{
-    /** @var Settings $settings */
-    $settings = app()->make(Settings::class);
-    $rowLimit = $rowLimit ?: $settings["row_limit"];
-    $page = get_current_page($request);
-    return [($page - 1) * $rowLimit, $rowLimit];
-}
-
-/**
- * @param Request $request
- * @return int
- */
-function get_current_page(Request $request)
-{
-    $pageNumber = (int) $request->get("page", 1);
-    return max($pageNumber, 1);
-}
-
-/**
  * @param Permission $permission
  * @param User $user
  * @return bool

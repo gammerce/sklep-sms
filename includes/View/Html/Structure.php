@@ -2,8 +2,7 @@
 namespace App\View\Html;
 
 use App\Translation\TranslationManager;
-use App\View\Pagination\PaginationFactory;
-use Symfony\Component\HttpFoundation\Request;
+use App\View\Pagination\Pagination;
 
 class Structure extends DOMElement
 {
@@ -116,16 +115,12 @@ class Structure extends DOMElement
 
     /**
      * @param string $path
-     * @param Request $request
+     * @param Pagination $pagination
      * @param int $count
      * @return $this
      */
-    public function enablePagination($path, Request $request, $count)
+    public function enablePagination($path, Pagination $pagination, $count)
     {
-        /** @var PaginationFactory $paginationFactory */
-        $paginationFactory = app()->make(PaginationFactory::class);
-
-        $pagination = $paginationFactory->create($request);
         $paginationView = $pagination->createView($count, $path);
 
         if ($paginationView) {

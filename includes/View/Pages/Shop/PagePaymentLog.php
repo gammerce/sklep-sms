@@ -76,6 +76,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
+        $pagination = $this->paginationFactory->create($request);
 
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM ({$this->transactionRepository->getQuery()}) as t " .
@@ -83,7 +84,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge([$user->getId()], get_row_limit($request, 10)));
+        $statement->execute(array_merge([$user->getId()], $pagination->getRowLimit(10)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";
@@ -114,7 +115,6 @@ class PagePaymentLog extends Page implements IBeLoggedMust
             );
         }
 
-        $pagination = $this->paginationFactory->create($request);
         $paginationContent = $pagination->createView($rowsCount, $request->getPathInfo(), 10);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 

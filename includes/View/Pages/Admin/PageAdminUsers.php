@@ -21,6 +21,7 @@ use App\View\Html\Link;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
@@ -42,6 +43,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     /** @var GroupManager */
     private $groupManager;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
@@ -49,7 +53,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         PriceTextService $priceTextService,
         UserManager $userManager,
         Database $db,
-        GroupManager $groupManager
+        GroupManager $groupManager,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
@@ -58,6 +63,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $this->userManager = $userManager;
         $this->db = $db;
         $this->groupManager = $groupManager;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -72,6 +78,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $recordId = as_int($request->query->get("record"));
         $search = $request->query->get("search");
 
@@ -102,7 +110,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_users` {$where} LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), get_row_limit($request)));
+        $statement->execute(array_merge($queryParticle->params(), $pagination->getRowLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -156,7 +164,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("groups")))
             ->addHeadCell(new HeadCell($this->lang->t("wallet")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request, $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         return (new Wrapper())
             ->setTitle($this->getTitle($request))

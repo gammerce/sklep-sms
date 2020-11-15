@@ -67,6 +67,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
+        $pagination = $this->paginationFactory->create($request);
 
         $moduleIds = collect($this->serviceModuleManager->all())
             ->filter(function (ServiceModule $serviceModule) {
@@ -101,7 +102,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
                     "LIMIT ?, ?"
             );
             $statement->execute(
-                array_merge([$user->getId()], $moduleIds->all(), get_row_limit($request, 4))
+                array_merge([$user->getId()], $moduleIds->all(), $pagination->getRowLimit(4))
             );
 
             $userServiceIds = collect($statement)
@@ -150,7 +151,6 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             $userOwnServices = $this->lang->t("no_data");
         }
 
-        $pagination = $this->paginationFactory->create($request);
         $paginationContent = $pagination->createView($rowsCount, $request->getPathInfo(), 4);
         $paginationClass = $paginationContent ? "" : "is-hidden";
 

@@ -30,4 +30,14 @@ class PaymentOption
     {
         return $this->paymentPlatformId;
     }
+
+    /**
+     * @param PaymentOption $paymentOption
+     * @return bool
+     */
+    public function equal(PaymentOption $paymentOption)
+    {
+        return $this->getPaymentPlatformId() === $paymentOption->getPaymentPlatformId() &&
+            $this->getPaymentMethod()->equals($paymentOption->getPaymentMethod());
+    }
 }

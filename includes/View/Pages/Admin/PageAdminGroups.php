@@ -16,6 +16,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
@@ -28,15 +29,20 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         GroupRepository $groupRepository,
-        Database $db
+        Database $db,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
         $this->groupRepository = $groupRepository;
         $this->db = $db;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -51,10 +57,12 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($request));
+        $statement->execute($pagination->getRowLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -71,7 +79,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
             ->addHeadCell(new HeadCell($this->lang->t("name")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request, $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 

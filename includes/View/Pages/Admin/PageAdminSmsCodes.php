@@ -21,6 +21,7 @@ use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
+use App\View\Pagination\PaginationFactory;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
@@ -39,13 +40,17 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
     /** @var Database */
     private $db;
 
+    /** @var PaginationFactory */
+    private $paginationFactory;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         SmsPriceRepository $smsPriceRepository,
         SmsCodeRepository $smsCodeRepository,
         PriceTextService $priceTextService,
-        Database $db
+        Database $db,
+        PaginationFactory $paginationFactory
     ) {
         parent::__construct($template, $translationManager);
 
@@ -53,6 +58,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $this->priceTextService = $priceTextService;
         $this->smsCodeRepository = $smsCodeRepository;
         $this->db = $db;
+        $this->paginationFactory = $paginationFactory;
     }
 
     public function getPrivilege()
@@ -67,13 +73,15 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getContent(Request $request)
     {
+        $pagination = $this->paginationFactory->create($request);
+
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * " .
                 "FROM `ss_sms_codes` " .
                 "WHERE `free` = '1' " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(get_row_limit($request));
+        $statement->execute($pagination->getRowLimit());
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -100,7 +108,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
             ->addHeadCell(new HeadCell($this->lang->t("sms_price")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addBodyRows($bodyRows)
-            ->enablePagination($this->getPagePath(), $request, $rowsCount);
+            ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 

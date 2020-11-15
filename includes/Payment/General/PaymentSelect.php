@@ -45,7 +45,7 @@ class PaymentSelect
         return collect($output)
             ->filter(function (PaymentOption $paymentOption) {
                 return $this->allowedPaymentOption === null ||
-                    payment_option_equals($paymentOption, $this->allowedPaymentOption);
+                    $paymentOption->equal($this->allowedPaymentOption);
             })
             ->filter(function (PaymentOption $paymentOption) {
                 foreach ($this->disallowedPaymentMethods as $disallowedPaymentMethod) {
@@ -112,7 +112,7 @@ class PaymentSelect
     public function contains(PaymentOption $paymentOption)
     {
         foreach ($this->all() as $item) {
-            if (payment_option_equals($paymentOption, $item)) {
+            if ($paymentOption->equal($item)) {
                 return true;
             }
         }
