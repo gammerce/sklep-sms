@@ -54,6 +54,7 @@ class PagePayment extends Page
         $orderDetails = $serviceModule->orderDetails($purchase);
 
         return $this->template->render("shop/pages/payment", [
+            "description" => "",
             "orderDetails" => $orderDetails,
         ]);
     }

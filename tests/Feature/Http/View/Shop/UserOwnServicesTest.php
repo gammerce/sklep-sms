@@ -17,7 +17,7 @@ class UserOwnServicesTest extends HttpTestCase
         $response = $this->get("/page/user_own_services");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Moje obecne usługi", $response->getContent());
     }
 

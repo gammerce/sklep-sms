@@ -78,14 +78,16 @@ trait MakePurchaseConcern
                 "password" => "anc123",
                 "sms_code" => "mycode",
                 "email" => "example@abc.pl",
+                "user" => new User(),
             ],
             $attributes
         );
 
         /** @var ExtraFlagsServiceModule $serviceModule */
         $serviceModule = $serviceModuleManager->get($serviceId);
+        assert($serviceModule);
 
-        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
+        $purchase = (new Purchase($attributes["user"], "192.0.2.1", "example"))
             ->setServiceId($serviceId)
             ->setEmail($attributes["email"])
             ->setOrder([
@@ -172,14 +174,16 @@ trait MakePurchaseConcern
                 "username" => "example",
                 "sms_code" => "mycode",
                 "email" => "example@abc.pl",
+                "user" => new User(),
             ],
             $attributes
         );
 
         /** @var MybbExtraGroupsServiceModule $serviceModule */
         $serviceModule = $serviceModuleManager->get($service->getId());
+        assert($serviceModule);
 
-        $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
+        $purchase = (new Purchase($attributes["user"], "192.0.2.1", "example"))
             ->setServiceId($service->getId())
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
