@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class RegisterTest extends HttpTestCase
@@ -12,7 +13,7 @@ class RegisterTest extends HttpTestCase
         $response = $this->get("/page/register");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Zarejestruj się", $response->getContent());
     }
 }

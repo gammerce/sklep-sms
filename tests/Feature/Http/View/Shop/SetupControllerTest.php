@@ -6,6 +6,7 @@ use App\Support\FileSystemContract;
 use App\Support\Path;
 use Mockery;
 use Mockery\MockInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class SetupControllerTest extends HttpTestCase
@@ -34,7 +35,7 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame("Sklep nie wymaga aktualizacji.", $response->getContent());
     }
 
@@ -52,7 +53,7 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("<title>Brak ENV - Sklep SMS</title>", $response->getContent());
     }
 
@@ -66,7 +67,7 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains(
             "<h1 class=\"title is-4\">Instalator Sklepu SMS</h1>",
             $response->getContent()
@@ -83,7 +84,7 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains(
             "<h1 class=\"title is-4\">Aktualizator Sklepu</h1>",
             $response->getContent()

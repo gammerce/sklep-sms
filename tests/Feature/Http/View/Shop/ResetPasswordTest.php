@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http\View\Shop;
 
 use App\Repositories\UserRepository;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ResetPasswordTest extends HttpTestCase
@@ -19,7 +20,7 @@ class ResetPasswordTest extends HttpTestCase
         $response = $this->get("/page/reset_password", ["code" => $resetKey]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Zresetuj hasło", $response->getContent());
     }
 
@@ -30,7 +31,7 @@ class ResetPasswordTest extends HttpTestCase
         $response = $this->get("/page/reset_password", ["code" => "abc123"]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Kod resetowania hasła jest błędny", $response->getContent());
     }
 }

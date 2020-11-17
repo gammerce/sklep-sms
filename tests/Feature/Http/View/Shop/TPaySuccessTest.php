@@ -4,18 +4,16 @@ namespace Tests\Feature\Http\View\Shop;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class ContactTest extends HttpTestCase
+class TPaySuccessTest extends HttpTestCase
 {
     /** @test */
-    public function it_loads()
+    public function is_loads()
     {
-        // given
-
         // when
-        $response = $this->get("/page/contact");
+        $response = $this->get("/page/tpay_success");
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Kontakt", $response->getContent());
+        $this->assertContains("Płatność zaakceptowana", $response->getContent());
     }
 }

@@ -13,7 +13,7 @@ class HomepageTest extends HttpTestCase
         $response = $this->get("/");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Strona główna", $response->getContent());
     }
 

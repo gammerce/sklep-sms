@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class RegulationsTest extends HttpTestCase
@@ -8,13 +9,11 @@ class RegulationsTest extends HttpTestCase
     /** @test */
     public function it_loads()
     {
-        // given
-
         // when
         $response = $this->get("/page/regulations");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Regulamin", $response->getContent());
     }
 }
