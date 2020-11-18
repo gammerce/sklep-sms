@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Admin;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class GroupsTest extends HttpTestCase
@@ -15,7 +16,7 @@ class GroupsTest extends HttpTestCase
         $response = $this->get("/admin/groups");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertContains("Panel Admina", $response->getContent());
         $this->assertContains('<div class="title is-4">Grupy', $response->getContent());
     }
