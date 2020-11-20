@@ -11,6 +11,9 @@ class UpdateServersTest extends HttpTestCase
     public function it_loads()
     {
         // given
+        $this->factory->server();
+        $this->factory->server();
+
         $this->requesterMock
             ->shouldReceive("get")
             ->withArgs([
