@@ -25,6 +25,7 @@ env:
     - DB_PASSWORD=
 
 before_install:
+  - phpenv config-rm xdebug.ini
   - nvm install stable
   - mysql -e 'CREATE DATABASE sklep_sms_test;'
 
