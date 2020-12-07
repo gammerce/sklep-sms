@@ -77,7 +77,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "Authorization" => $this->steamId,
+                "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
@@ -129,7 +129,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "Authorization" => $this->steamId,
+                "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
@@ -169,7 +169,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "Authorization" => $this->steamId,
+                "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );
@@ -216,7 +216,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "Authorization" => $this->steamId,
+                "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Server::TYPE_AMXMODX,
             ]
         );

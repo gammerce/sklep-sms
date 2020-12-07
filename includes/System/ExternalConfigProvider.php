@@ -72,7 +72,7 @@ class ExternalConfigProvider
             "https://license.sklep-sms.pl/config",
             [],
             [
-                "Authorization" => $this->settings->getLicenseToken(),
+                "Authorization" => "Bearer {$this->settings->getLicenseToken()}",
             ]
         );
         return $response ? $response->json() : null;

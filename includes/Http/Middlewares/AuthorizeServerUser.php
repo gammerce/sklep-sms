@@ -28,7 +28,7 @@ class AuthorizeServerUser implements MiddlewareContract
 
     private function authorizeUser(Request $request)
     {
-        $steamId = $request->headers->get("Authorization");
+        $steamId = get_authorization_value($request);
         $ip = $request->get("ip");
 
         if (!$steamId) {

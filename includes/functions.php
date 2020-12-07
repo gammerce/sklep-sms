@@ -969,3 +969,17 @@ function explode_int_list($list, $delimiter = ",")
         })
         ->all();
 }
+
+function get_authorization_value(Request $request)
+{
+    $authorization = $request->headers->get("Authorization");
+    if (!$authorization) {
+        return null;
+    }
+
+    if (0 === stripos($authorization, "bearer ")) {
+        return substr($authorization, 7);
+    }
+
+    return $authorization;
+}
