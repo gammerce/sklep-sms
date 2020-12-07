@@ -5,5 +5,6 @@ RUN apt-get update && \
     docker-php-ext-install mcrypt pdo_mysql mysqli calendar
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer self-update --1
 
 WORKDIR /var/www
