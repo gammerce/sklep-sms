@@ -977,7 +977,7 @@ function get_authorization_value(Request $request)
         return null;
     }
 
-    if (0 === stripos($authorization, 'bearer ')) {
+    if (0 === stripos($authorization, "bearer ")) {
         return substr($authorization, 7);
     }
 
