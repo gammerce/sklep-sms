@@ -69,7 +69,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
             "/api/server/purchase",
             [
                 "service_id" => $this->serviceId,
-                "server_id" => $this->server->getId(),
                 "type" => $type,
                 "auth_data" => $authData,
                 "password" => $password,
@@ -117,7 +116,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
             "/api/server/purchase",
             [
                 "service_id" => $this->serviceId,
-                "server_id" => $this->server->getId(),
                 "type" => $type,
                 "auth_data" => $authData,
                 "password" => $password,
@@ -161,7 +159,6 @@ class PurchaseResourceSmsTest extends HttpTestCase
             "/api/server/purchase",
             [
                 "service_id" => $this->serviceId,
-                "server_id" => $this->server->getId(),
                 "type" => $type,
                 "auth_data" => $authData,
                 "password" => "1",
