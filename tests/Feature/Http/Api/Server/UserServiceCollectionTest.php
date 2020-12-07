@@ -48,7 +48,6 @@ class UserServiceCollectionTest extends HttpTestCase
             "/api/server/user_services",
             [
                 "token" => $this->server->getToken(),
-                "server_id" => $this->server->getId(),
                 "nick" => "example",
                 "ip" => "192.0.2.1",
                 "steam_id" => "STEAM_1:0:22309350",
@@ -96,7 +95,6 @@ class UserServiceCollectionTest extends HttpTestCase
             "/api/server/user_services",
             [
                 "token" => $this->server->getToken(),
-                "server_id" => $this->server->getId(),
                 "nick" => "example",
                 "ip" => "192.0.2.1",
                 "steam_id" => "STEAM_1:0:22309350",
@@ -130,7 +128,6 @@ class UserServiceCollectionTest extends HttpTestCase
             "/api/server/user_services",
             [
                 "token" => $this->server->getToken(),
-                "server_id" => $this->server->getId(),
                 "nick" => $userName,
             ],
             [

@@ -65,7 +65,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "server_id" => $this->server->getId(),
                 "service_id" => $this->serviceId,
                 "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
@@ -118,7 +117,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "server_id" => $this->server->getId(),
                 "service_id" => $this->serviceId,
                 "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
@@ -159,7 +157,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "server_id" => $this->server->getId(),
                 "service_id" => $this->serviceId,
                 "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
@@ -207,7 +204,6 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "server_id" => $this->server->getId(),
                 "service_id" => $this->serviceId,
                 "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,

@@ -62,7 +62,6 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
             "/api/server/purchase",
             [
                 "service_id" => $service->getId(),
-                "server_id" => $server->getId(),
                 "type" => "0",
                 "auth_data" => $authData,
                 "password" => "",
