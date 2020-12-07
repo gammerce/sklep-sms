@@ -20,7 +20,7 @@ class CssettiTest extends TestCase
     /** @var Cssetti */
     private $cssetti;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

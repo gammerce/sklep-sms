@@ -18,7 +18,7 @@ class PageUserServiceActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj usługę użytkownikowi", $json["template"]);
+        $this->assertStringContainsString("Dodaj usługę użytkownikowi", $json["template"]);
     }
 
     /** @test */

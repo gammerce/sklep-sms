@@ -16,6 +16,6 @@ class ServiceTakeOverFormControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("services/extra_flags/service_take_over", $response->getContent());
+        $this->assertStringContainsString("services/extra_flags/service_take_over", $response->getContent());
     }
 }

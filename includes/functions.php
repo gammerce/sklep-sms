@@ -363,14 +363,16 @@ function starts_with($haystack, $needle)
     return substr($haystack, 0, strlen($needle)) === (string) $needle;
 }
 
-/**
- * @param string $string
- * @param string $needle
- * @return bool
- */
-function str_contains($string, $needle)
-{
-    return strpos($string, $needle) !== false;
+if (!function_exists("str_contains")) {
+    /**
+     * @param string $string
+     * @param string $needle
+     * @return bool
+     */
+    function str_contains($string, $needle)
+    {
+        return strpos($string, $needle) !== false;
+    }
 }
 
 /**

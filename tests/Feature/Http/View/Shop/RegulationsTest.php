@@ -14,6 +14,6 @@ class RegulationsTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Regulamin", $response->getContent());
+        $this->assertStringContainsString("Regulamin", $response->getContent());
     }
 }

@@ -18,7 +18,7 @@ class UsersTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains('<div class="title is-4">Użytkownicy', $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString('<div class="title is-4">Użytkownicy', $response->getContent());
     }
 }

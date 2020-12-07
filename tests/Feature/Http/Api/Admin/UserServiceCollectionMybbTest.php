@@ -13,7 +13,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
     /** @var UserServiceService */
     private $userServiceService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

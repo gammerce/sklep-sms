@@ -29,7 +29,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
     private $ip = "192.0.2.1";
     private $steamId = "STEAM_1:0:22309350";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -84,7 +84,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
         );
@@ -136,7 +136,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "#<return_value>no_money</return_value><text>Bida! Nie masz wystarczającej ilości kasy w portfelu\. Doładuj portfel ;-\)</text><positive>0</positive>#",
             $response->getContent()
         );
@@ -176,7 +176,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
             $response->getContent()
         );

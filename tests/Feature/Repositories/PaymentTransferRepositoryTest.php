@@ -9,7 +9,7 @@ class PaymentTransferRepositoryTest extends TestCase
     /** @var PaymentTransferRepository */
     private $paymentTransferRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->paymentTransferRepository = $this->app->make(PaymentTransferRepository::class);

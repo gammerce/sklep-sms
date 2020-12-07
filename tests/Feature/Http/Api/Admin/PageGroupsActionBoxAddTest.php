@@ -18,7 +18,7 @@ class PageGroupsActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj grupę", $json["template"]);
+        $this->assertStringContainsString("Dodaj grupę", $json["template"]);
     }
 
     /** @test */

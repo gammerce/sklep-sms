@@ -18,7 +18,7 @@ class PageSmsCodesActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj kod", $json["template"]);
+        $this->assertStringContainsString("Dodaj kod", $json["template"]);
     }
 
     /** @test */

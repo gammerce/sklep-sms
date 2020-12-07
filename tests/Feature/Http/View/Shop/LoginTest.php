@@ -14,7 +14,7 @@ class LoginTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Zaloguj się", $response->getContent());
+        $this->assertStringContainsString("Zaloguj się", $response->getContent());
     }
 
     /** @test */

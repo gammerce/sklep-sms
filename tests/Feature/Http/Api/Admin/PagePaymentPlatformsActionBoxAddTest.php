@@ -18,7 +18,7 @@ class PagePaymentPlatformsActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj platformę płatności", $json["template"]);
+        $this->assertStringContainsString("Dodaj platformę płatności", $json["template"]);
     }
 
     /** @test */

@@ -23,6 +23,6 @@ class UserServiceBrickControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("<strong>Nick</strong>: myauth<br />", $response->getContent());
+        $this->assertStringContainsString("<strong>Nick</strong>: myauth<br />", $response->getContent());
     }
 }

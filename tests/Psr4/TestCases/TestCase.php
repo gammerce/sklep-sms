@@ -7,6 +7,7 @@ use App\System\Application;
 use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
+use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use Mockery;
 use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -25,6 +26,7 @@ class TestCase extends BaseTestCase
     use MailerConcern;
     use MockeryConcern;
     use RequesterConcern;
+    use ArraySubsetAsserts;
 
     /** @var Application */
     protected $app;
@@ -41,7 +43,7 @@ class TestCase extends BaseTestCase
     /** @var array */
     private $afterApplicationCreatedCallbacks = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!$this->app) {
             $this->app = $this->createApplication();
@@ -72,7 +74,7 @@ class TestCase extends BaseTestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->app) {
             /** @var Database $db */

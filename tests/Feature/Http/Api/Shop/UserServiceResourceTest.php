@@ -10,7 +10,7 @@ class UserServiceResourceTest extends HttpTestCase
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->extraFlagUserServiceRepository = $this->app->make(

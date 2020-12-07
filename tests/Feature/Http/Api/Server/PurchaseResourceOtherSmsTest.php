@@ -19,7 +19,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockPaymentModuleFactory();
@@ -81,7 +81,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
         );

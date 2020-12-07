@@ -19,7 +19,7 @@ class PurchaseSerializerTest extends TestCase
     /** @var PurchaseSerializer */
     private $purchaseSerializer;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);

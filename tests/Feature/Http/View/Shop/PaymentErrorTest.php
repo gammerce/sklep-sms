@@ -14,6 +14,6 @@ class PaymentErrorTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Płatność odrzucona", $response->getContent());
+        $this->assertStringContainsString("Płatność odrzucona", $response->getContent());
     }
 }

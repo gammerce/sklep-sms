@@ -35,8 +35,8 @@ class UpdateWebTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains(
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
             "Skrypt sklepu jest zaktualizowany do najnowszej wersji",
             $response->getContent()
         );
@@ -70,8 +70,8 @@ class UpdateWebTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains(
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
             "<div class=\"title is-4\">Aktualizacja strony WWW",
             $response->getContent()
         );

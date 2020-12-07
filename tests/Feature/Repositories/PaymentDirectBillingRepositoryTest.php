@@ -9,7 +9,7 @@ class PaymentDirectBillingRepositoryTest extends TestCase
     /** @var PaymentDirectBillingRepository */
     private $paymentDirectBillingRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->paymentDirectBillingRepository = $this->app->make(

@@ -13,7 +13,7 @@ class HostplayTest extends TestCase
     /** @var Hostplay */
     private $hostplay;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

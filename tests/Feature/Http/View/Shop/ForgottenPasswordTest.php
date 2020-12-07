@@ -14,7 +14,7 @@ class ForgottenPasswordTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Odzyskanie hasła", $response->getContent());
+        $this->assertStringContainsString("Odzyskanie hasła", $response->getContent());
     }
 
     /** @test */
