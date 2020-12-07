@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="tests/bootstrap.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Feature Tests">
-            <directory suffix="Test.php">./tests/Feature</directory>
-        </testsuite>
-
-        <testsuite name="Unit Tests">
-            <directory suffix="Test.php">./tests/Unit</directory>
-        </testsuite>
-    </testsuites>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">./includes/</directory>
-        </whitelist>
-    </filter>
-    <php>
-        <env name="APP_ENV" value="testing"/>
-        <env name="APP_DEBUG" value="true"/>
-        <env name="DB_DATABASE" value="sklep_sms_test"/>
-        <env name="SENTRY_DSN" value="nope"/>
-    </php>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" backupStaticAttributes="false" bootstrap="tests/bootstrap.php" colors="true" convertErrorsToExceptions="true" convertNoticesToExceptions="true" convertWarningsToExceptions="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">./includes/</directory>
+    </include>
+  </coverage>
+  <testsuites>
+    <testsuite name="Feature Tests">
+      <directory suffix="Test.php">./tests/Feature</directory>
+    </testsuite>
+    <testsuite name="Unit Tests">
+      <directory suffix="Test.php">./tests/Unit</directory>
+    </testsuite>
+  </testsuites>
+  <php>
+    <env name="APP_ENV" value="testing"/>
+    <env name="APP_DEBUG" value="true"/>
+    <env name="DB_DATABASE" value="sklep_sms_test"/>
+    <env name="SENTRY_DSN" value="nope"/>
+  </php>
 </phpunit>
