@@ -167,8 +167,9 @@ class TestCase extends BaseTestCase
         }
     }
 
-    public static function assertStringContainsString($needle, $haystack, $message = ""): void {
-        if (method_exists(get_parent_class(static::class), "assertStringContainsString")) {
+    public static function assertStringContainsString($needle, $haystack, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertStringContainsString")) {
             parent::assertStringContainsString($needle, $haystack, $message);
         } else {
             // PHP 5.6 backward compatibility
@@ -176,8 +177,9 @@ class TestCase extends BaseTestCase
         }
     }
 
-    public static function assertMatchesRegularExpression($pattern, $string, $message = ""): void {
-        if (method_exists(get_parent_class(static::class), "assertMatchesRegularExpression")) {
+    public static function assertMatchesRegularExpression($pattern, $string, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertMatchesRegularExpression")) {
             parent::assertMatchesRegularExpression($pattern, $string, $message);
         } else {
             // PHP 5.6 backward compatibility
