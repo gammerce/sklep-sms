@@ -8,6 +8,7 @@ use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
 use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use Mockery;
 use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -152,6 +153,36 @@ class TestCase extends BaseTestCase
     protected function assertSameEnum(Enum $expected, Enum $value)
     {
         $this->assertTrue($expected->equals($value), "$expected does not equal $value");
+    }
+
+    protected function assertArraySubset($subset, $array, $checkForObjectIdentity = false, $message = '')
+    {
+        if (class_exists(Assert::class)) {
+            Assert::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
+        }
+    }
+
+    public static function assertStringContainsString(string $needle, string $haystack, string $message = ''): void
+    {
+        if (method_exists(get_parent_class(static::class), "assertStringContainsString")) {
+            parent::assertStringContainsString($needle, $haystack, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertContains($needle, $haystack, $message);
+        }
+    }
+
+    public static function assertMatchesRegularExpression(string $pattern, string $string, string $message = ''): void
+    {
+        if (method_exists(get_parent_class(static::class), "assertMatchesRegularExpression")) {
+            parent::assertMatchesRegularExpression($pattern, $string, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertRegExp($pattern, $string, $message);
+        }
     }
 
     /**
