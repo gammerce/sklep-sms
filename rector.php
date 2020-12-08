@@ -30,6 +30,10 @@ return static function (ContainerConfigurator $containerConfigurator) {
         $sets[] = DowngradeSetList::PHP_71;
     }
 
+    if (empty($sets)) {
+        exit(0);
+    }
+
     $parameters->set(Option::SETS, $sets);
     $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
 };
