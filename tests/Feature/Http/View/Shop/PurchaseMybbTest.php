@@ -18,6 +18,9 @@ class PurchaseMybbTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertStringContainsString("{$service->getNameI18n()} - Zakup usługi", $response->getContent());
+        $this->assertStringContainsString(
+            "{$service->getNameI18n()} - Zakup usługi",
+            $response->getContent()
+        );
     }
 }

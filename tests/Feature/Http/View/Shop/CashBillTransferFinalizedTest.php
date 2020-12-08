@@ -20,7 +20,10 @@ class CashBillTransferFinalizedTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertStringContainsString("Twoja płatność zakończyła się pomyślnie", $response->getContent());
+        $this->assertStringContainsString(
+            "Twoja płatność zakończyła się pomyślnie",
+            $response->getContent()
+        );
     }
 
     /** @test */

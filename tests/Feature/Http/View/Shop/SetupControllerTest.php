@@ -54,7 +54,10 @@ class SetupControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertStringContainsString("<title>Brak ENV - Sklep SMS</title>", $response->getContent());
+        $this->assertStringContainsString(
+            "<title>Brak ENV - Sklep SMS</title>",
+            $response->getContent()
+        );
     }
 
     /** @test */

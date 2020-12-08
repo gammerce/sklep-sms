@@ -33,7 +33,10 @@ class ServiceActionControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString("<option value=\"\">Wybierz ilość</option>", $response->getContent());
+        $this->assertStringContainsString(
+            "<option value=\"\">Wybierz ilość</option>",
+            $response->getContent()
+        );
     }
 
     /** @test */

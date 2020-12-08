@@ -80,17 +80,20 @@ export const refreshBlocks = function (bricks: string, onSuccessFunction?: any):
  * @param {object} data
  */
 export const showActionBox = function (pageId: string, boxId: string, data?: Dict): void {
-    restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function (
-        content
-    ) {
-        // Nie udalo sie prawidlowo pozyskac danych
-        if (content.return_id !== "ok") {
-            alert(content.text);
-            location.reload();
-        }
+    restRequest(
+        "GET",
+        `/api/admin/pages/${pageId}/action_boxes/${boxId}`,
+        data,
+        function (content) {
+            // Nie udalo sie prawidlowo pozyskac danych
+            if (content.return_id !== "ok") {
+                alert(content.text);
+                location.reload();
+            }
 
-        action_box.show(content.template);
-    });
+            action_box.show(content.template);
+        }
+    );
 };
 
 export const clearAndHideActionBox = function (): void {

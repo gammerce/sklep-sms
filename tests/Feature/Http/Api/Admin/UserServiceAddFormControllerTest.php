@@ -34,6 +34,9 @@ class UserServiceAddFormControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertStringContainsString("data-module=\"mybb_extra_groups\"", $response->getContent());
+        $this->assertStringContainsString(
+            "data-module=\"mybb_extra_groups\"",
+            $response->getContent()
+        );
     }
 }

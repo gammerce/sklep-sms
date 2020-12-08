@@ -137,6 +137,9 @@ class PayPalApprovedTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertStringContainsString("Operator zwrócił błąd transakcji.", $response->getContent());
+        $this->assertStringContainsString(
+            "Operator zwrócił błąd transakcji.",
+            $response->getContent()
+        );
     }
 }
