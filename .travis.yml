@@ -35,7 +35,7 @@ install:
   - composer install --no-interaction
   - composer dump
   - yarn install
-  - docker run --rm -v $(pwd):/project rector/rector:latest process --config rector.php
+  - docker run --rm -v $(pwd):/project rector/rector:latest process --config rector.php > /dev/null
   - php artisan test:setup
 
 script:

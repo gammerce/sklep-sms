@@ -9,7 +9,7 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $parameters = $containerConfigurator->parameters();
 
     // paths to refactor; solid alternative to CLI arguments
-    $parameters->set(Option::PATHS, [__DIR__ . '/includes', __DIR__ . '/tests']);
+    $parameters->set(Option::PATHS, [__DIR__ . "/includes", __DIR__ . "/tests"]);
 
     // Define what rule sets will be applied
     $parameters->set(Option::SETS, [
@@ -20,5 +20,5 @@ return static function (ContainerConfigurator $containerConfigurator) {
         DowngradeSetList::PHP_71,
     ]);
 
-    $parameters->set(Option::PHP_VERSION_FEATURES, '5.6');
+    $parameters->set(Option::PHP_VERSION_FEATURES, "5.6");
 };
