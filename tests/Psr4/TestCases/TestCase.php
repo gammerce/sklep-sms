@@ -7,7 +7,6 @@ use App\System\Application;
 use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
-use DMS\PHPUnitExtensions\ArraySubset\ArraySubsetAsserts;
 use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use Mockery;
 use MyCLabs\Enum\Enum;
@@ -27,7 +26,6 @@ class TestCase extends BaseTestCase
     use MailerConcern;
     use MockeryConcern;
     use RequesterConcern;
-    use ArraySubsetAsserts;
 
     /** @var Application */
     protected $app;
