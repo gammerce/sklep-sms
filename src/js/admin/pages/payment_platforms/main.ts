@@ -49,19 +49,14 @@ $(document).delegate("#form_payment_platform_add [name=module]", "change", funct
         return;
     }
 
-    restRequest(
-        "GET",
-        `/api/admin/payment_modules/${paymentModuleId}/add_form`,
-        {},
-        function (content) {
-            if (formPaymentPlatformAddForm) {
-                formPaymentPlatformAddForm.remove();
-            }
-
-            formPaymentPlatformAddForm = $(content);
-            formPaymentPlatformAddForm.insertAfter(".action_box .ftbody");
+    restRequest("GET", `/api/admin/payment_modules/${paymentModuleId}/add_form`, {}, (content) => {
+        if (formPaymentPlatformAddForm) {
+            formPaymentPlatformAddForm.remove();
         }
-    );
+
+        formPaymentPlatformAddForm = $(content);
+        formPaymentPlatformAddForm.insertAfter(".action_box .ftbody");
+    });
 });
 
 // EDIT

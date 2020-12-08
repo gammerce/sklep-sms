@@ -124,6 +124,4 @@ class PurchaseSerializerTest extends TestCase
 
         return $purchase;
     }
-
-    // TODO Check if user and promo code are refreshed
 }
