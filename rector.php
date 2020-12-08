@@ -9,7 +9,7 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $parameters = $containerConfigurator->parameters();
 
     // paths to refactor; solid alternative to CLI arguments
-    $parameters->set(Option::PATHS, [__DIR__ . "/includes", __DIR__ . "/tests"]);
+    $parameters->set(Option::PATHS, [__DIR__ . "/includes", __DIR__ . "/tests", __DIR__ . "/vendor"]);
 
     // Define what rule sets will be applied
     $parameters->set(Option::SETS, [
