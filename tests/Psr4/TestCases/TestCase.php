@@ -167,11 +167,7 @@ class TestCase extends BaseTestCase
         }
     }
 
-    public static function assertStringContainsString(
-        string $needle,
-        string $haystack,
-        string $message = ""
-    ): void {
+    public static function assertStringContainsString($needle, $haystack, $message = ""): void {
         if (method_exists(get_parent_class(static::class), "assertStringContainsString")) {
             parent::assertStringContainsString($needle, $haystack, $message);
         } else {
@@ -180,11 +176,7 @@ class TestCase extends BaseTestCase
         }
     }
 
-    public static function assertMatchesRegularExpression(
-        string $pattern,
-        string $string,
-        string $message = ""
-    ): void {
+    public static function assertMatchesRegularExpression($pattern, $string, $message = ""): void {
         if (method_exists(get_parent_class(static::class), "assertMatchesRegularExpression")) {
             parent::assertMatchesRegularExpression($pattern, $string, $message);
         } else {

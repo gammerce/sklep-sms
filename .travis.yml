@@ -43,7 +43,16 @@ install:
 script:
   - pre-commit run --all-files -c .pre-commit-config-ci.yaml
   - PHP_VERSION=$(php -v | grep ^PHP | cut -d' ' -f2)
-  - docker run --rm --env PHP_VERSION=$PHP_VERSION -v $(pwd):/project rector/rector:latest process --config rector.php --output-file=rector_output.txt
+  - |
+    docker run \
+    --rm \
+    --env PHP_VERSION=$PHP_VERSION \
+    -v $(pwd):/project \
+    rector/rector:latest \
+    process \
+    --config rector.php \
+    --output-file=rector_output.txt \
+    --output-format=json
   - php artisan test:setup
   - NODE_ENV=production yarn build
   - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
@@ -55,7 +64,16 @@ before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - PHP_VERSION=$(php -v | grep ^PHP | cut -d' ' -f2)
-  - docker run --rm --env PHP_VERSION=$PHP_VERSION -v $(pwd):/project rector/rector:latest process --config rector.php --output-file=rector_output.txt
+  - |
+    docker run \
+    --rm \
+    --env PHP_VERSION=$PHP_VERSION \
+    -v $(pwd):/project \
+    rector/rector:latest \
+    process \
+    --config rector.php \
+    --output-file=rector_output.txt \
+    --output-format=json
   - pre-commit run --all-files
   - |
     zip -r \
