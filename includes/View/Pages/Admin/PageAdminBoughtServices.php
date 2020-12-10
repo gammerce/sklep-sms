@@ -173,7 +173,11 @@ class PageAdminBoughtServices extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("amount")))
             ->addHeadCell(
                 new HeadCell(
-                    "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
+                    $this->lang->t("nick") .
+                        "/" .
+                        $this->lang->t("ip") .
+                        "/" .
+                        $this->lang->t("sid")
                 )
             )
             ->addHeadCell(new HeadCell($this->lang->t("promo_code")))

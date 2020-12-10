@@ -231,7 +231,7 @@ function seconds_to_time($seconds)
 
     return $dtF
         ->diff($dtT)
-        ->format("%a {$lang->t("days")} {$lang->t("and")} %h {$lang->t("hours")}");
+        ->format("%a " . $lang->t("days") . " " . $lang->t("and") . " %h " . $lang->t("hours"));
 }
 
 /**
