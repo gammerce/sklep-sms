@@ -187,6 +187,16 @@ class TestCase extends BaseTestCase
         }
     }
 
+    public static function assertIsString($actual, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertIsString")) {
+            parent::assertIsString($actual);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertInternalType("string", $actual);
+        }
+    }
+
     /**
      * @param Money|int|null $expected
      * @param Money|int|null $value
