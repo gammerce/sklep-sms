@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": ">=5.6",
+    "php": ">=8.0",
     "ext-calendar": "*",
     "ext-curl": "*",
     "ext-json": "*",
