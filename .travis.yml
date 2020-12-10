@@ -7,7 +7,7 @@ jobs:
     - php: "5.6"
       env: COMPOSER=composer-v5.json
     - php: "7.4"
-      env: COMPOSER=composer.json
+      env: COMPOSER=composer-v5.json
     - php: "8.0"
       env: COMPOSER=composer.json
 
@@ -103,4 +103,6 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    php: '5.6'
+    php:
+      - '5.6'
+      - '8.0'
