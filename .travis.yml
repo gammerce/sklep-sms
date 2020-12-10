@@ -65,7 +65,7 @@ before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - BUILD_NAME="build-${PHP_VERSION}.zip"
-  - pre-commit run --all-files
+  - pre-commit run --all-files || true
   - |
     zip -r \
     --exclude='data/cache/**' \
