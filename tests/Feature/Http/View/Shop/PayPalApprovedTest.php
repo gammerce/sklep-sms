@@ -20,7 +20,7 @@ class PayPalApprovedTest extends HttpTestCase
     /** @var PaymentPlatform */
     private $payPalPlatform;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->purchaseDataService = $this->app->make(PurchaseDataService::class);
@@ -97,7 +97,7 @@ class PayPalApprovedTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertStringContainsString(
             "Dziękujemy! Twoja płatność zakończyła się pomyślnie.",
             $response->getContent()
         );
@@ -137,6 +137,9 @@ class PayPalApprovedTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertContains("Operator zwrócił błąd transakcji.", $response->getContent());
+        $this->assertStringContainsString(
+            "Operator zwrócił błąd transakcji.",
+            $response->getContent()
+        );
     }
 }

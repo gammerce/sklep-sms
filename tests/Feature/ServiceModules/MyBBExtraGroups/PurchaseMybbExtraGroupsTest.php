@@ -26,7 +26,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
     /** @var BoughtServiceRepository */
     private $boughtServiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockMybbRepository();
@@ -89,7 +89,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
         $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals(10, $boughtService->getAmount());
         $this->assertSame("seek (1)", $boughtService->getAuthData());
-        $this->assertInternalType("string", $boughtService->getPaymentId());
+        $this->assertIsString($boughtService->getPaymentId());
         $this->assertSame("", $boughtService->getEmail());
         $this->assertNull($boughtService->getPromoCode());
         $this->assertSame(["uid" => 1, "groups" => "1,5"], $boughtService->getExtraData());

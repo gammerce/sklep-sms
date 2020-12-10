@@ -12,7 +12,7 @@ class ServerCollectionTest extends HttpTestCase
     /** @var ServerRepository */
     private $serverRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->serverRepository = $this->app->make(ServerRepository::class);

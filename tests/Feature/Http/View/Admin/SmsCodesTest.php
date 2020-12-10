@@ -25,8 +25,11 @@ class SmsCodesTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains('<div class="title is-4">Darmowe kody SMS', $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
+            '<div class="title is-4">Darmowe kody SMS',
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -47,7 +50,10 @@ class SmsCodesTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains('<div class="title is-4">Darmowe kody SMS', $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
+            '<div class="title is-4">Darmowe kody SMS',
+            $response->getContent()
+        );
     }
 }

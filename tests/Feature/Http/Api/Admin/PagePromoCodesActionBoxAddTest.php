@@ -20,7 +20,7 @@ class PagePromoCodesActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj kod promocyjny", $json["template"]);
+        $this->assertStringContainsString("Dodaj kod promocyjny", $json["template"]);
     }
 
     /** @test */

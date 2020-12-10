@@ -17,7 +17,7 @@ class ChangePasswordTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Zmiana hasła", $response->getContent());
+        $this->assertStringContainsString("Zmiana hasła", $response->getContent());
     }
 
     /** @test */

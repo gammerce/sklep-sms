@@ -9,7 +9,7 @@ class PagePaymentPlatformsActionBoxEditTest extends HttpTestCase
     /** @var PaymentPlatform */
     private $paymentPlatform;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->paymentPlatform = $this->factory->paymentPlatform();
@@ -30,7 +30,7 @@ class PagePaymentPlatformsActionBoxEditTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Edytuj platformę płatności", $json["template"]);
+        $this->assertStringContainsString("Edytuj platformę płatności", $json["template"]);
     }
 
     /** @test */

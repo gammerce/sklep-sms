@@ -9,7 +9,7 @@ class IncomeTest extends HttpTestCase
 {
     use MakePurchaseConcern;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->createRandomExtraFlagsPurchase();
@@ -26,8 +26,8 @@ class IncomeTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains("PA: Przychód - Sklep SMS", $response->getContent());
-        $this->assertContains('<tbody class="summary">', $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString("PA: Przychód - Sklep SMS", $response->getContent());
+        $this->assertStringContainsString('<tbody class="summary">', $response->getContent());
     }
 }

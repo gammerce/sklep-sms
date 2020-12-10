@@ -14,6 +14,6 @@ class ServicesTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Usługi", $response->getContent());
+        $this->assertStringContainsString("Usługi", $response->getContent());
     }
 }

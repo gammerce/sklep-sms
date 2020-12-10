@@ -13,7 +13,7 @@ class HomepageTest extends HttpTestCase
 {
     use MakePurchaseConcern;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->createRandomExtraFlagsPurchase();
@@ -81,8 +81,11 @@ class HomepageTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains("<div class=\"title is-4\">Strona główna", $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
+            "<div class=\"title is-4\">Strona główna",
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -100,7 +103,7 @@ class HomepageTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
     }
 
     /** @test */

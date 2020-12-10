@@ -14,6 +14,6 @@ class RegisterTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Zarejestruj się", $response->getContent());
+        $this->assertStringContainsString("Zarejestruj się", $response->getContent());
     }
 }

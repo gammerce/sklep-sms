@@ -9,7 +9,7 @@ class ServiceActionControllerTest extends HttpTestCase
     /** @var Server */
     private $server;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -33,7 +33,10 @@ class ServiceActionControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("<option value=\"\">Wybierz ilość</option>", $response->getContent());
+        $this->assertStringContainsString(
+            "<option value=\"\">Wybierz ilość</option>",
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -49,6 +52,6 @@ class ServiceActionControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("</option>", $response->getContent());
+        $this->assertStringContainsString("</option>", $response->getContent());
     }
 }

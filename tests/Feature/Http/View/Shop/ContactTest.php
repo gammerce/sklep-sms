@@ -16,6 +16,6 @@ class ContactTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Kontakt", $response->getContent());
+        $this->assertStringContainsString("Kontakt", $response->getContent());
     }
 }

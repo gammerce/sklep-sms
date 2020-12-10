@@ -17,7 +17,7 @@ class SetupControllerTest extends HttpTestCase
     /** @var ShopState|MockInterface */
     private $shopState;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fileSystem = $this->mockFileSystem();
@@ -54,7 +54,10 @@ class SetupControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("<title>Brak ENV - Sklep SMS</title>", $response->getContent());
+        $this->assertStringContainsString(
+            "<title>Brak ENV - Sklep SMS</title>",
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -68,7 +71,7 @@ class SetupControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertStringContainsString(
             "<h1 class=\"title is-4\">Instalator Sklepu SMS</h1>",
             $response->getContent()
         );
@@ -85,7 +88,7 @@ class SetupControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertStringContainsString(
             "<h1 class=\"title is-4\">Aktualizator Sklepu</h1>",
             $response->getContent()
         );

@@ -14,7 +14,7 @@ class PlayerFlagCollectionTest extends HttpTestCase
     /** @var PlayerFlagService */
     private $playerFlagService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

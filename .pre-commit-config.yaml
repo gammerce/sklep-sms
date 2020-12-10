@@ -1,3 +1,4 @@
+repos:
 - repo: https://github.com/budziam/prettier-plugin-php-pre-commit
   rev: master
   hooks:

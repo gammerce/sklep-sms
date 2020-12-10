@@ -17,6 +17,6 @@ class PurchaseExtraFlagTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("VIP - Zakup usługi", $response->getContent());
+        $this->assertStringContainsString("VIP - Zakup usługi", $response->getContent());
     }
 }

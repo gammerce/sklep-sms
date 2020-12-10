@@ -22,7 +22,7 @@ class PaymentLogTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Historia płatności", $response->getContent());
+        $this->assertStringContainsString("Historia płatności", $response->getContent());
     }
 
     /** @test */

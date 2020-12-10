@@ -18,7 +18,7 @@ class ServiceTakeOverTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Przejęcie usługi", $response->getContent());
+        $this->assertStringContainsString("Przejęcie usługi", $response->getContent());
     }
 
     /** @test */

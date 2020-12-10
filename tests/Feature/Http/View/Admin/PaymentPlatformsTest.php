@@ -18,8 +18,8 @@ class PaymentPlatformsTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains(
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
             '<div class="title is-4">Platformy płatności',
             $response->getContent()
         );

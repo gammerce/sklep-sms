@@ -14,6 +14,6 @@ class TPaySuccessTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Płatność zaakceptowana", $response->getContent());
+        $this->assertStringContainsString("Płatność zaakceptowana", $response->getContent());
     }
 }

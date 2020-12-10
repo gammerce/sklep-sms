@@ -26,7 +26,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
     /** @var string */
     private $serviceId = "vip";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockPaymentModuleFactory();
@@ -88,7 +88,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertRegExp(
+        $this->assertMatchesRegularExpression(
             "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
             $response->getContent()
         );
@@ -141,7 +141,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
             "text:Usługa została prawidłowo zakupiona.",
             "bsid:\d+",
         ]);
-        $this->assertRegExp("#^$data$#", $response->getContent());
+        $this->assertMatchesRegularExpression("#^$data$#", $response->getContent());
     }
 
     /** @test */

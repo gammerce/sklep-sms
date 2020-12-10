@@ -21,8 +21,8 @@ class ProfileTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Profil", $response->getContent());
-        $this->assertContains("my_example_username", $response->getContent());
+        $this->assertStringContainsString("Profil", $response->getContent());
+        $this->assertStringContainsString("my_example_username", $response->getContent());
     }
 
     /** @test */

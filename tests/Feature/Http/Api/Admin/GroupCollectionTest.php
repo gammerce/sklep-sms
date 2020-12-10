@@ -10,7 +10,7 @@ class GroupCollectionTest extends HttpTestCase
     /** @var GroupRepository */
     private $groupRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

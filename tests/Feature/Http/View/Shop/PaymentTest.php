@@ -55,7 +55,7 @@ class PaymentTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("Płatność", $response->getContent());
-        $this->assertContains("Szczegóły zamówienia", $response->getContent());
+        $this->assertStringContainsString("Płatność", $response->getContent());
+        $this->assertStringContainsString("Szczegóły zamówienia", $response->getContent());
     }
 }

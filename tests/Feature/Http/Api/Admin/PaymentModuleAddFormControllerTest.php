@@ -19,7 +19,7 @@ class PaymentModuleAddFormControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("ID KONTA", $response->getContent());
+        $this->assertStringContainsString("ID KONTA", $response->getContent());
     }
 
     /** @test */

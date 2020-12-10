@@ -9,7 +9,7 @@ class PriceRepositoryTest extends TestCase
     /** @var PriceRepository */
     private $priceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->priceRepository = $this->app->make(PriceRepository::class);
