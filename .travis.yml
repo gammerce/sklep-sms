@@ -64,6 +64,7 @@ before_deploy:
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - PHP_VERSION=$(php -v | grep ^PHP | cut -d' ' -f2)
+  - BUILD_NAME="build-${PHP_VERSION}.zip"
   - |
     docker run \
     --rm \
@@ -80,7 +81,7 @@ before_deploy:
     --exclude='data/cache/**' \
     --exclude='data/errors/**' \
     --exclude='data/transactions/**' \
-    build.zip \
+    ${BUILD_NAME} \
     build/ \
     bootstrap/ \
     confidential/ \
@@ -99,7 +100,7 @@ deploy:
   provider: releases
   api_key:
     secure: Ytqd1sJIIC1aVQjY/8TWggsNMr6s/52CpUaH8HppLe96+dVg74zvO4lAOITO8MP74oRe/DJ0U6eqV2oV0Ypsj6tHXXC9yMzi1v0TiKkJJKz5NhYiHxLraPWWz8vbCjso0tEgvBX4rcB+nuDQ5Afj+5F3mwTp32VhWl4V8ln5piYip9kUl9GChh8+5CG9/b1BXBTZWnPkuD+2UOo43nQ9XMmH2vPp+otT3nuR09lDA2W3arbwyWWSMk60fvYHlxMkK5rKE78KmAtbncEeFNsdIXTZXMvp43RU3Ap59LKqkhCz4aM7HrjRe82MQwTuhsVR151TyhBB93wEX0jPW8UFwpsP5vKB3wmqPbQzo2USlNOq2WIP2iaTEuNAfRdTy5+WPp14ba4poeYsMKs+Fc28nd3f/IoJglq75oW7LwgMQQnnS5Wcjw+y4nQ/CVO3fuTegMUJ5RPx6PEloXgQvkX2oHexdQ0xQv595rfQoBfCHt/i+BHRq2yok69sD3XO3mOXywqa/LZLC5wXAV6CzBY6IUcqfgWf7yVOngS6TIn7uiJaTsJkV5ZkH/m8DsQaGZzt2u10uF68NwsxIKavIyvkmCwX4WYB4aswvQ6Mj5VPz2cOwY9H9KqIGKh+pG3sZvjcB1M9CKEgQ4Thwr2KPltVkMcfG8Vnq0w9UnOERX87XNA=
-  file: build.zip
+  file: "${BUILD_NAME}"
   skip_cleanup: true
   on:
     tags: true
