@@ -61,6 +61,7 @@ after_success:
   - travis_retry php vendor/bin/php-coveralls
 
 before_deploy:
+  - sudo chown -R travis:travis /home/travis/
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
   - BUILD_NAME="build-${PHP_VERSION}.zip"
