@@ -157,7 +157,11 @@ class ExceptionHandler implements ExceptionHandlerContract
      */
     private function reportToSentry($e)
     {
-        Sentry\captureException($e);
+        if (class_exists(\Sentry\SentrySdk::class)) {
+            Sentry\captureException($e);
+        } elseif ($this->app->bound(\Raven_Client::class)) {
+            $this->app->make(\Raven_Client::class)->captureException($e);
+        }
     }
 
     /**
