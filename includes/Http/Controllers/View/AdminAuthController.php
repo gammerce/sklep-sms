@@ -66,12 +66,10 @@ class AdminAuthController
                 $request->request->get("password")
             );
 
-            if ($user) {
-                $auth->loginAdmin($request, $user);
+            $auth->loginAdmin($request, $user);
 
-                if ($intendedUrlService->exists($request)) {
-                    return $intendedUrlService->redirect($request);
-                }
+            if ($user && $intendedUrlService->exists($request)) {
+                return $intendedUrlService->redirect($request);
             }
         }
 
