@@ -327,7 +327,11 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("service")))
             ->addHeadCell(
                 new HeadCell(
-                    "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
+                    $this->lang->t("nick") .
+                        "/" .
+                        $this->lang->t("ip") .
+                        "/" .
+                        $this->lang->t("sid")
                 )
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
@@ -468,7 +472,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $password = "";
         if (strlen($purchase->getOrder("password"))) {
             $password =
-                "<strong>{$this->lang->t("password")}</strong>: " .
+                "<strong>" .
+                $this->lang->t("password") .
+                "</strong>: " .
                 htmlspecialchars($purchase->getOrder("password")) .
                 "<br />";
         }
@@ -533,7 +539,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         if (strlen($transaction->getExtraDatum("password"))) {
             $password =
-                "<strong>{$this->lang->t("password")}</strong>: " .
+                "<strong>" .
+                $this->lang->t("password") .
+                "</strong>: " .
                 htmlspecialchars($transaction->getExtraDatum("password")) .
                 "<br />";
         } else {

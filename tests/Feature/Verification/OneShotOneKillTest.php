@@ -13,7 +13,7 @@ class OneShotOneKillTest extends TestCase
     /** @var OneShotOneKill */
     private $oneShotOneKill;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

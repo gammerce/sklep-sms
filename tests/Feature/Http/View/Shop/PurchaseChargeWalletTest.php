@@ -16,8 +16,11 @@ class PurchaseChargeWalletTest extends HttpTestCase
         $response = $this->get("/page/purchase", ["service" => "charge_wallet"]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Doładowanie Portfela - Zakup usługi", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString(
+            "Doładowanie Portfela - Zakup usługi",
+            $response->getContent()
+        );
     }
 
     /** @test */

@@ -18,7 +18,7 @@ class PageServersActionBoxAddTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Dodaj serwer", $json["template"]);
+        $this->assertStringContainsString("Dodaj serwer", $json["template"]);
     }
 
     /** @test */

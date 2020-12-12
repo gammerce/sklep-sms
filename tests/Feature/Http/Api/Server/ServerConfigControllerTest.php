@@ -23,7 +23,7 @@ class ServerConfigControllerTest extends HttpTestCase
     /** @var Server */
     private $server;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -167,7 +167,10 @@ class ServerConfigControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("steam_ids:STEAM_1;STEAM_12;STEAM_2;", $response->getContent());
+        $this->assertStringContainsString(
+            "steam_ids:STEAM_1;STEAM_12;STEAM_2;",
+            $response->getContent()
+        );
     }
 
     /** @test */

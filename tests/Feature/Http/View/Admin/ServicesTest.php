@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Admin;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServicesTest extends HttpTestCase
@@ -15,8 +16,11 @@ class ServicesTest extends HttpTestCase
         $response = $this->get("/admin/services");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains('<div class="title is-4">Usługi', $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
+            '<div class="title is-4">Usługi',
+            $response->getContent()
+        );
     }
 }

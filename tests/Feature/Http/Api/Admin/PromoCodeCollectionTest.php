@@ -11,7 +11,7 @@ class PromoCodeCollectionTest extends HttpTestCase
     /** @var PromoCodeRepository */
     private $promoCodeRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->promoCodeRepository = $this->app->make(PromoCodeRepository::class);

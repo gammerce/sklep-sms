@@ -231,7 +231,7 @@ function seconds_to_time($seconds)
 
     return $dtF
         ->diff($dtT)
-        ->format("%a {$lang->t("days")} {$lang->t("and")} %h {$lang->t("hours")}");
+        ->format("%a " . $lang->t("days") . " " . $lang->t("and") . " %h " . $lang->t("hours"));
 }
 
 /**
@@ -363,14 +363,16 @@ function starts_with($haystack, $needle)
     return substr($haystack, 0, strlen($needle)) === (string) $needle;
 }
 
-/**
- * @param string $string
- * @param string $needle
- * @return bool
- */
-function str_contains($string, $needle)
-{
-    return strpos($string, $needle) !== false;
+if (!function_exists("str_contains")) {
+    /**
+     * @param string $string
+     * @param string $needle
+     * @return bool
+     */
+    function str_contains($string, $needle)
+    {
+        return strpos($string, $needle) !== false;
+    }
 }
 
 /**
@@ -968,4 +970,18 @@ function explode_int_list($list, $delimiter = ",")
             return (int) $value;
         })
         ->all();
+}
+
+function get_authorization_value(Request $request)
+{
+    $authorization = $request->headers->get("Authorization");
+    if (!$authorization) {
+        return null;
+    }
+
+    if (0 === stripos($authorization, "bearer ")) {
+        return substr($authorization, 7);
+    }
+
+    return $authorization;
 }

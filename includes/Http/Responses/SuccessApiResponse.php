@@ -3,7 +3,7 @@ namespace App\Http\Responses;
 
 class SuccessApiResponse extends ApiResponse
 {
-    public function __construct($text, array $data = [])
+    public function __construct($text, $data = [])
     {
         parent::__construct("ok", $text, true, $data);
     }

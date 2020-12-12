@@ -6,6 +6,7 @@ use App\Support\FileSystemContract;
 use App\Support\Path;
 use Mockery;
 use Mockery\MockInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class SetupControllerTest extends HttpTestCase
@@ -16,7 +17,7 @@ class SetupControllerTest extends HttpTestCase
     /** @var ShopState|MockInterface */
     private $shopState;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fileSystem = $this->mockFileSystem();
@@ -34,7 +35,7 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertSame("Sklep nie wymaga aktualizacji.", $response->getContent());
     }
 
@@ -52,8 +53,11 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("<title>Brak ENV - Sklep SMS</title>", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString(
+            "<title>Brak ENV - Sklep SMS</title>",
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -66,8 +70,8 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString(
             "<h1 class=\"title is-4\">Instalator Sklepu SMS</h1>",
             $response->getContent()
         );
@@ -83,8 +87,8 @@ class SetupControllerTest extends HttpTestCase
         $response = $this->get("/setup");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString(
             "<h1 class=\"title is-4\">Aktualizator Sklepu</h1>",
             $response->getContent()
         );

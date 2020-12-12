@@ -36,7 +36,7 @@ class ServiceDescriptionService
     public function create($serviceId)
     {
         $path = $this->path->to(
-            "themes/{$this->settings->getTheme()}/{$this->getTemplatePath($serviceId)}"
+            "themes/" . $this->settings->getTheme() . "/" . $this->getTemplatePath($serviceId)
         );
 
         if (!$this->fileSystem->exists($path)) {

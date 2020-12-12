@@ -12,7 +12,7 @@ class ServiceResourceTest extends HttpTestCase
     /** @var Service */
     private $service;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

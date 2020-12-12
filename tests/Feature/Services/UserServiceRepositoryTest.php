@@ -10,7 +10,7 @@ class UserServiceRepositoryTest extends TestCase
     /** @var UserServiceRepository */
     private $userServiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->userServiceRepository = $this->app->make(UserServiceRepository::class);

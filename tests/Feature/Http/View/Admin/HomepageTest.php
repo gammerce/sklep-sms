@@ -13,7 +13,7 @@ class HomepageTest extends HttpTestCase
 {
     use MakePurchaseConcern;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->createRandomExtraFlagsPurchase();
@@ -28,7 +28,7 @@ class HomepageTest extends HttpTestCase
             ])
             ->andReturn(
                 new RequestingResponse(
-                    200,
+                    Response::HTTP_OK,
                     json_encode([
                         "tag_name" => "3.10.0",
                     ])
@@ -45,7 +45,7 @@ class HomepageTest extends HttpTestCase
             ])
             ->andReturn(
                 new RequestingResponse(
-                    200,
+                    Response::HTTP_OK,
                     json_encode([
                         "tag_name" => "3.10.0",
                     ])
@@ -62,7 +62,7 @@ class HomepageTest extends HttpTestCase
             ])
             ->andReturn(
                 new RequestingResponse(
-                    200,
+                    Response::HTTP_OK,
                     json_encode([
                         "tag_name" => "3.10.0",
                     ])
@@ -80,9 +80,12 @@ class HomepageTest extends HttpTestCase
         $response = $this->get("/admin");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains("<div class=\"title is-4\">Strona główna", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
+            "<div class=\"title is-4\">Strona główna",
+            $response->getContent()
+        );
     }
 
     /** @test */
@@ -99,8 +102,8 @@ class HomepageTest extends HttpTestCase
         $response = $this->get("/admin");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
     }
 
     /** @test */

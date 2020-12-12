@@ -11,7 +11,7 @@ class SmsCodeRepositoryTest extends TestCase
     /** @var SmsCodeRepository */
     private $smsCodeRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->smsCodeRepository = $this->app->make(SmsCodeRepository::class);

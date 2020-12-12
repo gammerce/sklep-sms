@@ -12,13 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 class IndexController
 {
     public function action(
-        $pageId = "home",
         Request $request,
         PageManager $pageManager,
         ShopRenderer $shopRenderer,
-        BlockRenderer $blockRenderer
+        BlockRenderer $blockRenderer,
+        $pageId = "home"
     ) {
-        $page = $pageManager->getUser($pageId);
+        $page = $pageManager->getUser($pageId ?: "home");
 
         if (!$page) {
             throw new EntityNotFoundException();

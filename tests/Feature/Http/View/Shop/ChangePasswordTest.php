@@ -10,15 +10,14 @@ class ChangePasswordTest extends HttpTestCase
     public function it_loads()
     {
         // given
-        $user = $this->factory->user();
-        $this->actingAs($user);
+        $this->actingAs($this->factory->user());
 
         // when
         $response = $this->get("/page/change_password");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Zmiana hasła", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Zmiana hasła", $response->getContent());
     }
 
     /** @test */

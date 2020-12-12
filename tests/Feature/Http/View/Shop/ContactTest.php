@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Shop;
 
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class ContactTest extends HttpTestCase
@@ -14,7 +15,7 @@ class ContactTest extends HttpTestCase
         $response = $this->get("/page/contact");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Kontakt", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Kontakt", $response->getContent());
     }
 }

@@ -101,7 +101,11 @@ class PageAdminPlayersFlags extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("server")))
             ->addHeadCell(
                 new HeadCell(
-                    "{$this->lang->t("nick")}/{$this->lang->t("ip")}/{$this->lang->t("sid")}"
+                    $this->lang->t("nick") .
+                        "/" .
+                        $this->lang->t("ip") .
+                        "/" .
+                        $this->lang->t("sid")
                 )
             )
             ->addBodyRows($bodyRows)

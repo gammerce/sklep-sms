@@ -21,7 +21,7 @@ class PromoCodeServiceTest extends TestCase
     /** @var Purchase */
     private $purchase;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->promoCodeService = $this->app->make(PromoCodeService::class);

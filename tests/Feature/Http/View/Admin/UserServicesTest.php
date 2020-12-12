@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\View\Admin;
 
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
+use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -24,9 +25,9 @@ class UserServicesTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains(
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
             "<div class=\"title is-4\">Czasowe usługi użytkowników: Flagi Gracza",
             $response->getContent()
         );
@@ -46,9 +47,9 @@ class UserServicesTest extends HttpTestCase
         ]);
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Panel Admina", $response->getContent());
-        $this->assertContains(
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Panel Admina", $response->getContent());
+        $this->assertStringContainsString(
             "<div class=\"title is-4\">Czasowe usługi użytkowników: Grupy MyBB",
             $response->getContent()
         );

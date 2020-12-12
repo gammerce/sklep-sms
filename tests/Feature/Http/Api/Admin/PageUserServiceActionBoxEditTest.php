@@ -9,7 +9,7 @@ class PageUserServiceActionBoxEditTest extends HttpTestCase
     /** @var ExtraFlagUserService */
     private $userService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->userService = $this->factory->extraFlagUserService();
@@ -30,7 +30,7 @@ class PageUserServiceActionBoxEditTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Edytuj usługę użytkownika", $json["template"]);
+        $this->assertStringContainsString("Edytuj usługę użytkownika", $json["template"]);
     }
 
     /** @test */

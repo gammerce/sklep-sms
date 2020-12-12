@@ -19,7 +19,7 @@ class PurchaseSerializerTest extends TestCase
     /** @var PurchaseSerializer */
     private $purchaseSerializer;
 
-    public function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->purchaseSerializer = $this->app->make(PurchaseSerializer::class);
@@ -124,6 +124,4 @@ class PurchaseSerializerTest extends TestCase
 
         return $purchase;
     }
-
-    // TODO Check if user and promo code are refreshed
 }

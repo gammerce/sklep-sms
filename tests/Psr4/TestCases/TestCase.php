@@ -7,6 +7,7 @@ use App\System\Application;
 use App\System\License;
 use App\System\Settings;
 use App\Translation\LocaleService;
+use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use Mockery;
 use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase as BaseTestCase;
@@ -41,7 +42,7 @@ class TestCase extends BaseTestCase
     /** @var array */
     private $afterApplicationCreatedCallbacks = [];
 
-    protected function setUp()
+    protected function setUp(): void
     {
         if (!$this->app) {
             $this->app = $this->createApplication();
@@ -72,7 +73,7 @@ class TestCase extends BaseTestCase
         }
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         if ($this->app) {
             /** @var Database $db */
@@ -150,6 +151,50 @@ class TestCase extends BaseTestCase
     protected function assertSameEnum(Enum $expected, Enum $value)
     {
         $this->assertTrue($expected->equals($value), "$expected does not equal $value");
+    }
+
+    public static function assertArraySubset(
+        $subset,
+        $array,
+        $checkForObjectIdentity = false,
+        $message = ""
+    ) {
+        if (class_exists(Assert::class)) {
+            Assert::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
+        }
+    }
+
+    public static function assertStringContainsString($needle, $haystack, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertStringContainsString")) {
+            parent::assertStringContainsString($needle, $haystack, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertContains($needle, $haystack, $message);
+        }
+    }
+
+    public static function assertMatchesRegularExpression($pattern, $string, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertMatchesRegularExpression")) {
+            parent::assertMatchesRegularExpression($pattern, $string, $message);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertRegExp($pattern, $string, $message);
+        }
+    }
+
+    public static function assertIsString($actual, $message = ""): void
+    {
+        if (method_exists(get_parent_class(self::class), "assertIsString")) {
+            parent::assertIsString($actual);
+        } else {
+            // PHP 5.6 backward compatibility
+            parent::assertInternalType("string", $actual);
+        }
     }
 
     /**

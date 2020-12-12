@@ -28,7 +28,7 @@ class PaymentResourceTest extends HttpTestCase
     /** @var PaymentPlatform */
     private $transferPlatform;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

@@ -13,8 +13,8 @@ class HomepageTest extends HttpTestCase
         $response = $this->get("/");
 
         // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains("Strona główna", $response->getContent());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $this->assertStringContainsString("Strona główna", $response->getContent());
     }
 
     /** @test */
@@ -25,6 +25,6 @@ class HomepageTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
-        $this->assertContains("Strona nie została znaleziona", $response->getContent());
+        $this->assertStringContainsString("Strona nie została znaleziona", $response->getContent());
     }
 }

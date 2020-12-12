@@ -41,8 +41,8 @@ class MybbUserGroupRepository
 
         $this->db
             ->statement(
-                "INSERT INTO `ss_mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) " .
-                    "VALUES {$queryParticle->text(", ")}"
+                "INSERT INTO `ss_mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) VALUES " .
+                    $queryParticle->text(", ")
             )
             ->execute($queryParticle->params());
     }

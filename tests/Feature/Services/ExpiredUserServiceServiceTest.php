@@ -14,7 +14,7 @@ class ExpiredUserServiceServiceTest extends TestCase
     /** @var ExpiredUserServiceService */
     private $expiredUserServiceService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->expiredUserServiceService = $this->app->make(ExpiredUserServiceService::class);

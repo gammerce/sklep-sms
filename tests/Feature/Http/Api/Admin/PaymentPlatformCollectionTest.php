@@ -10,7 +10,7 @@ class PaymentPlatformCollectionTest extends HttpTestCase
     /** @var PaymentPlatformRepository */
     private $paymentPlatformRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

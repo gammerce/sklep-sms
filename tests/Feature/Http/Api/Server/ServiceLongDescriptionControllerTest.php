@@ -14,7 +14,7 @@ class ServiceLongDescriptionControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertStringContainsString(
             "LISTA BONUSÓW, KTÓRE ZYSKUJEMY KUPUJĄC VIPA PRO NA WYBRANYM SERWERZE",
             $response->getContent()
         );

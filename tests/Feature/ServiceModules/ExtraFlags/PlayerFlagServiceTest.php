@@ -14,7 +14,7 @@ class PlayerFlagServiceTest extends TestCase
     /** @var ExtraFlagUserServiceRepository */
     private $extraFlagUserServiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->playerFlagService = $this->app->make(PlayerFlagService::class);

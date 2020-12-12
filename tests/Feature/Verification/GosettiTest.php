@@ -20,7 +20,7 @@ class GosettiTest extends TestCase
     /** @var Gosetti */
     private $gosetti;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

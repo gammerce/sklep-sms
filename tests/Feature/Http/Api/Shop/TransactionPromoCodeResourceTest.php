@@ -19,7 +19,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
     /** @var PurchaseDataService */
     private $purchaseDataService;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->purchaseDataService = $this->app->make(PurchaseDataService::class);

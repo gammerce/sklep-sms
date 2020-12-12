@@ -9,7 +9,7 @@ class PasswordResetControllerTest extends HttpTestCase
     /** @var UserRepository */
     private $userRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->userRepository = $this->app->make(UserRepository::class);

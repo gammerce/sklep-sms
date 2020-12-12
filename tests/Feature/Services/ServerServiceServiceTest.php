@@ -13,7 +13,7 @@ class ServerServiceServiceTest extends TestCase
     /** @var ServerServiceRepository */
     private $serverServiceRepository;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

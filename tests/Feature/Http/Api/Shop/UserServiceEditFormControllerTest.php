@@ -22,7 +22,7 @@ class UserServiceEditFormControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains(
+        $this->assertStringContainsString(
             "services/extra_flags/user_own_service_edit",
             $response->getContent()
         );

@@ -9,7 +9,7 @@ class PathTest extends TestCase
     /** @var Path */
     private $path;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->path = new Path("/test");

@@ -17,6 +17,6 @@ class ServiceModuleExtraFieldsControllerTest extends HttpTestCase
 
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertContains("data-module=\"extra_flags\"", $response->getContent());
+        $this->assertStringContainsString("data-module=\"extra_flags\"", $response->getContent());
     }
 }

@@ -24,7 +24,7 @@ class InstallControllerTest extends TestCase
 
     private $dbName = "install_test";
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->app = $this->createApplication();
         $this->db = new Database(
@@ -40,7 +40,7 @@ class InstallControllerTest extends TestCase
         $this->db->createDatabaseIfNotExists($this->dbName);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->db->dropDatabaseIfExists($this->dbName);
         $this->db->close();

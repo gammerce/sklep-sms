@@ -21,7 +21,7 @@ class PageUsersActionBoxChangePasswordTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Zmiana hasła", $json["template"]);
+        $this->assertStringContainsString("Zmiana hasła", $json["template"]);
     }
 
     /** @test */

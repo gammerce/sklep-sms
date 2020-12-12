@@ -21,7 +21,7 @@ class PageUsersActionBoxChargeWalletTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertEquals("ok", $json["return_id"]);
-        $this->assertContains("Doładuj portfel", $json["template"]);
+        $this->assertStringContainsString("Doładuj portfel", $json["template"]);
     }
 
     /** @test */

@@ -8,7 +8,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class RegisterTest extends HttpTestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 

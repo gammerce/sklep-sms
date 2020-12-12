@@ -73,17 +73,14 @@ export const refreshBlocks = function (bricks: string, onSuccessFunction?: any):
 };
 
 /**
- * Tworzy okienko akcji danej strony
+ * Shows action window identified by pageId and boxId
  *
  * @param {string} pageId
  * @param {string} boxId
  * @param {object} data
  */
 export const showActionBox = function (pageId: string, boxId: string, data?: Dict): void {
-    restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, function (
-        content
-    ) {
-        // Nie udalo sie prawidlowo pozyskac danych
+    restRequest("GET", `/api/admin/pages/${pageId}/action_boxes/${boxId}`, data, (content) => {
         if (content.return_id !== "ok") {
             alert(content.text);
             location.reload();

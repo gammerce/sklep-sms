@@ -35,7 +35,7 @@ class CaptchaRule extends BaseRule
                 "remoteip" => get_ip(app()->make(Request::class)),
             ],
             [
-                "Authorization" => $this->settings->getLicenseToken(),
+                "Authorization" => "Bearer {$this->settings->getLicenseToken()}",
             ]
         );
 

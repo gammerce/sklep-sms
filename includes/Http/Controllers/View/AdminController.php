@@ -21,7 +21,6 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminController
 {
     public function get(
-        $pageId = "home",
         Request $request,
         Application $app,
         Auth $auth,
@@ -32,7 +31,8 @@ class AdminController
         UrlGenerator $url,
         PageManager $pageManager,
         WebsiteHeader $websiteHeader,
-        ServiceModuleManager $serviceModuleManager
+        ServiceModuleManager $serviceModuleManager,
+        $pageId = "home"
     ) {
         $page = $pageManager->getAdmin($pageId);
 

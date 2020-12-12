@@ -12,12 +12,16 @@ trait MakesHttpRequests
         /** @var KernelContract $kernel */
         $kernel = $this->app->make(KernelContract::class);
 
-        $request = Request::create($this->prepareUrlForRequest($uri), $method);
+        $server = collect($headers)
+            ->flatMap(function ($value, $key) {
+                $snakeKey = strtoupper(str_replace("-", "_", $key));
+                return ["HTTP_{$snakeKey}" => $value];
+            })
+            ->all();
+
+        $request = Request::create($this->prepareUrlForRequest($uri), $method, [], [], [], $server);
         $request->query->replace($this->castValuesToString($query));
         $request->request->replace($this->castValuesToString($body));
-        foreach ($headers as $key => $value) {
-            $request->headers->set($key, $value);
-        }
 
         $response = $kernel->handle($request);
         $kernel->terminate($request, $response);

@@ -15,7 +15,7 @@ class EnvCreatorTest extends TestCase
     /** @var EnvCreator */
     private $envCreator;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->fileSystem = new MemoryFileSystem();

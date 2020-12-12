@@ -12,7 +12,7 @@ class CronExecutorTest extends TestCase
     /** @var CronExecutor */
     private $cronExecutor;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->cronExecutor = $this->app->make(CronExecutor::class);
