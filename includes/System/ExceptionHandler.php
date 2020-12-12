@@ -17,7 +17,7 @@ use App\Routing\UrlGenerator;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Exception;
-use Raven_Client;
+use Sentry\ClientInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -149,7 +149,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         $exceptionDetails = $this->getExceptionDetails($e);
         $this->fileLogger->error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
-        if ($this->app->bound(Raven_Client::class)) {
+        if ($this->app->bound(ClientInterface::class)) {
             $this->reportToSentry($e);
         }
     }
@@ -159,8 +159,8 @@ class ExceptionHandler implements ExceptionHandlerContract
      */
     private function reportToSentry($e)
     {
-        /** @var Raven_Client $client */
-        $client = $this->app->make(Raven_Client::class);
+        /** @var ClientInterface $client */
+        $client = $this->app->make(ClientInterface::class);
         $client->captureException($e);
     }
 

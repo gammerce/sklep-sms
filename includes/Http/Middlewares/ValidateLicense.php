@@ -7,7 +7,8 @@ use App\System\Auth;
 use App\System\License;
 use App\User\Permission;
 use Closure;
-use Raven_Client;
+use Sentry;
+use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\Request;
 
 class ValidateLicense implements MiddlewareContract
@@ -39,11 +40,9 @@ class ValidateLicense implements MiddlewareContract
 
         // Let's pass some additional info to sentry logger
         // so that it would be easier for us to debug any potential exceptions
-        if ($this->app->bound(Raven_Client::class)) {
-            $this->app->make(Raven_Client::class)->tags_context([
-                "license_id" => $this->license->getExternalId(),
-            ]);
-        }
+        Sentry\configureScope(function (Scope $scope) {
+            $scope->setTag("license_id", $this->license->getExternalId());
+        });
 
         return $next($request);
     }
