@@ -13,15 +13,8 @@ class SentryTransaction implements MiddlewareContract
     {
         $hub = SentrySdk::getCurrentHub();
         $transaction = $this->startTransaction($request, $hub);
-
-        $response = $next($request);
-
         SentrySdk::getCurrentHub()->setSpan($transaction);
-
-        $transaction->setHttpStatus($response->getStatusCode());
-        $transaction->finish();
-
-        return $response;
+        return $next($request);
     }
 
     private function startTransaction(Request $request, HubInterface $hub)

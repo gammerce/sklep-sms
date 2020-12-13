@@ -28,7 +28,7 @@ class SentryServiceProvider
             Sentry\init([
                 "dsn" => getenv("SENTRY_DSN") ?: $configProvider->sentryDSN(),
                 "release" => $app->version(),
-                "traces_sample_rate" => 1.0,
+                "traces_sample_rate" => $configProvider->sentrySampleRate() ?: 1.0,
             ]);
         }
     }

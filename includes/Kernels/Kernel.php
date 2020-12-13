@@ -46,6 +46,6 @@ class Kernel implements KernelContract
 
     public function terminate(Request $request, Response $response)
     {
-        $this->app->terminate();
+        $this->app->terminate($request, $response);
     }
 }

@@ -9,6 +9,9 @@ use DirectoryIterator;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
+use Sentry\SentrySdk;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class Application extends Container
 {
@@ -85,9 +88,15 @@ class Application extends Container
         }
     }
 
-    public function terminate()
+    public function terminate(Request $request = null, Response $response = null)
     {
-        //
+        if (class_exists(SentrySdk::class)) {
+            $transaction = SentrySdk::getCurrentHub()->getTransaction();
+            if ($transaction && $response) {
+                $transaction->setHttpStatus($response->getStatusCode());
+                $transaction->finish();
+            }
+        }
     }
 
     private function getProviders()
