@@ -64,6 +64,7 @@ before_deploy:
   - sudo chown -R travis:travis /home/travis/
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
+  - composer require barryvdh/composer-cleanup-plugin:0.3.0
   - BUILD_NAME="build-${PHP_VERSION}.zip"
   - pre-commit run --all-files || true
   - |
