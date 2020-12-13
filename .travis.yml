@@ -35,7 +35,6 @@ before_install:
 
 install:
   - pip install pre-commit
-  - composer self-update --1
   - composer install --no-interaction
   - composer dump
   - yarn install
@@ -64,6 +63,7 @@ before_deploy:
   - sudo chown -R travis:travis /home/travis/
   - rm -Rf vendor
   - composer install --no-dev --no-interaction --prefer-dist
+  - ./remove_unnecessary_files.sh
   - BUILD_NAME="build-${PHP_VERSION}.zip"
   - pre-commit run --all-files || true
   - |
