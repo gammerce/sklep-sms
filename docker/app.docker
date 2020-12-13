@@ -7,6 +7,5 @@ RUN pecl install mcrypt-1.0.4
 RUN docker-php-ext-enable mcrypt
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer self-update --1
 
 WORKDIR /var/www
