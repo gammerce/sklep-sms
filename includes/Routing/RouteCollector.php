@@ -67,4 +67,9 @@ class RouteCollector extends BaseRouteCollector
     {
         $this->redirect($from, $to, Response::HTTP_MOVED_PERMANENTLY);
     }
+
+    public function addGlobalMiddleware($middleware)
+    {
+        $this->currentGroupMiddlewares[] = $middleware;
+    }
 }

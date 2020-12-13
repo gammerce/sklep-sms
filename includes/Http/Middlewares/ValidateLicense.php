@@ -40,9 +40,15 @@ class ValidateLicense implements MiddlewareContract
 
         // Let's pass some additional info to sentry logger
         // so that it would be easier for us to debug any potential exceptions
-        Sentry\configureScope(function (Scope $scope) {
-            $scope->setTag("license_id", $this->license->getExternalId());
-        });
+        if (class_exists(\Sentry\SentrySdk::class)) {
+            Sentry\configureScope(function (Scope $scope) {
+                $scope->setTag("license_id", $this->license->getExternalId());
+            });
+        } else {
+            $this->app->make(\Raven_Client::class)->tags_context([
+                "license_id" => $this->license->getExternalId(),
+            ]);
+        }
 
         return $next($request);
     }

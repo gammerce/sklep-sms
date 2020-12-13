@@ -37,6 +37,11 @@ class ExternalConfigProvider
         return $this->getConfig("sentry_dsn");
     }
 
+    public function sentrySampleRate()
+    {
+        return $this->getConfig("sentry_sample_rate");
+    }
+
     public function captchaSiteKey()
     {
         return $this->getConfig("hcaptcha_sitekey");

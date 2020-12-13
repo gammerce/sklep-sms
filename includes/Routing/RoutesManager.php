@@ -76,6 +76,7 @@ use App\Http\Middlewares\RequireInstalledAndNotUpdated;
 use App\Http\Middlewares\RequireNotInstalled;
 use App\Http\Middlewares\RequireUnauthorized;
 use App\Http\Middlewares\RunCron;
+use App\Http\Middlewares\SentryTransaction;
 use App\Http\Middlewares\SetLanguage;
 use App\Http\Middlewares\SetupAvailable;
 use App\Http\Middlewares\StartAdminSession;
@@ -88,6 +89,7 @@ use App\System\Settings;
 use App\User\Permission;
 use Exception;
 use FastRoute\Dispatcher;
+use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -124,6 +126,12 @@ class RoutesManager
 
     private function defineRoutes(RouteCollector $r)
     {
+        // Set global middlewares
+        if (class_exists(SentrySdk::class)) {
+            $r->addGlobalMiddleware(SentryTransaction::class);
+        }
+        $r->addGlobalMiddleware(SetLanguage::class);
+
         /**
          * @deprecated
          */
@@ -134,56 +142,47 @@ class RoutesManager
          */
         $r->redirectPermanent("/cron", "/api/cron");
 
-        $r->addGroup(
-            [
-                "middlewares" => [SetLanguage::class],
-            ],
-            function (RouteCollector $r) {
-                $r->get("/lang.js", [
-                    "uses" => LanguageJsController::class . "@get",
-                ]);
+        $r->addGroup([], function (RouteCollector $r) {
+            $r->get("/lang.js", [
+                "uses" => LanguageJsController::class . "@get",
+            ]);
 
-                $r->get("/api/cron", [
-                    "uses" => CronController::class . "@get",
-                ]);
+            $r->get("/api/cron", [
+                "uses" => CronController::class . "@get",
+            ]);
 
-                $r->get("/api/server/services/{serviceId}/long_description", [
-                    "uses" => ServiceLongDescriptionController::class . "@get",
-                ]);
+            $r->get("/api/server/services/{serviceId}/long_description", [
+                "uses" => ServiceLongDescriptionController::class . "@get",
+            ]);
 
-                $r->addGroup(
-                    [
-                        "middlewares" => [AuthorizeServer::class, AuthorizeServerUser::class],
-                    ],
-                    function (RouteCollector $r) {
-                        $r->post("/api/server/purchase", [
-                            "middlewares" => [ValidateLicense::class, BlockOnInvalidLicense::class],
-                            "uses" => ServerPurchaseResource::class . "@post",
-                        ]);
-
-                        $r->get("/api/server/config", [
-                            "uses" => ServerConfigController::class . "@get",
-                        ]);
-
-                        $r->get("/api/server/players_flags", [
-                            "uses" => PlayerFlagCollection::class . "@get",
-                        ]);
-
-                        $r->get("/api/server/user_services", [
-                            "uses" => ServerUserServiceCollection::class . "@get",
-                        ]);
-                    }
-                );
-            }
-        );
-
-        $r->addGroup(
-            [
-                "middlewares" => [
-                    StartUserSession::class,
-                    SetLanguage::class,
-                    AuthorizeUser::class,
+            $r->addGroup(
+                [
+                    "middlewares" => [AuthorizeServer::class, AuthorizeServerUser::class],
                 ],
+                function (RouteCollector $r) {
+                    $r->post("/api/server/purchase", [
+                        "middlewares" => [ValidateLicense::class, BlockOnInvalidLicense::class],
+                        "uses" => ServerPurchaseResource::class . "@post",
+                    ]);
+
+                    $r->get("/api/server/config", [
+                        "uses" => ServerConfigController::class . "@get",
+                    ]);
+
+                    $r->get("/api/server/players_flags", [
+                        "uses" => PlayerFlagCollection::class . "@get",
+                    ]);
+
+                    $r->get("/api/server/user_services", [
+                        "uses" => ServerUserServiceCollection::class . "@get",
+                    ]);
+                }
+            );
+        });
+
+        $r->addGroup(
+            [
+                "middlewares" => [StartUserSession::class, AuthorizeUser::class],
             ],
             function (RouteCollector $r) {
                 /**
@@ -325,7 +324,7 @@ class RoutesManager
 
         $r->addGroup(
             [
-                "middlewares" => [StartAdminSession::class, SetLanguage::class],
+                "middlewares" => [StartAdminSession::class],
             ],
             function (RouteCollector $r) {
                 $r->get("/admin/login", [
@@ -342,7 +341,6 @@ class RoutesManager
             [
                 "middlewares" => [
                     StartAdminSession::class,
-                    SetLanguage::class,
                     AuthorizeUser::class,
                     [RequireAuthorized::class, Permission::ACP()],
                     ValidateLicense::class,

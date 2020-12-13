@@ -61,12 +61,10 @@ class Auth
 
     /**
      * @param Request $request
-     * @param User $user
+     * @param User|null $user
      */
-    public function loginAdmin(Request $request, User $user)
+    public function loginAdmin(Request $request, User $user = null)
     {
-        assert($user->exists());
-
         $session = $request->getSession();
 
         if ($user && $user->can(Permission::ACP())) {
