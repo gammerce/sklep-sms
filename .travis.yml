@@ -35,11 +35,9 @@ before_install:
 
 install:
   - pip install pre-commit
-  - composer self-update --1
   - composer install --no-interaction
   - composer dump
   - yarn install
-  - ./remove_unnecessary_files.sh
 
 script:
   - pre-commit run --all-files -c .pre-commit-config-ci.yaml
