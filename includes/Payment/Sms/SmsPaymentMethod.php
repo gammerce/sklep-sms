@@ -62,6 +62,10 @@ class SmsPaymentMethod implements IPaymentMethod
 
     public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
+        if (!$paymentPlatform) {
+            return false;
+        }
+
         $smsPaymentModule = $this->paymentModuleManager->get($paymentPlatform);
         $price = $this->smsPriceService->getPrice($purchase);
 

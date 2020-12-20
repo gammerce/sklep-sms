@@ -48,6 +48,10 @@ class TransferPaymentMethod implements IPaymentMethod
 
     public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
+        if (!$paymentPlatform) {
+            return false;
+        }
+
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         $price = $this->transferPriceService->getPrice($purchase);
         return $paymentModule instanceof SupportTransfer && $price !== null;
