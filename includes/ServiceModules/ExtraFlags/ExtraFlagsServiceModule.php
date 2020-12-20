@@ -597,7 +597,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "text" => $this->lang->t(
                     "service_was_bought",
                     $this->service->getNameI18n(),
-                    $server->getName()
+                    $server ? $server->getName() : "n/a"
                 ),
                 "class" => "outcome",
             ];
