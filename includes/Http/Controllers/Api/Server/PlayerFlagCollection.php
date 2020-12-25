@@ -3,7 +3,7 @@ namespace App\Http\Controllers\Api\Server;
 
 use App\Http\Responses\AssocResponse;
 use App\Http\Responses\ServerJsonResponse;
-use App\Services\ServerDataService;
+use App\Server\ServerDataService;
 use App\System\ServerAuth;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;

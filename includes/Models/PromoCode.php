@@ -2,7 +2,7 @@
 namespace App\Models;
 
 use App\PromoCode\QuantityType;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use DateTime;
 use UnexpectedValueException;
 

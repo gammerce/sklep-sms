@@ -10,8 +10,8 @@ use App\Http\Validation\Validator;
 use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
+use App\Service\ServerServiceService;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
-use App\Services\ServerServiceService;
 
 class ServerService
 {

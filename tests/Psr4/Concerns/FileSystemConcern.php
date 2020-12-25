@@ -5,7 +5,7 @@ use App\Install\EnvCreator;
 use App\Install\OldShop;
 use App\Install\SetupManager;
 use App\Payment\General\PurchaseDataService;
-use App\Services\ServiceDescriptionService;
+use App\Service\ServiceDescriptionService;
 use Tests\Psr4\MemoryFileSystem;
 
 trait FileSystemConcern

@@ -5,7 +5,7 @@ use App\Http\Services\IncomeService;
 use App\Managers\ServerManager;
 use App\Managers\WebsiteHeader;
 use App\Models\Server;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;

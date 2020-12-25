@@ -6,7 +6,7 @@ use App\Models\UserService;
 use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
-use App\Services\UserServiceService;
+use App\Service\UserServiceService;
 use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;

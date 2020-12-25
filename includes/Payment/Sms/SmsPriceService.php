@@ -4,7 +4,7 @@ namespace App\Payment\Sms;
 use App\Models\Purchase;
 use App\Models\SmsNumber;
 use App\PromoCode\PromoCodeService;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Money;
 use App\System\Settings;
 use App\Verification\Abstracts\SupportSms;

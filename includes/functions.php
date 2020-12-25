@@ -38,7 +38,7 @@ function app($abstract = null, array $parameters = [])
 
 /**
  * @param Permission $permission
- * @param User $user
+ * @param User|null $user
  * @return bool
  */
 function can(Permission $permission, User $user = null)
@@ -71,27 +71,6 @@ function cannot(Permission $permission, User $user = null)
 function create_dom_element($name, $content = "", array $params = [])
 {
     return new DOMElement($name, $content, $params);
-}
-
-/**
- * @param string $platform
- * @return string
- */
-function translate_platform($platform)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-
-    if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
-        return $lang->t("amxx_server");
-    }
-
-    if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
-        return $lang->t("sm_server");
-    }
-
-    return $platform;
 }
 
 /**

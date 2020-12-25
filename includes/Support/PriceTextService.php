@@ -1,5 +1,5 @@
 <?php
-namespace App\Services;
+namespace App\Support;
 
 use App\Models\Service;
 use App\Support\Money;

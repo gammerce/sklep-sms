@@ -7,7 +7,7 @@ use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\Services\UserServiceAccessService;
+use App\Service\UserServiceAccessService;
 use App\Support\FileSystem;
 use App\Support\Path;
 use App\Support\Template;

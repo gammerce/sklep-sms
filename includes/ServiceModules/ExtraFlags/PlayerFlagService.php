@@ -3,7 +3,7 @@ namespace App\ServiceModules\ExtraFlags;
 
 use App\Managers\ServiceManager;
 use App\Repositories\UserServiceRepository;
-use App\Services\ExpiredUserServiceService;
+use App\Service\ExpiredUserServiceService;
 use App\Support\Database;
 use App\Support\Expression;
 
