@@ -1,6 +1,8 @@
 <?php
 namespace App\Models;
 
+use App\Server\Platform;
+
 class Server
 {
     /** @var int */
@@ -90,11 +92,11 @@ class Server
     }
 
     /**
-     * @return string
+     * @return Platform|null
      */
     public function getType()
     {
-        return $this->type;
+        return as_server_type($this->type);
     }
 
     /**

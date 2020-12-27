@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Api\Server;
 use App\Payment\General\PaymentMethod;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
-use App\Server\ServerType;
+use App\Server\Platform;
 use App\ServiceModules\Other\OtherServiceModule;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;
@@ -75,7 +75,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
                 "token" => $server->getToken(),
             ],
             [
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 

@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\PaymentPlatform;
 use App\Models\Server;
-use App\Server\ServerType;
+use App\Server\Platform;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\PlayerFlagService;
 use App\System\Settings;
@@ -65,7 +65,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.10.1-rc.1242",
             ],
             [
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 
@@ -125,7 +125,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 
@@ -162,7 +162,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.9.0",
             ],
             [
-                "User-Agent" => ServerType::SOURCEMOD,
+                "User-Agent" => Platform::SOURCEMOD,
             ]
         );
 
@@ -187,7 +187,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.9.0",
             ],
             [
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 
@@ -206,7 +206,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.10.0",
             ],
             [
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 
@@ -241,7 +241,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 
@@ -289,7 +289,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => ServerType::AMXMODX,
+                "User-Agent" => Platform::AMXMODX,
             ]
         );
 

@@ -4,10 +4,10 @@ namespace App\Server;
 use MyCLabs\Enum\Enum;
 
 /**
- * @method static ServerType AMXMODX()
- * @method static ServerType SOURCEMOD()
+ * @method static Platform AMXMODX()
+ * @method static Platform SOURCEMOD()
  */
-class ServerType extends Enum
+class Platform extends Enum
 {
     const AMXMODX = "amxmodx";
     const SOURCEMOD = "sourcemod";

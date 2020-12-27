@@ -5,7 +5,7 @@ use App\Models\PaymentPlatform;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
 use App\Routing\UrlGenerator;
-use App\Server\ServerType;
+use App\Server\Platform;
 use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\Money;
@@ -79,7 +79,7 @@ function create_dom_element($name, $content = "", array $params = [])
  */
 function is_server_platform($platform)
 {
-    return in_array($platform, [ServerType::AMXMODX, ServerType::SOURCEMOD], true);
+    return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
 }
 
 /**
@@ -531,6 +531,19 @@ function as_payment_method($value)
 }
 
 /**
+ * @param string $value
+ * @return Platform|null
+ */
+function as_server_type($value)
+{
+    try {
+        return new Platform($value);
+    } catch (UnexpectedValueException $e) {
+        return null;
+    }
+}
+
+/**
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */
@@ -650,39 +663,6 @@ function as_permission_list($permissions)
             return $permission;
         })
         ->all();
-}
-
-/**
- * @param $path
- * @return mixed|null
- * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
- */
-function get_class_from_file($path)
-{
-    $fp = fopen($path, "r");
-    $buffer = "";
-    $i = 0;
-
-    while (!feof($fp)) {
-        $buffer .= fread($fp, 512);
-        $tokens = token_get_all($buffer);
-
-        if (strpos($buffer, "{") === false) {
-            continue;
-        }
-
-        for (; $i < count($tokens); $i++) {
-            if ($tokens[$i][0] === T_CLASS) {
-                for ($j = $i + 1; $j < count($tokens); $j++) {
-                    if ($tokens[$j] === "{") {
-                        return $tokens[$i + 2][1];
-                    }
-                }
-            }
-        }
-    }
-
-    return null;
 }
 
 if (!function_exists("is_iterable")) {

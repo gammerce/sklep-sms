@@ -8,7 +8,7 @@ use App\Payment\General\PaymentMethod;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Server\ServerType;
+use App\Server\Platform;
 use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
@@ -257,7 +257,7 @@ class PageAdminMain extends PageAdmin
     private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion)
     {
         if (
-            $server->getType() === ServerType::AMXMODX &&
+            Platform::AMXMODX()->equals($server->getType()) &&
             $newestAmxxVersion &&
             version_compare($server->getVersion(), $newestAmxxVersion) < 0
         ) {
@@ -265,7 +265,7 @@ class PageAdminMain extends PageAdmin
         }
 
         if (
-            $server->getType() === ServerType::SOURCEMOD &&
+            Platform::SOURCEMOD()->equals($server->getType()) &&
             $newestSmVersion &&
             version_compare($server->getVersion(), $newestSmVersion) < 0
         ) {
