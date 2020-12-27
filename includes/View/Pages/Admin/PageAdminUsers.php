@@ -8,7 +8,7 @@ use App\Managers\UserManager;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\QueryParticle;
 use App\Support\Template;

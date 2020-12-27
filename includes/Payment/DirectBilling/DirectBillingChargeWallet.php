@@ -10,7 +10,7 @@ use App\Models\Purchase;
 use App\Models\Transaction;
 use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Money;
 use App\Support\Template;
 use App\System\Settings;

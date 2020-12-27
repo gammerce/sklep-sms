@@ -10,7 +10,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\SmsPriceRepository;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Money;
 use App\Support\Template;

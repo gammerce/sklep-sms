@@ -2,7 +2,7 @@
 namespace Tests\Feature\Services;
 
 use App\Repositories\ServerServiceRepository;
-use App\Services\ServerServiceService;
+use App\Service\ServerServiceService;
 use Tests\Psr4\TestCases\TestCase;
 
 class ServerServiceServiceTest extends TestCase

@@ -3,7 +3,7 @@ namespace App\Payment\Transfer;
 
 use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Money;
 
 class TransferPriceService

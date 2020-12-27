@@ -6,7 +6,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Models\SmsCode;
 use App\Repositories\SmsCodeRepository;
 use App\Repositories\SmsPriceRepository;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Money;
 use App\Support\Template;

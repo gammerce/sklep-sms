@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\Api\Shop;
 
 use App\Payment\General\PaymentMethod;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
-use App\Services\UserServiceService;
+use App\Service\UserServiceService;
 use Tests\Psr4\Concerns\MakePurchaseConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 

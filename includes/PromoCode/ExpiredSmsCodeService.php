@@ -1,5 +1,5 @@
 <?php
-namespace App\Services;
+namespace App\PromoCode;
 
 use App\Support\Database;
 

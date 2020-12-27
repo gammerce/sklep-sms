@@ -6,7 +6,7 @@ use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\System\Auth;

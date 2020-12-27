@@ -8,7 +8,7 @@ use App\Payment\General\PaymentMethod;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Template;
 use App\Support\Version;

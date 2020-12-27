@@ -13,7 +13,7 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
-use App\Services\ServiceDescriptionService;
+use App\Service\ServiceDescriptionService;
 use App\Support\Template;
 
 class OtherServiceModule extends ServiceModule implements

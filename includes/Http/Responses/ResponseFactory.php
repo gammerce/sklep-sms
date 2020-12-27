@@ -3,7 +3,7 @@ namespace App\Http\Responses;
 
 use App\Http\RequestHelper;
 use App\Routing\UrlGenerator;
-use App\Services\IntendedUrlService;
+use App\Support\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Renders\ErrorRenderer;
@@ -24,7 +24,7 @@ class ResponseFactory
     /** @var ErrorRenderer */
     private $errorRenderer;
 
-    /** @var IntendedUrlService */
+    /** @var \App\Support\IntendedUrlService */
     private $intendedUrlService;
 
     /** @var UrlGenerator */

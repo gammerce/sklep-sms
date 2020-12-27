@@ -3,7 +3,7 @@ namespace App\View\Blocks;
 
 use App\Managers\ServiceManager;
 use App\Routing\UrlGenerator;
-use App\Services\UserServiceAccessService;
+use App\Service\UserServiceAccessService;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
