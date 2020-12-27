@@ -3,9 +3,6 @@ namespace App\Models;
 
 class Server
 {
-    const TYPE_AMXMODX = "amxmodx";
-    const TYPE_SOURCEMOD = "sourcemod";
-
     /** @var int */
     private $id;
 

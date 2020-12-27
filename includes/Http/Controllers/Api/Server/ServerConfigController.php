@@ -7,13 +7,13 @@ use App\Http\Responses\AssocResponse;
 use App\Http\Responses\ServerJsonResponse;
 use App\Managers\PaymentModuleManager;
 use App\Models\Price;
-use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Server\ServerDataService;
+use App\Server\ServerType;
 use App\Service\UserServiceAccessService;
 use App\System\ExternalConfigProvider;
 use App\System\ServerAuth;
@@ -142,8 +142,8 @@ class ServerConfigController
     private function isVersionAcceptable($platform, $version)
     {
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.10.0",
-            Server::TYPE_SOURCEMOD => "3.9.0",
+            ServerType::AMXMODX => "3.10.0",
+            ServerType::SOURCEMOD => "3.9.0",
         ];
 
         $minimumVersion = array_get($minimumVersions, $platform);

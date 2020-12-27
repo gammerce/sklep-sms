@@ -7,6 +7,7 @@ use App\Models\Server;
 use App\Payment\General\PaymentMethod;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\UserRepository;
+use App\Server\ServerType;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\System\License;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -78,7 +79,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 "Authorization" => "Bearer {$this->steamId}",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -130,7 +131,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 "Authorization" => "Bearer {$this->steamId}",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -170,7 +171,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 "Authorization" => "Bearer {$this->steamId}",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -217,7 +218,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
             ],
             [
                 "Authorization" => "Bearer {$this->steamId}",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 

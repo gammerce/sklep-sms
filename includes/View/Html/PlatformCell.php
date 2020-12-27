@@ -2,6 +2,7 @@
 namespace App\View\Html;
 
 use App\Models\Server;
+use App\Server\ServerType;
 use App\Translation\TranslationManager;
 
 class PlatformCell extends Cell
@@ -24,11 +25,11 @@ class PlatformCell extends Cell
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
+        if (in_array($platform, ["engine_amxx", ServerType::AMXMODX])) {
             return $lang->t("amxx_server");
         }
 
-        if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
+        if (in_array($platform, ["engine_sm", ServerType::SOURCEMOD])) {
             return $lang->t("sm_server");
         }
 

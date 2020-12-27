@@ -6,6 +6,7 @@ use App\Models\Server;
 use App\Payment\General\PaymentMethod;
 use App\Repositories\BoughtServiceRepository;
 use App\Repositories\PaymentPlatformRepository;
+use App\Server\ServerType;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Gosetti;
 use Tests\Psr4\Concerns\GosettiConcern;
@@ -82,7 +83,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -130,7 +131,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/assoc",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -171,7 +172,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 

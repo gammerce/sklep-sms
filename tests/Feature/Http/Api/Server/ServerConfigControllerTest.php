@@ -3,6 +3,7 @@ namespace Tests\Feature\Http\Api\Server;
 
 use App\Models\PaymentPlatform;
 use App\Models\Server;
+use App\Server\ServerType;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\PlayerFlagService;
 use App\System\Settings;
@@ -64,7 +65,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.10.1-rc.1242",
             ],
             [
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -124,7 +125,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -161,7 +162,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.9.0",
             ],
             [
-                "User-Agent" => Server::TYPE_SOURCEMOD,
+                "User-Agent" => ServerType::SOURCEMOD,
             ]
         );
 
@@ -186,7 +187,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.9.0",
             ],
             [
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -205,7 +206,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "version" => "3.10.0",
             ],
             [
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -240,7 +241,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 
@@ -288,7 +289,7 @@ class ServerConfigControllerTest extends HttpTestCase
             ],
             [
                 "Accept" => "application/json",
-                "User-Agent" => Server::TYPE_AMXMODX,
+                "User-Agent" => ServerType::AMXMODX,
             ]
         );
 

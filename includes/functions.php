@@ -2,10 +2,10 @@
 
 use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
-use App\Models\Server;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
 use App\Routing\UrlGenerator;
+use App\Server\ServerType;
 use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\Money;
@@ -79,7 +79,7 @@ function create_dom_element($name, $content = "", array $params = [])
  */
 function is_server_platform($platform)
 {
-    return in_array($platform, [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD]);
+    return in_array($platform, [ServerType::AMXMODX, ServerType::SOURCEMOD], true);
 }
 
 /**

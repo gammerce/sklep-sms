@@ -1,7 +1,6 @@
 <?php
 namespace App\Http;
 
-use App\Models\Server;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,17 +14,17 @@ class RequestHelper
         $this->request = $request;
     }
 
-    public function expectsJson()
+    public function expectsJson(): bool
     {
         return ($this->ajax() && $this->acceptsAnyContentType()) || $this->wantsJson();
     }
 
-    public function ajax()
+    public function ajax(): bool
     {
         return "XMLHttpRequest" === $this->request->headers->get("X-Requested-With");
     }
 
-    public function acceptsAnyContentType()
+    public function acceptsAnyContentType(): bool
     {
         $acceptable = $this->getAcceptableContentTypes();
 
@@ -33,37 +32,33 @@ class RequestHelper
             (isset($acceptable[0]) && ($acceptable[0] === "*/*" || $acceptable[0] === "*"));
     }
 
+    /**
+     * @return string[]
+     */
     public function getAcceptableContentTypes()
     {
         return array_keys(AcceptHeader::fromString($this->request->headers->get("Accept"))->all());
     }
 
-    public function isFromServer()
+    public function isFromServer(): bool
     {
-        return in_array(
-            $this->request->headers->get("User-Agent"),
-            [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD],
-            true
-        );
+        return is_server_platform($this->request->headers->get("User-Agent"));
     }
 
-    /**
-     * @return bool
-     */
-    public function isAdminSession()
+    public function isAdminSession(): bool
     {
         $session = $this->request->getSession();
         return $session && $session->getName() === "admin";
     }
 
-    private function wantsJson()
+    private function wantsJson(): bool
     {
         $acceptable = $this->getAcceptableContentTypes();
         return isset($acceptable[0]) &&
             (str_contains($acceptable[0], "/json") || str_contains($acceptable[0], "+json"));
     }
 
-    public function acceptsNewFormat(Request $request)
+    public function acceptsNewFormat(Request $request): bool
     {
         return $request->headers->get("Accept-version") === "v2";
     }
