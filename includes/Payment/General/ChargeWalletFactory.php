@@ -20,9 +20,9 @@ class ChargeWalletFactory
     {
         $this->app = $app;
         $this->paymentMethodsClasses = [
-            PaymentMethod::DIRECT_BILLING()->getValue() => DirectBillingChargeWallet::class,
-            PaymentMethod::SMS()->getValue() => SmsChargeWallet::class,
-            PaymentMethod::TRANSFER()->getValue() => TransferChargeWallet::class,
+            PaymentMethod::DIRECT_BILLING => DirectBillingChargeWallet::class,
+            PaymentMethod::SMS => SmsChargeWallet::class,
+            PaymentMethod::TRANSFER => TransferChargeWallet::class,
         ];
     }
 

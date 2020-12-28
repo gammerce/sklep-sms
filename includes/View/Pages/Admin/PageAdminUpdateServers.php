@@ -2,8 +2,8 @@
 namespace App\View\Pages\Admin;
 
 use App\Managers\ServerManager;
-use App\Models\Server;
 use App\Requesting\Requester;
+use App\Server\Platform;
 use App\Support\Template;
 use App\Support\Version;
 use App\Translation\TranslationManager;
@@ -54,10 +54,10 @@ class PageAdminUpdateServers extends PageAdmin
 
         $versionBricks = "";
         foreach ($this->serverManager->getServers() as $server) {
-            if ($server->getType() === Server::TYPE_AMXMODX) {
+            if (Platform::AMXMODX()->equals($server->getType())) {
                 $newestVersion = $newestAmxxVersion;
                 $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";
-            } elseif ($server->getType() === Server::TYPE_SOURCEMOD) {
+            } elseif (Platform::SOURCEMOD()->equals($server->getType())) {
                 $newestVersion = $newestSmVersion;
                 $link = "https://github.com/gammerce/plugin-sourcemod/releases/tag/{$newestSmVersion}";
             } else {

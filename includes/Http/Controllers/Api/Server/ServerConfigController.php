@@ -7,13 +7,13 @@ use App\Http\Responses\AssocResponse;
 use App\Http\Responses\ServerJsonResponse;
 use App\Managers\PaymentModuleManager;
 use App\Models\Price;
-use App\Models\Server;
 use App\Models\Service;
 use App\Models\SmsNumber;
 use App\Models\User;
 use App\Repositories\ServerRepository;
 use App\Repositories\UserRepository;
 use App\Server\ServerDataService;
+use App\Server\Platform;
 use App\Service\UserServiceAccessService;
 use App\System\ExternalConfigProvider;
 use App\System\ServerAuth;
@@ -38,14 +38,14 @@ class ServerConfigController
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
-        $platform = $request->headers->get("User-Agent");
+        $platform = as_server_type($request->headers->get("User-Agent"));
 
         $server = $serverAuth->server();
         if (!$server) {
             throw new EntityNotFoundException();
         }
 
-        if (!$this->isVersionAcceptable($platform, $version)) {
+        if (!$platform || !$this->isVersionAcceptable($version, $platform)) {
             return new Response("", Response::HTTP_PAYMENT_REQUIRED);
         }
 
@@ -139,15 +139,17 @@ class ServerConfigController
             : new AssocResponse($data);
     }
 
-    private function isVersionAcceptable($platform, $version)
+    private function isVersionAcceptable($version, Platform $platform)
     {
+        if (!$platform) {
+            return false;
+        }
+
         $minimumVersions = [
-            Server::TYPE_AMXMODX => "3.10.0",
-            Server::TYPE_SOURCEMOD => "3.9.0",
+            Platform::AMXMODX => "3.10.0",
+            Platform::SOURCEMOD => "3.9.0",
         ];
 
-        $minimumVersion = array_get($minimumVersions, $platform);
-
-        return $minimumVersion && version_compare($version, $minimumVersion) >= 0;
+        return version_compare($version, $minimumVersions[$platform->getValue()]) >= 0;
     }
 }

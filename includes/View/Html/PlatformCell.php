@@ -1,8 +1,7 @@
 <?php
 namespace App\View\Html;
 
-use App\Models\Server;
-use App\Translation\TranslationManager;
+use App\Server\Platform;
 
 class PlatformCell extends Cell
 {
@@ -20,18 +19,11 @@ class PlatformCell extends Cell
      */
     private function translatePlatform($platform)
     {
-        /** @var TranslationManager $translationManager */
-        $translationManager = app()->make(TranslationManager::class);
-        $lang = $translationManager->user();
+        $translations = [
+            Platform::AMXMODX => __("amxx_server"),
+            Platform::SOURCEMOD => __("sm_server"),
+        ];
 
-        if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
-            return $lang->t("amxx_server");
-        }
-
-        if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
-            return $lang->t("sm_server");
-        }
-
-        return $platform;
+        return array_get($translations, $platform, $platform);
     }
 }
