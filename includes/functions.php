@@ -737,6 +737,8 @@ function map_to_params($data)
     foreach (to_array($data) as $key => $value) {
         if ($value === null) {
             $params[] = "$key IS NULL";
+        } elseif ($value instanceof Expression && my_is_integer($key)) {
+            $params[] = "$value";
         } elseif ($value instanceof Expression) {
             $params[] = "$key = $value";
         } else {

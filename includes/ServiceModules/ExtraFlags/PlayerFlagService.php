@@ -4,16 +4,12 @@ namespace App\ServiceModules\ExtraFlags;
 use App\Managers\ServiceManager;
 use App\Repositories\UserServiceRepository;
 use App\Service\ExpiredUserServiceService;
-use App\Support\Database;
 use App\Support\Expression;
 
 class PlayerFlagService
 {
     /** @var PlayerFlagRepository */
     private $playerFlagRepository;
-
-    /** @var Database */
-    private $db;
 
     /** @var ServiceManager */
     private $serviceManager;
@@ -32,11 +28,9 @@ class PlayerFlagService
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
         UserServiceRepository $userServiceRepository,
         ExpiredUserServiceService $expiredUserServiceService,
-        Database $db,
         ServiceManager $serviceManager
     ) {
         $this->playerFlagRepository = $playerFlagRepository;
-        $this->db = $db;
         $this->serviceManager = $serviceManager;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
         $this->userServiceRepository = $userServiceRepository;
@@ -105,14 +99,12 @@ class PlayerFlagService
         }
 
         // Let's set identical passwords for all services of that player on that server
-        $this->db->statement(
-            <<<EOF
-UPDATE `$table` 
-SET `password` = ? 
-WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?
-EOF
-            )
-            ->execute([$password, $serverId, $type, $authData]);
+        $this->extraFlagUserServiceRepository->updatePassword(
+            $password,
+            $serverId,
+            $type,
+            $authData
+        );
 
         // Let's recalculate players flags since we've added new user service
         $this->recalculatePlayerFlags($serverId, $type, $authData);
@@ -127,40 +119,39 @@ EOF
      */
     public function recalculatePlayerFlags($serverId, $type, $authData)
     {
-        // Musi byc podany typ, bo inaczej nam wywali wszystkie usługi bez typu
-        // Bez serwera oraz auth_data, skrypt po prostu nic nie zrobi
+        // The type has to be given, otherwise we will remove all player flags without a type
+        // The script will do nothing without a server or authData
         if (!$type) {
             return;
         }
 
-        // Usuwanie dane, ponieważ za chwilę będziemy je tworzyć na nowo
+        // Delete all player flags matching criteria since we're going to create it from scratch
         $this->playerFlagRepository->deleteByCredentials($serverId, $type, $authData);
 
-        // Pobieranie wszystkich usług na konkretne dane
-        $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
-        $statement = $this->db->statement(
-            "SELECT * FROM `ss_user_service` AS us " .
-                "INNER JOIN `$table` AS usef ON us.id = usef.us_id " .
-                "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ? AND ( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"
-        );
-        $statement->execute([$serverId, $type, $authData]);
+        // Get all player flags matching criteria
+        $extraFlagUserServices = $this->extraFlagUserServiceRepository->findAll([
+            "server_id" => $serverId,
+            "type" => $type,
+            "auth_data" => $authData,
+            new Expression("( `expire` > UNIX_TIMESTAMP() OR `expire` = -1 )"),
+        ]);
 
-        // Wyliczanie za jaki czas dana flaga ma wygasnąć
+        // Let's calculate when each flag should expire
         $flags = [];
         $password = "";
-        foreach ($statement as $row) {
-            $extraFlagUserService = $this->extraFlagUserServiceRepository->mapToModel($row);
-
-            // Pobranie hasła, bierzemy je tylko raz na początku
-            $password = $password ? $password : $extraFlagUserService->getPassword();
+        foreach ($extraFlagUserServices as $extraFlagUserService) {
+            // Let's get one password we will use for all player flags
+            if (!strlen($password)) {
+                $password = $extraFlagUserService->getPassword();
+            }
 
             $service = $this->serviceManager->get($extraFlagUserService->getServiceId());
-            $serviceFlags = $service->getFlags();
-            foreach (str_split($serviceFlags) as $flag) {
-                // Bierzemy maksa, ponieważ inaczej robią się problemy.
-                // A tak to jak wygaśnie jakaś usługa, to wykona się cron, usunie ją i przeliczy flagi jeszcze raz
-                // I znowu weźmie maksa
-                // Czyli stan w tabeli players flags nie jest do końca odzwierciedleniem rzeczywistości :)
+            assert($service);
+
+            foreach (str_split($service->getFlags()) as $flag) {
+                // We take the maximum, because otherwise we can get in trouble. Cron detects when a service expires,
+                // removes it and recalculates players flags. Maximum timestamp is set again.
+                // All in all, players flags table state is not entirely a reflection of reality.
                 $flags[$flag] = $this->maxMinus(
                     array_get($flags, $flag),
                     $extraFlagUserService->getExpire()
