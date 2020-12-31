@@ -19,6 +19,15 @@ class ExtraFlagUserServiceRepository
         $this->userServiceRepository = $userServiceRepository;
     }
 
+    public function find(array $data): ?ExtraFlagUserService
+    {
+        try {
+            return $this->findOrFail($data);
+        } catch (EntityNotFoundException $e) {
+            return null;
+        }
+    }
+
     /**
      * @param array $data
      * @return ExtraFlagUserService

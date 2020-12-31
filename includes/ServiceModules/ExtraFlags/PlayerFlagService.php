@@ -45,12 +45,12 @@ class PlayerFlagService
 
     /**
      * @param string $serviceId
-     * @param number $serverId
-     * @param number|null $days
+     * @param int $serverId
+     * @param int|null $days
      * @param string $type
      * @param string $authData
      * @param string|null $password
-     * @param number|null $userId
+     * @param int|null $userId
      * @return void
      */
     public function addPlayerFlags(
@@ -73,18 +73,14 @@ class PlayerFlagService
 
         // Let's add a user service. If there is service with the same data,
         // let's prolong the existing one.
-        $statement = $this->db->statement(
-            <<<EOF
-SELECT * FROM `ss_user_service` AS us 
-INNER JOIN `$table` AS m ON m.us_id = us.id 
-WHERE us.`service_id` = ? AND m.`server_id` = ? AND m.`type` = ? AND m.`auth_data` = ?
-EOF
-        );
-        $statement->execute([$serviceId, $serverId, $type, $authData]);
+        $userService = $this->extraFlagUserServiceRepository->find([
+            "us.service_id" => $serviceId,
+            "m.server_id" => $serverId,
+            "m.type" => $type,
+            "m.auth_data" => $authData,
+        ]);
 
-        if ($statement->rowCount()) {
-            $userService = $this->extraFlagUserServiceRepository->mapToModel($statement->fetch());
-
+        if ($userService) {
             if ($seconds === null || $userService->isForever()) {
                 $expire = null;
             } else {
@@ -109,11 +105,12 @@ EOF
         }
 
         // Let's set identical passwords for all services of that player on that server
-        $this->db
-            ->statement(
-                "UPDATE `$table` " .
-                    "SET `password` = ? " .
-                    "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
+        $this->db->statement(
+            <<<EOF
+UPDATE `$table` 
+SET `password` = ? 
+WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?
+EOF
             )
             ->execute([$password, $serverId, $type, $authData]);
 
