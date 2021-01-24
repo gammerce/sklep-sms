@@ -34,7 +34,7 @@ jobs:
       -
         uses: ramsey/composer-install@v1
         with:
-          composer-options: "--no-dev --optimize-autoloader"
+          composer-options: "--no-dev --optimize-autoloader --ignore-platform-reqs"
       -
         run: yarn install
       -
