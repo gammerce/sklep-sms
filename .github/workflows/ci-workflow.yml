@@ -11,15 +11,15 @@ jobs:
     name: Static code analysis
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the repo
+      -
         uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
+      -
         uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      - name: Install pre-commit
+      -
         run: pip install pre-commit
-      - name: Run pre-commit
+      -
         run: pre-commit run --all-files -c .pre-commit-config-ci.yaml
 
   frontend:
