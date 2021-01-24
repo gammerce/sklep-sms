@@ -38,6 +38,8 @@ jobs:
       -
         run: yarn install
       -
+        run: rm -r ./tests
+      -
         name: Transpile to PHP ${{ matrix.php_version }}
         run: |
           docker run \
