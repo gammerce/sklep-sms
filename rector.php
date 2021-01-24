@@ -41,5 +41,4 @@ return static function (ContainerConfigurator $containerConfigurator) {
     }
 
     $parameters->set(Option::SETS, $sets);
-    $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
 };

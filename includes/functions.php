@@ -805,13 +805,15 @@ function versioned($path, $query = [])
     return $url->versioned($path, $query);
 }
 
-function dd(...$vars)
-{
-    foreach ($vars as $v) {
-        VarDumper::dump($v);
-    }
+if (!function_exists("dd")) {
+    function dd(...$vars)
+    {
+        foreach ($vars as $v) {
+            VarDumper::dump($v);
+        }
 
-    exit(1);
+        exit(1);
+    }
 }
 
 /**
