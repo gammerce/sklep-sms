@@ -1,0 +1,112 @@
+name: CI workflow
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  static_code_analysis:
+    name: Static code analysis
+    runs-on: ubuntu-latest
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      -
+        run: pip install pre-commit
+      -
+        run: pre-commit run --all-files -c .pre-commit-config-ci.yaml
+
+  frontend:
+    name: Build frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: yarn install
+      - run: yarn build
+        env:
+          NODE_ENV: production
+
+  backend:
+    name: Run tests
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - php_version: "5.6"
+            composer: "composer-v5.json"
+          - php_version: "7.4"
+            composer: "composer-v5.json"
+          - php_version: "8.0"
+            composer: "composer.json"
+    env:
+      APP_DEBUG: true
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: sklep_sms_test
+      DB_USERNAME: root
+      DB_PASSWORD: secret
+      COMPOSER: ${{ matrix.composer }}
+    services:
+      mysql:
+        image: mysql:5.5
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_DATABASE: sklep_sms_test
+          MYSQL_ROOT_PASSWORD: secret
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        run: sudo /etc/init.d/mysql start
+      -
+        name: Setup PHP ${{ matrix.php_version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+          extensions: mysqli
+          coverage: xdebug
+      -
+        uses: ramsey/composer-install@v1
+        with:
+          composer-options: "--optimize-autoloader"
+      -
+        # We need to remove psy/psysh cause otherwise rector doesn't work for php 5.6
+        run: composer remove --dev psy/psysh
+      -
+        name: Transpile to PHP ${{ matrix.php_version }}
+        run: |
+          docker run \
+          --rm \
+          --env PHP_VERSION=${{ matrix.php_version }} \
+          -v $(pwd):/project \
+          -w /rector \
+          rector/rector:latest \
+          process \
+          --autoload-file=/project/vendor/autoload.php \
+          --config /project/rector.php
+      -
+        run: php artisan test:setup
+        env:
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+      -
+        name: Run tests
+        run: ./vendor/bin/phpunit --coverage-clover clover.xml
+        env:
+          XDEBUG_MODE: coverage
+          DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+      -
+        name: Upload coverage results to Coveralls
+        run: |
+          if [[ ${{ matrix.php_version }} == 8.0 ]]; then
+            ./vendor/bin/php-coveralls --coverage_clover clover.xml --json_path coveralls.json
+          fi
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
