@@ -82,6 +82,7 @@ jobs:
           BUILD_NAME: build-${{ matrix.php_version }}.zip
       -
         name: Get release
+        id: get_release
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
