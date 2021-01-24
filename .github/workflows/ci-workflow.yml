@@ -90,6 +90,8 @@ jobs:
           -w /rector \
           rector/rector:latest \
           process \
+          /project/includes \
+          /project/tests \
           --autoload-file=/project/vendor/autoload.php \
           --config /project/rector.php
       -

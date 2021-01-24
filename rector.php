@@ -9,9 +9,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $parameters = $containerConfigurator->parameters();
     $services = $containerConfigurator->services();
 
-    // paths to refactor; solid alternative to CLI arguments
-    $parameters->set(Option::PATHS, [__DIR__ . "/includes", __DIR__ . "/tests"]);
-
     // Define what rule sets will be applied
     $sets = [];
     $phpVersion = getenv("PHP_VERSION");
