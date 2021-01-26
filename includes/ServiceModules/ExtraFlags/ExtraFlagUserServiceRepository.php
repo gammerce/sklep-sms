@@ -19,12 +19,32 @@ class ExtraFlagUserServiceRepository
         $this->userServiceRepository = $userServiceRepository;
     }
 
+    public function find(array $data): ?ExtraFlagUserService
+    {
+        $models = $this->findAll($data);
+        return empty($models) ? null : $models[0];
+    }
+
     /**
      * @param array $data
      * @return ExtraFlagUserService
      * @throws EntityNotFoundException
      */
     public function findOrFail(array $data)
+    {
+        $models = $this->findAll($data);
+        if (empty($models)) {
+            throw new EntityNotFoundException();
+        }
+
+        return $models[0];
+    }
+
+    /**
+     * @param array $data
+     * @return ExtraFlagUserService[]
+     */
+    public function findAll(array $data)
     {
         list($params, $values) = map_to_params($data);
         $params = implode(" AND ", $params);
@@ -38,12 +58,11 @@ class ExtraFlagUserServiceRepository
         );
         $statement->execute($values);
 
-        $data = $statement->fetch();
-        if (!$data) {
-            throw new EntityNotFoundException();
-        }
-
-        return $this->mapToModel($data);
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
     }
 
     public function create($serviceId, $userId, $seconds, $serverId, $type, $authData, $password)
@@ -77,6 +96,26 @@ class ExtraFlagUserServiceRepository
         }
 
         return null;
+    }
+
+    /**
+     * @param string $password
+     * @param int $serverId
+     * @param int $type
+     * @param string $authData
+     */
+    public function updatePassword($password, $serverId, $type, $authData)
+    {
+        $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
+        $this->db
+            ->statement(
+                <<<EOF
+UPDATE `$table` 
+SET `password` = ? 
+WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?
+EOF
+            )
+            ->execute([$password, $serverId, $type, $authData]);
     }
 
     public function mapToModel(array $data)
