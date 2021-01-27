@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Models\ServerService;
 use App\Repositories\ServerRepository;
+use App\Repositories\ServerServiceRepository;
 use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
@@ -9,13 +11,14 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerResourceTest extends HttpTestCase
 {
-    /** @var ServerRepository */
-    private $serverRepository;
+    private ServerRepository $serverRepository;
+    private ServerServiceRepository $serverServiceRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->serverRepository = $this->app->make(ServerRepository::class);
+        $this->serverServiceRepository = $this->app->make(ServerServiceRepository::class);
     }
 
     /** @test */
@@ -45,6 +48,7 @@ class ServerResourceTest extends HttpTestCase
                 $transferPaymentPlatform1->getId(),
                 $transferPaymentPlatform2->getId(),
             ],
+            "service_ids" => ["vip", "vippro"],
         ]);
 
         // then
@@ -60,6 +64,12 @@ class ServerResourceTest extends HttpTestCase
             [$transferPaymentPlatform1->getId(), $transferPaymentPlatform2->getId()],
             $freshServer->getTransferPlatformIds()
         );
+
+        $links = $this->serverServiceRepository->findByServer($server->getId());
+        $serviceIds = collect($links)
+            ->map(fn(ServerService $serverService) => $serverService->getServiceId())
+            ->all();
+        $this->assertEquals(["vip", "vippro"], $serviceIds);
     }
 
     /** @test */

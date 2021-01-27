@@ -85,7 +85,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         $recordId = as_int($request->query->get("record"));
 
-        $bodyRows = collect($this->serverManager->getServers())
+        $bodyRows = collect($this->serverManager->all())
             ->filter(function (Server $server) use ($recordId) {
                 return $recordId === null || $server->getId() === $recordId;
             })
@@ -150,7 +150,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId === "edit") {
-            $server = $this->serverManager->getServer($query["id"]);
+            $server = $this->serverManager->get($query["id"]);
         } else {
             $server = null;
         }

@@ -28,7 +28,7 @@ class ServerLinkedToServiceRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        $server = $this->serverManager->getServer($value);
+        $server = $this->serverManager->get($value);
 
         if (
             !$server ||

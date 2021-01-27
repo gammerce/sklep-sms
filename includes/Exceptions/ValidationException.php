@@ -2,7 +2,6 @@
 namespace App\Exceptions;
 
 use Exception;
-use Illuminate\Contracts\Support\Arrayable;
 
 class ValidationException extends Exception
 {

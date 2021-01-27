@@ -156,7 +156,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     })
                     ->join();
 
-                $servers = collect($this->serverManager->getServers())
+                $servers = collect($this->serverManager->all())
                     ->map(function (Server $server) {
                         return new Option($server->getName(), $server->getId());
                     })

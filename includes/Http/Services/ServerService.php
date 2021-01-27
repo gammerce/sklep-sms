@@ -17,14 +17,9 @@ use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 
 class ServerService
 {
-    /** @var ServerServiceService */
-    private $serverServiceService;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private ServerServiceService $serverServiceService;
+    private ServiceModuleManager $serviceModuleManager;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         ServiceManager $serviceManager,
@@ -68,7 +63,7 @@ class ServerService
                 return [
                     "service_id" => $service->getId(),
                     "server_id" => $serverId,
-                    "connect" => (bool) in_array($service->getId(), $serviceIds, true),
+                    "connect" => in_array($service->getId(), $serviceIds, true),
                 ];
             })
             ->all();

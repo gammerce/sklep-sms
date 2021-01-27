@@ -6,8 +6,8 @@ use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\Support\PriceTextService;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -100,7 +100,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 $class = $logInfo["class"];
             } else {
                 $service = $this->serviceManager->get($transaction->getServiceId());
-                $server = $this->serverManager->getServer($transaction->getServerId());
+                $server = $this->serverManager->get($transaction->getServerId());
                 $desc = $this->lang->t(
                     "service_was_bought",
                     $service ? $service->getNameI18n() : "",

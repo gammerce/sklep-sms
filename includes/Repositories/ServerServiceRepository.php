@@ -58,6 +58,24 @@ class ServerServiceRepository
             ->all();
     }
 
+    /**
+     * @param string $serviceId
+     * @return ServerService[]
+     */
+    public function findByService($serviceId)
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_servers_services` WHERE `service_id` = ?"
+        );
+        $statement->execute([$serviceId]);
+
+        return collect($statement)
+            ->map(function (array $row) {
+                return $this->mapToModel($row);
+            })
+            ->all();
+    }
+
     public function mapToModel(array $data)
     {
         return new ServerService(as_int($data["server_id"]), $data["service_id"]);

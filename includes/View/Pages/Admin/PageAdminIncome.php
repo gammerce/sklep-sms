@@ -130,7 +130,7 @@ class PageAdminIncome extends PageAdmin
             0 => $this->createDatasetEntry($this->lang->t("other"), $this->getColor(0)),
         ];
 
-        foreach ($this->serverManager->getServers() as $server) {
+        foreach ($this->serverManager->all() as $server) {
             $dataset[$server->getId()] = $this->createDatasetEntry(
                 $server->getName(),
                 $this->getColor(count($dataset))
@@ -198,7 +198,7 @@ class PageAdminIncome extends PageAdmin
     {
         $tableRow = "";
 
-        foreach ($this->serverManager->getServers() as $server) {
+        foreach ($this->serverManager->all() as $server) {
             $tableRow .= new HeadCell($server->getName());
         }
 
@@ -259,7 +259,7 @@ class PageAdminIncome extends PageAdmin
      */
     private function getServersIds()
     {
-        return collect($this->serverManager->getServers())
+        return collect($this->serverManager->all())
             ->map(function (Server $server) {
                 return $server->getId();
             })

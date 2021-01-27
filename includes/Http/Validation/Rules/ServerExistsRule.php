@@ -18,7 +18,7 @@ class ServerExistsRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!$this->serverManager->getServer($value)) {
+        if (!$this->serverManager->get($value)) {
             throw new ValidationException($this->lang->t("no_server_id"));
         }
     }

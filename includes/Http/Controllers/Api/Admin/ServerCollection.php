@@ -27,11 +27,10 @@ class ServerCollection
             $validated["ip"],
             $validated["port"],
             $validated["sms_platform"],
-            $validated["transfer_platform"] ?? []
+            $validated["transfer_platform"] ?: []
         );
-        $serverId = $server->getId();
-        $serverService->updateServerServiceLinks($serverId, $validated["service_ids"] ?? []);
-        $databaseLogger->logWithActor("log_server_added", $serverId);
+        $serverService->updateServerServiceLinks($server->getId(), $validated["service_ids"] ?: []);
+        $databaseLogger->logWithActor("log_server_added", $server->getId());
 
         return new SuccessApiResponse($lang->t("server_added"), [
             "data" => [

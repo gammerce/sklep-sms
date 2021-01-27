@@ -10,9 +10,9 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PriceRepository;
 use App\Repositories\SmsPriceRepository;
-use App\Support\PriceTextService;
 use App\Support\Database;
 use App\Support\Money;
+use App\Support\PriceTextService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
@@ -21,6 +21,7 @@ use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\NoneText;
+use App\View\Html\Option;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -109,7 +110,7 @@ EOF
                 if ($price->isForEveryServer()) {
                     $serverEntry = $this->lang->t("all");
                 } else {
-                    $server = $this->serverManager->getServer($price->getServerId());
+                    $server = $this->serverManager->get($price->getServerId());
                     $serverEntry = $server
                         ? new ServerRef($server->getId(), $server->getName())
                         : new NoneText();
@@ -185,21 +186,18 @@ EOF
 
         $services = collect($this->serviceManager->all())
             ->map(function (Service $service) use ($price) {
-                return create_dom_element(
-                    "option",
-                    "{$service->getName()} ( {$service->getId()} )",
+                $selected = $price && $price->getServiceId() === $service->getId();
+                return new Option(
+                    "{$service->getName()} ({$service->getId()})",
+                    $service->getId(),
                     [
-                        "value" => $service->getId(),
-                        "selected" =>
-                            $price && $price->getServiceId() === $service->getId()
-                                ? "selected"
-                                : "",
+                        "selected" => selected($selected),
                     ]
                 );
             })
             ->join();
 
-        $servers = collect($this->serverManager->getServers())
+        $servers = collect($this->serverManager->all())
             ->map(function (Server $server) use ($price) {
                 return create_dom_element("option", $server->getName(), [
                     "value" => $server->getId(),

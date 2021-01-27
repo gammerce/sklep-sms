@@ -3,8 +3,8 @@ namespace App\Payment\DirectBilling;
 
 use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
-use App\Support\PriceTextService;
 use App\Support\Money;
+use App\Support\PriceTextService;
 
 class DirectBillingPriceService
 {
