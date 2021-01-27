@@ -17,17 +17,10 @@ class IterateRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!is_array($value)) {
-            return [$this->lang->t("field_array")];
-        }
+        assert(is_array($value));
 
         foreach ($value as $item) {
-            $result = $this->rule->validate($attribute, $item, $data);
-            if (count($result)) {
-                return $result;
-            }
+            $this->rule->validate($attribute, $item, $data);
         }
-
-        return [];
     }
 }

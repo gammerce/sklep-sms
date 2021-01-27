@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Support\FileSystemContract;
 use App\Support\Path;
@@ -26,9 +27,7 @@ class LanguageRule extends BaseRule
             !$this->fileSystem->isDirectory($this->path->to("translations/$value")) ||
             $value[0] === "."
         ) {
-            return [$this->lang->t("no_language")];
+            throw new ValidationException($this->lang->t("no_language"));
         }
-
-        return [];
     }
 }

@@ -13,13 +13,13 @@ class ValidationException extends Exception
     public $data;
 
     /**
-     * @param array|Arrayable $warnings
+     * @param mixed $warnings
      * @param array $data
      */
     public function __construct($warnings, array $data = [])
     {
         parent::__construct("Validation exception");
-        $this->warnings = $warnings instanceof Arrayable ? $warnings->toArray() : $warnings;
+        $this->warnings = to_array($warnings);
         $this->data = $data;
     }
 }

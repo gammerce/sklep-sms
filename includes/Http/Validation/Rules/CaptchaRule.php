@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Loggers\FileLogger;
 use App\Requesting\Requester;
@@ -43,7 +44,7 @@ class CaptchaRule extends BaseRule
             $result = $response->json();
 
             if (array_get($result, "success")) {
-                return [];
+                return;
             }
 
             $this->fileLogger->error("Captcha failed", [
@@ -52,6 +53,6 @@ class CaptchaRule extends BaseRule
             ]);
         }
 
-        return ["Captcha failed"];
+        throw new ValidationException("Captcha failed");
     }
 }

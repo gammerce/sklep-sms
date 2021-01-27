@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class MaxLengthRule extends BaseRule
@@ -17,9 +18,7 @@ class MaxLengthRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (strlen($value) > $this->length) {
-            return [$this->lang->t("field_length_max_warn", $this->length)];
+            throw new ValidationException($this->lang->t("field_length_max_warn", $this->length));
         }
-
-        return [];
     }
 }

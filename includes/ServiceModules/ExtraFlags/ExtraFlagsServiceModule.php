@@ -2,6 +2,7 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\ValidationException;
+use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
@@ -235,7 +236,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $validator->extendRules([
             "flags" => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
-            "type" => [new RequiredRule(), new ExtraFlagTypeListRule()],
+            "type" => [new RequiredRule(), new ArrayRule(), new ExtraFlagTypeListRule()],
             "web" => [new RequiredRule(), new YesNoRule()],
         ]);
     }

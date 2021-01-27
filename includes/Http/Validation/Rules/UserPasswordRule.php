@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Models\User;
 
@@ -18,9 +19,7 @@ class UserPasswordRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (hash_password($value, $this->user->getSalt()) != $this->user->getPassword()) {
-            return [$this->lang->t("old_pass_wrong")];
+            throw new ValidationException($this->lang->t("old_pass_wrong"));
         }
-
-        return [];
     }
 }

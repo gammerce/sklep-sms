@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Services;
 
+use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\GroupsRule;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MaxLengthRule;
@@ -19,7 +20,7 @@ class ServiceService
         ]);
 
         $validator->extendRules([
-            "groups" => [new GroupsRule()],
+            "groups" => [new ArrayRule(), new GroupsRule()],
             "name" => [new RequiredRule()],
             "order" => [new IntegerRule()],
             "short_description" => [new MaxLengthRule(28)],

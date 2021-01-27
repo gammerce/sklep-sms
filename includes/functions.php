@@ -17,6 +17,7 @@ use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -758,6 +759,10 @@ function to_array($items)
 {
     if ($items instanceof Traversable) {
         return iterator_to_array($items);
+    }
+
+    if ($items instanceof Arrayable) {
+        return $items->toArray();
     }
 
     if (is_array($items)) {
