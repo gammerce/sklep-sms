@@ -1,12 +1,11 @@
 <?php
-namespace App\Exceptions;
+namespace App\License\Exceptions;
 
 use App\Requesting\Response;
 
 class LicenseRequestException extends LicenseException
 {
-    /** @var Response|null */
-    public $response;
+    public ?Response $response;
 
     public function __construct(Response $response = null, $previous = null)
     {

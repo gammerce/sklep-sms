@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicense;
+namespace App\License\ServiceModules\ShopSmsLicense;
 
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\IntegerRule;
@@ -7,7 +7,7 @@ use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\PasswordRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
-use App\Models\LicenseUserService;
+use App\License\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -27,7 +27,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
-use App\ServiceModules\ShopSmsLicense\Rules\LicenseEnginesRule;
+use App\License\ServiceModules\ShopSmsLicense\Rules\LicenseEnginesRule;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
 use App\Service\ServiceDescriptionService;
@@ -68,48 +68,23 @@ class LicenseServiceModule extends ServiceModule implements
 {
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
-    // Kwoty za dzień w groszach
+    // Costs per day in grosze
     const COST_SHOP_PER_DAY = 40;
     const COST_ENGINE_PER_DAY = 20;
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var LicenseServerService */
-    private $licenseServerService;
-
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
-    /** @var LicenseUserServiceRepository */
-    private $licenseUserServiceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var EngineService */
-    private $engineService;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private Translator $lang;
+    private Auth $auth;
+    private BoughtServiceService $boughtServiceService;
+    private LicenseServerService $licenseServerService;
+    private UserServiceService $userServiceService;
+    private UserServiceRepository $userServiceRepository;
+    private PurchaseDataService $purchaseDataService;
+    private LicenseUserServiceRepository $licenseUserServiceRepository;
+    private PriceTextService $priceTextService;
+    private EngineService $engineService;
+    private Settings $settings;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Auth $auth,

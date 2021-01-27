@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicense\Rules;
+namespace App\License\ServiceModules\ShopSmsLicense\Rules;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;

@@ -1,7 +1,7 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicense;
+namespace App\License\ServiceModules\ShopSmsLicense;
 
-use App\Models\LicenseUserService;
+use App\License\Models\LicenseUserService;
 
 class LicenseUserServiceRepository
 {

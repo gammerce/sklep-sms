@@ -1,13 +1,12 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicense;
+namespace App\License\ServiceModules\ShopSmsLicense;
 
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class EngineService
 {
-    /** @var Translator */
-    private $lang;
+    private Translator $lang;
 
     public function __construct(TranslationManager $translationManager)
     {

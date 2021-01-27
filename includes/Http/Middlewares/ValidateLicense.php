@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Middlewares;
 
-use App\Exceptions\LicenseException;
+use App\License\Exceptions\LicenseException;
 use App\System\Application;
 use App\System\Auth;
 use App\System\License;

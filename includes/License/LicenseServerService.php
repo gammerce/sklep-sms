@@ -7,14 +7,9 @@ use Exception;
 
 class LicenseServerService
 {
-    /** @var Requester */
-    private $requester;
-
-    /** @var string */
-    private $url;
-
-    /** @var string */
-    private $licenseSecret;
+    private Requester $requester;
+    private string $url;
+    private string $licenseSecret;
 
     public function __construct($url, $licenseSecret, Requester $requester)
     {

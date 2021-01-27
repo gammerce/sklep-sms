@@ -3,7 +3,7 @@ namespace App\System;
 
 use App\Cache\CacheEnum;
 use App\Cache\CachingRequester;
-use App\Exceptions\LicenseRequestException;
+use App\License\Exceptions\LicenseRequestException;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;

@@ -1,5 +1,5 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicenseProlong;
+namespace App\License\ServiceModules\ShopSmsLicenseProlong;
 
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MinValueRule;
@@ -7,7 +7,7 @@ use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
-use App\Models\LicenseUserService;
+use App\License\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -21,8 +21,8 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\ServiceModule;
-use App\ServiceModules\ShopSmsLicense\LicenseUserServiceRepository;
-use App\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
+use App\License\ServiceModules\ShopSmsLicense\LicenseUserServiceRepository;
+use App\License\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
 use App\Service\ServiceDescriptionService;
@@ -46,32 +46,15 @@ class LicenseProlongServiceModule extends ServiceModule implements
     const MODULE_ID = "shopsms_license_prolong";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var LicenseServerService */
-    private $licenseServerService;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var AdminPaymentService */
-    private $adminPaymentService;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var LicenseUserServiceRepository */
-    private $licenseUserServiceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Database */
-    private $db;
+    private Translator $lang;
+    private Auth $auth;
+    private LicenseServerService $licenseServerService;
+    private BoughtServiceService $boughtServiceService;
+    private AdminPaymentService $adminPaymentService;
+    private DatabaseLogger $logger;
+    private LicenseUserServiceRepository $licenseUserServiceRepository;
+    private PriceTextService $priceTextService;
+    private Database $db;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,

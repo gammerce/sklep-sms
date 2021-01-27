@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Server;
 
-use App\Exceptions\LicenseRequestException;
+use App\License\Exceptions\LicenseRequestException;
 use App\Models\Price;
 use App\Models\Server;
 use App\Payment\General\PaymentMethod;

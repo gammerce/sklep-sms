@@ -1,15 +1,14 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicense\Rules;
+namespace App\License\ServiceModules\ShopSmsLicense\Rules;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
-use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
+use App\License\ServiceModules\ShopSmsLicense\LicenseServiceModule;
 use App\Support\Database;
 
 class LicenseProlongableRule extends BaseRule
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct()
     {

@@ -1,7 +1,7 @@
 <?php
-namespace App\ServiceModules\ShopSmsLicenseEdit;
+namespace App\License\ServiceModules\ShopSmsLicenseEdit;
 
-use App\Models\LicenseUserService;
+use App\License\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -12,7 +12,7 @@ use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
-use App\ServiceModules\ShopSmsLicense\EngineService;
+use App\License\ServiceModules\ShopSmsLicense\EngineService;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
 use App\Service\ServiceDescriptionService;
@@ -32,29 +32,14 @@ class LicenseEditServiceModule extends ServiceModule implements
     const MODULE_ID = "shopsms_license_edit";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var LicenseServerService */
-    private $licenseServerService;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var EngineService */
-    private $engineService;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var Database */
-    private $db;
+    private Translator $lang;
+    private LicenseServerService $licenseServerService;
+    private BoughtServiceService $boughtServiceService;
+    private UserServiceService $userServiceService;
+    private PriceTextService $priceTextService;
+    private EngineService $engineService;
+    private UserServiceRepository $userServiceRepository;
+    private Database $db;
 
     public function __construct(
         BoughtServiceService $boughtServiceService,

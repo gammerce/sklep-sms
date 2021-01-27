@@ -3,9 +3,9 @@ namespace App\Providers;
 
 use App\Managers\ServiceModuleManager;
 use App\Requesting\Requester;
-use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
-use App\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
-use App\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
+use App\License\ServiceModules\ShopSmsLicense\LicenseServiceModule;
+use App\License\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
+use App\License\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
 use App\License\LicenseServerService;
 use App\System\Application;
 

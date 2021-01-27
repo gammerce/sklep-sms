@@ -1,25 +1,16 @@
 <?php
-namespace App\Models;
+namespace App\License\Models;
+
+use App\Models\UserService;
 
 class LicenseUserService extends UserService
 {
-    /** @var string */
-    private $identifier;
-
-    /** @var string */
-    private $email;
-
-    /** @var int */
-    private $costDaily;
-
-    /** @var bool */
-    private $platformAmxModX;
-
-    /** @var bool */
-    private $platformSourceMod;
-
-    /** @var int */
-    private $externalLicenseId;
+    private string $identifier;
+    private string $email;
+    private int $costDaily;
+    private bool $platformAmxModX;
+    private bool $platformSourceMod;
+    private int $externalLicenseId;
 
     public function __construct(
         $id,
