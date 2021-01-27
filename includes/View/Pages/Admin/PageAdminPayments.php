@@ -3,8 +3,8 @@ namespace App\View\Pages\Admin;
 
 use App\Models\Transaction;
 use App\Repositories\TransactionRepository;
-use App\Support\PriceTextService;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;

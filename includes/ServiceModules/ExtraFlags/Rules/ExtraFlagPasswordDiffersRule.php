@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\Support\Database;
@@ -31,9 +32,9 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
         $existingPassword = $statement->fetchColumn();
 
         if ($existingPassword && $existingPassword !== $value) {
-            return [$this->lang->t("existing_service_has_different_password")];
+            throw new ValidationException(
+                $this->lang->t("existing_service_has_different_password")
+            );
         }
-
-        return [];
     }
 }

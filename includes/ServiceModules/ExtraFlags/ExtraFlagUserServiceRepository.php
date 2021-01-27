@@ -46,7 +46,7 @@ class ExtraFlagUserServiceRepository
      */
     public function findAll(array $data)
     {
-        list($params, $values) = map_to_params($data);
+        [$params, $values] = map_to_params($data);
         $params = implode(" AND ", $params);
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;

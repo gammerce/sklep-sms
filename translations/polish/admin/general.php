@@ -221,6 +221,7 @@ return [
     "service_edit" => "Usługa została prawidłowo wyedytowana.",
     "service_edit_unable" => "Tej usługi nie da rady się edytować.",
     "service_no_edit" => "Usługa nie została wyedytowana.",
+    "service_servers_hint" => "Lista serwerów na których można zakupić tę usługę",
     "services" => "Usługi",
     "settings" => "Ustawienia sklepu",
     "settings_edit" => "Ustawienia zostały prawidłowo wyedytowane.",

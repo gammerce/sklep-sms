@@ -2,6 +2,7 @@
 namespace App\ServiceModules\ExtraFlags;
 
 use App\Exceptions\ValidationException;
+use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\ConfirmedRule;
 use App\Http\Validation\Rules\DateTimeRule;
 use App\Http\Validation\Rules\EmailRule;
@@ -35,6 +36,7 @@ use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\UserServiceRepository;
+use App\Service\ServiceDescriptionService;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordRule;
@@ -54,10 +56,9 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
 use App\ServiceModules\ServiceModule;
-use App\Support\PriceTextService;
-use App\Service\ServiceDescriptionService;
 use App\Support\Database;
 use App\Support\Expression;
+use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\System\Auth;
@@ -235,7 +236,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         $validator->extendRules([
             "flags" => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
-            "type" => [new RequiredRule(), new ExtraFlagTypeListRule()],
+            "type" => [new RequiredRule(), new ArrayRule(), new ExtraFlagTypeListRule()],
             "web" => [new RequiredRule(), new YesNoRule()],
         ]);
     }
@@ -395,7 +396,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $quantityPrice = $this->purchasePriceService->getServicePriceByQuantity(
             $quantity,
             $this->service,
-            $this->serverManager->getServer($serverId)
+            $this->serverManager->get($serverId)
         );
 
         if ($quantityPrice) {
@@ -411,7 +412,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function purchaseDataValidate(Purchase $purchase)
     {
-        $server = $this->serverManager->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
+        $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
 
         if ($server) {
             $paymentPlatformSelect = $purchase->getPaymentSelect();
@@ -466,7 +467,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
     public function orderDetails(Purchase $purchase)
     {
-        $server = $this->serverManager->getServer($purchase->getOrder(Purchase::ORDER_SERVER));
+        $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
         $typeName = $this->getTypeName($purchase->getOrder("type"));
 
         $password = "";
@@ -556,7 +557,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $this->priceTextService->getPriceText($transaction->getCost()) ?:
             $this->lang->t("none");
 
-        $server = $this->serverManager->getServer($transaction->getServerId());
+        $server = $this->serverManager->get($transaction->getServerId());
 
         if (
             $transaction->getExtraDatum("type") &
@@ -900,7 +901,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $serviceInfo["password"] = "********";
         }
 
-        $server = $this->serverManager->getServer($userService->getServerId());
+        $server = $this->serverManager->get($userService->getServerId());
         $serviceInfo["server"] = $server->getName();
         $serviceInfo["expire"] = as_expiration_datetime_string($userService->getExpire());
         $serviceInfo["service"] = $this->service->getNameI18n();
@@ -915,7 +916,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     {
         assert($userService instanceof ExtraFlagUserService);
 
-        $server = $this->serverManager->getServer($userService->getServerId());
+        $server = $this->serverManager->get($userService->getServerId());
 
         return $this->template->render("shop/services/extra_flags/user_own_service", [
             "buttonEdit" => $buttonEdit,
@@ -1173,7 +1174,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     private function getServerOptions($selectedServerId = null)
     {
-        return collect($this->serverManager->getServers())
+        return collect($this->serverManager->all())
             ->filter(function (Server $server) {
                 return $this->serverServiceManager->serverServiceLinked(
                     $server->getId(),
@@ -1217,7 +1218,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      */
     private function pricesForServer($serverId)
     {
-        $server = $this->serverManager->getServer($serverId);
+        $server = $this->serverManager->get($serverId);
         $service = $this->service;
 
         $quantities = collect($this->purchasePriceService->getServicePrices($service, $server))

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class IntegerCommaSeparatedListRule extends BaseRule
@@ -11,11 +12,8 @@ class IntegerCommaSeparatedListRule extends BaseRule
 
         foreach ($groups as $group) {
             if (!my_is_integer($group)) {
-                return [$this->lang->t("group_not_integer")];
-                break;
+                throw new ValidationException($this->lang->t("group_not_integer"));
             }
         }
-
-        return [];
     }
 }

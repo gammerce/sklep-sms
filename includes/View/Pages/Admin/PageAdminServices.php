@@ -4,9 +4,12 @@ namespace App\View\Pages\Admin;
 use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\GroupManager;
+use App\Managers\ServerManager;
+use App\Managers\ServerServiceManager;
 use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Group;
+use App\Models\Server;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
@@ -18,6 +21,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
+use App\View\Html\Option;
 use App\View\Html\RawHtml;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
@@ -37,17 +41,27 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
     /** @var ServiceManager */
     private $serviceManager;
 
+    /** @var ServerManager */
+    private $serverManager;
+
+    /** @var ServerServiceManager */
+    private $serverServiceManager;
+
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         ServiceModuleManager $serviceModuleManager,
         GroupManager $groupManager,
-        ServiceManager $serviceManager
+        ServiceManager $serviceManager,
+        ServerManager $serverManager,
+        ServerServiceManager $serverServiceManager
     ) {
         parent::__construct($template, $translationManager);
         $this->serviceModuleManager = $serviceModuleManager;
         $this->groupManager = $groupManager;
         $this->serviceManager = $serviceManager;
+        $this->serverManager = $serverManager;
+        $this->serverServiceManager = $serverServiceManager;
     }
 
     public function getPrivilege()
@@ -112,14 +126,32 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
+        if ($boxId === "edit") {
+            $service = $this->serviceManager->get($query["id"]);
+        } else {
+            $service = null;
+        }
+
         $groups = collect($this->groupManager->all())
-            ->map(function (Group $group) {
-                return create_dom_element("option", "{$group->getName()} ( {$group->getId()} )", [
-                    "value" => $group->getId(),
-                    "selected" =>
-                        isset($service) && in_array($group->getId(), $service->getGroups())
-                            ? "selected"
-                            : "",
+            ->map(function (Group $group) use ($service) {
+                $selected = $service && in_array($group->getId(), $service->getGroups());
+                return new Option("{$group->getName()} ({$group->getId()})", $group->getId(), [
+                    "selected" => selected($selected),
+                ]);
+            })
+            ->join();
+
+        $servers = collect($this->serverManager->all())
+            ->map(function (Server $server) use ($service) {
+                $isLinked =
+                    $service &&
+                    $this->serverServiceManager->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    );
+
+                return new Option("{$server->getName()} ({$server->getId()})", $server->getId(), [
+                    "selected" => selected($isLinked),
                 ]);
             })
             ->join();
@@ -131,24 +163,19 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                         return $serviceModule instanceof IServiceCreate;
                     })
                     ->map(function (ServiceModule $serviceModule) {
-                        return create_dom_element(
-                            "option",
+                        return new Option(
                             $this->serviceModuleManager->getName($serviceModule->getModuleId()),
-                            [
-                                "value" => $serviceModule->getModuleId(),
-                            ]
+                            $serviceModule->getModuleId()
                         );
                     })
                     ->join();
 
                 return $this->template->render(
                     "admin/action_boxes/service_add",
-                    compact("groups", "servicesModules")
+                    compact("groups", "servers", "servicesModules")
                 );
 
             case "edit":
-                $service = $this->serviceManager->get($query["id"]);
-
                 if (strlen($service->getModule())) {
                     $serviceModule = $this->serviceModuleManager->get($service->getId());
 
@@ -167,7 +194,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
                 return $this->template->render(
                     "admin/action_boxes/service_edit",
-                    compact("service", "groups", "serviceModuleName", "extraFields")
+                    compact("service", "groups", "servers", "serviceModuleName", "extraFields")
                 );
 
             default:

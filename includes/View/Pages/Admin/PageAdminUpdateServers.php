@@ -53,7 +53,7 @@ class PageAdminUpdateServers extends PageAdmin
         $newestSmVersion = $this->version->getNewestSourcemod();
 
         $versionBricks = "";
-        foreach ($this->serverManager->getServers() as $server) {
+        foreach ($this->serverManager->all() as $server) {
             if (Platform::AMXMODX()->equals($server->getType())) {
                 $newestVersion = $newestAmxxVersion;
                 $link = "https://github.com/gammerce/plugin-amxmodx/releases/tag/{$newestAmxxVersion}";

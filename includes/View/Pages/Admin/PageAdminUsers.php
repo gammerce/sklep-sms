@@ -8,8 +8,8 @@ use App\Managers\UserManager;
 use App\Models\Group;
 use App\Models\User;
 use App\Repositories\UserRepository;
-use App\Support\PriceTextService;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\Support\Template;
 use App\Translation\TranslationManager;
@@ -18,6 +18,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Link;
+use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -197,14 +198,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
                 $groups = collect($this->groupManager->all())
                     ->map(function (Group $group) use ($user) {
-                        return create_dom_element(
-                            "option",
-                            "{$group->getName()} ( {$group->getId()} )",
+                        $selected = in_array($group->getId(), $user->getGroups());
+                        return new Option(
+                            "{$group->getName()} ({$group->getId()})",
+                            $group->getId(),
                             [
-                                "value" => $group->getId(),
-                                "selected" => in_array($group->getId(), $user->getGroups())
-                                    ? "selected"
-                                    : "",
+                                "selected" => selected($selected),
                             ]
                         );
                     })

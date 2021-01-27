@@ -22,14 +22,14 @@ class ServerServiceServiceTest extends TestCase
     }
 
     /** @test */
-    public function updates_affiliation_between_servers_and_services()
+    public function updates_link_between_servers_and_services()
     {
         // given
         $serverA = $this->factory->server();
         $serverB = $this->factory->server();
 
         // when
-        $this->serverServiceService->updateAffiliations([
+        $this->serverServiceService->updateLinks([
             [
                 "server_id" => $serverA->getId(),
                 "service_id" => "vip",
@@ -48,13 +48,13 @@ class ServerServiceServiceTest extends TestCase
     }
 
     /** @test */
-    public function removes_affiliation()
+    public function removes_link()
     {
         // given
         $serverA = $this->factory->server();
         $serverB = $this->factory->server();
 
-        $this->serverServiceService->updateAffiliations([
+        $this->serverServiceService->updateLinks([
             [
                 "server_id" => $serverA->getId(),
                 "service_id" => "vip",
@@ -68,7 +68,7 @@ class ServerServiceServiceTest extends TestCase
         ]);
 
         // when
-        $this->serverServiceService->updateAffiliations([
+        $this->serverServiceService->updateLinks([
             [
                 "server_id" => $serverA->getId(),
                 "service_id" => "vip",

@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Models\Service;
 
@@ -18,9 +19,7 @@ class ExtraFlagServiceTypesRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!($this->service->getTypes() & $value)) {
-            return [$this->lang->t("chosen_incorrect_type")];
+            throw new ValidationException($this->lang->t("chosen_incorrect_type"));
         }
-
-        return [];
     }
 }

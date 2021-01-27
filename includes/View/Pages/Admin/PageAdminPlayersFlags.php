@@ -77,7 +77,7 @@ class PageAdminPlayersFlags extends PageAdmin
                 return $this->playerFlagRepository->mapToModel($row);
             })
             ->map(function (PlayerFlag $playerFlag) {
-                $server = $this->serverManager->getServer($playerFlag->getServerId());
+                $server = $this->serverManager->get($playerFlag->getServerId());
                 $serverEntry = $server
                     ? new ServerRef($server->getId(), $server->getName())
                     : new NoneText();

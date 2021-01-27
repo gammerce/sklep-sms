@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Repositories\UserRepository;
 
@@ -18,9 +19,7 @@ class UserExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->userRepository->get($value)) {
-            return [$this->lang->t("no_account_id")];
+            throw new ValidationException($this->lang->t("no_account_id"));
         }
-
-        return [];
     }
 }

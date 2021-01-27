@@ -24,6 +24,7 @@ use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Link;
 use App\View\Html\NoneText;
+use App\View\Html\Option;
 use App\View\Html\Structure;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
@@ -84,7 +85,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
     {
         $recordId = as_int($request->query->get("record"));
 
-        $bodyRows = collect($this->serverManager->getServers())
+        $bodyRows = collect($this->serverManager->all())
             ->filter(function (Server $server) use ($recordId) {
                 return $recordId === null || $server->getId() === $recordId;
             })
@@ -149,7 +150,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         }
 
         if ($boxId === "edit") {
-            $server = $this->serverManager->getServer($query["id"]);
+            $server = $this->serverManager->get($query["id"]);
         } else {
             $server = null;
         }
@@ -161,9 +162,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             })
             ->map(function (PaymentPlatform $paymentPlatform) use ($server) {
                 $isSelected = $server && $paymentPlatform->getId() == $server->getSmsPlatformId();
-                return create_dom_element("option", $paymentPlatform->getName(), [
-                    "value" => $paymentPlatform->getId(),
-                    "selected" => $isSelected ? "selected" : "",
+                return new Option($paymentPlatform->getName(), $paymentPlatform->getId(), [
+                    "selected" => selected($isSelected),
                 ]);
             })
             ->join();
@@ -177,9 +177,8 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                 $isSelected =
                     $server &&
                     in_array($paymentPlatform->getId(), $server->getTransferPlatformIds(), true);
-                return create_dom_element("option", $paymentPlatform->getName(), [
-                    "value" => $paymentPlatform->getId(),
-                    "selected" => $isSelected ? "selected" : "",
+                return new Option($paymentPlatform->getName(), $paymentPlatform->getId(), [
+                    "selected" => selected($isSelected),
                 ]);
             })
             ->join();
@@ -196,21 +195,14 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                         $server->getId(),
                         $service->getId()
                     );
-                $options = [
-                    create_dom_element("option", to_upper($this->lang->t("no")), [
-                        "value" => 0,
-                        "selected" => $isLinked ? "" : "selected",
-                    ]),
-                    create_dom_element("option", to_upper($this->lang->t("yes")), [
-                        "value" => 1,
-                        "selected" => $isLinked ? "selected" : "",
-                    ]),
-                ];
-                return $this->template->render("admin/tr_text_select", [
-                    "name" => $service->getId(),
-                    "text" => "{$service->getName()} ( {$service->getId()} )",
-                    "values" => implode("", $options),
-                ]);
+
+                return new Option(
+                    "{$service->getName()} ({$service->getId()})",
+                    $service->getId(),
+                    [
+                        "selected" => selected($isLinked),
+                    ]
+                );
             })
             ->join();
 

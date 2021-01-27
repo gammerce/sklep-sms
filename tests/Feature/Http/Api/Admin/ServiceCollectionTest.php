@@ -1,6 +1,8 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Models\ServerService;
+use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
@@ -9,13 +11,24 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServiceCollectionTest extends HttpTestCase
 {
+    private ServiceRepository $serviceRepository;
+    private ServerServiceRepository $serverServiceRepository;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->serviceRepository = $this->app->make(ServiceRepository::class);
+        $this->serverServiceRepository = $this->app->make(ServerServiceRepository::class);
+    }
+
     /** @test */
     public function creates_extra_flag_service()
     {
         // given
-        /** @var ServiceRepository $repository */
-        $repository = $this->app->make(ServiceRepository::class);
         $this->actingAs($this->factory->admin());
+
+        $serverFFA = $this->factory->server();
+        $server4FUN = $this->factory->server();
 
         // when
         $response = $this->post("/api/admin/services", [
@@ -26,13 +39,14 @@ class ServiceCollectionTest extends HttpTestCase
             "web" => 1,
             "flags" => "a",
             "type" => [ExtraFlagType::TYPE_NICK],
+            "server_ids" => [$serverFFA->getId(), $server4FUN->getId()],
         ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $service = $repository->get("example");
+        $service = $this->serviceRepository->get("example");
         $this->assertSame("My Example", $service->getName());
         $this->assertSame(ExtraFlagsServiceModule::MODULE_ID, $service->getModule());
         $this->assertSame(
@@ -41,14 +55,18 @@ class ServiceCollectionTest extends HttpTestCase
             ],
             $service->getData()
         );
+
+        $links = $this->serverServiceRepository->findByService($service->getId());
+        $serverIds = collect($links)
+            ->map(fn(ServerService $serverService) => $serverService->getServerId())
+            ->all();
+        $this->assertEquals([$serverFFA->getId(), $server4FUN->getId()], $serverIds);
     }
 
     /** @test */
     public function creates_mybb_service()
     {
         // given
-        /** @var ServiceRepository $repository */
-        $repository = $this->app->make(ServiceRepository::class);
         $this->actingAs($this->factory->admin());
 
         // when
@@ -69,7 +87,7 @@ class ServiceCollectionTest extends HttpTestCase
         $this->assertSame(200, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
-        $service = $repository->get("example");
+        $service = $this->serviceRepository->get("example");
         $this->assertSame("My Example", $service->getName());
         $this->assertSame(MybbExtraGroupsServiceModule::MODULE_ID, $service->getModule());
         $this->assertSame(
@@ -83,6 +101,12 @@ class ServiceCollectionTest extends HttpTestCase
             ],
             $service->getData()
         );
+
+        $links = $this->serverServiceRepository->findByService($service->getId());
+        $serverIds = collect($links)
+            ->map(fn(ServerService $serverService) => $serverService->getServerId())
+            ->all();
+        $this->assertEquals([], $serverIds);
     }
 
     /** @test */

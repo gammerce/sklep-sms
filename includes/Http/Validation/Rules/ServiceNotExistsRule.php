@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Repositories\ServiceRepository;
 
@@ -22,9 +23,7 @@ class ServiceNotExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if ($value !== $this->exceptServiceId && $this->serviceRepository->get($value)) {
-            return [$this->lang->t("id_exist")];
+            throw new ValidationException($this->lang->t("id_exist"));
         }
-
-        return [];
     }
 }

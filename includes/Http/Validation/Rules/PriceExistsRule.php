@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Repositories\PriceRepository;
 
@@ -18,9 +19,7 @@ class PriceExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->priceRepository->get($value)) {
-            return [$this->lang->t("invalid_price")];
+            throw new ValidationException($this->lang->t("invalid_price"));
         }
-
-        return [];
     }
 }

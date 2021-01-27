@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
@@ -12,32 +13,20 @@ class ExtraFlagAuthDataRule extends BaseRule
 
         if ($type === ExtraFlagType::TYPE_NICK) {
             if (strlen($value) < 2) {
-                return [$this->lang->t("field_length_min_warn", 2)];
+                throw new ValidationException($this->lang->t("field_length_min_warn", 2));
             }
 
             if (strlen($value) > 32) {
-                return [$this->lang->t("field_length_max_warn", 32)];
+                throw new ValidationException($this->lang->t("field_length_max_warn", 32));
             }
-
-            return [];
-        }
-
-        if ($type === ExtraFlagType::TYPE_IP) {
+        } elseif ($type === ExtraFlagType::TYPE_IP) {
             if (!filter_var($value, FILTER_VALIDATE_IP)) {
-                return [$this->lang->t("wrong_ip")];
+                throw new ValidationException($this->lang->t("wrong_ip"));
             }
-
-            return [];
-        }
-
-        if ($type === ExtraFlagType::TYPE_SID) {
+        } elseif ($type === ExtraFlagType::TYPE_SID) {
             if (!is_steam_id_valid($value) || strlen($value) > 32) {
-                return [$this->lang->t("wrong_sid")];
+                throw new ValidationException($this->lang->t("wrong_sid"));
             }
-
-            return [];
         }
-
-        return [];
     }
 }

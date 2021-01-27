@@ -14,4 +14,14 @@ abstract class BaseRule implements Rule
         $translationManager = app()->make(TranslationManager::class);
         $this->lang = $translationManager->user();
     }
+
+    public function acceptsEmptyValue()
+    {
+        return false;
+    }
+
+    public function breaksPipelineOnWarning()
+    {
+        return false;
+    }
 }

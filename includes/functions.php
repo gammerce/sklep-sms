@@ -17,6 +17,7 @@ use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -264,7 +265,7 @@ function ip_in_range($ip, $range)
 {
     if (strpos($range, "/") !== false) {
         // $range is in IP/NETMASK format
-        list($range, $netmask) = explode("/", $range, 2);
+        [$range, $netmask] = explode("/", $range, 2);
         if (strpos($netmask, ".") !== false) {
             // $netmask is a 255.255.0.0 format
             $netmask = str_replace("*", "0", $netmask);
@@ -278,7 +279,7 @@ function ip_in_range($ip, $range)
             while (count($x) < 4) {
                 $x[] = "0";
             }
-            list($a, $b, $c, $d) = $x;
+            [$a, $b, $c, $d] = $x;
             $range = sprintf(
                 "%u.%u.%u.%u",
                 empty($a) ? "0" : $a,
@@ -310,7 +311,7 @@ function ip_in_range($ip, $range)
 
         if (strpos($range, "-") !== false) {
             // A-B format
-            list($lower, $upper) = explode("-", $range, 2);
+            [$lower, $upper] = explode("-", $range, 2);
             $lowerDec = (float) sprintf("%u", ip2long($lower));
             $upperDec = (float) sprintf("%u", ip2long($upper));
             $ipDec = (float) sprintf("%u", ip2long($ip));
@@ -760,6 +761,10 @@ function to_array($items)
         return iterator_to_array($items);
     }
 
+    if ($items instanceof Arrayable) {
+        return $items->toArray();
+    }
+
     if (is_array($items)) {
         return $items;
     }
@@ -947,4 +952,13 @@ function get_authorization_value(Request $request)
     }
 
     return $authorization;
+}
+
+/**
+ * @param mixed $value
+ * @return string
+ */
+function selected($value)
+{
+    return $value ? "selected" : "";
 }
