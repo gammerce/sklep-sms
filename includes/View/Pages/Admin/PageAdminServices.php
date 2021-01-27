@@ -145,7 +145,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
                 return $this->template->render(
                     "admin/action_boxes/service_add",
-                    compact("groups", "servers", "servicesModules")
+                    compact("groups", "servicesModules")
                 );
 
             case "edit":
