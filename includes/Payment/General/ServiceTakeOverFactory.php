@@ -19,8 +19,8 @@ class ServiceTakeOverFactory
     {
         $this->app = $app;
         $this->paymentMethodsClasses = [
-            PaymentMethod::SMS()->getValue() => SmsServiceTakeOver::class,
-            PaymentMethod::TRANSFER()->getValue() => TransferServiceTakeOver::class,
+            PaymentMethod::SMS => SmsServiceTakeOver::class,
+            PaymentMethod::TRANSFER => TransferServiceTakeOver::class,
         ];
     }
 

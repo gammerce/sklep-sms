@@ -1,11 +1,11 @@
 <form id="form_service_edit" class="action_box" autocomplete="off">
     <input type="password" class="is-hidden" />
-    <div class="service_main_info">{$lang->t('edit_service')}</div>
+    <div class="service_main_info">{{ __('edit_service') }}</div>
     <table>
         <tbody class="ftbody">
             <tr>
                 <td>
-                    <label for="new_id" class="required">{$lang->t('id')}</label>
+                    <label for="new_id" class="required">{{ __('id') }}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -25,7 +25,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="name" class="required">{$lang->t('name')}</label>
+                    <label for="name" class="required">{{ __('name') }}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -45,8 +45,8 @@
             </tr>
             <tr>
                 <td>
-                    <label for="short_description"> {$lang->t('short_description')} </label>
-                    <div class="hint">{$lang->t('description_on_server')}</div>
+                    <label for="short_description"> {{ __('short_description') }} </label>
+                    <div class="hint">{{ __('description_on_server') }}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -65,8 +65,8 @@
             </tr>
             <tr>
                 <td>
-                    <label for="description"> {$lang->t('description')} </label>
-                    <div class="hint">{$lang->t('description_on_www')}</div>
+                    <label for="description"> {{ __('description') }} </label>
+                    <div class="hint">{{ __('description_on_www') }}</div>
                 </td>
                 <td>
                     <div class="field">
@@ -85,7 +85,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="tag">{$lang->t('tag')}</label>
+                    <label for="tag">{{ __('tag') }}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -104,7 +104,7 @@
             </tr>
             <tr>
                 <td>
-                    <label for="order">{$lang->t('order')}</label>
+                    <label for="order">{{ __('order') }}</label>
                 </td>
                 <td>
                     <div class="field">
@@ -122,31 +122,55 @@
             </tr>
             <tr>
                 <td>
-                    <label for="group">{$lang->t('groups')}</label>
-                    <div class="hint">{$lang->t('groups_to_buy_service')}</div>
+                    <label for="group">{{ __('groups') }}</label>
+                    <div class="hint">{{ __('groups_to_buy_service') }}</div>
                 </td>
                 <td>
                     <div class="field">
                         <div class="control">
                             <div class="select is-multiple is-small">
                                 <select id="group" name="groups[]" multiple>
-                                    {$groups}
+                                    {!! $groups !!}
                                 </select>
                             </div>
                         </div>
                     </div>
                 </td>
             </tr>
+
             <tr>
                 <td colspan="2" class="line"></td>
             </tr>
+
             <tr>
-                <td>{$lang->t('module')}</td>
+                <td>
+                    <label for="server_ids">{{ __('servers') }}</label>
+                    <div class="hint">{{ __('service_servers_hint') }}</div>
+                </td>
+                <td>
+                    <div class="field">
+                        <div class="control">
+                            <div class="select is-multiple is-small">
+                                <select id="server_ids" name="server_ids[]" size="6" multiple>
+                                    {!! $servers !!}
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+
+            <tr>
+                <td colspan="2" class="line"></td>
+            </tr>
+
+            <tr>
+                <td>{{ __('module') }}</td>
                 <td>{{ $serviceModuleName }}</td>
             </tr>
         </tbody>
 
-        {$extraFields}
+        {!! $extraFields !!}
 
         <tbody>
             <tr>
@@ -155,7 +179,7 @@
             <tr>
                 <td colspan="2">
                     <input type="hidden" name="id" value="{{ $service->getId() }}" />
-                    <input type="submit" value="{$lang->t('edit')}" class="button w100" />
+                    <input type="submit" value="{{ __('edit') }}" class="button w100" />
                 </td>
             </tr>
         </tbody>

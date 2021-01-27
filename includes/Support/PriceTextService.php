@@ -1,8 +1,7 @@
 <?php
-namespace App\Services;
+namespace App\Support;
 
 use App\Models\Service;
-use App\Support\Money;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

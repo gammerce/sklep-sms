@@ -96,7 +96,7 @@ class DatabaseMigration
 
     private function executeMigration($path)
     {
-        $className = get_class_from_file($path);
+        $className = $this->getClassFromFile($path);
 
         if ($className) {
             require_once $path;
@@ -112,5 +112,38 @@ class DatabaseMigration
     private function saveExecutedMigration($name)
     {
         $this->db->statement("INSERT INTO `ss_migrations` SET `name` = ?")->execute([$name]);
+    }
+
+    /**
+     * @param string $path
+     * @return string|null
+     * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
+     */
+    private function getClassFromFile($path)
+    {
+        $fp = fopen($path, "r");
+        $buffer = "";
+        $i = 0;
+
+        while (!feof($fp)) {
+            $buffer .= fread($fp, 512);
+            $tokens = token_get_all($buffer);
+
+            if (strpos($buffer, "{") === false) {
+                continue;
+            }
+
+            for (; $i < count($tokens); $i++) {
+                if ($tokens[$i][0] === T_CLASS) {
+                    for ($j = $i + 1; $j < count($tokens); $j++) {
+                        if ($tokens[$j] === "{") {
+                            return $tokens[$i + 2][1];
+                        }
+                    }
+                }
+            }
+        }
+
+        return null;
     }
 }

@@ -8,8 +8,8 @@ use App\Http\Responses\SuccessApiResponse;
 use App\Loggers\DatabaseLogger;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\UserServiceRepository;
+use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
-use App\Services\UserServiceService;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 

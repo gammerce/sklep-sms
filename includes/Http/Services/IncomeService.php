@@ -41,7 +41,7 @@ class IncomeService
         foreach ($statement as $row) {
             $transaction = $this->transactionRepository->mapToModel($row);
             $date = explode(" ", $transaction->getTimestamp())[0];
-            $server = $this->serverManager->getServer($transaction->getServerId());
+            $server = $this->serverManager->get($transaction->getServerId());
             $serverId = $server ? $server->getId() : 0;
 
             if (!isset($data[$date])) {

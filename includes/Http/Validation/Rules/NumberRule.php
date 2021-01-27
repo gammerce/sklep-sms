@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class NumberRule extends BaseRule
@@ -8,9 +9,7 @@ class NumberRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!is_numeric($value)) {
-            return [$this->lang->t("field_must_be_number")];
+            throw new ValidationException($this->lang->t("field_must_be_number"));
         }
-
-        return [];
     }
 }

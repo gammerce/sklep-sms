@@ -1,8 +1,8 @@
 <?php
 namespace App\System;
 
-use App\Services\ExpiredSmsCodeService;
-use App\Services\ExpiredUserServiceService;
+use App\PromoCode\ExpiredSmsCodeService;
+use App\Service\ExpiredUserServiceService;
 use App\Support\Database;
 use App\Support\FileSystemContract;
 use App\Support\Path;

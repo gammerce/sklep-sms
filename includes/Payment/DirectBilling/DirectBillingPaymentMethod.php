@@ -52,6 +52,10 @@ class DirectBillingPaymentMethod implements IPaymentMethod
      */
     public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
     {
+        if (!$paymentPlatform) {
+            return false;
+        }
+
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         $price = $this->directBillingPriceService->getPrice($purchase);
         return $paymentModule instanceof SupportDirectBilling && $price !== null;

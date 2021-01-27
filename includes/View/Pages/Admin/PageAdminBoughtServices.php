@@ -111,7 +111,7 @@ class PageAdminBoughtServices extends PageAdmin
             })
             ->map(function (Transaction $transaction) {
                 $service = $this->serviceManager->get($transaction->getServiceId());
-                $server = $this->serverManager->getServer($transaction->getServerId());
+                $server = $this->serverManager->get($transaction->getServerId());
 
                 $userEntry = $transaction->getUserId()
                     ? new UserRef($transaction->getUserId(), $transaction->getUserName())

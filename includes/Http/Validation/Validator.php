@@ -23,13 +23,21 @@ class Validator
 
         foreach ($this->rules as $attribute => $rules) {
             foreach ($rules as $rule) {
+                if (!($rule instanceof Rule)) {
+                    continue;
+                }
+
                 $value = array_get($this->data, $attribute);
 
-                if ($rule instanceof Rule && ($rule instanceof EmptyRule || has_value($value))) {
-                    $result = $rule->validate($attribute, $value, $this->data);
+                if ($rule->acceptsEmptyValue() || has_value($value)) {
+                    try {
+                        $rule->validate($attribute, $value, $this->data);
+                    } catch (ValidationException $e) {
+                        $warnings->add($attribute, $e->warnings);
 
-                    if ($result) {
-                        $warnings->add($attribute, $result);
+                        if ($rule->breaksPipelineOnWarning()) {
+                            break;
+                        }
                     }
                 }
             }

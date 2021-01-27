@@ -1,10 +1,10 @@
 <?php
 namespace App\ServiceModules\ShopSmsLicense\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
-use App\Http\Validation\EmptyRule;
 
-class LicenseEnginesRule extends BaseRule implements EmptyRule
+class LicenseEnginesRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
@@ -12,9 +12,12 @@ class LicenseEnginesRule extends BaseRule implements EmptyRule
         $sourceMod = array_get($data, "platform_sourcemod");
 
         if ($amxModX == "0" && $sourceMod == "0") {
-            return [$this->lang->t("no_engine_choosen")];
+            throw new ValidationException($this->lang->t("no_engine_choosen"));
         }
+    }
 
-        return [];
+    public function acceptsEmptyValue()
+    {
+        return true;
     }
 }

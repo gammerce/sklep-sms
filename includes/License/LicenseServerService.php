@@ -1,5 +1,5 @@
 <?php
-namespace App\Services;
+namespace App\License;
 
 use App\Requesting\Requester;
 use App\Requesting\Response;
@@ -33,15 +33,15 @@ class LicenseServerService
     public function create($lifetime, $hasAmxModX, $hasSourceMod)
     {
         $response = $this->requester->post(
-            $this->buildUrl('/v1/licenses'),
+            $this->buildUrl("/v1/licenses"),
             json_encode([
-                'lifetime' => $lifetime,
-                'platform_amxmodx' => $hasAmxModX,
-                'platform_sourcemod' => $hasSourceMod,
+                "lifetime" => $lifetime,
+                "platform_amxmodx" => $hasAmxModX,
+                "platform_sourcemod" => $hasSourceMod,
             ]),
             [
-                'Authorization' => $this->licenseSecret,
-                'Content-Type' => 'application/json',
+                "Authorization" => $this->licenseSecret,
+                "Content-Type" => "application/json",
             ]
         );
 
@@ -62,12 +62,12 @@ class LicenseServerService
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
             json_encode([
-                'platform_amxmodx' => $hasAmxModX,
-                'platform_sourcemod' => $hasSourceMod,
+                "platform_amxmodx" => $hasAmxModX,
+                "platform_sourcemod" => $hasSourceMod,
             ]),
             [
-                'Authorization' => $this->licenseSecret,
-                'Content-Type' => 'application/json',
+                "Authorization" => $this->licenseSecret,
+                "Content-Type" => "application/json",
             ]
         );
 
@@ -87,11 +87,11 @@ class LicenseServerService
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
             json_encode([
-                'lifetime' => $lifetime,
+                "lifetime" => $lifetime,
             ]),
             [
-                'Authorization' => $this->licenseSecret,
-                'Content-Type' => 'application/json',
+                "Authorization" => $this->licenseSecret,
+                "Content-Type" => "application/json",
             ]
         );
 
@@ -111,8 +111,8 @@ class LicenseServerService
             $this->buildUrl("/v1/licenses/${licenseId}/token"),
             json_encode([]),
             [
-                'Authorization' => $this->licenseSecret,
-                'Content-Type' => 'application/json',
+                "Authorization" => $this->licenseSecret,
+                "Content-Type" => "application/json",
             ]
         );
 
@@ -131,7 +131,7 @@ class LicenseServerService
             $this->buildUrl("/v1/licenses/${licenseId}"),
             [],
             [
-                'Authorization' => $this->licenseSecret,
+                "Authorization" => $this->licenseSecret,
             ]
         );
 
@@ -146,10 +146,10 @@ class LicenseServerService
     public function getByToken($token)
     {
         $response = $this->requester->get(
-            $this->buildUrl('/v1/license'),
+            $this->buildUrl("/v1/license"),
             [],
             [
-                'Authorization' => $token,
+                "Authorization" => $token,
             ]
         );
 

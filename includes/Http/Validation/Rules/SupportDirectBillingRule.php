@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Managers\PaymentModuleManager;
 use App\Verification\Abstracts\SupportDirectBilling;
@@ -21,9 +22,7 @@ class SupportDirectBillingRule extends BaseRule
         $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
-            return [$this->lang->t("no_direct_billing_platform")];
+            throw new ValidationException($this->lang->t("no_direct_billing_platform"));
         }
-
-        return [];
     }
 }

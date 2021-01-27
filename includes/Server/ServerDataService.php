@@ -1,5 +1,5 @@
 <?php
-namespace App\Services;
+namespace App\Server;
 
 use App\Models\Price;
 use App\Models\Server;

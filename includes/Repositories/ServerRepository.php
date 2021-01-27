@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Models\Server;
+use App\Server\Platform;
 use App\Support\Database;
 use App\System\Settings;
 
@@ -102,7 +103,7 @@ class ServerRepository
         return !!$statement->rowCount();
     }
 
-    public function touch($id, $type, $version)
+    public function touch($id, Platform $type, $version)
     {
         $this->db
             ->statement(

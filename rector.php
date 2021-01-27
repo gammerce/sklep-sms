@@ -2,14 +2,12 @@
 
 use Rector\Core\Configuration\Option;
 use Rector\Set\ValueObject\DowngradeSetList;
+use Rector\DowngradePhp70\Rector\FunctionLike\DowngradeTypeReturnDeclarationRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator) {
-    // get parameters
     $parameters = $containerConfigurator->parameters();
-
-    // paths to refactor; solid alternative to CLI arguments
-    $parameters->set(Option::PATHS, [__DIR__ . "/includes", __DIR__ . "/tests"]);
+    $services = $containerConfigurator->services();
 
     // Define what rule sets will be applied
     $sets = [];
@@ -29,11 +27,15 @@ return static function (ContainerConfigurator $containerConfigurator) {
     if (version_compare($phpVersion, "7.1") < 0) {
         $sets[] = DowngradeSetList::PHP_71;
     }
+    if (version_compare($phpVersion, "7.0") < 0) {
+        // It doesn't work correctly with function argument type definition
+        // $sets[] = DowngradeSetList::PHP_70;
+        $services->set(DowngradeTypeReturnDeclarationRector::class);
+    }
 
     if (empty($sets)) {
         exit(0);
     }
 
     $parameters->set(Option::SETS, $sets);
-    $parameters->set(Option::PHP_VERSION_FEATURES, $phpVersion);
 };

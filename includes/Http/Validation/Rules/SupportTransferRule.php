@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Managers\PaymentModuleManager;
 use App\Verification\Abstracts\SupportTransfer;
@@ -18,18 +19,14 @@ class SupportTransferRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        if (!is_array($value)) {
-            return [$this->lang->t("field_array")];
-        }
+        assert(is_array($value));
 
         foreach ($value as $item) {
             $paymentModule = $this->paymentModuleManager->getByPlatformId($item);
 
             if (!($paymentModule instanceof SupportTransfer)) {
-                return [$this->lang->t("no_transfer_platform")];
+                throw new ValidationException($this->lang->t("no_transfer_platform"));
             }
         }
-
-        return [];
     }
 }

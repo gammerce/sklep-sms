@@ -6,7 +6,7 @@ use App\Requesting\Requester;
 use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
 use App\ServiceModules\ShopSmsLicenseEdit\LicenseEditServiceModule;
 use App\ServiceModules\ShopSmsLicenseProlong\LicenseProlongServiceModule;
-use App\Services\LicenseServerService;
+use App\License\LicenseServerService;
 use App\System\Application;
 
 class LicenseServiceProvider

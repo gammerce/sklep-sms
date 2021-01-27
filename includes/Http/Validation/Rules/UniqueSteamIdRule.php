@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Repositories\UserRepository;
 
@@ -24,9 +25,7 @@ class UniqueSteamIdRule extends BaseRule
         $user = $this->userRepository->findBySteamId($value);
 
         if ($user && $user->getId() !== $this->exceptUserId) {
-            return [$this->lang->t("steam_id_occupied")];
+            throw new ValidationException($this->lang->t("steam_id_occupied"));
         }
-
-        return [];
     }
 }

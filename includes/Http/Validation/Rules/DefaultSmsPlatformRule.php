@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
-use App\Http\Validation\EmptyRule;
 use App\System\Settings;
 
-class DefaultSmsPlatformRule extends BaseRule implements EmptyRule
+class DefaultSmsPlatformRule extends BaseRule
 {
     /** @var Settings */
     private $settings;
@@ -19,9 +19,12 @@ class DefaultSmsPlatformRule extends BaseRule implements EmptyRule
     public function validate($attribute, $value, array $data)
     {
         if (!$value && !$this->settings->getSmsPlatformId()) {
-            return [$this->lang->t("no_default_sms_platform")];
+            throw new ValidationException($this->lang->t("no_default_sms_platform"));
         }
+    }
 
-        return [];
+    public function acceptsEmptyValue()
+    {
+        return true;
     }
 }

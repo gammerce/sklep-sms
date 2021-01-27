@@ -21,7 +21,7 @@ class PlayerFlagRepository
      */
     public function findOrFail(array $data)
     {
-        list($params, $values) = map_to_params($data);
+        [$params, $values] = map_to_params($data);
         $params = implode(" AND ", $params);
 
         $statement = $this->db->statement(

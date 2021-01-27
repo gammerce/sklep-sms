@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class MaxValueRule extends BaseRule
@@ -17,9 +18,7 @@ class MaxValueRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (as_int($value) > $this->value) {
-            return [$this->lang->t("max_value", $this->value)];
+            throw new ValidationException($this->lang->t("max_value", $this->value));
         }
-
-        return [];
     }
 }

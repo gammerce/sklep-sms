@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ShopSmsLicense\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ShopSmsLicense\LicenseServiceModule;
 use App\Support\Database;
@@ -28,9 +29,7 @@ class LicenseProlongableRule extends BaseRule
         $statement->execute([$value]);
 
         if (!$statement->rowCount()) {
-            return [$this->lang->t('wrong_license_data')];
+            throw new ValidationException($this->lang->t("wrong_license_data"));
         }
-
-        return [];
     }
 }

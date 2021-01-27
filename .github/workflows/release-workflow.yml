@@ -1,0 +1,101 @@
+name: Release workflow
+on:
+  release:
+    types: [published]
+jobs:
+  main:
+    name: Build release
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - php_version: "5.6"
+            composer: "composer-v5.json"
+          - php_version: "7.4"
+            composer: "composer-v5.json"
+          - php_version: "8.0"
+            composer: "composer.json"
+    env:
+      COMPOSER: ${{ matrix.composer }}
+    steps:
+      -
+        uses: actions/checkout@v2
+      -
+        name: Setup PHP ${{ matrix.php_version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php_version }}
+      -
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+      -
+        run: pip install pre-commit
+      -
+        uses: ramsey/composer-install@v1
+        with:
+          composer-options: "--no-dev --optimize-autoloader --ignore-platform-reqs"
+      -
+        run: yarn install
+      -
+        name: Transpile to PHP ${{ matrix.php_version }}
+        run: |
+          docker run \
+          --rm \
+          --env PHP_VERSION=${{ matrix.php_version }} \
+          -v $(pwd):/project \
+          -w /rector \
+          rector/rector:latest \
+          process \
+          /project/includes \
+          --autoload-file=/project/vendor/autoload.php \
+          --config /project/rector.php
+      -
+        run: yarn build
+        env:
+          NODE_ENV: production
+      -
+        run: ./remove_unnecessary_files.sh
+      -
+        run: pre-commit run --all-files || true
+      -
+        id: build_artifact
+        run: |
+          zip -r \
+          --exclude='data/cache/**' \
+          --exclude='data/errors/**' \
+          --exclude='data/transactions/**' \
+          ${BUILD_NAME} \
+          build/ \
+          bootstrap/ \
+          confidential/ \
+          data/ \
+          includes/ \
+          migrations/ \
+          translations/ \
+          themes/ \
+          vendor/ \
+          .htaccess \
+          favicon.png \
+          index.php \
+          README.md
+          echo ::set-output name=ARTIFACT_PATH::./$BUILD_NAME
+          echo ::set-output name=ARTIFACT_NAME::$BUILD_NAME
+        env:
+          BUILD_NAME: build-${{ matrix.php_version }}.zip
+      -
+        name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      -
+        name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ steps.build_artifact.outputs.ARTIFACT_PATH }}
+          asset_name: ${{ steps.build_artifact.outputs.ARTIFACT_NAME }}
+          asset_content_type: application/zip

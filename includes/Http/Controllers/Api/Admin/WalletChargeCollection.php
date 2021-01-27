@@ -15,7 +15,7 @@ use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
-use App\Services\PriceTextService;
+use App\Support\PriceTextService;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;

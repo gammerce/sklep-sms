@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class UsernameRule extends BaseRule
@@ -17,6 +18,8 @@ class UsernameRule extends BaseRule
             $warnings[] = $this->lang->t("username_chars_warn");
         }
 
-        return $warnings;
+        if (!empty($warnings)) {
+            throw new ValidationException($warnings);
+        }
     }
 }

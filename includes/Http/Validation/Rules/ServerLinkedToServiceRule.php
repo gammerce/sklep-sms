@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Managers\ServerManager;
 use App\Managers\ServerServiceManager;
@@ -27,7 +28,7 @@ class ServerLinkedToServiceRule extends BaseRule
 
     public function validate($attribute, $value, array $data)
     {
-        $server = $this->serverManager->getServer($value);
+        $server = $this->serverManager->get($value);
 
         if (
             !$server ||
@@ -36,9 +37,7 @@ class ServerLinkedToServiceRule extends BaseRule
                 $this->service->getId()
             )
         ) {
-            return [$this->lang->t("chosen_incorrect_server")];
+            throw new ValidationException($this->lang->t("chosen_incorrect_server"));
         }
-
-        return [];
     }
 }

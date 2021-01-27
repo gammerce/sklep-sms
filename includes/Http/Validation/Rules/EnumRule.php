@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 
 class EnumRule extends BaseRule
@@ -18,9 +19,7 @@ class EnumRule extends BaseRule
         $enumClass = $this->enumClass;
 
         if (!$enumClass::isValid($value)) {
-            return [$this->lang->t("invalid_value")];
+            throw new ValidationException($this->lang->t("invalid_value"));
         }
-
-        return [];
     }
 }

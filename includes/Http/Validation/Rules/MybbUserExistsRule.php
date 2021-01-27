@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\MybbExtraGroups\MybbRepository;
 
@@ -18,9 +19,7 @@ class MybbUserExistsRule extends BaseRule
     public function validate($attribute, $value, array $data)
     {
         if (!$this->mybbRepository->existsByUsername($value)) {
-            return [$this->lang->t("no_user")];
+            throw new ValidationException($this->lang->t("no_user"));
         }
-
-        return [];
     }
 }

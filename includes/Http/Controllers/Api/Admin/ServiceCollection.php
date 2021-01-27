@@ -42,7 +42,7 @@ class ServiceCollection
                 ? $serviceModule->serviceAdminManagePost($validated)
                 : [];
 
-        $serviceRepository->create(
+        $service = $serviceRepository->create(
             $validated["id"],
             $validated["name"],
             $validated["short_description"],
@@ -55,8 +55,11 @@ class ServiceCollection
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", "")
         );
-
-        $logger->logWithActor("log_service_added", $validated["id"]);
+        $serviceService->updateServiceServerLinks(
+            $service->getId(),
+            $validated["server_ids"] ?: []
+        );
+        $logger->logWithActor("log_service_added", $service->getId());
 
         return new SuccessApiResponse($lang->t("service_added"), [
             "length" => 10000,

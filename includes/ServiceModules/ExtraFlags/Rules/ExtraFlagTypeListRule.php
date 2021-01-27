@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\ExtraFlags\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
@@ -8,18 +9,14 @@ class ExtraFlagTypeListRule extends BaseRule
 {
     public function validate($attribute, $value, array $data)
     {
-        if (!is_array($value)) {
-            return ["Invalid type"];
-        }
+        assert(is_array($value));
 
         $allowedTypes = ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID;
 
         foreach ($value as $type) {
             if (!($type & $allowedTypes)) {
-                return [$this->lang->t("wrong_type_chosen")];
+                throw new ValidationException($this->lang->t("wrong_type_chosen"));
             }
         }
-
-        return [];
     }
 }

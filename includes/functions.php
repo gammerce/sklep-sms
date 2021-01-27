@@ -2,10 +2,10 @@
 
 use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
-use App\Models\Server;
 use App\Models\User;
 use App\Payment\General\PaymentMethod;
 use App\Routing\UrlGenerator;
+use App\Server\Platform;
 use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\Money;
@@ -17,6 +17,7 @@ use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\VarDumper\VarDumper;
 
@@ -38,7 +39,7 @@ function app($abstract = null, array $parameters = [])
 
 /**
  * @param Permission $permission
- * @param User $user
+ * @param User|null $user
  * @return bool
  */
 function can(Permission $permission, User $user = null)
@@ -75,32 +76,11 @@ function create_dom_element($name, $content = "", array $params = [])
 
 /**
  * @param string $platform
- * @return string
- */
-function translate_platform($platform)
-{
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-
-    if (in_array($platform, ["engine_amxx", Server::TYPE_AMXMODX])) {
-        return $lang->t("amxx_server");
-    }
-
-    if (in_array($platform, ["engine_sm", Server::TYPE_SOURCEMOD])) {
-        return $lang->t("sm_server");
-    }
-
-    return $platform;
-}
-
-/**
- * @param string $platform
  * @return bool
  */
 function is_server_platform($platform)
 {
-    return in_array($platform, [Server::TYPE_AMXMODX, Server::TYPE_SOURCEMOD]);
+    return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
 }
 
 /**
@@ -285,7 +265,7 @@ function ip_in_range($ip, $range)
 {
     if (strpos($range, "/") !== false) {
         // $range is in IP/NETMASK format
-        list($range, $netmask) = explode("/", $range, 2);
+        [$range, $netmask] = explode("/", $range, 2);
         if (strpos($netmask, ".") !== false) {
             // $netmask is a 255.255.0.0 format
             $netmask = str_replace("*", "0", $netmask);
@@ -299,7 +279,7 @@ function ip_in_range($ip, $range)
             while (count($x) < 4) {
                 $x[] = "0";
             }
-            list($a, $b, $c, $d) = $x;
+            [$a, $b, $c, $d] = $x;
             $range = sprintf(
                 "%u.%u.%u.%u",
                 empty($a) ? "0" : $a,
@@ -331,7 +311,7 @@ function ip_in_range($ip, $range)
 
         if (strpos($range, "-") !== false) {
             // A-B format
-            list($lower, $upper) = explode("-", $range, 2);
+            [$lower, $upper] = explode("-", $range, 2);
             $lowerDec = (float) sprintf("%u", ip2long($lower));
             $upperDec = (float) sprintf("%u", ip2long($upper));
             $ipDec = (float) sprintf("%u", ip2long($ip));
@@ -552,6 +532,19 @@ function as_payment_method($value)
 }
 
 /**
+ * @param string $value
+ * @return Platform|null
+ */
+function as_server_type($value)
+{
+    try {
+        return new Platform($value);
+    } catch (UnexpectedValueException $e) {
+        return null;
+    }
+}
+
+/**
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */
@@ -673,39 +666,6 @@ function as_permission_list($permissions)
         ->all();
 }
 
-/**
- * @param $path
- * @return mixed|null
- * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
- */
-function get_class_from_file($path)
-{
-    $fp = fopen($path, "r");
-    $buffer = "";
-    $i = 0;
-
-    while (!feof($fp)) {
-        $buffer .= fread($fp, 512);
-        $tokens = token_get_all($buffer);
-
-        if (strpos($buffer, "{") === false) {
-            continue;
-        }
-
-        for (; $i < count($tokens); $i++) {
-            if ($tokens[$i][0] === T_CLASS) {
-                for ($j = $i + 1; $j < count($tokens); $j++) {
-                    if ($tokens[$j] === "{") {
-                        return $tokens[$i + 2][1];
-                    }
-                }
-            }
-        }
-    }
-
-    return null;
-}
-
 if (!function_exists("is_iterable")) {
     /**
      * @param mixed $value
@@ -778,6 +738,8 @@ function map_to_params($data)
     foreach (to_array($data) as $key => $value) {
         if ($value === null) {
             $params[] = "$key IS NULL";
+        } elseif ($value instanceof Expression && my_is_integer($key)) {
+            $params[] = "$value";
         } elseif ($value instanceof Expression) {
             $params[] = "$key = $value";
         } else {
@@ -797,6 +759,10 @@ function to_array($items)
 {
     if ($items instanceof Traversable) {
         return iterator_to_array($items);
+    }
+
+    if ($items instanceof Arrayable) {
+        return $items->toArray();
     }
 
     if (is_array($items)) {
@@ -846,13 +812,15 @@ function versioned($path, $query = [])
     return $url->versioned($path, $query);
 }
 
-function dd(...$vars)
-{
-    foreach ($vars as $v) {
-        VarDumper::dump($v);
-    }
+if (!function_exists("dd")) {
+    function dd(...$vars)
+    {
+        foreach ($vars as $v) {
+            VarDumper::dump($v);
+        }
 
-    exit(1);
+        exit(1);
+    }
 }
 
 /**
@@ -984,4 +952,13 @@ function get_authorization_value(Request $request)
     }
 
     return $authorization;
+}
+
+/**
+ * @param mixed $value
+ * @return string
+ */
+function selected($value)
+{
+    return $value ? "selected" : "";
 }

@@ -67,9 +67,7 @@ class PaymentPlatformResource
             return new ErrorApiResponse($lang->t("delete_payment_platform_settings_constraint"));
         }
 
-        $occupiedPlatforms = collect($serverManager->getServers())->flatMap(function (
-            Server $server
-        ) {
+        $occupiedPlatforms = collect($serverManager->all())->flatMap(function (Server $server) {
             return array_merge([$server->getSmsPlatformId()], $server->getTransferPlatformIds());
         });
 

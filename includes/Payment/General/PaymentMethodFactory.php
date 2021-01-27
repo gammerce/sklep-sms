@@ -21,10 +21,10 @@ class PaymentMethodFactory
     {
         $this->app = $app;
         $this->paymentMethodsClasses = [
-            PaymentMethod::SMS()->getValue() => SmsPaymentMethod::class,
-            PaymentMethod::DIRECT_BILLING()->getValue() => DirectBillingPaymentMethod::class,
-            PaymentMethod::TRANSFER()->getValue() => TransferPaymentMethod::class,
-            PaymentMethod::WALLET()->getValue() => WalletPaymentMethod::class,
+            PaymentMethod::SMS => SmsPaymentMethod::class,
+            PaymentMethod::DIRECT_BILLING => DirectBillingPaymentMethod::class,
+            PaymentMethod::TRANSFER => TransferPaymentMethod::class,
+            PaymentMethod::WALLET => WalletPaymentMethod::class,
         ];
     }
 

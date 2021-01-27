@@ -4,7 +4,7 @@ namespace App\Http\Controllers\View;
 use App\Managers\UserManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
-use App\Services\IntendedUrlService;
+use App\Support\IntendedUrlService;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;

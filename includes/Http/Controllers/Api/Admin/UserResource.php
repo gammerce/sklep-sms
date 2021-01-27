@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
@@ -39,7 +40,7 @@ class UserResource
             [
                 "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getId())],
                 "forename" => [],
-                "groups" => [new UserGroupsRule()],
+                "groups" => [new ArrayRule(), new UserGroupsRule()],
                 "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getId())],
                 "surname" => [],
                 "username" => [

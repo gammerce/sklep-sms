@@ -218,6 +218,7 @@ return [
     "service_edit" => "Service edited successfully.",
     "service_edit_unable" => "This service cannot be edited.",
     "service_no_edit" => "Service not edited.",
+    "service_servers_hint" => "List of servers where you can purchase this service",
     "services" => "Services",
     "settings" => "Shop settings",
     "settings_edit" => "Settings edited successfully.",

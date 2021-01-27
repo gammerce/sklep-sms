@@ -1,13 +1,13 @@
 <form id="form_server_edit" class="action_box">
-    <div class="service_main_info">{$lang->t('edit_server')}</div>
+    <div class="service_main_info">{{ __('edit_server') }}</div>
     <table>
         <tr>
-            <td>{$lang->t('id')}</td>
+            <td>{{ __('id') }}</td>
             <td>{{ $server->getId() }}</td>
         </tr>
 
         <tr>
-            <td>{$lang->t('token')}</td>
+            <td>{{ __('token') }}</td>
             <td>
                 <input class="input is-small" value="{{ $server->getToken() }}" disabled />
             </td>
@@ -19,7 +19,7 @@
 
         <tr>
             <td>
-                <label for="name" class="required">{$lang->t('name')}</label>
+                <label for="name" class="required">{{ __('name') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -40,7 +40,7 @@
 
         <tr>
             <td>
-                <label for="ip" class="required">{$lang->t('ip')}</label>
+                <label for="ip" class="required">{{ __('ip') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -61,7 +61,7 @@
 
         <tr>
             <td>
-                <label for="port" class="required">{$lang->t('port')}</label>
+                <label for="port" class="required">{{ __('port') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -82,14 +82,14 @@
 
         <tr>
             <td>
-                <label for="sms_platform">{$lang->t('sms_payment_platform')}</label>
+                <label for="sms_platform">{{ __('sms_payment_platform') }}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
-                                <option value="">{$lang->t('default')}</option>
+                                <option value="">{{ __('default') }}</option>
                                 {$smsPlatforms}
                             </select>
                         </div>
@@ -100,7 +100,7 @@
 
         <tr>
             <td>
-                <label for="transfer_platform">{$lang->t('transfer_payment_platform')}</label>
+                <label for="transfer_platform">{{ __('transfer_payment_platform') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -119,7 +119,22 @@
             <td colspan="2" class="line"></td>
         </tr>
 
-        {$services}
+        <tr>
+            <td>
+                <label for="service_ids">{{ __('services') }}</label>
+            </td>
+            <td>
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-multiple is-small">
+                            <select id="service_ids" name="service_ids[]" size="6" multiple>
+                                {!! $services !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
 
         <tr>
             <td colspan="2" class="line"></td>
@@ -128,7 +143,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $server->getId() }}" />
-                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
+                <input type="submit" value="{{ __('edit') }}" class="button w100" />
             </td>
         </tr>
     </table>

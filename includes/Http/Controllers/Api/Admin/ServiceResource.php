@@ -49,7 +49,7 @@ class ServiceResource
                 ? $serviceModule->serviceAdminManagePost($validated)
                 : [];
 
-        $updated = $serviceRepository->update(
+        $serviceRepository->update(
             $serviceId,
             $validated["new_id"],
             $validated["name"],
@@ -62,13 +62,13 @@ class ServiceResource
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", "")
         );
+        $serviceService->updateServiceServerLinks(
+            $validated["new_id"],
+            $validated["server_ids"] ?: []
+        );
+        $logger->logWithActor("log_service_edited", $validated["new_id"]);
 
-        if ($updated) {
-            $logger->logWithActor("log_service_edited", $serviceId);
-            return new SuccessApiResponse($lang->t("service_edit"));
-        }
-
-        return new ApiResponse("not_edited", $lang->t("service_no_edit"), 0);
+        return new SuccessApiResponse($lang->t("service_edit"));
     }
 
     public function delete(

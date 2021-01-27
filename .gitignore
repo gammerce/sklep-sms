@@ -16,3 +16,4 @@
 /data/setup_progress
 test.http
 .phpunit.result.cache
+clover.yml

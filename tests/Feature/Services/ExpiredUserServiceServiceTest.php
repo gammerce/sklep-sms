@@ -3,7 +3,7 @@ namespace Tests\Feature\Services;
 
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
-use App\Services\ExpiredUserServiceService;
+use App\Service\ExpiredUserServiceService;
 use Tests\Psr4\Concerns\MybbRepositoryConcern;
 use Tests\Psr4\TestCases\TestCase;
 

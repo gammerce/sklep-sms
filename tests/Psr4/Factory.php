@@ -1,7 +1,15 @@
 <?php
 namespace Tests\Psr4;
 
+use App\Models\Group;
+use App\Models\PaymentPlatform;
+use App\Models\Price;
+use App\Models\PromoCode;
+use App\Models\Server;
+use App\Models\ServerService;
+use App\Models\Service;
 use App\Models\SmsCode;
+use App\Models\User;
 use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
 use App\Repositories\LogRepository;
@@ -36,44 +44,19 @@ function resolve($value)
 
 class Factory
 {
-    /** @var Generator */
-    private $faker;
-
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var ServerRepository */
-    private $serverRepository;
-
-    /** @var ServerServiceRepository */
-    private $serverServiceRepository;
-
-    /** @var ServiceRepository */
-    private $serviceRepository;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
-
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var LogRepository */
-    private $logRepository;
-
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
-
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var MybbUserServiceRepository */
-    private $mybbUserServiceRepository;
-
-    /** @var GroupRepository */
-    private $groupRepository;
+    private Generator $faker;
+    private UserRepository $userRepository;
+    private ServerRepository $serverRepository;
+    private ServerServiceRepository $serverServiceRepository;
+    private ServiceRepository $serviceRepository;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private PromoCodeRepository $promoCodeRepository;
+    private PriceRepository $priceRepository;
+    private LogRepository $logRepository;
+    private SmsCodeRepository $smsCodeRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private MybbUserServiceRepository $mybbUserServiceRepository;
+    private GroupRepository $groupRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -104,7 +87,7 @@ class Factory
         $this->groupRepository = $groupRepository;
     }
 
-    public function server(array $attributes = [])
+    public function server(array $attributes = []): Server
     {
         $attributes = array_merge(
             [
@@ -126,7 +109,7 @@ class Factory
         );
     }
 
-    public function service(array $attributes = [])
+    public function service(array $attributes = []): Service
     {
         $attributes = merge_recursive(
             [
@@ -156,7 +139,7 @@ class Factory
         );
     }
 
-    public function extraFlagService(array $attributes = [])
+    public function extraFlagService(array $attributes = []): Service
     {
         return $this->service(
             merge_recursive(
@@ -168,7 +151,7 @@ class Factory
         );
     }
 
-    public function mybbService(array $attributes = [])
+    public function mybbService(array $attributes = []): Service
     {
         return $this->service(
             merge_recursive(
@@ -187,7 +170,7 @@ class Factory
         );
     }
 
-    public function serverService(array $attributes = [])
+    public function serverService(array $attributes = []): ServerService
     {
         $attributes = array_merge(
             [
@@ -202,7 +185,7 @@ class Factory
         );
     }
 
-    public function price(array $attributes = [])
+    public function price(array $attributes = []): Price
     {
         $attributes = array_merge(
             [
@@ -228,12 +211,12 @@ class Factory
         );
     }
 
-    public function admin(array $attributes = [])
+    public function admin(array $attributes = []): User
     {
         return $this->user(array_merge(["groups" => "2"], $attributes));
     }
 
-    public function user(array $attributes = [])
+    public function user(array $attributes = []): User
     {
         $attributes = array_merge(
             [
@@ -263,7 +246,7 @@ class Factory
         );
     }
 
-    public function paymentPlatform(array $attributes = [])
+    public function paymentPlatform(array $attributes = []): PaymentPlatform
     {
         $attributes = array_merge(
             [
@@ -283,7 +266,7 @@ class Factory
         );
     }
 
-    public function promoCode(array $attributes = [])
+    public function promoCode(array $attributes = []): PromoCode
     {
         $attributes = array_merge(
             [
@@ -323,11 +306,7 @@ class Factory
         return $this->logRepository->create($attributes["text"]);
     }
 
-    /**
-     * @param array $attributes
-     * @return SmsCode
-     */
-    public function smsCode(array $attributes = [])
+    public function smsCode(array $attributes = []): SmsCode
     {
         $attributes = array_merge(
             [
@@ -347,11 +326,7 @@ class Factory
         );
     }
 
-    /**
-     * @param array $attributes
-     * @return ExtraFlagUserService
-     */
-    public function extraFlagUserService(array $attributes = [])
+    public function extraFlagUserService(array $attributes = []): ExtraFlagUserService
     {
         $attributes = array_merge(
             [
@@ -377,11 +352,7 @@ class Factory
         );
     }
 
-    /**
-     * @param array $attributes
-     * @return MybbUserService
-     */
-    public function mybbUserService(array $attributes = [])
+    public function mybbUserService(array $attributes = []): MybbUserService
     {
         $attributes = array_merge(
             [
@@ -403,7 +374,7 @@ class Factory
         );
     }
 
-    public function group(array $attributes = [])
+    public function group(array $attributes = []): Group
     {
         $attributes = array_merge(
             [

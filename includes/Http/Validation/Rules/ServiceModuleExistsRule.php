@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Validation\Rules;
 
+use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\Managers\ServiceModuleManager;
 
@@ -20,9 +21,7 @@ class ServiceModuleExistsRule extends BaseRule
         $serviceModule = $this->serviceModuleManager->getEmpty($value);
 
         if (!$serviceModule) {
-            return [$this->lang->t("wrong_module")];
+            throw new ValidationException($this->lang->t("wrong_module"));
         }
-
-        return [];
     }
 }

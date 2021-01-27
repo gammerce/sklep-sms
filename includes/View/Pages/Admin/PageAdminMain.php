@@ -8,8 +8,9 @@ use App\Payment\General\PaymentMethod;
 use App\Repositories\TransactionRepository;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
-use App\Services\PriceTextService;
+use App\Server\Platform;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\Template;
 use App\Support\Version;
 use App\System\Application;
@@ -144,7 +145,7 @@ class PageAdminMain extends PageAdmin
         }
 
         $serversCount = 0;
-        foreach ($this->serverManager->getServers() as $server) {
+        foreach ($this->serverManager->all() as $server) {
             if (!$this->isServerNewest($server, $newestAmxXVersion, $newestSmVersion)) {
                 $serversCount += 1;
             }
@@ -157,7 +158,7 @@ class PageAdminMain extends PageAdmin
                 $this->lang->t(
                     "update_available_servers",
                     $serversCount,
-                    $this->serverManager->getServersAmount(),
+                    $this->serverManager->getCount(),
                     $updateServersLink
                 ),
                 "is-success"
@@ -173,7 +174,7 @@ class PageAdminMain extends PageAdmin
 
         // Server
         $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_servers", $this->serverManager->getServersAmount()),
+            $this->lang->t("number_of_servers", $this->serverManager->getCount()),
             $this->url->to("/admin/servers")
         );
 
@@ -256,7 +257,7 @@ class PageAdminMain extends PageAdmin
     private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion)
     {
         if (
-            $server->getType() === Server::TYPE_AMXMODX &&
+            Platform::AMXMODX()->equals($server->getType()) &&
             $newestAmxxVersion &&
             version_compare($server->getVersion(), $newestAmxxVersion) < 0
         ) {
@@ -264,7 +265,7 @@ class PageAdminMain extends PageAdmin
         }
 
         if (
-            $server->getType() === Server::TYPE_SOURCEMOD &&
+            Platform::SOURCEMOD()->equals($server->getType()) &&
             $newestSmVersion &&
             version_compare($server->getVersion(), $newestSmVersion) < 0
         ) {
