@@ -13,6 +13,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
 use App\Support\Template;
 use App\Translation\TranslationManager;
@@ -126,38 +127,10 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             throw new UnauthorizedException();
         }
 
-        if ($boxId === "edit") {
-            $service = $this->serviceManager->get($query["id"]);
-        } else {
-            $service = null;
-        }
-
-        $groups = collect($this->groupManager->all())
-            ->map(function (Group $group) use ($service) {
-                $selected = $service && in_array($group->getId(), $service->getGroups());
-                return new Option("{$group->getName()} ({$group->getId()})", $group->getId(), [
-                    "selected" => selected($selected),
-                ]);
-            })
-            ->join();
-
-        $servers = collect($this->serverManager->all())
-            ->map(function (Server $server) use ($service) {
-                $isLinked =
-                    $service &&
-                    $this->serverServiceManager->serverServiceLinked(
-                        $server->getId(),
-                        $service->getId()
-                    );
-
-                return new Option("{$server->getName()} ({$server->getId()})", $server->getId(), [
-                    "selected" => selected($isLinked),
-                ]);
-            })
-            ->join();
-
         switch ($boxId) {
             case "add":
+                $groups = $this->getGroupOptions();
+
                 $servicesModules = collect($this->serviceModuleManager->all())
                     ->filter(function (ServiceModule $serviceModule) {
                         return $serviceModule instanceof IServiceCreate;
@@ -172,22 +145,28 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
                 return $this->template->render(
                     "admin/action_boxes/service_add",
-                    compact("groups", "servers", "servicesModules")
+                    compact("groups", "servicesModules")
                 );
 
             case "edit":
-                if (strlen($service->getModule())) {
-                    $serviceModule = $this->serviceModuleManager->get($service->getId());
+                $service = $this->serviceManager->get($query["id"]);
+                $serviceModule = $this->serviceModuleManager->get($service->getId());
+                $groups = $this->getGroupOptions($service);
 
-                    if ($serviceModule instanceof IServiceAdminManage) {
-                        $extraFields = create_dom_element(
-                            "tbody",
-                            new RawHtml($serviceModule->serviceAdminExtraFieldsGet()),
-                            [
-                                "class" => "extra_fields",
-                            ]
-                        );
-                    }
+                if ($serviceModule instanceof IServiceAdminManage) {
+                    $extraFields = create_dom_element(
+                        "tbody",
+                        new RawHtml($serviceModule->serviceAdminExtraFieldsGet()),
+                        [
+                            "class" => "extra_fields",
+                        ]
+                    );
+                }
+
+                if ($serviceModule instanceof IServicePurchaseExternal) {
+                    $servers = $this->getServersSection($service);
+                } else {
+                    $servers = null;
                 }
 
                 $serviceModuleName = $this->serviceModuleManager->getName($service->getModule());
@@ -200,5 +179,43 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
             default:
                 throw new EntityNotFoundException();
         }
+    }
+
+    private function getServersSection(Service $service = null)
+    {
+        $serverOptions = collect($this->serverManager->all())
+            ->map(function (Server $server) use ($service) {
+                $isLinked =
+                    $service &&
+                    $this->serverServiceManager->serverServiceLinked(
+                        $server->getId(),
+                        $service->getId()
+                    );
+
+                return new Option("{$server->getName()} ({$server->getId()})", $server->getId(), [
+                    "selected" => selected($isLinked),
+                ]);
+            })
+            ->join();
+
+        return $this->template->render("admin/components/action_box/multi_select", [
+            "id" => "server_ids",
+            "title" => $this->lang->t("servers"),
+            "subtitle" => $this->lang->t("service_servers_hint"),
+            "items" => $serverOptions,
+            "size" => 6,
+        ]);
+    }
+
+    private function getGroupOptions(Service $service = null)
+    {
+        return collect($this->groupManager->all())
+            ->map(function (Group $group) use ($service) {
+                $selected = $service && in_array($group->getId(), $service->getGroups());
+                return new Option("{$group->getName()} ({$group->getId()})", $group->getId(), [
+                    "selected" => selected($selected),
+                ]);
+            })
+            ->join();
     }
 }
