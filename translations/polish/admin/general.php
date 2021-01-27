@@ -86,7 +86,7 @@ return [
     "group_no_edit" => "Grupa nie została prawidłowo wyedytowana.",
     "groups" => "Grupy",
     "groups_to_buy_service" =>
-        "Które grupy mogą zakupić tę usługę.<br/>Zostaw puste, aby zezwolić wszystkim.",
+        "Które grupy mogą zakupić tę usługę. Zostaw puste, aby zezwolić wszystkim.",
     "how_to_update" => "Jak zaktualizować",
     "html_allowed" => "( dozwolony HTML )",
     "id_exist" => "Takie ID już istnieje.",

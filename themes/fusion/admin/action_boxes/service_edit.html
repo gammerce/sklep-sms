@@ -138,30 +138,14 @@
                 </td>
             </tr>
 
-            <tr>
-                <td colspan="2" class="line"></td>
+            <tr class="line">
+                <td colspan="2"></td>
             </tr>
 
-            <tr>
-                <td>
-                    <label for="server_ids">{{ __('servers') }}</label>
-                    <div class="hint">{{ __('service_servers_hint') }}</div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="control">
-                            <div class="select is-multiple is-small">
-                                <select id="server_ids" name="server_ids[]" size="6" multiple>
-                                    {!! $servers !!}
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </td>
-            </tr>
+            {!! $servers !!}
 
-            <tr>
-                <td colspan="2" class="line"></td>
+            <tr class="line">
+                <td colspan="2"></td>
             </tr>
 
             <tr>
