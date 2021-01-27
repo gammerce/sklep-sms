@@ -32,9 +32,9 @@ class ServerResource
             $validated["ip"],
             $validated["port"],
             $validated["sms_platform"],
-            $validated["transfer_platform"] ?: []
+            $validated["transfer_platform"] ?? []
         );
-        $serverService->updateServerServiceAffiliations($serverId, $request->request->all());
+        $serverService->updateServerServiceLinks($serverId, $validated["service_ids"] ?? []);
         $databaseLogger->logWithActor("log_server_edited", $serverId);
 
         return new SuccessApiResponse($lang->t("server_edit"));

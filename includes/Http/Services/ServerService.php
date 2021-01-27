@@ -3,7 +3,9 @@ namespace App\Http\Services;
 
 use App\Http\Validation\Rules\ArrayRule;
 use App\Http\Validation\Rules\DefaultSmsPlatformRule;
+use App\Http\Validation\Rules\IterateRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\ServiceExistsRule;
 use App\Http\Validation\Rules\SupportSmsRule;
 use App\Http\Validation\Rules\SupportTransferRule;
 use App\Http\Validation\Validator;
@@ -40,6 +42,7 @@ class ServerService
             array_merge($body, [
                 "ip" => trim(array_get($body, "ip")),
                 "port" => trim(array_get($body, "port")),
+                "service_ids" => array_get($body, "service_ids"),
                 "sms_platform" => as_int(array_get($body, "sms_platform")),
                 "transfer_platform" => array_get($body, "transfer_platform"),
             ]),
@@ -47,28 +50,29 @@ class ServerService
                 "name" => [new RequiredRule()],
                 "ip" => [new RequiredRule()],
                 "port" => [new RequiredRule()],
+                "service_ids" => [new ArrayRule(), new IterateRule(new ServiceExistsRule())],
                 "sms_platform" => [new SupportSmsRule(), new DefaultSmsPlatformRule()],
                 "transfer_platform" => [new ArrayRule(), new SupportTransferRule()],
             ]
         );
     }
 
-    public function updateServerServiceAffiliations($serverId, array $body)
+    public function updateServerServiceLinks($serverId, array $serviceIds)
     {
         $serversServices = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 return $this->serviceModuleManager->get($service->getId()) instanceof
                     IServicePurchaseExternal;
             })
-            ->map(function (Service $service) use ($serverId, $body) {
+            ->map(function (Service $service) use ($serverId, $serviceIds) {
                 return [
                     "service_id" => $service->getId(),
                     "server_id" => $serverId,
-                    "connect" => (bool) array_get($body, $service->getId()),
+                    "connect" => (bool) in_array($service->getId(), $serviceIds, true),
                 ];
             })
             ->all();
 
-        $this->serverServiceService->updateAffiliations($serversServices);
+        $this->serverServiceService->updateLinks($serversServices);
     }
 }

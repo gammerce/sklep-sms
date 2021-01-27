@@ -1,7 +1,9 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Models\ServerService;
 use App\Repositories\ServerRepository;
+use App\Repositories\ServerServiceRepository;
 use App\Repositories\SettingsRepository;
 use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\TPay;
@@ -9,13 +11,14 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerCollectionTest extends HttpTestCase
 {
-    /** @var ServerRepository */
-    private $serverRepository;
+    private ServerRepository $serverRepository;
+    private ServerServiceRepository $serverServiceRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->serverRepository = $this->app->make(ServerRepository::class);
+        $this->serverServiceRepository = $this->app->make(ServerServiceRepository::class);
     }
 
     /** @test */
@@ -36,6 +39,7 @@ class ServerCollectionTest extends HttpTestCase
             "name" => "My Example",
             "ip" => "192.168.0.1",
             "port" => "27015",
+            "service_ids" => ["vip", "vippro"],
             "sms_platform" => $smsPaymentPlatform->getId(),
             "transfer_platform" => [$transferPaymentPlatform->getId()],
         ]);
@@ -50,6 +54,12 @@ class ServerCollectionTest extends HttpTestCase
         $this->assertSame("27015", $server->getPort());
         $this->assertSame($smsPaymentPlatform->getId(), $server->getSmsPlatformId());
         $this->assertSame([$transferPaymentPlatform->getId()], $server->getTransferPlatformIds());
+
+        $links = $this->serverServiceRepository->findByServer($server->getId());
+        $serviceIds = collect($links)
+            ->map(fn(ServerService $serverService) => $serverService->getServiceId())
+            ->all();
+        $this->assertEquals(["vip", "vippro"], $serviceIds);
     }
 
     /** @test */
@@ -83,6 +93,12 @@ class ServerCollectionTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $server = $this->serverRepository->get($json["data"]["id"]);
         $this->assertNotNull($server);
+
+        $links = $this->serverServiceRepository->findByServer($server->getId());
+        $serviceIds = collect($links)
+            ->map(fn(ServerService $serverService) => $serverService->getServiceId())
+            ->all();
+        $this->assertEquals([], $serviceIds);
     }
 
     /** @test */
