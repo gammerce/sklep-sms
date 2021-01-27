@@ -12,6 +12,7 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -55,12 +56,15 @@ class ServiceCollection
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", "")
         );
-        $serviceService->updateServiceServerLinks(
-            $service->getId(),
-            $validated["server_ids"] ?: []
-        );
-        $logger->logWithActor("log_service_added", $service->getId());
 
+        if ($serviceModule instanceof IServicePurchaseExternal) {
+            $serviceService->updateServiceServerLinks(
+                $service->getId(),
+                $validated["server_ids"] ?: []
+            );
+        }
+
+        $logger->logWithActor("log_service_added", $service->getId());
         return new SuccessApiResponse($lang->t("service_added"), [
             "length" => 10000,
         ]);

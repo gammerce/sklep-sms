@@ -11,6 +11,7 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\ServiceModuleManager;
 use App\Repositories\ServiceRepository;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
+use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\Translation\TranslationManager;
 use PDOException;
 use Symfony\Component\HttpFoundation\Request;
@@ -62,12 +63,15 @@ class ServiceResource
             array_get($additionalData, "types", 0),
             array_get($additionalData, "flags", "")
         );
-        $serviceService->updateServiceServerLinks(
-            $validated["new_id"],
-            $validated["server_ids"] ?: []
-        );
-        $logger->logWithActor("log_service_edited", $validated["new_id"]);
 
+        if ($serviceModule instanceof IServicePurchaseExternal) {
+            $serviceService->updateServiceServerLinks(
+                $validated["new_id"],
+                $validated["server_ids"] ?: []
+            );
+        }
+
+        $logger->logWithActor("log_service_edited", $validated["new_id"]);
         return new SuccessApiResponse($lang->t("service_edit"));
     }
 

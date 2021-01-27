@@ -1,0 +1,17 @@
+<tr>
+    <td>
+        <label for="{{ $id }}">{{ $title }}</label>
+        <div class="hint">{{ $subtitle }}</div>
+    </td>
+    <td>
+        <div class="field">
+            <div class="control">
+                <div class="select is-multiple is-small">
+                    <select id="{{ $id }}" name="{{ $id }}[]" size="{{ $size }}" multiple>
+                        {!! $items !!}
+                    </select>
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>

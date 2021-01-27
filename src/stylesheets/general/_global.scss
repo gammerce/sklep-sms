@@ -31,9 +31,15 @@ a:hover {
 }
 
 hr,
-.line {
+td.line,
+tr.line > td {
     border: 1px inset #5f5f5f !important;
     padding: 0 !important;
+}
+
+// Hide multiple lines stacked on each other
+tr.line + tr.line {
+    display: none;
 }
 
 .vcenter {
