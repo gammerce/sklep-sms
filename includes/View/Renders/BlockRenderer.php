@@ -30,11 +30,7 @@ class BlockRenderer
     {
         try {
             $block = $this->blockResolver->resolve($blockId);
-        } catch (EntityNotFoundException $e) {
-            return null;
-        } catch (ForbiddenException $e) {
-            return null;
-        } catch (UnauthorizedException $e) {
+        } catch (EntityNotFoundException | ForbiddenException | UnauthorizedException $e) {
             return null;
         }
 
