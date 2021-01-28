@@ -113,9 +113,7 @@ class PageAdminPayments extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->transactionRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->transactionRepository->mapToModel($row))
             ->map(function (Transaction $transaction) use ($recordId) {
                 $cost =
                     $this->priceTextService->getPriceText($transaction->getCost()) ?:

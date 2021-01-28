@@ -92,11 +92,9 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->promoCodeRepository->mapToModel($row);
-            })
-            ->map(function (PromoCode $promoCode) {
-                return (new BodyRow())
+            ->map(fn(array $row) => $this->promoCodeRepository->mapToModel($row))
+            ->map(
+                fn(PromoCode $promoCode) => (new BodyRow())
                     ->setDbId($promoCode->getId())
                     ->addCell(new Cell($promoCode->getCode()))
                     ->addCell(new Cell($promoCode->getQuantityFormatted()))
@@ -104,8 +102,8 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new ExpirationDateCell($promoCode->getExpiresAt()))
                     ->addCell(new DateTimeCell($promoCode->getCreatedAt()))
                     ->addAction($this->createViewButton())
-                    ->setDeleteAction(can(Permission::MANAGE_PROMO_CODES()));
-            })
+                    ->setDeleteAction(can(Permission::MANAGE_PROMO_CODES()))
+            )
             ->all();
 
         $table = (new Structure())
@@ -151,24 +149,22 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         switch ($boxId) {
             case "add":
                 $services = collect($this->serviceManager->all())
-                    ->map(function (Service $service) {
-                        return new Option($service->getName(), $service->getId());
-                    })
+                    ->map(
+                        fn(Service $service) => new Option($service->getName(), $service->getId())
+                    )
                     ->join();
 
                 $servers = collect($this->serverManager->all())
-                    ->map(function (Server $server) {
-                        return new Option($server->getName(), $server->getId());
-                    })
+                    ->map(fn(Server $server) => new Option($server->getName(), $server->getId()))
                     ->join();
 
                 $quantityTypes = collect(QuantityType::values())
-                    ->map(function (QuantityType $quantityType) {
-                        return new Option(
+                    ->map(
+                        fn(QuantityType $quantityType) => new Option(
                             $this->getQuantityTypeName($quantityType),
                             $quantityType->getValue()
-                        );
-                    })
+                        )
+                    )
                     ->join();
 
                 return $this->template->render(

@@ -59,9 +59,7 @@ class ExtraFlagUserServiceRepository
         $statement->execute($values);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 

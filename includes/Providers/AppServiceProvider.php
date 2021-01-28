@@ -64,15 +64,16 @@ class AppServiceProvider
 
     private function registerDatabase(Application $app)
     {
-        $app->singleton(Database::class, function () {
-            return new Database(
+        $app->singleton(
+            Database::class,
+            fn() => new Database(
                 getenv("DB_HOST"),
                 getenv("DB_PORT") ?: 3306,
                 getenv("DB_USERNAME"),
                 getenv("DB_PASSWORD"),
                 getenv("DB_DATABASE")
-            );
-        });
+            )
+        );
     }
 
     private function registerCache(Application $app)

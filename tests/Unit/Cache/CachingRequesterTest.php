@@ -23,9 +23,7 @@ class CachingRequesterTest extends TestCase
         $requester = new CachingRequester($cache);
 
         // when
-        $response = $requester->load("test", 120, function () {
-            return "foobar";
-        });
+        $response = $requester->load("test", 120, fn() => "foobar");
 
         // then
         $this->assertEquals("value", $response);
@@ -49,9 +47,7 @@ class CachingRequesterTest extends TestCase
         $requester = new CachingRequester($cache);
 
         // when
-        $response = $requester->load("test", 120, function () {
-            return "foobar";
-        });
+        $response = $requester->load("test", 120, fn() => "foobar");
 
         // then
         $this->assertEquals("foobar", $response);
@@ -76,9 +72,7 @@ class CachingRequesterTest extends TestCase
         $requester = new CachingRequester($cache);
 
         // when
-        $response = $requester->load("test", 100, function () {
-            return "foobar";
-        });
+        $response = $requester->load("test", 100, fn() => "foobar");
 
         // then
         $this->assertEquals("foobar", $response);
@@ -98,9 +92,7 @@ class CachingRequesterTest extends TestCase
         $requester = new CachingRequester($cache);
 
         // when
-        $response = $requester->load("test", 100, function () {
-            return null;
-        });
+        $response = $requester->load("test", 100, fn() => null);
 
         // then
         $this->assertEquals("value", $response);

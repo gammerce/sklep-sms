@@ -87,12 +87,10 @@ class PageAdminIncome extends PageAdmin
         $buttons = $this->renderButtons($queryYear, $queryMonth);
 
         $tbody = collect($labels)
-            ->filter(function ($label) {
-                return $label <= date("Y-m-d");
-            })
-            ->map(function ($label) use ($incomeFromPeriod) {
-                return $this->renderTRow($label, array_get($incomeFromPeriod, $label, []));
-            });
+            ->filter(fn($label) => $label <= date("Y-m-d"))
+            ->map(
+                fn($label) => $this->renderTRow($label, array_get($incomeFromPeriod, $label, []))
+            );
 
         if ($tbody->isPopulated()) {
             $tbody->push($this->renderSummary($incomeFromPeriod));
@@ -260,9 +258,7 @@ class PageAdminIncome extends PageAdmin
     private function getServersIds()
     {
         return collect($this->serverManager->all())
-            ->map(function (Server $server) {
-                return $server->getId();
-            })
+            ->map(fn(Server $server) => $server->getId())
             ->push(0)
             ->all();
     }

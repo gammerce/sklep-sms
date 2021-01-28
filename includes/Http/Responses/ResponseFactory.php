@@ -141,9 +141,7 @@ class ResponseFactory
     private function formatWarnings(array $warnings)
     {
         return collect($warnings)
-            ->mapWithKeys(function ($value) {
-                return to_array($value);
-            })
+            ->mapWithKeys(fn($value) => to_array($value))
             ->all();
     }
 }

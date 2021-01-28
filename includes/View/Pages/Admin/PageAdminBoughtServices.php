@@ -106,9 +106,7 @@ class PageAdminBoughtServices extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->transactionRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->transactionRepository->mapToModel($row))
             ->map(function (Transaction $transaction) {
                 $service = $this->serviceManager->get($transaction->getServiceId());
                 $server = $this->serverManager->get($transaction->getServerId());
@@ -133,9 +131,7 @@ class PageAdminBoughtServices extends PageAdmin
                     : new NoneText();
 
                 $extraData = collect($transaction->getExtraData())
-                    ->filter(function ($value) {
-                        return strlen($value);
-                    })
+                    ->filter(fn($value) => strlen($value))
                     ->mapWithKeys(function ($value, $key) {
                         if ($key == "password") {
                             $key = $this->lang->t("password");

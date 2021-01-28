@@ -103,9 +103,7 @@ EOF
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->priceRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->priceRepository->mapToModel($row))
             ->map(function (Price $price) {
                 if ($price->isForEveryServer()) {
                     $serverEntry = $this->lang->t("all");
@@ -198,18 +196,18 @@ EOF
             ->join();
 
         $servers = collect($this->serverManager->all())
-            ->map(function (Server $server) use ($price) {
-                return create_dom_element("option", $server->getName(), [
+            ->map(
+                fn(Server $server) => create_dom_element("option", $server->getName(), [
                     "value" => $server->getId(),
                     "selected" =>
                         $price && $price->getServerId() === $server->getId() ? "selected" : "",
-                ]);
-            })
+                ])
+            )
             ->join();
 
         $smsPrices = collect($this->smsPriceRepository->all())
-            ->map(function (Money $smsPrice) use ($price) {
-                return create_dom_element(
+            ->map(
+                fn(Money $smsPrice) => create_dom_element(
                     "option",
                     $this->priceTextService->getPriceGrossText($smsPrice),
                     [
@@ -217,8 +215,8 @@ EOF
                         "selected" =>
                             $price && $smsPrice->equal($price->getSmsPrice()) ? "selected" : "",
                     ]
-                );
-            })
+                )
+            )
             ->join();
 
         switch ($boxId) {

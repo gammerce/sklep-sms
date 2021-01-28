@@ -66,9 +66,7 @@ class ServerDataService
         $statement->execute(array_merge([$server->getId()], $serviceIds));
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->priceRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->priceRepository->mapToModel($row))
             ->all();
     }
 
@@ -79,9 +77,7 @@ class ServerDataService
     public function getServices($serverId)
     {
         $serviceIds = collect($this->serverServiceRepository->findByServer($serverId))
-            ->map(function (ServerService $serverService) {
-                return $serverService->getServiceId();
-            })
+            ->map(fn(ServerService $serverService) => $serverService->getServiceId())
             ->all();
 
         return $this->serviceRepository->findMany($serviceIds);
@@ -134,12 +130,8 @@ EOF
         return collect($statement)
             ->map(function (array $data) {
                 $flags = collect($data)
-                    ->filter(function ($value, $key) {
-                        return in_array($key, PlayerFlag::FLAGS, true);
-                    })
-                    ->filter(function ($value) {
-                        return !!$value;
-                    })
+                    ->filter(fn($value, $key) => in_array($key, PlayerFlag::FLAGS, true))
+                    ->filter(fn($value) => !!$value)
                     ->keys()
                     ->join();
 

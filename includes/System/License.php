@@ -116,9 +116,7 @@ class License
             return $this->cachingRequester->load(
                 CacheEnum::LICENSE,
                 static::CACHE_TTL,
-                function () {
-                    return $this->request();
-                }
+                fn() => $this->request()
             );
         } catch (RequestException $e) {
             throw new LicenseRequestException(null, $e);

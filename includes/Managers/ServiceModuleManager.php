@@ -106,9 +106,7 @@ class ServiceModuleManager
     {
         return collect($this->classes)
             ->keys()
-            ->map(function ($moduleId) {
-                return $this->getEmpty($moduleId);
-            })
+            ->map(fn($moduleId) => $this->getEmpty($moduleId))
             ->all();
     }
 }

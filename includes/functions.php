@@ -660,9 +660,7 @@ function as_permission_list($permissions)
                 return null;
             }
         })
-        ->filter(function ($permission) {
-            return $permission;
-        })
+        ->filter(fn($permission) => $permission)
         ->all();
 }
 
@@ -934,9 +932,7 @@ function explode_int_list($list, $delimiter = ",")
     }
 
     return collect(explode($delimiter, $list))
-        ->map(function ($value) {
-            return (int) $value;
-        })
+        ->map(fn($value) => (int) $value)
         ->all();
 }
 

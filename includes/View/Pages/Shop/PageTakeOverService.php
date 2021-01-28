@@ -45,11 +45,11 @@ class PageTakeOverService extends Page implements IBeLoggedMust
                 // Service module doesn't allow taking the service over
                 return $serviceModule instanceof IServiceTakeOver;
             })
-            ->map(function (Service $service) {
-                return create_dom_element("option", $service->getNameI18n(), [
+            ->map(
+                fn(Service $service) => create_dom_element("option", $service->getNameI18n(), [
                     "value" => $service->getId(),
-                ]);
-            })
+                ])
+            )
             ->join();
 
         return $this->template->render("shop/pages/service_take_over", compact("servicesOptions"));

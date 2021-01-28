@@ -56,18 +56,14 @@ class WebsiteHeader
     public function getScripts()
     {
         return collect($this->scripts)
-            ->map(function ($path) {
-                return "<script type=\"text/javascript\" src=\"{$path}\"></script>";
-            })
+            ->map(fn($path) => "<script type=\"text/javascript\" src=\"{$path}\"></script>")
             ->join("\n");
     }
 
     public function getStyles()
     {
         return collect($this->styles)
-            ->map(function ($path) {
-                return "<link href=\"{$path}\" rel=\"stylesheet\" />";
-            })
+            ->map(fn($path) => "<link href=\"{$path}\" rel=\"stylesheet\" />")
             ->join("\n");
     }
 }

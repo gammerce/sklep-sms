@@ -80,9 +80,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $recordId = $request->query->get("record");
 
         $bodyRows = collect($this->serviceManager->all())
-            ->filter(function (Service $service) use ($recordId) {
-                return $recordId === null || $service->getId() === $recordId;
-            })
+            ->filter(fn(Service $service) => $recordId === null || $service->getId() === $recordId)
             ->map(function (Service $service) use ($recordId) {
                 return (new BodyRow())
                     ->setDbId($service->getId())
@@ -92,9 +90,10 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($service->getOrder()))
                     ->setDeleteAction(can(Permission::MANAGE_SERVICES()))
                     ->setEditAction(can(Permission::MANAGE_SERVICES()))
-                    ->when($recordId === $service->getId(), function (BodyRow $bodyRow) {
-                        $bodyRow->addClass("highlighted");
-                    });
+                    ->when(
+                        $recordId === $service->getId(),
+                        fn(BodyRow $bodyRow) => $bodyRow->addClass("highlighted")
+                    );
             })
             ->all();
 
@@ -132,15 +131,15 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 $groups = $this->getGroupOptions();
 
                 $servicesModules = collect($this->serviceModuleManager->all())
-                    ->filter(function (ServiceModule $serviceModule) {
-                        return $serviceModule instanceof IServiceCreate;
-                    })
-                    ->map(function (ServiceModule $serviceModule) {
-                        return new Option(
+                    ->filter(
+                        fn(ServiceModule $serviceModule) => $serviceModule instanceof IServiceCreate
+                    )
+                    ->map(
+                        fn(ServiceModule $serviceModule) => new Option(
                             $this->serviceModuleManager->getName($serviceModule->getModuleId()),
                             $serviceModule->getModuleId()
-                        );
-                    })
+                        )
+                    )
                     ->join();
 
                 return $this->template->render(

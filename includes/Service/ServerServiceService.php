@@ -15,25 +15,15 @@ class ServerServiceService
 
     public function updateLinks(array $data)
     {
-        $itemsToCreate = collect($data)->filter(function (array $item) {
-            return $item["connect"];
-        });
+        $itemsToCreate = collect($data)->filter(fn(array $item) => $item["connect"]);
 
-        $itemsToDelete = collect($data)->filter(function (array $item) {
-            return !$item["connect"];
-        });
+        $itemsToDelete = collect($data)->filter(fn(array $item) => !$item["connect"]);
 
         if ($itemsToCreate->isPopulated()) {
-            $keys = $itemsToCreate
-                ->map(function () {
-                    return "(?, ?)";
-                })
-                ->join(", ");
+            $keys = $itemsToCreate->map(fn() => "(?, ?)")->join(", ");
 
             $values = $itemsToCreate
-                ->flatMap(function (array $item) {
-                    return [$item["server_id"], $item["service_id"]];
-                })
+                ->flatMap(fn(array $item) => [$item["server_id"], $item["service_id"]])
                 ->all();
 
             $this->db
@@ -46,15 +36,11 @@ class ServerServiceService
 
         if ($itemsToDelete->isPopulated()) {
             $keys = $itemsToDelete
-                ->map(function () {
-                    return "(`server_id` = ? AND `service_id` = ?)";
-                })
+                ->map(fn() => "(`server_id` = ? AND `service_id` = ?)")
                 ->join(" OR ");
 
             $values = $itemsToDelete
-                ->flatMap(function (array $item) {
-                    return [$item["server_id"], $item["service_id"]];
-                })
+                ->flatMap(fn(array $item) => [$item["server_id"], $item["service_id"]])
                 ->all();
 
             $this->db
