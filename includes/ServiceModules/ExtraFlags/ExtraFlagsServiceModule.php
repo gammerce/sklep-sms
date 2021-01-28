@@ -70,6 +70,7 @@ use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\NoneText;
+use App\View\Html\Option;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -212,8 +213,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        $webSelYes = $this->showOnWeb() ? "selected" : "";
-        $webSelNo = $this->showOnWeb() ? "" : "selected";
+        $webSelYes = selected($this->showOnWeb());
+        $webSelNo = selected(!$this->showOnWeb());
 
         $types = $this->getTypeOptions(
             ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID,
@@ -676,16 +677,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
-
                 // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
                 // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
             ->map(
-                fn(Service $service) => create_dom_element("option", $service->getNameI18n(), [
-                    "value" => $service->getId(),
-                    "selected" =>
-                        $userService->getServiceId() === $service->getId() ? "selected" : "",
+                fn(Service $service) => new Option($service->getNameI18n(), $service->getId(), [
+                    "selected" => selected($userService->getServiceId() === $service->getId()),
                 ])
             )
             ->join();
@@ -863,14 +861,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 continue;
             }
 
-            $serviceInfo["types"] .= create_dom_element(
-                "option",
-                ExtraFlagType::getTypeName($optionId),
-                [
-                    "value" => $optionId,
-                    "selected" => $optionId == $userService->getType() ? "selected" : "",
-                ]
-            );
+            $serviceInfo["types"] .= new Option(ExtraFlagType::getTypeName($optionId), $optionId, [
+                "selected" => selected($optionId == $userService->getType()),
+            ]);
 
             if ($optionId == $userService->getType()) {
                 switch ($optionId) {
@@ -1180,9 +1173,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 )
             )
             ->map(
-                fn(Server $server) => create_dom_element("option", $server->getName(), [
-                    "value" => $server->getId(),
-                    "selected" => $selectedServerId === $server->getId() ? "selected" : "",
+                fn(Server $server) => new Option($server->getName(), $server->getId(), [
+                    "selected" => selected($selectedServerId === $server->getId()),
                 ])
             )
             ->join();
@@ -1198,14 +1190,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return collect(ExtraFlagType::ALL)
             ->filter(fn($optionId) => $availableTypes & $optionId)
             ->map(
-                fn($optionId) => create_dom_element(
-                    "option",
-                    ExtraFlagType::getTypeName($optionId),
-                    [
-                        "value" => $optionId,
-                        "selected" => $optionId & $selectedTypes ? "selected" : "",
-                    ]
-                )
+                fn($optionId) => new Option(ExtraFlagType::getTypeName($optionId), $optionId, [
+                    "selected" => selected($optionId & $selectedTypes),
+                ])
             )
             ->join();
     }

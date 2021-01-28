@@ -7,6 +7,7 @@ use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
 use App\Support\Template;
 use App\Translation\TranslationManager;
+use App\View\Html\Option;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +46,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
                 // Service module doesn't allow taking the service over
                 return $serviceModule instanceof IServiceTakeOver;
             })
-            ->map(
-                fn(Service $service) => create_dom_element("option", $service->getNameI18n(), [
-                    "value" => $service->getId(),
-                ])
-            )
+            ->map(fn(Service $service) => new Option($service->getNameI18n(), $service->getId()))
             ->join();
 
         return $this->template->render("shop/pages/service_take_over", compact("servicesOptions"));

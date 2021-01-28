@@ -10,6 +10,7 @@ use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\HeadCell;
+use App\View\Html\Option;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminIncome extends PageAdmin
@@ -175,17 +176,19 @@ class PageAdminIncome extends PageAdmin
     {
         $months = "";
         for ($dayId = 1; $dayId <= 12; $dayId++) {
-            $months .= create_dom_element("option", $this->lang->t($this->months[$dayId]), [
-                "value" => str_pad($dayId, 2, 0, STR_PAD_LEFT),
-                "selected" => $month == $dayId ? "selected" : "",
-            ]);
+            $months .= new Option(
+                $this->lang->t($this->months[$dayId]),
+                str_pad($dayId, 2, 0, STR_PAD_LEFT),
+                [
+                    "selected" => selected($month == $dayId),
+                ]
+            );
         }
 
         $years = "";
         for ($dayId = 2014; $dayId <= intval(date("Y")); $dayId++) {
-            $years .= create_dom_element("option", $dayId, [
-                "value" => $dayId,
-                "selected" => $year == $dayId ? "selected" : "",
+            $years .= new Option($dayId, $dayId, [
+                "selected" => selected($year == $dayId),
             ]);
         }
 
