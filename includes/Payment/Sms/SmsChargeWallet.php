@@ -18,6 +18,7 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use App\View\Html\Option;
 
 class SmsChargeWallet implements IChargeWallet
 {
@@ -110,16 +111,13 @@ class SmsChargeWallet implements IChargeWallet
 
         $smsList = collect($paymentModule->getSmsNumbers())
             ->map(
-                fn(SmsNumber $smsNumber) => create_dom_element(
-                    "option",
+                fn(SmsNumber $smsNumber) => new Option(
                     $this->lang->t(
                         "charge_sms_option",
                         $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
                         $this->priceTextService->getPriceText($smsNumber->getProvision())
                     ),
-                    [
-                        "value" => $smsNumber->getPrice()->asInt(),
-                    ]
+                    $smsNumber->getPrice()->asInt()
                 )
             )
             ->join();

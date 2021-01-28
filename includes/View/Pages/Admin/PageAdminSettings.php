@@ -168,10 +168,8 @@ class PageAdminSettings extends PageAdmin
         array $currentIds
     ) {
         $selected = in_array($paymentPlatform->getId(), $currentIds);
-
-        return create_dom_element("option", $paymentPlatform->getName(), [
-            "value" => $paymentPlatform->getId(),
-            "selected" => $selected ? "selected" : "",
+        return new Option($paymentPlatform->getName(), $paymentPlatform->getId(), [
+            "selected" => selected($selected),
         ]);
     }
 
@@ -184,9 +182,8 @@ class PageAdminSettings extends PageAdmin
                 $dirName[0] != "." &&
                 $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
             ) {
-                yield create_dom_element("option", $dirName, [
-                    "value" => $dirName,
-                    "selected" => $dirName == $this->settings->getTheme() ? "selected" : "",
+                yield new Option($dirName, $dirName, [
+                    "selected" => selected($dirName == $this->settings->getTheme()),
                 ]);
             }
         }
@@ -201,10 +198,8 @@ class PageAdminSettings extends PageAdmin
                 $dirName[0] != "." &&
                 $this->fileSystem->isDirectory($this->path->to("translations/{$dirName}"))
             ) {
-                yield create_dom_element("option", $this->lang->t("language_" . $dirName), [
-                    "value" => $dirName,
-                    "selected" =>
-                        $dirName == $this->langShop->getCurrentLanguage() ? "selected" : "",
+                yield new Option($this->lang->t("language_" . $dirName), $dirName, [
+                    "selected" => selected($dirName == $this->langShop->getCurrentLanguage()),
                 ]);
             }
         }

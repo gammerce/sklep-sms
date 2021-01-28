@@ -197,23 +197,19 @@ EOF
 
         $servers = collect($this->serverManager->all())
             ->map(
-                fn(Server $server) => create_dom_element("option", $server->getName(), [
-                    "value" => $server->getId(),
-                    "selected" =>
-                        $price && $price->getServerId() === $server->getId() ? "selected" : "",
+                fn(Server $server) => new Option($server->getName(), $server->getId(), [
+                    "selected" => selected($price && $price->getServerId() === $server->getId()),
                 ])
             )
             ->join();
 
         $smsPrices = collect($this->smsPriceRepository->all())
             ->map(
-                fn(Money $smsPrice) => create_dom_element(
-                    "option",
+                fn(Money $smsPrice) => new Option(
                     $this->priceTextService->getPriceGrossText($smsPrice),
+                    $smsPrice->asInt(),
                     [
-                        "value" => $smsPrice->asInt(),
-                        "selected" =>
-                            $price && $smsPrice->equal($price->getSmsPrice()) ? "selected" : "",
+                        "selected" => selected($price && $smsPrice->equal($price->getSmsPrice())),
                     ]
                 )
             )
@@ -244,7 +240,7 @@ EOF
                         "smsPrices",
                         "transferPrice"
                     ) + [
-                        "allServers" => $price->isForEveryServer() ? "selected" : "",
+                        "allServers" => selected($price->isForEveryServer()),
                         "discount" => $price->getDiscount(),
                     ]
                 );
