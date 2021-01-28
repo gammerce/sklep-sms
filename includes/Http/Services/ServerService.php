@@ -55,17 +55,18 @@ class ServerService
     public function updateServerServiceLinks($serverId, array $serviceIds)
     {
         $serversServices = collect($this->serviceManager->all())
-            ->filter(function (Service $service) {
-                return $this->serviceModuleManager->get($service->getId()) instanceof
-                    IServicePurchaseExternal;
-            })
-            ->map(function (Service $service) use ($serverId, $serviceIds) {
-                return [
+            ->filter(
+                fn(Service $service) => $this->serviceModuleManager->get(
+                    $service->getId()
+                ) instanceof IServicePurchaseExternal
+            )
+            ->map(
+                fn(Service $service) => [
                     "service_id" => $service->getId(),
                     "server_id" => $serverId,
                     "connect" => in_array($service->getId(), $serviceIds, true),
-                ];
-            })
+                ]
+            )
             ->all();
 
         $this->serverServiceService->updateLinks($serversServices);

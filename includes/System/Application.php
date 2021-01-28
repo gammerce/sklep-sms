@@ -45,9 +45,7 @@ class Application extends Container
     {
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
-        $this->bind(Path::class, function () {
-            return new Path(realpath($this->basePath));
-        });
+        $this->bind(Path::class, fn() => new Path(realpath($this->basePath)));
     }
 
     private function bootstrap()

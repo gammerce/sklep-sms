@@ -62,9 +62,7 @@ class ExternalConfigProvider
             return $this->cachingRequester->load(
                 CacheEnum::EXTERNAL_CONFIG,
                 static::CACHE_TTL,
-                function () {
-                    return $this->request();
-                }
+                fn() => $this->request()
             );
         } catch (RequestException $e) {
             return [];

@@ -126,17 +126,9 @@ class Template
         $data = $this->addDefaultVariables($data);
         extract($data);
 
-        $e = function ($value) {
-            return htmlspecialchars($value);
-        };
-
-        $v = function ($value) {
-            return $value;
-        };
-
-        $addSlashes = function ($value) {
-            return addslashes($value);
-        };
+        $e = fn($value) => htmlspecialchars($value);
+        $v = fn($value) => $value;
+        $addSlashes = fn($value) => addslashes($value);
 
         return eval("return \"$__content\";");
     }

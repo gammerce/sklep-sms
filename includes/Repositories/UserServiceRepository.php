@@ -85,13 +85,13 @@ class UserServiceRepository
 
     public function updateWithModule($table, $userServiceId, array $data)
     {
-        $baseData = collect($data)->filter(function ($value, $key) {
-            return in_array($key, ["user_id", "service_id", "expire"], true);
-        });
+        $baseData = collect($data)->filter(
+            fn($value, $key) => in_array($key, ["user_id", "service_id", "expire"], true)
+        );
 
-        $moduleData = collect($data)->filter(function ($value, $key) {
-            return !in_array($key, ["user_id", "expire"], true);
-        });
+        $moduleData = collect($data)->filter(
+            fn($value, $key) => !in_array($key, ["user_id", "expire"], true)
+        );
 
         $affected = $this->update($userServiceId, $baseData->all());
 

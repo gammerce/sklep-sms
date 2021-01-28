@@ -46,8 +46,6 @@ class SmsPriceRepository
      */
     public function exists(Money $price = null)
     {
-        return collect($this->all())->some(function (Money $money) use ($price) {
-            return $money->equal($price);
-        });
+        return collect($this->all())->some(fn(Money $money) => $money->equal($price));
     }
 }

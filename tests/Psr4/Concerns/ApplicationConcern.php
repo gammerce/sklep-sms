@@ -15,9 +15,7 @@ trait ApplicationConcern
     protected function createApplication()
     {
         $app = require __DIR__ . "/../../../bootstrap/app.php";
-        $app->singleton(Session::class, function () {
-            return new Session(new MockArraySessionStorage());
-        });
+        $app->singleton(Session::class, fn() => new Session(new MockArraySessionStorage()));
         $app->singleton(KernelContract::class, Kernel::class);
         return $app;
     }

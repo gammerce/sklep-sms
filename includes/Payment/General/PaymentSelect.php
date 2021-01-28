@@ -43,10 +43,10 @@ class PaymentSelect
         $output[] = new PaymentOption(PaymentMethod::WALLET());
 
         return collect($output)
-            ->filter(function (PaymentOption $paymentOption) {
-                return $this->allowedPaymentOption === null ||
-                    $paymentOption->equal($this->allowedPaymentOption);
-            })
+            ->filter(
+                fn(PaymentOption $paymentOption) => $this->allowedPaymentOption === null ||
+                    $paymentOption->equal($this->allowedPaymentOption)
+            )
             ->filter(function (PaymentOption $paymentOption) {
                 foreach ($this->disallowedPaymentMethods as $disallowedPaymentMethod) {
                     if ($disallowedPaymentMethod->equals($paymentOption->getPaymentMethod())) {

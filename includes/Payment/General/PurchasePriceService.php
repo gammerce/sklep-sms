@@ -100,11 +100,9 @@ class PurchasePriceService
         $smsModule = $this->paymentModuleManager->getByPlatformId($smsPlatformId);
 
         if ($smsModule instanceof SupportSms) {
-            return collect($smsModule->getSmsNumbers())->some(function (SmsNumber $smsNumber) use (
-                $price
-            ) {
-                return $smsNumber->getPrice()->equal($price->getSmsPrice());
-            });
+            return collect($smsModule->getSmsNumbers())->some(
+                fn(SmsNumber $smsNumber) => $smsNumber->getPrice()->equal($price->getSmsPrice())
+            );
         }
 
         return false;

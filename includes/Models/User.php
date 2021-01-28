@@ -88,9 +88,7 @@ class User
         $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
         $this->permissions = collect($permissions)
-            ->flatMap(function (Permission $permission) {
-                return [$permission->getKey() => $permission];
-            })
+            ->flatMap(fn(Permission $permission) => [$permission->getKey() => $permission])
             ->all();
     }
 

@@ -28,14 +28,14 @@ trait SimPayConcern
         $this->requesterMock
             ->shouldReceive("post")
             ->withArgs(["https://simpay.pl/db/api", Mockery::any()])
-            ->andReturnUsing(function ($url, $body) {
-                return new Response(
+            ->andReturnUsing(
+                fn($url, $body) => new Response(
                     200,
                     json_encode([
                         "status" => "success",
                         "link" => "https://example.com",
                     ])
-                );
-            });
+                )
+            );
     }
 }

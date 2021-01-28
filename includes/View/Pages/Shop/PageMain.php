@@ -67,12 +67,17 @@ class PageMain extends Page
                     );
             })
             ->limit($this::SERVICE_LIMIT)
-            ->map(function (Service $service) {
-                return $this->template->render("shop/components/home/service_tile", [
-                    "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
-                    "name" => $service->getNameI18n(),
-                ]);
-            })
+            ->map(
+                fn(Service $service) => $this->template->render(
+                    "shop/components/home/service_tile",
+                    [
+                        "link" => $this->url->to("/page/purchase", [
+                            "service" => $service->getId(),
+                        ]),
+                        "name" => $service->getNameI18n(),
+                    ]
+                )
+            )
             ->join();
 
         return $this->template->render("shop/pages/home", [

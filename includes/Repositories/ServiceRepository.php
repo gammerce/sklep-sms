@@ -22,9 +22,7 @@ class ServiceRepository
         $statement = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -55,9 +53,7 @@ class ServiceRepository
         $statement->execute($ids);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 

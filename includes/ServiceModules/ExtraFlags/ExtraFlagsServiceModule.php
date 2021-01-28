@@ -345,15 +345,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function purchaseFormGet(array $query)
     {
         $types = collect(ExtraFlagType::ALL)
-            ->filter(function ($type) {
-                return $this->service->getTypes() & $type;
-            })
-            ->map(function ($value) {
-                return $this->template->render("shop/services/extra_flags/service_type", [
+            ->filter(fn($type) => $this->service->getTypes() & $type)
+            ->map(
+                fn($value) => $this->template->render("shop/services/extra_flags/service_type", [
                     "type" => ExtraFlagType::getTypeName($value),
                     "value" => $value,
-                ]);
-            })
+                ])
+            )
             ->join();
 
         $servers = $this->getServerOptions();
@@ -683,13 +681,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
-            ->map(function (Service $service) use ($userService) {
-                return create_dom_element("option", $service->getNameI18n(), [
+            ->map(
+                fn(Service $service) => create_dom_element("option", $service->getNameI18n(), [
                     "value" => $service->getId(),
                     "selected" =>
                         $userService->getServiceId() === $service->getId() ? "selected" : "",
-                ]);
-            })
+                ])
+            )
             ->join();
 
         $types = $this->getTypeOptions($this->service->getTypes(), $userService->getType());
@@ -1175,18 +1173,18 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function getServerOptions($selectedServerId = null)
     {
         return collect($this->serverManager->all())
-            ->filter(function (Server $server) {
-                return $this->serverServiceManager->serverServiceLinked(
+            ->filter(
+                fn(Server $server) => $this->serverServiceManager->serverServiceLinked(
                     $server->getId(),
                     $this->service->getId()
-                );
-            })
-            ->map(function (Server $server) use ($selectedServerId) {
-                return create_dom_element("option", $server->getName(), [
+                )
+            )
+            ->map(
+                fn(Server $server) => create_dom_element("option", $server->getName(), [
                     "value" => $server->getId(),
                     "selected" => $selectedServerId === $server->getId() ? "selected" : "",
-                ]);
-            })
+                ])
+            )
             ->join();
     }
 
@@ -1198,15 +1196,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function getTypeOptions($availableTypes, $selectedTypes = 0)
     {
         return collect(ExtraFlagType::ALL)
-            ->filter(function ($optionId) use ($availableTypes) {
-                return $availableTypes & $optionId;
-            })
-            ->map(function ($optionId) use ($selectedTypes) {
-                return create_dom_element("option", ExtraFlagType::getTypeName($optionId), [
-                    "value" => $optionId,
-                    "selected" => $optionId & $selectedTypes ? "selected" : "",
-                ]);
-            })
+            ->filter(fn($optionId) => $availableTypes & $optionId)
+            ->map(
+                fn($optionId) => create_dom_element(
+                    "option",
+                    ExtraFlagType::getTypeName($optionId),
+                    [
+                        "value" => $optionId,
+                        "selected" => $optionId & $selectedTypes ? "selected" : "",
+                    ]
+                )
+            )
             ->join();
     }
 
@@ -1222,9 +1222,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $service = $this->service;
 
         $quantities = collect($this->purchasePriceService->getServicePrices($service, $server))
-            ->map(function (QuantityPrice $price) {
-                return $this->purchasePriceRenderer->render($price, $this->service);
-            })
+            ->map(
+                fn(QuantityPrice $price) => $this->purchasePriceRenderer->render(
+                    $price,
+                    $this->service
+                )
+            )
             ->join();
 
         return $this->template->render(

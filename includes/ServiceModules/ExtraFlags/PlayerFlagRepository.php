@@ -74,18 +74,16 @@ class PlayerFlagRepository
         $keys = "";
         $values = [];
 
-        $filteredFlags = collect($flags)->filter(function ($value, $key) {
-            return in_array($key, PlayerFlag::FLAGS, true);
-        });
+        $filteredFlags = collect($flags)->filter(
+            fn($value, $key) => in_array($key, PlayerFlag::FLAGS, true)
+        );
 
         if ($filteredFlags->isPopulated()) {
             $keys =
                 ", " .
                 $filteredFlags
                     ->keys()
-                    ->map(function ($key) {
-                        return "`$key` = ?";
-                    })
+                    ->map(fn($key) => "`$key` = ?")
                     ->join(", ");
 
             $values = $filteredFlags->values()->all();
@@ -146,9 +144,7 @@ class PlayerFlagRepository
     public function mapToModel(array $data)
     {
         $flags = collect($data)
-            ->filter(function ($value, $key) {
-                return in_array($key, PlayerFlag::FLAGS, true);
-            })
+            ->filter(fn($value, $key) => in_array($key, PlayerFlag::FLAGS, true))
             ->all();
 
         return new PlayerFlag(

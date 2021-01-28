@@ -108,9 +108,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                         $serviceModule = $this->serviceModuleManager->get($service->getId());
                         return $serviceModule instanceof IServiceUserServiceAdminAdd;
                     })
-                    ->map(function (Service $service) {
-                        return new Option($service->getName(), $service->getId());
-                    })
+                    ->map(
+                        fn(Service $service) => new Option($service->getName(), $service->getId())
+                    )
                     ->join();
 
                 return $this->template->render(

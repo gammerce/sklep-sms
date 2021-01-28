@@ -327,9 +327,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     public function purchaseFormGet(array $query)
     {
         $quantities = collect($this->purchasePriceService->getServicePrices($this->service))
-            ->map(function (QuantityPrice $price) {
-                return $this->purchasePriceRenderer->render($price, $this->service);
-            })
+            ->map(
+                fn(QuantityPrice $price) => $this->purchasePriceRenderer->render(
+                    $price,
+                    $this->service
+                )
+            )
             ->join();
 
         $costBox = $this->template->render("shop/components/purchase/cost_box");
@@ -681,14 +684,14 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
         $this->mybbUserGroupRepository->createMany(
             collect($mybbUser->getShopGroup())
-                ->map(function (array $groupData, $groupId) use ($mybbUser) {
-                    return [
+                ->map(
+                    fn(array $groupData, $groupId) => [
                         "uid" => $mybbUser->getUid(),
                         "gid" => $groupId,
                         "expire" => $groupData["expire"],
                         "was_before" => $groupData["was_before"],
-                    ];
-                })
+                    ]
+                )
                 ->all()
         );
 

@@ -52,9 +52,7 @@ class PaymentPlatformRepository
         $statement = $this->db->query("SELECT * FROM `ss_payment_platforms`");
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -71,9 +69,7 @@ class PaymentPlatformRepository
         $statement->execute($ids);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 

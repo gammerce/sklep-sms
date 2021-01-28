@@ -27,9 +27,9 @@ class Structure extends DOMElement
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        $hasActions = collect($this->bodyRows)->some(function (BodyRow $bodyRow) {
-            return $bodyRow->hasAnyAction();
-        });
+        $hasActions = collect($this->bodyRows)->some(
+            fn(BodyRow $bodyRow) => $bodyRow->hasAnyAction()
+        );
 
         // THEAD
         $head = new DOMElement("thead");

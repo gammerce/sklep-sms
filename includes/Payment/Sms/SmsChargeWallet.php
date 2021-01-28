@@ -109,8 +109,8 @@ class SmsChargeWallet implements IChargeWallet
         assert($paymentModule instanceof SupportSms);
 
         $smsList = collect($paymentModule->getSmsNumbers())
-            ->map(function (SmsNumber $smsNumber) {
-                return create_dom_element(
+            ->map(
+                fn(SmsNumber $smsNumber) => create_dom_element(
                     "option",
                     $this->lang->t(
                         "charge_sms_option",
@@ -120,8 +120,8 @@ class SmsChargeWallet implements IChargeWallet
                     [
                         "value" => $smsNumber->getPrice()->asInt(),
                     ]
-                );
-            })
+                )
+            )
             ->join();
 
         $paymentOptionId = make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform);

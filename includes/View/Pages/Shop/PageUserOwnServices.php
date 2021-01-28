@@ -70,21 +70,16 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $pagination = $this->paginationFactory->create($request);
 
         $moduleIds = collect($this->serviceModuleManager->all())
-            ->filter(function (ServiceModule $serviceModule) {
-                return $serviceModule instanceof IServiceUserOwnServices;
-            })
-            ->map(function (ServiceModule $serviceModule) {
-                return $serviceModule->getModuleId();
-            });
+            ->filter(
+                fn(ServiceModule $serviceModule) => $serviceModule instanceof
+                    IServiceUserOwnServices
+            )
+            ->map(fn(ServiceModule $serviceModule) => $serviceModule->getModuleId());
 
         $usersServices = [];
         $rowsCount = 0;
         if ($moduleIds->isPopulated()) {
-            $keys = $moduleIds
-                ->map(function () {
-                    return "?";
-                })
-                ->join(", ");
+            $keys = $moduleIds->map(fn() => "?")->join(", ");
 
             $statement = $this->db->statement(
                 "SELECT COUNT(*) FROM `ss_user_service` AS us " .
@@ -106,9 +101,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             );
 
             $userServiceIds = collect($statement)
-                ->map(function (array $row) {
-                    return $row["id"];
-                })
+                ->map(fn(array $row) => $row["id"])
                 ->join(", ");
 
             if ($userServiceIds) {

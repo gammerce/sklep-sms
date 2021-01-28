@@ -73,9 +73,7 @@ class PageAdminPlayersFlags extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->playerFlagRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->playerFlagRepository->mapToModel($row))
             ->map(function (PlayerFlag $playerFlag) {
                 $server = $this->serverManager->get($playerFlag->getServerId());
                 $serverEntry = $server
