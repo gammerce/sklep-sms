@@ -26,20 +26,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "payment_platforms";
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var DataFieldService */
-    private $dataFieldService;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private DataFieldService $dataFieldService;
+    private Database $db;
+    private PaymentModuleManager $paymentModuleManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

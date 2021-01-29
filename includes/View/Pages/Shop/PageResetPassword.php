@@ -13,11 +13,8 @@ class PageResetPassword extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = "reset_password";
 
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var UrlGenerator */
-    private $url;
+    private UserRepository $userRepository;
+    private UrlGenerator $url;
 
     public function __construct(
         Template $template,

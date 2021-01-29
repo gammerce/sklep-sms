@@ -33,20 +33,11 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "services";
 
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var GroupManager */
-    private $groupManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
+    private ServiceModuleManager $serviceModuleManager;
+    private GroupManager $groupManager;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private ServerServiceManager $serverServiceManager;
 
     public function __construct(
         Template $template,

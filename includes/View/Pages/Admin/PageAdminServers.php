@@ -34,23 +34,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "servers";
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private ServiceModuleManager $serviceModuleManager;
+    private PaymentModuleManager $paymentModuleManager;
+    private ServerManager $serverManager;
+    private ServiceManager $serviceManager;
+    private ServerServiceManager $serverServiceManager;
 
     public function __construct(
         Template $template,

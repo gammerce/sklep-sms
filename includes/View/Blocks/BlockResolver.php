@@ -11,11 +11,8 @@ use App\View\Interfaces\IBeLoggedMust;
 
 class BlockResolver
 {
-    /** @var Auth */
-    private $auth;
-
-    /** @var BlockManager */
-    private $blockManager;
+    private Auth $auth;
+    private BlockManager $blockManager;
 
     public function __construct(Auth $auth, BlockManager $blockManager)
     {

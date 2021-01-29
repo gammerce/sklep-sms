@@ -7,11 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PaginationFactory
 {
-    /** @var Application */
-    private $app;
-
-    /** @var TranslationManager */
-    private $translationManager;
+    private Application $app;
+    private TranslationManager $translationManager;
 
     public function __construct(Application $app, TranslationManager $translationManager)
     {

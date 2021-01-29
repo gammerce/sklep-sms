@@ -10,13 +10,10 @@ class BodyRow extends Row
     private $dbId = null;
 
     /** @var I_ToHtml[] */
-    private $actions = [];
+    private array $actions = [];
 
-    /** @var bool */
-    private $editAction = false;
-
-    /** @var bool */
-    private $deleteAction = false;
+    private bool $editAction = false;
+    private bool $deleteAction = false;
 
     public function toHtml()
     {

@@ -23,17 +23,10 @@ class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = "players_flags";
 
-    /** @var Database */
-    private $db;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private Database $db;
+    private ServerManager $serverManager;
+    private PlayerFlagRepository $playerFlagRepository;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

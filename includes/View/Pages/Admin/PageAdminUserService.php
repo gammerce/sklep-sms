@@ -26,14 +26,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "user_service";
 
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private UserServiceService $userServiceService;
+    private ServiceManager $serviceManager;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,

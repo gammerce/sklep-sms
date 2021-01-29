@@ -29,23 +29,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "users";
 
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var Database */
-    private $db;
-
-    /** @var GroupManager */
-    private $groupManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private UserRepository $userRepository;
+    private PriceTextService $priceTextService;
+    private UserManager $userManager;
+    private Database $db;
+    private GroupManager $groupManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

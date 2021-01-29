@@ -23,14 +23,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "groups";
 
-    /** @var GroupRepository */
-    private $groupRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private GroupRepository $groupRepository;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

@@ -27,8 +27,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
 
-    /** @var string[] */
-    private array $allowedIps = [];
+    private ?array $allowedIps = null;
 
     public static function getDataFields()
     {

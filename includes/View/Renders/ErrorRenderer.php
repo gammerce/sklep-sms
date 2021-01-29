@@ -6,11 +6,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ErrorRenderer
 {
-    /** @var ShopRenderer */
-    private $shopRenderer;
-
-    /** @var Template */
-    private $template;
+    private ShopRenderer $shopRenderer;
+    private Template $template;
 
     public function __construct(ShopRenderer $shopRenderer, Template $template)
     {

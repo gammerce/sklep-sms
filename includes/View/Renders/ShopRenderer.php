@@ -13,20 +13,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ShopRenderer
 {
-    /** @var Template */
-    private $template;
-
-    /** @var License */
-    private $license;
-
-    /** @var BlockRenderer */
-    private $blockRenderer;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var WebsiteHeader */
-    private $websiteHeader;
+    private Template $template;
+    private License $license;
+    private BlockRenderer $blockRenderer;
+    private Settings $settings;
+    private WebsiteHeader $websiteHeader;
 
     public function __construct(
         Template $template,

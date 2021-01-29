@@ -20,29 +20,14 @@ class PagePaymentLog extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "payment_log";
 
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
+    private PriceTextService $priceTextService;
+    private TransactionRepository $transactionRepository;
+    private Auth $auth;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
+    private ServiceModuleManager $serviceModuleManager;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
 
     public function __construct(
         Template $template,

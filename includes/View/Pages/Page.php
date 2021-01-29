@@ -13,11 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class Page
 {
-    /** @var Template */
-    protected $template;
-
-    /** @var Translator */
-    protected $lang;
+    protected Template $template;
+    protected Translator $lang;
 
     public function __construct(Template $template, TranslationManager $translationManager)
     {

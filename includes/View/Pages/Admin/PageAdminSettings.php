@@ -22,23 +22,12 @@ class PageAdminSettings extends PageAdmin
 {
     const PAGE_ID = "settings";
 
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var Translator */
-    private $langShop;
-
-    /** @var FileSystem */
-    private $fileSystem;
-
-    /** @var Path */
-    private $path;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private Settings $settings;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private Translator $langShop;
+    private FileSystem $fileSystem;
+    private Path $path;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         Template $template,

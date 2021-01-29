@@ -28,20 +28,11 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "sms_codes";
 
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private SmsPriceRepository $smsPriceRepository;
+    private PriceTextService $priceTextService;
+    private SmsCodeRepository $smsCodeRepository;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

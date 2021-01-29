@@ -12,17 +12,10 @@ class BlockServicesButtons extends Block
 {
     const BLOCK_ID = "services_buttons";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var Template */
-    private $template;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ServiceListService */
-    private $serviceListService;
+    private Auth $auth;
+    private Template $template;
+    private UrlGenerator $url;
+    private ServiceListService $serviceListService;
 
     public function __construct(
         Auth $auth,

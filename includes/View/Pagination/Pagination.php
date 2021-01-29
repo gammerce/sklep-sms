@@ -12,17 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Pagination
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var Request */
-    private $request;
+    private Settings $settings;
+    private UrlGenerator $url;
+    private Translator $lang;
+    private Request $request;
 
     public function __construct(
         UrlGenerator $url,

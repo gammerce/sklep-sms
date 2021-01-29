@@ -17,20 +17,11 @@ class PageMain extends Page
     const PAGE_ID = "home";
     const SERVICE_LIMIT = 5;
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private Auth $auth;
+    private ServiceModuleManager $serviceModuleManager;
+    private UserServiceAccessService $userServiceAccessService;
+    private UrlGenerator $url;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         Template $template,

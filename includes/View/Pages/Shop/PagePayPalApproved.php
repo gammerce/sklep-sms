@@ -24,26 +24,13 @@ class PagePayPalApproved extends Page
 {
     const PAGE_ID = "paypal_approved";
 
-    /** @var PurchaseInformation */
-    private $purchaseInformation;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var ExternalPaymentService */
-    private $externalPaymentService;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var TransferPaymentService */
-    private $transferPaymentService;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
-
-    /** @var PaymentTransferRepository */
-    private $paymentTransferRepository;
+    private PurchaseInformation $purchaseInformation;
+    private PaymentModuleManager $paymentModuleManager;
+    private ExternalPaymentService $externalPaymentService;
+    private DatabaseLogger $logger;
+    private TransferPaymentService $transferPaymentService;
+    private TransferPriceService $transferPriceService;
+    private PaymentTransferRepository $paymentTransferRepository;
 
     public function __construct(
         Template $template,

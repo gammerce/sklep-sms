@@ -15,23 +15,12 @@ class BlockWallet extends Block implements IBeLoggedMust
 {
     const BLOCK_ID = "wallet";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var Template */
-    private $template;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var Translator */
-    private $lang;
+    private Auth $auth;
+    private Template $template;
+    private UrlGenerator $url;
+    private UserServiceAccessService $userServiceAccessService;
+    private ServiceManager $serviceManager;
+    private Translator $lang;
 
     public function __construct(
         Auth $auth,

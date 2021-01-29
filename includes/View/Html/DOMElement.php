@@ -7,14 +7,13 @@ class DOMElement implements I_ToHtml
 {
     use Whenable;
 
-    /** @var string */
-    protected $name;
+    protected string $name;
 
     /** @var I_ToHtml[] */
-    protected $contents = [];
+    protected array $contents = [];
 
     /** @var array */
-    protected $params = [];
+    protected array $params = [];
 
     /**
      * @param string $tag

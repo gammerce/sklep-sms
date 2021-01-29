@@ -15,11 +15,8 @@ class PageTakeOverService extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "service_take_over";
 
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private ServiceModuleManager $serviceModuleManager;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         Template $template,

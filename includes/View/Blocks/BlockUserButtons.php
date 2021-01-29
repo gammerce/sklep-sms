@@ -15,23 +15,12 @@ class BlockUserButtons extends Block
 {
     const BLOCK_ID = "user_buttons";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var Template */
-    private $template;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
+    private Auth $auth;
+    private Template $template;
+    private ServiceManager $serviceManager;
+    private UrlGenerator $url;
+    private Translator $lang;
+    private UserServiceAccessService $userServiceAccessService;
 
     public function __construct(
         Auth $auth,

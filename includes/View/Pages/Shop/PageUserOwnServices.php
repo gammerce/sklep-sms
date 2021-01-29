@@ -21,23 +21,12 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "user_own_services";
 
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private UserServiceService $userServiceService;
+    private Settings $settings;
+    private Auth $auth;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,

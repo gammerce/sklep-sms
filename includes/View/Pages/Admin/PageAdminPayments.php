@@ -28,17 +28,10 @@ class PageAdminPayments extends PageAdmin
 {
     const PAGE_ID = "payments";
 
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private TransactionRepository $transactionRepository;
+    private Database $db;
+    private PriceTextService $priceTextService;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
