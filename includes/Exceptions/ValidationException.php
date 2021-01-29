@@ -5,11 +5,8 @@ use Exception;
 
 class ValidationException extends Exception
 {
-    /** @var array */
-    public $warnings;
-
-    /** @var array */
-    public $data;
+    public array $warnings;
+    public array $data;
 
     /**
      * @param mixed $warnings

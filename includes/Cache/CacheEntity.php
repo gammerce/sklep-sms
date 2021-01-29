@@ -10,7 +10,7 @@ class CacheEntity
     public function __construct($value, ?int $cachedAt = null)
     {
         $this->value = $value;
-        $this->cachedAt = $cachedAt ?? time();
+        $this->cachedAt = $cachedAt ?: time();
     }
 
     /**
