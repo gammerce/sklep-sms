@@ -5,14 +5,12 @@ class CacheEntity
 {
     /** @var mixed */
     public $value;
+    public int $cachedAt;
 
-    /** @var int */
-    public $cachedAt;
-
-    public function __construct($value, $cachedAt = null)
+    public function __construct($value, ?int $cachedAt = null)
     {
         $this->value = $value;
-        $this->cachedAt = $cachedAt ?: time();
+        $this->cachedAt = $cachedAt ?? time();
     }
 
     /**
