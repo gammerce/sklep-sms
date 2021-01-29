@@ -8,20 +8,11 @@ use App\Support\Database;
 
 class ExpiredUserServiceService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Database $db;
+    private DatabaseLogger $logger;
+    private UserServiceService $userServiceService;
+    private UserServiceRepository $userServiceRepository;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Database $db,

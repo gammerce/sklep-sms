@@ -8,14 +8,9 @@ use App\Support\Database;
 
 class UserServiceService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Database $db;
+    private UserServiceRepository $userServiceRepository;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         ServiceModuleManager $serviceModuleManager,
