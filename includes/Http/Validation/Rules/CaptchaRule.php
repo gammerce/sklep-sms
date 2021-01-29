@@ -10,14 +10,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class CaptchaRule extends BaseRule
 {
-    /** @var Requester */
-    private $requester;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var FileLogger */
-    private $fileLogger;
+    private Requester $requester;
+    private Settings $settings;
+    private FileLogger $fileLogger;
 
     public function __construct()
     {

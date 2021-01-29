@@ -30,20 +30,11 @@ class PageAdminBoughtServices extends PageAdmin
 {
     const PAGE_ID = "bought_services";
 
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private TransactionRepository $transactionRepository;
+    private Database $db;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

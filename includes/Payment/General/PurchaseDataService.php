@@ -7,14 +7,9 @@ use App\Support\Path;
 
 class PurchaseDataService
 {
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
-
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private PurchaseSerializer $purchaseSerializer;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     public function __construct(
         PurchaseSerializer $purchaseSerializer,

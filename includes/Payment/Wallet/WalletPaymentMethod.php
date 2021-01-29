@@ -15,17 +15,10 @@ use App\Translation\Translator;
 
 class WalletPaymentMethod implements IPaymentMethod
 {
-    /** @var Translator */
-    private $lang;
-
-    /** @var WalletPaymentService */
-    private $walletPaymentService;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
-
-    /** @var Auth */
-    private $auth;
+    private Translator $lang;
+    private WalletPaymentService $walletPaymentService;
+    private TransferPriceService $transferPriceService;
+    private Auth $auth;
 
     public function __construct(
         TranslationManager $translationManager,

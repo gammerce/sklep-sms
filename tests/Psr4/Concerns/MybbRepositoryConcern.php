@@ -36,6 +36,8 @@ trait MybbRepositoryConcern
             ->withArgs(["host", 3306, "user", "password", "name"])
             ->andReturn($this->mybbRepositoryMock);
 
-        $mybbRepositoryFactory->shouldReceive("create")->andReturnNull();
+        $mybbRepositoryFactory
+            ->shouldReceive("create")
+            ->andReturnUsing(fn() => Mockery::mock(MybbRepository::class));
     }
 }

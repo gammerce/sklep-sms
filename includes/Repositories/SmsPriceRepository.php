@@ -6,7 +6,7 @@ use App\Support\Money;
 class SmsPriceRepository
 {
     /** @var Money[] */
-    private $prices;
+    private array $prices;
 
     public function __construct()
     {

@@ -6,8 +6,7 @@ use PDOException;
 
 class MybbRepository
 {
-    /** @var Database */
-    private $dbMybb;
+    private Database $dbMybb;
 
     public function __construct($host, $port, $user, $password, $database)
     {

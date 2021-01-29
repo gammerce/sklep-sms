@@ -8,8 +8,7 @@ class BlockContent extends Block
 {
     const BLOCK_ID = "content";
 
-    /** @var PageResolver */
-    private $pageResolver;
+    private PageResolver $pageResolver;
 
     public function __construct(PageResolver $pageResolver)
     {

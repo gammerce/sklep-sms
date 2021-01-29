@@ -26,22 +26,13 @@ use Throwable;
 
 class ExceptionHandler implements ExceptionHandlerContract
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
+    private Translator $lang;
+    private FileLogger $fileLogger;
+    private UrlGenerator $url;
+    private ResponseFactory $responseFactory;
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var FileLogger */
-    private $fileLogger;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ResponseFactory */
-    private $responseFactory;
-
-    private $dontReport = [
+    private array $dontReport = [
         EntityNotFoundException::class,
         InvalidConfigException::class,
         LicenseException::class,

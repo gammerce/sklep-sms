@@ -7,59 +7,43 @@ class FinalizedPayment
 {
     /**
      * Payment status, is it valid
-     *
-     * @var bool
      */
-    private $status = false;
+    private bool $status = false;
 
     /**
      * Payment ID
-     *
-     * @var string
      */
-    private $orderId = "";
+    private string $orderId = "";
 
     /**
      * Payment value gross
-     *
-     * @var Money
      */
-    private $cost;
+    private Money $cost;
 
     /**
      * How much money is received
-     *
-     * @var Money
      */
-    private $income;
+    private Money $income;
 
     /**
      * Filename of transaction
-     *
-     * @var string
      */
-    private $transactionId = "";
+    private string $transactionId = "";
 
     /**
      * Service ID from the external system
-     *
-     * @var string
      */
-    private $externalServiceId = "";
+    private string $externalServiceId = "";
 
     /**
      * What should be displayed as a response
-     *
-     * @var string
      */
-    private $output = "";
+    private string $output = "";
 
     /**
      * Is it test payment
-     *
-     * @var bool
      */
-    private $testMode = false;
+    private bool $testMode = false;
 
     public function __construct()
     {

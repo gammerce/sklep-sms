@@ -11,11 +11,10 @@ use UnexpectedValueException;
 
 class PaymentMethodFactory
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
 
     /** @var string[] */
-    private $paymentMethodsClasses;
+    private array $paymentMethodsClasses;
 
     public function __construct(Application $app)
     {

@@ -14,20 +14,11 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 
 class TransferPaymentService
 {
-    /** @var PaymentTransferRepository */
-    private $paymentTransferRepository;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
+    private PaymentTransferRepository $paymentTransferRepository;
+    private DatabaseLogger $logger;
+    private PurchaseDataService $purchaseDataService;
+    private ServiceModuleManager $serviceModuleManager;
+    private TransferPriceService $transferPriceService;
 
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,

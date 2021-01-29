@@ -9,8 +9,7 @@ class BlockAdminContent extends Block implements IBeLoggedMust
 {
     const BLOCK_ID = "admincontent";
 
-    /** @var PageResolver */
-    private $pageResolver;
+    private PageResolver $pageResolver;
 
     public function __construct(PageResolver $pageResolver)
     {

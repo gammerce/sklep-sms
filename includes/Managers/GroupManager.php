@@ -6,12 +6,11 @@ use App\Repositories\GroupRepository;
 
 class GroupManager
 {
-    /** @var GroupRepository */
-    private $groupRepository;
+    private GroupRepository $groupRepository;
 
     /** @var Group[] */
-    private $groups = [];
-    private $groupsFetched = false;
+    private array $groups = [];
+    private bool $groupsFetched = false;
 
     public function __construct(GroupRepository $groupRepository)
     {

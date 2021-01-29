@@ -34,26 +34,13 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "pricing";
 
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Database */
-    private $db;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private PriceRepository $priceRepository;
+    private SmsPriceRepository $smsPriceRepository;
+    private PriceTextService $priceTextService;
+    private Database $db;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

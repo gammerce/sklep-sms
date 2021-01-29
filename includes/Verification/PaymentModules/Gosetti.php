@@ -21,8 +21,7 @@ class Gosetti extends PaymentModule implements SupportSms
     /** @var string */
     private $smsCode;
 
-    /** @var array */
-    private $numbers = [];
+    private array $numbers = [];
 
     public static function getDataFields()
     {

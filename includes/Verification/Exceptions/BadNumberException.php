@@ -9,14 +9,12 @@ use App\Support\Money;
  */
 class BadNumberException extends SmsPaymentException
 {
-    protected $errorCode = "bad_number";
+    protected string $errorCode = "bad_number";
 
     /**
      * Sms net price
-     *
-     * @var Money|null
      */
-    private $smsPrice;
+    private ?Money $smsPrice;
 
     public function __construct(Money $smsPrice = null)
     {

@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SetupAvailable implements MiddlewareContract
 {
-    /** @var SetupManager */
-    private $setupManager;
+    private SetupManager $setupManager;
 
     public function __construct(SetupManager $setupManager)
     {

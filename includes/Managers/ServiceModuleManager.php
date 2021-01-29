@@ -9,16 +9,11 @@ use App\Translation\Translator;
 
 class ServiceModuleManager
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
+    private ServiceManager $serviceManager;
+    private Translator $lang;
 
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var Translator */
-    private $lang;
-
-    private $classes = [];
+    private array $classes = [];
 
     public function __construct(
         Application $app,

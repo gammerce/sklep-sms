@@ -6,20 +6,11 @@ use DateTime;
 
 class SmsCode
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $code;
-
-    /** @var Money */
-    private $smsPrice;
-
-    /** @var bool */
-    private $free;
-
-    /** @var DateTime|null */
-    private $expiresAt;
+    private int $id;
+    private string $code;
+    private Money $smsPrice;
+    private bool $free;
+    private ?DateTime $expiresAt;
 
     public function __construct($id, $code, Money $smsPrice, $free, DateTime $expiresAt = null)
     {
@@ -30,42 +21,27 @@ class SmsCode
         $this->expiresAt = $expiresAt;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    /**
-     * @return Money
-     */
-    public function getSmsPrice()
+    public function getSmsPrice(): Money
     {
         return $this->smsPrice;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->free;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getExpiresAt()
+    public function getExpiresAt(): ?DateTime
     {
         return $this->expiresAt;
     }

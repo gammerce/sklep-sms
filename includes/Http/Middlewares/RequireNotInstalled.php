@@ -8,8 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RequireNotInstalled implements MiddlewareContract
 {
-    /** @var ShopState */
-    private $shopState;
+    private ShopState $shopState;
 
     public function __construct(ShopState $shopState)
     {

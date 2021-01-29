@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Auth
 {
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var User */
-    private $user;
+    private UserManager $userManager;
+    private ?User $user = null;
 
     public function __construct(UserManager $userManager)
     {

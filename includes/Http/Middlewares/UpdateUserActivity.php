@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UpdateUserActivity implements MiddlewareContract
 {
-    /** @var Auth */
-    private $auth;
-
-    /** @var UserRepository */
-    private $userRepository;
+    private Auth $auth;
+    private UserRepository $userRepository;
 
     public function __construct(Auth $auth, UserRepository $userRepository)
     {

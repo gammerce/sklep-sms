@@ -12,11 +12,8 @@ class PageAdminUpdateWeb extends PageAdmin
 {
     const PAGE_ID = "update_web";
 
-    /** @var Version */
-    private $version;
-
-    /** @var Application */
-    private $app;
+    private Version $version;
+    private Application $app;
 
     public function __construct(
         Template $template,

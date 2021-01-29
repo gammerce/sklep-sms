@@ -24,7 +24,7 @@ class Server
     private $smsPlatformId;
 
     /** @var int[] */
-    private $transferPlatformIds;
+    private array $transferPlatformIds;
 
     /** @var string */
     private $version;

@@ -11,8 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class BlockRenderer
 {
-    /** @var BlockResolver */
-    private $blockResolver;
+    private BlockResolver $blockResolver;
 
     public function __construct(BlockResolver $blockResolver)
     {

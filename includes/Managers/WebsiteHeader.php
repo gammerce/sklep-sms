@@ -7,20 +7,15 @@ use App\Support\Path;
 
 class WebsiteHeader
 {
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystem */
-    private $fileSystem;
-
-    /** @var UrlGenerator */
-    private $url;
+    private Path $path;
+    private FileSystem $fileSystem;
+    private UrlGenerator $url;
 
     /** @var string[] */
-    private $scripts = [];
+    private array $scripts = [];
 
     /** @var string[] */
-    private $styles = [];
+    private array $styles = [];
 
     public function __construct(Path $path, FileSystem $fileSystem, UrlGenerator $url)
     {

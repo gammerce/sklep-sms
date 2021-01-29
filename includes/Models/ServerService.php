@@ -3,11 +3,8 @@ namespace App\Models;
 
 class ServerService
 {
-    /** @var int */
-    private $serverId;
-
-    /** @var string */
-    private $serviceId;
+    private int $serverId;
+    private string $serviceId;
 
     public function __construct($serverId, $serviceId)
     {
@@ -15,12 +12,12 @@ class ServerService
         $this->serviceId = $serviceId;
     }
 
-    public function getServerId()
+    public function getServerId(): int
     {
         return $this->serverId;
     }
 
-    public function getServiceId()
+    public function getServiceId(): string
     {
         return $this->serviceId;
     }

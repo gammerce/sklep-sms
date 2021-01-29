@@ -12,26 +12,13 @@ use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    /** @var Mailer */
-    private $mailer;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var BoughtServiceRepository */
-    private $boughtServiceRepository;
-
-    /** @var PurchaseInformation */
-    private $purchaseInformation;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private Mailer $mailer;
+    private Translator $lang;
+    private BoughtServiceRepository $boughtServiceRepository;
+    private PurchaseInformation $purchaseInformation;
+    private DatabaseLogger $logger;
+    private ServerManager $serverManager;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         TranslationManager $translationManager,

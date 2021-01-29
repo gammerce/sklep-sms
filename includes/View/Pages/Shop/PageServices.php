@@ -14,14 +14,9 @@ class PageServices extends Page
 {
     const PAGE_ID = "services";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ServiceListService */
-    private $serviceListService;
+    private Auth $auth;
+    private UrlGenerator $url;
+    private ServiceListService $serviceListService;
 
     public function __construct(
         Template $template,

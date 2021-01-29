@@ -7,11 +7,8 @@ use App\Support\Database;
 
 class SmsServiceTakeOver implements IServiceTakeOver
 {
-    /** @var Database */
-    private $db;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
+    private Database $db;
+    private TransactionRepository $transactionRepository;
 
     public function __construct(Database $db, TransactionRepository $transactionRepository)
     {

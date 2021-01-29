@@ -17,17 +17,10 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferPaymentMethod implements IPaymentMethod
 {
-    /** @var Translator */
-    private $lang;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var TransferPaymentService */
-    private $transferPaymentService;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
+    private Translator $lang;
+    private PaymentModuleManager $paymentModuleManager;
+    private TransferPaymentService $transferPaymentService;
+    private TransferPriceService $transferPriceService;
 
     public function __construct(
         TranslationManager $translationManager,

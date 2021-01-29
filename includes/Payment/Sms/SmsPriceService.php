@@ -11,14 +11,9 @@ use App\Verification\Abstracts\SupportSms;
 
 class SmsPriceService
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private Settings $settings;
+    private PromoCodeService $promoCodeService;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         Settings $settings,

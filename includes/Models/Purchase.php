@@ -15,9 +15,7 @@ class Purchase
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $id;
 
     /**
@@ -27,14 +25,10 @@ class Purchase
      */
     private $serviceId;
 
-    /**
-     * @var User
-     */
+    /** @var User */
     public $user;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $email;
 
     /**
@@ -44,29 +38,21 @@ class Purchase
      */
     private $paymentSelect;
 
-    /**
-     * @var PaymentOption|null
-     */
-    private $paymentOption;
+    /** @var PaymentOption|null */
+    private $paymentOption = null;
 
     /**
      * Payment details like method, sms_code et.c
-     *
-     * @var array
      */
-    private $payment = [];
+    private array $payment = [];
 
     /**
      * Order details like auth_data, password etc.
-     *
-     * @var array
      */
-    private $order = [];
+    private array $order = [];
 
-    /**
-     * @var PromoCode|null
-     */
-    private $promoCode;
+    /** @var PromoCode|null */
+    private $promoCode = null;
 
     /**
      * Purchase description ( useful for transfer payments )
@@ -90,17 +76,13 @@ class Purchase
 
     /**
      * Attempt to finalize purchase has been made
-     *
-     * @var bool
      */
-    private $isAttempted = false;
+    private bool $isAttempted = false;
 
     /**
      * Transaction has been deleted
-     *
-     * @var bool
      */
-    private $isDeleted = false;
+    private bool $isDeleted = false;
 
     /**
      * @param User $user

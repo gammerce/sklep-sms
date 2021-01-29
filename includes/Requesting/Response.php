@@ -3,11 +3,8 @@ namespace App\Requesting;
 
 final class Response
 {
-    /** @var int */
-    private $statusCode;
-
-    /** @var string */
-    private $body;
+    private int $statusCode;
+    private string $body;
 
     public function __construct($statusCode, $body)
     {

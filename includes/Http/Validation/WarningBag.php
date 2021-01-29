@@ -9,8 +9,7 @@ use IteratorAggregate;
 
 class WarningBag implements ArrayAccess, Countable, IteratorAggregate, Arrayable
 {
-    /** @var array */
-    private $warnings = [];
+    private array $warnings = [];
 
     public function add($key, $warning)
     {

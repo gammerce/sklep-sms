@@ -17,7 +17,7 @@ class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = "income";
 
-    private $months = [
+    private array $months = [
         "",
         "january",
         "february",
@@ -33,17 +33,10 @@ class PageAdminIncome extends PageAdmin
         "december",
     ];
 
-    /** @var IncomeService */
-    private $incomeService;
-
-    /** @var WebsiteHeader */
-    private $websiteHeader;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private IncomeService $incomeService;
+    private WebsiteHeader $websiteHeader;
+    private ServerManager $serverManager;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         Template $template,

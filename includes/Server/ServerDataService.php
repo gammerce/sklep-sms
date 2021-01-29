@@ -14,20 +14,11 @@ use App\Support\Database;
 
 class ServerDataService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var ServerServiceRepository */
-    private $serverServiceRepository;
-
-    /** @var ServiceRepository */
-    private $serviceRepository;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
+    private Database $db;
+    private PriceRepository $priceRepository;
+    private ServerServiceRepository $serverServiceRepository;
+    private ServiceRepository $serviceRepository;
+    private PlayerFlagRepository $playerFlagRepository;
 
     public function __construct(
         Database $db,

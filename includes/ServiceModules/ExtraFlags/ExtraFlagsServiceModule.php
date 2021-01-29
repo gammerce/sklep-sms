@@ -98,62 +98,25 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "ss_user_service_extra_flags";
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var AdminPaymentService */
-    private $adminPaymentService;
-
-    /** @var PurchasePriceService */
-    private $purchasePriceService;
-
-    /** @var PurchasePriceRenderer */
-    private $purchasePriceRenderer;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var PlayerFlagService */
-    private $playerFlagService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var ServiceTakeOverFactory */
-    private $serviceTakeOverFactory;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var Database */
-    private $db;
+    private Translator $lang;
+    private ServiceModuleManager $serviceModuleManager;
+    private ServerManager $serverManager;
+    private ServerServiceManager $serverServiceManager;
+    private ServiceManager $serviceManager;
+    private UserManager $userManager;
+    private Auth $auth;
+    private BoughtServiceService $boughtServiceService;
+    private DatabaseLogger $logger;
+    private AdminPaymentService $adminPaymentService;
+    private PurchasePriceService $purchasePriceService;
+    private PurchasePriceRenderer $purchasePriceRenderer;
+    private UserServiceRepository $userServiceRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private PlayerFlagService $playerFlagService;
+    private PriceTextService $priceTextService;
+    private ServiceTakeOverFactory $serviceTakeOverFactory;
+    private PaginationFactory $paginationFactory;
+    private Database $db;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,
@@ -177,7 +140,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         TranslationManager $translationManager,
         UserManager $userManager,
         UserServiceRepository $userServiceRepository,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->adminPaymentService = $adminPaymentService;

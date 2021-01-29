@@ -13,8 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SetupController
 {
-    /** @var Template */
-    private $template;
+    private Template $template;
 
     public function __construct(Template $template)
     {

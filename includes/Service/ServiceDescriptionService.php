@@ -9,17 +9,10 @@ use App\Translation\Translator;
 
 class ServiceDescriptionService
 {
-    /** @var Path */
-    private $path;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private Settings $settings;
+    private Translator $lang;
+    private FileSystemContract $fileSystem;
 
     public function __construct(
         Path $path,

@@ -6,8 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class MaxLengthRule extends BaseRule
 {
-    /** @var int */
-    private $length;
+    private int $length;
 
     public function __construct($value)
     {

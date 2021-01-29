@@ -5,7 +5,7 @@ use App\Models\Transaction;
 
 class TransactionRepository
 {
-    private $transactionsQuery = <<<EOF
+    private string $transactionsQuery = <<<EOF
 (SELECT bs.id AS `id`,
 bs.user_id AS `user_id`,
 u.username AS `username`,

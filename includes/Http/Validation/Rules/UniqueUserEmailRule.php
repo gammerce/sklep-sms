@@ -7,11 +7,8 @@ use App\Repositories\UserRepository;
 
 class UniqueUserEmailRule extends BaseRule
 {
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var int|null */
-    private $exceptUserId;
+    private UserRepository $userRepository;
+    private ?int $exceptUserId;
 
     public function __construct($exceptUserId = null)
     {

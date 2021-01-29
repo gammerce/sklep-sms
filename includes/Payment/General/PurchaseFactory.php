@@ -7,8 +7,7 @@ use App\System\Settings;
 
 class PurchaseFactory
 {
-    /** @var Settings */
-    private $settings;
+    private Settings $settings;
 
     public function __construct(Settings $settings)
     {

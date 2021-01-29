@@ -7,8 +7,7 @@ use App\Repositories\UserRepository;
 
 class UserExistsRule extends BaseRule
 {
-    /** @var UserRepository */
-    private $userRepository;
+    private UserRepository $userRepository;
 
     public function __construct()
     {

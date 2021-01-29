@@ -8,14 +8,9 @@ use App\Models\User;
 
 class ServiceListService
 {
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private ServiceModuleManager $serviceModuleManager;
+    private UserServiceAccessService $userServiceAccessService;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         ServiceManager $serviceManager,

@@ -16,17 +16,10 @@ use App\Verification\Abstracts\SupportDirectBilling;
 
 class DirectBillingPaymentMethod implements IPaymentMethod
 {
-    /** @var Translator */
-    private $lang;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var DirectBillingPriceService */
-    private $directBillingPriceService;
-
-    /** @var DirectBillingPaymentService */
-    private $directBillingPaymentService;
+    private Translator $lang;
+    private PaymentModuleManager $paymentModuleManager;
+    private DirectBillingPriceService $directBillingPriceService;
+    private DirectBillingPaymentService $directBillingPaymentService;
 
     public function __construct(
         PaymentModuleManager $paymentModuleManager,

@@ -7,14 +7,9 @@ use App\Support\Template;
 
 class UpdateInfo
 {
-    /** @var Path */
-    private $path;
-
-    /** @var Template */
-    private $template;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private Template $template;
+    private FileSystemContract $fileSystem;
 
     public function __construct(Path $path, Template $template, FileSystemContract $fileSystem)
     {

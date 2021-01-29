@@ -7,14 +7,9 @@ use App\Support\Database;
 
 class IncomeService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
+    private Database $db;
+    private ServerManager $serverManager;
+    private TransactionRepository $transactionRepository;
 
     public function __construct(
         Database $db,

@@ -31,7 +31,7 @@ class User
     private $steamId;
 
     /** @var int[] */
-    private $groups;
+    private array $groups;
 
     /** @var string */
     private $regDate;
@@ -39,8 +39,7 @@ class User
     /** @var string */
     private $lastActive;
 
-    /** @var Money */
-    private $wallet;
+    private ?Money $wallet;
 
     /** @var string */
     private $regIp;
@@ -52,7 +51,7 @@ class User
     private $resetPasswordKey;
 
     /** @var Permission[] */
-    private $permissions;
+    private array $permissions;
 
     public function __construct(
         $id = null,
@@ -63,7 +62,7 @@ class User
         $forename = null,
         $surname = null,
         $steamId = null,
-        $groups = [],
+        array $groups = [],
         $regDate = null,
         $lastActive = null,
         Money $wallet = null,

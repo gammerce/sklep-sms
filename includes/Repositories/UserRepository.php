@@ -9,11 +9,8 @@ use App\User\Permission;
 
 class UserRepository
 {
-    /** @var Database */
-    private $db;
-
-    /** @var GroupManager */
-    private $groupManager;
+    private Database $db;
+    private GroupManager $groupManager;
 
     public function __construct(Database $db, GroupManager $groupManager)
     {

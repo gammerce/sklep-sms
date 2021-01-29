@@ -6,17 +6,10 @@ use PDOException;
 
 class ShopState
 {
-    /** @var MigrationFiles */
-    private $migrationFiles;
-
-    /** @var DatabaseMigration */
-    private $databaseMigration;
-
-    /** @var RequirementsStore */
-    private $requirementsStore;
-
-    /** @var Database */
-    private $db;
+    private MigrationFiles $migrationFiles;
+    private DatabaseMigration $databaseMigration;
+    private RequirementsStore $requirementsStore;
+    private Database $db;
 
     public function __construct(
         MigrationFiles $migrationFiles,

@@ -13,17 +13,10 @@ use App\Verification\Results\SmsSuccessResult;
 
 class SmsPaymentService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
+    private Database $db;
+    private DatabaseLogger $logger;
+    private SmsPriceService $smsPriceService;
+    private SmsCodeRepository $smsCodeRepository;
 
     public function __construct(
         Database $db,

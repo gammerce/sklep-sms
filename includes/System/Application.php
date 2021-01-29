@@ -17,15 +17,13 @@ class Application extends Container
 {
     const VERSION = "3.16.0";
 
-    /** @var array */
-    private $providers = [
+    private array $providers = [
         AppServiceProvider::class,
         HeartServiceProvider::class,
         SentryServiceProvider::class,
     ];
 
-    /** @var string */
-    private $basePath;
+    private string $basePath;
 
     public function __construct($basePath)
     {

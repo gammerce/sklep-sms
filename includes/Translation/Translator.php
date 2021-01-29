@@ -6,42 +6,31 @@ use App\Support\Path;
 
 class Translator
 {
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     /**
      * Current language
-     *
-     * @var string
      */
-    private $language;
+    private string $language;
 
     /**
      * Language of loaded translations
-     *
-     * @var string
      */
-    private $loadedLanguage;
+    private ?string $loadedLanguage = null;
 
     /**
      * Array of language => language short
-     *
-     * @var array
      */
-    private $langList = [
+    private array $langList = [
         "polish" => "pl",
         "english" => "en",
     ];
 
     /**
      * Array of translations
-     *
-     * @var array
      */
-    private $translations;
+    private array $translations = [];
 
     public function __construct($lang = "polish")
     {
@@ -99,7 +88,6 @@ class Translator
         if (
             !strlen($language) ||
             !isset($this->langList[$language]) ||
-            $this->getCurrentLanguage() === $language ||
             !$this->fileSystem->isDirectory($this->path->to("translations/" . $language))
         ) {
             return;
@@ -122,7 +110,6 @@ class Translator
      * Translate key to text
      *
      * @param string $key
-     *
      * @return string
      */
     private function translate($key)

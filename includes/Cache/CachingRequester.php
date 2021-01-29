@@ -9,8 +9,7 @@ class CachingRequester
 {
     const HARD_TTL = 2 * 24 * 60 * 60;
 
-    /** @var CacheInterface */
-    private $cache;
+    private CacheInterface $cache;
 
     public function __construct(CacheInterface $cache)
     {

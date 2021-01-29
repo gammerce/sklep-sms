@@ -3,8 +3,7 @@ namespace App\Support;
 
 class Money
 {
-    /** @var int */
-    private $value;
+    private int $value;
 
     /**
      * @param Money|string|float|int|null $value

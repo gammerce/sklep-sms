@@ -7,8 +7,7 @@ use App\Repositories\SmsPriceRepository;
 
 class SmsPriceExistsRule extends BaseRule
 {
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
+    private SmsPriceRepository $smsPriceRepository;
 
     public function __construct()
     {

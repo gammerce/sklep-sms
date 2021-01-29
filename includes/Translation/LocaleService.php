@@ -7,17 +7,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class LocaleService
 {
-    /** @var TranslationManager */
-    private $translationManager;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var LocaleCookieService */
-    private $localeCookieService;
+    private TranslationManager $translationManager;
+    private Settings $settings;
+    private Requester $requester;
+    private LocaleCookieService $localeCookieService;
 
     public function __construct(
         TranslationManager $translationManager,

@@ -5,14 +5,11 @@ use App\User\Permission;
 
 class Group
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $name;
+    private int $id;
+    private string $name;
 
     /** @var Permission[] */
-    private $permissions;
+    private array $permissions;
 
     public function __construct($id, $name, array $permissions)
     {
@@ -21,18 +18,12 @@ class Group
         $this->permissions = $permissions;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -40,16 +31,12 @@ class Group
     /**
      * @return Permission[]
      */
-    public function getPermissions()
+    public function getPermissions(): array
     {
         return $this->permissions;
     }
 
-    /**
-     * @param Permission $permission
-     * @return bool
-     */
-    public function hasPermission(Permission $permission)
+    public function hasPermission(Permission $permission): bool
     {
         foreach ($this->permissions as $lookup) {
             if ($lookup->equals($permission)) {

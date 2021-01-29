@@ -8,11 +8,8 @@ use App\Support\PriceTextService;
 
 class DirectBillingPriceService
 {
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private PromoCodeService $promoCodeService;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         PromoCodeService $promoCodeService,

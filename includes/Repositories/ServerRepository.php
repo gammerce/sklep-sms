@@ -8,11 +8,8 @@ use App\System\Settings;
 
 class ServerRepository
 {
-    /** @var Database */
-    private $db;
-
-    /** @var Settings */
-    private $settings;
+    private Database $db;
+    private Settings $settings;
 
     public function __construct(Database $db, Settings $settings)
     {

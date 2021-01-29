@@ -10,17 +10,10 @@ class ExternalConfigProvider
 {
     const CACHE_TTL = 20 * 60;
 
-    /** @var array */
-    private $config;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var CachingRequester */
-    private $cachingRequester;
-
-    /** @var Settings */
-    private $settings;
+    private Requester $requester;
+    private CachingRequester $cachingRequester;
+    private Settings $settings;
+    private ?array $config = null;
 
     public function __construct(
         Requester $requester,

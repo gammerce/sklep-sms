@@ -9,8 +9,7 @@ use Tests\Psr4\DatabaseSetup;
 
 class ConsoleKernel implements ConsoleKernelContract
 {
-    /** @var Application */
-    protected $app;
+    private Application $app;
 
     public function __construct(Application $app)
     {

@@ -21,26 +21,13 @@ class PagePurchase extends Page
 {
     const PAGE_ID = "purchase";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var WebsiteHeader */
-    private $websiteHeader;
-
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystem */
-    private $fileSystem;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Auth $auth;
+    private UserServiceAccessService $userServiceAccessService;
+    private WebsiteHeader $websiteHeader;
+    private Path $path;
+    private FileSystem $fileSystem;
+    private UrlGenerator $url;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,

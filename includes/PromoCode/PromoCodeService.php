@@ -10,8 +10,7 @@ use UnexpectedValueException;
 
 class PromoCodeService
 {
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
+    private PromoCodeRepository $promoCodeRepository;
 
     public function __construct(PromoCodeRepository $promoCodeRepository)
     {

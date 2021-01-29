@@ -13,14 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class ValidateLicense implements MiddlewareContract
 {
-    /** @var Application */
-    private $app;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var License */
-    private $license;
+    private Application $app;
+    private Auth $auth;
+    private License $license;
 
     public function __construct(Application $app, Auth $auth, License $license)
     {

@@ -9,8 +9,7 @@ use App\Support\Database;
 
 class PriceRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {

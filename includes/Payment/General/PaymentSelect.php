@@ -3,20 +3,15 @@ namespace App\Payment\General;
 
 class PaymentSelect
 {
-    /** @var int|null */
-    private $smsPaymentPlatform;
+    private ?int $smsPaymentPlatform = null;
+    private ?int $directBillingPaymentPlatform = null;
+    private ?PaymentOption $allowedPaymentOption = null;
 
     /** @var int[] */
-    private $transferPaymentPlatforms = [];
-
-    /** @var int|null */
-    private $directBillingPaymentPlatform;
-
-    /** @var PaymentOption|null */
-    private $allowedPaymentOption;
+    private array $transferPaymentPlatforms = [];
 
     /** @var PaymentMethod[] */
-    private $disallowedPaymentMethods = [];
+    private array $disallowedPaymentMethods = [];
 
     /**
      * @return PaymentOption[]

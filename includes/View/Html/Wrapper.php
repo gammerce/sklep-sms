@@ -6,17 +6,12 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Wrapper extends Div
 {
-    /** @var  Structure */
-    protected $table;
+    protected ?Structure $table;
+    protected ?string $title;
+    protected bool $search = false;
 
-    /** @var  string */
-    protected $title;
-
-    /** @var  DOMElement[] */
-    protected $buttons = [];
-
-    /** @var bool */
-    protected $search = false;
+    /** @var DOMElement[] */
+    protected array $buttons = [];
 
     public function __construct()
     {

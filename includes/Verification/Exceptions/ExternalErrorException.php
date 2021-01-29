@@ -6,5 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class ExternalErrorException extends SmsPaymentException
 {
-    protected $errorCode = "external_error";
+    protected string $errorCode = "external_error";
 }

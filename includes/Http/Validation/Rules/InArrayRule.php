@@ -6,8 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class InArrayRule extends BaseRule
 {
-    /** @var array */
-    private $values;
+    private array $values;
 
     public function __construct(array $values)
     {

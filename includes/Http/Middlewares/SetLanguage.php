@@ -11,17 +11,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SetLanguage implements MiddlewareContract
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var LocaleService */
-    private $localeService;
-
-    /** @var TranslationManager */
-    private $translationManager;
-
-    /** @var LocaleCookieService */
-    private $localeCookieService;
+    private Settings $settings;
+    private LocaleService $localeService;
+    private TranslationManager $translationManager;
+    private LocaleCookieService $localeCookieService;
 
     public function __construct(
         TranslationManager $translationManager,

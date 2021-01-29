@@ -7,13 +7,12 @@ use App\View\Pagination\Pagination;
 class Structure extends DOMElement
 {
     /** @var DOMElement[] */
-    private $headCells = [];
+    private array $headCells = [];
 
     /** @var BodyRow[] */
-    private $bodyRows = [];
+    private array $bodyRows = [];
 
-    /** @var DOMElement */
-    public $foot = null;
+    public ?DOMElement $foot = null;
 
     public function __construct($content = null)
     {

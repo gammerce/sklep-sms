@@ -21,11 +21,8 @@ class PayPal extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "paypal";
 
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
+    private Settings $settings;
+    private Translator $lang;
 
     public function __construct(
         Requester $requester,

@@ -31,8 +31,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "hotpay";
 
-    /** @var ServiceManager */
-    private $serviceManager;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         Requester $requester,

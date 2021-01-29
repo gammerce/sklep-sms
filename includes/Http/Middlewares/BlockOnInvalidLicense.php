@@ -14,17 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BlockOnInvalidLicense implements MiddlewareContract
 {
-    /** @var License */
-    private $license;
-
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var UrlGenerator */
-    private $url;
+    private License $license;
+    private Template $template;
+    private Translator $lang;
+    private UrlGenerator $url;
 
     public function __construct(
         License $license,

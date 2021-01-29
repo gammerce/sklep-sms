@@ -7,8 +7,7 @@ use App\Managers\ServiceModuleManager;
 
 class ServiceModuleExistsRule extends BaseRule
 {
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct()
     {

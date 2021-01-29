@@ -3,17 +3,10 @@ namespace App\Models;
 
 class PaymentPlatform
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $module;
-
-    /** @var array */
-    private $data;
+    private int $id;
+    private string $name;
+    private string $module;
+    private array $data;
 
     public function __construct($id, $name, $module, array $data)
     {
@@ -23,26 +16,22 @@ class PaymentPlatform
         $this->data = $data;
     }
 
-    /** @return int */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /** @return string */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /** @return string */
-    public function getModuleId()
+    public function getModuleId(): string
     {
         return $this->module;
     }
 
-    /** @return array */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

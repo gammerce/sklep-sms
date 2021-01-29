@@ -23,14 +23,13 @@ class OtherServiceModule extends ServiceModule implements
 {
     const MODULE_ID = "other";
 
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
+    private BoughtServiceService $boughtServiceService;
 
     public function __construct(
         BoughtServiceService $boughtServiceService,
         ServiceDescriptionService $serviceDescriptionService,
         Template $template,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->boughtServiceService = $boughtServiceService;

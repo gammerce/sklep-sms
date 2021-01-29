@@ -7,8 +7,7 @@ use App\Payment\Exceptions\LackOfValidPurchaseDataException;
 
 class ExternalPaymentService
 {
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
+    private PurchaseDataService $purchaseDataService;
 
     public function __construct(PurchaseDataService $purchaseDataService)
     {

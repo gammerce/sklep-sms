@@ -8,17 +8,10 @@ use ArrayAccess;
 
 class Settings implements ArrayAccess
 {
-    /** @var array */
-    private $data;
-
-    /** @var Database */
-    private $db;
-
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private array $data;
+    private Database $db;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     public function __construct(Path $path, Database $database, FileSystemContract $fileSystem)
     {

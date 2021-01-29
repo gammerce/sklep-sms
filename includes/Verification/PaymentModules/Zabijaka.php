@@ -44,7 +44,7 @@ class Zabijaka extends PaymentModule implements SupportSms
                 urlencode($this->getApi()) .
                 "/sms" .
                 "/" .
-                round(get_sms_cost($number) / 100) .
+                round(get_sms_cost($number)->asFloat()) .
                 "/" .
                 urlencode($returnCode) .
                 "/sms.xml/add"

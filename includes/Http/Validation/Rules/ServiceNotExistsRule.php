@@ -7,11 +7,8 @@ use App\Repositories\ServiceRepository;
 
 class ServiceNotExistsRule extends BaseRule
 {
-    /** @var string|null */
-    private $exceptServiceId;
-
-    /** @var ServiceRepository */
-    private $serviceRepository;
+    private ?string $exceptServiceId;
+    private ServiceRepository $serviceRepository;
 
     public function __construct($exceptServiceId = null)
     {

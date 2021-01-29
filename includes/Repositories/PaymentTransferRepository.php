@@ -7,8 +7,7 @@ use App\Support\Money;
 
 class PaymentTransferRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {

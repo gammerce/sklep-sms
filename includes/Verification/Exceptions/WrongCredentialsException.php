@@ -6,5 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class WrongCredentialsException extends SmsPaymentException
 {
-    protected $errorCode = "wrong_credentials";
+    protected string $errorCode = "wrong_credentials";
 }

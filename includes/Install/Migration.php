@@ -7,14 +7,9 @@ use InvalidArgumentException;
 
 abstract class Migration
 {
-    /** @var Database */
-    protected $db;
-
-    /** @var MigrationFiles */
-    protected $migrationFiles;
-
-    /** @var FileLogger */
-    protected $fileLogger;
+    protected Database $db;
+    protected MigrationFiles $migrationFiles;
+    protected FileLogger $fileLogger;
 
     public function __construct(
         Database $db,

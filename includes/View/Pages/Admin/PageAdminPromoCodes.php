@@ -34,23 +34,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "promo_codes";
 
-    /** @var Database */
-    private $db;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private Database $db;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private PromoCodeRepository $promoCodeRepository;
+    private Settings $settings;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

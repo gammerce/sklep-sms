@@ -21,20 +21,11 @@ use UnexpectedValueException;
 
 class PurchaseService
 {
-    /** @var PaymentService */
-    private $paymentService;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
+    private PaymentService $paymentService;
+    private Auth $auth;
+    private PriceRepository $priceRepository;
+    private Settings $settings;
+    private Translator $lang;
 
     public function __construct(
         PaymentService $paymentService,
