@@ -522,7 +522,7 @@ function as_string($value)
  * @param string $value
  * @return PaymentMethod|null
  */
-function as_payment_method($value)
+function as_payment_method($value): ?PaymentMethod
 {
     try {
         return new PaymentMethod($value);
@@ -535,7 +535,7 @@ function as_payment_method($value)
  * @param string $value
  * @return Platform|null
  */
-function as_server_type($value)
+function as_server_type($value): ?Platform
 {
     try {
         return new Platform($value);
@@ -548,7 +548,7 @@ function as_server_type($value)
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */
-function as_datetime($value)
+function as_datetime($value): ?DateTime
 {
     if (!$value) {
         return null;

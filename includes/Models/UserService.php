@@ -3,21 +3,14 @@ namespace App\Models;
 
 class UserService
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $serviceId;
-
-    /** @var int|null */
-    private $userId;
+    private int $id;
+    private string $serviceId;
+    private ?int $userId;
 
     /**
      * Timestamp or -1 when forever
-     *
-     * @var int
      */
-    private $expire;
+    private int $expire;
 
     public function __construct($id, $serviceId, $userId, $expire)
     {
@@ -27,42 +20,27 @@ class UserService
         $this->expire = $expire;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getServiceId()
+    public function getServiceId(): string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /**
-     * @return int
-     */
-    public function getExpire()
+    public function getExpire(): int
     {
         return $this->expire;
     }
 
-    /**
-     * @return bool
-     */
-    public function isForever()
+    public function isForever(): bool
     {
         return $this->expire === -1;
     }
