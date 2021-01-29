@@ -14,17 +14,10 @@ use UnexpectedValueException;
 
 class PaymentService
 {
-    /** @var Translator */
-    private $lang;
-
-    /** @var PaymentMethodFactory */
-    private $paymentMethodFactory;
-
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Translator $lang;
+    private PaymentMethodFactory $paymentMethodFactory;
+    private PromoCodeRepository $promoCodeRepository;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         TranslationManager $translationManager,

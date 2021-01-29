@@ -17,17 +17,10 @@ use App\Verification\Exceptions\SmsPaymentException;
 
 class SmsPaymentMethod implements IPaymentMethod
 {
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
-    /** @var SmsPaymentService */
-    private $smsPaymentService;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private SmsPriceService $smsPriceService;
+    private SmsPaymentService $smsPaymentService;
+    private Translator $lang;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         SmsPriceService $smsPriceService,

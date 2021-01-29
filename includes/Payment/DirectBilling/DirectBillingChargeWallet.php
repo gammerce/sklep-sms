@@ -17,20 +17,11 @@ use App\System\Settings;
 
 class DirectBillingChargeWallet implements IChargeWallet
 {
-    /** @var Template */
-    private $template;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var DirectBillingPriceService */
-    private $directBillingPriceService;
+    private Template $template;
+    private PriceTextService $priceTextService;
+    private Settings $settings;
+    private PaymentModuleManager $paymentModuleManager;
+    private DirectBillingPriceService $directBillingPriceService;
 
     public function __construct(
         Template $template,

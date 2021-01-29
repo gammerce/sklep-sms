@@ -3,11 +3,8 @@ namespace App\Payment\General;
 
 class PaymentOption
 {
-    /** @var PaymentMethod */
-    private $paymentMethod;
-
-    /** @var int|null */
-    private $paymentPlatformId;
+    private PaymentMethod $paymentMethod;
+    private ?int $paymentPlatformId;
 
     public function __construct(PaymentMethod $paymentMethod, $paymentPlatformId = null)
     {

@@ -3,8 +3,7 @@ namespace App\Payment\General;
 
 final class PaymentResult
 {
-    /** @var PaymentResultType */
-    private $type;
+    private PaymentResultType $type;
 
     /** @var mixed */
     private $data;

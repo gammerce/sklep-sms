@@ -6,8 +6,7 @@ use App\System\Application;
 
 class PaymentModuleFactory
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
 
     public function __construct(Application $app)
     {

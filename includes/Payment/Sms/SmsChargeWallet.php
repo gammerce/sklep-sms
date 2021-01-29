@@ -21,23 +21,12 @@ use App\Verification\Abstracts\SupportSms;
 
 class SmsChargeWallet implements IChargeWallet
 {
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private SmsPriceService $smsPriceService;
+    private PriceTextService $priceTextService;
+    private Template $template;
+    private Translator $lang;
+    private Settings $settings;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         SmsPriceService $smsPriceService,

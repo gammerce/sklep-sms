@@ -8,11 +8,8 @@ use ReflectionClass;
 
 class PurchaseSerializer
 {
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var UserManager */
-    private $userManager;
+    private PromoCodeService $promoCodeService;
+    private UserManager $userManager;
 
     public function __construct(PromoCodeService $promoCodeService, UserManager $userManager)
     {

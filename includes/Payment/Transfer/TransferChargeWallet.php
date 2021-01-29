@@ -20,20 +20,11 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferChargeWallet implements IChargeWallet
 {
-    /** @var Template */
-    private $template;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private Template $template;
+    private PriceTextService $priceTextService;
+    private Translator $lang;
+    private TransferPriceService $transferPriceService;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         Template $template,

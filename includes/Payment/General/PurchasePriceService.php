@@ -13,14 +13,9 @@ use App\Verification\Abstracts\SupportSms;
 
 class PurchasePriceService
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private Settings $settings;
+    private PriceRepository $priceRepository;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         Settings $settings,
