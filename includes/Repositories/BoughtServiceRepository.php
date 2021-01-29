@@ -6,8 +6,7 @@ use App\Support\Database;
 
 class BoughtServiceRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {

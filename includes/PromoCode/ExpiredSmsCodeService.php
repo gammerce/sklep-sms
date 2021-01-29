@@ -5,8 +5,7 @@ use App\Support\Database;
 
 class ExpiredSmsCodeService
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {

@@ -5,8 +5,7 @@ use App\Loggers\FileLogger;
 
 class Requester
 {
-    /** @var FileLogger */
-    private $logger;
+    private FileLogger $logger;
 
     public function __construct(FileLogger $logger)
     {

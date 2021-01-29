@@ -7,14 +7,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class UrlGenerator
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var Application */
-    private $app;
-
-    /** @var string|null */
-    private $version;
+    private Settings $settings;
+    private Application $app;
+    private ?string $version = null;
 
     public function __construct(Settings $settings, Application $app)
     {
