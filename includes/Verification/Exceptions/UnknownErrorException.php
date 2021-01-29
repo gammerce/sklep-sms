@@ -6,5 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class UnknownErrorException extends SmsPaymentException
 {
-    protected $errorCode = "unknown_error";
+    protected string $errorCode = "unknown_error";
 }

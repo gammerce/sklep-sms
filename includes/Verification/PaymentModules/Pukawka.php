@@ -17,7 +17,7 @@ class Pukawka extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "pukawka";
 
-    private $rates = [];
+    private array $rates = [];
 
     public static function getDataFields()
     {

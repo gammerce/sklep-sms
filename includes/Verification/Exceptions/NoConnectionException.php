@@ -6,5 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class NoConnectionException extends SmsPaymentException
 {
-    protected $errorCode = "no_connection";
+    protected string $errorCode = "no_connection";
 }
