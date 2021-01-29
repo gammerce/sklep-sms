@@ -5,29 +5,23 @@ use App\Support\Money;
 
 class PaymentDirectBilling
 {
-    /** @var int */
-    private $id;
+    private int $id;
+    private string $externalId;
+    private Money $income;
+    private Money $cost;
+    private string $ip;
+    private string $platform;
+    private bool $free;
 
-    /** @var string */
-    private $externalId;
-
-    /** @var Money */
-    private $income;
-
-    /** @var Money */
-    private $cost;
-
-    /** @var string */
-    private $ip;
-
-    /** @var string */
-    private $platform;
-
-    /** @var bool */
-    private $free;
-
-    public function __construct($id, $externalId, Money $income, Money $cost, $ip, $platform, $free)
-    {
+    public function __construct(
+        int $id,
+        string $externalId,
+        Money $income,
+        Money $cost,
+        string $ip,
+        string $platform,
+        bool $free
+    ) {
         $this->id = $id;
         $this->externalId = $externalId;
         $this->income = $income;
@@ -37,58 +31,37 @@ class PaymentDirectBilling
         $this->free = $free;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getExternalId()
+    public function getExternalId(): string
     {
         return $this->externalId;
     }
 
-    /**
-     * @return Money
-     */
-    public function getIncome()
+    public function getIncome(): Money
     {
         return $this->income;
     }
 
-    /**
-     * @return Money
-     */
-    public function getCost()
+    public function getCost(): Money
     {
         return $this->cost;
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlatform()
+    public function getPlatform(): string
     {
         return $this->platform;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->free;
     }

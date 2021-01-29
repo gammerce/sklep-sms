@@ -5,43 +5,28 @@ use App\Support\Money;
 
 class Price
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $serviceId;
-
-    /** @var int|null */
-    private $serverId;
-
-    /** @var Money|null */
-    private $smsPrice;
-
-    /** @var Money|null */
-    private $transferPrice;
-
-    /** @var Money|null */
-    private $directBillingPrice;
+    private int $id;
+    private string $serviceId;
+    private ?int $serverId;
+    private ?Money $smsPrice;
+    private ?Money $transferPrice;
+    private ?Money $directBillingPrice;
+    private ?int $discount;
 
     /**
      * Null means infinity/forever
-     *
-     * @var int|null
      */
-    private $quantity;
-
-    /** @var int|null */
-    private $discount;
+    private ?int $quantity;
 
     public function __construct(
-        $id,
-        $serviceId,
-        $serverId = null,
-        Money $smsPrice = null,
-        Money $transferPrice = null,
-        Money $directBillingPrice = null,
-        $quantity = null,
-        $discount = null
+        int $id,
+        string $serviceId,
+        ?int $serverId = null,
+        ?Money $smsPrice = null,
+        ?Money $transferPrice = null,
+        ?Money $directBillingPrice = null,
+        ?int $quantity = null,
+        ?int $discount = null
     ) {
         $this->id = $id;
         $this->serviceId = $serviceId;
@@ -53,124 +38,77 @@ class Price
         $this->discount = $discount;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getServiceId()
+    public function getServiceId(): string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getServerId()
+    public function getServerId(): ?int
     {
         return $this->serverId;
     }
 
-    /**
-     * @return Money|null
-     */
-    public function getSmsPrice()
+    public function getSmsPrice(): ?Money
     {
         return $this->smsPrice;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasSmsPrice()
+    public function hasSmsPrice(): bool
     {
         return $this->smsPrice !== null;
     }
 
-    /**
-     * @return Money|null
-     */
-    public function getTransferPrice()
+    public function getTransferPrice(): ?Money
     {
         return $this->transferPrice;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasTransferPrice()
+    public function hasTransferPrice(): bool
     {
         return $this->transferPrice !== null;
     }
 
-    /**
-     * @return Money|null
-     */
-    public function getDirectBillingPrice()
+    public function getDirectBillingPrice(): ?Money
     {
         return $this->directBillingPrice;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasDirectBillingPrice()
+    public function hasDirectBillingPrice(): bool
     {
         return $this->directBillingPrice !== null;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getQuantity()
+    public function getQuantity(): ?int
     {
         return $this->quantity;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getDiscount()
+    public function getDiscount(): ?int
     {
         return $this->discount;
     }
 
-    /**
-     * @return bool
-     */
-    public function isForever()
+    public function isForever(): bool
     {
         return $this->quantity === null;
     }
 
-    /**
-     * @return bool
-     */
-    public function isForEveryServer()
+    public function isForEveryServer(): bool
     {
         return $this->serverId === null;
     }
 
-    /**
-     * @param int|null $serverId
-     * @return bool
-     */
-    public function concernServer($serverId)
+    public function concernServer(?int $serverId): bool
     {
         return $this->isForEveryServer() || $this->getServerId() === $serverId;
     }
 
-    /**
-     * @param string $serviceId
-     * @return bool
-     */
-    public function concernService($serviceId)
+    public function concernService(?string $serviceId): bool
     {
         return $this->getServiceId() === $serviceId;
     }
