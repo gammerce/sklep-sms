@@ -8,7 +8,7 @@ class PaymentPlatform
     private string $module;
     private array $data;
 
-    public function __construct(int $id, string $name, string $module, array $data)
+    public function __construct($id, $name, $module, array $data)
     {
         $this->id = $id;
         $this->name = $name;

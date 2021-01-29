@@ -11,7 +11,7 @@ class Group
     /** @var Permission[] */
     private array $permissions;
 
-    public function __construct(int $id, string $name, array $permissions)
+    public function __construct($id, $name, array $permissions)
     {
         $this->id = $id;
         $this->name = $name;

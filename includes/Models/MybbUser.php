@@ -3,20 +3,15 @@ namespace App\Models;
 
 class MybbUser
 {
-    /** @var int */
-    private $uid;
+    private int $uid;
 
-    /** @var array */
-    private $shopGroups = [];
-
-    /** @var int */
-    private $mybbUserGroup;
+    private array $shopGroups = [];
+    private int $mybbUserGroup;
 
     /** @var int[] */
-    private $mybbAddGroups = [];
+    private array $mybbAddGroups = [];
 
-    /** @var int */
-    private $mybbDisplayGroup;
+    private ?int $mybbDisplayGroup = null;
 
     /**
      * @param int $uid

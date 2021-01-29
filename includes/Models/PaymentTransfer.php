@@ -14,13 +14,13 @@ class PaymentTransfer
     private bool $free;
 
     public function __construct(
-        string $id,
+        $id,
         Money $income,
         Money $cost,
-        string $transferService,
-        string $ip,
-        string $platform,
-        bool $free
+        $transferService,
+        $ip,
+        $platform,
+        $free
     ) {
         $this->id = $id;
         $this->income = $income;

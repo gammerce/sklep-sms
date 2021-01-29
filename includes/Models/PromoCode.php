@@ -14,14 +14,12 @@ class PromoCode
     /** @var string */
     private $code;
 
-    /** @var QuantityType */
-    private $quantityType;
+    private QuantityType $quantityType;
 
     /** @var int */
     private $quantity;
 
-    /** @var DateTime */
-    private $createdAt;
+    private DateTime $createdAt;
 
     /** @var string|null */
     private $service;
@@ -38,8 +36,7 @@ class PromoCode
     /** @var int|null */
     private $usageLimit;
 
-    /** @var DateTime|null */
-    private $expiresAt;
+    private ?DateTime $expiresAt;
 
     public function __construct(
         $id,

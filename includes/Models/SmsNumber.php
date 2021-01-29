@@ -12,7 +12,7 @@ class SmsNumber
      * @param string $smsNumber
      * @param Money|int|null $provision
      */
-    public function __construct(string $smsNumber, $provision = null)
+    public function __construct($smsNumber, $provision = null)
     {
         $this->smsNumber = $smsNumber;
         $this->provision = new Money($provision ?: get_sms_provision(get_sms_cost($smsNumber)));

@@ -6,7 +6,7 @@ class ServerService
     private int $serverId;
     private string $serviceId;
 
-    public function __construct(int $serverId, string $serviceId)
+    public function __construct($serverId, $serviceId)
     {
         $this->serverId = $serverId;
         $this->serviceId = $serviceId;

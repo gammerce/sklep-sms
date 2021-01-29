@@ -13,15 +13,8 @@ class PaymentDirectBilling
     private string $platform;
     private bool $free;
 
-    public function __construct(
-        int $id,
-        string $externalId,
-        Money $income,
-        Money $cost,
-        string $ip,
-        string $platform,
-        bool $free
-    ) {
+    public function __construct($id, $externalId, Money $income, Money $cost, $ip, $platform, $free)
+    {
         $this->id = $id;
         $this->externalId = $externalId;
         $this->income = $income;

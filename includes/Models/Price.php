@@ -19,14 +19,14 @@ class Price
     private ?int $quantity;
 
     public function __construct(
-        int $id,
-        string $serviceId,
-        ?int $serverId = null,
-        ?Money $smsPrice = null,
-        ?Money $transferPrice = null,
-        ?Money $directBillingPrice = null,
-        ?int $quantity = null,
-        ?int $discount = null
+        $id,
+        $serviceId,
+        $serverId = null,
+        Money $smsPrice = null,
+        Money $transferPrice = null,
+        Money $directBillingPrice = null,
+        $quantity = null,
+        $discount = null
     ) {
         $this->id = $id;
         $this->serviceId = $serviceId;
