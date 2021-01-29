@@ -6,12 +6,11 @@ use App\Repositories\ServerRepository;
 
 class ServerManager
 {
-    /** @var ServerRepository */
-    private $serverRepository;
+    private ServerRepository $serverRepository;
 
     /** @var Server[] */
-    private $servers = [];
-    private $serversFetched = false;
+    private array $servers = [];
+    private bool $serversFetched = false;
 
     public function __construct(ServerRepository $serverRepository)
     {

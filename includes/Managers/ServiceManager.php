@@ -6,12 +6,11 @@ use App\Repositories\ServiceRepository;
 
 class ServiceManager
 {
-    /** @var ServiceRepository */
-    private $serviceRepository;
+    private ServiceRepository $serviceRepository;
 
     /** @var Service[] */
-    private $services = [];
-    private $servicesFetched = false;
+    private array $services = [];
+    private bool $servicesFetched = false;
 
     public function __construct(ServiceRepository $serviceRepository)
     {

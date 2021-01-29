@@ -6,11 +6,10 @@ use App\Repositories\UserRepository;
 
 class UserManager
 {
-    /** @var UserRepository */
-    private $userRepository;
+    private UserRepository $userRepository;
 
     /** @var User[] */
-    private $users = [];
+    private array $users = [];
 
     public function __construct(UserRepository $userRepository)
     {

@@ -8,10 +8,10 @@ use App\View\Pages\Page;
 
 class PageManager
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
 
-    private $classes = [];
+    /** @var string[] */
+    private array $classes = [];
 
     public function __construct(Application $app)
     {

@@ -11,14 +11,10 @@ use App\Verification\DataField;
 
 class PaymentModuleManager
 {
-    /** @var PaymentModuleFactory */
-    private $paymentModuleFactory;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var array */
-    private $classes = [];
+    private PaymentModuleFactory $paymentModuleFactory;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    /** @var string[] */
+    private array $classes = [];
 
     public function __construct(
         PaymentModuleFactory $paymentModuleFactory,

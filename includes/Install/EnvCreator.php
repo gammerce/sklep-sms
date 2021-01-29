@@ -6,11 +6,8 @@ use App\Support\Path;
 
 class EnvCreator
 {
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     public function __construct(Path $path, FileSystemContract $fileSystem)
     {
