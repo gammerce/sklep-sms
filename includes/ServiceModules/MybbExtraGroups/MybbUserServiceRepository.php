@@ -79,11 +79,7 @@ class MybbUserServiceRepository
         return null;
     }
 
-    /**
-     * @param array $data
-     * @return MybbUserService
-     */
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): MybbUserService
     {
         return new MybbUserService(
             as_int($data["id"]),
