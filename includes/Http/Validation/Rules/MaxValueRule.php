@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class MaxValueRule extends BaseRule
 {
-    /** @var int */
+    /** @var int|float */
     private $value;
 
     public function __construct($value)

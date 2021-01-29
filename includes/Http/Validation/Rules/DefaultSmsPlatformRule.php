@@ -7,8 +7,7 @@ use App\System\Settings;
 
 class DefaultSmsPlatformRule extends BaseRule
 {
-    /** @var Settings */
-    private $settings;
+    private Settings $settings;
 
     public function __construct()
     {

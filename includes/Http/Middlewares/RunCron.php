@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RunCron implements MiddlewareContract
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var CronExecutor */
-    private $cronExecutor;
+    private Settings $settings;
+    private CronExecutor $cronExecutor;
 
     public function __construct(Settings $settings, CronExecutor $cronExecutor)
     {

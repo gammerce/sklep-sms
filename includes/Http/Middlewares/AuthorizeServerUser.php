@@ -8,11 +8,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AuthorizeServerUser implements MiddlewareContract
 {
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var Auth */
-    private $auth;
+    private UserRepository $userRepository;
+    private Auth $auth;
 
     public function __construct(UserRepository $userRepository, Auth $auth)
     {

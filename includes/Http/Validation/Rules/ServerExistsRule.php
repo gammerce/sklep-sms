@@ -7,8 +7,7 @@ use App\Managers\ServerManager;
 
 class ServerExistsRule extends BaseRule
 {
-    /** @var ServerManager */
-    private $serverManager;
+    private ServerManager $serverManager;
 
     public function __construct()
     {

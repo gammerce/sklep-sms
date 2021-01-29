@@ -8,11 +8,8 @@ use App\Support\Path;
 
 class LanguageRule extends BaseRule
 {
-    /** @var FileSystemContract */
-    private $fileSystem;
-
-    /** @var Path */
-    private $path;
+    private FileSystemContract $fileSystem;
+    private Path $path;
 
     public function __construct()
     {

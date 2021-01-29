@@ -9,14 +9,9 @@ use App\Models\Service;
 
 class ServerLinkedToServiceRule extends BaseRule
 {
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var Service */
-    private $service;
+    private ServerServiceManager $serverServiceManager;
+    private ServerManager $serverManager;
+    private Service $service;
 
     public function __construct(Service $service)
     {

@@ -15,20 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseFactory
 {
-    /** @var ServerResponseFactory */
-    private $serverResponseFactory;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var ErrorRenderer */
-    private $errorRenderer;
-
-    /** @var \App\Support\IntendedUrlService */
-    private $intendedUrlService;
-
-    /** @var UrlGenerator */
-    private $url;
+    private ServerResponseFactory $serverResponseFactory;
+    private Translator $lang;
+    private ErrorRenderer $errorRenderer;
+    private IntendedUrlService $intendedUrlService;
+    private UrlGenerator $url;
 
     public function __construct(
         ServerResponseFactory $serverResponseFactory,

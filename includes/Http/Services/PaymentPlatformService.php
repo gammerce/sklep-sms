@@ -7,8 +7,7 @@ use App\Verification\Exceptions\ProcessDataFieldsException;
 
 class PaymentPlatformService
 {
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(PaymentModuleManager $paymentModuleManager)
     {

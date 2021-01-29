@@ -5,11 +5,8 @@ use App\Exceptions\ValidationException;
 
 class Validator
 {
-    /** @var array */
-    private $data;
-
-    /** @var array */
-    private $rules;
+    private array $data;
+    private array $rules;
 
     public function __construct(array $data, array $rules)
     {

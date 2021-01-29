@@ -6,8 +6,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequestHelper
 {
-    /** @var Request */
-    private $request;
+    private Request $request;
 
     public function __construct(Request $request)
     {
