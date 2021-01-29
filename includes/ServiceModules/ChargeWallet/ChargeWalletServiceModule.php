@@ -49,7 +49,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         Template $template,
         TranslationManager $translationManager,
         WalletPaymentService $walletPaymentService,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->lang = $translationManager->user();

@@ -69,65 +69,29 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
     const MODULE_ID = "mybb_extra_groups";
     const USER_SERVICE_TABLE = "ss_user_service_mybb_extra_groups";
 
-    /** @var array */
-    private $groups = [];
+    /** @var string[] */
+    private array $groups = [];
 
-    /** @var string */
-    private $dbHost;
+    private string $dbHost;
+    private int $dbPort;
+    private string $dbUser;
+    private string $dbPassword;
+    private string $dbName;
 
-    /** @var int */
-    private $dbPort;
-
-    /** @var string */
-    private $dbUser;
-
-    /** @var string */
-    private $dbPassword;
-
-    /** @var string */
-    private $dbName;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var AdminPaymentService */
-    private $adminPaymentService;
-
-    /** @var PurchasePriceService */
-    private $purchasePriceService;
-
-    /** @var PurchasePriceRenderer */
-    private $purchasePriceRenderer;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var MybbRepository */
-    private $mybbRepository;
-
-    /** @var MybbUserGroupRepository */
-    private $mybbUserGroupRepository;
-
-    /** @var MybbUserServiceRepository */
-    private $mybbUserServiceRepository;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var Database */
-    private $db;
+    private Auth $auth;
+    private UserManager $userManager;
+    private Translator $lang;
+    private BoughtServiceService $boughtServiceService;
+    private AdminPaymentService $adminPaymentService;
+    private PurchasePriceService $purchasePriceService;
+    private PurchasePriceRenderer $purchasePriceRenderer;
+    private PriceTextService $priceTextService;
+    private MybbRepository $mybbRepository;
+    private MybbUserGroupRepository $mybbUserGroupRepository;
+    private MybbUserServiceRepository $mybbUserServiceRepository;
+    private DatabaseLogger $logger;
+    private PaginationFactory $paginationFactory;
+    private Database $db;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,
@@ -146,7 +110,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         Template $template,
         TranslationManager $translationManager,
         UserManager $userManager,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->adminPaymentService = $adminPaymentService;

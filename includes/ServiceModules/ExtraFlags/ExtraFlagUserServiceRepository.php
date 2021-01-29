@@ -7,11 +7,8 @@ use App\Support\Database;
 
 class ExtraFlagUserServiceRepository
 {
-    /** @var Database */
-    private $db;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
+    private Database $db;
+    private UserServiceRepository $userServiceRepository;
 
     public function __construct(Database $db, UserServiceRepository $userServiceRepository)
     {
