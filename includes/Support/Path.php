@@ -3,8 +3,7 @@ namespace App\Support;
 
 class Path
 {
-    /** @var string */
-    private $basePath;
+    private string $basePath;
 
     public function __construct($basePath)
     {

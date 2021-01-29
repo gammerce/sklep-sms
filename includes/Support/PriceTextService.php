@@ -8,11 +8,8 @@ use App\Translation\Translator;
 
 class PriceTextService
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
+    private Settings $settings;
+    private Translator $lang;
 
     public function __construct(Settings $settings, TranslationManager $translationManager)
     {

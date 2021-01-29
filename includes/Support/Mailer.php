@@ -10,17 +10,10 @@ use PHPMailer\PHPMailer\SMTP;
 
 class Mailer
 {
-    /** @var array */
-    private $config;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var DatabaseLogger */
-    private $databaseLogger;
-
-    /** @var FileLogger */
-    private $fileLogger;
+    private array $config;
+    private Settings $settings;
+    private DatabaseLogger $databaseLogger;
+    private FileLogger $fileLogger;
 
     public function __construct(
         Settings $settings,

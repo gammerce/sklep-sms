@@ -4,10 +4,9 @@ namespace App\Support;
 class QueryParticle
 {
     /** @var string[] */
-    private $particles = [];
+    private array $particles = [];
 
-    /** @var array  */
-    private $params = [];
+    private array $params = [];
 
     /**
      * @param string $query

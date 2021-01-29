@@ -12,8 +12,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
 {
     use Whenable;
 
-    /** @var array */
-    private $items;
+    private array $items;
 
     public function __construct($items = [])
     {

@@ -8,20 +8,11 @@ use App\Translation\Translator;
 
 class Template
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var UrlGenerator */
-    private $urlGenerator;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
-
-    /** @var array */
-    private $cachedTemplates = [];
+    private Settings $settings;
+    private Translator $lang;
+    private UrlGenerator $urlGenerator;
+    private FileSystemContract $fileSystem;
+    private array $cachedTemplates = [];
 
     public function __construct(
         Settings $settings,
