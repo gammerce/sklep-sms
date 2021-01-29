@@ -3,11 +3,8 @@ namespace App\Translation;
 
 class TranslationManager
 {
-    /** @var Translator */
-    private $user;
-
-    /** @var Translator */
-    private $shop;
+    private ?Translator $user = null;
+    private ?Translator $shop = null;
 
     public function user()
     {

@@ -14,20 +14,11 @@ class License
 {
     const CACHE_TTL = 10 * 60;
 
-    /** @var Translator */
-    private $langShop;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var CachingRequester */
-    private $cachingRequester;
-
-    /** @var UrlGenerator */
-    private $urlGenerator;
+    private Translator $langShop;
+    private Settings $settings;
+    private Requester $requester;
+    private CachingRequester $cachingRequester;
+    private UrlGenerator $urlGenerator;
 
     /** @var int */
     private $externalLicenseId;
@@ -38,8 +29,7 @@ class License
     /** @var string */
     private $footer;
 
-    /** @var LicenseRequestException */
-    private $loadingException;
+    private ?LicenseRequestException $loadingException;
 
     public function __construct(
         TranslationManager $translationManager,

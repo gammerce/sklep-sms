@@ -5,8 +5,7 @@ use App\Models\Server;
 
 class ServerAuth
 {
-    /** @var Server|null */
-    private $server;
+    private ?Server $server = null;
 
     /**
      * @return Server|null
