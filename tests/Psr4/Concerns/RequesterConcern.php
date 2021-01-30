@@ -11,15 +11,14 @@ trait RequesterConcern
     /** @var Requester|MockInterface */
     public $requesterMock;
 
-    public function mockRequester()
+    public function mockRequester(): void
     {
         $this->requesterMock = Mockery::mock(Requester::class);
         $this->app->instance(Requester::class, $this->requesterMock);
-
         $this->mockExternalConfig();
     }
 
-    private function mockExternalConfig()
+    private function mockExternalConfig(): void
     {
         $this->requesterMock
             ->shouldReceive("get")

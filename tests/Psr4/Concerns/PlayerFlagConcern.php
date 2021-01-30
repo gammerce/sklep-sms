@@ -5,7 +5,7 @@ use App\ServiceModules\ExtraFlags\PlayerFlag;
 
 trait PlayerFlagConcern
 {
-    public function assertPlayerFlags($expected, $actual)
+    public function assertPlayerFlags($expected, $actual): void
     {
         $fullExpected = array_merge(array_fill_keys(PlayerFlag::FLAGS, 0), $expected);
 

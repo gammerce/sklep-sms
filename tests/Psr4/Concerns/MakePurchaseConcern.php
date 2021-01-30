@@ -28,11 +28,7 @@ trait MakePurchaseConcern
     use MybbRepositoryConcern;
     use CssettiConcern;
 
-    /**
-     * @param array $attributes
-     * @return BoughtService
-     */
-    public function createRandomExtraFlagsPurchase(array $attributes = [])
+    public function createRandomExtraFlagsPurchase(array $attributes = []): BoughtService
     {
         $this->mockCSSSettiGetData();
         $this->mockPaymentModuleFactory();

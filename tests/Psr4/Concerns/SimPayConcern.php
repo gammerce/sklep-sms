@@ -6,7 +6,7 @@ use Mockery;
 
 trait SimPayConcern
 {
-    public function mockSimPayIpList()
+    public function mockSimPayIpList(): void
     {
         $this->requesterMock
             ->shouldReceive("get")
@@ -23,7 +23,7 @@ trait SimPayConcern
             );
     }
 
-    public function mockSimPayApiSuccessResponse()
+    public function mockSimPayApiSuccessResponse(): void
     {
         $this->requesterMock
             ->shouldReceive("post")

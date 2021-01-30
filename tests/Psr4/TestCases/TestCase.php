@@ -27,27 +27,15 @@ class TestCase extends BaseTestCase
     use MockeryConcern;
     use RequesterConcern;
 
-    /** @var Application */
-    protected $app;
-
-    /** @var bool */
-    protected $wrapInTransaction = true;
-
-    /** @var Factory */
-    protected $factory;
-
-    /** @var boolean */
-    protected $mockLocale = true;
-
-    /** @var array */
-    private $afterApplicationCreatedCallbacks = [];
+    protected Application $app;
+    protected bool $wrapInTransaction = true;
+    protected Factory $factory;
+    protected bool $mockLocale = true;
+    private array $afterApplicationCreatedCallbacks = [];
 
     protected function setUp(): void
     {
-        if (!$this->app) {
-            $this->app = $this->createApplication();
-        }
-
+        $this->app = $this->createApplication();
         $this->factory = $this->app->make(Factory::class);
         $this->mockLicense();
         $this->mockFileSystem();

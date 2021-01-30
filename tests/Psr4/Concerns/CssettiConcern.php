@@ -5,7 +5,7 @@ use App\Requesting\Response;
 
 trait CssettiConcern
 {
-    protected function mockCSSSettiGetData()
+    protected function mockCSSSettiGetData(): void
     {
         $this->requesterMock
             ->shouldReceive("get")

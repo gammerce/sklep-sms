@@ -6,7 +6,7 @@ use Exception;
 
 class MemoryFileSystem implements FileSystemContract
 {
-    private $fileSystem = [];
+    private array $fileSystem = [];
 
     public function exists($path)
     {
