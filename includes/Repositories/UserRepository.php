@@ -28,7 +28,7 @@ class UserRepository
         $ip,
         $groups,
         $wallet = 0
-    ) {
+    ): User {
         $salt = get_random_string(8);
         $this->db
             ->statement(
@@ -51,7 +51,7 @@ class UserRepository
         return $this->get($this->db->lastId());
     }
 
-    public function update(User $user)
+    public function update(User $user): void
     {
         $this->db
             ->statement(
@@ -74,7 +74,7 @@ class UserRepository
     /**
      * @return User[]
      */
-    public function allWithSteamId()
+    public function allWithSteamId(): array
     {
         $statement = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` IS NOT NULL");
         return collect($statement)
@@ -86,7 +86,7 @@ class UserRepository
      * @param int $id
      * @return User|null
      */
-    public function get($id)
+    public function get($id): ?User
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `uid` = ?");
@@ -104,7 +104,7 @@ class UserRepository
      * @param string $steamId
      * @return User|null
      */
-    public function findBySteamId($steamId)
+    public function findBySteamId($steamId): ?User
     {
         if (!strlen($steamId)) {
             return null;
@@ -124,7 +124,7 @@ class UserRepository
      * @param string $username
      * @return User|null
      */
-    public function findByUsername($username)
+    public function findByUsername($username): ?User
     {
         if (!strlen($username)) {
             return null;
@@ -141,7 +141,7 @@ class UserRepository
      * @param string $email
      * @return User|null
      */
-    public function findByEmail($email)
+    public function findByEmail($email): ?User
     {
         if (!strlen($email)) {
             return null;
@@ -159,7 +159,7 @@ class UserRepository
      * @param string $password
      * @return User|null
      */
-    public function findByPassword($emailOrUsername, $password)
+    public function findByPassword($emailOrUsername, $password): ?User
     {
         if (!strlen($emailOrUsername) || !strlen($password)) {
             return null;
@@ -179,7 +179,7 @@ class UserRepository
      * @param string $resetKey
      * @return User|null
      */
-    public function findByResetKey($resetKey)
+    public function findByResetKey($resetKey): ?User
     {
         if (!strlen($resetKey)) {
             return null;
@@ -194,7 +194,7 @@ class UserRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
-    public function createResetPasswordKey($userId)
+    public function createResetPasswordKey($userId): string
     {
         $key = get_random_string(32);
         $this->db
@@ -204,7 +204,7 @@ class UserRepository
         return $key;
     }
 
-    public function updatePassword($userId, $password)
+    public function updatePassword($userId, $password): void
     {
         if (is_demo() && as_int($userId) === 1) {
             // Do not allow to modify admin's password in demo version
@@ -220,14 +220,14 @@ class UserRepository
             ->execute([hash_password($password, $salt), $salt, $userId]);
     }
 
-    public function touch(User $user)
+    public function touch(User $user): void
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `lastactiv` = NOW(), `lastip` = ? WHERE `uid` = ?")
             ->execute([$user->getLastIp(), $user->getId()]);
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_users` WHERE `uid` = ?");
         $statement->execute([$id]);
@@ -235,7 +235,7 @@ class UserRepository
         return !!$statement->rowCount();
     }
 
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): User
     {
         $groupsIds = explode_int_list($data["groups"], ";");
 
@@ -263,7 +263,7 @@ class UserRepository
      * @param int[] $groupsIds
      * @return Permission[]
      */
-    private function gatherPermissions(array $groupsIds)
+    private function gatherPermissions(array $groupsIds): array
     {
         return collect($groupsIds)
             ->flatMap(function ($groupId) {

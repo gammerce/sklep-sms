@@ -16,7 +16,7 @@ class PriceRepository
         $this->db = $db;
     }
 
-    public function get($id)
+    public function get($id): ?Price
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_prices` WHERE `id` = ?");
@@ -30,7 +30,7 @@ class PriceRepository
         return null;
     }
 
-    public function getOrFail($id)
+    public function getOrFail($id): Price
     {
         if ($paymentPlatform = $this->get($id)) {
             return $paymentPlatform;
@@ -47,7 +47,7 @@ class PriceRepository
         $directBillingPrice,
         $quantity,
         $discount
-    ) {
+    ): Price {
         $this->db
             ->statement(
                 "INSERT INTO `ss_prices` (`service_id`, `server_id`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
@@ -71,7 +71,7 @@ class PriceRepository
      * @param Server|null $server
      * @return Price[]
      */
-    public function findByServiceServer(Service $service, Server $server = null)
+    public function findByServiceServer(Service $service, Server $server = null): array
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .
@@ -97,7 +97,7 @@ class PriceRepository
         $directBillingPrice,
         $quantity,
         $discount
-    ) {
+    ): bool {
         $statement = $this->db->statement(
             <<<EOF
             UPDATE `ss_prices` 
@@ -126,7 +126,7 @@ EOF
         return !!$statement->rowCount();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_prices` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -134,7 +134,7 @@ EOF
         return !!$statement->rowCount();
     }
 
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): Price
     {
         return new Price(
             as_int($data["id"]),

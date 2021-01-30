@@ -14,7 +14,7 @@ class PaymentTransferRepository
         $this->db = $db;
     }
 
-    public function get($id)
+    public function get($id): ?PaymentTransfer
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_payment_transfer` WHERE `id` = ?");
@@ -28,8 +28,15 @@ class PaymentTransferRepository
         return null;
     }
 
-    public function create($id, $income, $cost, $transferService, $ip, $platform, $free)
-    {
+    public function create(
+        $id,
+        $income,
+        $cost,
+        $transferService,
+        $ip,
+        $platform,
+        $free
+    ): PaymentTransfer {
         $this->db
             ->statement(
                 "INSERT INTO `ss_payment_transfer` " .
@@ -40,7 +47,7 @@ class PaymentTransferRepository
         return $this->get($id);
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): PaymentTransfer
     {
         return new PaymentTransfer(
             $data["id"],

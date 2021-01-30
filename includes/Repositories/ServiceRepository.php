@@ -128,7 +128,7 @@ class ServiceRepository
         return !!$statement->rowCount();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_services` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -136,7 +136,7 @@ class ServiceRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): Service
     {
         return new Service(
             $data["id"],

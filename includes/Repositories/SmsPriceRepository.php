@@ -35,7 +35,7 @@ class SmsPriceRepository
     /**
      * @return Money[]
      */
-    public function all()
+    public function all(): array
     {
         return $this->prices;
     }
@@ -44,7 +44,7 @@ class SmsPriceRepository
      * @param Money|null $price
      * @return bool
      */
-    public function exists(Money $price = null)
+    public function exists(Money $price = null): bool
     {
         return collect($this->all())->some(fn(Money $money) => $money->equal($price));
     }

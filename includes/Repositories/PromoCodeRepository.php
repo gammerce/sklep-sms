@@ -24,7 +24,7 @@ class PromoCodeRepository
         $serviceId = null,
         $serverId = null,
         $userId = null
-    ) {
+    ): PromoCode {
         $this->db
             ->statement(
                 <<<EOF
@@ -58,7 +58,7 @@ EOF
      * @param int $id
      * @return PromoCode|null
      */
-    public function get($id)
+    public function get($id): ?PromoCode
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_promo_codes` WHERE `id` = ?");
@@ -76,7 +76,7 @@ EOF
      * @param string $code
      * @return PromoCode|null
      */
-    public function findByCode($code)
+    public function findByCode($code): ?PromoCode
     {
         if (strlen($code)) {
             $statement = $this->db->statement("SELECT * FROM `ss_promo_codes` WHERE `code` = ?");
@@ -94,7 +94,7 @@ EOF
      * @param int $id
      * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_promo_codes` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -105,7 +105,7 @@ EOF
     /**
      * @param int $id
      */
-    public function useIt($id)
+    public function useIt($id): void
     {
         $this->db
             ->statement(
@@ -114,11 +114,7 @@ EOF
             ->execute([$id]);
     }
 
-    /**
-     * @param array $data
-     * @return PromoCode
-     */
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): PromoCode
     {
         return new PromoCode(
             as_int($data["id"]),
