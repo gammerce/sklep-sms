@@ -19,7 +19,7 @@ class AdminPaymentService
      * @param string $platform
      * @return int
      */
-    public function payByAdmin(User $admin, $ip, $platform)
+    public function payByAdmin(User $admin, $ip, $platform): int
     {
         $this->db
             ->statement("INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) VALUES (?, ?, ?)")

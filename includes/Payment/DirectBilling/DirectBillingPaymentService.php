@@ -43,7 +43,7 @@ class DirectBillingPaymentService
      * @throws PaymentRejectedException
      * @throws InvalidServiceModuleException
      */
-    public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment)
+    public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment): int
     {
         if (!$finalizedPayment->isSuccessful()) {
             throw new PaymentRejectedException();

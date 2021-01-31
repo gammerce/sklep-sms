@@ -45,7 +45,7 @@ class SmsChargeWallet implements IChargeWallet
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function setup(Purchase $purchase, array $body)
+    public function setup(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             [
@@ -74,7 +74,7 @@ class SmsChargeWallet implements IChargeWallet
         ]);
     }
 
-    public function getTransactionView(Transaction $transaction)
+    public function getTransactionView(Transaction $transaction): string
     {
         $quantity = $this->priceTextService->getPriceText(
             Money::fromPrice($transaction->getQuantity())
@@ -93,7 +93,7 @@ class SmsChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView(PaymentPlatform $paymentPlatform)
+    public function getOptionView(PaymentPlatform $paymentPlatform): array
     {
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportSms);
@@ -124,14 +124,14 @@ class SmsChargeWallet implements IChargeWallet
         return [$option, $body];
     }
 
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceGrossText(
             $this->smsPriceService->getPrice($purchase)
         );
     }
 
-    public function getQuantity(Purchase $purchase)
+    public function getQuantity(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY));
     }

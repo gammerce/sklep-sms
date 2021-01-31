@@ -32,12 +32,14 @@ class WalletPaymentMethod implements IPaymentMethod
         $this->auth = $auth;
     }
 
-    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
-    {
+    public function getPaymentDetails(
+        Purchase $purchase,
+        PaymentPlatform $paymentPlatform = null
+    ): array {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
+    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null): bool
     {
         $price = $this->transferPriceService->getPrice($purchase);
         return $this->auth->check() && $price !== null;
@@ -49,7 +51,7 @@ class WalletPaymentMethod implements IPaymentMethod
      * @return PaymentResult
      * @throws PaymentProcessingException
      */
-    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule): PaymentResult
     {
         if (!$purchase->user->exists()) {
             throw new PaymentProcessingException(
