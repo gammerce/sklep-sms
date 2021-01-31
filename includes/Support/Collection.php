@@ -19,11 +19,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         $this->items = to_array($items);
     }
 
-    /**
-     * @param callable $callback
-     * @return Collection
-     */
-    public function map(callable $callback)
+    public function map(callable $callback): self
     {
         $result = [];
 
@@ -34,11 +30,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return new Collection($result);
     }
 
-    /**
-     * @param callable $callback
-     * @return Collection
-     */
-    public function mapWithKeys(callable $callback)
+    public function mapWithKeys(callable $callback): self
     {
         $result = [];
 
@@ -49,28 +41,17 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return new Collection($result);
     }
 
-    /**
-     * @param callable $callback
-     * @return Collection
-     */
-    public function flatMap(callable $callback)
+    public function flatMap(callable $callback): self
     {
         return $this->map($callback)->collapse();
     }
 
-    /**
-     * @param callable $callback
-     * @return Collection
-     */
-    public function filter(callable $callback)
+    public function filter(callable $callback): self
     {
         return new Collection(array_filter($this->items, $callback, ARRAY_FILTER_USE_BOTH));
     }
 
-    /**
-     * @return Collection
-     */
-    public function collapse()
+    public function collapse(): self
     {
         $results = [];
 
@@ -92,7 +73,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
      * @param mixed $default
      * @return mixed
      */
-    public function first(callable $callback = null, $default = null)
+    public function first(callable $callback = null, $default = null): mixed
     {
         if ($callback === null) {
             if (empty($this->items)) {
@@ -113,11 +94,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return $default;
     }
 
-    /**
-     * @param callable $callback
-     * @return bool
-     */
-    public function every(callable $callback)
+    public function every(callable $callback): bool
     {
         foreach ($this->items as $key => $value) {
             if (!call_user_func($callback, $value, $key)) {
@@ -128,11 +105,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return true;
     }
 
-    /**
-     * @param callable $callback
-     * @return bool
-     */
-    public function some(callable $callback)
+    public function some(callable $callback): bool
     {
         foreach ($this->items as $key => $value) {
             if (call_user_func($callback, $value, $key)) {
@@ -143,19 +116,12 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return false;
     }
 
-    /**
-     * @return Collection
-     */
-    public function unique()
+    public function unique(): self
     {
         return new Collection(array_unique($this->items));
     }
 
-    /**
-     * @param callable|null $callback
-     * @return Collection
-     */
-    public function sort(callable $callback = null)
+    public function sort(?callable $callback = null): self
     {
         $items = $this->items;
 
@@ -168,7 +134,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
      * @param mixed $item
      * @return bool
      */
-    public function includes($item)
+    public function includes($item): bool
     {
         if (is_callable($item)) {
             foreach ($this->items as $key => $value) {
@@ -185,9 +151,9 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
 
     /**
      * @param mixed $item
-     * @return Collection
+     * @return self
      */
-    public function push($item)
+    public function push($item): self
     {
         $this->items[] = $item;
         return $this;
@@ -195,9 +161,9 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
 
     /**
      * @param array|Traversable $data
-     * @return Collection
+     * @return self
      */
-    public function extend($data)
+    public function extend($data): self
     {
         $this->items = array_merge($this->items, to_array($data));
         return $this;
@@ -205,33 +171,24 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
 
     /**
      * @param int $limit
-     * @return Collection
+     * @return self
      */
-    public function limit($limit)
+    public function limit($limit): self
     {
         return new Collection(array_slice($this->items, 0, $limit));
     }
 
-    /**
-     * @return Collection
-     */
-    public function keys()
+    public function keys(): self
     {
         return new Collection(array_keys($this->items));
     }
 
-    /**
-     * @return Collection
-     */
-    public function values()
+    public function values(): self
     {
         return new Collection(array_values($this->items));
     }
 
-    /**
-     * @return array
-     */
-    public function all()
+    public function all(): array
     {
         return $this->items;
     }
@@ -240,64 +197,52 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
      * @param string $glue
      * @return string
      */
-    public function join($glue = "")
+    public function join($glue = ""): string
     {
         return implode($glue, $this->items);
     }
 
-    /**
-     * @return array
-     */
-    public function toArray()
+    public function toArray(): array
     {
         return $this->all();
     }
 
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->items[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->items[$offset];
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         $this->items[$offset] = $value;
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         unset($this->items[$offset]);
     }
 
-    /**
-     * @return int
-     */
-    public function count()
+    public function count(): int
     {
         return count($this->items);
     }
 
-    /**
-     * @return bool
-     */
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->count() === 0;
     }
 
-    /**
-     * @return bool
-     */
-    public function isPopulated()
+    public function isPopulated(): bool
     {
         return !$this->isEmpty();
     }
 
-    public function getIterator()
+    public function getIterator(): ArrayIterator
     {
         return new ArrayIterator($this->items);
     }

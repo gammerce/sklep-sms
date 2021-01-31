@@ -32,7 +32,7 @@ class PaymentMethodFactory
      * @return IPaymentMethod
      * @throws UnexpectedValueException
      */
-    public function create(PaymentMethod $paymentMethod)
+    public function create(PaymentMethod $paymentMethod): IPaymentMethod
     {
         if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
             return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);

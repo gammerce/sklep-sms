@@ -16,7 +16,7 @@ class SmsServiceTakeOver implements IServiceTakeOver
         $this->transactionRepository = $transactionRepository;
     }
 
-    public function isValid($paymentId, $serviceId, $authData, $serverId)
+    public function isValid($paymentId, $serviceId, $authData, $serverId): bool
     {
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .

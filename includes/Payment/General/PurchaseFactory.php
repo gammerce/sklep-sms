@@ -20,7 +20,7 @@ class PurchaseFactory
      * @param string $platform
      * @return Purchase
      */
-    public function create(User $user, $ip, $platform)
+    public function create(User $user, $ip, $platform): Purchase
     {
         $purchase = new Purchase($user, $ip, $platform);
 

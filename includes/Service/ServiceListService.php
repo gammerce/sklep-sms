@@ -26,7 +26,7 @@ class ServiceListService
      * @param User $user
      * @return Service[]
      */
-    public function getWebSupportedForUser(User $user)
+    public function getWebSupportedForUser(User $user): array
     {
         return collect($this->serviceManager->all())
             ->filter(function (Service $service) use ($user) {

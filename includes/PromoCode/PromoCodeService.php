@@ -22,7 +22,7 @@ class PromoCodeService
      * @param Purchase $purchase
      * @return PromoCode|null
      */
-    public function findApplicablePromoCode($promoCode, Purchase $purchase)
+    public function findApplicablePromoCode($promoCode, Purchase $purchase): ?PromoCode
     {
         $promoCodeModel = $this->promoCodeRepository->findByCode($promoCode);
 
@@ -70,7 +70,7 @@ class PromoCodeService
      * @param Money $price
      * @return Money
      */
-    public function applyDiscount(PromoCode $promoCode, Money $price)
+    public function applyDiscount(PromoCode $promoCode, Money $price): Money
     {
         switch ($promoCode->getQuantityType()) {
             case QuantityType::FIXED():

@@ -28,7 +28,7 @@ class ExpiredUserServiceService
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function deleteExpired()
+    public function deleteExpired(): void
     {
         // Usunięcie przestarzałych usług użytkownika
         // Pierwsze pobieramy te, które usuniemy

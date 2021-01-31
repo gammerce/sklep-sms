@@ -17,11 +17,7 @@ class PurchaseSerializer
         $this->userManager = $userManager;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return string
-     */
-    public function serialize(Purchase $purchase)
+    public function serialize(Purchase $purchase): string
     {
         $clonedPurchase = clone $purchase;
         $reflectionClass = new ReflectionClass(Purchase::class);
@@ -42,7 +38,7 @@ class PurchaseSerializer
      * @param string $content
      * @return Purchase|null
      */
-    public function deserialize($content)
+    public function deserialize($content): ?Purchase
     {
         /** @var Purchase $purchase */
         $purchase = unserialize($content);

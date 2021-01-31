@@ -27,7 +27,7 @@ class Mailer
         $this->fileLogger = $fileLogger;
     }
 
-    public function send($email, $name, $subject, $text)
+    public function send($email, $name, $subject, $text): string
     {
         // Recipient's email address
         $email = filter_var($email, FILTER_VALIDATE_EMAIL);
@@ -44,7 +44,7 @@ class Mailer
         return $this->simpleSend($email, $name, $subject, $text);
     }
 
-    private function signedSend($email, $name, $subject, $text)
+    private function signedSend($email, $name, $subject, $text): string
     {
         $mail = new PHPMailer(true);
 
@@ -91,7 +91,7 @@ class Mailer
         }
     }
 
-    private function simpleSend($email, $name, $subject, $text)
+    private function simpleSend($email, $name, $subject, $text): string
     {
         $header = "MIME-Version: 1.0\r\n";
         $header .= "Content-Type: text/html; charset=UTF-8\n";
@@ -113,7 +113,7 @@ class Mailer
         return "sent";
     }
 
-    private function shouldUseSignedSend()
+    private function shouldUseSignedSend(): bool
     {
         return strlen(array_get($this->config, "host")) &&
             strlen(array_get($this->config, "password"));

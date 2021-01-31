@@ -68,7 +68,7 @@ class BoughtServiceService
         $email,
         $promoCode,
         $extraData = []
-    ) {
+    ): int {
         $forever = $quantity === null;
 
         $boughtService = $this->boughtServiceRepository->create(
@@ -109,7 +109,7 @@ class BoughtServiceService
         return $boughtService->getId();
     }
 
-    private function sendEmail($service, $authData, $email, BoughtService $boughtService)
+    private function sendEmail($service, $authData, $email, BoughtService $boughtService): string
     {
         if (!strlen($email)) {
             return $this->lang->t("none");

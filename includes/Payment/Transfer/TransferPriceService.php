@@ -19,11 +19,7 @@ class TransferPriceService
         $this->priceTextService = $priceTextService;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return Money|null
-     */
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): ?Money
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER));
         if ($price === null) {
@@ -38,11 +34,7 @@ class TransferPriceService
         return $price;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
-    public function getOldAndNewPrice(Purchase $purchase)
+    public function getOldAndNewPrice(Purchase $purchase): array
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER));
         $promoCode = $purchase->getPromoCode();

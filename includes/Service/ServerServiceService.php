@@ -12,7 +12,7 @@ class ServerServiceService
         $this->db = $db;
     }
 
-    public function updateLinks(array $data)
+    public function updateLinks(array $data): void
     {
         $itemsToCreate = collect($data)->filter(fn(array $item) => $item["connect"]);
 

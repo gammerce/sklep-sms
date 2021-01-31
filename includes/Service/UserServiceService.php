@@ -26,7 +26,7 @@ class UserServiceService
      * @param string|int $conditions
      * @return UserService[]
      */
-    public function find($conditions = "")
+    public function find($conditions = ""): array
     {
         if (my_is_integer($conditions)) {
             $conditions = "WHERE `id` = " . intval($conditions);
@@ -65,7 +65,7 @@ class UserServiceService
      * @param string $conditions
      * @return UserService|null
      */
-    public function findOne($conditions = "")
+    public function findOne($conditions = ""): ?UserService
     {
         $userServices = $this->find($conditions);
         return $userServices ? $userServices[0] : null;
