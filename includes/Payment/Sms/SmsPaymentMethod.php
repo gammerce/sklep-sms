@@ -36,7 +36,7 @@ class SmsPaymentMethod implements IPaymentMethod
 
     public function getPaymentDetails(
         Purchase $purchase,
-        PaymentPlatform $paymentPlatform = null
+        ?PaymentPlatform $paymentPlatform = null
     ): ?array {
         $smsPaymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
