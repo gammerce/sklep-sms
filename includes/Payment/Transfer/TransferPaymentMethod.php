@@ -37,7 +37,7 @@ class TransferPaymentMethod implements IPaymentMethod
     public function getPaymentDetails(
         Purchase $purchase,
         PaymentPlatform $paymentPlatform = null
-    ): array {
+    ): ?array {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 

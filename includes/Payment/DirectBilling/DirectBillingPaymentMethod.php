@@ -36,7 +36,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
     public function getPaymentDetails(
         Purchase $purchase,
         ?PaymentPlatform $paymentPlatform = null
-    ): array {
+    ): ?array {
         return $this->directBillingPriceService->getOldAndNewPrice($purchase);
     }
 
