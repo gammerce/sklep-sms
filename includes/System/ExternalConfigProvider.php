@@ -74,7 +74,7 @@ class ExternalConfigProvider
         return $response ? $response->json() : null;
     }
 
-    private function fetched()
+    private function fetched(): bool
     {
         return $this->config !== null;
     }

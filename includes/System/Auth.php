@@ -16,10 +16,7 @@ class Auth
         $this->userManager = $userManager;
     }
 
-    /**
-     * @return User
-     */
-    public function user()
+    public function user(): User
     {
         if ($this->user === null) {
             $this->user = new User();
@@ -28,26 +25,22 @@ class Auth
         return $this->user;
     }
 
-    public function check()
+    public function check(): bool
     {
         return $this->user !== null && $this->user->exists();
     }
 
-    public function setUser(User $user)
+    public function setUser(User $user): void
     {
         $this->user = $user;
     }
 
-    public function setUserById($userId)
+    public function setUserById($userId): void
     {
         $this->user = $this->userManager->get($userId);
     }
 
-    /**
-     * @param Request $request
-     * @param User $user
-     */
-    public function loginUser(Request $request, User $user)
+    public function loginUser(Request $request, User $user): void
     {
         assert($user->exists());
 
@@ -56,11 +49,7 @@ class Auth
         $this->user = $user;
     }
 
-    /**
-     * @param Request $request
-     * @param User|null $user
-     */
-    public function loginAdmin(Request $request, User $user = null)
+    public function loginAdmin(Request $request, User $user = null): void
     {
         $session = $request->getSession();
 
@@ -72,7 +61,7 @@ class Auth
         }
     }
 
-    public function logout(Request $request)
+    public function logout(Request $request): void
     {
         $this->user = null;
         $request->getSession()->invalidate();

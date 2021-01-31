@@ -32,7 +32,7 @@ class CronExecutor
         $this->expiredSmsCodeService = $expiredSmsCodeService;
     }
 
-    public function run()
+    public function run(): void
     {
         $this->expiredUserServiceService->deleteExpired();
         $this->expiredSmsCodeService->deleteExpired();

@@ -62,7 +62,7 @@ class License
         $this->footer = array_get($response, "f");
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->externalLicenseId !== null;
     }
@@ -72,7 +72,7 @@ class License
         return $this->loadingException;
     }
 
-    public function getExpires()
+    public function getExpires(): string
     {
         if ($this->isForever()) {
             return $this->langShop->t("never");

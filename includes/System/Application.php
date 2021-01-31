@@ -34,19 +34,19 @@ class Application extends Container
         $this->bootstrap();
     }
 
-    public function version()
+    public function version(): string
     {
         return self::VERSION;
     }
 
-    private function registerBindings()
+    private function registerBindings(): void
     {
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
         $this->bind(Path::class, fn() => new Path(realpath($this->basePath)));
     }
 
-    private function bootstrap()
+    private function bootstrap(): void
     {
         $this->loadEnvironmentVariables();
         $this->getProviders();
@@ -54,7 +54,7 @@ class Application extends Container
         $this->bootServiceProviders();
     }
 
-    private function loadEnvironmentVariables()
+    private function loadEnvironmentVariables(): void
     {
         /** @var Path $path */
         $path = $this->make(Path::class);
@@ -66,7 +66,7 @@ class Application extends Container
         }
     }
 
-    private function registerServiceProviders()
+    private function registerServiceProviders(): void
     {
         foreach ($this->providers as $provider) {
             if (method_exists($provider, "register")) {
@@ -75,7 +75,7 @@ class Application extends Container
         }
     }
 
-    private function bootServiceProviders()
+    private function bootServiceProviders(): void
     {
         foreach ($this->providers as $provider) {
             if (method_exists($provider, "boot")) {
@@ -84,7 +84,7 @@ class Application extends Container
         }
     }
 
-    public function terminate(Request $request = null, Response $response = null)
+    public function terminate(Request $request = null, Response $response = null): void
     {
         if (class_exists(SentrySdk::class)) {
             $transaction = SentrySdk::getCurrentHub()->getTransaction();
@@ -95,7 +95,7 @@ class Application extends Container
         }
     }
 
-    private function getProviders()
+    private function getProviders(): array
     {
         if (!$this->providers) {
             /** @var Path $path */
