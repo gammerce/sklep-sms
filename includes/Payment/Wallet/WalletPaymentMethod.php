@@ -39,7 +39,7 @@ class WalletPaymentMethod implements IPaymentMethod
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null): bool
+    public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool
     {
         $price = $this->transferPriceService->getPrice($purchase);
         return $this->auth->check() && $price !== null;
