@@ -7,8 +7,7 @@ use App\Models\Service;
 
 class ExtraFlagServiceTypesRule extends BaseRule
 {
-    /** @var Service */
-    private $service;
+    private Service $service;
 
     public function __construct(Service $service)
     {

@@ -7,8 +7,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserServiceResourceTest extends HttpTestCase
 {
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
 
     protected function setUp(): void
     {

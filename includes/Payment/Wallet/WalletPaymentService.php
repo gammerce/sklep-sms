@@ -7,8 +7,7 @@ use App\Support\Money;
 
 class WalletPaymentService
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
@@ -23,7 +22,7 @@ class WalletPaymentService
      * @return int
      * @throws NotEnoughFundsException
      */
-    public function payWithWallet(Money $cost, User $user, $ip, $platform)
+    public function payWithWallet(Money $cost, User $user, $ip, $platform): int
     {
         if ($cost->asInt() > $user->getWallet()->asInt()) {
             throw new NotEnoughFundsException();
@@ -42,7 +41,7 @@ class WalletPaymentService
      * @param User $user
      * @param int $quantity
      */
-    public function chargeWallet(User $user, $quantity)
+    public function chargeWallet(User $user, $quantity): void
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")

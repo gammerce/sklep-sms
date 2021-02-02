@@ -20,11 +20,8 @@ class PurchaseMybbExtraGroupsTest extends TestCase
     use PaymentModuleFactoryConcern;
     use MybbRepositoryConcern;
 
-    /** @var PaymentService */
-    private $paymentService;
-
-    /** @var BoughtServiceRepository */
-    private $boughtServiceRepository;
+    private PaymentService $paymentService;
+    private BoughtServiceRepository $boughtServiceRepository;
 
     protected function setUp(): void
     {

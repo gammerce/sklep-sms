@@ -18,13 +18,13 @@ class IntendedUrlService
         }
     }
 
-    public function exists(Request $request)
+    public function exists(Request $request): bool
     {
         $session = $request->getSession();
         return $session && $session->has(static::URL_INTENDED_KEY);
     }
 
-    public function remove(Request $request)
+    public function remove(Request $request): void
     {
         $session = $request->getSession();
         if ($session) {
@@ -32,7 +32,7 @@ class IntendedUrlService
         }
     }
 
-    public function get(Request $request)
+    public function get(Request $request): ?string
     {
         $session = $request->getSession();
 
@@ -48,7 +48,7 @@ class IntendedUrlService
      * @return RedirectResponse
      * @throws UnexpectedValueException
      */
-    public function redirect(Request $request)
+    public function redirect(Request $request): RedirectResponse
     {
         $intendedUrl = $this->get($request);
         $this->remove($request);

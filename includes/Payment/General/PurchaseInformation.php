@@ -9,14 +9,9 @@ use App\Support\QueryParticle;
 
 class PurchaseInformation
 {
-    /** @var Database */
-    private $db;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Database $db;
+    private TransactionRepository $transactionRepository;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Database $db,

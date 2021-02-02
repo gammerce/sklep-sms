@@ -8,14 +8,9 @@ use App\Support\Database;
 
 class UserServiceService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private Database $db;
+    private UserServiceRepository $userServiceRepository;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         ServiceModuleManager $serviceModuleManager,
@@ -31,12 +26,8 @@ class UserServiceService
      * @param string|int $conditions
      * @return UserService[]
      */
-    public function find($conditions = "")
+    public function find($conditions = ""): array
     {
-        if (my_is_integer($conditions)) {
-            $conditions = "WHERE `id` = " . intval($conditions);
-        }
-
         $output = [];
 
         foreach ($this->serviceModuleManager->all() as $serviceModule) {
@@ -67,12 +58,12 @@ class UserServiceService
     }
 
     /**
-     * @param string $conditions
+     * @param int $userServiceId
      * @return UserService|null
      */
-    public function findOne($conditions = "")
+    public function findOne($userServiceId): ?UserService
     {
-        $userServices = $this->find($conditions);
+        $userServices = $this->find("WHERE `id` = " . intval($userServiceId));
         return $userServices ? $userServices[0] : null;
     }
 }

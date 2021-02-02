@@ -6,8 +6,7 @@ use App\Support\QueryParticle;
 
 class MybbUserGroupRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {

@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PriceRepositoryTest extends TestCase
 {
-    /** @var PriceRepository */
-    private $priceRepository;
+    private PriceRepository $priceRepository;
 
     protected function setUp(): void
     {

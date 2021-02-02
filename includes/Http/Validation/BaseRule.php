@@ -6,8 +6,7 @@ use App\Translation\Translator;
 
 abstract class BaseRule implements Rule
 {
-    /** @var Translator */
-    protected $lang;
+    protected Translator $lang;
 
     public function __construct()
     {

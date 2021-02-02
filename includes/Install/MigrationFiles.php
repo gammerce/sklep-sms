@@ -6,8 +6,7 @@ use DirectoryIterator;
 
 class MigrationFiles
 {
-    /** @var Path */
-    private $path;
+    private Path $path;
 
     public function __construct(Path $path)
     {

@@ -11,17 +11,10 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransactionService
 {
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var PaymentMethodFactory */
-    private $paymentMethodFactory;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private ServiceModuleManager $serviceModuleManager;
+    private PaymentMethodFactory $paymentMethodFactory;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         ServiceModuleManager $serviceModuleManager,

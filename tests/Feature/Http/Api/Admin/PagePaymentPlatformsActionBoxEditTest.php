@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PagePaymentPlatformsActionBoxEditTest extends HttpTestCase
 {
-    /** @var PaymentPlatform */
-    private $paymentPlatform;
+    private PaymentPlatform $paymentPlatform;
 
     protected function setUp(): void
     {

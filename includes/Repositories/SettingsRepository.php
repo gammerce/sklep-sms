@@ -5,15 +5,14 @@ use App\Support\Database;
 
 class SettingsRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function update(array $values)
+    public function update(array $values): bool
     {
         if (empty($values)) {
             return false;

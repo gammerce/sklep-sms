@@ -5,17 +5,10 @@ use App\Models\UserService;
 
 class ExtraFlagUserService extends UserService
 {
-    /** @var int */
-    private $serverId;
-
-    /** @var int */
-    private $type;
-
-    /** @var string */
-    private $authData;
-
-    /** @var string */
-    private $password;
+    private ?int $serverId;
+    private int $type;
+    private string $authData;
+    private string $password;
 
     public function __construct(
         $id,
@@ -35,34 +28,22 @@ class ExtraFlagUserService extends UserService
         $this->password = $password;
     }
 
-    /**
-     * @return int
-     */
-    public function getServerId()
+    public function getServerId(): ?int
     {
         return $this->serverId;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthData()
+    public function getAuthData(): string
     {
         return $this->authData;
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }

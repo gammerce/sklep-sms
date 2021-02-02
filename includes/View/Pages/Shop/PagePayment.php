@@ -14,11 +14,8 @@ class PagePayment extends Page
 {
     const PAGE_ID = "payment";
 
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private PurchaseDataService $purchaseDataService;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,

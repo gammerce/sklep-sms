@@ -12,17 +12,10 @@ abstract class PaymentModule
 {
     const MODULE_ID = "";
 
-    /** @var Requester */
-    protected $requester;
-
-    /** @var PaymentPlatform */
-    protected $paymentPlatform;
-
-    /** @var UrlGenerator */
-    protected $url;
-
-    /** @var FileLogger */
-    protected $fileLogger;
+    protected Requester $requester;
+    protected PaymentPlatform $paymentPlatform;
+    protected UrlGenerator $url;
+    protected FileLogger $fileLogger;
 
     public function __construct(
         Requester $requester,

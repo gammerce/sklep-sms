@@ -7,8 +7,7 @@ use App\System\Settings;
 
 class PurchaseFactory
 {
-    /** @var Settings */
-    private $settings;
+    private Settings $settings;
 
     public function __construct(Settings $settings)
     {
@@ -21,7 +20,7 @@ class PurchaseFactory
      * @param string $platform
      * @return Purchase
      */
-    public function create(User $user, $ip, $platform)
+    public function create(User $user, $ip, $platform): Purchase
     {
         $purchase = new Purchase($user, $ip, $platform);
 

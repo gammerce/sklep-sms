@@ -356,9 +356,7 @@ class Factory
     {
         $attributes = array_merge(
             [
-                "service_id" => function () {
-                    return $this->mybbService()->getId();
-                },
+                "service_id" => fn() => $this->mybbService()->getId(),
                 "user_id" => null,
                 "seconds" => 35 * 24 * 60 * 60,
                 "mybb_uid" => 1,

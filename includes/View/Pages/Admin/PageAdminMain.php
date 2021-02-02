@@ -24,35 +24,16 @@ class PageAdminMain extends PageAdmin
     const PAGE_ID = "home";
     const LICENSE_EXPIRE_THRESHOLD = 4 * 24 * 60 * 60;
 
-    /** @var Version */
-    private $version;
-
-    /** @var License */
-    private $license;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var IncomeService */
-    private $incomeService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var Application */
-    private $app;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var Database */
-    private $db;
+    private Version $version;
+    private License $license;
+    private Requester $requester;
+    private IncomeService $incomeService;
+    private PriceTextService $priceTextService;
+    private TransactionRepository $transactionRepository;
+    private UrlGenerator $url;
+    private Application $app;
+    private ServerManager $serverManager;
+    private Database $db;
 
     public function __construct(
         Template $template,

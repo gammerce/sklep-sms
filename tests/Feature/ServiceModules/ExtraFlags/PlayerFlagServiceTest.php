@@ -8,11 +8,8 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PlayerFlagServiceTest extends TestCase
 {
-    /** @var PlayerFlagService */
-    private $playerFlagService;
-
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
+    private PlayerFlagService $playerFlagService;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
 
     protected function setUp(): void
     {

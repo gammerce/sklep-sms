@@ -14,14 +14,9 @@ class PageAdminUpdateServers extends PageAdmin
 {
     const PAGE_ID = "update_servers";
 
-    /** @var Requester */
-    private $requester;
-
-    /** @var Version */
-    private $version;
-
-    /** @var ServerManager */
-    private $serverManager;
+    private Requester $requester;
+    private Version $version;
+    private ServerManager $serverManager;
 
     public function __construct(
         Template $template,

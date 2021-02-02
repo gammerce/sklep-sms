@@ -28,17 +28,10 @@ class PageAdminPayments extends PageAdmin
 {
     const PAGE_ID = "payments";
 
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private TransactionRepository $transactionRepository;
+    private Database $db;
+    private PriceTextService $priceTextService;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -113,9 +106,7 @@ class PageAdminPayments extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->transactionRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->transactionRepository->mapToModel($row))
             ->map(function (Transaction $transaction) use ($recordId) {
                 $cost =
                     $this->priceTextService->getPriceText($transaction->getCost()) ?:

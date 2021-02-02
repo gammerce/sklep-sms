@@ -26,11 +26,7 @@ class BrickResource
                 $block = $blockResolver->resolve($blockId);
                 $content = $block->getContent($request, array_slice($fragments, 1));
                 $class = $block->getContentClass();
-            } catch (UnauthorizedException $e) {
-                //
-            } catch (ForbiddenException $e) {
-                //
-            } catch (EntityNotFoundException $e) {
+            } catch (UnauthorizedException | ForbiddenException | EntityNotFoundException $e) {
                 //
             }
 

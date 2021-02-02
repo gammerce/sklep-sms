@@ -9,17 +9,10 @@ use App\Translation\Translator;
 
 class ServiceDescriptionService
 {
-    /** @var Path */
-    private $path;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private Settings $settings;
+    private Translator $lang;
+    private FileSystemContract $fileSystem;
 
     public function __construct(
         Path $path,
@@ -33,7 +26,7 @@ class ServiceDescriptionService
         $this->fileSystem = $fileSystem;
     }
 
-    public function create($serviceId)
+    public function create($serviceId): void
     {
         $path = $this->path->to(
             "themes/" . $this->settings->getTheme() . "/" . $this->getTemplatePath($serviceId)
@@ -45,7 +38,7 @@ class ServiceDescriptionService
         }
     }
 
-    public function getTemplatePath($serviceId)
+    public function getTemplatePath($serviceId): string
     {
         $escapedName = escape_filename($serviceId);
         return "/shop/services/{$escapedName}_desc.html";

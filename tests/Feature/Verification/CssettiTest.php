@@ -17,8 +17,7 @@ class CssettiTest extends TestCase
 {
     use FixtureConcern;
 
-    /** @var Cssetti */
-    private $cssetti;
+    private Cssetti $cssetti;
 
     protected function setUp(): void
     {

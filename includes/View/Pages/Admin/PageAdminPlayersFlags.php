@@ -23,17 +23,10 @@ class PageAdminPlayersFlags extends PageAdmin
 {
     const PAGE_ID = "players_flags";
 
-    /** @var Database */
-    private $db;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private Database $db;
+    private ServerManager $serverManager;
+    private PlayerFlagRepository $playerFlagRepository;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -73,9 +66,7 @@ class PageAdminPlayersFlags extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->playerFlagRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->playerFlagRepository->mapToModel($row))
             ->map(function (PlayerFlag $playerFlag) {
                 $server = $this->serverManager->get($playerFlag->getServerId());
                 $serverEntry = $server

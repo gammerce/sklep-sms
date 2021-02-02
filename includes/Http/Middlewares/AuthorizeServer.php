@@ -9,11 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizeServer implements MiddlewareContract
 {
-    /** @var ServerRepository */
-    private $serverRepository;
-
-    /** @var ServerAuth */
-    private $serverAuth;
+    private ServerRepository $serverRepository;
+    private ServerAuth $serverAuth;
 
     public function __construct(ServerRepository $serverRepository, ServerAuth $serverAuth)
     {

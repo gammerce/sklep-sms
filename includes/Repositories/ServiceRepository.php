@@ -6,8 +6,7 @@ use App\Support\Database;
 
 class ServiceRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
@@ -22,9 +21,7 @@ class ServiceRepository
         $statement = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -55,9 +52,7 @@ class ServiceRepository
         $statement->execute($ids);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -133,7 +128,7 @@ class ServiceRepository
         return !!$statement->rowCount();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_services` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -141,7 +136,7 @@ class ServiceRepository
         return !!$statement->rowCount();
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): Service
     {
         return new Service(
             $data["id"],

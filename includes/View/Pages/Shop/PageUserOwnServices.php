@@ -21,23 +21,12 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "user_own_services";
 
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private UserServiceService $userServiceService;
+    private Settings $settings;
+    private Auth $auth;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,
@@ -70,21 +59,16 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $pagination = $this->paginationFactory->create($request);
 
         $moduleIds = collect($this->serviceModuleManager->all())
-            ->filter(function (ServiceModule $serviceModule) {
-                return $serviceModule instanceof IServiceUserOwnServices;
-            })
-            ->map(function (ServiceModule $serviceModule) {
-                return $serviceModule->getModuleId();
-            });
+            ->filter(
+                fn(ServiceModule $serviceModule) => $serviceModule instanceof
+                    IServiceUserOwnServices
+            )
+            ->map(fn(ServiceModule $serviceModule) => $serviceModule->getModuleId());
 
         $usersServices = [];
         $rowsCount = 0;
         if ($moduleIds->isPopulated()) {
-            $keys = $moduleIds
-                ->map(function () {
-                    return "?";
-                })
-                ->join(", ");
+            $keys = $moduleIds->map(fn() => "?")->join(", ");
 
             $statement = $this->db->statement(
                 "SELECT COUNT(*) FROM `ss_user_service` AS us " .
@@ -106,9 +90,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
             );
 
             $userServiceIds = collect($statement)
-                ->map(function (array $row) {
-                    return $row["id"];
-                })
+                ->map(fn(array $row) => $row["id"])
                 ->join(", ");
 
             if ($userServiceIds) {

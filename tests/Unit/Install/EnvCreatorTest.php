@@ -9,11 +9,8 @@ use Tests\Psr4\TestCases\TestCase;
 
 class EnvCreatorTest extends TestCase
 {
-    /** @var FileSystemContract */
-    private $fileSystem;
-
-    /** @var EnvCreator */
-    private $envCreator;
+    private FileSystemContract $fileSystem;
+    private EnvCreator $envCreator;
 
     protected function setUp(): void
     {

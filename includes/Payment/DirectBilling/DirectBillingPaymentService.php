@@ -15,20 +15,11 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 
 class DirectBillingPaymentService
 {
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var PaymentDirectBillingRepository */
-    private $paymentDirectBillingRepository;
-
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var DirectBillingPriceService */
-    private $directBillingPriceService;
+    private DatabaseLogger $logger;
+    private PaymentDirectBillingRepository $paymentDirectBillingRepository;
+    private PurchaseDataService $purchaseDataService;
+    private ServiceModuleManager $serviceModuleManager;
+    private DirectBillingPriceService $directBillingPriceService;
 
     public function __construct(
         DatabaseLogger $logger,
@@ -52,7 +43,7 @@ class DirectBillingPaymentService
      * @throws PaymentRejectedException
      * @throws InvalidServiceModuleException
      */
-    public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment)
+    public function finalizePurchase(Purchase $purchase, FinalizedPayment $finalizedPayment): int
     {
         if (!$finalizedPayment->isSuccessful()) {
             throw new PaymentRejectedException();

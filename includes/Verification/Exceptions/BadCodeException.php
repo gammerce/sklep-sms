@@ -6,5 +6,5 @@ namespace App\Verification\Exceptions;
  */
 class BadCodeException extends SmsPaymentException
 {
-    protected $errorCode = "bad_code";
+    protected string $errorCode = "bad_code";
 }

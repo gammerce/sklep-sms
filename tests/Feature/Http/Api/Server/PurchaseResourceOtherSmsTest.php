@@ -16,8 +16,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
     use GosettiConcern;
     use PaymentModuleFactoryConcern;
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
+    private PaymentPlatformRepository $paymentPlatformRepository;
 
     protected function setUp(): void
     {

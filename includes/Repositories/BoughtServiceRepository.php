@@ -6,15 +6,14 @@ use App\Support\Database;
 
 class BoughtServiceRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function get($id)
+    public function get($id): ?BoughtService
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_bought_services` WHERE `id` = ?");
@@ -39,7 +38,7 @@ class BoughtServiceRepository
         $email,
         $promoCode,
         $extraData = []
-    ) {
+    ): BoughtService {
         $this->db
             ->statement(
                 <<<EOF
@@ -73,7 +72,7 @@ EOF
         return $this->get($this->db->lastId());
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): BoughtService
     {
         return new BoughtService(
             as_int($data["id"]),

@@ -5,26 +5,13 @@ use App\Support\Money;
 
 class PaymentTransfer
 {
-    /** @var string */
-    private $id;
-
-    /** @var Money */
-    private $income;
-
-    /** @var Money */
-    private $cost;
-
-    /** @var string */
-    private $transferService;
-
-    /** @var string */
-    private $ip;
-
-    /** @var string */
-    private $platform;
-
-    /** @var bool */
-    private $free;
+    private string $id;
+    private Money $income;
+    private Money $cost;
+    private string $transferService;
+    private string $ip;
+    private string $platform;
+    private bool $free;
 
     public function __construct(
         $id,
@@ -44,58 +31,37 @@ class PaymentTransfer
         $this->free = $free;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return Money
-     */
-    public function getIncome()
+    public function getIncome(): Money
     {
         return $this->income;
     }
 
-    /**
-     * @return Money
-     */
-    public function getCost()
+    public function getCost(): Money
     {
         return $this->cost;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransferService()
+    public function getTransferService(): string
     {
         return $this->transferService;
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlatform()
+    public function getPlatform(): string
     {
         return $this->platform;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->free;
     }

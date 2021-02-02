@@ -9,5 +9,5 @@ namespace App\Verification\Exceptions;
  */
 class ServerErrorException extends SmsPaymentException
 {
-    protected $errorCode = "server_error";
+    protected string $errorCode = "server_error";
 }

@@ -7,15 +7,14 @@ use App\Support\Money;
 
 class PaymentDirectBillingRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function get($id)
+    public function get($id): ?PaymentDirectBilling
     {
         if ($id) {
             $statement = $this->db->statement(
@@ -31,7 +30,7 @@ class PaymentDirectBillingRepository
         return null;
     }
 
-    public function findByExternalId($externalId)
+    public function findByExternalId($externalId): ?PaymentDirectBilling
     {
         if ($externalId) {
             $statement = $this->db->statement(
@@ -47,7 +46,7 @@ class PaymentDirectBillingRepository
         return null;
     }
 
-    public function create($externalId, $income, $cost, $ip, $platform, $free)
+    public function create($externalId, $income, $cost, $ip, $platform, $free): PaymentDirectBilling
     {
         $this->db
             ->statement(
@@ -59,7 +58,7 @@ class PaymentDirectBillingRepository
         return $this->get($this->db->lastId());
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): PaymentDirectBilling
     {
         return new PaymentDirectBilling(
             (int) $data["id"],

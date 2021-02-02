@@ -8,8 +8,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PromoCodeRepositoryTest extends TestCase
 {
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
+    private PromoCodeRepository $promoCodeRepository;
 
     protected function setUp(): void
     {

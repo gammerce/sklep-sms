@@ -11,8 +11,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class SetupControllerTest extends HttpTestCase
 {
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private FileSystemContract $fileSystem;
 
     /** @var ShopState|MockInterface */
     private $shopState;

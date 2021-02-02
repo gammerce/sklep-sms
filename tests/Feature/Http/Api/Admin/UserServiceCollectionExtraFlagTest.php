@@ -12,11 +12,8 @@ class UserServiceCollectionExtraFlagTest extends HttpTestCase
 {
     use PlayerFlagConcern;
 
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
+    private UserServiceService $userServiceService;
+    private PlayerFlagRepository $playerFlagRepository;
 
     protected function setUp(): void
     {
@@ -50,7 +47,7 @@ class UserServiceCollectionExtraFlagTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
 
         /** @var ExtraFlagUserService $userService */
-        $userService = $this->userServiceService->findOne();
+        $userService = $this->userServiceService->find()[0];
         $this->assertNotNull($userService);
         $this->assertSame("vip", $userService->getServiceId());
         $this->assertSame(ExtraFlagType::TYPE_NICK, $userService->getType());

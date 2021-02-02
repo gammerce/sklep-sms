@@ -573,7 +573,6 @@ class RoutesManager
     {
         $method = $request->getMethod();
         $uri = "/" . trim($request->getPathInfo(), "/");
-
         $routeInfo = $this->createDispatcher()->dispatch($method, $uri);
         return $this->handleDispatcherResponse($routeInfo, $request);
     }

@@ -8,11 +8,8 @@ use App\System\Settings;
 
 class ServerRepository
 {
-    /** @var Database */
-    private $db;
-
-    /** @var Settings */
-    private $settings;
+    private Database $db;
+    private Settings $settings;
 
     public function __construct(Database $db, Settings $settings)
     {
@@ -23,20 +20,18 @@ class ServerRepository
     /**
      * @return Server[]
      */
-    public function all()
+    public function all(): array
     {
         $statement = $this->db->query(
             "SELECT *, UNIX_TIMESTAMP(`last_active_at`) AS `last_active_at` FROM `ss_servers`"
         );
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
-    public function get($id)
+    public function get($id): ?Server
     {
         if ($id) {
             $statement = $this->db->statement(
@@ -52,7 +47,7 @@ class ServerRepository
         return null;
     }
 
-    public function findByToken($token)
+    public function findByToken($token): ?Server
     {
         $statement = $this->db->statement(
             "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `ss_servers` WHERE `token` = ?"
@@ -63,7 +58,7 @@ class ServerRepository
         return $data ? $this->mapToModel($data) : null;
     }
 
-    public function create($name, $ip, $port, $smsPlatformId, array $transferPlatformIds)
+    public function create($name, $ip, $port, $smsPlatformId, array $transferPlatformIds): Server
     {
         $token = $this->generateToken();
 
@@ -84,7 +79,7 @@ class ServerRepository
         return $this->get($this->db->lastId());
     }
 
-    public function update($id, $name, $ip, $port, $smsPlatformId, array $transferPlatformIds)
+    public function update($id, $name, $ip, $port, $smsPlatformId, array $transferPlatformIds): void
     {
         $this->db
             ->statement(
@@ -95,7 +90,7 @@ class ServerRepository
             ->execute([$name, $ip, $port, $smsPlatformId, implode(",", $transferPlatformIds), $id]);
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_servers` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -103,7 +98,7 @@ class ServerRepository
         return !!$statement->rowCount();
     }
 
-    public function touch($id, Platform $type, $version)
+    public function touch($id, Platform $type, $version): void
     {
         $this->db
             ->statement(
@@ -116,7 +111,7 @@ class ServerRepository
      * @param int $id
      * @return string
      */
-    public function regenerateToken($id)
+    public function regenerateToken($id): string
     {
         $token = $this->generateToken();
 
@@ -127,7 +122,7 @@ class ServerRepository
         return $token;
     }
 
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): Server
     {
         return new Server(
             as_int($data["id"]),
@@ -143,10 +138,7 @@ class ServerRepository
         );
     }
 
-    /**
-     * @return string
-     */
-    private function generateToken()
+    private function generateToken(): string
     {
         return substr(hash("sha256", uniqid()), 0, 32);
     }

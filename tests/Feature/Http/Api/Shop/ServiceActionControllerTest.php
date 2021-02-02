@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServiceActionControllerTest extends HttpTestCase
 {
-    /** @var Server */
-    private $server;
+    private Server $server;
 
     protected function setUp(): void
     {

@@ -8,14 +8,9 @@ use App\Translation\Translator;
 
 class DataFieldService
 {
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private Template $template;
+    private Translator $lang;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         PaymentModuleManager $paymentModuleManager,

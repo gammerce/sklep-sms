@@ -14,21 +14,13 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PurchaseResourceWalletTest extends HttpTestCase
 {
-    /** @var BoughtServiceRepository */
-    private $boughtServiceRepository;
-
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var Server */
-    private $server;
-
-    /** @var Price */
-    private $price;
-
-    private $serviceId = "vip";
-    private $ip = "192.0.2.1";
-    private $steamId = "STEAM_1:0:22309350";
+    private BoughtServiceRepository $boughtServiceRepository;
+    private UserRepository $userRepository;
+    private Server $server;
+    private Price $price;
+    private string $serviceId = "vip";
+    private string $ip = "192.0.2.1";
+    private string $steamId = "STEAM_1:0:22309350";
 
     protected function setUp(): void
     {

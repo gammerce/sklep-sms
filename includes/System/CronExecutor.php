@@ -9,23 +9,12 @@ use App\Support\Path;
 
 class CronExecutor
 {
-    /** @var Database */
-    private $db;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
-
-    /** @var ExpiredUserServiceService */
-    private $expiredUserServiceService;
-
-    /** @var ExpiredSmsCodeService */
-    private $expiredSmsCodeService;
+    private Database $db;
+    private Settings $settings;
+    private Path $path;
+    private FileSystemContract $fileSystem;
+    private ExpiredUserServiceService $expiredUserServiceService;
+    private ExpiredSmsCodeService $expiredSmsCodeService;
 
     public function __construct(
         Database $db,
@@ -43,7 +32,7 @@ class CronExecutor
         $this->expiredSmsCodeService = $expiredSmsCodeService;
     }
 
-    public function run()
+    public function run(): void
     {
         $this->expiredUserServiceService->deleteExpired();
         $this->expiredSmsCodeService->deleteExpired();

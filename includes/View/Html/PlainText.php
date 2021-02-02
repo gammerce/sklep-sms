@@ -3,8 +3,7 @@ namespace App\View\Html;
 
 class PlainText implements I_ToHtml
 {
-    /** @var  string */
-    private $text;
+    private string $text;
 
     /**
      * @param string $text

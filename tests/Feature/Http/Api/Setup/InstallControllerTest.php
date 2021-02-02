@@ -16,13 +16,9 @@ class InstallControllerTest extends TestCase
     use FileSystemConcern;
     use MakesHttpRequests;
 
-    /** @var Application */
-    private $app;
-
-    /** @var Database */
-    private $db;
-
-    private $dbName = "install_test";
+    private Application $app;
+    private Database $db;
+    private string $dbName = "install_test";
 
     protected function setUp(): void
     {

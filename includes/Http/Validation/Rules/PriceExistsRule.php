@@ -7,8 +7,7 @@ use App\Repositories\PriceRepository;
 
 class PriceExistsRule extends BaseRule
 {
-    /** @var PriceRepository */
-    private $priceRepository;
+    private PriceRepository $priceRepository;
 
     public function __construct()
     {

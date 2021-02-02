@@ -12,11 +12,8 @@ use App\View\Pages\Admin\PageAdmin;
 
 class PageResolver
 {
-    /** @var Auth */
-    private $auth;
-
-    /** @var PageManager */
-    private $pageManager;
+    private Auth $auth;
+    private PageManager $pageManager;
 
     public function __construct(Auth $auth, PageManager $pageManager)
     {

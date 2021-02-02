@@ -7,8 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class AuthorizeUser implements MiddlewareContract
 {
-    /** @var Auth */
-    private $auth;
+    private Auth $auth;
 
     public function __construct(Auth $auth)
     {

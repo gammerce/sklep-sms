@@ -12,14 +12,9 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PromoCodeServiceTest extends TestCase
 {
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
-
-    /** @var Purchase */
-    private $purchase;
+    private PromoCodeService $promoCodeService;
+    private PromoCodeRepository $promoCodeRepository;
+    private Purchase $purchase;
 
     protected function setUp(): void
     {

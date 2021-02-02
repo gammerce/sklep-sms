@@ -16,8 +16,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PurchaseSerializerTest extends TestCase
 {
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
+    private PurchaseSerializer $purchaseSerializer;
 
     protected function setUp(): void
     {

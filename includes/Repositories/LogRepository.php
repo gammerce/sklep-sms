@@ -5,15 +5,14 @@ use App\Support\Database;
 
 class LogRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
         $this->db = $db;
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_logs` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -25,7 +24,7 @@ class LogRepository
      * @param string $message
      * @return string
      */
-    public function create($message)
+    public function create($message): string
     {
         $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
         return $this->db->lastId();

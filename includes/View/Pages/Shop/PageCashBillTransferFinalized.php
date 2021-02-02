@@ -12,8 +12,7 @@ class PageCashBillTransferFinalized extends Page
 {
     const PAGE_ID = "transfer_finalized";
 
-    /** @var PurchaseInformation */
-    private $purchaseInformation;
+    private PurchaseInformation $purchaseInformation;
 
     public function __construct(
         Template $template,
@@ -21,7 +20,6 @@ class PageCashBillTransferFinalized extends Page
         PurchaseInformation $purchaseInformation
     ) {
         parent::__construct($template, $translationManager);
-
         $this->purchaseInformation = $purchaseInformation;
     }
 

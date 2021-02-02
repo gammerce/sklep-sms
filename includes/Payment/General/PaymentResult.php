@@ -3,8 +3,7 @@ namespace App\Payment\General;
 
 final class PaymentResult
 {
-    /** @var PaymentResultType */
-    private $type;
+    private PaymentResultType $type;
 
     /** @var mixed */
     private $data;
@@ -15,18 +14,12 @@ final class PaymentResult
         $this->data = $data;
     }
 
-    /**
-     * @return PaymentResultType
-     */
-    public function getType()
+    public function getType(): PaymentResultType
     {
         return $this->type;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }

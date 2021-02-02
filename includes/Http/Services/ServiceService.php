@@ -55,13 +55,13 @@ class ServiceService
     public function updateServiceServerLinks($serviceId, array $serverIds)
     {
         $serversServices = collect($this->serverManager->all())
-            ->map(function (Server $server) use ($serviceId, $serverIds) {
-                return [
+            ->map(
+                fn(Server $server) => [
                     "service_id" => $serviceId,
                     "server_id" => $server->getId(),
                     "connect" => in_array($server->getId(), $serverIds),
-                ];
-            })
+                ]
+            )
             ->all();
 
         $this->serverServiceService->updateLinks($serversServices);

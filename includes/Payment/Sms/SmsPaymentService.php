@@ -13,17 +13,10 @@ use App\Verification\Results\SmsSuccessResult;
 
 class SmsPaymentService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
+    private Database $db;
+    private DatabaseLogger $logger;
+    private SmsPriceService $smsPriceService;
+    private SmsCodeRepository $smsCodeRepository;
 
     public function __construct(
         Database $db,
@@ -53,7 +46,7 @@ class SmsPaymentService
         User $user,
         $ip,
         $platform
-    ) {
+    ): int {
         if ($price->equal(0)) {
             return $this->storePaymentSms(
                 $paymentModule,
@@ -131,7 +124,7 @@ class SmsPaymentService
      * @param string $number
      * @param string $ip
      * @param string $platform
-     * @return string
+     * @return int
      */
     private function storePaymentSms(
         SupportSms $smsPaymentModule,
@@ -141,7 +134,7 @@ class SmsPaymentService
         $number,
         $ip,
         $platform
-    ) {
+    ): int {
         $this->db
             ->statement(
                 "INSERT INTO `ss_payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
@@ -166,7 +159,7 @@ class SmsPaymentService
      * @param Money $smsPrice
      * @return SmsSuccessResult|null
      */
-    private function tryToUseSmsCode($code, Money $smsPrice)
+    private function tryToUseSmsCode($code, Money $smsPrice): ?SmsSuccessResult
     {
         $smsCode = $this->smsCodeRepository->findByCodeAndPrice($code, $smsPrice);
 
@@ -191,7 +184,7 @@ class SmsPaymentService
         Money $smsPrice,
         Money $expectedSmsPrice,
         User $user
-    ) {
+    ): void {
         $this->smsCodeRepository->create($code, $smsPrice, false);
 
         $this->logger->logWithUser(

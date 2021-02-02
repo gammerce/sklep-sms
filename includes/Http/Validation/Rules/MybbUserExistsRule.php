@@ -7,8 +7,7 @@ use App\ServiceModules\MybbExtraGroups\MybbRepository;
 
 class MybbUserExistsRule extends BaseRule
 {
-    /** @var MybbRepository */
-    private $mybbRepository;
+    private MybbRepository $mybbRepository;
 
     public function __construct(MybbRepository $mybbRepository)
     {

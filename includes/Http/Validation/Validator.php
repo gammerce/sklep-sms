@@ -5,11 +5,8 @@ use App\Exceptions\ValidationException;
 
 class Validator
 {
-    /** @var array */
-    private $data;
-
-    /** @var array */
-    private $rules;
+    private array $data;
+    private array $rules;
 
     public function __construct(array $data, array $rules)
     {
@@ -60,11 +57,11 @@ class Validator
     public function validated()
     {
         return collect(array_keys($this->rules))
-            ->flatMap(function ($attribute) {
-                return [
+            ->flatMap(
+                fn($attribute) => [
                     $attribute => array_get($this->data, $attribute),
-                ];
-            })
+                ]
+            )
             ->all();
     }
 

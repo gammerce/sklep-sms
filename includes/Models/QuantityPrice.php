@@ -5,36 +5,20 @@ use App\Support\Money;
 
 class QuantityPrice
 {
-    /** @var int */
-    private $quantity;
-
-    /** @var int|null */
-    public $directBillingDiscount;
-
-    /** @var Money|null */
-    public $directBillingPrice;
-
-    /** @var int|null */
-    public $smsDiscount;
-
-    /** @var Money|null */
-    public $smsPrice;
-
-    /** @var int|null */
-    public $transferDiscount;
-
-    /** @var Money|null */
-    public $transferPrice;
+    private int $quantity;
+    public ?int $directBillingDiscount = null;
+    public ?Money $directBillingPrice = null;
+    public ?int $smsDiscount = null;
+    public ?Money $smsPrice = null;
+    public ?int $transferDiscount = null;
+    public ?Money $transferPrice = null;
 
     public function __construct($quantity)
     {
         $this->quantity = $quantity;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }

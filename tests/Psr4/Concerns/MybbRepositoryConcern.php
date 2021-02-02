@@ -11,7 +11,7 @@ trait MybbRepositoryConcern
     /** @var MybbRepository|MockInterface */
     public $mybbRepositoryMock;
 
-    public function mockMybbRepository()
+    public function mockMybbRepository(): void
     {
         $mybbRepositoryFactory = Mockery::mock(MybbRepositoryFactory::class);
         $this->app->instance(MybbRepositoryFactory::class, $mybbRepositoryFactory);
@@ -36,6 +36,8 @@ trait MybbRepositoryConcern
             ->withArgs(["host", 3306, "user", "password", "name"])
             ->andReturn($this->mybbRepositoryMock);
 
-        $mybbRepositoryFactory->shouldReceive("create")->andReturnNull();
+        $mybbRepositoryFactory
+            ->shouldReceive("create")
+            ->andReturnUsing(fn() => Mockery::mock(MybbRepository::class));
     }
 }

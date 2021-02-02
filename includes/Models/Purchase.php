@@ -15,9 +15,7 @@ class Purchase
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
 
-    /**
-     * @var string
-     */
+    /** @var string */
     private $id;
 
     /**
@@ -27,80 +25,56 @@ class Purchase
      */
     private $serviceId;
 
-    /**
-     * @var User
-     */
+    /** @var User */
     public $user;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
     private $email;
 
     /**
      * List of available payment platforms
-     *
-     * @var PaymentSelect
      */
-    private $paymentSelect;
+    private PaymentSelect $paymentSelect;
 
-    /**
-     * @var PaymentOption|null
-     */
-    private $paymentOption;
+    private ?PaymentOption $paymentOption = null;
 
     /**
      * Payment details like method, sms_code et.c
-     *
-     * @var array
      */
-    private $payment = [];
+    private array $payment = [];
 
     /**
      * Order details like auth_data, password etc.
-     *
-     * @var array
      */
-    private $order = [];
+    private array $order = [];
 
-    /**
-     * @var PromoCode|null
-     */
-    private $promoCode;
+    /** @var PromoCode|null */
+    private $promoCode = null;
 
     /**
      * Purchase description ( useful for transfer payments )
-     * @var string|null
      */
-    private $description;
+    private ?string $description;
 
     /**
      * Platform from which the purchase was made
-     *
-     * @var string
      */
-    private $platform;
+    private ?string $platform;
 
     /**
      * IP from which the purchase was made
-     *
-     * @var string
      */
-    private $ip;
+    private ?string $ip;
 
     /**
      * Attempt to finalize purchase has been made
-     *
-     * @var bool
      */
-    private $isAttempted = false;
+    private bool $isAttempted = false;
 
     /**
      * Transaction has been deleted
-     *
-     * @var bool
      */
-    private $isDeleted = false;
+    private bool $isDeleted = false;
 
     /**
      * @param User $user
@@ -126,9 +100,9 @@ class Purchase
 
     /**
      * @param string $serviceId
-     * @return Purchase
+     * @return static
      */
-    public function setServiceId($serviceId)
+    public function setServiceId($serviceId): self
     {
         $this->serviceId = (string) $serviceId;
         return $this;
@@ -145,9 +119,9 @@ class Purchase
 
     /**
      * @param array $order
-     * @return $this
+     * @return static
      */
-    public function setOrder(array $order)
+    public function setOrder(array $order): self
     {
         foreach ($order as $key => $value) {
             $this->order[$key] = $value;
@@ -156,10 +130,7 @@ class Purchase
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getOrderList()
+    public function getOrderList(): array
     {
         return $this->order;
     }
@@ -175,9 +146,9 @@ class Purchase
 
     /**
      * @param array $payment
-     * @return $this
+     * @return static
      */
-    public function setPayment(array $payment)
+    public function setPayment(array $payment): self
     {
         foreach ($payment as $key => $value) {
             $this->payment[$key] = $value;
@@ -186,79 +157,61 @@ class Purchase
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public function getPaymentList()
+    public function getPaymentList(): array
     {
         return $this->payment;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
     /**
      * @param string $email
-     * @return Purchase
+     * @return static
      */
-    public function setEmail($email)
+    public function setEmail($email): self
     {
         $this->email = (string) $email;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): ?string
     {
         return $this->description;
     }
 
     /**
      * @param string $description
-     * @return Purchase
+     * @return static
      */
-    public function setDescription($description)
+    public function setDescription($description): self
     {
         $this->description = $description;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlatform()
+    public function getPlatform(): ?string
     {
         return $this->platform;
     }
 
-    /**
-     * @return string
-     */
-    public function getAddressIp()
+    public function getAddressIp(): ?string
     {
         return $this->ip;
     }
 
-    /**
-     * @return PaymentSelect
-     */
-    public function getPaymentSelect()
+    public function getPaymentSelect(): PaymentSelect
     {
         return $this->paymentSelect;
     }
 
     /**
      * @param Price $price
-     * @return $this
+     * @return static
      */
-    public function setUsingPrice(Price $price)
+    public function setUsingPrice(Price $price): self
     {
         $this->setPayment([
             Purchase::PAYMENT_PRICE_SMS => as_int($price->getSmsPrice()),
@@ -272,71 +225,56 @@ class Purchase
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isAttempted()
+    public function isAttempted(): bool
     {
         return $this->isAttempted;
     }
 
-    public function markAsAttempted()
+    public function markAsAttempted(): void
     {
         $this->isAttempted = true;
     }
 
-    /**
-     * @return bool
-     */
-    public function isDeleted()
+    public function isDeleted(): bool
     {
         return $this->isDeleted;
     }
 
-    public function markAsDeleted()
+    public function markAsDeleted(): void
     {
         $this->isDeleted = true;
     }
 
-    /**
-     * @return PromoCode|null
-     */
-    public function getPromoCode()
+    public function getPromoCode(): ?PromoCode
     {
         return $this->promoCode;
     }
 
     /**
      * @param PromoCode|null $promoCode
-     * @return Purchase
+     * @return static
      */
-    public function setPromoCode(PromoCode $promoCode = null)
+    public function setPromoCode(PromoCode $promoCode = null): self
     {
         $this->promoCode = $promoCode;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return PaymentOption|null
-     */
-    public function getPaymentOption()
+    public function getPaymentOption(): ?PaymentOption
     {
         return $this->paymentOption;
     }
 
     /**
      * @param PaymentOption $paymentOption
-     * @return Purchase
+     * @return static
      */
-    public function setPaymentOption(PaymentOption $paymentOption)
+    public function setPaymentOption(PaymentOption $paymentOption): self
     {
         $this->paymentOption = $paymentOption;
         return $this;

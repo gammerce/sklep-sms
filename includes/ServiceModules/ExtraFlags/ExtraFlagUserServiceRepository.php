@@ -7,11 +7,8 @@ use App\Support\Database;
 
 class ExtraFlagUserServiceRepository
 {
-    /** @var Database */
-    private $db;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
+    private Database $db;
+    private UserServiceRepository $userServiceRepository;
 
     public function __construct(Database $db, UserServiceRepository $userServiceRepository)
     {
@@ -59,9 +56,7 @@ class ExtraFlagUserServiceRepository
         $statement->execute($values);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 

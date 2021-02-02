@@ -9,11 +9,10 @@ use UnexpectedValueException;
 
 class ServiceTakeOverFactory
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
 
-    /** @var array */
-    private $paymentMethodsClasses;
+    /** @var string[] */
+    private array $paymentMethodsClasses;
 
     public function __construct(Application $app)
     {
@@ -29,7 +28,7 @@ class ServiceTakeOverFactory
      * @return IServiceTakeOver
      * @throws UnexpectedValueException
      */
-    public function create(PaymentMethod $paymentMethod)
+    public function create(PaymentMethod $paymentMethod): IServiceTakeOver
     {
         if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
             return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);

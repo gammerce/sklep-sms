@@ -7,11 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RouteCollector extends BaseRouteCollector
 {
-    /** @var array */
-    private $currentGroupMiddlewares = [];
-
-    /** @var string|null */
-    private $currentGroupType;
+    /** @var string[] */
+    private array $currentGroupMiddlewares = [];
+    private ?string $currentGroupType = null;
 
     /**
      * @param string|array $prefix

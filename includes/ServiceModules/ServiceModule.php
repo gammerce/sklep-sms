@@ -18,30 +18,21 @@ abstract class ServiceModule
      */
     const USER_SERVICE_TABLE = "";
 
-    /** @var Service|null */
-    public $service;
-
-    /** @var Template */
-    protected $template;
-
-    /** @var ServiceDescriptionService */
-    protected $serviceDescriptionService;
+    public ?Service $service;
+    protected Template $template;
+    protected ServiceDescriptionService $serviceDescriptionService;
 
     public function __construct(
         Template $template,
         ServiceDescriptionService $serviceDescriptionService,
-        Service $service = null
+        ?Service $service = null
     ) {
         $this->service = $service;
         $this->template = $template;
         $this->serviceDescriptionService = $serviceDescriptionService;
     }
 
-    /**
-     * @param array $data
-     * @return UserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): UserService
     {
         return new UserService(
             as_int($data["id"]),

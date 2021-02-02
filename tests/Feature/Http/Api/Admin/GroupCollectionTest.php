@@ -7,8 +7,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class GroupCollectionTest extends HttpTestCase
 {
-    /** @var GroupRepository */
-    private $groupRepository;
+    private GroupRepository $groupRepository;
 
     protected function setUp(): void
     {

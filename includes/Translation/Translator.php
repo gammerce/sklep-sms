@@ -6,42 +6,31 @@ use App\Support\Path;
 
 class Translator
 {
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     /**
      * Current language
-     *
-     * @var string
      */
-    private $language;
+    private string $language;
 
     /**
      * Language of loaded translations
-     *
-     * @var string
      */
-    private $loadedLanguage;
+    private ?string $loadedLanguage = null;
 
     /**
      * Array of language => language short
-     *
-     * @var array
      */
-    private $langList = [
+    private array $langList = [
         "polish" => "pl",
         "english" => "en",
     ];
 
     /**
      * Array of translations
-     *
-     * @var array
      */
-    private $translations;
+    private array $translations = [];
 
     public function __construct($lang = "polish")
     {
@@ -50,10 +39,7 @@ class Translator
         $this->setLanguage($lang);
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrentLanguage()
+    public function getCurrentLanguage(): string
     {
         return $this->language;
     }
@@ -70,7 +56,7 @@ class Translator
      * @param string $lang
      * @return bool
      */
-    public function languageExists($lang)
+    public function languageExists($lang): bool
     {
         return array_key_exists($lang, $this->langList);
     }
@@ -92,14 +78,13 @@ class Translator
      *
      * @param string $language Full language name
      */
-    public function setLanguage($language)
+    public function setLanguage($language): void
     {
         $language = escape_filename(strtolower($language));
 
         if (
             !strlen($language) ||
             !isset($this->langList[$language]) ||
-            $this->getCurrentLanguage() === $language ||
             !$this->fileSystem->isDirectory($this->path->to("translations/" . $language))
         ) {
             return;
@@ -113,7 +98,7 @@ class Translator
      * @param mixed ...$args
      * @return string
      */
-    public function t($key, ...$args)
+    public function t($key, ...$args): string
     {
         return $this->sprintf($this->translate($key), ...$args);
     }
@@ -122,10 +107,9 @@ class Translator
      * Translate key to text
      *
      * @param string $key
-     *
      * @return string
      */
-    private function translate($key)
+    private function translate($key): string
     {
         $this->load();
         return array_get($this->translations, $key, $key);
@@ -135,7 +119,7 @@ class Translator
      * @param $string
      * @return string
      */
-    private function sprintf($string)
+    private function sprintf($string): string
     {
         $argList = func_get_args();
         $numArgs = count($argList);
@@ -147,7 +131,7 @@ class Translator
         return $string;
     }
 
-    private function load()
+    private function load(): void
     {
         $language = $this->getCurrentLanguage();
 
@@ -205,10 +189,7 @@ class Translator
         $this->loadedLanguage = $language;
     }
 
-    /**
-     * @return array
-     */
-    public function getTranslations()
+    public function getTranslations(): array
     {
         $this->load();
         return $this->translations;

@@ -12,8 +12,7 @@ class PageProfile extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "profile";
 
-    /** @var Auth */
-    private $auth;
+    private Auth $auth;
 
     public function __construct(
         Template $template,

@@ -29,29 +29,14 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
 {
     const MODULE_ID = "charge_wallet";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var ChargeWalletFactory */
-    private $chargeWalletFactory;
-
-    /** @var WalletPaymentService */
-    private $walletPaymentService;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var Settings */
-    private $settings;
+    private Auth $auth;
+    private Translator $lang;
+    private BoughtServiceService $boughtServiceService;
+    private PriceTextService $priceTextService;
+    private ChargeWalletFactory $chargeWalletFactory;
+    private WalletPaymentService $walletPaymentService;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private Settings $settings;
 
     public function __construct(
         Auth $auth,
@@ -64,7 +49,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         Template $template,
         TranslationManager $translationManager,
         WalletPaymentService $walletPaymentService,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->lang = $translationManager->user();

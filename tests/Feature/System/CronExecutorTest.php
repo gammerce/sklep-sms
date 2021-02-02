@@ -9,8 +9,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class CronExecutorTest extends TestCase
 {
-    /** @var CronExecutor */
-    private $cronExecutor;
+    private CronExecutor $cronExecutor;
 
     protected function setUp(): void
     {

@@ -5,7 +5,7 @@ use App\Requesting\Response;
 
 class LicenseRequestException extends LicenseException
 {
-    public ?Response $response;
+    public ?Response $response = null;
 
     public function __construct(Response $response = null, $previous = null)
     {

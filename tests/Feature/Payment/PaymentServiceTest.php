@@ -24,11 +24,8 @@ class PaymentServiceTest extends TestCase
     use PaymentModuleFactoryConcern;
     use CssettiConcern;
 
-    /** @var PaymentService */
-    private $paymentService;
-
-    /** @var BoughtServiceRepository */
-    private $boughtServiceRepository;
+    private PaymentService $paymentService;
+    private BoughtServiceRepository $boughtServiceRepository;
 
     protected function setUp(): void
     {

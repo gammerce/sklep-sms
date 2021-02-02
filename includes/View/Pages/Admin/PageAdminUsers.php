@@ -29,23 +29,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "users";
 
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var Database */
-    private $db;
-
-    /** @var GroupManager */
-    private $groupManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private UserRepository $userRepository;
+    private PriceTextService $priceTextService;
+    private UserManager $userManager;
+    private Database $db;
+    private GroupManager $groupManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -115,20 +104,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->userRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->userRepository->mapToModel($row))
             ->map(function (User $user) use ($recordId) {
                 $groups = collect($user->getGroups())
-                    ->map(function ($groupId) {
-                        return $this->groupManager->get($groupId);
-                    })
-                    ->filter(function ($group) {
-                        return !!$group;
-                    })
-                    ->map(function (Group $group) {
-                        return "{$group->getName()} ({$group->getId()})";
-                    })
+                    ->map(fn($groupId) => $this->groupManager->get($groupId))
+                    ->filter(fn($group) => !!$group)
+                    ->map(fn(Group $group) => "{$group->getName()} ({$group->getId()})")
                     ->join("; ");
 
                 return (new BodyRow())

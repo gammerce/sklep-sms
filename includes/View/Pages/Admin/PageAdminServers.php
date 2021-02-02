@@ -34,23 +34,12 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "servers";
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private ServiceModuleManager $serviceModuleManager;
+    private PaymentModuleManager $paymentModuleManager;
+    private ServerManager $serverManager;
+    private ServiceManager $serviceManager;
+    private ServerServiceManager $serverServiceManager;
 
     public function __construct(
         Template $template,
@@ -86,9 +75,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         $recordId = as_int($request->query->get("record"));
 
         $bodyRows = collect($this->serverManager->all())
-            ->filter(function (Server $server) use ($recordId) {
-                return $recordId === null || $server->getId() === $recordId;
-            })
+            ->filter(fn(Server $server) => $recordId === null || $server->getId() === $recordId)
             ->map(function (Server $server) use ($recordId) {
                 return (new BodyRow())
                     ->setDbId($server->getId())
@@ -97,15 +84,18 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($server->getType() ?: new NoneText()))
                     ->addCell(new Cell($server->getVersion() ?: new NoneText()))
                     ->addCell(new Cell($server->getLastActiveAt() ?: new NoneText()))
-
                     ->setDeleteAction(can(Permission::MANAGE_SERVERS()))
                     ->setEditAction(can(Permission::MANAGE_SERVERS()))
-                    ->when(can(Permission::MANAGE_SERVERS()), function (BodyRow $bodyRow) {
-                        $bodyRow->addAction($this->createRegenerateTokenButton());
-                    })
-                    ->when($recordId === $server->getId(), function (BodyRow $bodyRow) {
-                        $bodyRow->addClass("highlighted");
-                    });
+                    ->when(
+                        can(Permission::MANAGE_SERVERS()),
+                        fn(BodyRow $bodyRow) => $bodyRow->addAction(
+                            $this->createRegenerateTokenButton()
+                        )
+                    )
+                    ->when(
+                        $recordId === $server->getId(),
+                        fn(BodyRow $bodyRow) => $bodyRow->addClass("highlighted")
+                    );
             })
             ->all();
 

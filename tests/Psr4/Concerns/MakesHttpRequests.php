@@ -7,8 +7,13 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait MakesHttpRequests
 {
-    protected function call($method, $uri, array $query = [], array $body = [], array $headers = [])
-    {
+    protected function call(
+        $method,
+        $uri,
+        array $query = [],
+        array $body = [],
+        array $headers = []
+    ): Response {
         /** @var KernelContract $kernel */
         $kernel = $this->app->make(KernelContract::class);
 
@@ -29,12 +34,12 @@ trait MakesHttpRequests
         return $response;
     }
 
-    protected function get($uri, array $query = [], array $headers = [])
+    protected function get($uri, array $query = [], array $headers = []): Response
     {
         return $this->call("GET", $uri, $query, [], $headers);
     }
 
-    protected function getJson($uri, array $query = [], array $headers = [])
+    protected function getJson($uri, array $query = [], array $headers = []): Response
     {
         return $this->call(
             "GET",
@@ -45,18 +50,26 @@ trait MakesHttpRequests
         );
     }
 
-    protected function post($uri, array $body = [], array $query = [], array $headers = [])
-    {
+    protected function post(
+        $uri,
+        array $body = [],
+        array $query = [],
+        array $headers = []
+    ): Response {
         return $this->call("POST", $uri, $query, $body, $headers);
     }
 
-    protected function put($uri, array $body = [], array $query = [], array $headers = [])
+    protected function put($uri, array $body = [], array $query = [], array $headers = []): Response
     {
         return $this->call("PUT", $uri, $query, $body, $headers);
     }
 
-    protected function putJson($uri, array $body = [], array $query = [], array $headers = [])
-    {
+    protected function putJson(
+        $uri,
+        array $body = [],
+        array $query = [],
+        array $headers = []
+    ): Response {
         return $this->call(
             "PUT",
             $uri,
@@ -66,7 +79,7 @@ trait MakesHttpRequests
         );
     }
 
-    protected function delete($uri, array $query = [], array $headers = [])
+    protected function delete($uri, array $query = [], array $headers = []): Response
     {
         return $this->call("DELETE", $uri, $query, [], $headers);
     }
@@ -80,12 +93,12 @@ trait MakesHttpRequests
         return $decoded;
     }
 
-    protected function prepareUrlForRequest($uri)
+    protected function prepareUrlForRequest($uri): string
     {
         return "http://localhost/" . ltrim($uri, "/");
     }
 
-    private function castValuesToString(array $data)
+    private function castValuesToString(array $data): array
     {
         return $data;
         //        return collect($data)

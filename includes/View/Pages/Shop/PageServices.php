@@ -14,14 +14,9 @@ class PageServices extends Page
 {
     const PAGE_ID = "services";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ServiceListService */
-    private $serviceListService;
+    private Auth $auth;
+    private UrlGenerator $url;
+    private ServiceListService $serviceListService;
 
     public function __construct(
         Template $template,
@@ -44,13 +39,18 @@ class PageServices extends Page
     public function getContent(Request $request)
     {
         $cards = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
-            ->map(function (Service $service) {
-                return $this->template->render("shop/components/services/service_card", [
-                    "link" => $this->url->to("/page/purchase", ["service" => $service->getId()]),
-                    "description" => $service->getDescriptionI18n(),
-                    "name" => $service->getNameI18n(),
-                ]);
-            })
+            ->map(
+                fn(Service $service) => $this->template->render(
+                    "shop/components/services/service_card",
+                    [
+                        "link" => $this->url->to("/page/purchase", [
+                            "service" => $service->getId(),
+                        ]),
+                        "description" => $service->getDescriptionI18n(),
+                        "name" => $service->getNameI18n(),
+                    ]
+                )
+            )
             ->join();
 
         return $this->template->render("shop/pages/services", compact("cards"));

@@ -7,11 +7,8 @@ use Psr\SimpleCache\CacheInterface;
 
 class FileCache implements CacheInterface
 {
-    /** @var string */
-    private $directory;
-
-    /** @var FileSystemContract */
-    private $files;
+    private FileSystemContract $files;
+    private string $directory;
 
     public function __construct(FileSystemContract $files, $directory)
     {

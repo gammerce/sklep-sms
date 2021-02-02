@@ -7,14 +7,9 @@ use InvalidArgumentException;
 
 abstract class Migration
 {
-    /** @var Database */
-    protected $db;
-
-    /** @var MigrationFiles */
-    protected $migrationFiles;
-
-    /** @var FileLogger */
-    protected $fileLogger;
+    protected Database $db;
+    protected MigrationFiles $migrationFiles;
+    protected FileLogger $fileLogger;
 
     public function __construct(
         Database $db,
@@ -69,8 +64,6 @@ abstract class Migration
 
         fclose($path);
 
-        return array_filter($queries, function ($query) {
-            return strlen($query);
-        });
+        return array_filter($queries, fn($query) => strlen($query));
     }
 }

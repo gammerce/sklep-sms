@@ -7,8 +7,7 @@ use App\Managers\GroupManager;
 
 class UserGroupsRule extends BaseRule
 {
-    /** @var GroupManager */
-    private $groupManager;
+    private GroupManager $groupManager;
 
     public function __construct()
     {

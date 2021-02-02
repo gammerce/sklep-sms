@@ -34,26 +34,13 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "pricing";
 
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Database */
-    private $db;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private PriceRepository $priceRepository;
+    private SmsPriceRepository $smsPriceRepository;
+    private PriceTextService $priceTextService;
+    private Database $db;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -103,9 +90,7 @@ EOF
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->priceRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->priceRepository->mapToModel($row))
             ->map(function (Price $price) {
                 if ($price->isForEveryServer()) {
                     $serverEntry = $this->lang->t("all");
@@ -198,27 +183,23 @@ EOF
             ->join();
 
         $servers = collect($this->serverManager->all())
-            ->map(function (Server $server) use ($price) {
-                return create_dom_element("option", $server->getName(), [
-                    "value" => $server->getId(),
-                    "selected" =>
-                        $price && $price->getServerId() === $server->getId() ? "selected" : "",
-                ]);
-            })
+            ->map(
+                fn(Server $server) => new Option($server->getName(), $server->getId(), [
+                    "selected" => selected($price && $price->getServerId() === $server->getId()),
+                ])
+            )
             ->join();
 
         $smsPrices = collect($this->smsPriceRepository->all())
-            ->map(function (Money $smsPrice) use ($price) {
-                return create_dom_element(
-                    "option",
+            ->map(
+                fn(Money $smsPrice) => new Option(
                     $this->priceTextService->getPriceGrossText($smsPrice),
+                    $smsPrice->asInt(),
                     [
-                        "value" => $smsPrice->asInt(),
-                        "selected" =>
-                            $price && $smsPrice->equal($price->getSmsPrice()) ? "selected" : "",
+                        "selected" => selected($price && $smsPrice->equal($price->getSmsPrice())),
                     ]
-                );
-            })
+                )
+            )
             ->join();
 
         switch ($boxId) {
@@ -246,7 +227,7 @@ EOF
                         "smsPrices",
                         "transferPrice"
                     ) + [
-                        "allServers" => $price->isForEveryServer() ? "selected" : "",
+                        "allServers" => selected($price->isForEveryServer()),
                         "discount" => $price->getDiscount(),
                     ]
                 );

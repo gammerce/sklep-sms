@@ -20,11 +20,8 @@ class PageAdminLogs extends PageAdmin
 {
     const PAGE_ID = "logs";
 
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,

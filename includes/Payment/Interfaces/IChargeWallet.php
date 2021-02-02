@@ -7,34 +7,9 @@ use App\Models\Transaction;
 
 interface IChargeWallet
 {
-    /**
-     * @param Purchase $purchase
-     * @param array $body
-     * @return void
-     */
-    public function setup(Purchase $purchase, array $body);
-
-    /**
-     * @param Transaction $transaction
-     * @return string
-     */
-    public function getTransactionView(Transaction $transaction);
-
-    /**
-     * @param PaymentPlatform $paymentPlatform
-     * @return array
-     */
-    public function getOptionView(PaymentPlatform $paymentPlatform);
-
-    /**
-     * @param Purchase $purchase
-     * @return string
-     */
-    public function getPrice(Purchase $purchase);
-
-    /**
-     * @param Purchase $purchase
-     * @return string
-     */
-    public function getQuantity(Purchase $purchase);
+    public function setup(Purchase $purchase, array $body): void;
+    public function getTransactionView(Transaction $transaction): string;
+    public function getOptionView(PaymentPlatform $paymentPlatform): array;
+    public function getPrice(Purchase $purchase): string;
+    public function getQuantity(Purchase $purchase): string;
 }

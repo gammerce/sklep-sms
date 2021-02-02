@@ -14,20 +14,11 @@ use App\Support\Database;
 
 class ServerDataService
 {
-    /** @var Database */
-    private $db;
-
-    /** @var PriceRepository */
-    private $priceRepository;
-
-    /** @var ServerServiceRepository */
-    private $serverServiceRepository;
-
-    /** @var ServiceRepository */
-    private $serviceRepository;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
+    private Database $db;
+    private PriceRepository $priceRepository;
+    private ServerServiceRepository $serverServiceRepository;
+    private ServiceRepository $serviceRepository;
+    private PlayerFlagRepository $playerFlagRepository;
 
     public function __construct(
         Database $db,
@@ -48,7 +39,7 @@ class ServerDataService
      * @param Server $server
      * @return Price[]
      */
-    public function getPrices(array $serviceIds, Server $server)
+    public function getPrices(array $serviceIds, Server $server): array
     {
         if (!$serviceIds) {
             return [];
@@ -66,9 +57,7 @@ class ServerDataService
         $statement->execute(array_merge([$server->getId()], $serviceIds));
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->priceRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->priceRepository->mapToModel($row))
             ->all();
     }
 
@@ -76,12 +65,10 @@ class ServerDataService
      * @param int $serverId
      * @return Service[]
      */
-    public function getServices($serverId)
+    public function getServices($serverId): array
     {
         $serviceIds = collect($this->serverServiceRepository->findByServer($serverId))
-            ->map(function (ServerService $serverService) {
-                return $serverService->getServiceId();
-            })
+            ->map(fn(ServerService $serverService) => $serverService->getServiceId())
             ->all();
 
         return $this->serviceRepository->findMany($serviceIds);
@@ -91,7 +78,7 @@ class ServerDataService
      * @param int $serverId
      * @return array
      */
-    public function getPlayersFlags($serverId)
+    public function getPlayersFlags($serverId): array
     {
         // ORDER BY is very important for binary search in plugins code
         $statement = $this->db->statement(
@@ -134,12 +121,8 @@ EOF
         return collect($statement)
             ->map(function (array $data) {
                 $flags = collect($data)
-                    ->filter(function ($value, $key) {
-                        return in_array($key, PlayerFlag::FLAGS, true);
-                    })
-                    ->filter(function ($value) {
-                        return !!$value;
-                    })
+                    ->filter(fn($value, $key) => in_array($key, PlayerFlag::FLAGS, true))
+                    ->filter(fn($value) => !!$value)
                     ->keys()
                     ->join();
 

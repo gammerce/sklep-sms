@@ -8,14 +8,9 @@ use Psr\Log\LoggerInterface;
 
 class FileLogger implements LoggerInterface
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
-
-    /** @var Path */
-    private $path;
+    private Settings $settings;
+    private FileSystemContract $fileSystem;
+    private Path $path;
 
     public function __construct(Settings $settings, FileSystemContract $fileSystem, Path $path)
     {

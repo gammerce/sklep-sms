@@ -7,11 +7,8 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserResourceTest extends HttpTestCase
 {
-    /** @var User */
-    private $user;
-
-    /** @var UserRepository */
-    private $repository;
+    private User $user;
+    private UserRepository $repository;
 
     protected function setUp(): void
     {

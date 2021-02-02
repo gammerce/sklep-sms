@@ -522,7 +522,7 @@ function as_string($value)
  * @param string $value
  * @return PaymentMethod|null
  */
-function as_payment_method($value)
+function as_payment_method($value): ?PaymentMethod
 {
     try {
         return new PaymentMethod($value);
@@ -535,7 +535,7 @@ function as_payment_method($value)
  * @param string $value
  * @return Platform|null
  */
-function as_server_type($value)
+function as_server_type($value): ?Platform
 {
     try {
         return new Platform($value);
@@ -548,7 +548,7 @@ function as_server_type($value)
  * @param string|int|DateTime|null $value
  * @return DateTime|null
  */
-function as_datetime($value)
+function as_datetime($value): ?DateTime
 {
     if (!$value) {
         return null;
@@ -660,9 +660,7 @@ function as_permission_list($permissions)
                 return null;
             }
         })
-        ->filter(function ($permission) {
-            return $permission;
-        })
+        ->filter(fn($permission) => $permission)
         ->all();
 }
 
@@ -934,9 +932,7 @@ function explode_int_list($list, $delimiter = ",")
     }
 
     return collect(explode($delimiter, $list))
-        ->map(function ($value) {
-            return (int) $value;
-        })
+        ->map(fn($value) => (int) $value)
         ->all();
 }
 

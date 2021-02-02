@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class ServerTokenControllerTest extends HttpTestCase
 {
-    /** @var ServerRepository */
-    private $serverRepository;
+    private ServerRepository $serverRepository;
 
     protected function setUp(): void
     {

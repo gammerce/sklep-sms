@@ -9,7 +9,7 @@ trait FixtureConcern
      * @param string $name
      * @return string
      */
-    protected function loadFixture($name)
+    protected function loadFixture($name): string
     {
         /** @var Path $pathBuilder */
         $pathBuilder = $this->app->make(Path::class);

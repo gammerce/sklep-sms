@@ -11,34 +11,25 @@ use Symfony\Component\HttpFoundation\Request;
 
 class TemplateResource
 {
-    /** @var Template */
-    private $template;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    public function __construct(
+    public function get(
+        $name,
+        Request $request,
         Template $template,
         UserManager $userManager,
         PriceTextService $priceTextService
     ) {
-        $this->template = $template;
-        $this->userManager = $userManager;
-        $this->priceTextService = $priceTextService;
-    }
-
-    public function get($name, Request $request)
-    {
         $templateName = escape_filename($name);
-        $data = $this->getData($templateName, $request);
+        $data = $this->getData($templateName, $request, $template, $userManager, $priceTextService);
         return new JsonResponse($data);
     }
 
-    private function getData($templateName, Request $request)
-    {
+    private function getData(
+        $templateName,
+        Request $request,
+        Template $template,
+        UserManager $userManager,
+        PriceTextService $priceTextService
+    ) {
         $email = $request->query->get("email");
 
         if ($templateName === "admin_user_wallet") {
@@ -46,8 +37,8 @@ class TemplateResource
                 throw new UnauthorizedException();
             }
 
-            $user = $this->userManager->get($request->query->get("user_id"));
-            $wallet = $user ? $this->priceTextService->getPriceText($user->getWallet()) : null;
+            $user = $userManager->get($request->query->get("user_id"));
+            $wallet = $user ? $priceTextService->getPriceText($user->getWallet()) : null;
 
             return [
                 "template" => $wallet,
@@ -55,7 +46,7 @@ class TemplateResource
         }
 
         return [
-            "template" => $this->template->render("jsonhttp/$templateName", compact("email")),
+            "template" => $template->render("jsonhttp/$templateName", compact("email")),
         ];
     }
 }

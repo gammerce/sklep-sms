@@ -16,17 +16,10 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentResourceTest extends HttpTestCase
 {
-    /** @var Purchase */
-    private $purchase;
-
-    /** @var PaymentPlatform */
-    private $directBillingPlatform;
-
-    /** @var PaymentPlatform */
-    private $smsPlatform;
-
-    /** @var PaymentPlatform */
-    private $transferPlatform;
+    private Purchase $purchase;
+    private PaymentPlatform $directBillingPlatform;
+    private PaymentPlatform $smsPlatform;
+    private PaymentPlatform $transferPlatform;
 
     protected function setUp(): void
     {

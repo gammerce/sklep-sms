@@ -9,20 +9,15 @@ use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 
 trait ApplicationConcern
 {
-    /**
-     * @return Application
-     */
-    protected function createApplication()
+    protected function createApplication(): Application
     {
         $app = require __DIR__ . "/../../../bootstrap/app.php";
-        $app->singleton(Session::class, function () {
-            return new Session(new MockArraySessionStorage());
-        });
+        $app->singleton(Session::class, fn() => new Session(new MockArraySessionStorage()));
         $app->singleton(KernelContract::class, Kernel::class);
         return $app;
     }
 
-    protected function tearDownApplication(Application $app)
+    protected function tearDownApplication(Application $app): void
     {
         $app->flush();
         $app = null;

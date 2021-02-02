@@ -3,20 +3,13 @@ namespace App\Models;
 
 class MybbUser
 {
-    /** @var int */
-    private $uid;
-
-    /** @var array */
-    private $shopGroups = [];
-
-    /** @var int */
-    private $mybbUserGroup;
+    private int $uid;
+    private array $shopGroups = [];
+    private int $mybbUserGroup;
+    private ?int $mybbDisplayGroup = null;
 
     /** @var int[] */
-    private $mybbAddGroups = [];
-
-    /** @var int */
-    private $mybbDisplayGroup;
+    private array $mybbAddGroups = [];
 
     /**
      * @param int $uid
@@ -28,7 +21,7 @@ class MybbUser
         $this->mybbUserGroup = (int) $mybbUserGroup;
     }
 
-    public function getUid()
+    public function getUid(): int
     {
         return $this->uid;
     }
@@ -37,7 +30,7 @@ class MybbUser
      * @param int   $groupId
      * @param array $group
      */
-    public function setShopGroup($groupId, $group)
+    public function setShopGroup($groupId, $group): void
     {
         if (!is_numeric($groupId)) {
             return;
@@ -56,7 +49,7 @@ class MybbUser
      * @param int $groupId
      * @param int|null $seconds
      */
-    public function prolongShopGroup($groupId, $seconds)
+    public function prolongShopGroup($groupId, $seconds): void
     {
         if (!is_numeric($groupId)) {
             return;

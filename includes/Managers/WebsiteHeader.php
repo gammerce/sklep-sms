@@ -7,20 +7,15 @@ use App\Support\Path;
 
 class WebsiteHeader
 {
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystem */
-    private $fileSystem;
-
-    /** @var UrlGenerator */
-    private $url;
+    private Path $path;
+    private FileSystem $fileSystem;
+    private UrlGenerator $url;
 
     /** @var string[] */
-    private $scripts = [];
+    private array $scripts = [];
 
     /** @var string[] */
-    private $styles = [];
+    private array $styles = [];
 
     public function __construct(Path $path, FileSystem $fileSystem, UrlGenerator $url)
     {
@@ -56,18 +51,14 @@ class WebsiteHeader
     public function getScripts()
     {
         return collect($this->scripts)
-            ->map(function ($path) {
-                return "<script type=\"text/javascript\" src=\"{$path}\"></script>";
-            })
+            ->map(fn($path) => "<script type=\"text/javascript\" src=\"{$path}\"></script>")
             ->join("\n");
     }
 
     public function getStyles()
     {
         return collect($this->styles)
-            ->map(function ($path) {
-                return "<link href=\"{$path}\" rel=\"stylesheet\" />";
-            })
+            ->map(fn($path) => "<link href=\"{$path}\" rel=\"stylesheet\" />")
             ->join("\n");
     }
 }

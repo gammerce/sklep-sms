@@ -11,9 +11,7 @@ class XmlResponse extends Response
     public function __construct(array $data, $status = 200)
     {
         $output = collect($data)
-            ->map(function ($value, $key) {
-                return "<$key>$value</$key>";
-            })
+            ->map(fn($value, $key) => "<$key>$value</$key>")
             ->join();
 
         parent::__construct($output, $status, [

@@ -11,17 +11,10 @@ use App\Translation\Translator;
 
 class PurchasePriceRenderer
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private Settings $settings;
+    private Template $template;
+    private Translator $lang;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         Settings $settings,

@@ -10,7 +10,7 @@ use Tests\Psr4\MemoryFileSystem;
 
 trait FileSystemConcern
 {
-    protected function mockFileSystem()
+    protected function mockFileSystem(): MemoryFileSystem
     {
         $fileSystem = new MemoryFileSystem();
 

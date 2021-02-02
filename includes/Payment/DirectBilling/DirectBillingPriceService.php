@@ -8,11 +8,8 @@ use App\Support\PriceTextService;
 
 class DirectBillingPriceService
 {
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private PromoCodeService $promoCodeService;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         PromoCodeService $promoCodeService,
@@ -22,11 +19,7 @@ class DirectBillingPriceService
         $this->priceTextService = $priceTextService;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return Money|null
-     */
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): ?Money
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         if ($price === null) {
@@ -41,11 +34,7 @@ class DirectBillingPriceService
         return $price;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
-    public function getOldAndNewPrice(Purchase $purchase)
+    public function getOldAndNewPrice(Purchase $purchase): array
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_DIRECT_BILLING));
         $promoCode = $purchase->getPromoCode();

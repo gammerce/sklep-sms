@@ -10,11 +10,8 @@ class BlockLoggedInfo extends Block implements IBeLoggedMust
 {
     const BLOCK_ID = "logged_info";
 
-    /** @var Auth */
-    private $auth;
-
-    /** @var Template */
-    private $template;
+    private Auth $auth;
+    private Template $template;
 
     public function __construct(Auth $auth, Template $template)
     {

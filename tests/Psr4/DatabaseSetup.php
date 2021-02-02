@@ -6,11 +6,8 @@ use App\Support\Database;
 
 class DatabaseSetup
 {
-    /** @var Database */
-    private $db;
-
-    /** @var DatabaseMigration */
-    private $databaseMigration;
+    private Database $db;
+    private DatabaseMigration $databaseMigration;
 
     public function __construct(Database $db, DatabaseMigration $databaseMigration)
     {

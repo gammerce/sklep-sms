@@ -10,13 +10,14 @@ use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\HeadCell;
+use App\View\Html\Option;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminIncome extends PageAdmin
 {
     const PAGE_ID = "income";
 
-    private $months = [
+    private array $months = [
         "",
         "january",
         "february",
@@ -32,17 +33,10 @@ class PageAdminIncome extends PageAdmin
         "december",
     ];
 
-    /** @var IncomeService */
-    private $incomeService;
-
-    /** @var WebsiteHeader */
-    private $websiteHeader;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private IncomeService $incomeService;
+    private WebsiteHeader $websiteHeader;
+    private ServerManager $serverManager;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         Template $template,
@@ -87,12 +81,10 @@ class PageAdminIncome extends PageAdmin
         $buttons = $this->renderButtons($queryYear, $queryMonth);
 
         $tbody = collect($labels)
-            ->filter(function ($label) {
-                return $label <= date("Y-m-d");
-            })
-            ->map(function ($label) use ($incomeFromPeriod) {
-                return $this->renderTRow($label, array_get($incomeFromPeriod, $label, []));
-            });
+            ->filter(fn($label) => $label <= date("Y-m-d"))
+            ->map(
+                fn($label) => $this->renderTRow($label, array_get($incomeFromPeriod, $label, []))
+            );
 
         if ($tbody->isPopulated()) {
             $tbody->push($this->renderSummary($incomeFromPeriod));
@@ -177,17 +169,19 @@ class PageAdminIncome extends PageAdmin
     {
         $months = "";
         for ($dayId = 1; $dayId <= 12; $dayId++) {
-            $months .= create_dom_element("option", $this->lang->t($this->months[$dayId]), [
-                "value" => str_pad($dayId, 2, 0, STR_PAD_LEFT),
-                "selected" => $month == $dayId ? "selected" : "",
-            ]);
+            $months .= new Option(
+                $this->lang->t($this->months[$dayId]),
+                str_pad($dayId, 2, 0, STR_PAD_LEFT),
+                [
+                    "selected" => selected($month == $dayId),
+                ]
+            );
         }
 
         $years = "";
         for ($dayId = 2014; $dayId <= intval(date("Y")); $dayId++) {
-            $years .= create_dom_element("option", $dayId, [
-                "value" => $dayId,
-                "selected" => $year == $dayId ? "selected" : "",
+            $years .= new Option($dayId, $dayId, [
+                "selected" => selected($year == $dayId),
             ]);
         }
 
@@ -260,9 +254,7 @@ class PageAdminIncome extends PageAdmin
     private function getServersIds()
     {
         return collect($this->serverManager->all())
-            ->map(function (Server $server) {
-                return $server->getId();
-            })
+            ->map(fn(Server $server) => $server->getId())
             ->push(0)
             ->all();
     }

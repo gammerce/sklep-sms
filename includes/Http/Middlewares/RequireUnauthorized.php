@@ -10,11 +10,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class RequireUnauthorized implements MiddlewareContract
 {
-    /** @var Auth */
-    private $auth;
-
-    /** @var Translator */
-    private $lang;
+    private Auth $auth;
+    private Translator $lang;
 
     public function __construct(Auth $auth, TranslationManager $translationManager)
     {

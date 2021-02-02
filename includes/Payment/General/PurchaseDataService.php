@@ -7,14 +7,9 @@ use App\Support\Path;
 
 class PurchaseDataService
 {
-    /** @var PurchaseSerializer */
-    private $purchaseSerializer;
-
-    /** @var Path */
-    private $path;
-
-    /** @var FileSystemContract */
-    private $fileSystem;
+    private PurchaseSerializer $purchaseSerializer;
+    private Path $path;
+    private FileSystemContract $fileSystem;
 
     public function __construct(
         PurchaseSerializer $purchaseSerializer,
@@ -26,10 +21,7 @@ class PurchaseDataService
         $this->fileSystem = $fileSystem;
     }
 
-    /**
-     * @param Purchase $purchase
-     */
-    public function storePurchase(Purchase $purchase)
+    public function storePurchase(Purchase $purchase): void
     {
         $transactionId = escape_filename($purchase->getId());
         $serialized = $this->purchaseSerializer->serialize($purchase);
@@ -41,7 +33,7 @@ class PurchaseDataService
      * @param string $transactionId
      * @return Purchase|null
      */
-    public function restorePurchase($transactionId)
+    public function restorePurchase($transactionId): ?Purchase
     {
         $transactionId = escape_filename($transactionId);
         if (
@@ -62,10 +54,7 @@ class PurchaseDataService
         return $purchase;
     }
 
-    /**
-     * @param Purchase $purchase
-     */
-    public function deletePurchase(Purchase $purchase)
+    public function deletePurchase(Purchase $purchase): void
     {
         $transactionId = escape_filename($purchase->getId());
         $this->fileSystem->delete($this->path->to("data/transactions/$transactionId"));

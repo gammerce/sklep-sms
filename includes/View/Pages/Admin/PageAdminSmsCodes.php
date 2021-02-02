@@ -28,20 +28,11 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "sms_codes";
 
-    /** @var SmsPriceRepository */
-    private $smsPriceRepository;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private SmsPriceRepository $smsPriceRepository;
+    private PriceTextService $priceTextService;
+    private SmsCodeRepository $smsCodeRepository;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -85,11 +76,9 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->smsCodeRepository->mapToModel($row);
-            })
-            ->map(function (SmsCode $smsCode) {
-                return (new BodyRow())
+            ->map(fn(array $row) => $this->smsCodeRepository->mapToModel($row))
+            ->map(
+                fn(SmsCode $smsCode) => (new BodyRow())
                     ->setDbId($smsCode->getId())
                     ->addCell(new Cell($smsCode->getCode()))
                     ->addCell(
@@ -98,8 +87,8 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                         )
                     )
                     ->addCell(new ExpirationDateCell($smsCode->getExpiresAt()))
-                    ->setDeleteAction(can(Permission::MANAGE_SMS_CODES()));
-            })
+                    ->setDeleteAction(can(Permission::MANAGE_SMS_CODES()))
+            )
             ->all();
 
         $table = (new Structure())
@@ -134,12 +123,12 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         switch ($boxId) {
             case "add":
                 $smsPrices = collect($this->smsPriceRepository->all())
-                    ->map(function (Money $smsPrice) {
-                        return new Option(
+                    ->map(
+                        fn(Money $smsPrice) => new Option(
                             $this->priceTextService->getPriceGrossText($smsPrice),
                             $smsPrice->asInt()
-                        );
-                    })
+                        )
+                    )
                     ->join();
 
                 return $this->template->render(

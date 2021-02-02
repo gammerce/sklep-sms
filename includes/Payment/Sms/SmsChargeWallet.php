@@ -18,26 +18,16 @@ use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportSms;
+use App\View\Html\Option;
 
 class SmsChargeWallet implements IChargeWallet
 {
-    /** @var SmsPriceService */
-    private $smsPriceService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Template */
-    private $template;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private SmsPriceService $smsPriceService;
+    private PriceTextService $priceTextService;
+    private Template $template;
+    private Translator $lang;
+    private Settings $settings;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         SmsPriceService $smsPriceService,
@@ -55,7 +45,7 @@ class SmsChargeWallet implements IChargeWallet
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function setup(Purchase $purchase, array $body)
+    public function setup(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             [
@@ -84,7 +74,7 @@ class SmsChargeWallet implements IChargeWallet
         ]);
     }
 
-    public function getTransactionView(Transaction $transaction)
+    public function getTransactionView(Transaction $transaction): string
     {
         $quantity = $this->priceTextService->getPriceText(
             Money::fromPrice($transaction->getQuantity())
@@ -103,25 +93,22 @@ class SmsChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView(PaymentPlatform $paymentPlatform)
+    public function getOptionView(PaymentPlatform $paymentPlatform): array
     {
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportSms);
 
         $smsList = collect($paymentModule->getSmsNumbers())
-            ->map(function (SmsNumber $smsNumber) {
-                return create_dom_element(
-                    "option",
+            ->map(
+                fn(SmsNumber $smsNumber) => new Option(
                     $this->lang->t(
                         "charge_sms_option",
                         $this->priceTextService->getPriceGrossText($smsNumber->getPrice()),
                         $this->priceTextService->getPriceText($smsNumber->getProvision())
                     ),
-                    [
-                        "value" => $smsNumber->getPrice()->asInt(),
-                    ]
-                );
-            })
+                    $smsNumber->getPrice()->asInt()
+                )
+            )
             ->join();
 
         $paymentOptionId = make_charge_wallet_option(PaymentMethod::SMS(), $paymentPlatform);
@@ -137,14 +124,14 @@ class SmsChargeWallet implements IChargeWallet
         return [$option, $body];
     }
 
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceGrossText(
             $this->smsPriceService->getPrice($purchase)
         );
     }
 
-    public function getQuantity(Purchase $purchase)
+    public function getQuantity(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY));
     }

@@ -9,14 +9,9 @@ use App\Translation\Translator;
 
 class DatabaseLogger
 {
-    /** @var Translator */
-    private $langShop;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var LogRepository */
-    private $logRepository;
+    private Translator $langShop;
+    private Auth $auth;
+    private LogRepository $logRepository;
 
     public function __construct(
         LogRepository $logRepository,

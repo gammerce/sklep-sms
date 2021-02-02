@@ -8,14 +8,11 @@ use Symfony\Component\HttpFoundation\Request;
 
 class Pipeline
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
+    private Request $passable;
 
-    /** @var Request */
-    private $passable;
-
-    /** @var array */
-    private $pipes;
+    /** @var MiddlewareContract[] */
+    private array $pipes;
 
     public function __construct(Application $app)
     {

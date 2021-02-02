@@ -3,7 +3,7 @@ namespace App\Support;
 
 class Expression
 {
-    private $value;
+    private string $value;
 
     public function __construct($value)
     {

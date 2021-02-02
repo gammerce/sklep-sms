@@ -6,8 +6,7 @@ use App\Support\Database;
 
 class AdminPaymentService
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
@@ -20,7 +19,7 @@ class AdminPaymentService
      * @param string $platform
      * @return int
      */
-    public function payByAdmin(User $admin, $ip, $platform)
+    public function payByAdmin(User $admin, $ip, $platform): int
     {
         $this->db
             ->statement("INSERT INTO `ss_payment_admin` (`aid`, `ip`, `platform`) VALUES (?, ?, ?)")

@@ -7,10 +7,10 @@ use App\View\Blocks\Block;
 
 class BlockManager
 {
-    /** @var Application */
-    private $app;
+    private Application $app;
 
-    private $classes = [];
+    /** @var string[] */
+    private array $classes = [];
 
     public function __construct(Application $app)
     {

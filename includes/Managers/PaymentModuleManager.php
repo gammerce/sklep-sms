@@ -11,14 +11,10 @@ use App\Verification\DataField;
 
 class PaymentModuleManager
 {
-    /** @var PaymentModuleFactory */
-    private $paymentModuleFactory;
-
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var array */
-    private $classes = [];
+    private PaymentModuleFactory $paymentModuleFactory;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    /** @var string[] */
+    private array $classes = [];
 
     public function __construct(
         PaymentModuleFactory $paymentModuleFactory,
@@ -28,7 +24,7 @@ class PaymentModuleManager
         $this->paymentPlatformRepository = $paymentPlatformRepository;
     }
 
-    public function register($className)
+    public function register($className): void
     {
         $moduleId = $className::MODULE_ID;
 
@@ -41,7 +37,7 @@ class PaymentModuleManager
         $this->classes[$moduleId] = $className;
     }
 
-    public function allIds()
+    public function allIds(): array
     {
         return array_keys($this->classes);
     }
@@ -51,7 +47,7 @@ class PaymentModuleManager
      * @return DataField[]
      * @throws InvalidPaymentModuleException
      */
-    public function dataFields($moduleId)
+    public function dataFields($moduleId): array
     {
         $className = $this->getClass($moduleId);
         return $className::getDataFields();
@@ -59,10 +55,10 @@ class PaymentModuleManager
 
     /**
      * @param string $moduleId
-     * @return string|null
+     * @return string
      * @throws InvalidPaymentModuleException
      */
-    public function getClass($moduleId)
+    public function getClass($moduleId): string
     {
         $className = array_get($this->classes, $moduleId);
 
@@ -77,7 +73,7 @@ class PaymentModuleManager
      * @param PaymentPlatform $paymentPlatform
      * @return PaymentModule|null
      */
-    public function get(PaymentPlatform $paymentPlatform)
+    public function get(PaymentPlatform $paymentPlatform): ?PaymentModule
     {
         $paymentModuleClass = array_get($this->classes, $paymentPlatform->getModuleId());
 
@@ -92,7 +88,7 @@ class PaymentModuleManager
      * @param string $platformId
      * @return PaymentModule|null
      */
-    public function getByPlatformId($platformId)
+    public function getByPlatformId($platformId): ?PaymentModule
     {
         $paymentPlatform = $this->paymentPlatformRepository->get($platformId);
         if (!$paymentPlatform) {

@@ -10,19 +10,11 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 
 interface IPaymentMethod
 {
-    /**
-     * @param Purchase $purchase
-     * @param PaymentPlatform|null $paymentPlatform
-     * @return array
-     */
-    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null);
-
-    /**
-     * @param Purchase $purchase
-     * @param PaymentPlatform|null $paymentPlatform
-     * @return bool
-     */
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null);
+    public function getPaymentDetails(
+        Purchase $purchase,
+        ?PaymentPlatform $paymentPlatform = null
+    ): ?array;
+    public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool;
 
     /**
      * @param Purchase $purchase
@@ -31,5 +23,5 @@ interface IPaymentMethod
      * @throws PaymentProcessingException
      * @throws ValidationException
      */
-    public function pay(Purchase $purchase, IServicePurchase $serviceModule);
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule): PaymentResult;
 }

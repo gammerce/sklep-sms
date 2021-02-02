@@ -15,20 +15,11 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseFactory
 {
-    /** @var ServerResponseFactory */
-    private $serverResponseFactory;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var ErrorRenderer */
-    private $errorRenderer;
-
-    /** @var \App\Support\IntendedUrlService */
-    private $intendedUrlService;
-
-    /** @var UrlGenerator */
-    private $url;
+    private ServerResponseFactory $serverResponseFactory;
+    private Translator $lang;
+    private ErrorRenderer $errorRenderer;
+    private IntendedUrlService $intendedUrlService;
+    private UrlGenerator $url;
 
     public function __construct(
         ServerResponseFactory $serverResponseFactory,
@@ -141,9 +132,7 @@ class ResponseFactory
     private function formatWarnings(array $warnings)
     {
         return collect($warnings)
-            ->mapWithKeys(function ($value) {
-                return to_array($value);
-            })
+            ->mapWithKeys(fn($value) => to_array($value))
             ->all();
     }
 }

@@ -47,12 +47,12 @@ EOF
         ]);
 
         $data = collect($statement)
-            ->map(function (array $item) {
-                return [
+            ->map(
+                fn(array $item) => [
                     "s" => $item["service"],
                     "e" => as_expiration_datetime_string($item["expire"]),
-                ];
-            })
+                ]
+            )
             ->all();
 
         return $acceptHeader->has("application/json")

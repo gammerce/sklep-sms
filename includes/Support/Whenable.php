@@ -6,9 +6,9 @@ trait Whenable
     /**
      * @param bool $condition
      * @param callable $callback
-     * @return $this
+     * @return self
      */
-    public function when($condition, callable $callback)
+    public function when($condition, callable $callback): self
     {
         if ($condition) {
             call_user_func($callback, $this);

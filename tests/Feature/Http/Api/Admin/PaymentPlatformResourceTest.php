@@ -8,11 +8,8 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentPlatformResourceTest extends HttpTestCase
 {
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var PaymentPlatform */
-    private $paymentPlatform;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private PaymentPlatform $paymentPlatform;
 
     protected function setUp(): void
     {

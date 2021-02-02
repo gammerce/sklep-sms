@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PasswordResetControllerTest extends HttpTestCase
 {
-    /** @var UserRepository */
-    private $userRepository;
+    private UserRepository $userRepository;
 
     protected function setUp(): void
     {

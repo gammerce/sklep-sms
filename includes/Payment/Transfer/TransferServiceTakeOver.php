@@ -7,11 +7,8 @@ use App\Support\Database;
 
 class TransferServiceTakeOver implements IServiceTakeOver
 {
-    /** @var Database */
-    private $db;
-
-    /** @var TransactionRepository */
-    private $transactionRepository;
+    private Database $db;
+    private TransactionRepository $transactionRepository;
 
     public function __construct(Database $db, TransactionRepository $transactionRepository)
     {
@@ -19,7 +16,7 @@ class TransferServiceTakeOver implements IServiceTakeOver
         $this->transactionRepository = $transactionRepository;
     }
 
-    public function isValid($paymentId, $serviceId, $authData, $serverId)
+    public function isValid($paymentId, $serviceId, $authData, $serverId): bool
     {
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t " .

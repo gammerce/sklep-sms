@@ -26,14 +26,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "user_service";
 
-    /** @var UserServiceService */
-    private $userServiceService;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
+    private UserServiceService $userServiceService;
+    private ServiceManager $serviceManager;
+    private ServiceModuleManager $serviceModuleManager;
 
     public function __construct(
         Template $template,
@@ -108,9 +103,9 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
                         $serviceModule = $this->serviceModuleManager->get($service->getId());
                         return $serviceModule instanceof IServiceUserServiceAdminAdd;
                     })
-                    ->map(function (Service $service) {
-                        return new Option($service->getName(), $service->getId());
-                    })
+                    ->map(
+                        fn(Service $service) => new Option($service->getName(), $service->getId())
+                    )
                     ->join();
 
                 return $this->template->render(

@@ -8,20 +8,11 @@ use App\Support\Expression;
 
 class PlayerFlagService
 {
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ExpiredUserServiceService */
-    private $expiredUserServiceService;
+    private PlayerFlagRepository $playerFlagRepository;
+    private ServiceManager $serviceManager;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private UserServiceRepository $userServiceRepository;
+    private ExpiredUserServiceService $expiredUserServiceService;
 
     public function __construct(
         PlayerFlagRepository $playerFlagRepository,

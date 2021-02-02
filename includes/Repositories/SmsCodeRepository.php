@@ -8,8 +8,7 @@ use DateTime;
 
 class SmsCodeRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
@@ -20,7 +19,7 @@ class SmsCodeRepository
      * @param int $id
      * @return SmsCode|null
      */
-    public function get($id)
+    public function get($id): ?SmsCode
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_sms_codes` WHERE `id` = ?");
@@ -39,7 +38,7 @@ class SmsCodeRepository
      * @param Money $smsPrice
      * @return SmsCode|null
      */
-    public function findByCodeAndPrice($code, Money $smsPrice)
+    public function findByCodeAndPrice($code, Money $smsPrice): ?SmsCode
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ? AND (`expires_at` IS NULL OR `expires_at` > NOW())"
@@ -60,7 +59,7 @@ class SmsCodeRepository
      * @param DateTime|null $expires
      * @return SmsCode
      */
-    public function create($code, Money $smsPrice, $free, DateTime $expires = null)
+    public function create($code, Money $smsPrice, $free, DateTime $expires = null): SmsCode
     {
         $this->db
             ->statement(
@@ -75,7 +74,7 @@ class SmsCodeRepository
      * @param int $id
      * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_sms_codes` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -87,7 +86,7 @@ class SmsCodeRepository
      * @param array $data
      * @return SmsCode
      */
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): SmsCode
     {
         return new SmsCode(
             (int) $data["id"],

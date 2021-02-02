@@ -5,7 +5,7 @@ use Mockery;
 
 trait MockeryConcern
 {
-    protected function closeMockery()
+    protected function closeMockery(): void
     {
         if (class_exists("Mockery")) {
             if ($container = Mockery::getContainer()) {

@@ -8,8 +8,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class SmsCodeRepositoryTest extends TestCase
 {
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
+    private SmsCodeRepository $smsCodeRepository;
 
     protected function setUp(): void
     {

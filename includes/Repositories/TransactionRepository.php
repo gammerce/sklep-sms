@@ -5,7 +5,7 @@ use App\Models\Transaction;
 
 class TransactionRepository
 {
-    private $transactionsQuery = <<<EOF
+    private string $transactionsQuery = <<<EOF
 (SELECT bs.id AS `id`,
 bs.user_id AS `user_id`,
 u.username AS `username`,
@@ -40,7 +40,7 @@ LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.paym
 LEFT JOIN `ss_payment_direct_billing` AS pdb ON bs.payment = 'direct_billing' AND pdb.id = bs.payment_id)
 EOF;
 
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): Transaction
     {
         return new Transaction(
             as_int($data["id"]),
@@ -70,10 +70,7 @@ EOF;
         );
     }
 
-    /**
-     * @return string
-     */
-    public function getQuery()
+    public function getQuery(): string
     {
         return $this->transactionsQuery;
     }

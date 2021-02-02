@@ -5,8 +5,7 @@ use App\Requesting\Requester;
 
 class Version
 {
-    /** @var Requester */
-    private $requester;
+    private Requester $requester;
 
     public function __construct(Requester $requester)
     {

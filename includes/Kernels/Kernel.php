@@ -12,11 +12,8 @@ use Throwable;
 
 class Kernel implements KernelContract
 {
-    /** @var Application */
-    private $app;
-
-    /** @var RoutesManager */
-    private $routesManager;
+    private Application $app;
+    private RoutesManager $routesManager;
 
     public function __construct(Application $app, RoutesManager $routesManager)
     {

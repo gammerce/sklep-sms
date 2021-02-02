@@ -7,8 +7,7 @@ use App\Support\Database;
 
 class PaymentPlatformRepository
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct(Database $db)
     {
@@ -21,7 +20,7 @@ class PaymentPlatformRepository
      * @param array $data
      * @return PaymentPlatform
      */
-    public function create($name, $module, array $data = [])
+    public function create($name, $module, array $data = []): PaymentPlatform
     {
         $this->db
             ->statement(
@@ -37,7 +36,7 @@ class PaymentPlatformRepository
      * @param string $name
      * @param array $data
      */
-    public function update($id, $name, array $data = [])
+    public function update($id, $name, array $data = []): void
     {
         $this->db
             ->statement("UPDATE `ss_payment_platforms` SET `name` = ?, `data` = ? WHERE `id` = ?")
@@ -47,14 +46,12 @@ class PaymentPlatformRepository
     /**
      * @return PaymentPlatform[]
      */
-    public function all()
+    public function all(): array
     {
         $statement = $this->db->query("SELECT * FROM `ss_payment_platforms`");
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -62,7 +59,7 @@ class PaymentPlatformRepository
      * @param array $ids
      * @return PaymentPlatform[]
      */
-    public function findMany(array $ids)
+    public function findMany(array $ids): array
     {
         $keys = implode(",", array_fill(0, count($ids), "?"));
         $statement = $this->db->statement(
@@ -71,9 +68,7 @@ class PaymentPlatformRepository
         $statement->execute($ids);
 
         return collect($statement)
-            ->map(function (array $row) {
-                return $this->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->mapToModel($row))
             ->all();
     }
 
@@ -81,7 +76,7 @@ class PaymentPlatformRepository
      * @param int $id
      * @return PaymentPlatform|null
      */
-    public function get($id)
+    public function get($id): ?PaymentPlatform
     {
         if ($id) {
             $statement = $this->db->statement(
@@ -102,7 +97,7 @@ class PaymentPlatformRepository
      * @return PaymentPlatform
      * @throws EntityNotFoundException
      */
-    public function getOrFail($id)
+    public function getOrFail($id): PaymentPlatform
     {
         if ($paymentPlatform = $this->get($id)) {
             return $paymentPlatform;
@@ -115,7 +110,7 @@ class PaymentPlatformRepository
      * @param int $id
      * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_payment_platforms` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -126,7 +121,7 @@ class PaymentPlatformRepository
      * @param array $data
      * @return PaymentPlatform
      */
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): PaymentPlatform
     {
         return new PaymentPlatform(
             as_int($data["id"]),

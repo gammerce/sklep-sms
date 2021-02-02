@@ -5,8 +5,7 @@ use App\Models\UserService;
 
 class MybbUserService extends UserService
 {
-    /** @var int */
-    private $mybbUid;
+    private int $mybbUid;
 
     public function __construct($id, $serviceId, $userId, $expire, $mybbUid)
     {
@@ -14,10 +13,7 @@ class MybbUserService extends UserService
         $this->mybbUid = $mybbUid;
     }
 
-    /**
-     * @return int
-     */
-    public function getMybbUid()
+    public function getMybbUid(): int
     {
         return $this->mybbUid;
     }

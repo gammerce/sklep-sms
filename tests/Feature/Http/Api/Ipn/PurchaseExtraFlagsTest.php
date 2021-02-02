@@ -14,11 +14,8 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 {
     use PaymentModuleFactoryConcern;
 
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private PlayerFlagRepository $playerFlagRepository;
 
     protected function setUp(): void
     {

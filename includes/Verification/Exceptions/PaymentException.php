@@ -5,7 +5,7 @@ use Exception;
 
 abstract class PaymentException extends Exception
 {
-    protected $errorCode;
+    protected string $errorCode;
 
     public function getErrorCode()
     {

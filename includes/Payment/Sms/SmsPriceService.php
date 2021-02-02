@@ -11,14 +11,9 @@ use App\Verification\Abstracts\SupportSms;
 
 class SmsPriceService
 {
-    /** @var Settings */
-    private $settings;
-
-    /** @var PromoCodeService */
-    private $promoCodeService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
+    private Settings $settings;
+    private PromoCodeService $promoCodeService;
+    private PriceTextService $priceTextService;
 
     public function __construct(
         Settings $settings,
@@ -30,12 +25,7 @@ class SmsPriceService
         $this->priceTextService = $priceTextService;
     }
 
-    /**
-     * @param Money $smsPrice
-     * @param SupportSms $paymentModule
-     * @return bool
-     */
-    public function isPriceAvailable(Money $smsPrice, SupportSms $paymentModule)
+    public function isPriceAvailable(Money $smsPrice, SupportSms $paymentModule): bool
     {
         if ($smsPrice->equal(0)) {
             return true;
@@ -52,12 +42,7 @@ class SmsPriceService
         return false;
     }
 
-    /**
-     * @param Money $smsPrice
-     * @param SupportSms $paymentModule
-     * @return SmsNumber|null
-     */
-    public function getNumber(Money $smsPrice, SupportSms $paymentModule)
+    public function getNumber(Money $smsPrice, SupportSms $paymentModule): ?SmsNumber
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 
@@ -70,12 +55,7 @@ class SmsPriceService
         return null;
     }
 
-    /**
-     * @param Money $smsPrice
-     * @param SupportSms $paymentModule
-     * @return Money
-     */
-    public function getProvision(Money $smsPrice, SupportSms $paymentModule)
+    public function getProvision(Money $smsPrice, SupportSms $paymentModule): Money
     {
         $smsNumbers = $paymentModule->getSmsNumbers();
 
@@ -88,20 +68,12 @@ class SmsPriceService
         return get_sms_provision($smsPrice);
     }
 
-    /**
-     * @param Money $smsPrice
-     * @return Money
-     */
-    public function getGross(Money $smsPrice)
+    public function getGross(Money $smsPrice): Money
     {
         return new Money(ceil($smsPrice->asInt() * $this->settings->getVat()));
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return Money|null
-     */
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): ?Money
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
 
@@ -125,11 +97,7 @@ class SmsPriceService
         return $price;
     }
 
-    /**
-     * @param Purchase $purchase
-     * @return array
-     */
-    public function getOldAndNewPrice(Purchase $purchase)
+    public function getOldAndNewPrice(Purchase $purchase): array
     {
         $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_SMS));
         $promoCode = $purchase->getPromoCode();

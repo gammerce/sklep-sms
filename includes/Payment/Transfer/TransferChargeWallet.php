@@ -20,20 +20,11 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class TransferChargeWallet implements IChargeWallet
 {
-    /** @var Template */
-    private $template;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Translator */
-    private $lang;
-
-    /** @var TransferPriceService */
-    private $transferPriceService;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private Template $template;
+    private PriceTextService $priceTextService;
+    private Translator $lang;
+    private TransferPriceService $transferPriceService;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
         Template $template,
@@ -49,7 +40,7 @@ class TransferChargeWallet implements IChargeWallet
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function setup(Purchase $purchase, array $body)
+    public function setup(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             [
@@ -70,7 +61,7 @@ class TransferChargeWallet implements IChargeWallet
         ]);
     }
 
-    public function getTransactionView(Transaction $transaction)
+    public function getTransactionView(Transaction $transaction): string
     {
         $quantity = $this->priceTextService->getPriceText(
             Money::fromPrice($transaction->getQuantity())
@@ -81,7 +72,7 @@ class TransferChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView(PaymentPlatform $paymentPlatform)
+    public function getOptionView(PaymentPlatform $paymentPlatform): array
     {
         $paymentModule = $this->paymentModuleManager->get($paymentPlatform);
         assert($paymentModule instanceof SupportTransfer);
@@ -98,14 +89,14 @@ class TransferChargeWallet implements IChargeWallet
         return [$option, $body];
     }
 
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceText(
             $this->transferPriceService->getPrice($purchase)
         );
     }
 
-    public function getQuantity(Purchase $purchase)
+    public function getQuantity(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceText($purchase->getOrder(Purchase::ORDER_QUANTITY));
     }

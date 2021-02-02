@@ -6,77 +6,30 @@ use App\Support\Money;
 
 class Transaction
 {
-    /** @var int */
-    private $id;
-
-    /** @var int */
-    private $userId;
-
-    /** @var string */
-    private $userName;
-
-    /** @var string */
-    private $paymentMethod;
-
-    /** @var string */
-    private $paymentId;
-
-    /** @var string */
-    private $externalPaymentId;
-
-    /** @var string */
-    private $serviceId;
-
-    /** @var int */
-    private $serverId;
-
-    /** @var float */
-    private $quantity;
-
-    /** @var string */
-    private $authData;
-
-    /** @var string */
-    private $email;
-
-    /** @var string|null */
-    private $promoCode;
-
-    /** @var array|null */
-    private $extraData;
-
-    /** @var string */
-    private $ip;
-
-    /** @var string */
-    private $platform;
-
-    /** @var Money|null */
-    private $income;
-
-    /** @var Money|null */
-    private $cost;
-
-    /** @var int */
-    private $adminId;
-
-    /** @var string */
-    private $adminName;
-
-    /** @var string */
-    private $smsCode;
-
-    /** @var string */
-    private $smsText;
-
-    /** @var string */
-    private $smsNumber;
-
-    /** @var bool */
-    private $free;
-
-    /** @var string */
-    private $timestamp;
+    private int $id;
+    private ?int $userId;
+    private ?string $userName;
+    private string $paymentMethod;
+    private string $paymentId;
+    private ?string $externalPaymentId;
+    private string $serviceId;
+    private int $serverId;
+    private float $quantity;
+    private string $authData;
+    private string $email;
+    private ?string $promoCode;
+    private array $extraData;
+    private string $ip;
+    private string $platform;
+    private ?Money $income;
+    private ?Money $cost;
+    private ?int $adminId;
+    private ?string $adminName;
+    private ?string $smsCode;
+    private ?string $smsText;
+    private ?string $smsNumber;
+    private bool $free;
+    private string $timestamp;
 
     public function __construct(
         $id,
@@ -116,7 +69,7 @@ class Transaction
         $this->authData = $authData;
         $this->email = $email;
         $this->promoCode = $promoCode;
-        $this->extraData = $extraData;
+        $this->extraData = $extraData ?: [];
         $this->ip = $ip;
         $this->platform = $platform;
         $this->income = $income;
@@ -130,114 +83,72 @@ class Transaction
         $this->timestamp = $timestamp;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /**
-     * @return string
-     */
-    public function getUserName()
+    public function getUserName(): ?string
     {
         return $this->userName;
     }
 
-    /**
-     * @return PaymentMethod|null
-     */
-    public function getPaymentMethod()
+    public function getPaymentMethod(): PaymentMethod
     {
         return as_payment_method($this->paymentMethod);
     }
 
-    /**
-     * @return string
-     */
-    public function getPaymentId()
+    public function getPaymentId(): string
     {
         return $this->paymentId;
     }
 
-    /**
-     * @return string
-     */
-    public function getExternalPaymentId()
+    public function getExternalPaymentId(): ?string
     {
         return $this->externalPaymentId;
     }
 
-    /**
-     * @return string
-     */
-    public function getServiceId()
+    public function getServiceId(): string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @return int
-     */
-    public function getServerId()
+    public function getServerId(): int
     {
         return $this->serverId;
     }
 
-    /**
-     * @return float
-     */
-    public function getQuantity()
+    public function getQuantity(): float
     {
         return $this->quantity;
     }
 
-    /**
-     * @return bool
-     */
-    public function isForever()
+    public function isForever(): bool
     {
         return $this->quantity === -1;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthData()
+    public function getAuthData(): string
     {
         return $this->authData;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPromoCode()
+    public function getPromoCode(): ?string
     {
         return $this->promoCode;
     }
 
-    /**
-     * @return array|null
-     */
-    public function getExtraData()
+    public function getExtraData(): array
     {
         return $this->extraData;
     }
@@ -246,95 +157,62 @@ class Transaction
      * @param string $key
      * @return mixed|null
      */
-    public function getExtraDatum($key)
+    public function getExtraDatum($key): mixed
     {
         return array_get($this->extraData, $key);
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @return string
-     */
-    public function getPlatform()
+    public function getPlatform(): string
     {
         return $this->platform;
     }
 
-    /**
-     * @return Money|null
-     */
-    public function getIncome()
+    public function getIncome(): ?Money
     {
         return $this->income;
     }
 
-    /**
-     * @return Money|null
-     */
-    public function getCost()
+    public function getCost(): ?Money
     {
         return $this->cost;
     }
 
-    /**
-     * @return int
-     */
-    public function getAdminId()
+    public function getAdminId(): ?int
     {
         return $this->adminId;
     }
 
-    /**
-     * @return string
-     */
-    public function getAdminName()
+    public function getAdminName(): ?string
     {
         return $this->adminName;
     }
 
-    /**
-     * @return string
-     */
-    public function getSmsCode()
+    public function getSmsCode(): ?string
     {
         return $this->smsCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getSmsText()
+    public function getSmsText(): ?string
     {
         return $this->smsText;
     }
 
-    /**
-     * @return string
-     */
-    public function getSmsNumber()
+    public function getSmsNumber(): ?string
     {
         return $this->smsNumber;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->free;
     }
 
-    /**
-     * @return string
-     */
-    public function getTimestamp()
+    public function getTimestamp(): string
     {
         return $this->timestamp;
     }

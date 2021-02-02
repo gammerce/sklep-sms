@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PriceResourceTest extends HttpTestCase
 {
-    /** @var PriceRepository */
-    private $priceRepository;
+    private PriceRepository $priceRepository;
 
     protected function setUp(): void
     {

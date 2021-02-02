@@ -23,14 +23,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "groups";
 
-    /** @var GroupRepository */
-    private $groupRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private GroupRepository $groupRepository;
+    private Database $db;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -66,13 +61,13 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return (new BodyRow())
+            ->map(
+                fn(array $row) => (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($row["name"]))
                     ->setDeleteAction(can(Permission::MANAGE_GROUPS()))
-                    ->setEditAction(can(Permission::MANAGE_GROUPS()));
-            })
+                    ->setEditAction(can(Permission::MANAGE_GROUPS()))
+            )
             ->all();
 
         $table = (new Structure())

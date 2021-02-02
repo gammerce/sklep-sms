@@ -10,17 +10,10 @@ class ExternalConfigProvider
 {
     const CACHE_TTL = 20 * 60;
 
-    /** @var array */
-    private $config;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var CachingRequester */
-    private $cachingRequester;
-
-    /** @var Settings */
-    private $settings;
+    private Requester $requester;
+    private CachingRequester $cachingRequester;
+    private Settings $settings;
+    private ?array $config = null;
 
     public function __construct(
         Requester $requester,
@@ -62,9 +55,7 @@ class ExternalConfigProvider
             return $this->cachingRequester->load(
                 CacheEnum::EXTERNAL_CONFIG,
                 static::CACHE_TTL,
-                function () {
-                    return $this->request();
-                }
+                fn() => $this->request()
             );
         } catch (RequestException $e) {
             return [];
@@ -83,7 +74,7 @@ class ExternalConfigProvider
         return $response ? $response->json() : null;
     }
 
-    private function fetched()
+    private function fetched(): bool
     {
         return $this->config !== null;
     }

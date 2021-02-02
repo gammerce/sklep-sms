@@ -26,20 +26,11 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "payment_platforms";
 
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
-
-    /** @var DataFieldService */
-    private $dataFieldService;
-
-    /** @var Database */
-    private $db;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private PaymentPlatformRepository $paymentPlatformRepository;
+    private DataFieldService $dataFieldService;
+    private Database $db;
+    private PaymentModuleManager $paymentModuleManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -86,17 +77,15 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->paymentPlatformRepository->mapToModel($row);
-            })
-            ->map(function (PaymentPlatform $paymentPlatform) {
-                return (new BodyRow())
+            ->map(fn(array $row) => $this->paymentPlatformRepository->mapToModel($row))
+            ->map(
+                fn(PaymentPlatform $paymentPlatform) => (new BodyRow())
                     ->setDbId($paymentPlatform->getId())
                     ->addCell(new Cell($paymentPlatform->getName(), "name"))
                     ->addCell(new Cell($this->lang->t($paymentPlatform->getModuleId())))
                     ->setEditAction(true)
-                    ->setDeleteAction(true);
-            })
+                    ->setDeleteAction(true)
+            )
             ->all();
 
         $table = (new Structure())
@@ -120,9 +109,12 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
         if ($boxId === "create") {
             $paymentModules = collect($this->paymentModuleManager->allIds())
-                ->map(function ($paymentModuleId) {
-                    return new Option($this->lang->t($paymentModuleId), $paymentModuleId);
-                })
+                ->map(
+                    fn($paymentModuleId) => new Option(
+                        $this->lang->t($paymentModuleId),
+                        $paymentModuleId
+                    )
+                )
                 ->join();
 
             return $this->template->render(

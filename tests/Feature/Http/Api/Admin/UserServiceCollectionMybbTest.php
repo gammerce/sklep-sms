@@ -10,8 +10,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
 {
     use MybbRepositoryConcern;
 
-    /** @var UserServiceService */
-    private $userServiceService;
+    private UserServiceService $userServiceService;
 
     protected function setUp(): void
     {
@@ -52,8 +51,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
 
         /** @var MybbUserService $userService */
-        $userService = $this->userServiceService->findOne();
-        $this->assertNotNull($userService);
+        $userService = $this->userServiceService->find()[0];
         $this->assertSame($service->getId(), $userService->getServiceId());
         $this->assertSame(1, $userService->getMybbUid());
         $this->assertSame(0, $userService->getUserId());

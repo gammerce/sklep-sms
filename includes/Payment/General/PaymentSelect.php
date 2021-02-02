@@ -3,25 +3,20 @@ namespace App\Payment\General;
 
 class PaymentSelect
 {
-    /** @var int|null */
-    private $smsPaymentPlatform;
+    private ?int $smsPaymentPlatform = null;
+    private ?int $directBillingPaymentPlatform = null;
+    private ?PaymentOption $allowedPaymentOption = null;
 
     /** @var int[] */
-    private $transferPaymentPlatforms = [];
-
-    /** @var int|null */
-    private $directBillingPaymentPlatform;
-
-    /** @var PaymentOption|null */
-    private $allowedPaymentOption;
+    private array $transferPaymentPlatforms = [];
 
     /** @var PaymentMethod[] */
-    private $disallowedPaymentMethods = [];
+    private array $disallowedPaymentMethods = [];
 
     /**
      * @return PaymentOption[]
      */
-    public function all()
+    public function all(): array
     {
         $output = [];
 
@@ -43,10 +38,10 @@ class PaymentSelect
         $output[] = new PaymentOption(PaymentMethod::WALLET());
 
         return collect($output)
-            ->filter(function (PaymentOption $paymentOption) {
-                return $this->allowedPaymentOption === null ||
-                    $paymentOption->equal($this->allowedPaymentOption);
-            })
+            ->filter(
+                fn(PaymentOption $paymentOption) => $this->allowedPaymentOption === null ||
+                    $paymentOption->equal($this->allowedPaymentOption)
+            )
             ->filter(function (PaymentOption $paymentOption) {
                 foreach ($this->disallowedPaymentMethods as $disallowedPaymentMethod) {
                     if ($disallowedPaymentMethod->equals($paymentOption->getPaymentMethod())) {
@@ -61,9 +56,9 @@ class PaymentSelect
 
     /**
      * @param int $paymentPlatform
-     * @return $this
+     * @return self
      */
-    public function setSmsPaymentPlatform($paymentPlatform)
+    public function setSmsPaymentPlatform($paymentPlatform): self
     {
         $this->smsPaymentPlatform = $paymentPlatform;
         return $this;
@@ -71,9 +66,9 @@ class PaymentSelect
 
     /**
      * @param int[] $paymentPlatforms
-     * @return $this
+     * @return self
      */
-    public function setTransferPaymentPlatforms(array $paymentPlatforms)
+    public function setTransferPaymentPlatforms(array $paymentPlatforms): self
     {
         $this->transferPaymentPlatforms = $paymentPlatforms;
         return $this;
@@ -81,35 +76,25 @@ class PaymentSelect
 
     /**
      * @param int $paymentPlatform
-     * @return $this
+     * @return self
      */
-    public function setDirectBillingPaymentPlatform($paymentPlatform)
+    public function setDirectBillingPaymentPlatform($paymentPlatform): self
     {
         $this->directBillingPaymentPlatform = $paymentPlatform;
         return $this;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     */
-    public function allowPaymentOption(PaymentOption $paymentOption)
+    public function allowPaymentOption(PaymentOption $paymentOption): void
     {
         $this->allowedPaymentOption = $paymentOption;
     }
 
-    /**
-     * @param PaymentMethod $paymentMethod
-     */
-    public function disallowPaymentMethod(PaymentMethod $paymentMethod)
+    public function disallowPaymentMethod(PaymentMethod $paymentMethod): void
     {
         $this->disallowedPaymentMethods[] = $paymentMethod;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     * @return bool
-     */
-    public function contains(PaymentOption $paymentOption)
+    public function contains(PaymentOption $paymentOption): bool
     {
         foreach ($this->all() as $item) {
             if ($paymentOption->equal($item)) {

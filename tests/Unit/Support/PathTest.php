@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PathTest extends TestCase
 {
-    /** @var Path */
-    private $path;
+    private Path $path;
 
     protected function setUp(): void
     {

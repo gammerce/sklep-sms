@@ -6,7 +6,7 @@ use Mockery;
 
 trait SimPayConcern
 {
-    public function mockSimPayIpList()
+    public function mockSimPayIpList(): void
     {
         $this->requesterMock
             ->shouldReceive("get")
@@ -23,19 +23,19 @@ trait SimPayConcern
             );
     }
 
-    public function mockSimPayApiSuccessResponse()
+    public function mockSimPayApiSuccessResponse(): void
     {
         $this->requesterMock
             ->shouldReceive("post")
             ->withArgs(["https://simpay.pl/db/api", Mockery::any()])
-            ->andReturnUsing(function ($url, $body) {
-                return new Response(
+            ->andReturnUsing(
+                fn($url, $body) => new Response(
                     200,
                     json_encode([
                         "status" => "success",
                         "link" => "https://example.com",
                     ])
-                );
-            });
+                )
+            );
     }
 }

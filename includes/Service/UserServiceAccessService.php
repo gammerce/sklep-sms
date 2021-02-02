@@ -13,7 +13,7 @@ class UserServiceAccessService
      * @param User|null $user
      * @return bool
      */
-    public function canUserUseService(Service $service, User $user = null)
+    public function canUserUseService(Service $service, User $user = null): bool
     {
         $combined = array_intersect($service->getGroups(), $user ? $user->getGroups() : []);
         return empty($service->getGroups()) || !empty($combined);

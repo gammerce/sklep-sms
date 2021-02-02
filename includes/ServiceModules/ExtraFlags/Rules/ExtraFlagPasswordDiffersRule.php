@@ -8,8 +8,7 @@ use App\Support\Database;
 
 class ExtraFlagPasswordDiffersRule extends BaseRule
 {
-    /** @var Database */
-    private $db;
+    private Database $db;
 
     public function __construct()
     {

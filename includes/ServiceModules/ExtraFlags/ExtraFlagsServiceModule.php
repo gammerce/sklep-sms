@@ -70,6 +70,7 @@ use App\View\Html\Cell;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\NoneText;
+use App\View\Html\Option;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -97,62 +98,25 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "ss_user_service_extra_flags";
 
-    /** @var Translator */
-    private $lang;
-
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var ServerServiceManager */
-    private $serverServiceManager;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var UserManager */
-    private $userManager;
-
-    /** @var Auth */
-    private $auth;
-
-    /** @var BoughtServiceService */
-    private $boughtServiceService;
-
-    /** @var DatabaseLogger */
-    private $logger;
-
-    /** @var AdminPaymentService */
-    private $adminPaymentService;
-
-    /** @var PurchasePriceService */
-    private $purchasePriceService;
-
-    /** @var PurchasePriceRenderer */
-    private $purchasePriceRenderer;
-
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
-
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var PlayerFlagService */
-    private $playerFlagService;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var ServiceTakeOverFactory */
-    private $serviceTakeOverFactory;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
-
-    /** @var Database */
-    private $db;
+    private Translator $lang;
+    private ServiceModuleManager $serviceModuleManager;
+    private ServerManager $serverManager;
+    private ServerServiceManager $serverServiceManager;
+    private ServiceManager $serviceManager;
+    private UserManager $userManager;
+    private Auth $auth;
+    private BoughtServiceService $boughtServiceService;
+    private DatabaseLogger $logger;
+    private AdminPaymentService $adminPaymentService;
+    private PurchasePriceService $purchasePriceService;
+    private PurchasePriceRenderer $purchasePriceRenderer;
+    private UserServiceRepository $userServiceRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private PlayerFlagService $playerFlagService;
+    private PriceTextService $priceTextService;
+    private ServiceTakeOverFactory $serviceTakeOverFactory;
+    private PaginationFactory $paginationFactory;
+    private Database $db;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,
@@ -176,7 +140,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         TranslationManager $translationManager,
         UserManager $userManager,
         UserServiceRepository $userServiceRepository,
-        Service $service = null
+        ?Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
         $this->adminPaymentService = $adminPaymentService;
@@ -200,11 +164,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
     }
 
-    /**
-     * @param array $data
-     * @return ExtraFlagUserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): ExtraFlagUserService
     {
         return $this->extraFlagUserServiceRepository->mapToModel($data);
     }
@@ -212,8 +172,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function serviceAdminExtraFieldsGet()
     {
         // WEB
-        $webSelYes = $this->showOnWeb() ? "selected" : "";
-        $webSelNo = $this->showOnWeb() ? "" : "selected";
+        $webSelYes = selected($this->showOnWeb());
+        $webSelNo = selected(!$this->showOnWeb());
 
         $types = $this->getTypeOptions(
             ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID,
@@ -345,15 +305,13 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     public function purchaseFormGet(array $query)
     {
         $types = collect(ExtraFlagType::ALL)
-            ->filter(function ($type) {
-                return $this->service->getTypes() & $type;
-            })
-            ->map(function ($value) {
-                return $this->template->render("shop/services/extra_flags/service_type", [
+            ->filter(fn($type) => $this->service->getTypes() & $type)
+            ->map(
+                fn($value) => $this->template->render("shop/services/extra_flags/service_type", [
                     "type" => ExtraFlagType::getTypeName($value),
                     "value" => $value,
-                ]);
-            })
+                ])
+            )
             ->join();
 
         $servers = $this->getServerOptions();
@@ -678,18 +636,15 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
-
                 // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
                 // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
-            ->map(function (Service $service) use ($userService) {
-                return create_dom_element("option", $service->getNameI18n(), [
-                    "value" => $service->getId(),
-                    "selected" =>
-                        $userService->getServiceId() === $service->getId() ? "selected" : "",
-                ]);
-            })
+            ->map(
+                fn(Service $service) => new Option($service->getNameI18n(), $service->getId(), [
+                    "selected" => selected($userService->getServiceId() === $service->getId()),
+                ])
+            )
             ->join();
 
         $types = $this->getTypeOptions($this->service->getTypes(), $userService->getType());
@@ -865,14 +820,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 continue;
             }
 
-            $serviceInfo["types"] .= create_dom_element(
-                "option",
-                ExtraFlagType::getTypeName($optionId),
-                [
-                    "value" => $optionId,
-                    "selected" => $optionId == $userService->getType() ? "selected" : "",
-                ]
-            );
+            $serviceInfo["types"] .= new Option(ExtraFlagType::getTypeName($optionId), $optionId, [
+                "selected" => selected($optionId == $userService->getType()),
+            ]);
 
             if ($optionId == $userService->getType()) {
                 switch ($optionId) {
@@ -1175,18 +1125,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function getServerOptions($selectedServerId = null)
     {
         return collect($this->serverManager->all())
-            ->filter(function (Server $server) {
-                return $this->serverServiceManager->serverServiceLinked(
+            ->filter(
+                fn(Server $server) => $this->serverServiceManager->serverServiceLinked(
                     $server->getId(),
                     $this->service->getId()
-                );
-            })
-            ->map(function (Server $server) use ($selectedServerId) {
-                return create_dom_element("option", $server->getName(), [
-                    "value" => $server->getId(),
-                    "selected" => $selectedServerId === $server->getId() ? "selected" : "",
-                ]);
-            })
+                )
+            )
+            ->map(
+                fn(Server $server) => new Option($server->getName(), $server->getId(), [
+                    "selected" => selected($selectedServerId === $server->getId()),
+                ])
+            )
             ->join();
     }
 
@@ -1198,15 +1147,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     private function getTypeOptions($availableTypes, $selectedTypes = 0)
     {
         return collect(ExtraFlagType::ALL)
-            ->filter(function ($optionId) use ($availableTypes) {
-                return $availableTypes & $optionId;
-            })
-            ->map(function ($optionId) use ($selectedTypes) {
-                return create_dom_element("option", ExtraFlagType::getTypeName($optionId), [
-                    "value" => $optionId,
-                    "selected" => $optionId & $selectedTypes ? "selected" : "",
-                ]);
-            })
+            ->filter(fn($optionId) => $availableTypes & $optionId)
+            ->map(
+                fn($optionId) => new Option(ExtraFlagType::getTypeName($optionId), $optionId, [
+                    "selected" => selected($optionId & $selectedTypes),
+                ])
+            )
             ->join();
     }
 
@@ -1222,9 +1168,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $service = $this->service;
 
         $quantities = collect($this->purchasePriceService->getServicePrices($service, $server))
-            ->map(function (QuantityPrice $price) {
-                return $this->purchasePriceRenderer->render($price, $this->service);
-            })
+            ->map(
+                fn(QuantityPrice $price) => $this->purchasePriceRenderer->render(
+                    $price,
+                    $this->service
+                )
+            )
             ->join();
 
         return $this->template->render(

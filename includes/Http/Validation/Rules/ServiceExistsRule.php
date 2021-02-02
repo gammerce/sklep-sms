@@ -7,8 +7,7 @@ use App\Repositories\ServiceRepository;
 
 class ServiceExistsRule extends BaseRule
 {
-    /** @var ServiceRepository */
-    private $serviceRepository;
+    private ServiceRepository $serviceRepository;
 
     public function __construct()
     {

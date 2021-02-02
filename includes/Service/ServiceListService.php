@@ -8,14 +8,9 @@ use App\Models\User;
 
 class ServiceListService
 {
-    /** @var ServiceModuleManager */
-    private $serviceModuleManager;
-
-    /** @var UserServiceAccessService */
-    private $userServiceAccessService;
-
-    /** @var ServiceManager */
-    private $serviceManager;
+    private ServiceModuleManager $serviceModuleManager;
+    private UserServiceAccessService $userServiceAccessService;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         ServiceManager $serviceManager,
@@ -31,7 +26,7 @@ class ServiceListService
      * @param User $user
      * @return Service[]
      */
-    public function getWebSupportedForUser(User $user)
+    public function getWebSupportedForUser(User $user): array
     {
         return collect($this->serviceManager->all())
             ->filter(function (Service $service) use ($user) {

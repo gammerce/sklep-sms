@@ -19,14 +19,14 @@ class PlayerFlagCollection
         $server = $serverAuth->server();
 
         $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
-            return [
+        $playerFlagItems = collect($playersFlags)->map(
+            fn(array $item) => [
                 "t" => $item["type"],
                 "a" => $item["auth_data"],
                 "p" => $item["password"],
                 "f" => $item["flags"],
-            ];
-        });
+            ]
+        );
 
         $data = [
             "pf" => $playerFlagItems->all(),

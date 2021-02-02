@@ -3,15 +3,14 @@ namespace App\Support;
 
 class Path
 {
-    /** @var string */
-    private $basePath;
+    private string $basePath;
 
     public function __construct($basePath)
     {
         $this->basePath = $basePath;
     }
 
-    public function to($path = "")
+    public function to($path = ""): string
     {
         if (!strlen($path)) {
             return $this->basePath;

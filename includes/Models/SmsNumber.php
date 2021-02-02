@@ -5,11 +5,8 @@ use App\Support\Money;
 
 class SmsNumber
 {
-    /** @var string */
-    private $smsNumber;
-
-    /** @var Money */
-    private $provision;
+    private string $smsNumber;
+    private Money $provision;
 
     /**
      * @param string $smsNumber
@@ -21,26 +18,17 @@ class SmsNumber
         $this->provision = new Money($provision ?: get_sms_provision(get_sms_cost($smsNumber)));
     }
 
-    /**
-     * @return string
-     */
-    public function getNumber()
+    public function getNumber(): string
     {
         return $this->smsNumber;
     }
 
-    /**
-     * @return Money
-     */
-    public function getProvision()
+    public function getProvision(): Money
     {
         return $this->provision;
     }
 
-    /**
-     * @return Money
-     */
-    public function getPrice()
+    public function getPrice(): Money
     {
         return get_sms_cost($this->smsNumber);
     }

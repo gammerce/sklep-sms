@@ -14,20 +14,11 @@ class License
 {
     const CACHE_TTL = 10 * 60;
 
-    /** @var Translator */
-    private $langShop;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var Requester */
-    private $requester;
-
-    /** @var CachingRequester */
-    private $cachingRequester;
-
-    /** @var UrlGenerator */
-    private $urlGenerator;
+    private Translator $langShop;
+    private Settings $settings;
+    private Requester $requester;
+    private CachingRequester $cachingRequester;
+    private UrlGenerator $urlGenerator;
 
     /** @var int */
     private $externalLicenseId;
@@ -38,8 +29,7 @@ class License
     /** @var string */
     private $footer;
 
-    /** @var LicenseRequestException */
-    private $loadingException;
+    private ?LicenseRequestException $loadingException;
 
     public function __construct(
         TranslationManager $translationManager,
@@ -72,7 +62,7 @@ class License
         $this->footer = array_get($response, "f");
     }
 
-    public function isValid()
+    public function isValid(): bool
     {
         return $this->externalLicenseId !== null;
     }
@@ -82,7 +72,7 @@ class License
         return $this->loadingException;
     }
 
-    public function getExpires()
+    public function getExpires(): string
     {
         if ($this->isForever()) {
             return $this->langShop->t("never");
@@ -116,9 +106,7 @@ class License
             return $this->cachingRequester->load(
                 CacheEnum::LICENSE,
                 static::CACHE_TTL,
-                function () {
-                    return $this->request();
-                }
+                fn() => $this->request()
             );
         } catch (RequestException $e) {
             throw new LicenseRequestException(null, $e);

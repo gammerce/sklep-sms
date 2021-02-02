@@ -7,7 +7,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class LocaleServiceTest extends TestCase
 {
-    protected $mockLocale = false;
+    protected bool $mockLocale = false;
 
     /** @test */
     public function defaults_to_polish()

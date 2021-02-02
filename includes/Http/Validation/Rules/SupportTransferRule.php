@@ -8,8 +8,7 @@ use App\Verification\Abstracts\SupportTransfer;
 
 class SupportTransferRule extends BaseRule
 {
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
+    private PaymentModuleManager $paymentModuleManager;
 
     public function __construct()
     {

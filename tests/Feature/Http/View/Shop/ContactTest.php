@@ -9,8 +9,6 @@ class ContactTest extends HttpTestCase
     /** @test */
     public function it_loads()
     {
-        // given
-
         // when
         $response = $this->get("/page/contact");
 

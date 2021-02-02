@@ -30,20 +30,11 @@ class PageAdminBoughtServices extends PageAdmin
 {
     const PAGE_ID = "bought_services";
 
-    /** @var TransactionRepository */
-    private $transactionRepository;
-
-    /** @var Database */
-    private $db;
-
-    /** @var ServiceManager */
-    private $serviceManager;
-
-    /** @var ServerManager */
-    private $serverManager;
-
-    /** @var PaginationFactory */
-    private $paginationFactory;
+    private TransactionRepository $transactionRepository;
+    private Database $db;
+    private ServiceManager $serviceManager;
+    private ServerManager $serverManager;
+    private PaginationFactory $paginationFactory;
 
     public function __construct(
         Template $template,
@@ -106,9 +97,7 @@ class PageAdminBoughtServices extends PageAdmin
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
-            ->map(function (array $row) {
-                return $this->transactionRepository->mapToModel($row);
-            })
+            ->map(fn(array $row) => $this->transactionRepository->mapToModel($row))
             ->map(function (Transaction $transaction) {
                 $service = $this->serviceManager->get($transaction->getServiceId());
                 $server = $this->serverManager->get($transaction->getServerId());
@@ -133,9 +122,7 @@ class PageAdminBoughtServices extends PageAdmin
                     : new NoneText();
 
                 $extraData = collect($transaction->getExtraData())
-                    ->filter(function ($value) {
-                        return strlen($value);
-                    })
+                    ->filter(fn($value) => strlen($value))
                     ->mapWithKeys(function ($value, $key) {
                         if ($key == "password") {
                             $key = $this->lang->t("password");

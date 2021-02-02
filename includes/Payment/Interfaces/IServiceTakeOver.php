@@ -10,5 +10,5 @@ interface IServiceTakeOver
      * @param int $serverId
      * @return bool
      */
-    public function isValid($paymentId, $serviceId, $authData, $serverId);
+    public function isValid($paymentId, $serviceId, $authData, $serverId): bool;
 }

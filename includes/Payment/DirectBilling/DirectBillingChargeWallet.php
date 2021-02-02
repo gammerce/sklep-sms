@@ -17,20 +17,11 @@ use App\System\Settings;
 
 class DirectBillingChargeWallet implements IChargeWallet
 {
-    /** @var Template */
-    private $template;
-
-    /** @var PriceTextService */
-    private $priceTextService;
-
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentModuleManager */
-    private $paymentModuleManager;
-
-    /** @var DirectBillingPriceService */
-    private $directBillingPriceService;
+    private Template $template;
+    private PriceTextService $priceTextService;
+    private Settings $settings;
+    private PaymentModuleManager $paymentModuleManager;
+    private DirectBillingPriceService $directBillingPriceService;
 
     public function __construct(
         Template $template,
@@ -46,7 +37,7 @@ class DirectBillingChargeWallet implements IChargeWallet
         $this->directBillingPriceService = $directBillingPriceService;
     }
 
-    public function setup(Purchase $purchase, array $body)
+    public function setup(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             [
@@ -64,7 +55,7 @@ class DirectBillingChargeWallet implements IChargeWallet
         ]);
     }
 
-    public function getTransactionView(Transaction $transaction)
+    public function getTransactionView(Transaction $transaction): string
     {
         $quantity = $this->priceTextService->getPriceText(
             Money::fromPrice($transaction->getQuantity())
@@ -75,7 +66,7 @@ class DirectBillingChargeWallet implements IChargeWallet
         );
     }
 
-    public function getOptionView(PaymentPlatform $paymentPlatform)
+    public function getOptionView(PaymentPlatform $paymentPlatform): array
     {
         $paymentOptionId = make_charge_wallet_option(
             PaymentMethod::DIRECT_BILLING(),
@@ -92,14 +83,14 @@ class DirectBillingChargeWallet implements IChargeWallet
         return [$option, $body];
     }
 
-    public function getPrice(Purchase $purchase)
+    public function getPrice(Purchase $purchase): string
     {
         return $this->priceTextService->getPriceText(
             $this->directBillingPriceService->getPrice($purchase)
         );
     }
 
-    public function getQuantity(Purchase $purchase)
+    public function getQuantity(Purchase $purchase): string
     {
         $price =
             $this->directBillingPriceService->getPrice($purchase)->asInt() /

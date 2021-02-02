@@ -3,13 +3,10 @@ namespace App\Translation;
 
 class TranslationManager
 {
-    /** @var Translator */
-    private $user;
+    private ?Translator $user = null;
+    private ?Translator $shop = null;
 
-    /** @var Translator */
-    private $shop;
-
-    public function user()
+    public function user(): Translator
     {
         if ($this->user !== null) {
             return $this->user;
@@ -18,7 +15,7 @@ class TranslationManager
         return $this->user = new Translator();
     }
 
-    public function shop()
+    public function shop(): Translator
     {
         if ($this->shop !== null) {
             return $this->shop;

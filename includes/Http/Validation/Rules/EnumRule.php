@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class EnumRule extends BaseRule
 {
-    private $enumClass;
+    private string $enumClass;
 
     public function __construct($enumClass)
     {

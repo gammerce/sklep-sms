@@ -59,31 +59,25 @@ class ServerConfigController
         }
 
         $smsNumbers = $smsModule->getSmsNumbers();
-        $services = collect($serverDataService->getServices($server->getId()))->filter(function (
-            Service $service
-        ) use ($userServiceAccessService) {
-            return $userServiceAccessService->canUserUseService($service, null);
-        });
-        $serviceIds = $services
-            ->map(function (Service $service) {
-                return $service->getId();
-            })
-            ->all();
+        $services = collect($serverDataService->getServices($server->getId()))->filter(
+            fn(Service $service) => $userServiceAccessService->canUserUseService($service, null)
+        );
+        $serviceIds = $services->map(fn(Service $service) => $service->getId())->all();
         $prices = $serverDataService->getPrices($serviceIds, $server);
 
-        $serviceItems = $services->map(function (Service $service) {
-            return [
+        $serviceItems = $services->map(
+            fn(Service $service) => [
                 "i" => $service->getId(),
                 "n" => $service->getNameI18n(),
                 "d" => $service->getShortDescriptionI18n(),
                 "ta" => $service->getTag(),
                 "f" => $service->getFlags(),
                 "ty" => $service->getTypes(),
-            ];
-        });
+            ]
+        );
 
-        $priceItems = collect($prices)->map(function (Price $price) {
-            return [
+        $priceItems = collect($prices)->map(
+            fn(Price $price) => [
                 "i" => $price->getId(),
                 "s" => $price->getServiceId(),
                 "p" => as_int($price->getSmsPrice()),
@@ -91,27 +85,25 @@ class ServerConfigController
                 "q" => $price->getQuantity() !== null ? $price->getQuantity() : -1,
                 // Replace null with 0 cause it's easier to handle it by plugins
                 "d" => $price->getDiscount() ?: 0,
-            ];
-        });
+            ]
+        );
 
         $playersFlags = $serverDataService->getPlayersFlags($server->getId());
-        $playerFlagItems = collect($playersFlags)->map(function (array $item) {
-            return [
+        $playerFlagItems = collect($playersFlags)->map(
+            fn(array $item) => [
                 "t" => $item["type"],
                 "a" => $item["auth_data"],
                 "p" => $item["password"],
                 "f" => $item["flags"],
-            ];
-        });
+            ]
+        );
 
-        $smsNumberItems = collect($smsNumbers)->map(function (SmsNumber $smsNumber) {
-            return $smsNumber->getNumber();
-        });
+        $smsNumberItems = collect($smsNumbers)->map(
+            fn(SmsNumber $smsNumber) => $smsNumber->getNumber()
+        );
 
         $steamIds = collect($userRepository->allWithSteamId())
-            ->map(function (User $user) {
-                return $user->getSteamId();
-            })
+            ->map(fn(User $user) => $user->getSteamId())
             ->join(";");
 
         $serverRepository->touch($server->getId(), $platform, $version);

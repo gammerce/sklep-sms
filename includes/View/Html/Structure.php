@@ -7,13 +7,12 @@ use App\View\Pagination\Pagination;
 class Structure extends DOMElement
 {
     /** @var DOMElement[] */
-    private $headCells = [];
+    private array $headCells = [];
 
     /** @var BodyRow[] */
-    private $bodyRows = [];
+    private array $bodyRows = [];
 
-    /** @var DOMElement */
-    public $foot = null;
+    public ?DOMElement $foot = null;
 
     public function __construct($content = null)
     {
@@ -27,9 +26,9 @@ class Structure extends DOMElement
         $translationManager = app()->make(TranslationManager::class);
         $lang = $translationManager->user();
 
-        $hasActions = collect($this->bodyRows)->some(function (BodyRow $bodyRow) {
-            return $bodyRow->hasAnyAction();
-        });
+        $hasActions = collect($this->bodyRows)->some(
+            fn(BodyRow $bodyRow) => $bodyRow->hasAnyAction()
+        );
 
         // THEAD
         $head = new DOMElement("thead");

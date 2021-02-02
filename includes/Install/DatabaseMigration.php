@@ -7,14 +7,9 @@ use PDOException;
 
 class DatabaseMigration
 {
-    /** @var Application */
-    private $app;
-
-    /** @var Database */
-    private $db;
-
-    /** @var MigrationFiles */
-    private $migrationFiles;
+    private Application $app;
+    private Database $db;
+    private MigrationFiles $migrationFiles;
 
     public function __construct(Application $app, Database $db, MigrationFiles $migrationFiles)
     {

@@ -11,8 +11,7 @@ class ExpiredUserServiceServiceTest extends TestCase
 {
     use MybbRepositoryConcern;
 
-    /** @var ExpiredUserServiceService */
-    private $expiredUserServiceService;
+    private ExpiredUserServiceService $expiredUserServiceService;
 
     protected function setUp(): void
     {

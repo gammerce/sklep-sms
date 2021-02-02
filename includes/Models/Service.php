@@ -3,38 +3,22 @@ namespace App\Models;
 
 class Service
 {
-    /** @var string */
-    private $id;
+    private string $id;
+    private string $name;
+    private string $shortDescription;
+    private string $description;
+    private int $types;
+    private string $tag;
 
-    /** @var string */
-    private $name;
+    /**
+     * ServiceModule identifier
+     */
+    private string $module;
 
-    /** @var string */
-    private $shortDescription;
-
-    /** @var string */
-    private $description;
-
-    /** @var int */
-    private $types;
-
-    /** @var string */
-    private $tag;
-
-    /** @var string */
-    private $module;
-
-    /** @var array */
-    private $groups;
-
-    /** @var string */
-    private $flags;
-
-    /** @var int */
-    private $order;
-
-    /** @var array */
-    private $data;
+    private array $groups;
+    private string $flags;
+    private int $order;
+    private ?array $data;
 
     public function __construct(
         $id,
@@ -44,10 +28,10 @@ class Service
         $types,
         $tag,
         $module,
-        $groups,
+        array $groups,
         $flags,
         $order,
-        $data
+        ?array $data
     ) {
         $this->id = $id;
         $this->name = $name;
@@ -59,117 +43,75 @@ class Service
         $this->groups = $groups;
         $this->flags = $flags;
         $this->order = $order;
-        $this->data = $data;
+        $this->data = $data ?: [];
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getNameI18n()
+    public function getNameI18n(): string
     {
         return __($this->name);
     }
 
-    /**
-     * @return string
-     */
-    public function getShortDescription()
+    public function getShortDescription(): string
     {
         return $this->shortDescription;
     }
 
-    /**
-     * @return string
-     */
-    public function getShortDescriptionI18n()
+    public function getShortDescriptionI18n(): string
     {
         return __($this->shortDescription);
     }
 
-    /**
-     * @return string
-     */
-    public function getDescription()
+    public function getDescription(): string
     {
         return $this->description;
     }
 
-    /**
-     * @return string
-     */
-    public function getDescriptionI18n()
+    public function getDescriptionI18n(): string
     {
         return __($this->description);
     }
 
-    /**
-     * @return int
-     */
-    public function getTypes()
+    public function getTypes(): int
     {
         return $this->types;
     }
 
-    /**
-     * @return string
-     */
-    public function getTag()
+    public function getTag(): string
     {
         return $this->tag;
     }
 
-    /**
-     * @return string
-     */
-    public function getModule()
+    public function getModule(): string
     {
         return $this->module;
     }
 
-    /**
-     * @return array
-     */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }
 
-    /**
-     * @return string
-     */
-    public function getFlags()
+    public function getFlags(): string
     {
         return $this->flags;
     }
 
-    /**
-     * @return int
-     */
-    public function getOrder()
+    public function getOrder(): int
     {
         return $this->order;
     }
 
-    /**
-     * @return array
-     */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }

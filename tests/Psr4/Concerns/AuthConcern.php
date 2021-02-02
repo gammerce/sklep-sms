@@ -6,7 +6,7 @@ use App\System\Auth;
 
 trait AuthConcern
 {
-    protected function actingAs(User $user)
+    protected function actingAs(User $user): void
     {
         /** @var Auth $auth */
         $auth = $this->app->make(Auth::class);

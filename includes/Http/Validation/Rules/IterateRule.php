@@ -11,7 +11,6 @@ class IterateRule extends BaseRule
     public function __construct(Rule $rule)
     {
         parent::__construct();
-
         $this->rule = $rule;
     }
 
