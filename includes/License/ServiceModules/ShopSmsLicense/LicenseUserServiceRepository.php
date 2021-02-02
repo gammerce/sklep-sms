@@ -5,7 +5,7 @@ use App\License\Models\LicenseUserService;
 
 class LicenseUserServiceRepository
 {
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): LicenseUserService
     {
         return new LicenseUserService(
             as_int($data["id"]),

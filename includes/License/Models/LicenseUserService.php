@@ -34,50 +34,32 @@ class LicenseUserService extends UserService
         $this->externalLicenseId = $externalLicenseId;
     }
 
-    /**
-     * @return string
-     */
-    public function getIdentifier()
+    public function getIdentifier(): string
     {
         return $this->identifier;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return int
-     */
-    public function getCostDaily()
+    public function getCostDaily(): int
     {
         return $this->costDaily;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasPlatformAmxModX()
+    public function hasPlatformAmxModX(): bool
     {
         return $this->platformAmxModX;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasPlatformSourceMod()
+    public function hasPlatformSourceMod(): bool
     {
         return $this->platformSourceMod;
     }
 
-    /**
-     * @return int
-     */
-    public function getExternalLicenseId()
+    public function getExternalLicenseId(): int
     {
         return $this->externalLicenseId;
     }

@@ -82,11 +82,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
     }
 
-    /**
-     * @param array $data
-     * @return LicenseUserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): LicenseUserService
     {
         return $this->licenseUserServiceRepository->mapToModel($data);
     }

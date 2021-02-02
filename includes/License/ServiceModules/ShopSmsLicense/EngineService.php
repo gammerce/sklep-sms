@@ -13,7 +13,7 @@ class EngineService
         $this->lang = $translationManager->user();
     }
 
-    public function formatOrderEngines(array $engines)
+    public function formatOrderEngines(array $engines): string
     {
         $output = [];
 
@@ -28,7 +28,7 @@ class EngineService
         return $this->formatEngines($output);
     }
 
-    public function formatEngines(array $engines)
+    public function formatEngines(array $engines): string
     {
         if ($engines) {
             return implode(", ", $engines);
