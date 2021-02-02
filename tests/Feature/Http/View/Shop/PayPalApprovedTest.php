@@ -14,11 +14,8 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PayPalApprovedTest extends HttpTestCase
 {
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
-
-    /** @var PaymentPlatform */
-    private $payPalPlatform;
+    private PurchaseDataService $purchaseDataService;
+    private PaymentPlatform $payPalPlatform;
 
     protected function setUp(): void
     {

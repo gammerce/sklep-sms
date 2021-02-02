@@ -8,8 +8,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PromoCodeCollectionTest extends HttpTestCase
 {
-    /** @var PromoCodeRepository */
-    private $promoCodeRepository;
+    private PromoCodeRepository $promoCodeRepository;
 
     protected function setUp(): void
     {

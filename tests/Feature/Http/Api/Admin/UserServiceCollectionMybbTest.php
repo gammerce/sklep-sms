@@ -10,8 +10,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
 {
     use MybbRepositoryConcern;
 
-    /** @var UserServiceService */
-    private $userServiceService;
+    private UserServiceService $userServiceService;
 
     protected function setUp(): void
     {

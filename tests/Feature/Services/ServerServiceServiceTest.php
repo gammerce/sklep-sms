@@ -7,11 +7,8 @@ use Tests\Psr4\TestCases\TestCase;
 
 class ServerServiceServiceTest extends TestCase
 {
-    /** @var ServerServiceService */
-    private $serverServiceService;
-
-    /** @var ServerServiceRepository */
-    private $serverServiceRepository;
+    private ServerServiceService $serverServiceService;
+    private ServerServiceRepository $serverServiceRepository;
 
     protected function setUp(): void
     {

@@ -17,8 +17,7 @@ class GosettiTest extends TestCase
 {
     use FixtureConcern;
 
-    /** @var Gosetti */
-    private $gosetti;
+    private Gosetti $gosetti;
 
     protected function setUp(): void
     {

@@ -16,8 +16,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
 {
     use CssettiConcern;
 
-    /** @var PurchaseDataService */
-    private $purchaseDataService;
+    private PurchaseDataService $purchaseDataService;
 
     protected function setUp(): void
     {

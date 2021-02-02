@@ -7,8 +7,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class UserServiceRepositoryTest extends TestCase
 {
-    /** @var UserServiceRepository */
-    private $userServiceRepository;
+    private UserServiceRepository $userServiceRepository;
 
     protected function setUp(): void
     {

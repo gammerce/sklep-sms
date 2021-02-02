@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PaymentDirectBillingRepositoryTest extends TestCase
 {
-    /** @var PaymentDirectBillingRepository */
-    private $paymentDirectBillingRepository;
+    private PaymentDirectBillingRepository $paymentDirectBillingRepository;
 
     protected function setUp(): void
     {

@@ -11,11 +11,8 @@ class UserServiceResourceTest extends HttpTestCase
 {
     use PlayerFlagConcern;
 
-    /** @var ExtraFlagUserServiceRepository */
-    private $extraFlagUserServiceRepository;
-
-    /** @var PlayerFlagRepository */
-    private $playerFlagRepository;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private PlayerFlagRepository $playerFlagRepository;
 
     protected function setUp(): void
     {

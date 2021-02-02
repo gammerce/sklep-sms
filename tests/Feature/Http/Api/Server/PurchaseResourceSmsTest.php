@@ -18,14 +18,9 @@ class PurchaseResourceSmsTest extends HttpTestCase
     use GosettiConcern;
     use PaymentModuleFactoryConcern;
 
-    /** @var Server */
-    private $server;
-
-    /** @var Price */
-    private $price;
-
-    /** @var string */
-    private $serviceId = "vip";
+    private Server $server;
+    private Price $price;
+    private string $serviceId = "vip";
 
     protected function setUp(): void
     {

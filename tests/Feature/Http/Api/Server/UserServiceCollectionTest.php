@@ -7,8 +7,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserServiceCollectionTest extends HttpTestCase
 {
-    /** @var Server */
-    private $server;
+    private Server $server;
 
     protected function setUp(): void
     {

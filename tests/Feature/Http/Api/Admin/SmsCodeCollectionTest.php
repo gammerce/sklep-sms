@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class SmsCodeCollectionTest extends HttpTestCase
 {
-    /** @var SmsCodeRepository */
-    private $smsCodeRepository;
+    private SmsCodeRepository $smsCodeRepository;
 
     protected function setUp(): void
     {

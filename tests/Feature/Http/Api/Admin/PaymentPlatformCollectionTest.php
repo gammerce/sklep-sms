@@ -7,8 +7,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PaymentPlatformCollectionTest extends HttpTestCase
 {
-    /** @var PaymentPlatformRepository */
-    private $paymentPlatformRepository;
+    private PaymentPlatformRepository $paymentPlatformRepository;
 
     protected function setUp(): void
     {

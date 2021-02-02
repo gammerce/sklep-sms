@@ -10,8 +10,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class HostplayTest extends TestCase
 {
-    /** @var Hostplay */
-    private $hostplay;
+    private Hostplay $hostplay;
 
     protected function setUp(): void
     {
