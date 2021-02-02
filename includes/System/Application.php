@@ -16,7 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Application extends Container
 {
-    const VERSION = "3.16.0";
+    const VERSION = "3.16.1";
 
     private array $providers = [
         AppServiceProvider::class,
