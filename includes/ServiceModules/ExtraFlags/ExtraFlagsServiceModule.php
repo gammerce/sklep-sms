@@ -164,11 +164,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
     }
 
-    /**
-     * @param array $data
-     * @return ExtraFlagUserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): ExtraFlagUserService
     {
         return $this->extraFlagUserServiceRepository->mapToModel($data);
     }

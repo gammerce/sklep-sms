@@ -16,7 +16,7 @@ class PaymentSelect
     /**
      * @return PaymentOption[]
      */
-    public function all()
+    public function all(): array
     {
         $output = [];
 
@@ -56,9 +56,9 @@ class PaymentSelect
 
     /**
      * @param int $paymentPlatform
-     * @return $this
+     * @return self
      */
-    public function setSmsPaymentPlatform($paymentPlatform)
+    public function setSmsPaymentPlatform($paymentPlatform): self
     {
         $this->smsPaymentPlatform = $paymentPlatform;
         return $this;
@@ -66,9 +66,9 @@ class PaymentSelect
 
     /**
      * @param int[] $paymentPlatforms
-     * @return $this
+     * @return self
      */
-    public function setTransferPaymentPlatforms(array $paymentPlatforms)
+    public function setTransferPaymentPlatforms(array $paymentPlatforms): self
     {
         $this->transferPaymentPlatforms = $paymentPlatforms;
         return $this;
@@ -76,35 +76,25 @@ class PaymentSelect
 
     /**
      * @param int $paymentPlatform
-     * @return $this
+     * @return self
      */
-    public function setDirectBillingPaymentPlatform($paymentPlatform)
+    public function setDirectBillingPaymentPlatform($paymentPlatform): self
     {
         $this->directBillingPaymentPlatform = $paymentPlatform;
         return $this;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     */
-    public function allowPaymentOption(PaymentOption $paymentOption)
+    public function allowPaymentOption(PaymentOption $paymentOption): void
     {
         $this->allowedPaymentOption = $paymentOption;
     }
 
-    /**
-     * @param PaymentMethod $paymentMethod
-     */
-    public function disallowPaymentMethod(PaymentMethod $paymentMethod)
+    public function disallowPaymentMethod(PaymentMethod $paymentMethod): void
     {
         $this->disallowedPaymentMethods[] = $paymentMethod;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     * @return bool
-     */
-    public function contains(PaymentOption $paymentOption)
+    public function contains(PaymentOption $paymentOption): bool
     {
         foreach ($this->all() as $item) {
             if ($paymentOption->equal($item)) {

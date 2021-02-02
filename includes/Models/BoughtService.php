@@ -5,58 +5,46 @@ use App\Payment\General\PaymentMethod;
 
 class BoughtService
 {
-    /** @var int */
-    private $id;
+    private int $id;
 
-    /** @var int */
-    private $userId;
+    /**
+     * 0 means null
+     */
+    private ?int $userId;
+    private string $method;
+    private string $paymentId;
+    private string $serviceId;
 
-    /** @var string */
-    private $method;
+    /**
+     * 0 means null
+     */
+    private ?int $serverId;
 
-    /** @var string */
-    private $paymentId;
-
-    /** @var string */
-    private $service;
-
-    /** @var int */
-    private $server;
-
-    /** @var string */
-    private $amount;
-
-    /** @var string */
-    private $authData;
-
-    /** @var string */
-    private $email;
-
-    /** @var string|null */
-    private $promoCode;
-
-    /** @var array */
-    private $extraData;
+    private string $amount;
+    private string $authData;
+    private string $email;
+    private ?string $promoCode;
+    private array $extraData;
 
     public function __construct(
         $id,
         $userId,
         $method,
         $paymentId,
-        $service,
-        $server,
+        $serviceId,
+        $serverId,
         $amount,
         $authData,
         $email,
         $promoCode,
-        $extraData
+        array $extraData
     ) {
         $this->id = $id;
         $this->userId = $userId;
         $this->method = $method;
         $this->paymentId = $paymentId;
-        $this->service = $service;
-        $this->server = $server;
+        $this->serviceId = $serviceId;
+        $this->serverId = $serverId;
         $this->amount = $amount;
         $this->authData = $authData;
         $this->email = $email;
@@ -64,70 +52,57 @@ class BoughtService
         $this->extraData = $extraData;
     }
 
-    /** @return int */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /** @return int */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /** @return PaymentMethod|null */
-    public function getMethod()
+    public function getMethod(): ?PaymentMethod
     {
         return as_payment_method($this->method);
     }
 
-    /** @return string */
-    public function getPaymentId()
+    public function getPaymentId(): string
     {
         return $this->paymentId;
     }
 
-    /** @return string */
-    public function getServiceId()
+    public function getServiceId(): string
     {
-        return $this->service;
+        return $this->serviceId;
     }
 
-    /** @return int */
-    public function getServerId()
+    public function getServerId(): ?int
     {
-        return $this->server;
+        return $this->serverId;
     }
 
-    /** @return string */
-    public function getAmount()
+    public function getAmount(): string
     {
         return $this->amount;
     }
 
-    /** @return string */
-    public function getAuthData()
+    public function getAuthData(): string
     {
         return $this->authData;
     }
 
-    /** @return string */
-    public function getEmail()
+    public function getEmail(): string
     {
         return $this->email;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getPromoCode()
+    public function getPromoCode(): ?string
     {
         return $this->promoCode;
     }
 
-    /** @return array */
-    public function getExtraData()
+    public function getExtraData(): array
     {
         return $this->extraData;
     }

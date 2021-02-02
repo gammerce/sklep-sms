@@ -12,7 +12,7 @@ class SettingsRepository
         $this->db = $db;
     }
 
-    public function update(array $values)
+    public function update(array $values): bool
     {
         if (empty($values)) {
             return false;

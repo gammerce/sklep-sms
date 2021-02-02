@@ -32,11 +32,7 @@ abstract class ServiceModule
         $this->serviceDescriptionService = $serviceDescriptionService;
     }
 
-    /**
-     * @param array $data
-     * @return UserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): UserService
     {
         return new UserService(
             as_int($data["id"]),

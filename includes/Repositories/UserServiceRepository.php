@@ -16,9 +16,9 @@ class UserServiceRepository
      * @param string $serviceId
      * @param int|null $seconds
      * @param int|null $userId
-     * @return string
+     * @return int
      */
-    public function create($serviceId, $seconds, $userId)
+    public function create($serviceId, $seconds, $userId): int
     {
         $statement = $this->db->statement(
             "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
@@ -28,7 +28,7 @@ class UserServiceRepository
         return $this->db->lastId();
     }
 
-    public function createFixedExpire($serviceId, $expiresAt, $userId)
+    public function createFixedExpire($serviceId, $expiresAt, $userId): int
     {
         $statement = $this->db->statement(
             "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
@@ -38,15 +38,14 @@ class UserServiceRepository
         return $this->db->lastId();
     }
 
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` = ?");
         $statement->execute([$id]);
-
         return !!$statement->rowCount();
     }
 
-    public function deleteMany(array $ids)
+    public function deleteMany(array $ids): bool
     {
         if (!$ids) {
             return false;
@@ -59,7 +58,7 @@ class UserServiceRepository
         return !!$statement->rowCount();
     }
 
-    public function update($id, array $data)
+    public function update($id, array $data): int
     {
         if (!$data) {
             return 0;
@@ -82,7 +81,7 @@ class UserServiceRepository
         return $statement->rowCount();
     }
 
-    public function updateWithModule($table, $userServiceId, array $data)
+    public function updateWithModule($table, $userServiceId, array $data): int
     {
         $baseData = collect($data)->filter(
             fn($value, $key) => in_array($key, ["user_id", "service_id", "expire"], true)
@@ -106,7 +105,7 @@ class UserServiceRepository
         return $affected;
     }
 
-    public function updateUserId($id, $userId)
+    public function updateUserId($id, $userId): bool
     {
         $statement = $this->db->statement(
             "UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?"

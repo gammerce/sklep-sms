@@ -14,7 +14,7 @@ class GroupRepository
         $this->db = $db;
     }
 
-    public function getPermissions()
+    public function getPermissions(): array
     {
         return Permission::values();
     }
@@ -22,7 +22,7 @@ class GroupRepository
     /**
      * @return Group[]
      */
-    public function all()
+    public function all(): array
     {
         $statement = $this->db->query("SELECT * FROM `ss_groups`");
 
@@ -35,7 +35,7 @@ class GroupRepository
      * @param int $id
      * @return Group|null
      */
-    public function get($id)
+    public function get($id): ?Group
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_groups` WHERE `id` = ?");
@@ -53,7 +53,7 @@ class GroupRepository
      * @param int $id
      * @return bool
      */
-    public function delete($id)
+    public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_groups` WHERE `id` = ?");
         $statement->execute([$id]);
@@ -65,7 +65,7 @@ class GroupRepository
      * @param Permission[] $permissions
      * @return Group
      */
-    public function create($name, array $permissions)
+    public function create($name, array $permissions): Group
     {
         $statement = $this->db->statement(
             "INSERT INTO `ss_groups` SET `name` = ?, `permissions` = ?"
@@ -80,7 +80,7 @@ class GroupRepository
      * @param Permission[] $permissions
      * @return bool
      */
-    public function update($id, $name, array $permissions)
+    public function update($id, $name, array $permissions): bool
     {
         $statement = $this->db->statement(
             "UPDATE `ss_groups` SET `name` = ?, `permissions` = ? WHERE `id` = ?"
@@ -89,11 +89,7 @@ class GroupRepository
         return !!$statement->rowCount();
     }
 
-    /**
-     * @param array $data
-     * @return Group
-     */
-    private function mapToModel(array $data)
+    private function mapToModel(array $data): Group
     {
         $permissions = as_permission_list(explode(",", $data["permissions"]) ?: []);
         return new Group(as_int($data["id"]), as_string($data["name"]), $permissions);

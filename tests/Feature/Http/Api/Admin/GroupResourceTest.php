@@ -8,11 +8,8 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class GroupResourceTest extends HttpTestCase
 {
-    /** @var GroupRepository */
-    private $groupRepository;
-
-    /** @var Group */
-    private $group;
+    private GroupRepository $groupRepository;
+    private Group $group;
 
     protected function setUp(): void
     {

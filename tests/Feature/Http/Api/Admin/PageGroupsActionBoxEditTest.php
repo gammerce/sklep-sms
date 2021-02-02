@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PageGroupsActionBoxEditTest extends HttpTestCase
 {
-    /** @var Group */
-    private $group;
+    private Group $group;
 
     protected function setUp(): void
     {

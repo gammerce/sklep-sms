@@ -32,7 +32,7 @@ class PurchasePriceService
      * @param Server|null $server
      * @return QuantityPrice[]
      */
-    public function getServicePrices(Service $service, Server $server = null)
+    public function getServicePrices(Service $service, Server $server = null): array
     {
         $output = [];
         $prices = $this->priceRepository->findByServiceServer($service, $server);
@@ -74,13 +74,16 @@ class PurchasePriceService
      * @param Server|null $server
      * @return QuantityPrice|null
      */
-    public function getServicePriceByQuantity($quantity, Service $service, Server $server = null)
-    {
+    public function getServicePriceByQuantity(
+        $quantity,
+        Service $service,
+        Server $server = null
+    ): ?QuantityPrice {
         $quantityPrices = $this->getServicePrices($service, $server);
         return array_get($quantityPrices, $quantity);
     }
 
-    private function isAvailableUsingSms(Price $price, Server $server = null)
+    private function isAvailableUsingSms(Price $price, Server $server = null): bool
     {
         if (!$price->hasSmsPrice()) {
             return false;
@@ -103,12 +106,12 @@ class PurchasePriceService
         return false;
     }
 
-    private function isAvailableUsingWallet(Price $price)
+    private function isAvailableUsingWallet(Price $price): bool
     {
         return $price->hasTransferPrice();
     }
 
-    private function isAvailableUsingDirectBilling(Price $price)
+    private function isAvailableUsingDirectBilling(Price $price): bool
     {
         return $price->hasDirectBillingPrice();
     }

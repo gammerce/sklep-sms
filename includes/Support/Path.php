@@ -10,7 +10,7 @@ class Path
         $this->basePath = $basePath;
     }
 
-    public function to($path = "")
+    public function to($path = ""): string
     {
         if (!strlen($path)) {
             return $this->basePath;

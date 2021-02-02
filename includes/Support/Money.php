@@ -21,31 +21,22 @@ class Money
      * @param string|null $price
      * @return Money
      */
-    public static function fromPrice($price)
+    public static function fromPrice($price): Money
     {
         return new Money(price_to_int($price));
     }
 
-    /**
-     * @return int
-     */
-    public function asInt()
+    public function asInt(): int
     {
         return $this->value;
     }
 
-    /**
-     * @return float
-     */
-    public function asFloat()
+    public function asFloat(): float
     {
         return $this->value / 100.0;
     }
 
-    /**
-     * @return string
-     */
-    public function asPrice()
+    public function asPrice(): string
     {
         return number_format($this->asFloat(), 2);
     }
@@ -54,7 +45,7 @@ class Money
      * @param Money|int $money
      * @return bool
      */
-    public function equal($money)
+    public function equal($money): bool
     {
         if ($money instanceof Money) {
             return $money->asInt() === $this->value;
@@ -67,7 +58,7 @@ class Money
      * @param Money|int $money
      * @return bool
      */
-    public function notEqual($money)
+    public function notEqual($money): bool
     {
         return !$this->equal($money);
     }
@@ -76,7 +67,7 @@ class Money
      * @param Money|int $money
      * @return Money
      */
-    public function add($money)
+    public function add($money): Money
     {
         if ($money instanceof Money) {
             $money = $money->asInt();

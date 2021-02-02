@@ -19,9 +19,9 @@ class PriceTextService
 
     /**
      * @param Money|null $price
-     * @return string
+     * @return string|null
      */
-    public function getPriceGrossText(Money $price = null)
+    public function getPriceGrossText(Money $price = null): ?string
     {
         if ($price === null) {
             return null;
@@ -33,9 +33,9 @@ class PriceTextService
 
     /**
      * @param Money|int|null $price
-     * @return string
+     * @return string|null
      */
-    public function getPriceText($price)
+    public function getPriceText($price): ?string
     {
         if ($price === null) {
             return null;
@@ -50,18 +50,18 @@ class PriceTextService
 
     /**
      * @param int|null $price
-     * @return string
+     * @return string|null
      */
-    public function getPlainPrice($price)
+    public function getPlainPrice($price): ?string
     {
         return $price !== null ? number_format($price / 100.0, 2) : null;
     }
 
     /**
      * @param Money|null $price
-     * @return string
+     * @return string|null
      */
-    public function getPlainPriceGross(Money $price)
+    public function getPlainPriceGross(Money $price = null): ?string
     {
         if ($price === null) {
             return null;
@@ -76,7 +76,7 @@ class PriceTextService
      * @param Service $service
      * @return string
      */
-    public function getQuantityText($quantity, Service $service)
+    public function getQuantityText($quantity, Service $service): string
     {
         return $quantity === null || $quantity === -1
             ? $this->lang->t("forever")

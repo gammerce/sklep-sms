@@ -11,7 +11,7 @@ trait MybbRepositoryConcern
     /** @var MybbRepository|MockInterface */
     public $mybbRepositoryMock;
 
-    public function mockMybbRepository()
+    public function mockMybbRepository(): void
     {
         $mybbRepositoryFactory = Mockery::mock(MybbRepositoryFactory::class);
         $this->app->instance(MybbRepositoryFactory::class, $mybbRepositoryFactory);

@@ -15,14 +15,9 @@ class ServerConfigControllerTest extends HttpTestCase
 {
     use GosettiConcern;
 
-    /** @var Settings */
-    private $settings;
-
-    /** @var PaymentPlatform */
-    private $paymentPlatform;
-
-    /** @var Server */
-    private $server;
+    private Settings $settings;
+    private PaymentPlatform $paymentPlatform;
+    private Server $server;
 
     protected function setUp(): void
     {

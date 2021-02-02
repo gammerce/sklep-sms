@@ -17,11 +17,8 @@ class ChargeWalletTest extends HttpTestCase
     use PaymentModuleFactoryConcern;
     use SimPayConcern;
 
-    /** @var SettingsRepository */
-    private $settingsRepository;
-
-    /** @var UserRepository */
-    private $userRepository;
+    private SettingsRepository $settingsRepository;
+    private UserRepository $userRepository;
 
     protected function setUp(): void
     {

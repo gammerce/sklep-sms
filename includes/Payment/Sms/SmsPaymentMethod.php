@@ -34,8 +34,10 @@ class SmsPaymentMethod implements IPaymentMethod
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
-    {
+    public function getPaymentDetails(
+        Purchase $purchase,
+        ?PaymentPlatform $paymentPlatform = null
+    ): ?array {
         $smsPaymentModule = $this->paymentModuleManager->get($paymentPlatform);
 
         if (!($smsPaymentModule instanceof SupportSms)) {
@@ -53,7 +55,7 @@ class SmsPaymentMethod implements IPaymentMethod
         ]);
     }
 
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
+    public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool
     {
         if (!$paymentPlatform) {
             return false;
@@ -73,7 +75,7 @@ class SmsPaymentMethod implements IPaymentMethod
      * @return PaymentResult
      * @throws PaymentProcessingException
      */
-    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule): PaymentResult
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()
@@ -125,7 +127,7 @@ class SmsPaymentMethod implements IPaymentMethod
         return new PaymentResult(PaymentResultType::PURCHASED(), $boughtServiceId);
     }
 
-    private function getSmsExceptionMessage(SmsPaymentException $e)
+    private function getSmsExceptionMessage(SmsPaymentException $e): string
     {
         return $e->getMessage() ?:
             $this->lang->t("sms_info_" . $e->getErrorCode()) ?:

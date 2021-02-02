@@ -12,18 +12,18 @@ class QueryParticle
      * @param string $query
      * @param array $params
      */
-    public function add($query, array $params = [])
+    public function add($query, array $params = []): void
     {
         $this->particles[] = $query;
         $this->params = array_merge($this->params, $params);
     }
 
-    public function extend(QueryParticle $particle)
+    public function extend(QueryParticle $particle): void
     {
         $this->add($particle->text(), $particle->params());
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return !$this->particles;
     }
@@ -32,7 +32,7 @@ class QueryParticle
      * @param string $glue
      * @return string
      */
-    public function text($glue = " ")
+    public function text($glue = " "): string
     {
         return implode($glue, $this->particles);
     }

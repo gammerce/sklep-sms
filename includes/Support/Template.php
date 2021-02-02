@@ -26,14 +26,18 @@ class Template
         $this->fileSystem = $fileSystem;
     }
 
-    public function render($templateName, array $data = [], $eslashes = true, $htmlcomments = true)
-    {
+    public function render(
+        $templateName,
+        array $data = [],
+        $eslashes = true,
+        $htmlcomments = true
+    ): string {
         $template = $this->getTemplate($templateName, $eslashes, $htmlcomments);
         $compiled = $this->compileTemplate($template);
         return $this->evalTemplate($compiled, $data);
     }
 
-    public function renderNoComments($templateName, array $data = [])
+    public function renderNoComments($templateName, array $data = []): string
     {
         return $this->render($templateName, $data, true, false);
     }
@@ -59,7 +63,7 @@ class Template
         return $this->cachedTemplates[$title];
     }
 
-    private function resolvePath($title)
+    private function resolvePath($title): ?string
     {
         foreach ($this->getPossiblePaths($title) as $path) {
             if ($this->fileSystem->exists($path)) {
@@ -70,7 +74,7 @@ class Template
         return null;
     }
 
-    private function getPossiblePaths($title)
+    private function getPossiblePaths($title): array
     {
         $theme = $this->settings->getTheme();
         $language = $this->lang->getCurrentLanguageShort();
@@ -92,7 +96,7 @@ class Template
         return $paths;
     }
 
-    private function readTemplate($path, $title, $htmlcomments, $eslashes)
+    private function readTemplate($path, $title, $htmlcomments, $eslashes): string
     {
         $template = $this->fileSystem->get($path);
 
@@ -112,7 +116,7 @@ class Template
         return $template;
     }
 
-    private function evalTemplate($__content, array $data)
+    private function evalTemplate($__content, array $data): string
     {
         $data = $this->addDefaultVariables($data);
         extract($data);
@@ -124,7 +128,7 @@ class Template
         return eval("return \"$__content\";");
     }
 
-    private function addDefaultVariables(array $data)
+    private function addDefaultVariables(array $data): array
     {
         if (!array_key_exists("lang", $data)) {
             $data["lang"] = $this->lang;
@@ -141,7 +145,7 @@ class Template
         return $data;
     }
 
-    private function compileTemplate($template)
+    private function compileTemplate($template): string
     {
         return preg_replace(
             ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],

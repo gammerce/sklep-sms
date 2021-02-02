@@ -13,13 +13,13 @@ trait PaymentModuleFactoryConcern
     /** @var PaymentModuleFactory|MockInterface */
     private $paymentModuleFactoryMock;
 
-    public function mockPaymentModuleFactory()
+    public function mockPaymentModuleFactory(): void
     {
         $this->paymentModuleFactoryMock = Mockery::mock(PaymentModuleFactory::class);
         $this->app->instance(PaymentModuleFactory::class, $this->paymentModuleFactoryMock);
     }
 
-    public function makeVerifySmsSuccessful($paymentModuleClass)
+    public function makeVerifySmsSuccessful($paymentModuleClass): void
     {
         $this->paymentModuleFactoryMock
             ->shouldReceive("create")
@@ -32,7 +32,7 @@ trait PaymentModuleFactoryConcern
             });
     }
 
-    public function makeVerifySmsUnsuccessful($paymentModuleClass)
+    public function makeVerifySmsUnsuccessful($paymentModuleClass): void
     {
         $this->paymentModuleFactoryMock
             ->shouldReceive("create")

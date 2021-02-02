@@ -38,7 +38,7 @@ class PaymentService
      * @throws InvalidServiceModuleException
      * @throws ValidationException
      */
-    public function makePayment(Purchase $purchase)
+    public function makePayment(Purchase $purchase): PaymentResult
     {
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
 

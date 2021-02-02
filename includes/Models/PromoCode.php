@@ -8,33 +8,20 @@ use UnexpectedValueException;
 
 class PromoCode
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $code;
-
+    private int $id;
+    private string $code;
     private QuantityType $quantityType;
-
-    /** @var int */
-    private $quantity;
-
+    private int $quantity;
     private DateTime $createdAt;
+    private ?string $serviceId;
+    private ?int $server;
+    private ?int $userId;
+    private int $usageCount;
 
-    /** @var string|null */
-    private $service;
-
-    /** @var int|null */
-    private $server;
-
-    /** @var int|null */
-    private $userId;
-
-    /** @var int */
-    private $usageCount;
-
-    /** @var int|null */
-    private $usageLimit;
+    /**
+     * null means no limit
+     */
+    private ?int $usageLimit;
 
     private ?DateTime $expiresAt;
 
@@ -47,7 +34,7 @@ class PromoCode
         $usageCount = 0,
         $usageLimit = null,
         DateTime $expiresAt = null,
-        $service = null,
+        $serviceId = null,
         $server = null,
         $userId = null
     ) {
@@ -55,7 +42,7 @@ class PromoCode
         $this->code = $code;
         $this->quantityType = $quantityType;
         $this->quantity = $quantity;
-        $this->service = $service;
+        $this->serviceId = $serviceId;
         $this->server = $server;
         $this->userId = $userId;
         $this->createdAt = $createdAt;
@@ -64,82 +51,52 @@ class PromoCode
         $this->expiresAt = $expiresAt;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getCode()
+    public function getCode(): string
     {
         return $this->code;
     }
 
-    /**
-     * @return string
-     */
-    public function getServiceId()
+    public function getServiceId(): ?string
     {
-        return $this->service;
+        return $this->serviceId;
     }
 
-    /**
-     * @return int
-     */
-    public function getServerId()
+    public function getServerId(): ?int
     {
         return $this->server;
     }
 
-    /**
-     * @return QuantityType
-     */
-    public function getQuantityType()
+    public function getQuantityType(): QuantityType
     {
         return $this->quantityType;
     }
 
-    /**
-     * @return int
-     */
-    public function getQuantity()
+    public function getQuantity(): int
     {
         return $this->quantity;
     }
 
-    /**
-     * @return int
-     */
-    public function getUserId()
+    public function getUserId(): ?int
     {
         return $this->userId;
     }
 
-    /**
-     * @return DateTime
-     */
-    public function getCreatedAt()
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    /**
-     * @return int
-     */
-    public function getUsageCount()
+    public function getUsageCount(): int
     {
         return $this->usageCount;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getRemainingUsage()
+    public function getRemainingUsage(): ?int
     {
         if ($this->usageLimit === null) {
             return null;
@@ -148,26 +105,17 @@ class PromoCode
         return $this->usageLimit - $this->usageCount;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getUsageLimit()
+    public function getUsageLimit(): ?int
     {
         return $this->usageLimit;
     }
 
-    /**
-     * @return DateTime|null
-     */
-    public function getExpiresAt()
+    public function getExpiresAt(): ?DateTime
     {
         return $this->expiresAt;
     }
 
-    /**
-     * @return string
-     */
-    public function getQuantityFormatted()
+    public function getQuantityFormatted(): string
     {
         switch ($this->quantityType) {
             case QuantityType::FIXED():

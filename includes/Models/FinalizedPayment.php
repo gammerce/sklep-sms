@@ -51,10 +51,7 @@ class FinalizedPayment
         $this->income = new Money(0);
     }
 
-    /**
-     * @return bool
-     */
-    public function isSuccessful()
+    public function isSuccessful(): bool
     {
         return $this->status;
     }
@@ -63,16 +60,13 @@ class FinalizedPayment
      * @param bool $status
      * @return $this
      */
-    public function setStatus($status)
+    public function setStatus($status): self
     {
         $this->status = (bool) $status;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOrderId()
+    public function getOrderId(): string
     {
         return $this->orderId;
     }
@@ -81,16 +75,13 @@ class FinalizedPayment
      * @param string $orderId
      * @return $this
      */
-    public function setOrderId($orderId)
+    public function setOrderId($orderId): self
     {
         $this->orderId = (string) $orderId;
         return $this;
     }
 
-    /**
-     * @return Money
-     */
-    public function getCost()
+    public function getCost(): Money
     {
         return $this->cost;
     }
@@ -99,16 +90,13 @@ class FinalizedPayment
      * @param Money|int $cost
      * @return $this
      */
-    public function setCost($cost)
+    public function setCost($cost): self
     {
         $this->cost = new Money($cost);
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getTransactionId()
+    public function getTransactionId(): string
     {
         return $this->transactionId;
     }
@@ -117,16 +105,13 @@ class FinalizedPayment
      * @param string $transactionId
      * @return $this
      */
-    public function setTransactionId($transactionId)
+    public function setTransactionId($transactionId): self
     {
         $this->transactionId = (string) $transactionId;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getExternalServiceId()
+    public function getExternalServiceId(): string
     {
         return $this->externalServiceId;
     }
@@ -135,16 +120,13 @@ class FinalizedPayment
      * @param string $externalServiceId
      * @return $this
      */
-    public function setExternalServiceId($externalServiceId)
+    public function setExternalServiceId($externalServiceId): self
     {
         $this->externalServiceId = (string) $externalServiceId;
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOutput()
+    public function getOutput(): string
     {
         return $this->output;
     }
@@ -153,7 +135,7 @@ class FinalizedPayment
      * @param string $output
      * @return $this
      */
-    public function setOutput($output)
+    public function setOutput($output): self
     {
         $this->output = (string) $output;
         return $this;
@@ -163,24 +145,18 @@ class FinalizedPayment
      * @param bool $value
      * @return $this
      */
-    public function setTestMode($value)
+    public function setTestMode($value): self
     {
         $this->testMode = (bool) $value;
         return $this;
     }
 
-    /**
-     * @return bool
-     */
-    public function isTestMode()
+    public function isTestMode(): bool
     {
         return $this->testMode;
     }
 
-    /**
-     * @return Money
-     */
-    public function getIncome()
+    public function getIncome(): Money
     {
         return $this->income;
     }
@@ -189,7 +165,7 @@ class FinalizedPayment
      * @param Money|int $income
      * @return $this
      */
-    public function setIncome($income)
+    public function setIncome($income): self
     {
         $this->income = new Money($income);
         return $this;

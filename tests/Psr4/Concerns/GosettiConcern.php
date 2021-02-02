@@ -5,7 +5,7 @@ use App\Requesting\Response;
 
 trait GosettiConcern
 {
-    protected function mockGoSettiGetData()
+    protected function mockGoSettiGetData(): void
     {
         $this->requesterMock
             ->shouldReceive("get")

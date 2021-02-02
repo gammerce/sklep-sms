@@ -33,17 +33,14 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         $this->directBillingPaymentService = $directBillingPaymentService;
     }
 
-    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
-    {
+    public function getPaymentDetails(
+        Purchase $purchase,
+        ?PaymentPlatform $paymentPlatform = null
+    ): array {
         return $this->directBillingPriceService->getOldAndNewPrice($purchase);
     }
 
-    /**
-     * @param Purchase $purchase
-     * @param PaymentPlatform|null $paymentPlatform
-     * @return bool
-     */
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
+    public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool
     {
         if (!$paymentPlatform) {
             return false;
@@ -60,7 +57,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
      * @return PaymentResult
      * @throws PaymentProcessingException
      */
-    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule): PaymentResult
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()
@@ -88,7 +85,7 @@ class DirectBillingPaymentMethod implements IPaymentMethod
         return $paymentModule->prepareDirectBilling($price, $purchase);
     }
 
-    private function makeSyncPayment(Purchase $purchase)
+    private function makeSyncPayment(Purchase $purchase): PaymentResult
     {
         $finalizedPayment = (new FinalizedPayment())
             ->setStatus(true)

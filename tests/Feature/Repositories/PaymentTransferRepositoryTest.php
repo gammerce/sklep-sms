@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class PaymentTransferRepositoryTest extends TestCase
 {
-    /** @var PaymentTransferRepository */
-    private $paymentTransferRepository;
+    private PaymentTransferRepository $paymentTransferRepository;
 
     protected function setUp(): void
     {

@@ -5,35 +5,19 @@ use App\Server\Platform;
 
 class Server
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $ip;
-
-    /** @var string */
-    private $port;
-
-    /** @var string */
-    private $type;
-
-    /** @var int|null */
-    private $smsPlatformId;
+    private int $id;
+    private string $name;
+    private string $ip;
+    private string $port;
+    private ?string $type;
+    private ?int $smsPlatformId;
 
     /** @var int[] */
     private array $transferPlatformIds;
 
-    /** @var string */
-    private $version;
-
-    /** @var string|null */
-    private $lastActiveAt;
-
-    /** @var string|null */
-    private $token;
+    private ?string $version;
+    private ?string $lastActiveAt;
+    private ?string $token;
 
     public function __construct(
         $id,
@@ -59,50 +43,32 @@ class Server
         $this->token = $token;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @return string
-     */
-    public function getIp()
+    public function getIp(): string
     {
         return $this->ip;
     }
 
-    /**
-     * @return string
-     */
-    public function getPort()
+    public function getPort(): string
     {
         return $this->port;
     }
 
-    /**
-     * @return Platform|null
-     */
-    public function getType()
+    public function getType(): ?Platform
     {
         return as_server_type($this->type);
     }
 
-    /**
-     * @return int|null
-     */
-    public function getSmsPlatformId()
+    public function getSmsPlatformId(): ?int
     {
         return $this->smsPlatformId;
     }
@@ -110,31 +76,22 @@ class Server
     /**
      * @return int[]
      */
-    public function getTransferPlatformIds()
+    public function getTransferPlatformIds(): array
     {
         return $this->transferPlatformIds;
     }
 
-    /**
-     * @return string
-     */
-    public function getVersion()
+    public function getVersion(): ?string
     {
         return $this->version;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLastActiveAt()
+    public function getLastActiveAt(): ?string
     {
         return $this->lastActiveAt;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getToken()
+    public function getToken(): ?string
     {
         return $this->token;
     }

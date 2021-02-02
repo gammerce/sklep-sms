@@ -16,7 +16,7 @@ class ServerServiceRepository
     /**
      * @return ServerService[]
      */
-    public function all()
+    public function all(): array
     {
         $statement = $this->db->query("SELECT * FROM `ss_servers_services`");
 
@@ -25,7 +25,7 @@ class ServerServiceRepository
             ->all();
     }
 
-    public function create($serverId, $serviceId)
+    public function create($serverId, $serviceId): ServerService
     {
         $this->db
             ->statement("INSERT INTO `ss_servers_services` SET `server_id` = ?, `service_id` = ?")
@@ -41,7 +41,7 @@ class ServerServiceRepository
      * @param int $serverId
      * @return ServerService[]
      */
-    public function findByServer($serverId)
+    public function findByServer($serverId): array
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_servers_services` WHERE `server_id` = ?"
@@ -57,7 +57,7 @@ class ServerServiceRepository
      * @param string $serviceId
      * @return ServerService[]
      */
-    public function findByService($serviceId)
+    public function findByService($serviceId): array
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_servers_services` WHERE `service_id` = ?"
@@ -69,7 +69,7 @@ class ServerServiceRepository
             ->all();
     }
 
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): ServerService
     {
         return new ServerService(as_int($data["server_id"]), $data["service_id"]);
     }

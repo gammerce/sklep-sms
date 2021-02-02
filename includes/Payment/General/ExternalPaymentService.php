@@ -19,7 +19,7 @@ class ExternalPaymentService
      * @return Purchase
      * @throws LackOfValidPurchaseDataException
      */
-    public function restorePurchase(FinalizedPayment $finalizedPayment)
+    public function restorePurchase(FinalizedPayment $finalizedPayment): Purchase
     {
         $transactionId = $finalizedPayment->getTransactionId();
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);

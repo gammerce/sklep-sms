@@ -34,12 +34,14 @@ class TransferPaymentMethod implements IPaymentMethod
         $this->transferPriceService = $transferPriceService;
     }
 
-    public function getPaymentDetails(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
-    {
+    public function getPaymentDetails(
+        Purchase $purchase,
+        ?PaymentPlatform $paymentPlatform = null
+    ): array {
         return $this->transferPriceService->getOldAndNewPrice($purchase);
     }
 
-    public function isAvailable(Purchase $purchase, PaymentPlatform $paymentPlatform = null)
+    public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool
     {
         if (!$paymentPlatform) {
             return false;
@@ -56,7 +58,7 @@ class TransferPaymentMethod implements IPaymentMethod
      * @return PaymentResult
      * @throws PaymentProcessingException
      */
-    public function pay(Purchase $purchase, IServicePurchase $serviceModule)
+    public function pay(Purchase $purchase, IServicePurchase $serviceModule): PaymentResult
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId(
             $purchase->getPaymentOption()->getPaymentPlatformId()
@@ -85,7 +87,7 @@ class TransferPaymentMethod implements IPaymentMethod
         }
     }
 
-    private function makeSyncPayment(Purchase $purchase)
+    private function makeSyncPayment(Purchase $purchase): PaymentResult
     {
         $finalizedPayment = (new FinalizedPayment())
             ->setStatus(true)
@@ -115,7 +117,7 @@ class TransferPaymentMethod implements IPaymentMethod
         SupportTransfer $paymentModule,
         Money $price,
         Purchase $purchase
-    ) {
+    ): PaymentResult {
         $data = $paymentModule->prepareTransfer($price, $purchase);
         return new PaymentResult(PaymentResultType::EXTERNAL(), $data);
     }

@@ -14,7 +14,6 @@ use App\Http\Validation\Rules\YesNoRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Managers\UserManager;
-use App\Models\MybbExtraGroupsUserService;
 use App\Models\MybbUser;
 use App\Models\Purchase;
 use App\Models\QuantityPrice;
@@ -151,19 +150,9 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $this->dbName = array_get($serviceData, "db_name", "");
     }
 
-    /**
-     * @param array $data
-     * @return MybbExtraGroupsUserService
-     */
-    public function mapToUserService(array $data)
+    public function mapToUserService(array $data): MybbUserService
     {
-        return new MybbExtraGroupsUserService(
-            as_int($data["id"]),
-            as_string($data["service_id"]),
-            as_int($data["user_id"]),
-            as_int($data["expire"]),
-            as_int($data["mybb_uid"])
-        );
+        return $this->mybbUserServiceRepository->mapToModel($data);
     }
 
     public function serviceAdminExtraFieldsGet()
@@ -471,7 +460,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userServiceDeletePost(UserService $userService)
     {
-        assert($userService instanceof MybbExtraGroupsUserService);
+        assert($userService instanceof MybbUserService);
 
         $mybbUser = $this->findMybbUser($userService->getMybbUid());
 
@@ -587,7 +576,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
     {
-        assert($userService instanceof MybbExtraGroupsUserService);
+        assert($userService instanceof MybbUserService);
 
         $username = $this->mybbRepository->findUsernameByUid($userService->getMybbUid());
 

@@ -10,8 +10,7 @@ use Tests\Psr4\TestCases\TestCase;
 
 class OneShotOneKillTest extends TestCase
 {
-    /** @var OneShotOneKill */
-    private $oneShotOneKill;
+    private OneShotOneKill $oneShotOneKill;
 
     protected function setUp(): void
     {

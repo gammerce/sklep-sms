@@ -8,11 +8,8 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PlayerFlagCollectionTest extends HttpTestCase
 {
-    /** @var Server */
-    private $server;
-
-    /** @var PlayerFlagService */
-    private $playerFlagService;
+    private Server $server;
+    private PlayerFlagService $playerFlagService;
 
     protected function setUp(): void
     {

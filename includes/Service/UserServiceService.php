@@ -26,7 +26,7 @@ class UserServiceService
      * @param string|int $conditions
      * @return UserService[]
      */
-    public function find($conditions = "")
+    public function find($conditions = ""): array
     {
         $output = [];
 

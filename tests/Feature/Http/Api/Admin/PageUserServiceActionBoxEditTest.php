@@ -6,8 +6,7 @@ use Tests\Psr4\TestCases\HttpTestCase;
 
 class PageUserServiceActionBoxEditTest extends HttpTestCase
 {
-    /** @var ExtraFlagUserService */
-    private $userService;
+    private ExtraFlagUserService $userService;
 
     protected function setUp(): void
     {

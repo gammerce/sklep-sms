@@ -14,18 +14,12 @@ final class PaymentResult
         $this->data = $data;
     }
 
-    /**
-     * @return PaymentResultType
-     */
-    public function getType()
+    public function getType(): PaymentResultType
     {
         return $this->type;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getData()
+    public function getData(): mixed
     {
         return $this->data;
     }

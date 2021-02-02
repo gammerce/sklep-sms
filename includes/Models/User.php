@@ -6,49 +6,25 @@ use App\User\Permission;
 
 class User
 {
-    /** @var int */
-    private $id;
-
-    /** @var string */
-    private $username;
-
-    /** @var string */
-    private $password;
-
-    /** @var string */
-    private $salt;
-
-    /** @var string */
-    private $email;
-
-    /** @var string */
-    private $forename;
-
-    /** @var string */
-    private $surname;
-
-    /** @var string|null */
-    private $steamId;
+    private ?int $id;
+    private ?string $username;
+    private ?string $password;
+    private ?string $salt;
+    private ?string $email;
+    private ?string $forename;
+    private ?string $surname;
+    private ?string $steamId;
 
     /** @var int[] */
     private array $groups;
 
-    /** @var string */
-    private $regDate;
+    private ?string $regDate;
 
-    /** @var string */
-    private $lastActive;
-
-    private ?Money $wallet;
-
-    /** @var string */
-    private $regIp;
-
-    /** @var string */
-    private $lastIp;
-
-    /** @var string */
-    private $resetPasswordKey;
+    private ?string $lastActive;
+    private Money $wallet;
+    private ?string $regIp;
+    private ?string $lastIp;
+    private ?string $resetPasswordKey;
 
     /** @var Permission[] */
     private array $permissions;
@@ -91,23 +67,17 @@ class User
             ->all();
     }
 
-    public function exists()
+    public function exists(): bool
     {
         return !!$this->getId();
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    /**
-     * @return string
-     */
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
@@ -115,31 +85,22 @@ class User
     /**
      * @param string $username
      */
-    public function setUsername($username)
+    public function setUsername($username): void
     {
         $this->username = $username;
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword()
+    public function getPassword(): ?string
     {
         return $this->password;
     }
 
-    /**
-     * @return string
-     */
-    public function getSalt()
+    public function getSalt(): ?string
     {
         return $this->salt;
     }
 
-    /**
-     * @return string
-     */
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
@@ -147,15 +108,12 @@ class User
     /**
      * @param string $email
      */
-    public function setEmail($email)
+    public function setEmail($email): void
     {
         $this->email = $email;
     }
 
-    /**
-     * @return string
-     */
-    public function getForename()
+    public function getForename(): ?string
     {
         return $this->forename;
     }
@@ -163,15 +121,12 @@ class User
     /**
      * @param string $forename
      */
-    public function setForename($forename)
+    public function setForename($forename): void
     {
         $this->forename = $forename;
     }
 
-    /**
-     * @return string
-     */
-    public function getSurname()
+    public function getSurname(): ?string
     {
         return $this->surname;
     }
@@ -179,15 +134,12 @@ class User
     /**
      * @param string $surname
      */
-    public function setSurname($surname)
+    public function setSurname($surname): void
     {
         $this->surname = $surname;
     }
 
-    /**
-     * @return array
-     */
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }
@@ -195,31 +147,22 @@ class User
     /**
      * @param array $groups
      */
-    public function setGroups(array $groups)
+    public function setGroups(array $groups): void
     {
         $this->groups = $groups;
     }
 
-    /**
-     * @return string
-     */
-    public function getRegDate()
+    public function getRegDate(): ?string
     {
         return $this->regDate;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastActive()
+    public function getLastActive(): ?string
     {
         return $this->lastActive;
     }
 
-    /**
-     * @return Money
-     */
-    public function getWallet()
+    public function getWallet(): Money
     {
         return $this->wallet;
     }
@@ -227,23 +170,17 @@ class User
     /**
      * @param Money|int $wallet
      */
-    public function setWallet($wallet)
+    public function setWallet($wallet): void
     {
         $this->wallet = new Money($wallet);
     }
 
-    /**
-     * @return string
-     */
-    public function getRegIp()
+    public function getRegIp(): ?string
     {
         return $this->regIp;
     }
 
-    /**
-     * @return string
-     */
-    public function getLastIp()
+    public function getLastIp(): ?string
     {
         return $this->lastIp;
     }
@@ -251,15 +188,12 @@ class User
     /**
      * @param string $lastIp
      */
-    public function setLastIp($lastIp)
+    public function setLastIp($lastIp): void
     {
         $this->lastIp = $lastIp;
     }
 
-    /**
-     * @return string
-     */
-    public function getResetPasswordKey()
+    public function getResetPasswordKey(): ?string
     {
         return $this->resetPasswordKey;
     }
@@ -267,41 +201,27 @@ class User
     /**
      * @param string $resetPasswordKey
      */
-    public function setResetPasswordKey($resetPasswordKey)
+    public function setResetPasswordKey($resetPasswordKey): void
     {
         $this->resetPasswordKey = $resetPasswordKey;
     }
 
-    /**
-     * @param Permission $permission
-     * @return boolean
-     */
-    public function can(Permission $permission)
+    public function can(Permission $permission): bool
     {
         return array_key_exists($permission->getKey(), $this->permissions);
     }
 
-    /**
-     * @param Permission $permission
-     * @return bool
-     */
-    public function cannot(Permission $permission)
+    public function cannot(Permission $permission): bool
     {
         return !$this->can($permission);
     }
 
-    /**
-     * @return array
-     */
-    public function getPermissions()
+    public function getPermissions(): array
     {
         return $this->permissions;
     }
 
-    /**
-     * @param array $permissions
-     */
-    public function setPermissions($permissions)
+    public function setPermissions(array $permissions): void
     {
         foreach ($permissions as $key => $value) {
             $this->permissions[$key] = $value;
@@ -311,15 +231,12 @@ class User
     /**
      * Removes all permissions
      */
-    public function removePermissions()
+    public function removePermissions(): void
     {
         $this->permissions = [];
     }
 
-    /**
-     * @return string|null
-     */
-    public function getSteamId()
+    public function getSteamId(): ?string
     {
         return $this->steamId;
     }
@@ -327,7 +244,7 @@ class User
     /**
      * @param string|null $steamId
      */
-    public function setSteamId($steamId)
+    public function setSteamId($steamId): void
     {
         $this->steamId = $steamId;
     }

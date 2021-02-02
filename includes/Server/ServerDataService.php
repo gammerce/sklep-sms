@@ -39,7 +39,7 @@ class ServerDataService
      * @param Server $server
      * @return Price[]
      */
-    public function getPrices(array $serviceIds, Server $server)
+    public function getPrices(array $serviceIds, Server $server): array
     {
         if (!$serviceIds) {
             return [];
@@ -65,7 +65,7 @@ class ServerDataService
      * @param int $serverId
      * @return Service[]
      */
-    public function getServices($serverId)
+    public function getServices($serverId): array
     {
         $serviceIds = collect($this->serverServiceRepository->findByServer($serverId))
             ->map(fn(ServerService $serverService) => $serverService->getServiceId())
@@ -78,7 +78,7 @@ class ServerDataService
      * @param int $serverId
      * @return array
      */
-    public function getPlayersFlags($serverId)
+    public function getPlayersFlags($serverId): array
     {
         // ORDER BY is very important for binary search in plugins code
         $statement = $this->db->statement(

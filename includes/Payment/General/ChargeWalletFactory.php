@@ -30,7 +30,7 @@ class ChargeWalletFactory
      * @return IChargeWallet
      * @throws UnexpectedValueException
      */
-    public function create(PaymentMethod $paymentMethod)
+    public function create(PaymentMethod $paymentMethod): IChargeWallet
     {
         if (isset($this->paymentMethodsClasses[$paymentMethod->getValue()])) {
             return $this->app->make($this->paymentMethodsClasses[$paymentMethod->getValue()]);
