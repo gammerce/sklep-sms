@@ -28,10 +28,6 @@ class UserServiceService
      */
     public function find($conditions = "")
     {
-        if (my_is_integer($conditions)) {
-            $conditions = "WHERE `id` = " . intval($conditions);
-        }
-
         $output = [];
 
         foreach ($this->serviceModuleManager->all() as $serviceModule) {
@@ -62,12 +58,12 @@ class UserServiceService
     }
 
     /**
-     * @param string $conditions
+     * @param int $userServiceId
      * @return UserService|null
      */
-    public function findOne($conditions = "")
+    public function findOne($userServiceId): ?UserService
     {
-        $userServices = $this->find($conditions);
+        $userServices = $this->find("WHERE `id` = " . intval($userServiceId));
         return $userServices ? $userServices[0] : null;
     }
 }
