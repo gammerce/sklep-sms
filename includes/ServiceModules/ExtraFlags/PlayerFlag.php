@@ -32,23 +32,12 @@ class PlayerFlag
         "z",
     ];
 
-    /** @var int */
-    private $id;
-
-    /** @var int */
-    private $server;
-
-    /** @var int */
-    private $type;
-
-    /** @var string */
-    private $authData;
-
-    /** @var string */
-    private $password;
-
-    /** @var array */
-    private $flags;
+    private int $id;
+    private int $server;
+    private int $type;
+    private string $authData;
+    private string $password;
+    private array $flags;
 
     public function __construct($id, $server, $type, $authData, $password, array $flags)
     {
@@ -60,50 +49,32 @@ class PlayerFlag
         $this->flags = $flags;
     }
 
-    /**
-     * @return int
-     */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
-    /**
-     * @return int
-     */
-    public function getServerId()
+    public function getServerId(): int
     {
         return $this->server;
     }
 
-    /**
-     * @return int
-     */
-    public function getType()
+    public function getType(): int
     {
         return $this->type;
     }
 
-    /**
-     * @return string
-     */
-    public function getAuthData()
+    public function getAuthData(): string
     {
         return $this->authData;
     }
 
-    /**
-     * @return string
-     */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    /**
-     * @return array
-     */
-    public function getFlags()
+    public function getFlags(): array
     {
         return $this->flags;
     }
@@ -112,7 +83,7 @@ class PlayerFlag
      * @param string $flag
      * @return int|null
      */
-    public function getFlag($flag)
+    public function getFlag($flag): ?int
     {
         return array_get($this->flags, $flag);
     }
