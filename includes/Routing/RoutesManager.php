@@ -100,17 +100,10 @@ class RoutesManager
 {
     const TYPE_INSTALL = "install";
 
-    /** @var Application */
-    private $app;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ShopState */
-    private $shopState;
-
-    /** @var Settings */
-    private $settings;
+    private Application $app;
+    private UrlGenerator $url;
+    private ShopState $shopState;
+    private Settings $settings;
 
     public function __construct(
         Application $app,
@@ -627,7 +620,7 @@ class RoutesManager
         );
     }
 
-    private function shouldRedirectToSetup(array $routeInfo)
+    private function shouldRedirectToSetup(array $routeInfo): bool
     {
         return array_get(array_get($routeInfo, 1), "type") !== RoutesManager::TYPE_INSTALL &&
             $this->shopState->requiresAction();
