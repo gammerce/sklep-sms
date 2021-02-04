@@ -39,7 +39,6 @@ use App\Http\Controllers\Api\Setup\InstallController;
 use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\BrickResource;
 use App\Http\Controllers\Api\Shop\CronController;
-use App\Http\Controllers\Api\Shop\IncomeController;
 use App\Http\Controllers\Api\Shop\LogInController;
 use App\Http\Controllers\Api\Shop\LogOutController;
 use App\Http\Controllers\Api\Shop\PasswordForgottenController;
@@ -281,10 +280,6 @@ class RoutesManager
                         $r->put("/api/user_services/{userServiceId}", [
                             "middlewares" => [RequireAuthorized::class],
                             "uses" => UserServiceResource::class . "@put",
-                        ]);
-
-                        $r->get("/api/income", [
-                            "uses" => IncomeController::class . "@get",
                         ]);
 
                         $r->post("/api/services/{service}/actions/{action}", [
@@ -566,7 +561,8 @@ class RoutesManager
     {
         $method = $request->getMethod();
         $uri = "/" . trim($request->getPathInfo(), "/");
-        $routeInfo = $this->createDispatcher()->dispatch($method, $uri);
+        $decodedUri = urldecode($uri);
+        $routeInfo = $this->createDispatcher()->dispatch($method, $decodedUri);
         return $this->handleDispatcherResponse($routeInfo, $request);
     }
 
