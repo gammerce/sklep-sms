@@ -35,15 +35,12 @@ class Pagination
      */
     public function getSqlLimit($rowLimit = null)
     {
-        $rowLimit = $rowLimit ?: $this->settings["row_limit"];
+        $rowLimit = as_int($rowLimit ?: $this->settings["row_limit"]);
         $page = $this->getCurrentPage();
         return [($page - 1) * $rowLimit, $rowLimit];
     }
 
-    /**
-     * @return int
-     */
-    public function getCurrentPage()
+    public function getCurrentPage(): int
     {
         $pageNumber = (int) $this->request->get("page", 1);
         return max($pageNumber, 1);

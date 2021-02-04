@@ -61,28 +61,8 @@ class BlockUserButtons extends Block
             $acpButton = "";
         }
 
-        // TODO Remove along with retro theme
-        if (
-            $this->userServiceAccessService->canUserUseService(
-                $this->serviceManager->get("charge_wallet"),
-                $user
-            )
-        ) {
-            $chargeWalletButton = $this->template->render(
-                "shop/components/navbar/navigation_item_icon",
-                [
-                    "icon" => "fa-wallet",
-                    "link" => $this->url->to("/page/purchase", ["service" => "charge_wallet"]),
-                    "text" => $this->lang->t("charge_wallet"),
-                ]
-            );
-        } else {
-            $chargeWalletButton = "";
-        }
-
         return $this->template->render("shop/layout/user_buttons", [
             "acpButton" => $acpButton,
-            "chargeWalletButton" => $chargeWalletButton,
             "username" => $user->getUsername(),
             "userId" => $user->getId(),
         ]);

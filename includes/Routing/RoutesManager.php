@@ -39,7 +39,6 @@ use App\Http\Controllers\Api\Setup\InstallController;
 use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\BrickResource;
 use App\Http\Controllers\Api\Shop\CronController;
-use App\Http\Controllers\Api\Shop\IncomeController;
 use App\Http\Controllers\Api\Shop\LogInController;
 use App\Http\Controllers\Api\Shop\LogOutController;
 use App\Http\Controllers\Api\Shop\PasswordForgottenController;
@@ -100,17 +99,10 @@ class RoutesManager
 {
     const TYPE_INSTALL = "install";
 
-    /** @var Application */
-    private $app;
-
-    /** @var UrlGenerator */
-    private $url;
-
-    /** @var ShopState */
-    private $shopState;
-
-    /** @var Settings */
-    private $settings;
+    private Application $app;
+    private UrlGenerator $url;
+    private ShopState $shopState;
+    private Settings $settings;
 
     public function __construct(
         Application $app,
@@ -288,10 +280,6 @@ class RoutesManager
                         $r->put("/api/user_services/{userServiceId}", [
                             "middlewares" => [RequireAuthorized::class],
                             "uses" => UserServiceResource::class . "@put",
-                        ]);
-
-                        $r->get("/api/income", [
-                            "uses" => IncomeController::class . "@get",
                         ]);
 
                         $r->post("/api/services/{service}/actions/{action}", [
@@ -573,7 +561,8 @@ class RoutesManager
     {
         $method = $request->getMethod();
         $uri = "/" . trim($request->getPathInfo(), "/");
-        $routeInfo = $this->createDispatcher()->dispatch($method, $uri);
+        $decodedUri = urldecode($uri);
+        $routeInfo = $this->createDispatcher()->dispatch($method, $decodedUri);
         return $this->handleDispatcherResponse($routeInfo, $request);
     }
 
@@ -627,7 +616,7 @@ class RoutesManager
         );
     }
 
-    private function shouldRedirectToSetup(array $routeInfo)
+    private function shouldRedirectToSetup(array $routeInfo): bool
     {
         return array_get(array_get($routeInfo, 1), "type") !== RoutesManager::TYPE_INSTALL &&
             $this->shopState->requiresAction();

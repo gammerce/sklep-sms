@@ -16,7 +16,7 @@ class ServiceRepository
     /**
      * @return Service[]
      */
-    public function all()
+    public function all(): array
     {
         $statement = $this->db->query("SELECT * FROM `ss_services` ORDER BY `order` ASC");
 
@@ -25,7 +25,7 @@ class ServiceRepository
             ->all();
     }
 
-    public function get($id)
+    public function get($id): ?Service
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_services` WHERE `id` = ?");
@@ -39,7 +39,11 @@ class ServiceRepository
         return null;
     }
 
-    public function findMany(array $ids)
+    /**
+     * @param int[] $ids
+     * @return Service[]
+     */
+    public function findMany(array $ids): array
     {
         if (!$ids) {
             return [];
@@ -68,7 +72,7 @@ class ServiceRepository
         array $data = [],
         $types = 0,
         $flags = ""
-    ) {
+    ): Service {
         $this->db
             ->statement(
                 "INSERT INTO `ss_services` " .
@@ -104,7 +108,7 @@ class ServiceRepository
         array $data,
         $types,
         $flags
-    ) {
+    ): bool {
         $statement = $this->db->statement(
             "UPDATE `ss_services` " .
                 "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
