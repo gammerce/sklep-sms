@@ -22,9 +22,9 @@ class LogRepository
 
     /**
      * @param string $message
-     * @return string
+     * @return int
      */
-    public function create($message): string
+    public function create($message): int
     {
         $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
         return $this->db->lastId();
