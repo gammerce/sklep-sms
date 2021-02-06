@@ -14,7 +14,7 @@ interface IServiceUserServiceAdminDisplay
      *
      * @return string
      */
-    public function userServiceAdminDisplayTitleGet();
+    public function userServiceAdminDisplayTitleGet(): string;
 
     /**
      * Provides list of users' services

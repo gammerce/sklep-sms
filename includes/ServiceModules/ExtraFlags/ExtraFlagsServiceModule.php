@@ -71,6 +71,7 @@ use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\NoneText;
 use App\View\Html\Option;
+use App\View\Html\PreWrapCell;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -224,7 +225,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Wyświetlanie usług użytkowników w PA
 
-    public function userServiceAdminDisplayTitleGet()
+    public function userServiceAdminDisplayTitleGet(): string
     {
         return $this->lang->t("extra_flags");
     }
@@ -246,19 +247,28 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS " .
-                "us.id AS `id`, us.user_id AS `user_id`, u.username AS `username`, " .
-                "srv.id AS `server_id`, srv.name AS `server_name`, " .
-                "s.id AS `service_id`, s.name AS `service_name`, " .
-                "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
-                "FROM `ss_user_service` AS us " .
-                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = usef.service_id " .
-                "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server_id " .
-                "LEFT JOIN `ss_users` AS u ON u.uid = us.user_id " .
-                $where .
-                "ORDER BY us.id DESC " .
-                "LIMIT ?, ?"
+            <<<EOF
+            SELECT SQL_CALC_FOUND_ROWS 
+            us.id,  
+            us.user_id,  
+            us.comment,  
+            u.username, 
+            srv.id AS `server_id`,  
+            srv.name AS `server_name`, 
+            s.id AS `service_id`,
+            s.name AS `service_name`, 
+            usef.type,
+            usef.auth_data,
+            us.expire 
+            FROM `ss_user_service` AS us 
+            INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id 
+            LEFT JOIN `ss_services` AS s ON s.id = usef.service_id 
+            LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server_id 
+            LEFT JOIN `ss_users` AS u ON u.uid = us.user_id 
+            {$where}
+            ORDER BY us.id DESC 
+            LIMIT ?, ?
+EOF
         );
         $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -276,6 +286,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
                     ->addCell(new Cell($row["auth_data"]))
                     ->addCell(new ExpirationCell($row["expire"]))
+                    ->addCell(new PreWrapCell($row["comment"]))
                     ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
                     ->setEditAction(can(Permission::MANAGE_USER_SERVICES()));
             })
@@ -296,6 +307,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 )
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
+            ->addHeadCell(new HeadCell($this->lang->t("comment")))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
@@ -569,7 +581,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Zarządzanie usługami użytkowników przez admina
 
-    public function userServiceAdminAddFormGet()
+    public function userServiceAdminAddFormGet(): string
     {
         $types = $this->getTypeOptions($this->service->getTypes());
         $servers = $this->getServerOptions();
@@ -580,7 +592,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request)
+    public function userServiceAdminAdd(Request $request): void
     {
         $forever = (bool) $request->request->get("forever");
 
