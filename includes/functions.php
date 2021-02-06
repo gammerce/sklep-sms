@@ -646,10 +646,6 @@ function price_to_int($value): ?int
     return (int) str_replace(".", "", number_format($value, 2));
 }
 
-// TODO Display comment in a table
-// TODO Allow to edit comment in mybb user service
-// TODO Add comment to tests
-
 /**
  * @param Permission[] $permissions
  * @return array
