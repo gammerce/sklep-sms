@@ -15,7 +15,7 @@ class MaxValueRule extends BaseRule
         $this->value = $value;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (as_int($value) > $this->value) {
             throw new ValidationException($this->lang->t("max_value", $this->value));

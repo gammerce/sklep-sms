@@ -15,7 +15,7 @@ class ServiceModuleExistsRule extends BaseRule
         $this->serviceModuleManager = app()->make(ServiceModuleManager::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $serviceModule = $this->serviceModuleManager->getEmpty($value);
 

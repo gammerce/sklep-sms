@@ -14,7 +14,7 @@ class MaxLengthRule extends BaseRule
         $this->length = $value;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (strlen($value) > $this->length) {
             throw new ValidationException($this->lang->t("field_length_max_warn", $this->length));

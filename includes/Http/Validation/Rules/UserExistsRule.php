@@ -15,7 +15,7 @@ class UserExistsRule extends BaseRule
         $this->userRepository = app()->make(UserRepository::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->userRepository->get($value)) {
             throw new ValidationException($this->lang->t("no_account_id"));

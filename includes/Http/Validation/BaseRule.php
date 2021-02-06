@@ -14,12 +14,12 @@ abstract class BaseRule implements Rule
         $this->lang = $translationManager->user();
     }
 
-    public function acceptsEmptyValue()
+    public function acceptsEmptyValue(): bool
     {
         return false;
     }
 
-    public function breaksPipelineOnWarning()
+    public function breaksPipelineOnWarning(): bool
     {
         return false;
     }

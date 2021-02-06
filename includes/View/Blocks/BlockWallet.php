@@ -38,12 +38,12 @@ class BlockWallet extends Block implements IBeLoggedMust
         $this->lang = $translationManager->user();
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return "wallet-status";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         $user = $this->auth->user();
         $balance = $user->getWallet();

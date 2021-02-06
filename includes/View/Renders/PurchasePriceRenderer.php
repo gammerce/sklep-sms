@@ -28,7 +28,7 @@ class PurchasePriceRenderer
         $this->priceTextService = $priceTextService;
     }
 
-    public function render(QuantityPrice $price, Service $service)
+    public function render(QuantityPrice $price, Service $service): string
     {
         return $this->template->renderNoComments("shop/components/purchase/purchase_price", [
             "directBillingDiscount" => $price->directBillingDiscount,

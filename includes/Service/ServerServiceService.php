@@ -15,7 +15,6 @@ class ServerServiceService
     public function updateLinks(array $data): void
     {
         $itemsToCreate = collect($data)->filter(fn(array $item) => $item["connect"]);
-
         $itemsToDelete = collect($data)->filter(fn(array $item) => !$item["connect"]);
 
         if ($itemsToCreate->isPopulated()) {

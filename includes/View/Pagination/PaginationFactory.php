@@ -20,7 +20,7 @@ class PaginationFactory
      * @param Request $request
      * @return Pagination
      */
-    public function create(Request $request)
+    public function create(Request $request): Pagination
     {
         $lang = $this->translationManager->shop();
         return $this->app->makeWith(Pagination::class, compact("lang", "request"));

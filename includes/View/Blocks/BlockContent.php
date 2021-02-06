@@ -15,12 +15,12 @@ class BlockContent extends Block
         $this->pageResolver = $pageResolver;
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return "site-content";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         return (string) $this->pageResolver->resolveUser($params[0])->getContent($request);
     }

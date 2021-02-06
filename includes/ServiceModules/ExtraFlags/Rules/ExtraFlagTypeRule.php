@@ -7,7 +7,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class ExtraFlagTypeRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $allowedTypes = ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP | ExtraFlagType::TYPE_SID;
 
