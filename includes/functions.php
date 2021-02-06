@@ -42,7 +42,7 @@ function app($abstract = null, array $parameters = [])
  * @param User|null $user
  * @return bool
  */
-function can(Permission $permission, User $user = null)
+function can(Permission $permission, User $user = null): bool
 {
     if (!$user) {
         /** @var Auth $auth */
@@ -58,7 +58,7 @@ function can(Permission $permission, User $user = null)
  * @param User|null $user
  * @return bool
  */
-function cannot(Permission $permission, User $user = null)
+function cannot(Permission $permission, User $user = null): bool
 {
     return !can($permission, $user);
 }
@@ -69,7 +69,7 @@ function cannot(Permission $permission, User $user = null)
  * @param array $params
  * @return DOMElement
  */
-function create_dom_element($name, $content = "", array $params = [])
+function create_dom_element($name, $content = "", array $params = []): DOMElement
 {
     return new DOMElement($name, $content, $params);
 }
@@ -78,7 +78,7 @@ function create_dom_element($name, $content = "", array $params = [])
  * @param string $platform
  * @return bool
  */
-function is_server_platform($platform)
+function is_server_platform($platform): bool
 {
     return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
 }
@@ -87,7 +87,7 @@ function is_server_platform($platform)
  * @param Request $request
  * @return string|null
  */
-function get_ip(Request $request)
+function get_ip(Request $request): ?string
 {
     if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
         $cfIpRanges = [
@@ -123,7 +123,7 @@ function get_ip(Request $request)
  * @param Request $request
  * @return string
  */
-function get_platform(Request $request)
+function get_platform(Request $request): string
 {
     return $request->headers->get("User-Agent", "");
 }
@@ -134,7 +134,7 @@ function get_platform(Request $request)
  * @param string $number
  * @return Money
  */
-function get_sms_cost($number)
+function get_sms_cost($number): Money
 {
     if (strlen($number) < 4) {
         return new Money(0);
@@ -157,17 +157,17 @@ function get_sms_cost($number)
  * @param Money $smsPrice
  * @return Money
  */
-function get_sms_provision(Money $smsPrice)
+function get_sms_provision(Money $smsPrice): Money
 {
     return new Money(ceil($smsPrice->asInt() / 2));
 }
 
-function hash_password($password, $salt)
+function hash_password($password, $salt): string
 {
     return md5(md5($password) . md5($salt));
 }
 
-function escape_filename($filename)
+function escape_filename($filename): string
 {
     $filename = str_replace("/", "_", $filename);
     $filename = str_replace(" ", "_", $filename);
@@ -176,7 +176,7 @@ function escape_filename($filename)
     return $filename;
 }
 
-function get_random_string($length)
+function get_random_string($length): string
 {
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"; //length:36
     $finalRand = "";
@@ -189,9 +189,9 @@ function get_random_string($length)
 
 /**
  * @param string $steamId
- * @return string
+ * @return bool
  */
-function is_steam_id_valid($steamId)
+function is_steam_id_valid($steamId): bool
 {
     return !!preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamId);
 }
@@ -200,7 +200,7 @@ function is_steam_id_valid($steamId)
  * @param int $seconds
  * @return string
  */
-function seconds_to_time($seconds)
+function seconds_to_time($seconds): string
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -228,7 +228,7 @@ function custom_mb_str_split($string)
  * @param string $search
  * @return QueryParticle|null
  */
-function create_search_query($columns, $search)
+function create_search_query($columns, $search): ?QueryParticle
 {
     if (!$columns) {
         return null;
@@ -261,7 +261,7 @@ function create_search_query($columns, $search)
 // The function will return true if the supplied IP is within the range.
 // Note little validation is done on the range inputs - it expects you to
 // use one of the above 3 formats.
-function ip_in_range($ip, $range)
+function ip_in_range($ip, $range): bool
 {
     if (strpos($range, "/") !== false) {
         // $range is in IP/NETMASK format
@@ -328,7 +328,7 @@ function ip_in_range($ip, $range)
  * @param string $end
  * @return bool
  */
-function ends_at($string, $end)
+function ends_at($string, $end): bool
 {
     return substr($string, -strlen($end)) == $end;
 }
@@ -338,7 +338,7 @@ function ends_at($string, $end)
  * @param string $needle
  * @return bool
  */
-function starts_with($haystack, $needle)
+function starts_with($haystack, $needle): bool
 {
     return substr($haystack, 0, strlen($needle)) === (string) $needle;
 }
@@ -349,7 +349,7 @@ if (!function_exists("str_contains")) {
      * @param string $needle
      * @return bool
      */
-    function str_contains($string, $needle)
+    function str_contains($string, $needle): bool
     {
         return strpos($string, $needle) !== false;
     }
@@ -369,10 +369,9 @@ function pr($a)
 
 /**
  * @param mixed $val
- *
  * @return bool
  */
-function my_is_integer($val)
+function my_is_integer($val): bool
 {
     return strlen($val) && trim($val) === strval(intval($val));
 }
@@ -383,7 +382,7 @@ function my_is_integer($val)
  * @param mixed $default
  * @return mixed|null
  */
-function array_get($array, $key, $default = null)
+function array_get($array, $key, $default = null): mixed
 {
     return isset($array[$key]) ? $array[$key] : $default;
 }
@@ -394,7 +393,7 @@ function array_get($array, $key, $default = null)
  * @param mixed $default
  * @return mixed
  */
-function array_dot_get($array, $key, $default = null)
+function array_dot_get($array, $key, $default = null): mixed
 {
     foreach (explode(".", $key) as $segment) {
         if (!isset($array[$segment])) {
@@ -407,10 +406,7 @@ function array_dot_get($array, $key, $default = null)
     return $array;
 }
 
-/**
- * @return Request
- */
-function captureRequest()
+function captureRequest(): Request
 {
     $queryAttributes = [];
     foreach ($_GET as $key => $value) {
@@ -436,7 +432,7 @@ function get_error_code(PDOException $e)
  * @param mixed $items
  * @return Collection
  */
-function collect($items = [])
+function collect($items = []): Collection
 {
     return new Collection($items);
 }
@@ -445,7 +441,7 @@ function collect($items = [])
  * @param array $array
  * @return bool
  */
-function is_list(array $array)
+function is_list(array $array): bool
 {
     if (empty($array)) {
         return true;
@@ -458,7 +454,7 @@ function is_list(array $array)
  * @param mixed $value
  * @return Money|null
  */
-function as_money($value)
+function as_money($value): ?Money
 {
     if ($value === null || $value === "") {
         return null;
@@ -471,7 +467,7 @@ function as_money($value)
  * @param mixed $value
  * @return int|null
  */
-function as_int($value)
+function as_int($value): ?int
 {
     if ($value === null || $value === "") {
         return null;
@@ -488,7 +484,7 @@ function as_int($value)
  * @param mixed $value
  * @return float|null
  */
-function as_float($value)
+function as_float($value): ?float
 {
     if ($value === null || $value === "") {
         return null;
@@ -505,7 +501,7 @@ function as_float($value)
  * @param mixed $value
  * @return string|null
  */
-function as_string($value)
+function as_string($value): ?string
 {
     if ($value === null) {
         return null;
@@ -675,26 +671,17 @@ if (!function_exists("is_iterable")) {
     }
 }
 
-/**
- * @return bool
- */
 function is_debug(): bool
 {
     $debug = getenv("APP_DEBUG");
     return $debug === "1" || $debug === "true" || $debug === 1;
 }
 
-/**
- * @return bool
- */
-function is_testing()
+function is_testing(): bool
 {
     return getenv("APP_ENV") === "testing";
 }
 
-/**
- * @return bool
- */
 function is_demo(): bool
 {
     return getenv("APP_ENV") === "demo";
@@ -728,7 +715,7 @@ function log_info($text, array $data = []): void
  * @param mixed $data
  * @return array
  */
-function map_to_params($data)
+function map_to_params($data): array
 {
     $params = [];
     $values = [];
@@ -779,7 +766,7 @@ function to_array($items): array
  * @param mixed ...$args
  * @return string
  */
-function __($key, ...$args)
+function __($key, ...$args): string
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
@@ -791,7 +778,7 @@ function __($key, ...$args)
  * @param array $query
  * @return string
  */
-function url($path, array $query = [])
+function url($path, array $query = []): string
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
@@ -803,7 +790,7 @@ function url($path, array $query = [])
  * @param array $query
  * @return string
  */
-function versioned($path, $query = [])
+function versioned($path, $query = []): string
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
@@ -811,7 +798,7 @@ function versioned($path, $query = [])
 }
 
 if (!function_exists("dd")) {
-    function dd(...$vars)
+    function dd(...$vars): void
     {
         foreach ($vars as $v) {
             VarDumper::dump($v);
@@ -825,7 +812,7 @@ if (!function_exists("dd")) {
  * @link https://stackoverflow.com/a/2040279
  * @return string
  */
-function generate_uuid4()
+function generate_uuid4(): string
 {
     return sprintf(
         "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
@@ -856,7 +843,7 @@ function generate_uuid4()
  * @param int $length
  * @return string
  */
-function generate_id($length)
+function generate_id($length): string
 {
     return substr(hash("sha256", generate_uuid4()), 0, $length);
 }
@@ -865,7 +852,7 @@ function generate_id($length)
  * @param $string
  * @return string
  */
-function to_upper($string)
+function to_upper($string): string
 {
     return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
 }
@@ -915,8 +902,10 @@ function multiply($a, $b)
  * @param PaymentPlatform $paymentPlatform
  * @return string
  */
-function make_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform $paymentPlatform)
-{
+function make_charge_wallet_option(
+    PaymentMethod $paymentMethod,
+    PaymentPlatform $paymentPlatform
+): string {
     return $paymentMethod . "," . $paymentPlatform->getId();
 }
 
@@ -925,7 +914,7 @@ function make_charge_wallet_option(PaymentMethod $paymentMethod, PaymentPlatform
  * @param string $delimiter
  * @return array
  */
-function explode_int_list($list, $delimiter = ",")
+function explode_int_list($list, $delimiter = ","): array
 {
     if ($list === "" || $list === null) {
         return [];
@@ -954,7 +943,7 @@ function get_authorization_value(Request $request)
  * @param mixed $value
  * @return string
  */
-function selected($value)
+function selected($value): string
 {
     return $value ? "selected" : "";
 }
