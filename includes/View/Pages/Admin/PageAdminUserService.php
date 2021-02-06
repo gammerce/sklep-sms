@@ -116,22 +116,21 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             case "edit":
                 $userService = $this->userServiceService->findOne($query["id"]);
 
-                $serviceModuleId = 0;
-                $formData = $this->lang->t("service_edit_unable");
-
-                if ($userService) {
-                    $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
-
-                    if ($serviceModule instanceof IServiceUserServiceAdminEdit) {
-                        $serviceModuleId = $serviceModule->getModuleId();
-                        $formData = $serviceModule->userServiceAdminEditFormGet($userService);
-                    }
+                if (!$userService) {
+                    throw new EntityNotFoundException();
                 }
 
-                return $this->template->render(
-                    "admin/action_boxes/user_service_edit",
-                    compact("serviceModuleId", "formData")
-                );
+                $serviceModule = $this->serviceModuleManager->get($userService->getServiceId());
+                if (!($serviceModule instanceof IServiceUserServiceAdminEdit)) {
+                    throw new EntityNotFoundException();
+                }
+
+                return $this->template->render("admin/action_boxes/user_service_edit", [
+                    "comment" => $userService->getComment(),
+                    "formData" => $serviceModule->userServiceAdminEditFormGet($userService),
+                    "serviceModuleId" => $serviceModule->getModuleId(),
+                    "userServiceId" => $userService->getId(),
+                ]);
 
             default:
                 throw new EntityNotFoundException();

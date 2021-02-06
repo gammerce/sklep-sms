@@ -220,7 +220,6 @@ return [
     "service_added" => 'Usługa została prawidłowo dodana.<br />Ustaw teraz ceny usługi w zakładce <strong>Cennik</strong><br />
 		Natomiast w zakładce <strong>Serwery</strong> ustal na których serwerach będzie można tę usługę zakupić.<br />',
     "service_edit" => "Usługa została prawidłowo wyedytowana.",
-    "service_edit_unable" => "Tej usługi nie da rady się edytować.",
     "service_no_edit" => "Usługa nie została wyedytowana.",
     "service_servers_hint" => "Lista serwerów na których można zakupić tę usługę",
     "services" => "Usługi",

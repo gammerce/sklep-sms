@@ -217,7 +217,6 @@ return [
     "service_added" => 'Service added successfully.<br />Set service prices in tab <strong>Pricing</strong><br />
 	Whereas in tab <strong>Servers</strong> set servers on which you can buy this service.<br />',
     "service_edit" => "Service edited successfully.",
-    "service_edit_unable" => "This service cannot be edited.",
     "service_no_edit" => "Service not edited.",
     "service_servers_hint" => "List of servers where you can purchase this service",
     "services" => "Services",

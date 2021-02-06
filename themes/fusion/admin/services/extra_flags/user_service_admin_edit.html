@@ -1,194 +1,153 @@
-<table data-module="{{ $moduleId }}">
-    <tbody>
-        <tr>
-            <td>ID</td>
-            <td>{{ $userServiceId }}</td>
-        </tr>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td>
-                <label for="user_id">{{ __('user_id') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input
-                            type="text"
-                            id="user_id"
-                            name="user_id"
-                            value="{{ $userServiceUserId }}"
-                            class="input is-small"
-                        />
+<tbody>
+    <tr>
+        <td>
+            <label for="user_id">{{ __('user_id') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input
+                        type="text"
+                        id="user_id"
+                        name="user_id"
+                        value="{{ $userServiceUserId }}"
+                        class="input is-small"
+                    />
+                </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="type" class="required">{{ __('type') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="type" name="type" required>
+                            {!! $types !!}
+                        </select>
                     </div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="type" class="required">{{ __('type') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-small">
-                            <select id="type" name="type" required>
-                                {!! $types !!}
-                            </select>
-                        </div>
+            </div>
+        </td>
+    </tr>
+</tbody>
+<tbody id="type_nick" class="{{ $classes['nick'] }}">
+    <tr>
+        <td>
+            <label for="nick" class="required">Nick</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input type="text" id="nick" name="auth_data" class="input is-small"
+                    maxlength="32" value="{{ $nick }}" autocomplete="off" required
+                    {$disabled['nick']} />
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>
+<tbody id="type_ip" class="{{ $classes['ip'] }}">
+    <tr>
+        <td>
+            <label for="ip" class="required">IP</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input type="text" id="ip" name="auth_data" class="input is-small"
+                    maxlength="21" value="{{ $ip }}" autocomplete="off" required {$disabled['ip']}
+                    />
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>
+<tbody id="type_sid" class="{{ $classes['sid'] }}">
+    <tr>
+        <td>
+            <label for="sid" class="required">SteamID</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input type="text" id="sid" name="auth_data" class="input is-small"
+                    maxlength="32" value="{{ $sid }}" autocomplete="off" required {$disabled['sid']}
+                    />
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>
+<tbody id="type_password" class="{{ $classes['password'] }}">
+    <tr>
+        <td>
+            <label for="password">{{ __('password') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input type="text" id="password" name="password" class="input is-small"
+                    maxlength="32" placeholder="{{ $password }}" autocomplete="off"
+                    {$disabled['password']} />
+                </div>
+            </div>
+        </td>
+    </tr>
+</tbody>
+<tbody>
+    <tr>
+        <td colspan="2" class="line"></td>
+    </tr>
+    <tr>
+        <td>
+            <label for="service_id" class="required">{{ __('service') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="service_id" name="service_id" required>
+                            {!! $services !!}
+                        </select>
                     </div>
                 </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="type_nick" class="{{ $classes['nick'] }}">
-        <tr>
-            <td>
-                <label for="nick" class="required">Nick</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input type="text" id="nick" name="auth_data" class="input is-small"
-                        maxlength="32" value="{{ $nick }}" autocomplete="off" required {!!
-                        $disabled['nick'] !!} />
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="server_id" class="required">{{ __('server') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <div class="select is-small">
+                        <select id="server_id" name="server_id" required>
+                            {!! $servers !!}
+                        </select>
                     </div>
                 </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="type_ip" class="{{ $classes['ip'] }}">
-        <tr>
-            <td>
-                <label for="ip" class="required">IP</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input type="text" id="ip" name="auth_data" class="input is-small"
-                        maxlength="21" value="{{ $ip }}" autocomplete="off" required {!!
-                        $disabled['ip'] !!} />
-                    </div>
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label for="expire" class="required">{{ __('expires') }}</label>
+        </td>
+        <td>
+            <div class="field">
+                <div class="control">
+                    <input type="text" id="expire" name="expire" class="input is-small" value="{{
+                    $userServiceExpire }}" autocomplete="off" {$disabled['expire']} />
                 </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="type_sid" class="{{ $classes['sid'] }}">
-        <tr>
-            <td>
-                <label for="sid" class="required">SteamID</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input type="text" id="sid" name="auth_data" class="input is-small"
-                        maxlength="32" value="{{ $sid }}" autocomplete="off" required {!!
-                        $disabled['sid'] !!} />
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody id="type_password" class="{{ $classes['password'] }}">
-        <tr>
-            <td>
-                <label for="password">{{ __('password') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input type="text" id="password" name="password" class="input is-small"
-                        maxlength="32" placeholder="{{ $password }}" autocomplete="off" {!!
-                        $disabled['password'] !!} />
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td>
-                <label for="service_id" class="required">{{ __('service') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-small">
-                            <select id="service_id" name="service_id" required>
-                                {!! $services !!}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="server_id" class="required">{{ __('server') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-small">
-                            <select id="server_id" name="server_id" required>
-                                {!! $servers !!}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="expire" class="required">{{ __('expires') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <input type="text" id="expire" name="expire" class="input is-small"
-                        value="{{ $userServiceExpire }}" autocomplete="off" {!! $disabled['expire']
-                        !!} />
-                    </div>
-                </div>
-                <label class="checkbox">
-                    <input type="checkbox" name="forever" {!! $checked['forever'] !!} /> {{
-                    __('forever') }}
-                </label>
-            </td>
-        </tr>
-    </tbody>
-    <tbody>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td>
-                <label for="comment">{{ __('comment') }}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <textarea id="comment" name="comment" class="textarea is-small">
-{{ $comment }}</textarea
-                        >
-                    </div>
-                </div>
-            </td>
-        </tr>
-    </tbody>
-    <tbody>
-        <tr>
-            <td colspan="2" class="line"></td>
-        </tr>
-        <tr>
-            <td colspan="2">
-                <input type="hidden" name="id" value="{{ $userServiceId }}" />
-                <input type="submit" value="{{ __('edit') }}" class="button w100" />
-            </td>
-        </tr>
-    </tbody>
-</table>
+            </div>
+            <label class="checkbox">
+                <input type="checkbox" name="forever" {$checked['forever']} /> {{ __('forever') }}
+            </label>
+        </td>
+    </tr>
+</tbody>
