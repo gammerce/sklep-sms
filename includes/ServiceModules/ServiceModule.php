@@ -38,7 +38,8 @@ abstract class ServiceModule
             as_int($data["id"]),
             as_string($data["service_id"]),
             as_int($data["user_id"]),
-            as_int($data["expire"])
+            as_int($data["expire"]),
+            as_int($data["comment"])
         );
     }
 

@@ -15,12 +15,13 @@ class ExtraFlagUserService extends UserService
         $serviceId,
         $userId,
         $expire,
+        $comment,
         $serverId,
         $type,
         $authData,
         $password
     ) {
-        parent::__construct($id, $serviceId, $userId, $expire);
+        parent::__construct($id, $serviceId, $userId, $expire, $comment);
 
         $this->serverId = $serverId;
         $this->type = $type;

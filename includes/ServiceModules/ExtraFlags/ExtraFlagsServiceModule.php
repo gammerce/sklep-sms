@@ -461,7 +461,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $this->playerFlagService->addPlayerFlags(
             $this->service->getId(),
@@ -470,7 +470,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder("type"),
             $purchase->getOrder("auth_data"),
             $purchase->getOrder("password"),
-            $purchase->user->getId()
+            $purchase->user->getId(),
+            $purchase->getComment()
         );
 
         $promoCode = $purchase->getPromoCode();
@@ -590,6 +591,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "user_id" => as_int($request->request->get("user_id")),
             ]),
             [
+                "comment" => [],
                 "email" => [new EmailRule()],
                 "password" => [new ExtraFlagPasswordRule()],
                 "quantity" => $forever
@@ -623,7 +625,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "password" => $validated["password"],
                 Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
             ])
-            ->setEmail($validated["email"]);
+            ->setEmail($validated["email"])
+            ->setComment($validated["comment"]);
 
         $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
@@ -688,12 +691,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $servers = $this->getServerOptions($userService->getServerId());
 
-        // Pobranie hasła
         if (strlen($userService->getPassword())) {
             $password = "********";
         }
 
-        // Zamiana daty
         if ($userService->isForever()) {
             $userServiceExpire = "";
             $checked["forever"] = "checked";
@@ -717,6 +718,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "checked",
                 "userServiceExpire"
             ) + [
+                "comment" => $userService->getComment(),
                 "moduleId" => $this->getModuleId(),
                 "userServiceId" => $userService->getId(),
                 "userServiceUserId" => $userService->getUserId() ?: "",
@@ -736,6 +738,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "user_id" => as_int(array_get($body, "user_id")),
             ]),
             [
+                "comment" => [],
                 "expire" => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
                 "server_id" => [new RequiredRule(), new ServerExistsRule()],
                 "user_id" => [new UserExistsRule()],
@@ -906,12 +909,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-    /**
-     * @param ExtraFlagUserService $userService
-     * @param array $data
-     * @return bool
-     */
-    private function userServiceEdit(ExtraFlagUserService $userService, array $data)
+    private function userServiceEdit(ExtraFlagUserService $userService, array $data): bool
     {
         $expire = array_key_exists("expire", $data)
             ? as_int($data["expire"])
@@ -934,7 +932,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $shouldPasswordBeUpdated = !!strlen($password);
         }
 
-        $set = [];
+        if (array_key_exists("comment", $data)) {
+            $set["comment"] = $data["comment"];
+        }
 
         if ($shouldPasswordBeUpdated) {
             $set["password"] = $password;
@@ -948,7 +948,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $set["expire"] = -1;
         }
 
-        // Sprawdzenie czy nie ma już takiej usługi
+        // Check if the same user service doesn't exist
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
@@ -965,8 +965,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($existingUserServiceData) {
             $existingUserService = $this->mapToUserService($existingUserServiceData);
-            // Since $shouldUidBeUpdated is false we can assume that it is action done via ACP
-            // not by "user own service edit"
             $canManageThisUserService =
                 !$shouldUserBeUpdated &&
                 $userService->getUserId() != $existingUserService->getUserId();
@@ -977,14 +975,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ]);
             }
 
+            // Since $shouldUserBeUpdated is false we can assume that it is action done via ACP
+            // not by "user own service edit"
+
             $this->userServiceRepository->delete($userService->getId());
 
-            // Dodajemy expire
             if ($expire) {
                 $set["expire"] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
             }
 
-            // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
+            // Let's update a user service that already exists in the database
+            // and has the same data
             $affected = $this->userServiceRepository->updateWithModule(
                 $this->getUserServiceTable(),
                 $existingUserService->getId(),
@@ -1007,7 +1008,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             );
         }
 
-        // Ustaw jednakowe hasła, żeby potem nie było problemów z różnymi hasłami
+        // Set the same passwords to avoid problems with different passwords later
         if ($shouldPasswordBeUpdated) {
             $this->db
                 ->statement(
@@ -1018,19 +1019,19 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ->execute([$password, $serverId, $type, $authData]);
         }
 
-        // Przelicz flagi tylko wtedy, gdy coś się zmieniło
+        // Only recalculate flags when something has changed
         if (!$affected) {
             return false;
         }
 
-        // Odśwież flagi gracza ( przed zmiana danych )
+        // Refresh player flags (before changing data)
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
             $userService->getType(),
             $userService->getAuthData()
         );
 
-        // Odśwież flagi gracza ( już po edycji )
+        // Refresh player flags (after editing)
         $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
 
         return true;

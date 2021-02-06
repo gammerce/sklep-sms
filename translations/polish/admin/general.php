@@ -29,6 +29,7 @@ return [
     "charge" => "Doładuj",
     "choose_sms_price" => "Wybierz koszt SMSa",
     "code" => "Kod",
+    "comment" => "Komentarz",
     "confirm" => "Zatwierdź",
     "confirm_remove_server" => 'Na pewno chcesz usunąć serwer\n{0}?',
     "create" => "Utwórz",

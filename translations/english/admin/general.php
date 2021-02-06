@@ -29,6 +29,7 @@ return [
     "charge" => "Charge",
     "choose_sms_price" => "Choose SMS price",
     "code" => "Code",
+    "comment" => "Comment",
     "confirm" => "Confirm",
     "confirm_remove_server" => 'Do you really want to remove server \n{0}?',
     "create" => "Create",

@@ -27,7 +27,7 @@ class ExtraFlagUserServiceRepository
      * @return ExtraFlagUserService
      * @throws EntityNotFoundException
      */
-    public function findOrFail(array $data)
+    public function findOrFail(array $data): ExtraFlagUserService
     {
         $models = $this->findAll($data);
         if (empty($models)) {
@@ -41,7 +41,7 @@ class ExtraFlagUserServiceRepository
      * @param array $data
      * @return ExtraFlagUserService[]
      */
-    public function findAll(array $data)
+    public function findAll(array $data): array
     {
         [$params, $values] = map_to_params($data);
         $params = implode(" AND ", $params);
@@ -60,9 +60,22 @@ class ExtraFlagUserServiceRepository
             ->all();
     }
 
-    public function create($serviceId, $userId, $seconds, $serverId, $type, $authData, $password)
-    {
-        $userServiceId = $this->userServiceRepository->create($serviceId, $seconds, $userId);
+    public function create(
+        $serviceId,
+        $userId,
+        $seconds,
+        $serverId,
+        $type,
+        $authData,
+        $password,
+        $comment
+    ): ExtraFlagUserService {
+        $userServiceId = $this->userServiceRepository->create(
+            $serviceId,
+            $seconds,
+            $userId,
+            $comment
+        );
 
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $statement = $this->db->statement(
@@ -74,7 +87,7 @@ class ExtraFlagUserServiceRepository
         return $this->get($userServiceId);
     }
 
-    public function get($id)
+    public function get($id): ?ExtraFlagUserService
     {
         if ($id) {
             $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
@@ -99,7 +112,7 @@ class ExtraFlagUserServiceRepository
      * @param int $type
      * @param string $authData
      */
-    public function updatePassword($password, $serverId, $type, $authData)
+    public function updatePassword($password, $serverId, $type, $authData): void
     {
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $this->db
@@ -113,13 +126,14 @@ EOF
             ->execute([$password, $serverId, $type, $authData]);
     }
 
-    public function mapToModel(array $data)
+    public function mapToModel(array $data): ExtraFlagUserService
     {
         return new ExtraFlagUserService(
             as_int($data["id"]),
             as_string($data["service_id"]),
             as_int($data["user_id"]),
             as_int($data["expire"]),
+            as_string($data["comment"]),
             as_int($data["server_id"]),
             as_int($data["type"]),
             as_string($data["auth_data"]),

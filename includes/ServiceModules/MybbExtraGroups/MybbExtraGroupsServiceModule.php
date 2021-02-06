@@ -353,11 +353,10 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $mybbUser = $this->findMybbUser($purchase->getOrder("username"));
 
-        // Nie znaleziono użytkownika o takich danych jak podane podczas zakupu
         if (!$mybbUser) {
             $this->logger->log(
                 "log_mybb_purchase_no_user",
@@ -372,7 +371,8 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             $this->service->getId(),
             $purchase->user->getId(),
             $quantity,
-            $mybbUser->getUid()
+            $mybbUser->getUid(),
+            $purchase->getComment()
         );
 
         foreach ($this->groups as $group) {

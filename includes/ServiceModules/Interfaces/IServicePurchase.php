@@ -11,5 +11,5 @@ interface IServicePurchase
      * @param Purchase $purchase
      * @return int ID of the BoughtService
      */
-    public function purchase(Purchase $purchase);
+    public function purchase(Purchase $purchase): int;
 }

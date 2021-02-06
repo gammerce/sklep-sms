@@ -574,7 +574,7 @@ function as_datetime($value): ?DateTime
  * @param string|int|DateTime|null $value
  * @return string
  */
-function as_date_string($value)
+function as_date_string($value): string
 {
     $date = as_datetime($value);
     return $date ? $date->format("Y-m-d") : "";
@@ -583,9 +583,9 @@ function as_date_string($value)
 /**
  * @param int|string|DateTime|null $value
  * @param string $format
- * @return string
+ * @return string|null
  */
-function as_datetime_string($value, $format = "")
+function as_datetime_string($value, $format = ""): ?string
 {
     if (!strlen($format)) {
         /** @var Settings $settings */
@@ -601,7 +601,7 @@ function as_datetime_string($value, $format = "")
  * @param int|string|DateTime|null $value
  * @return string
  */
-function as_expiration_date_string($value)
+function as_expiration_date_string($value): string
 {
     if ($value === -1 || $value === null) {
         return __("never");
@@ -614,9 +614,9 @@ function as_expiration_date_string($value)
  * @param int|string|DateTime|null $value
  * @return string
  */
-function as_expiration_datetime_string($value)
+function as_expiration_datetime_string($value): ?string
 {
-    if ($value === -1 || $value === null) {
+    if ($value === -1 || $value === "-1" || $value === null) {
         return __("never");
     }
 
@@ -627,7 +627,7 @@ function as_expiration_datetime_string($value)
  * @param DateTime|null $date
  * @return string|null
  */
-function serialize_date($date)
+function serialize_date($date): ?string
 {
     return $date ? $date->format("Y-m-d H:i:s") : null;
 }
@@ -636,7 +636,7 @@ function serialize_date($date)
  * @param string|float $value
  * @return int|null
  */
-function price_to_int($value)
+function price_to_int($value): ?int
 {
     if ($value === null || $value === "") {
         return null;
@@ -650,7 +650,7 @@ function price_to_int($value)
  * @param Permission[] $permissions
  * @return array
  */
-function as_permission_list($permissions)
+function as_permission_list($permissions): array
 {
     return collect($permissions)
         ->map(function ($permission) {
@@ -669,7 +669,7 @@ if (!function_exists("is_iterable")) {
      * @param mixed $value
      * @return bool
      */
-    function is_iterable($value)
+    function is_iterable($value): bool
     {
         return is_array($value) || $value instanceof Traversable;
     }
@@ -678,7 +678,7 @@ if (!function_exists("is_iterable")) {
 /**
  * @return bool
  */
-function is_debug()
+function is_debug(): bool
 {
     $debug = getenv("APP_DEBUG");
     return $debug === "1" || $debug === "true" || $debug === 1;
@@ -695,7 +695,7 @@ function is_testing()
 /**
  * @return bool
  */
-function is_demo()
+function is_demo(): bool
 {
     return getenv("APP_ENV") === "demo";
 }
@@ -704,7 +704,7 @@ function is_demo()
  * @param mixed $value
  * @return bool
  */
-function has_value($value)
+function has_value($value): bool
 {
     if (is_array($value) || is_object($value)) {
         return !!$value;
@@ -717,7 +717,7 @@ function has_value($value)
  * @param string $text
  * @param array $data
  */
-function log_info($text, array $data = [])
+function log_info($text, array $data = []): void
 {
     /** @var FileLogger $logger */
     $logger = app()->make(FileLogger::class);
@@ -753,7 +753,7 @@ function map_to_params($data)
  * @param mixed $items
  * @return array
  */
-function to_array($items)
+function to_array($items): array
 {
     if ($items instanceof Traversable) {
         return iterator_to_array($items);

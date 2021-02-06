@@ -156,7 +156,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $this->walletPaymentService->chargeWallet(
             $purchase->user,

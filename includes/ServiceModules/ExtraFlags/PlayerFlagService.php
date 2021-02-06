@@ -36,6 +36,7 @@ class PlayerFlagService
      * @param string $authData
      * @param string|null $password
      * @param int|null $userId
+     * @param string|null $comment
      * @return void
      */
     public function addPlayerFlags(
@@ -45,8 +46,9 @@ class PlayerFlagService
         $type,
         $authData,
         $password,
-        $userId
-    ) {
+        $userId,
+        $comment = null
+    ): void {
         $authData = trim($authData);
         $password = strlen($password) ? $password : "";
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
@@ -76,6 +78,7 @@ class PlayerFlagService
                 "user_id" => $userId,
                 "password" => $password,
                 "expire" => $expire,
+                "comment" => trim($userService->getComment() . "\n---\n" . $comment),
             ]);
         } else {
             $this->extraFlagUserServiceRepository->create(
@@ -85,7 +88,8 @@ class PlayerFlagService
                 $serverId,
                 $type,
                 $authData,
-                $password
+                $password,
+                $comment
             );
         }
 

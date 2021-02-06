@@ -15,21 +15,19 @@ class Purchase
     const ORDER_QUANTITY = "quantity";
     const ORDER_SERVER = "server";
 
-    /** @var string */
-    private $id;
+    private string $id;
 
     /**
      * ID of row from ss_services table
      *
      * @var string|null
      */
-    private $serviceId;
+    private ?string $serviceId = null;
 
     /** @var User */
     public $user;
 
-    /** @var string|null */
-    private $email;
+    private ?string $email;
 
     /**
      * List of available payment platforms
@@ -51,10 +49,12 @@ class Purchase
     /** @var PromoCode|null */
     private $promoCode = null;
 
+    private ?string $comment = null;
+
     /**
      * Purchase description ( useful for transfer payments )
      */
-    private ?string $description;
+    private ?string $transferDescription = null;
 
     /**
      * Platform from which the purchase was made
@@ -100,7 +100,7 @@ class Purchase
 
     /**
      * @param string $serviceId
-     * @return static
+     * @return self
      */
     public function setServiceId($serviceId): self
     {
@@ -119,7 +119,7 @@ class Purchase
 
     /**
      * @param array $order
-     * @return static
+     * @return self
      */
     public function setOrder(array $order): self
     {
@@ -146,7 +146,7 @@ class Purchase
 
     /**
      * @param array $payment
-     * @return static
+     * @return self
      */
     public function setPayment(array $payment): self
     {
@@ -169,7 +169,7 @@ class Purchase
 
     /**
      * @param string $email
-     * @return static
+     * @return self
      */
     public function setEmail($email): self
     {
@@ -177,18 +177,29 @@ class Purchase
         return $this;
     }
 
-    public function getDescription(): ?string
+    public function getComment(): ?string
     {
-        return $this->description;
+        return $this->comment;
+    }
+
+    public function setComment($comment): self
+    {
+        $this->comment = $comment;
+        return $this;
+    }
+
+    public function getTransferDescription(): ?string
+    {
+        return $this->transferDescription;
     }
 
     /**
-     * @param string $description
-     * @return static
+     * @param string $transferDescription
+     * @return self
      */
-    public function setDescription($description): self
+    public function setTransferDescription($transferDescription): self
     {
-        $this->description = $description;
+        $this->transferDescription = $transferDescription;
         return $this;
     }
 
@@ -209,7 +220,7 @@ class Purchase
 
     /**
      * @param Price $price
-     * @return static
+     * @return self
      */
     public function setUsingPrice(Price $price): self
     {
@@ -252,7 +263,7 @@ class Purchase
 
     /**
      * @param PromoCode|null $promoCode
-     * @return static
+     * @return self
      */
     public function setPromoCode(PromoCode $promoCode = null): self
     {
@@ -272,7 +283,7 @@ class Purchase
 
     /**
      * @param PaymentOption $paymentOption
-     * @return static
+     * @return self
      */
     public function setPaymentOption(PaymentOption $paymentOption): self
     {

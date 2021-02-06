@@ -1,5 +1,5 @@
 <form id="form_user_service_edit" class="action_box">
-    <div class="service_main_info">{$lang->t('edit_user_service')}</div>
+    <div class="service_main_info">{{ __('edit_user_service') }}</div>
     <input type="hidden" name="module" value="{{ $serviceModuleId }}" />
-    {$formData}
+    {!! $formData !!}
 </form>

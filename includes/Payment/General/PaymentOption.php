@@ -12,27 +12,17 @@ class PaymentOption
         $this->paymentPlatformId = $paymentPlatformId;
     }
 
-    /**
-     * @return PaymentMethod
-     */
-    public function getPaymentMethod()
+    public function getPaymentMethod(): PaymentMethod
     {
         return $this->paymentMethod;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getPaymentPlatformId()
+    public function getPaymentPlatformId(): ?int
     {
         return $this->paymentPlatformId;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     * @return bool
-     */
-    public function equal(PaymentOption $paymentOption)
+    public function equal(PaymentOption $paymentOption): bool
     {
         return $this->getPaymentPlatformId() === $paymentOption->getPaymentPlatformId() &&
             $this->getPaymentMethod()->equals($paymentOption->getPaymentMethod());

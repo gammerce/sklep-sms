@@ -80,10 +80,10 @@ $(document).delegate("[id^=delete_row_]", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/user_services/" + userServiceId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -117,10 +117,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/user_services/" + userServiceId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -150,10 +150,10 @@ $(document).delegate("#form_user_service_add", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/admin/services/" + serviceId + "/user_services"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -184,10 +184,10 @@ $(document).delegate("#form_user_service_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/user_services/" + userServiceId),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

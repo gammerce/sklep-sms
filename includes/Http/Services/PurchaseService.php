@@ -72,7 +72,7 @@ class PurchaseService
 
         $purchase = (new Purchase($this->auth->user(), $ip, $platform))
             ->setServiceId($serviceModule->service->getId())
-            ->setDescription(
+            ->setTransferDescription(
                 $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())
             )
             ->setEmail($email)

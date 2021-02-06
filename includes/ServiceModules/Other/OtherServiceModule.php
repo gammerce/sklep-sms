@@ -53,7 +53,7 @@ class OtherServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $promoCode = $purchase->getPromoCode();
 
