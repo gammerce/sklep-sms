@@ -33,7 +33,7 @@ class DOMElement implements I_ToHtml
         }
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         $oldParams = $this->params;
 

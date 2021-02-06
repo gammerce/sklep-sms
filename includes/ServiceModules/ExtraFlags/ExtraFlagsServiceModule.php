@@ -170,7 +170,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->extraFlagUserServiceRepository->mapToModel($data);
     }
 
-    public function serviceAdminExtraFieldsGet()
+    public function serviceAdminExtraFieldsGet(): string
     {
         // WEB
         $webSelYes = selected($this->showOnWeb());
@@ -193,7 +193,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePre(Validator $validator)
+    public function serviceAdminManagePre(Validator $validator): void
     {
         $validator->extendRules([
             "flags" => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
@@ -202,9 +202,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function serviceAdminManagePost(array $body)
+    public function serviceAdminManagePost(array $body): array
     {
-        // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
+        // We prepare for writing (bit sum) which types have been selected
         $types = 0;
         foreach ($body["type"] as $type) {
             $types |= $type;
@@ -230,7 +230,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->lang->t("extra_flags");
     }
 
-    public function userServiceAdminDisplayGet(Request $request)
+    public function userServiceAdminDisplayGet(Request $request): Wrapper
     {
         $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
@@ -314,7 +314,7 @@ EOF
         return (new Wrapper())->enableSearch()->setTable($table);
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         $types = collect(ExtraFlagType::ALL)
             ->filter(fn($type) => $this->service->getTypes() & $type)
@@ -338,7 +338,7 @@ EOF
         ]);
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         $quantity = as_int(array_get($body, "quantity"));
         $serverId = as_int(array_get($body, "server_id"));
@@ -380,7 +380,7 @@ EOF
         }
     }
 
-    public function purchaseDataValidate(Purchase $purchase)
+    public function purchaseDataValidate(Purchase $purchase): Validator
     {
         $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
 
@@ -435,7 +435,7 @@ EOF
         );
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
         $typeName = $this->getTypeName($purchase->getOrder("type"));
@@ -644,15 +644,15 @@ EOF
         $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
     }
 
-    public function userServiceAdminEditFormGet(UserService $userService)
+    public function userServiceAdminEditFormGet(UserService $userService): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
         $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
-                // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
-                // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
+                // We can only change the service to one that uses the same module.
+                // It doesn't make sense otherwise, better remove it and add a new one
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
             ->map(
@@ -738,7 +738,7 @@ EOF
         );
     }
 
-    public function userServiceAdminEdit(array $body, UserService $userService)
+    public function userServiceAdminEdit(array $body, UserService $userService): bool
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -790,7 +790,7 @@ EOF
         ]);
     }
 
-    public function userServiceDeletePost(UserService $userService)
+    public function userServiceDeletePost(UserService $userService): void
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -804,7 +804,7 @@ EOF
     // ----------------------------------------------------------------------------------
     // ### Edytowanie usług przez użytkownika
 
-    public function userOwnServiceEditFormGet(UserService $userService)
+    public function userOwnServiceEditFormGet(UserService $userService): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -877,7 +877,7 @@ EOF
         );
     }
 
-    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
+    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -945,7 +945,7 @@ EOF
         }
 
         if (array_key_exists("comment", $data)) {
-            $set["comment"] = $data["comment"];
+            $set["comment"] = (string) $data["comment"];
         }
 
         if ($shouldPasswordBeUpdated) {
@@ -1049,7 +1049,7 @@ EOF
         return true;
     }
 
-    public function serviceTakeOverFormGet()
+    public function serviceTakeOverFormGet(): string
     {
         $types = $this->getTypeOptions($this->service->getTypes());
         $servers = $this->getServerOptions();
@@ -1060,7 +1060,7 @@ EOF
         );
     }
 
-    public function serviceTakeOver(array $body)
+    public function serviceTakeOver(array $body): array
     {
         try {
             $paymentMethodId = new PaymentMethod(array_get($body, "payment_method"));
@@ -1135,7 +1135,7 @@ EOF
      * @param int|null $selectedServerId
      * @return string
      */
-    private function getServerOptions($selectedServerId = null)
+    private function getServerOptions($selectedServerId = null): string
     {
         return collect($this->serverManager->all())
             ->filter(
@@ -1175,7 +1175,7 @@ EOF
      * @param int $serverId
      * @return string
      */
-    private function pricesForServer($serverId)
+    private function pricesForServer($serverId): string
     {
         $server = $this->serverManager->get($serverId);
         $service = $this->service;
@@ -1195,7 +1195,7 @@ EOF
         );
     }
 
-    public function actionExecute($action, array $body)
+    public function actionExecute($action, array $body): string
     {
         switch ($action) {
             case "prices_for_server":

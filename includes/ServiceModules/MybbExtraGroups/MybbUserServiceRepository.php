@@ -100,7 +100,7 @@ class MybbUserServiceRepository
             as_string($data["service_id"]),
             as_int($data["user_id"]),
             as_int($data["expire"]),
-            as_int($data["comment"]),
+            as_string($data["comment"]),
             as_int($data["mybb_uid"])
         );
     }

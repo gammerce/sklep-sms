@@ -5,47 +5,44 @@ use App\Models\Purchase;
 use App\Models\Transaction;
 
 /**
- * Możliwość zakupu usługi przez stronę WWWW
- * Implementacja tego interfejsu powinna pociągnąć za sobą implementacje interfejsu:
- *    IServicePurchase
+ * Possibility to purchase the service via the website
  */
 interface IServicePurchaseWeb extends IServicePurchase
 {
     /**
-     * Metoda powinna zwracać formularz zakupu w postaci stringa
+     * Returns a purchase fom
      *
      * @param array $query
-     * @return string   - Formularz zakupu
+     * @return string
      */
-    public function purchaseFormGet(array $query);
+    public function purchaseFormGet(array $query): string;
 
     /**
-     * Metoda wywoływana, gdy użytkownik wprowadzi dane w formularzu zakupu
-     * i trzeba sprawdzić, czy są one prawidłowe
+     * Method called when the data provided by a user in the purchase form
+     * needs to be validated
      *
      * @param Purchase $purchase
      * @param array $body
      */
-    public function purchaseFormValidate(Purchase $purchase, array $body);
+    public function purchaseFormValidate(Purchase $purchase, array $body): void;
 
     /**
-     * Metoda zwraca szczegóły zamówienia, wyświetlane podczas zakupu usługi, przed płatnością.
+     * Returns the order details, displayed when purchasing the service, before payment.
      *
      * @param Purchase $purchase
-     *
-     * @return string Szczegóły zamówienia
+     * @return string
      */
-    public function orderDetails(Purchase $purchase);
+    public function orderDetails(Purchase $purchase): string;
 
     /**
-     * Metoda formatuje i zwraca informacje o zakupionej usłudze, zaraz po jej zakupie.
+     * Formats and returns information about the purchased service.
      *
-     * @param string      $action Do czego zostaną te dane użyte ( email, web, payment_log )
-     *  email - wiadomość wysłana na maila o zakupie usługi
-     *  web - informacje wyświetlone na stronie WWW zaraz po zakupie
-     *  payment_log - wpis w historii płatności
+     * @param string $action What will the data be used for (email, web, payment_log)
+     *   email - a message sent to the email about the purchase of the service
+     *   web - information displayed on the website right after the purchase
+     *   payment_log - entry in the payment history
      * @param Transaction $transaction
-     * @return string|array Informacje o zakupionej usłudze
+     * @return string|array
      */
     public function purchaseInfo($action, Transaction $transaction);
 }

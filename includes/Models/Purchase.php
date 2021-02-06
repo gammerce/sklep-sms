@@ -27,7 +27,7 @@ class Purchase
     /** @var User */
     public $user;
 
-    private ?string $email;
+    private ?string $email = null;
 
     /**
      * List of available payment platforms

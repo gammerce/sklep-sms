@@ -35,7 +35,7 @@ class OtherServiceModule extends ServiceModule implements
         $this->boughtServiceService = $boughtServiceService;
     }
 
-    public function purchaseDataValidate(Purchase $purchase)
+    public function purchaseDataValidate(Purchase $purchase): Validator
     {
         return new Validator(
             [
@@ -72,17 +72,17 @@ class OtherServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePost(array $body)
+    public function serviceAdminManagePost(array $body): array
     {
         return [];
     }
 
-    public function serviceAdminExtraFieldsGet()
+    public function serviceAdminExtraFieldsGet(): string
     {
         return "";
     }
 
-    public function serviceAdminManagePre(Validator $validator)
+    public function serviceAdminManagePre(Validator $validator): void
     {
         //
     }

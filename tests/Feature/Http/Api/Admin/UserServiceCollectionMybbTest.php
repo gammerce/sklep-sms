@@ -40,6 +40,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/services/{$service->getId()}/user_services", [
+            "comment" => "foo",
             "mybb_username" => "example",
             "quantity" => "5",
         ]);
@@ -55,6 +56,7 @@ class UserServiceCollectionMybbTest extends HttpTestCase
         $this->assertSame($service->getId(), $userService->getServiceId());
         $this->assertSame(1, $userService->getMybbUid());
         $this->assertSame(0, $userService->getUserId());
+        $this->assertSame("foo", $userService->getComment());
         $this->assertAlmostSameTimestamp($expectedExpire, $userService->getExpire());
     }
 }

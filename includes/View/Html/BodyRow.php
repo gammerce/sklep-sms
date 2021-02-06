@@ -15,7 +15,7 @@ class BodyRow extends Row
     private bool $editAction = false;
     private bool $deleteAction = false;
 
-    public function toHtml()
+    public function toHtml(): string
     {
         // Zachowujemy poprzedni stan, aby go przywrocic
         $oldContents = $this->contents;

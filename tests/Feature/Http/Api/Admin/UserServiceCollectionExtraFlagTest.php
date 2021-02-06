@@ -33,11 +33,12 @@ class UserServiceCollectionExtraFlagTest extends HttpTestCase
 
         // when
         $response = $this->post("/api/admin/services/vip/user_services", [
-            "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "michal",
+            "comment" => "my comment",
             "password" => "abc123",
             "quantity" => "5",
             "server_id" => $server->getId(),
+            "type" => ExtraFlagType::TYPE_NICK,
         ]);
 
         // then
@@ -56,6 +57,7 @@ class UserServiceCollectionExtraFlagTest extends HttpTestCase
         $this->assertSame($server->getId(), $userService->getServerId());
         $this->assertSame(0, $userService->getUserId());
         $this->assertAlmostSameTimestamp($expectedExpire, $userService->getExpire());
+        $this->assertEquals("my comment", $userService->getComment());
 
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
@@ -79,24 +81,27 @@ class UserServiceCollectionExtraFlagTest extends HttpTestCase
 
         // when
         $this->post("/api/admin/services/vip/user_services", [
-            "type" => (string) ExtraFlagType::TYPE_NICK,
             "auth_data" => "michal",
+            "comment" => "foo",
             "password" => "abc123",
             "quantity" => "5",
             "server_id" => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
         ]);
         $this->post("/api/admin/services/vip/user_services", [
-            "type" => (string) ExtraFlagType::TYPE_NICK,
             "auth_data" => "michal",
+            "comment" => "bar",
             "password" => "abc123",
             "quantity" => "6",
             "server_id" => $server->getId(),
+            "type" => (string) ExtraFlagType::TYPE_NICK,
         ]);
 
         // then
         $userServices = $this->userServiceService->find();
         $this->assertCount(1, $userServices);
         $this->assertAlmostSameTimestamp($expectedExpire, $userServices[0]->getExpire());
+        $this->assertEquals("foo\n---\nbar", $userServices[0]->getComment());
 
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),

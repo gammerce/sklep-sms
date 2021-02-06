@@ -4,27 +4,25 @@ namespace App\ServiceModules\Interfaces;
 use App\Models\UserService;
 
 /**
- * Obsługa edycji usług użytkownika w PA
+ * Support for editing user services in ACP
  */
 interface IServiceUserServiceAdminEdit
 {
     /**
-     * Metoda sprawdza dane formularza podczas edycji usługi użytkownika w PA
-     * i gdy wszystko jest okej, to ją edytuje.
+     * The method checks the form data when editing the user service in ACP
+     * and when everything is fine, it edits it.
      *
      * @param array $body
-     * @param UserService $userService Obecne dane edytowanej usługi
+     * @param UserService $userService Current data of the edited service
      * @return bool
      */
-    public function userServiceAdminEdit(array $body, UserService $userService);
+    public function userServiceAdminEdit(array $body, UserService $userService): bool;
 
     /**
-     * Metoda powinna zwrócić dodatkowe pola usługi
-     * podczas jej edycji w PA
+     * The method should return additional service fields during its edition in ACP
      *
      * @param UserService $userService
-     *
      * @return string
      */
-    public function userServiceAdminEditFormGet(UserService $userService);
+    public function userServiceAdminEditFormGet(UserService $userService): string;
 }

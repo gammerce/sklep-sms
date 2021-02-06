@@ -69,25 +69,18 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             return $this->lang->t("no_subpage");
         }
 
-        $wrapper = $serviceModule->userServiceAdminDisplayGet($request);
-
-        if (get_class($wrapper) !== Wrapper::class) {
-            return $wrapper;
-        }
-
-        $wrapper->setTitle($this->getTitle($request));
-        $wrapper->addButton($this->createModuleSelectBox($subPage));
-
-        if (can(Permission::MANAGE_USER_SERVICES())) {
-            $button = (new Input())
-                ->setParam("id", "user_service_button_add")
-                ->setParam("type", "button")
-                ->addClass("button is-small")
-                ->setParam("value", $this->lang->t("add_service"));
-            $wrapper->addButton($button);
-        }
-
-        return $wrapper;
+        return $serviceModule
+            ->userServiceAdminDisplayGet($request)
+            ->setTitle($this->getTitle($request))
+            ->addButton($this->createModuleSelectBox($subPage))
+            ->when(can(Permission::MANAGE_USER_SERVICES()), function (Wrapper $wrapper) {
+                $button = (new Input())
+                    ->setParam("id", "user_service_button_add")
+                    ->setParam("type", "button")
+                    ->addClass("button is-small")
+                    ->setParam("value", $this->lang->t("add_service"));
+                $wrapper->addButton($button);
+            });
     }
 
     public function getActionBox($boxId, array $query)

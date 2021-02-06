@@ -20,7 +20,7 @@ interface IServiceUserServiceAdminDisplay
      * Provides list of users' services
      *
      * @param Request $request
-     * @return Wrapper | string
+     * @return Wrapper
      */
-    public function userServiceAdminDisplayGet(Request $request);
+    public function userServiceAdminDisplayGet(Request $request): Wrapper;
 }

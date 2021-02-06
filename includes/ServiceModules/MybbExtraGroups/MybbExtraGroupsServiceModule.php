@@ -156,7 +156,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->mybbUserServiceRepository->mapToModel($data);
     }
 
-    public function serviceAdminExtraFieldsGet()
+    public function serviceAdminExtraFieldsGet(): string
     {
         if ($this->showOnWeb()) {
             $webSelYes = "selected";
@@ -178,7 +178,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function serviceAdminManagePre(Validator $validator)
+    public function serviceAdminManagePre(Validator $validator): void
     {
         $validator->extendRules([
             "db_host" => [new RequiredRule()],
@@ -190,7 +190,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function serviceAdminManagePost(array $body)
+    public function serviceAdminManagePost(array $body): array
     {
         $mybbGroups = explode(",", $body["mybb_groups"]);
         foreach ($mybbGroups as $key => $group) {
@@ -219,7 +219,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return $this->lang->t("mybb_groups");
     }
 
-    public function userServiceAdminDisplayGet(Request $request)
+    public function userServiceAdminDisplayGet(Request $request): Wrapper
     {
         $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
@@ -290,7 +290,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return (new Wrapper())->enableSearch()->setTable($table);
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         $quantities = collect($this->purchasePriceService->getServicePrices($this->service))
             ->map(
@@ -311,7 +311,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             [
@@ -350,7 +350,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         $email = $purchase->getEmail() ?: $this->lang->t("none");
         $username = $purchase->getOrder("username");
@@ -457,7 +457,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         return "";
     }
 
-    public function userServiceDelete(UserService $userService, $who)
+    public function userServiceDelete(UserService $userService, $who): bool
     {
         try {
             $this->mybbRepository->connectDb();
@@ -471,7 +471,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         }
     }
 
-    public function userServiceDeletePost(UserService $userService)
+    public function userServiceDeletePost(UserService $userService): void
     {
         assert($userService instanceof MybbUserService);
 
@@ -583,7 +583,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
+    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit): string
     {
         assert($userService instanceof MybbUserService);
 
@@ -605,7 +605,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
      * @param string|int $userId Int - by uid, String - by username
      * @return MybbUser|null
      */
-    private function findMybbUser($userId)
+    private function findMybbUser($userId): ?MybbUser
     {
         if (is_integer($userId)) {
             $rawMybbUser = $this->mybbRepository->getUserByUid($userId);
