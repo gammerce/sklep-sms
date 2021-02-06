@@ -15,7 +15,7 @@ interface IServiceUserOwnServicesEdit
      * @param UserService $userService
      * @return string
      */
-    public function userOwnServiceEditFormGet(UserService $userService);
+    public function userOwnServiceEditFormGet(UserService $userService): string;
 
     /**
      * Validate form and edit user service

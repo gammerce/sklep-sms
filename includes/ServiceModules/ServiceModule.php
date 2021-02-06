@@ -38,7 +38,8 @@ abstract class ServiceModule
             as_int($data["id"]),
             as_string($data["service_id"]),
             as_int($data["user_id"]),
-            as_int($data["expire"])
+            as_int($data["expire"]),
+            as_string($data["comment"])
         );
     }
 
@@ -47,7 +48,7 @@ abstract class ServiceModule
      *
      * @param int $serviceId ID usługi
      */
-    public function serviceDelete($serviceId)
+    public function serviceDelete($serviceId): void
     {
         //
     }
@@ -60,7 +61,7 @@ abstract class ServiceModule
      *
      * @return bool
      */
-    public function userServiceDelete(UserService $userService, $who)
+    public function userServiceDelete(UserService $userService, $who): bool
     {
         return true;
     }
@@ -70,7 +71,7 @@ abstract class ServiceModule
      *
      * @param UserService $userService
      */
-    public function userServiceDeletePost(UserService $userService)
+    public function userServiceDeletePost(UserService $userService): void
     {
         //
     }
@@ -78,10 +79,10 @@ abstract class ServiceModule
     /**
      * Metoda powinna zwrócić, czy usługa ma być wyświetlana na stronie WWW.
      */
-    public function showOnWeb()
+    public function showOnWeb(): bool
     {
         if ($this->service !== null) {
-            return array_get($this->service->getData(), "web", false);
+            return (bool) array_get($this->service->getData(), "web", false);
         }
 
         return false;
@@ -94,23 +95,23 @@ abstract class ServiceModule
      *
      * @return string    Description
      */
-    public function descriptionLongGet()
+    public function descriptionLongGet(): string
     {
         $templatePath = $this->serviceDescriptionService->getTemplatePath($this->service->getId());
         return $this->template->render($templatePath, [], true, false);
     }
 
-    public function descriptionShortGet()
+    public function descriptionShortGet(): string
     {
         return $this->service->getDescriptionI18n();
     }
 
-    public function getModuleId()
+    public function getModuleId(): string
     {
         return $this::MODULE_ID;
     }
 
-    protected function getUserServiceTable()
+    protected function getUserServiceTable(): string
     {
         return $this::USER_SERVICE_TABLE;
     }

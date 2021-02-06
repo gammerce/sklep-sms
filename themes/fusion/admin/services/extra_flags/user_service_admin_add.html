@@ -1,7 +1,7 @@
 <tbody data-module="{{ $moduleId }}">
     <tr>
         <td>
-            <label for="user_id">{$lang->t('user_id')}</label>
+            <label for="user_id">{{ __('user_id') }}</label>
         </td>
         <td>
             <div class="field">
@@ -13,15 +13,15 @@
     </tr>
     <tr>
         <td>
-            <label for="type" class="required">{$lang->t('type')}</label>
+            <label for="type" class="required">{{ __('type') }}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
                         <select id="type" name="type" required>
-                            <option value="">{$lang->t('choose_type')}</option>
-                            {$types}
+                            <option value="">{{ __('choose_type') }}</option>
+                            {!! $types !!}
                         </select>
                     </div>
                 </div>
@@ -91,7 +91,7 @@
     </tr>
     <tr id="type_password" class="is-hidden">
         <td>
-            <label for="password" class="required">{$lang->t('password')}</label>
+            <label for="password" class="required">{{ __('password') }}</label>
         </td>
         <td>
             <div class="field">
@@ -132,15 +132,15 @@
     </tr>
     <tr>
         <td>
-            <label for="server_id" class="required">{$lang->t('server')}</label>
+            <label for="server_id" class="required">{{ __('server') }}</label>
         </td>
         <td>
             <div class="field">
                 <div class="control">
                     <div class="select is-small">
                         <select id="server_id" name="server_id" required>
-                            <option value="">{$lang->t('choose_server')}</option>
-                            {$servers}
+                            <option value="">{{ __('choose_server') }}</option>
+                            {!! $servers !!}
                         </select>
                     </div>
                 </div>
@@ -149,7 +149,7 @@
     </tr>
     <tr>
         <td>
-            <label for="quantity">{$lang->t('days_amount')}</label>
+            <label for="quantity" class="required">{{ __('days_amount') }}</label>
         </td>
         <td>
             <div class="field">
@@ -162,7 +162,7 @@
                     /><br />
                     <label class="checkbox">
                         <input type="checkbox" name="forever" />
-                        {$lang->t('forever')}
+                        {{ __('forever') }}
                     </label>
                 </div>
             </div>

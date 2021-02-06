@@ -14,7 +14,7 @@ class Validator
         $this->rules = $rules;
     }
 
-    public function validate()
+    public function validate(): WarningBag
     {
         $warnings = new WarningBag();
 
@@ -43,7 +43,7 @@ class Validator
         return $warnings;
     }
 
-    public function validateOrFail()
+    public function validateOrFail(): array
     {
         $warnings = $this->validate();
 
@@ -54,7 +54,7 @@ class Validator
         return $this->validated();
     }
 
-    public function validated()
+    public function validated(): array
     {
         return collect(array_keys($this->rules))
             ->flatMap(
@@ -65,17 +65,17 @@ class Validator
             ->all();
     }
 
-    public function extendRules(array $rules)
+    public function extendRules(array $rules): void
     {
         $this->rules = array_merge_recursive($this->rules, $rules);
     }
 
-    public function extendData(array $data)
+    public function extendData(array $data): void
     {
         $this->data = array_merge($this->data, $data);
     }
 
-    public function getData($attribute)
+    public function getData($attribute): mixed
     {
         return array_get($this->data, $attribute);
     }

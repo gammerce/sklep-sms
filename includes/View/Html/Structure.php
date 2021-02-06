@@ -20,7 +20,7 @@ class Structure extends DOMElement
         $this->addClass("table is-fullwidth is-hoverable");
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         /** @var TranslationManager $translationManager */
         $translationManager = app()->make(TranslationManager::class);

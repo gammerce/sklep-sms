@@ -56,7 +56,7 @@ class PurchaseService
         Server $server,
         array $body,
         $platform
-    ) {
+    ): PaymentResult {
         $type = as_int(array_get($body, "type"));
         $authData = trim(array_get($body, "auth_data"));
         $password = array_get($body, "password");
@@ -72,7 +72,7 @@ class PurchaseService
 
         $purchase = (new Purchase($this->auth->user(), $ip, $platform))
             ->setServiceId($serviceModule->service->getId())
-            ->setDescription(
+            ->setTransferDescription(
                 $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())
             )
             ->setEmail($email)
@@ -109,7 +109,7 @@ class PurchaseService
     private function getPaymentOption(
         PaymentMethod $paymentMethod = null,
         $paymentPlatformId = null
-    ) {
+    ): PaymentOption {
         if (PaymentMethod::SMS()->equals($paymentMethod)) {
             return new PaymentOption(PaymentMethod::SMS(), $paymentPlatformId);
         }

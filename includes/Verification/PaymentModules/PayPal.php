@@ -74,7 +74,7 @@ class PayPal extends PaymentModule implements SupportTransfer
                             "currency_code" => $this->settings->getCurrency(),
                             "value" => $price->asPrice(),
                         ],
-                        "description" => $purchase->getDescription(),
+                        "description" => $purchase->getTransferDescription(),
                         "custom_id" => $purchase->getId(),
                     ],
                 ],

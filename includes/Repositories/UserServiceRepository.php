@@ -16,25 +16,33 @@ class UserServiceRepository
      * @param string $serviceId
      * @param int|null $seconds
      * @param int|null $userId
+     * @param string|null $comment
      * @return int
      */
-    public function create($serviceId, $seconds, $userId): int
+    public function create($serviceId, $seconds, $userId, $comment): int
     {
         $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
-                "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?)"
+            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`, `comment`) " .
+                "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?, ?)"
         );
-        $statement->execute([$serviceId, $seconds, $seconds, $userId ?: 0]);
+        $statement->execute([$serviceId, $seconds, $seconds, $userId ?: 0, $comment ?: ""]);
         return $this->db->lastId();
     }
 
-    public function createFixedExpire($serviceId, $expiresAt, $userId): int
+    /**
+     * @param string $serviceId
+     * @param int $expiresAt
+     * @param int|null $userId
+     * @param string|null $comment
+     * @return int
+     */
+    public function createFixedExpire($serviceId, $expiresAt, $userId, $comment): int
     {
         $statement = $this->db->statement(
-            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`) " .
-                "VALUES (?, ?, ?)"
+            "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`, `comment`) " .
+                "VALUES (?, ?, ?, ?)"
         );
-        $statement->execute([$serviceId, $expiresAt, $userId ?: 0]);
+        $statement->execute([$serviceId, $expiresAt, $userId ?: 0, $comment ?: ""]);
         return $this->db->lastId();
     }
 
@@ -84,11 +92,11 @@ class UserServiceRepository
     public function updateWithModule($table, $userServiceId, array $data): int
     {
         $baseData = collect($data)->filter(
-            fn($value, $key) => in_array($key, ["user_id", "service_id", "expire"], true)
+            fn($value, $key) => in_array($key, ["user_id", "service_id", "expire", "comment"], true)
         );
 
         $moduleData = collect($data)->filter(
-            fn($value, $key) => !in_array($key, ["user_id", "expire"], true)
+            fn($value, $key) => !in_array($key, ["user_id", "expire", "comment"], true)
         );
 
         $affected = $this->update($userServiceId, $baseData->all());

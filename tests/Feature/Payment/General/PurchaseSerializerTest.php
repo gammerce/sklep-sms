@@ -113,7 +113,7 @@ class PurchaseSerializerTest extends TestCase
             ])
             ->setServiceId("vip")
             ->setEmail("example@example.com")
-            ->setDescription("example");
+            ->setTransferDescription("example");
 
         $purchase
             ->getPaymentSelect()

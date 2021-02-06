@@ -43,7 +43,7 @@ abstract class Page
         return $this::PAGE_ID;
     }
 
-    public function getPagePath()
+    public function getPagePath(): string
     {
         return "/page/{$this->getId()}";
     }
