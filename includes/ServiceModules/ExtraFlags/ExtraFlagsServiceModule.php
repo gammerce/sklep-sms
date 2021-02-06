@@ -592,7 +592,7 @@ EOF
         );
     }
 
-    public function userServiceAdminAdd(Request $request): void
+    public function userServiceAdminAdd(Request $request): int
     {
         $forever = (bool) $request->request->get("forever");
 
@@ -640,8 +640,7 @@ EOF
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
 
-        $boughtServiceId = $this->purchase($purchase);
-        $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
+        return $this->purchase($purchase);
     }
 
     public function userServiceAdminEditFormGet(UserService $userService): string

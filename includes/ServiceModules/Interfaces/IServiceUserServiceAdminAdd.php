@@ -1,6 +1,7 @@
 <?php
 namespace App\ServiceModules\Interfaces;
 
+use App\Exceptions\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -12,8 +13,10 @@ interface IServiceUserServiceAdminAdd
      * Validate form and add user service
      *
      * @param Request $request
+     * @return int
+     * @throws ValidationException
      */
-    public function userServiceAdminAdd(Request $request): void;
+    public function userServiceAdminAdd(Request $request): int;
 
     /**
      * Provide additional user service add form fields

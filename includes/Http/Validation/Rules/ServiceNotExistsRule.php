@@ -17,7 +17,7 @@ class ServiceNotExistsRule extends BaseRule
         $this->exceptServiceId = $exceptServiceId;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if ($value !== $this->exceptServiceId && $this->serviceRepository->get($value)) {
             throw new ValidationException($this->lang->t("id_exist"));

@@ -22,7 +22,7 @@ class CaptchaRule extends BaseRule
         $this->fileLogger = app()->make(FileLogger::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $response = $this->requester->post(
             "https://license.sklep-sms.pl/v1/captcha",

@@ -16,10 +16,6 @@ abstract class Block
      * @throws ForbiddenException
      * @throws EntityNotFoundException
      */
-    abstract public function getContent(Request $request, array $params);
-
-    /**
-     * @return string
-     */
-    abstract public function getContentClass();
+    abstract public function getContent(Request $request, array $params): string;
+    abstract public function getContentClass(): string;
 }

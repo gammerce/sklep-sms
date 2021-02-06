@@ -21,7 +21,7 @@ class ServerLinkedToServiceRule extends BaseRule
         $this->serverManager = app()->make(ServerManager::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $server = $this->serverManager->get($value);
 

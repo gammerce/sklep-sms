@@ -38,12 +38,12 @@ class BlockUserButtons extends Block
         $this->userServiceAccessService = $userServiceAccessService;
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return $this->auth->check() ? "user-buttons" : "loginarea";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         if (!$this->auth->check()) {
             return $this->template->render("shop/layout/loginarea");

@@ -33,7 +33,7 @@ class ShopRenderer
         $this->websiteHeader = $websiteHeader;
     }
 
-    public function render($content, $pageId, $pageTitle, Request $request)
+    public function render($content, $pageId, $pageTitle, Request $request): string
     {
         $header = $this->template->render("shop/layout/header", [
             "currentPageId" => $pageId,
@@ -72,7 +72,7 @@ class ShopRenderer
         );
     }
 
-    private function getGoogleAnalytics()
+    private function getGoogleAnalytics(): string
     {
         return strlen($this->settings["google_analytics"])
             ? $this->template->render("shop/layout/google_analytics")

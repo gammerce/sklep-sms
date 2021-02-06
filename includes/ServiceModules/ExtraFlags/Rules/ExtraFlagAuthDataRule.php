@@ -7,7 +7,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class ExtraFlagAuthDataRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $type = array_get($data, "type");
 

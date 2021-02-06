@@ -18,7 +18,7 @@ class ThemeRule extends BaseRule
         $this->path = app()->make(Path::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (
             !$this->fileSystem->isDirectory($this->path->to("themes/$value")) ||

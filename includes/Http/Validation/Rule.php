@@ -12,15 +12,7 @@ interface Rule
      * @return void
      * @throws ValidationException
      */
-    public function validate($attribute, $value, array $data);
-
-    /**
-     * @return bool
-     */
-    public function breaksPipelineOnWarning();
-
-    /**
-     * @return bool
-     */
-    public function acceptsEmptyValue();
+    public function validate($attribute, $value, array $data): void;
+    public function breaksPipelineOnWarning(): bool;
+    public function acceptsEmptyValue(): bool;
 }

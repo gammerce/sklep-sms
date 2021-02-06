@@ -14,7 +14,7 @@ class IterateRule extends BaseRule
         $this->rule = $rule;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         assert(is_array($value));
 

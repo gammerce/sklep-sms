@@ -19,12 +19,12 @@ class BlockLoggedInfo extends Block implements IBeLoggedMust
         $this->template = $template;
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return "logged_info";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         return $this->template->render("shop/layout/logged_in_informations", [
             "user" => $this->auth->user(),
