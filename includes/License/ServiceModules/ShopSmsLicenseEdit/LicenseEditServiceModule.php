@@ -65,17 +65,17 @@ class LicenseEditServiceModule extends ServiceModule implements
         $this->lang = $translationManager->user();
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
+    {
+        return "";
+    }
+
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         //
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
-    {
-        //
-    }
-
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         $statement = $this->db->statement(
             "SELECT `identifier` FROM `{$this->getUserServiceTable()}` WHERE `us_id` = ?"
@@ -99,7 +99,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $userService = $this->userServiceService->findOne($purchase->getOrder("user_service_id"));
         $engines = $purchase->getOrder("engines");
@@ -178,7 +178,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    public function showOnWeb()
+    public function showOnWeb(): bool
     {
         return false;
     }

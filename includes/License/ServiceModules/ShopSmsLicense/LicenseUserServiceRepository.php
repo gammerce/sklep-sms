@@ -9,12 +9,13 @@ class LicenseUserServiceRepository
     {
         return new LicenseUserService(
             as_int($data["id"]),
-            $data["service_id"],
+            as_string($data["service_id"]),
             as_int($data["user_id"]),
             as_int($data["expire"]),
-            $data["identifier"],
-            $data["external_license_id"],
-            $data["email"],
+            as_string($data["comment"]),
+            as_string($data["identifier"]),
+            as_int($data["external_license_id"]),
+            as_string($data["email"]),
             as_int($data["cost_daily"]),
             (bool) $data["platform_amxmodx"],
             (bool) $data["platform_sourcemod"]

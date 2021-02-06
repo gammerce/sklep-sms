@@ -120,7 +120,7 @@ class LicenseServerService
      * @param int $licenseId
      * @throws Exception
      */
-    public function delete($licenseId)
+    public function delete($licenseId): void
     {
         $response = $this->requester->delete(
             $this->buildUrl("/v1/licenses/${licenseId}"),
@@ -153,12 +153,12 @@ class LicenseServerService
         return $response->json();
     }
 
-    private function buildUrl($string)
+    private function buildUrl($string): string
     {
         return $this->url . $string;
     }
 
-    private function guardAgainstInvalidResponse(Response $response = null)
+    private function guardAgainstInvalidResponse(Response $response = null): void
     {
         if (!$response) {
             throw new Exception("Problem with connecting to the license server");

@@ -17,6 +17,7 @@ class LicenseUserService extends UserService
         $serviceId,
         $uid,
         $expire,
+        $comment,
         $identifier,
         $externalLicenseId,
         $email,
@@ -24,7 +25,7 @@ class LicenseUserService extends UserService
         $platformAmxModX,
         $platformSourceMod
     ) {
-        parent::__construct($id, $serviceId, $uid, $expire);
+        parent::__construct($id, $serviceId, $uid, $expire, $comment);
 
         $this->identifier = $identifier;
         $this->email = $email;

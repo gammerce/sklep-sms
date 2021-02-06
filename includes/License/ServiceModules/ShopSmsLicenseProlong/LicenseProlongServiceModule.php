@@ -87,7 +87,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         return $this->licenseUserServiceRepository->mapToModel($data);
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         return $this->template->render("shop/services/shopsms_license_prolong/purchase_form", [
             "identifier" => array_get($query, "identifier", ""),
@@ -97,7 +97,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         $validator = new Validator($body, [
             "amount" => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
@@ -119,7 +119,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         return $this->template->renderNoComments(
             "shop/services/shopsms_license_prolong/order_details",
@@ -132,7 +132,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
@@ -214,7 +214,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    public function userServiceAdminAddFormGet()
+    public function userServiceAdminAddFormGet(): string
     {
         return $this->template->renderNoComments(
             "admin/services/shopsms_license_prolong/user_service_admin_add",
@@ -224,10 +224,11 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request)
+    public function userServiceAdminAdd(Request $request): void
     {
         $validator = new Validator($request->request->all(), [
             "amount" => [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+            "comment" => [],
             "identifier" => [new RequiredRule(), new LicenseProlongableRule()],
         ]);
 
@@ -240,28 +241,23 @@ class LicenseProlongServiceModule extends ServiceModule implements
             get_platform($request)
         );
 
-        $purchase = new Purchase($admin, get_ip($request), get_platform($request));
-        $purchase->setServiceId($this->service->getId());
-        $purchase->setPayment([
-            "method" => "admin",
-            "payment_id" => $paymentId,
-        ]);
-        $purchase->setOrder([
-            "identifier" => $validated["identifier"],
-            Purchase::ORDER_QUANTITY => $validated["amount"],
-        ]);
+        $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
+            ->setServiceId($this->service->getId())
+            ->setPayment([
+                "method" => "admin",
+                "payment_id" => $paymentId,
+            ])
+            ->setOrder([
+                "identifier" => $validated["identifier"],
+                Purchase::ORDER_QUANTITY => $validated["amount"],
+            ])
+            ->setComment($validated["comment"]);
 
         $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
-
-        return [
-            "status" => "ok",
-            "text" => $this->lang->t("service_added_correctly"),
-            "positive" => true,
-        ];
     }
 
-    public function actionExecute($action, array $body)
+    public function actionExecute($action, array $body): string
     {
         if ($action === "get_cost") {
             $daysAmount = array_get($body, "amount");
@@ -287,9 +283,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
      *
      * @param $identifier
      * @param $amount
-     * @return int
+     * @return int|null
      */
-    private function getCost($identifier, $amount)
+    private function getCost($identifier, $amount): ?int
     {
         if (!my_is_integer($amount) || $amount < 30) {
             return null;
@@ -308,7 +304,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         return (int) ceil($costDaily * $this->getBargain($amount));
     }
 
-    private function getBargainPercentage($daysCount)
+    private function getBargainPercentage($daysCount): int
     {
         if ($daysCount >= 365) {
             return 20;
@@ -317,12 +313,12 @@ class LicenseProlongServiceModule extends ServiceModule implements
         return 0;
     }
 
-    private function getBargain($daysCount)
+    private function getBargain($daysCount): float
     {
         return (100 - $this->getBargainPercentage($daysCount)) / 100;
     }
 
-    public function showOnWeb()
+    public function showOnWeb(): bool
     {
         return true;
     }

@@ -4,14 +4,18 @@ namespace App\License\ServiceModules\ShopSmsLicense;
 use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\IntegerRule;
 use App\Http\Validation\Rules\MinValueRule;
+use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\PasswordRule;
 use App\Http\Validation\Rules\RequiredRule;
+use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\License\Models\LicenseUserService;
+use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Models\UserService;
+use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseDataService;
@@ -45,6 +49,7 @@ use App\View\Html\Cell;
 use App\View\Html\DOMElement;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\PreWrapCell;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
 use App\View\Html\UserRef;
@@ -85,6 +90,11 @@ class LicenseServiceModule extends ServiceModule implements
     private Settings $settings;
     private Database $db;
     private PaginationFactory $paginationFactory;
+    private AdminPaymentService $adminPaymentService;
+    /**
+     * @var DatabaseLogger
+     */
+    private DatabaseLogger $logger;
 
     public function __construct(
         Auth $auth,
@@ -102,6 +112,8 @@ class LicenseServiceModule extends ServiceModule implements
         TranslationManager $translationManager,
         UserServiceRepository $userServiceRepository,
         UserServiceService $userServiceService,
+        AdminPaymentService $adminPaymentService,
+        DatabaseLogger $logger,
         Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
@@ -117,6 +129,8 @@ class LicenseServiceModule extends ServiceModule implements
         $this->settings = $settings;
         $this->userServiceRepository = $userServiceRepository;
         $this->userServiceService = $userServiceService;
+        $this->adminPaymentService = $adminPaymentService;
+        $this->logger = $logger;
         $this->lang = $translationManager->user();
     }
 
@@ -125,12 +139,12 @@ class LicenseServiceModule extends ServiceModule implements
         return $this->licenseUserServiceRepository->mapToModel($data);
     }
 
-    public function userServiceAdminDisplayTitleGet()
+    public function userServiceAdminDisplayTitleGet(): string
     {
         return $this->lang->t("licenses");
     }
 
-    public function userServiceAdminDisplayGet(Request $request)
+    public function userServiceAdminDisplayGet(Request $request): Wrapper
     {
         $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
@@ -155,15 +169,26 @@ class LicenseServiceModule extends ServiceModule implements
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS us.id, us.user_id, u.username, s.id AS `service_id`, " .
-                "s.name AS `service`, us.expire, m.identifier, m.external_license_id, m.cost_daily " .
-                "FROM `ss_user_service` AS us " .
-                "INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = m.service_id " .
-                "LEFT JOIN `ss_users` AS u ON u.uid = us.user_id " .
-                $where .
-                "ORDER BY us.id DESC " .
-                "LIMIT ?, ?"
+            <<<EOF
+            SELECT 
+                SQL_CALC_FOUND_ROWS
+                us.id,
+                us.user_id,
+                us.comment,
+                u.username,
+                s.id AS `service_id`,
+                s.name AS `service`,
+                us.expire, m.identifier,
+                m.external_license_id,
+                m.cost_daily
+            FROM `ss_user_service` AS us
+            INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id
+            LEFT JOIN `ss_services` AS s ON s.id = m.service_id
+            LEFT JOIN `ss_users` AS u ON u.uid = us.user_id
+            {$where}
+            ORDER BY us.id DESC
+            LIMIT ?, ?
+            EOF
         );
         $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -182,6 +207,7 @@ class LicenseServiceModule extends ServiceModule implements
                     ->addCell(new Cell($row["external_license_id"]))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
+                    ->addCell(new PreWrapCell($row["comment"]))
                     ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
                     ->setEditAction(false);
             })
@@ -195,13 +221,14 @@ class LicenseServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("external_license_id")))
             ->addHeadCell(new HeadCell($this->lang->t("cost_daily")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
+            ->addHeadCell(new HeadCell($this->lang->t("comment")))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         return $this->template->render("shop/services/shopsms_license/purchase_form", [
             "user" => $this->auth->user(),
@@ -214,7 +241,7 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         $validator = new Validator(
             array_merge($body, [
@@ -235,22 +262,27 @@ class LicenseServiceModule extends ServiceModule implements
             $validated["platform_amxmodx"],
             $validated["platform_sourcemod"]
         );
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $validated["amount"],
-            "engines" => [
-                "amxx" => $validated["platform_amxmodx"],
-                "sm" => $validated["platform_sourcemod"],
-            ],
-            "cost_daily" => $costDaily,
-        ]);
-        $purchase->setEmail($validated["email"]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost($costDaily, $validated["amount"]),
-        ]);
-        $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
+        $purchase
+            ->setOrder([
+                Purchase::ORDER_QUANTITY => $validated["amount"],
+                "engines" => [
+                    "amxx" => $validated["platform_amxmodx"],
+                    "sm" => $validated["platform_sourcemod"],
+                ],
+                "cost_daily" => $costDaily,
+            ])
+            ->setEmail($validated["email"])
+            ->setPayment([
+                Purchase::PAYMENT_PRICE_TRANSFER => $this->getCost(
+                    $costDaily,
+                    $validated["amount"]
+                ),
+            ])
+            ->getPaymentSelect()
+            ->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         return $this->template->renderNoComments("shop/services/shopsms_license/order_details", [
             "costMonthly" => $this->priceTextService->getPriceText(
@@ -264,7 +296,7 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $engines = $purchase->getOrder("engines");
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
@@ -284,7 +316,8 @@ class LicenseServiceModule extends ServiceModule implements
         $userServiceId = $this->userServiceRepository->createFixedExpire(
             $this->service->getId(),
             $expiresAt,
-            $purchase->user->getId()
+            $purchase->user->getId(),
+            $purchase->getComment()
         );
 
         $this->db
@@ -371,7 +404,7 @@ class LicenseServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    public function userServiceAdminAddFormGet()
+    public function userServiceAdminAddFormGet(): string
     {
         return $this->template->renderNoComments(
             "admin/services/shopsms_license/user_service_admin_add",
@@ -381,18 +414,67 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request)
+    public function userServiceAdminAdd(Request $request): void
     {
-        return [
-            "status" => "ok",
-            "text" => $this->lang->t("service_added_correctly"),
-            "positive" => true,
-        ];
+        $forever = (bool) $request->request->get("forever");
+
+        $validator = new Validator(
+            array_merge($request->request->all(), [
+                "quantity" => as_int($request->request->get("quantity")),
+                "server_id" => as_int($request->request->get("server_id")),
+                "user_id" => as_int($request->request->get("user_id")),
+            ]),
+            [
+                "comment" => [],
+                "email" => [new EmailRule()],
+                "engines" => [new LicenseEnginesRule()],
+                "platform_amxmodx" => [],
+                "platform_sourcemod" => [],
+                "quantity" => $forever
+                    ? []
+                    : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+                "user_id" => [new UserExistsRule()],
+            ]
+        );
+
+        $validated = $validator->validateOrFail();
+
+        $admin = $this->auth->user();
+        $paymentId = $this->adminPaymentService->payByAdmin(
+            $admin,
+            get_ip($request),
+            get_platform($request)
+        );
+
+        $costDaily = $this->getDailyCost(
+            $validated["platform_amxmodx"],
+            $validated["platform_sourcemod"]
+        );
+
+        $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
+            ->setServiceId($this->service->getId())
+            ->setPayment([
+                "method" => "admin",
+                "payment_id" => $paymentId,
+            ])
+            ->setOrder([
+                Purchase::ORDER_QUANTITY => $validated["quantity"],
+                "engines" => [
+                    "amxx" => $validated["platform_amxmodx"],
+                    "sm" => $validated["platform_sourcemod"],
+                ],
+                "cost_daily" => $costDaily,
+            ])
+            ->setEmail($validated["email"])
+            ->setComment($validated["comment"]);
+
+        $boughtServiceId = $this->purchase($purchase);
+        $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
     }
 
     // ------------------- My Current Services --------------------
 
-    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
+    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit): string
     {
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -421,7 +503,7 @@ class LicenseServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function userOwnServiceEditFormGet(UserService $userService)
+    public function userOwnServiceEditFormGet(UserService $userService): string
     {
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -509,12 +591,12 @@ class LicenseServiceModule extends ServiceModule implements
         ];
     }
 
-    public function serviceTakeOverFormGet()
+    public function serviceTakeOverFormGet(): string
     {
         return $this->template->render("shop/services/shopsms_license/service_take_over");
     }
 
-    public function serviceTakeOver(array $body)
+    public function serviceTakeOver(array $body): array
     {
         $validator = new Validator($body, [
             "service_id" => [new RequiredRule()],
@@ -562,7 +644,7 @@ class LicenseServiceModule extends ServiceModule implements
         ];
     }
 
-    public function userServiceDelete(UserService $userService, $who)
+    public function userServiceDelete(UserService $userService, $who): bool
     {
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -578,7 +660,7 @@ class LicenseServiceModule extends ServiceModule implements
         return true;
     }
 
-    public function actionExecute($action, array $body)
+    public function actionExecute($action, array $body): string
     {
         if ($action === "get_cost") {
             $daysAmount = (int) $body["amount"];
@@ -659,19 +741,19 @@ class LicenseServiceModule extends ServiceModule implements
      * @param int $daysAmount
      * @return int
      */
-    private function getCost($costDaily, $daysAmount)
+    private function getCost($costDaily, $daysAmount): int
     {
         return (int) ceil($costDaily * $daysAmount * $this->getBargain($daysAmount));
     }
 
     /**
-     * Zwraca koszt zakupu licencji
+     * Calculate license daily cost
      *
-     * @param $platformAmxmodx
-     * @param $platformSourcemod
+     * @param bool $platformAmxmodx
+     * @param bool $platformSourcemod
      * @return int
      */
-    private function getDailyCost($platformAmxmodx, $platformSourcemod)
+    private function getDailyCost($platformAmxmodx, $platformSourcemod): int
     {
         // -COST_ENGINE_PER_DAY, bo pierwsza gra jest darmowa
         $costEngines = -$this::COST_ENGINE_PER_DAY;
@@ -686,12 +768,7 @@ class LicenseServiceModule extends ServiceModule implements
         return (int) ceil($this::COST_SHOP_PER_DAY + max(0, $costEngines));
     }
 
-    /**
-     * @param array $body
-     * @param LicenseUserService $userService
-     * @return array
-     */
-    private function getCostUserEdit(array $body, LicenseUserService $userService)
+    private function getCostUserEdit(array $body, LicenseUserService $userService): array
     {
         $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));
 
@@ -736,7 +813,7 @@ class LicenseServiceModule extends ServiceModule implements
         ];
     }
 
-    private function getBargainPercentage($daysCount)
+    private function getBargainPercentage($daysCount): int
     {
         if ($daysCount >= 365) {
             return 20;
@@ -745,12 +822,12 @@ class LicenseServiceModule extends ServiceModule implements
         return 0;
     }
 
-    private function getBargain($daysCount)
+    private function getBargain($daysCount): float
     {
         return (100 - $this->getBargainPercentage($daysCount)) / 100;
     }
 
-    public function showOnWeb()
+    public function showOnWeb(): bool
     {
         return true;
     }
