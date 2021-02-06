@@ -528,7 +528,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request): void
+    public function userServiceAdminAdd(Request $request): int
     {
         $admin = $this->auth->user();
         $forever = (bool) $request->request->get("forever");
@@ -574,13 +574,7 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
 
-        $boughtServiceId = $this->purchase($purchase);
-        $this->logger->logWithActor(
-            "log_user_service_added",
-            $admin->getUsername(),
-            $admin->getId(),
-            $boughtServiceId
-        );
+        return $this->purchase($purchase);
     }
 
     public function userOwnServiceInfoGet(UserService $userService, $buttonEdit): string
