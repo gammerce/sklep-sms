@@ -10,7 +10,6 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\License\Models\LicenseUserService;
-use App\Loggers\DatabaseLogger;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -91,10 +90,6 @@ class LicenseServiceModule extends ServiceModule implements
     private Database $db;
     private PaginationFactory $paginationFactory;
     private AdminPaymentService $adminPaymentService;
-    /**
-     * @var DatabaseLogger
-     */
-    private DatabaseLogger $logger;
 
     public function __construct(
         Auth $auth,
@@ -113,7 +108,6 @@ class LicenseServiceModule extends ServiceModule implements
         UserServiceRepository $userServiceRepository,
         UserServiceService $userServiceService,
         AdminPaymentService $adminPaymentService,
-        DatabaseLogger $logger,
         Service $service = null
     ) {
         parent::__construct($template, $serviceDescriptionService, $service);
@@ -130,7 +124,6 @@ class LicenseServiceModule extends ServiceModule implements
         $this->userServiceRepository = $userServiceRepository;
         $this->userServiceService = $userServiceService;
         $this->adminPaymentService = $adminPaymentService;
-        $this->logger = $logger;
         $this->lang = $translationManager->user();
     }
 
@@ -312,7 +305,7 @@ class LicenseServiceModule extends ServiceModule implements
         $identifier = generate_uuid4();
         $promoCode = $purchase->getPromoCode();
 
-        // Dodajemy usługę użytkownika do bazy sklepu
+        // Let's add a user service to the shop database
         $userServiceId = $this->userServiceRepository->createFixedExpire(
             $this->service->getId(),
             $expiresAt,
@@ -414,7 +407,7 @@ class LicenseServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request): void
+    public function userServiceAdminAdd(Request $request): int
     {
         $forever = (bool) $request->request->get("forever");
 
@@ -468,8 +461,7 @@ class LicenseServiceModule extends ServiceModule implements
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
 
-        $boughtServiceId = $this->purchase($purchase);
-        $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
+        return $this->purchase($purchase);
     }
 
     // ------------------- My Current Services --------------------
@@ -650,7 +642,7 @@ class LicenseServiceModule extends ServiceModule implements
             throw new UnexpectedValueException();
         }
 
-        // Nie usuwaj, jezeli jest mniej niz 30 dni po wygasnieciu
+        // Do not delete if it is less than 30 days after expiration
         if ($who != "admin" && $userService->getExpire() + 60 * 60 * 24 * 30 > time()) {
             return false;
         }
@@ -755,7 +747,7 @@ class LicenseServiceModule extends ServiceModule implements
      */
     private function getDailyCost($platformAmxmodx, $platformSourcemod): int
     {
-        // -COST_ENGINE_PER_DAY, bo pierwsza gra jest darmowa
+        // -COST_ENGINE_PER_DAY, because the first engine is free
         $costEngines = -$this::COST_ENGINE_PER_DAY;
 
         if ($platformAmxmodx) {
@@ -785,8 +777,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $additionalCost = 0;
         foreach ($engines as $engine => $engineData) {
-            // Jezeli anulujemy wsparcie dla jakiegos silnika, to tracimy wszelkie znizki
-            // i przeliczamy normalnie koszt jaki wychodzi
+            // If we cancel support for an engine, we lose all discounts
             if ($engineData["old"] && !$engineData["new"]) {
                 $costDaily = $this->getDailyCost(
                     $body["platform_amxmodx"],
@@ -795,7 +786,7 @@ class LicenseServiceModule extends ServiceModule implements
                 break;
             }
 
-            // Jezeli dodajemy wsparcie dla nowego silnika, to dodajemy do dniowki
+            // If we add support for a new engine, we add it to the daily cost
             if ($engineData["new"] && !$engineData["old"]) {
                 $additionalCost += $this::COST_ENGINE_PER_DAY;
             }

@@ -6,7 +6,6 @@ use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
-use App\Loggers\DatabaseLogger;
 use App\License\Models\LicenseUserService;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -51,7 +50,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
     private LicenseServerService $licenseServerService;
     private BoughtServiceService $boughtServiceService;
     private AdminPaymentService $adminPaymentService;
-    private DatabaseLogger $logger;
     private LicenseUserServiceRepository $licenseUserServiceRepository;
     private PriceTextService $priceTextService;
     private Database $db;
@@ -61,7 +59,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
         Auth $auth,
         BoughtServiceService $boughtServiceService,
         Database $db,
-        DatabaseLogger $logger,
         LicenseServerService $licenseServerService,
         LicenseUserServiceRepository $licenseUserServiceRepository,
         PriceTextService $priceTextService,
@@ -77,7 +74,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $this->db = $db;
         $this->licenseServerService = $licenseServerService;
         $this->licenseUserServiceRepository = $licenseUserServiceRepository;
-        $this->logger = $logger;
         $this->priceTextService = $priceTextService;
         $this->lang = $translationManager->user();
     }
@@ -224,7 +220,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request): void
+    public function userServiceAdminAdd(Request $request): int
     {
         $validator = new Validator($request->request->all(), [
             "amount" => [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
@@ -253,8 +249,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             ])
             ->setComment($validated["comment"]);
 
-        $boughtServiceId = $this->purchase($purchase);
-        $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
+        return $this->purchase($purchase);
     }
 
     public function actionExecute($action, array $body): string

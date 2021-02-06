@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class LicenseEnginesRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $amxModX = array_get($data, "platform_amxmodx");
         $sourceMod = array_get($data, "platform_sourcemod");
@@ -16,7 +16,7 @@ class LicenseEnginesRule extends BaseRule
         }
     }
 
-    public function acceptsEmptyValue()
+    public function acceptsEmptyValue(): bool
     {
         return true;
     }

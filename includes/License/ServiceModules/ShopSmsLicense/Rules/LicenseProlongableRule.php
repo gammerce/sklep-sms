@@ -16,7 +16,7 @@ class LicenseProlongableRule extends BaseRule
         $this->db = app()->make(Database::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $table = LicenseServiceModule::USER_SERVICE_TABLE;
 
