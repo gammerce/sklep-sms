@@ -92,6 +92,7 @@ class ServiceResourceTest extends HttpTestCase
         // given
         $this->actingAs($this->factory->admin());
         $service = $this->factory->service([
+            "id" => "example",
             "module" => OtherServiceModule::MODULE_ID,
         ]);
 

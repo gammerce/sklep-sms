@@ -28,7 +28,7 @@ class PageResolver
      * @throws UnauthorizedException
      * @throws EntityNotFoundException
      */
-    public function resolveAdmin($page)
+    public function resolveAdmin($page): PageAdmin
     {
         if (!($page instanceof PageAdmin)) {
             $page = $this->pageManager->getAdmin($page);
@@ -52,7 +52,7 @@ class PageResolver
      * @throws UnauthorizedException
      * @throws EntityNotFoundException
      */
-    public function resolveUser($page)
+    public function resolveUser($page): Page
     {
         if (!($page instanceof Page)) {
             $page = $this->pageManager->getUser($page);
@@ -71,7 +71,7 @@ class PageResolver
      * @throws ForbiddenException
      * @throws UnauthorizedException
      */
-    private function resolve(Page $page)
+    private function resolve(Page $page): Page
     {
         if ($page instanceof IBeLoggedMust && !$this->auth->check()) {
             throw new UnauthorizedException();

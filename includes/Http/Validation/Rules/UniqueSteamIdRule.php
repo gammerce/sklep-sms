@@ -17,7 +17,7 @@ class UniqueSteamIdRule extends BaseRule
         $this->exceptUserId = $exceptUserId;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $user = $this->userRepository->findBySteamId($value);
 

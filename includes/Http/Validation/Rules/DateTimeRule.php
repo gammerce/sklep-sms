@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class DateTimeRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (strtotime($value) === false) {
             throw new ValidationException($this->lang->t("wrong_date_format"));

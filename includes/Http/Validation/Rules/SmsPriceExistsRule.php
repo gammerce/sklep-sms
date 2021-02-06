@@ -15,7 +15,7 @@ class SmsPriceExistsRule extends BaseRule
         $this->smsPriceRepository = app()->make(SmsPriceRepository::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->smsPriceRepository->exists(as_money($value))) {
             throw new ValidationException($this->lang->t("invalid_price"));

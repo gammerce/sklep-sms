@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class UsernameRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $warnings = [];
 

@@ -27,7 +27,7 @@ class BlockResolver
      * @throws UnauthorizedException
      * @throws EntityNotFoundException
      */
-    public function resolve($block)
+    public function resolve($block): Block
     {
         if (!($block instanceof Block)) {
             $block = $this->blockManager->get($block);

@@ -6,7 +6,7 @@ use App\Http\Validation\BaseRule;
 
 class PasswordRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (strlen($value) < 6) {
             throw new ValidationException($this->lang->t("field_length_min_warn", 6));

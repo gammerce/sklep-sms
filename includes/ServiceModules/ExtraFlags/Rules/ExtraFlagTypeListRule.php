@@ -7,7 +7,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class ExtraFlagTypeListRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         assert(is_array($value));
 

@@ -14,7 +14,7 @@ class EnumRule extends BaseRule
         $this->enumClass = $enumClass;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $enumClass = $this->enumClass;
 

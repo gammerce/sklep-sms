@@ -16,12 +16,12 @@ class BlockAdminContent extends Block implements IBeLoggedMust
         $this->pageResolver = $pageResolver;
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return "";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         return (string) $this->pageResolver->resolveAdmin($params[0])->getContent($request);
     }

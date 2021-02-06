@@ -15,7 +15,7 @@ class ServiceExistsRule extends BaseRule
         $this->serviceRepository = app()->make(ServiceRepository::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->serviceRepository->get($value)) {
             throw new ValidationException($this->lang->t("no_such_service"));

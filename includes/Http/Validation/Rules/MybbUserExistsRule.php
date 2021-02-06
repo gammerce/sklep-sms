@@ -15,7 +15,7 @@ class MybbUserExistsRule extends BaseRule
         $this->mybbRepository = $mybbRepository;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->mybbRepository->existsByUsername($value)) {
             throw new ValidationException($this->lang->t("no_user"));

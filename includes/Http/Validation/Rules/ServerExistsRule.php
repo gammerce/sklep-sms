@@ -15,7 +15,7 @@ class ServerExistsRule extends BaseRule
         $this->serverManager = app()->make(ServerManager::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->serverManager->get($value)) {
             throw new ValidationException($this->lang->t("no_server_id"));

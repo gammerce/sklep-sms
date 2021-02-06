@@ -7,7 +7,7 @@ use App\ServiceModules\ExtraFlags\ExtraFlagType;
 
 class ExtraFlagPasswordRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $type = array_get($data, "type");
 
@@ -17,7 +17,7 @@ class ExtraFlagPasswordRule extends BaseRule
         }
     }
 
-    public function acceptsEmptyValue()
+    public function acceptsEmptyValue(): bool
     {
         return true;
     }

@@ -29,12 +29,12 @@ class BlockServicesButtons extends Block
         $this->serviceListService = $serviceListService;
     }
 
-    public function getContentClass()
+    public function getContentClass(): string
     {
         return "services-buttons";
     }
 
-    public function getContent(Request $request, array $params)
+    public function getContent(Request $request, array $params): string
     {
         $services = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(

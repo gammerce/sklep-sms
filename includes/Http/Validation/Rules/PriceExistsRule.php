@@ -15,7 +15,7 @@ class PriceExistsRule extends BaseRule
         $this->priceRepository = app()->make(PriceRepository::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$this->priceRepository->get($value)) {
             throw new ValidationException($this->lang->t("invalid_price"));

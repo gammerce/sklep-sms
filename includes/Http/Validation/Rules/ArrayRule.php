@@ -6,14 +6,14 @@ use App\Http\Validation\BaseRule;
 
 class ArrayRule extends BaseRule
 {
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!is_array($value)) {
             throw new ValidationException($this->lang->t("field_array"));
         }
     }
 
-    public function breaksPipelineOnWarning()
+    public function breaksPipelineOnWarning(): bool
     {
         return true;
     }

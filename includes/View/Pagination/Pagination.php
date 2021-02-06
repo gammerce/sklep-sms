@@ -33,7 +33,7 @@ class Pagination
      * @param int|null $rowLimit
      * @return array [int, int]
      */
-    public function getSqlLimit($rowLimit = null)
+    public function getSqlLimit($rowLimit = null): array
     {
         $rowLimit = as_int($rowLimit ?: $this->settings["row_limit"]);
         $page = $this->getCurrentPage();

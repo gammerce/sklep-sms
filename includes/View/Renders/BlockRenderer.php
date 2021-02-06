@@ -25,7 +25,7 @@ class BlockRenderer
      * @return DOMElement|null
      * @throws EntityNotFoundException
      */
-    public function render($blockId, Request $request, array $params = [])
+    public function render($blockId, Request $request, array $params = []): ?DOMElement
     {
         try {
             $block = $this->blockResolver->resolve($blockId);

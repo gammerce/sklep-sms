@@ -21,7 +21,7 @@ class BlockManager
      * @param string $className
      * @throws InvalidConfigException
      */
-    public function register($className)
+    public function register($className): void
     {
         $blockId = $className::BLOCK_ID;
 
@@ -38,7 +38,7 @@ class BlockManager
      * @param string $blockId
      * @return bool
      */
-    public function exists($blockId)
+    public function exists($blockId): bool
     {
         return isset($this->classes[$blockId]);
     }
@@ -47,7 +47,7 @@ class BlockManager
      * @param string $blockId
      * @return Block|null
      */
-    public function get($blockId)
+    public function get($blockId): ?Block
     {
         return $this->exists($blockId) ? $this->app->make($this->classes[$blockId]) : null;
     }

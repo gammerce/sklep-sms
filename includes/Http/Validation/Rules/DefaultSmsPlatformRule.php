@@ -15,14 +15,14 @@ class DefaultSmsPlatformRule extends BaseRule
         $this->settings = app()->make(Settings::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!$value && !$this->settings->getSmsPlatformId()) {
             throw new ValidationException($this->lang->t("no_default_sms_platform"));
         }
     }
 
-    public function acceptsEmptyValue()
+    public function acceptsEmptyValue(): bool
     {
         return true;
     }

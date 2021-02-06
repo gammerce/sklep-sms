@@ -14,7 +14,7 @@ class InArrayRule extends BaseRule
         $this->values = $values;
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         if (!in_array($value, $this->values, true)) {
             throw new ValidationException("Invalid value");

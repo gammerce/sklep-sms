@@ -16,7 +16,7 @@ class SupportSmsRule extends BaseRule
         $this->paymentModuleManager = app()->make(PaymentModuleManager::class);
     }
 
-    public function validate($attribute, $value, array $data)
+    public function validate($attribute, $value, array $data): void
     {
         $paymentModule = $this->paymentModuleManager->getByPlatformId($value);
 
