@@ -62,7 +62,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $this->walletPaymentService = $walletPaymentService;
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         $paymentMethodOptions = [];
         $paymentMethodBodies = [];
@@ -90,7 +90,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
     /**
      * @return PaymentOption[]
      */
-    private function getPaymentOptions()
+    private function getPaymentOptions(): array
     {
         $output = [];
 
@@ -115,7 +115,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         return $output;
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         if (!$this->auth->check()) {
             throw new UnauthorizedException();
@@ -141,7 +141,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         $this->chargeWalletFactory->create($paymentMethod)->setup($purchase, $body);
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         $paymentMethod = $this->chargeWalletFactory->create(
             $purchase->getPaymentOption()->getPaymentMethod()
@@ -156,7 +156,7 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $this->walletPaymentService->chargeWallet(
             $purchase->user,

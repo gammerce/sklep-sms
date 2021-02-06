@@ -13,7 +13,7 @@ class MybbUserGroupRepository
         $this->db = $db;
     }
 
-    public function createMany(array $rows)
+    public function createMany(array $rows): void
     {
         if (!$rows) {
             return;
@@ -49,7 +49,7 @@ class MybbUserGroupRepository
     /**
      * @param int $id
      */
-    public function delete($id)
+    public function delete($id): void
     {
         $this->db->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")->execute([$id]);
     }
@@ -58,7 +58,7 @@ class MybbUserGroupRepository
      * @param int $id
      * @return array
      */
-    public function findGroupsExpiration($id)
+    public function findGroupsExpiration($id): array
     {
         $statement = $this->db->statement(
             "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .

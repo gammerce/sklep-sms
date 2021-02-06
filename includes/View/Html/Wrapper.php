@@ -19,7 +19,7 @@ class Wrapper extends Div
         $this->addClass("table-structure");
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         /** @var Template $template */
         $template = app()->make(Template::class);
@@ -57,56 +57,39 @@ class Wrapper extends Div
         return $output;
     }
 
-    /**
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
     /**
      * @param string $title
-     * @return $this
+     * @return self
      */
-    public function setTitle($title)
+    public function setTitle($title): self
     {
         $this->title = $title;
         return $this;
     }
 
-    /**
-     * @param DOMElement $element
-     * @return $this
-     */
-    public function addButton($element)
+    public function addButton(DOMElement $element): self
     {
         $this->buttons[] = $element;
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function enableSearch()
+    public function enableSearch(): self
     {
         $this->search = true;
         return $this;
     }
 
-    /**
-     * @return Structure
-     */
-    public function getTable()
+    public function getTable(): ?Structure
     {
         return $this->table;
     }
 
-    /**
-     * @param Structure $table
-     * @return $this
-     */
-    public function setTable($table)
+    public function setTable(Structure $table): self
     {
         $this->table = $table;
         return $this;

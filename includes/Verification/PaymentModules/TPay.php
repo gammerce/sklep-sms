@@ -32,7 +32,7 @@ class TPay extends PaymentModule implements SupportTransfer
             "data" => [
                 "id" => $this->getAccountId(),
                 "kwota" => $price->asPrice(),
-                "opis" => $purchase->getDescription(),
+                "opis" => $purchase->getTransferDescription(),
                 "crc" => $crc,
                 "md5sum" => md5($this->getAccountId() . $price->asPrice() . $crc . $this->getKey()),
                 "imie" => $purchase->user->getForename(),

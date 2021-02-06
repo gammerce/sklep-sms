@@ -10,7 +10,7 @@ class ExtraFlagType
     const TYPE_SID = 1 << 2;
     const ALL = [self::TYPE_NICK, self::TYPE_IP, self::TYPE_SID];
 
-    public static function getTypeName($value)
+    public static function getTypeName($value): string
     {
         /** @var TranslationManager $translationManager */
         $translationManager = app()->make(TranslationManager::class);

@@ -13,7 +13,7 @@ class RawHtml implements I_ToHtml
         $this->text = (string) $text;
     }
 
-    public function toHtml()
+    public function toHtml(): string
     {
         return $this->text;
     }

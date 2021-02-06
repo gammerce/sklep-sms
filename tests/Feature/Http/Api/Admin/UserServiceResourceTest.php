@@ -32,6 +32,7 @@ class UserServiceResourceTest extends HttpTestCase
 
         $server = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
+            "comment" => "foo",
             "server_id" => $server->getId(),
         ]);
         $expireTimestamp = time() + 24321;
@@ -39,10 +40,11 @@ class UserServiceResourceTest extends HttpTestCase
         // when
         $response = $this->put("/api/admin/user_services/{$userService->getId()}", [
             "auth_data" => "STEAM_1:1:21984552",
-            "type" => ExtraFlagType::TYPE_SID,
+            "comment" => "bar",
             "expire" => as_datetime_string($expireTimestamp, "Y-m-d H:i:s"),
             "server_id" => $server->getId(),
             "service_id" => "vip",
+            "type" => ExtraFlagType::TYPE_SID,
             "user_id" => $user->getId(),
         ]);
 
@@ -56,6 +58,7 @@ class UserServiceResourceTest extends HttpTestCase
         $this->assertSame("", $freshUserService->getPassword());
         $this->assertSame($user->getId(), $freshUserService->getUserId());
         $this->assertSame($expireTimestamp, $freshUserService->getExpire());
+        $this->assertSame("bar", $freshUserService->getComment());
         $playerFlag = $this->playerFlagRepository->getByCredentials(
             $server->getId(),
             ExtraFlagType::TYPE_SID,

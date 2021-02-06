@@ -2,27 +2,27 @@
 namespace App\ServiceModules\Interfaces;
 
 /**
- * Obsługa przejmowania usług przez użytkowników
+ * Support for service take over by a user
  */
 interface IServiceTakeOver
 {
     /**
-     * Zwraca formularz przejęcia usługi
+     * Generates a service takeover form
      *
      * @return string
      */
-    public function serviceTakeOverFormGet();
+    public function serviceTakeOverFormGet(): string;
 
     /**
-     * Sprawdza poprawność danych wprowadzonych w formularzu przejęcia usługi
-     * a jeżeli wszystko jest ok, to ją przejmuje
+     * Checks the correctness of the data entered in the service takeover form
+     * and if everything is ok, it takes over
      *
      * @param array $body
      *
      * @return array
-     * status => id wiadomości
-     * text => treść wiadomości
-     * positive => czy udało się przejąć usługę
+     * status => message id
+     * text => message body
+     * positive => whether the service took over
      */
-    public function serviceTakeOver(array $body);
+    public function serviceTakeOver(array $body): array;
 }

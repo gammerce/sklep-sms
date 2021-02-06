@@ -16,5 +16,5 @@ interface IServicePurchaseExternal extends IServicePurchase
      * @param Purchase $purchase
      * @return Validator
      */
-    public function purchaseDataValidate(Purchase $purchase);
+    public function purchaseDataValidate(Purchase $purchase): Validator;
 }

@@ -6,18 +6,20 @@ class UserService
     private int $id;
     private string $serviceId;
     private ?int $userId;
+    private string $comment;
 
     /**
      * Timestamp or -1 when forever
      */
     private int $expire;
 
-    public function __construct($id, $serviceId, $userId, $expire)
+    public function __construct($id, $serviceId, $userId, $expire, $comment)
     {
         $this->id = $id;
         $this->serviceId = $serviceId;
         $this->userId = $userId;
         $this->expire = $expire;
+        $this->comment = $comment;
     }
 
     public function getId(): int
@@ -43,5 +45,10 @@ class UserService
     public function isForever(): bool
     {
         return $this->expire === -1;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
     }
 }

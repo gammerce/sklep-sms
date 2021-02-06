@@ -330,13 +330,14 @@ class Factory
     {
         $attributes = array_merge(
             [
-                "service_id" => "vip",
-                "user_id" => null,
+                "auth_data" => "my_nickname",
+                "comment" => null,
+                "password" => "pokll12",
                 "seconds" => 35 * 24 * 60 * 60,
                 "server_id" => null,
+                "service_id" => "vip",
                 "type" => ExtraFlagType::TYPE_NICK,
-                "auth_data" => "my_nickname",
-                "password" => "pokll12",
+                "user_id" => null,
             ],
             $attributes
         );
@@ -348,7 +349,8 @@ class Factory
             $attributes["server_id"],
             $attributes["type"],
             $attributes["auth_data"],
-            $attributes["password"]
+            $attributes["password"],
+            $attributes["comment"]
         );
     }
 
@@ -356,10 +358,11 @@ class Factory
     {
         $attributes = array_merge(
             [
+                "comment" => null,
+                "mybb_uid" => 1,
+                "seconds" => 35 * 24 * 60 * 60,
                 "service_id" => fn() => $this->mybbService()->getId(),
                 "user_id" => null,
-                "seconds" => 35 * 24 * 60 * 60,
-                "mybb_uid" => 1,
             ],
             $attributes
         );
@@ -368,7 +371,8 @@ class Factory
             resolve($attributes["service_id"]),
             $attributes["user_id"],
             $attributes["seconds"],
-            $attributes["mybb_uid"]
+            $attributes["mybb_uid"],
+            $attributes["comment"]
         );
     }
 

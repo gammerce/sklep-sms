@@ -85,7 +85,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
             "method" => "POST",
             "data" => [
                 "service" => $this->getService(),
-                "desc" => $purchase->getDescription(),
+                "desc" => $purchase->getTransferDescription(),
                 "forname" => $purchase->user->getForename(),
                 "surname" => $purchase->user->getSurname(),
                 "email" => $purchase->getEmail(),
@@ -94,7 +94,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
                 "sign" => md5(
                     $this->getService() .
                         $price->asPrice() .
-                        $purchase->getDescription() .
+                        $purchase->getTransferDescription() .
                         $userData .
                         $purchase->user->getForename() .
                         $purchase->user->getSurname() .

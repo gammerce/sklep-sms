@@ -71,6 +71,7 @@ use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
 use App\View\Html\NoneText;
 use App\View\Html\Option;
+use App\View\Html\PreWrapCell;
 use App\View\Html\ServerRef;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -169,7 +170,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         return $this->extraFlagUserServiceRepository->mapToModel($data);
     }
 
-    public function serviceAdminExtraFieldsGet()
+    public function serviceAdminExtraFieldsGet(): string
     {
         // WEB
         $webSelYes = selected($this->showOnWeb());
@@ -192,7 +193,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceAdminManagePre(Validator $validator)
+    public function serviceAdminManagePre(Validator $validator): void
     {
         $validator->extendRules([
             "flags" => [new RequiredRule(), new MaxLengthRule(25), new UniqueFlagsRule()],
@@ -201,9 +202,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function serviceAdminManagePost(array $body)
+    public function serviceAdminManagePost(array $body): array
     {
-        // Przygotowujemy do zapisu ( suma bitowa ), które typy zostały wybrane
+        // We prepare for writing (bit sum) which types have been selected
         $types = 0;
         foreach ($body["type"] as $type) {
             $types |= $type;
@@ -224,12 +225,12 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Wyświetlanie usług użytkowników w PA
 
-    public function userServiceAdminDisplayTitleGet()
+    public function userServiceAdminDisplayTitleGet(): string
     {
         return $this->lang->t("extra_flags");
     }
 
-    public function userServiceAdminDisplayGet(Request $request)
+    public function userServiceAdminDisplayGet(Request $request): Wrapper
     {
         $pagination = $this->paginationFactory->create($request);
         $queryParticle = new QueryParticle();
@@ -246,19 +247,28 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle} ";
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS " .
-                "us.id AS `id`, us.user_id AS `user_id`, u.username AS `username`, " .
-                "srv.id AS `server_id`, srv.name AS `server_name`, " .
-                "s.id AS `service_id`, s.name AS `service_name`, " .
-                "usef.type AS `type`, usef.auth_data AS `auth_data`, us.expire AS `expire` " .
-                "FROM `ss_user_service` AS us " .
-                "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id " .
-                "LEFT JOIN `ss_services` AS s ON s.id = usef.service_id " .
-                "LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server_id " .
-                "LEFT JOIN `ss_users` AS u ON u.uid = us.user_id " .
-                $where .
-                "ORDER BY us.id DESC " .
-                "LIMIT ?, ?"
+            <<<EOF
+            SELECT SQL_CALC_FOUND_ROWS 
+            us.id,  
+            us.user_id,  
+            us.comment,  
+            u.username, 
+            srv.id AS `server_id`,  
+            srv.name AS `server_name`, 
+            s.id AS `service_id`,
+            s.name AS `service_name`, 
+            usef.type,
+            usef.auth_data,
+            us.expire 
+            FROM `ss_user_service` AS us 
+            INNER JOIN `{$this->getUserServiceTable()}` AS usef ON usef.us_id = us.id 
+            LEFT JOIN `ss_services` AS s ON s.id = usef.service_id 
+            LEFT JOIN `ss_servers` AS srv ON srv.id = usef.server_id 
+            LEFT JOIN `ss_users` AS u ON u.uid = us.user_id 
+            {$where}
+            ORDER BY us.id DESC 
+            LIMIT ?, ?
+EOF
         );
         $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
@@ -276,6 +286,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service_name"])))
                     ->addCell(new Cell($row["auth_data"]))
                     ->addCell(new ExpirationCell($row["expire"]))
+                    ->addCell(new PreWrapCell($row["comment"]))
                     ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
                     ->setEditAction(can(Permission::MANAGE_USER_SERVICES()));
             })
@@ -296,13 +307,14 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 )
             )
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
+            ->addHeadCell(new HeadCell($this->lang->t("comment")))
             ->addBodyRows($bodyRows)
             ->enablePagination("/admin/user_service", $pagination, $rowsCount);
 
         return (new Wrapper())->enableSearch()->setTable($table);
     }
 
-    public function purchaseFormGet(array $query)
+    public function purchaseFormGet(array $query): string
     {
         $types = collect(ExtraFlagType::ALL)
             ->filter(fn($type) => $this->service->getTypes() & $type)
@@ -326,7 +338,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function purchaseFormValidate(Purchase $purchase, array $body)
+    public function purchaseFormValidate(Purchase $purchase, array $body): void
     {
         $quantity = as_int(array_get($body, "quantity"));
         $serverId = as_int(array_get($body, "server_id"));
@@ -368,7 +380,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         }
     }
 
-    public function purchaseDataValidate(Purchase $purchase)
+    public function purchaseDataValidate(Purchase $purchase): Validator
     {
         $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
 
@@ -423,7 +435,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function orderDetails(Purchase $purchase)
+    public function orderDetails(Purchase $purchase): string
     {
         $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
         $typeName = $this->getTypeName($purchase->getOrder("type"));
@@ -461,7 +473,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function purchase(Purchase $purchase)
+    public function purchase(Purchase $purchase): int
     {
         $this->playerFlagService->addPlayerFlags(
             $this->service->getId(),
@@ -470,7 +482,8 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $purchase->getOrder("type"),
             $purchase->getOrder("auth_data"),
             $purchase->getOrder("password"),
-            $purchase->user->getId()
+            $purchase->user->getId(),
+            $purchase->getComment()
         );
 
         $promoCode = $purchase->getPromoCode();
@@ -568,7 +581,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Zarządzanie usługami użytkowników przez admina
 
-    public function userServiceAdminAddFormGet()
+    public function userServiceAdminAddFormGet(): string
     {
         $types = $this->getTypeOptions($this->service->getTypes());
         $servers = $this->getServerOptions();
@@ -579,7 +592,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminAdd(Request $request)
+    public function userServiceAdminAdd(Request $request): void
     {
         $forever = (bool) $request->request->get("forever");
 
@@ -590,6 +603,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "user_id" => as_int($request->request->get("user_id")),
             ]),
             [
+                "comment" => [],
                 "email" => [new EmailRule()],
                 "password" => [new ExtraFlagPasswordRule()],
                 "quantity" => $forever
@@ -623,21 +637,22 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "password" => $validated["password"],
                 Purchase::ORDER_QUANTITY => $forever ? null : $validated["quantity"],
             ])
-            ->setEmail($validated["email"]);
+            ->setEmail($validated["email"])
+            ->setComment($validated["comment"]);
 
         $boughtServiceId = $this->purchase($purchase);
         $this->logger->logWithActor("log_user_service_added", $boughtServiceId);
     }
 
-    public function userServiceAdminEditFormGet(UserService $userService)
+    public function userServiceAdminEditFormGet(UserService $userService): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
         $services = collect($this->serviceManager->all())
             ->filter(function (Service $service) {
                 $serviceModule = $this->serviceModuleManager->getEmpty($service->getModule());
-                // Usługę możemy zmienić tylko na taka, która korzysta z tego samego modułu.
-                // Inaczej to nie ma sensu, lepiej ją usunąć i dodać nową
+                // We can only change the service to one that uses the same module.
+                // It doesn't make sense otherwise, better remove it and add a new one
                 return $serviceModule && $this->getModuleId() === $serviceModule->getModuleId();
             })
             ->map(
@@ -688,12 +703,10 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $servers = $this->getServerOptions($userService->getServerId());
 
-        // Pobranie hasła
         if (strlen($userService->getPassword())) {
             $password = "********";
         }
 
-        // Zamiana daty
         if ($userService->isForever()) {
             $userServiceExpire = "";
             $checked["forever"] = "checked";
@@ -717,6 +730,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "checked",
                 "userServiceExpire"
             ) + [
+                "comment" => $userService->getComment(),
                 "moduleId" => $this->getModuleId(),
                 "userServiceId" => $userService->getId(),
                 "userServiceUserId" => $userService->getUserId() ?: "",
@@ -724,7 +738,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userServiceAdminEdit(array $body, UserService $userService)
+    public function userServiceAdminEdit(array $body, UserService $userService): bool
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -736,6 +750,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 "user_id" => as_int(array_get($body, "user_id")),
             ]),
             [
+                "comment" => [],
                 "expire" => $forever ? [] : [new RequiredRule(), new DateTimeRule()],
                 "server_id" => [new RequiredRule(), new ServerExistsRule()],
                 "user_id" => [new UserExistsRule()],
@@ -775,7 +790,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ]);
     }
 
-    public function userServiceDeletePost(UserService $userService)
+    public function userServiceDeletePost(UserService $userService): void
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -789,7 +804,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Edytowanie usług przez użytkownika
 
-    public function userOwnServiceEditFormGet(UserService $userService)
+    public function userOwnServiceEditFormGet(UserService $userService): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -862,7 +877,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit)
+    public function userOwnServiceInfoGet(UserService $userService, $buttonEdit): string
     {
         assert($userService instanceof ExtraFlagUserService);
 
@@ -906,12 +921,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     // ----------------------------------------------------------------------------------
     // ### Dodatkowe funkcje przydatne przy zarządzaniu usługami użytkowników
 
-    /**
-     * @param ExtraFlagUserService $userService
-     * @param array $data
-     * @return bool
-     */
-    private function userServiceEdit(ExtraFlagUserService $userService, array $data)
+    private function userServiceEdit(ExtraFlagUserService $userService, array $data): bool
     {
         $expire = array_key_exists("expire", $data)
             ? as_int($data["expire"])
@@ -934,7 +944,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $shouldPasswordBeUpdated = !!strlen($password);
         }
 
-        $set = [];
+        if (array_key_exists("comment", $data)) {
+            $set["comment"] = (string) $data["comment"];
+        }
 
         if ($shouldPasswordBeUpdated) {
             $set["password"] = $password;
@@ -948,7 +960,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             $set["expire"] = -1;
         }
 
-        // Sprawdzenie czy nie ma już takiej usługi
+        // Check if the same user service doesn't exist
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
@@ -965,8 +977,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         if ($existingUserServiceData) {
             $existingUserService = $this->mapToUserService($existingUserServiceData);
-            // Since $shouldUidBeUpdated is false we can assume that it is action done via ACP
-            // not by "user own service edit"
             $canManageThisUserService =
                 !$shouldUserBeUpdated &&
                 $userService->getUserId() != $existingUserService->getUserId();
@@ -977,14 +987,17 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ]);
             }
 
+            // Since $shouldUserBeUpdated is false we can assume that it is action done via ACP
+            // not by "user own service edit"
+
             $this->userServiceRepository->delete($userService->getId());
 
-            // Dodajemy expire
             if ($expire) {
                 $set["expire"] = new Expression("( `expire` - UNIX_TIMESTAMP() + $expire )");
             }
 
-            // Aktualizujemy usługę, która już istnieje w bazie i ma takie same dane jak nasze nowe
+            // Let's update a user service that already exists in the database
+            // and has the same data
             $affected = $this->userServiceRepository->updateWithModule(
                 $this->getUserServiceTable(),
                 $existingUserService->getId(),
@@ -1007,7 +1020,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             );
         }
 
-        // Ustaw jednakowe hasła, żeby potem nie było problemów z różnymi hasłami
+        // Set the same passwords to avoid problems with different passwords later
         if ($shouldPasswordBeUpdated) {
             $this->db
                 ->statement(
@@ -1018,25 +1031,25 @@ class ExtraFlagsServiceModule extends ServiceModule implements
                 ->execute([$password, $serverId, $type, $authData]);
         }
 
-        // Przelicz flagi tylko wtedy, gdy coś się zmieniło
+        // Only recalculate flags when something has changed
         if (!$affected) {
             return false;
         }
 
-        // Odśwież flagi gracza ( przed zmiana danych )
+        // Refresh player flags (before changing data)
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
             $userService->getType(),
             $userService->getAuthData()
         );
 
-        // Odśwież flagi gracza ( już po edycji )
+        // Refresh player flags (after editing)
         $this->playerFlagService->recalculatePlayerFlags($serverId, $type, $authData);
 
         return true;
     }
 
-    public function serviceTakeOverFormGet()
+    public function serviceTakeOverFormGet(): string
     {
         $types = $this->getTypeOptions($this->service->getTypes());
         $servers = $this->getServerOptions();
@@ -1047,7 +1060,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function serviceTakeOver(array $body)
+    public function serviceTakeOver(array $body): array
     {
         try {
             $paymentMethodId = new PaymentMethod(array_get($body, "payment_method"));
@@ -1122,7 +1135,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      * @param int|null $selectedServerId
      * @return string
      */
-    private function getServerOptions($selectedServerId = null)
+    private function getServerOptions($selectedServerId = null): string
     {
         return collect($this->serverManager->all())
             ->filter(
@@ -1162,7 +1175,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
      * @param int $serverId
      * @return string
      */
-    private function pricesForServer($serverId)
+    private function pricesForServer($serverId): string
     {
         $server = $this->serverManager->get($serverId);
         $service = $this->service;
@@ -1182,7 +1195,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         );
     }
 
-    public function actionExecute($action, array $body)
+    public function actionExecute($action, array $body): string
     {
         switch ($action) {
             case "prices_for_server":

@@ -13,12 +13,12 @@ interface IServiceUserServiceAdminAdd
      *
      * @param Request $request
      */
-    public function userServiceAdminAdd(Request $request);
+    public function userServiceAdminAdd(Request $request): void;
 
     /**
      * Provide additional user service add form fields
      *
      * @return string
      */
-    public function userServiceAdminAddFormGet();
+    public function userServiceAdminAddFormGet(): string;
 }

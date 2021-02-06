@@ -20,10 +20,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         return Permission::ACP();
     }
 
-    /**
-     * @return string
-     */
-    public function getPagePath()
+    public function getPagePath(): string
     {
         return "/admin/{$this->getId()}";
     }

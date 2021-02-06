@@ -4,32 +4,31 @@ namespace App\ServiceModules\Interfaces;
 use App\Http\Validation\Validator;
 
 /**
- * Obsługa dodawania nowych usług w PA
- * (Ten interfejs powinien być implementowany w klasie *Simple modułu usługi)
+ * Support for adding new services in ACP
  */
 interface IServiceAdminManage
 {
     /**
-     * Metoda wywoływana przy edytowaniu lub dodawaniu usługi w PA
-     * Powinna zwracać dodatkowe pola do uzupełnienia
+     * Method called when editing or adding a service in ACP
+     * Should return additional fields to be filled
      *
      * @return string
      */
-    public function serviceAdminExtraFieldsGet();
+    public function serviceAdminExtraFieldsGet(): string;
 
     /**
-     * Metoda testuje dane przesłane przez formularz podczas dodawania nowej usługi w PA
+     * The method tests the data submitted using the form when adding a new service in ACP
      *
      * @param Validator $validator
      */
-    public function serviceAdminManagePre(Validator $validator);
+    public function serviceAdminManagePre(Validator $validator): void;
 
     /**
-     * Metoda zostaje wywołana po tym, jak  weryfikacja danych
-     * przesłanych w formularzu dodania nowej usługi w PA przebiegła bezproblemowo
+     * Called after verification of
+     * data sent in the form for adding a new service in ACP went smoothly
      *
      * @param array $body
      * @return array
      */
-    public function serviceAdminManagePost(array $body);
+    public function serviceAdminManagePost(array $body): array;
 }
