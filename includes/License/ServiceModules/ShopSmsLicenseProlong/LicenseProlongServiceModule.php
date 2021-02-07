@@ -17,6 +17,7 @@ use App\Models\Transaction;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
+use App\Payment\General\PaymentOption;
 use App\Service\ServiceDescriptionService;
 use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
@@ -245,9 +246,9 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
             ->setServiceId($this->service->getId())
+            ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
-                "method" => "admin",
-                "payment_id" => $paymentId,
+                Purchase::PAYMENT_PAYMENT_ID => $paymentId,
             ])
             ->setOrder([
                 "identifier" => $validated["identifier"],
