@@ -2,16 +2,6 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox } from "../../../general/infobox";
 import { buildUrl, restRequest, show } from "../../../general/global";
 
-function platform_toggle(element) {
-    if (element.val() == "1") {
-        element.val("0");
-        return false;
-    } else {
-        element.val("1");
-        return true;
-    }
-}
-
 function regenerate_token(identifier, button) {
     const confirmed = confirm(
         `Czy na pewno chcesz ponownie wygenerować token dla licencji: ${identifier} ?`
@@ -26,10 +16,10 @@ function regenerate_token(identifier, button) {
             data: {
                 identifier: identifier,
             },
-            complete: function () {
+            complete() {
                 loader.hide();
             },
-            success: function (content) {
+            success(content) {
                 content = JSON.parse(content);
 
                 const box = $(button).closest(".row").find(".regenerated-token-box");
@@ -39,7 +29,7 @@ function regenerate_token(identifier, button) {
 
                 infobox.showInfo("Token został zregenerowany", true);
             },
-            error: function () {
+            error() {
                 handleErrorResponse();
                 location.reload();
             },
@@ -47,7 +37,7 @@ function regenerate_token(identifier, button) {
     }
 }
 
-function ss_user_edit_set_cost(form) {
+function set_cost(form) {
     const tmpData = form.serializeArray();
     const data = {};
     $.each(tmpData, function (index, element) {
@@ -69,22 +59,9 @@ function ss_user_edit_set_cost(form) {
     });
 }
 
-// Zaznaczamy jakas gre
+// Zaznaczamy jakas platformę
 $(document).delegate(".shopsms_user_edit .platform", "click", function () {
-    let toggle_value = false;
-    if ($(this).hasClass("amxx")) {
-        toggle_value = platform_toggle($(this).parent().find("[name=platform_amxmodx]"));
-    } else if ($(this).hasClass("sm")) {
-        toggle_value = platform_toggle($(this).parent().find("[name=platform_sourcemod]"));
-    }
-
-    ss_user_edit_set_cost($(this).closest("form"));
-
-    if (toggle_value) {
-        $(this).addClass("is-active");
-    } else {
-        $(this).removeClass("is-active");
-    }
+    set_cost($(this).closest("form"));
 });
 
 $(document).delegate(".regenerate-token", "click", function () {

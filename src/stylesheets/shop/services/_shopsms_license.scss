@@ -1,40 +1,37 @@
-$amxx-color: #024079;
-$sm-color: #f69e1d;
+$amxmodx-color: #024079;
+$sourcemod-color: #f69e1d;
 
 .shopsms_license_purchase,
 .shopsms_user_edit {
     .platform {
         color: $white;
+        border: none;
 
-        &:not(.is-active) {
-            border: none;
-        }
-
-        &.amxx {
-            background: rgba($amxx-color, 0.8);
+        &.amxmodx {
+            background: rgba($amxmodx-color, 0.8);
 
             &:hover {
-                background: $amxx-color;
+                background: $amxmodx-color;
             }
 
             &.is-active {
-                background: $amxx-color;
+                background: $amxmodx-color;
             }
         }
 
-        &.sm {
-            background: rgba($sm-color, 0.8);
+        &.sourcemod {
+            background: rgba($sourcemod-color, 0.8);
 
             &:hover {
-                background: $sm-color;
+                background: $sourcemod-color;
             }
 
             &.is-active {
-                background: $sm-color;
+                background: $sourcemod-color;
             }
         }
 
-        &.is-active:after {
+        [type="checkbox"]:checked + span:after {
             content: "\f00c";
             margin-left: 0.5rem;
             color: $success;

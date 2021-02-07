@@ -496,14 +496,8 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         $platforms = [
-            "amxx" => [
-                "input" => $userService->hasPlatformAmxModX() ? "1" : "0",
-                "div" => $userService->hasPlatformAmxModX() ? "is-active" : "",
-            ],
-            "sm" => [
-                "input" => $userService->hasPlatformSourceMod() ? "1" : "0",
-                "div" => $userService->hasPlatformSourceMod() ? "is-active" : "",
-            ],
+            Platform::AMXMODX => $userService->hasPlatformAmxModX() ? "checked" : "",
+            Platform::SOURCEMOD => $userService->hasPlatformSourceMod() ? "checked" : "",
         ];
 
         return $this->template->render("shop/services/shopsms_license/user_own_service_edit", [
@@ -649,12 +643,13 @@ class LicenseServiceModule extends ServiceModule implements
     {
         if ($action === "get_cost") {
             $daysAmount = (int) $body["amount"];
+            $platforms = to_array(array_get($body, "platforms"));
 
             if ($daysAmount < 30) {
                 return "0.00";
             }
 
-            $dailyCost = $this->licensePriceService->getDailyCost($body["platforms"]);
+            $dailyCost = $this->licensePriceService->getDailyCost($platforms);
             $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
@@ -732,9 +727,6 @@ class LicenseServiceModule extends ServiceModule implements
                 "new" => in_array(Platform::SOURCEMOD(), $body["platforms"]),
             ],
         ];
-
-        // TODO Replace all platform_amxmodx
-        // TODO Replace all platform_sourcemod
 
         $additionalCost = 0;
         foreach ($platforms as $platformData) {

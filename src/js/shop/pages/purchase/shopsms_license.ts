@@ -1,17 +1,5 @@
 import { restRequest } from "../../../general/global";
 
-function platform_toggle(element) {
-    if (element.val() == "1") {
-        element.val("0");
-        set_cost();
-        return false;
-    } else {
-        element.val("1");
-        set_cost();
-        return true;
-    }
-}
-
 function set_cost() {
     const form = $(".shopsms_license_purchase");
 
@@ -34,28 +22,12 @@ function set_cost() {
 }
 
 $(document).ready(function ($) {
-    // Aby żadna opcja nie była zaznaczona w przypadku użycia "cofnij"
-    $(".shopsms_license_purchase [name=platform_sourcemod]").val("0");
-    $(".shopsms_license_purchase [name=platform_amxmodx]").val("0");
     set_cost();
 });
 
 // Zaznaczamy jakas platformę
 $(document).delegate(".shopsms_license_purchase .platform", "click", function () {
-    const form = $(this).closest("form");
-
-    let toggle_value = false;
-    if ($(this).hasClass("amxx")) {
-        toggle_value = platform_toggle(form.find("[name=platform_amxmodx]"));
-    } else if ($(this).hasClass("sm")) {
-        toggle_value = platform_toggle(form.find("[name=platform_sourcemod]"));
-    }
-
-    if (toggle_value) {
-        $(this).addClass("is-active");
-    } else {
-        $(this).removeClass("is-active");
-    }
+    set_cost();
 });
 
 // Zmiana ilosci dni

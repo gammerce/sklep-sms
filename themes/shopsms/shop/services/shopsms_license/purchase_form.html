@@ -5,23 +5,27 @@
                 <label class="label required">{{ __('platforms_for_shop') }}</label>
                 <div class="control">
                     <div class="buttons" name="platforms">
-                        <input type="hidden" name="platform_amxmodx" />
-                        <input type="hidden" name="platform_sourcemod" />
-
-                        <button
-                            type="button"
-                            class="button platform amxx fas"
-                            title="Counter Strike 1.6, etc."
-                        >
-                            AMX Mod X
-                        </button>
-                        <button
-                            type="button"
-                            class="button platform sm fas"
+                        <label class="button platform amxmodx fas" title="Counter Strike 1.6, etc.">
+                            <input
+                                type="checkbox"
+                                name="platforms[]"
+                                value="amxmodx"
+                                class="is-hidden"
+                            />
+                            <span>AMX Mod X</span>
+                        </label>
+                        <label
+                            class="button platform sourcemod fas"
                             title="Counter Strike: Global Offensive, Team Fortress 2, etc."
                         >
-                            SOURCEMOD
-                        </button>
+                            <input
+                                type="checkbox"
+                                name="platforms[]"
+                                value="sourcemod"
+                                class="is-hidden"
+                            />
+                            <span>SOURCEMOD</span>
+                        </label>
                     </div>
                 </div>
                 <div class="help">{!! __('price_per_option', $platformMonthlyPrice) !!}</div>
