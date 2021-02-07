@@ -3,6 +3,7 @@ namespace App\License;
 
 use App\Requesting\Requester;
 use App\Requesting\Response;
+use App\Server\Platform;
 use Exception;
 
 class LicenseServerService
@@ -20,19 +21,18 @@ class LicenseServerService
 
     /**
      * @param int $lifetime
-     * @param bool $hasAmxModX
-     * @param bool $hasSourceMod
+     * @param
      * @return array ['id', 'token', 'expires_at']
      * @throws Exception
      */
-    public function create($lifetime, $hasAmxModX, $hasSourceMod)
+    public function create($lifetime, array $platforms)
     {
         $response = $this->requester->post(
             $this->buildUrl("/v1/licenses"),
             json_encode([
                 "lifetime" => $lifetime,
-                "platform_amxmodx" => $hasAmxModX,
-                "platform_sourcemod" => $hasSourceMod,
+                "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
+                "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
             ]),
             [
                 "Authorization" => $this->licenseSecret,
@@ -47,18 +47,17 @@ class LicenseServerService
 
     /**
      * @param int $licenseId
-     * @param bool $hasAmxModX
-     * @param bool $hasSourceMod
+     * @param Platform[] $platforms
      * @return array ['expires_at']
      * @throws Exception
      */
-    public function updatePlatforms($licenseId, $hasAmxModX, $hasSourceMod)
+    public function updatePlatforms($licenseId, array $platforms)
     {
         $response = $this->requester->patch(
             $this->buildUrl("/v1/licenses/${licenseId}"),
             json_encode([
-                "platform_amxmodx" => $hasAmxModX,
-                "platform_sourcemod" => $hasSourceMod,
+                "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
+                "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
             ]),
             [
                 "Authorization" => $this->licenseSecret,

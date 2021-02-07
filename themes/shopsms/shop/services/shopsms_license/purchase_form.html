@@ -2,37 +2,35 @@
     <div class="columns is-multiline">
         <div class="column is-half">
             <div class="field">
-                <label class="label required">{{ __('engines_for_shop') }}</label>
+                <label class="label required">{{ __('platforms_for_shop') }}</label>
                 <div class="control">
-                    <div class="buttons" name="engines">
+                    <div class="buttons" name="platforms">
                         <input type="hidden" name="platform_amxmodx" />
                         <input type="hidden" name="platform_sourcemod" />
 
                         <button
                             type="button"
-                            class="button engine amxx fas"
+                            class="button platform amxx fas"
                             title="Counter Strike 1.6, etc."
                         >
                             AMX Mod X
                         </button>
                         <button
                             type="button"
-                            class="button engine sm fas"
+                            class="button platform sm fas"
                             title="Counter Strike: Global Offensive, Team Fortress 2, etc."
                         >
                             SOURCEMOD
                         </button>
                     </div>
                 </div>
-                <div class="help">{!! __('price_per_option', $engineMonthlyPrice) !!}</div>
+                <div class="help">{!! __('price_per_option', $platformMonthlyPrice) !!}</div>
             </div>
         </div>
 
         <div class="column is-half">
             <div class="field">
-                <label for="amount" class="label required">
-                    {{ __('license_duration') }}
-                </label>
+                <label for="amount" class="label required"> {{ __('license_duration') }} </label>
                 <div class="control">
                     <div class="field has-addons">
                         <div class="control">
@@ -47,9 +45,7 @@
                             />
                         </div>
                         <div class="control">
-                            <a class="button is-static">
-                                {{ $serviceTag }}
-                            </a>
+                            <a class="button is-static"> {{ $serviceTag }} </a>
                         </div>
                     </div>
                 </div>

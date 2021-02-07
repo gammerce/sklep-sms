@@ -23,10 +23,11 @@ class UserServiceService
     }
 
     /**
-     * @param string|int $conditions
+     * @param string $query
+     * @param array $values
      * @return UserService[]
      */
-    public function find($conditions = ""): array
+    public function find($query = "", array $values = []): array
     {
         $output = [];
 
@@ -37,15 +38,16 @@ class UserServiceService
                 continue;
             }
 
-            $result = $this->db->query(
+            $statement = $this->db->statement(
                 "SELECT * " .
                     "FROM `ss_user_service` AS us " .
                     "INNER JOIN `$table` AS m ON m.us_id = us.id " .
-                    $conditions .
+                    $query .
                     " ORDER BY us.id DESC "
             );
+            $statement->execute($values);
 
-            foreach ($result as $row) {
+            foreach ($statement as $row) {
                 $userService = $serviceModule->mapToUserService($row);
                 $output[$userService->getId()] = $userService;
             }
@@ -63,7 +65,7 @@ class UserServiceService
      */
     public function findOne($userServiceId): ?UserService
     {
-        $userServices = $this->find("WHERE `id` = " . intval($userServiceId));
+        $userServices = $this->find("WHERE `id` = ?", [$userServiceId]);
         return $userServices ? $userServices[0] : null;
     }
 }

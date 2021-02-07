@@ -7,12 +7,13 @@ use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\General\BoughtServiceService;
 use App\Repositories\UserServiceRepository;
+use App\Server\Platform;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
-use App\License\ServiceModules\ShopSmsLicense\EngineService;
+use App\License\ServiceModules\ShopSmsLicense\PlatformService;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
 use App\Service\ServiceDescriptionService;
@@ -37,14 +38,14 @@ class LicenseEditServiceModule extends ServiceModule implements
     private BoughtServiceService $boughtServiceService;
     private UserServiceService $userServiceService;
     private PriceTextService $priceTextService;
-    private EngineService $engineService;
+    private PlatformService $platformService;
     private UserServiceRepository $userServiceRepository;
     private Database $db;
 
     public function __construct(
         BoughtServiceService $boughtServiceService,
         Database $db,
-        EngineService $engineService,
+        PlatformService $platformService,
         LicenseServerService $licenseServerService,
         PriceTextService $priceTextService,
         ServiceDescriptionService $serviceDescriptionService,
@@ -60,7 +61,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         $this->db = $db;
         $this->userServiceService = $userServiceService;
         $this->priceTextService = $priceTextService;
-        $this->engineService = $engineService;
+        $this->platformService = $platformService;
         $this->userServiceRepository = $userServiceRepository;
         $this->lang = $translationManager->user();
     }
@@ -90,8 +91,8 @@ class LicenseEditServiceModule extends ServiceModule implements
                     $purchase->getOrder("cost_daily") * 30
                 ),
                 "email" => $purchase->getEmail() ?: $this->lang->t("none"),
-                "engines" => $this->engineService->formatOrderEngines(
-                    $purchase->getOrder("engines")
+                "platforms" => $this->platformService->formatPlatforms(
+                    $purchase->getOrder("platforms")
                 ),
                 "identifier" => $identifier,
                 "serviceName" => $this->service->getName(),
@@ -102,7 +103,7 @@ class LicenseEditServiceModule extends ServiceModule implements
     public function purchase(Purchase $purchase): int
     {
         $userService = $this->userServiceService->findOne($purchase->getOrder("user_service_id"));
-        $engines = $purchase->getOrder("engines");
+        $platforms = $purchase->getOrder("platforms");
 
         if (!($userService instanceof LicenseUserService)) {
             throw new UnexpectedValueException();
@@ -112,8 +113,7 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         $this->licenseServerService->updatePlatforms(
             $userService->getExternalLicenseId(),
-            $engines["amxx"],
-            $engines["sm"]
+            $platforms
         );
 
         $this->userServiceRepository->updateWithModule(
@@ -122,8 +122,8 @@ class LicenseEditServiceModule extends ServiceModule implements
             [
                 "cost_daily" => $purchase->getOrder("cost_daily"),
                 "email" => $purchase->getEmail(),
-                "platform_amxmodx" => $engines["amxx"],
-                "platform_sourcemod" => $engines["sm"],
+                "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
+                "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
             ]
         );
 
@@ -139,20 +139,20 @@ class LicenseEditServiceModule extends ServiceModule implements
             $userService->getIdentifier(),
             $purchase->getEmail(),
             $promoCode ? $promoCode->getCode() : null,
-            ["engines" => $this->engineService->formatOrderEngines($engines)]
+            ["engines" => $this->platformService->formatPlatforms($platforms)]
         );
     }
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        $engines = $transaction->getExtraDatum("engines");
+        $platforms = $transaction->getExtraDatum("engines");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license_edit/purchase_info_email",
                 [
                     "authData" => $transaction->getAuthData(),
-                    "engines" => $engines,
+                    "platforms" => $platforms,
                 ]
             );
         }
@@ -163,7 +163,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                 [
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
-                    "engines" => $engines,
+                    "platforms" => $platforms,
                 ]
             );
         }

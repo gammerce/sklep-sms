@@ -2,7 +2,7 @@ import { loader } from "../../../general/loader";
 import { handleErrorResponse, infobox } from "../../../general/infobox";
 import { buildUrl, restRequest, show } from "../../../general/global";
 
-function engine_toggle(element) {
+function platform_toggle(element) {
     if (element.val() == "1") {
         element.val("0");
         return false;
@@ -26,22 +26,20 @@ function regenerate_token(identifier, button) {
             data: {
                 identifier: identifier,
             },
-            complete: function() {
+            complete: function () {
                 loader.hide();
             },
-            success: function(content) {
+            success: function (content) {
                 content = JSON.parse(content);
 
-                const box = $(button)
-                    .closest(".row")
-                    .find(".regenerated-token-box");
+                const box = $(button).closest(".row").find(".regenerated-token-box");
 
                 show(box);
                 box.find(".token-value").text(content.token);
 
                 infobox.showInfo("Token został zregenerowany", true);
             },
-            error: function() {
+            error: function () {
                 handleErrorResponse();
                 location.reload();
             },
@@ -52,14 +50,14 @@ function regenerate_token(identifier, button) {
 function ss_user_edit_set_cost(form) {
     const tmpData = form.serializeArray();
     const data = {};
-    $.each(tmpData, function(index, element) {
+    $.each(tmpData, function (index, element) {
         data[element.name] = element.value;
     });
     data["user_service_id"] = form.data("row");
 
     const serviceId = form.find("[name=service_id]").val();
 
-    restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function(
+    restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function (
         content
     ) {
         const cost = form.find("#cost .price");
@@ -72,20 +70,12 @@ function ss_user_edit_set_cost(form) {
 }
 
 // Zaznaczamy jakas gre
-$(document).delegate(".shopsms_user_edit .engine", "click", function() {
+$(document).delegate(".shopsms_user_edit .platform", "click", function () {
     let toggle_value = false;
     if ($(this).hasClass("amxx")) {
-        toggle_value = engine_toggle(
-            $(this)
-                .parent()
-                .find("[name=platform_amxmodx]")
-        );
+        toggle_value = platform_toggle($(this).parent().find("[name=platform_amxmodx]"));
     } else if ($(this).hasClass("sm")) {
-        toggle_value = engine_toggle(
-            $(this)
-                .parent()
-                .find("[name=platform_sourcemod]")
-        );
+        toggle_value = platform_toggle($(this).parent().find("[name=platform_sourcemod]"));
     }
 
     ss_user_edit_set_cost($(this).closest("form"));
@@ -97,7 +87,7 @@ $(document).delegate(".shopsms_user_edit .engine", "click", function() {
     }
 });
 
-$(document).delegate(".regenerate-token", "click", function() {
+$(document).delegate(".regenerate-token", "click", function () {
     const identifier = $(this).data("identifier");
     regenerate_token(identifier, this);
 });

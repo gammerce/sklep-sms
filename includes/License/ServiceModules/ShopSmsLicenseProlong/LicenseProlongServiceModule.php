@@ -6,13 +6,19 @@ use App\Http\Validation\Rules\MinValueRule;
 use App\Http\Validation\Rules\NumberRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
+use App\License\LicensePriceService;
+use App\License\LicenseServerService;
 use App\License\Models\LicenseUserService;
+use App\License\ServiceModules\ShopSmsLicense\LicenseUserServiceRepository;
+use App\License\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
 use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
+use App\Service\ServiceDescriptionService;
+use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -20,12 +26,8 @@ use App\ServiceModules\Interfaces\IServicePurchase;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\ServiceModule;
-use App\License\ServiceModules\ShopSmsLicense\LicenseUserServiceRepository;
-use App\License\ServiceModules\ShopSmsLicense\Rules\LicenseProlongableRule;
-use App\License\LicenseServerService;
-use App\Support\PriceTextService;
-use App\Service\ServiceDescriptionService;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -52,6 +54,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
     private AdminPaymentService $adminPaymentService;
     private LicenseUserServiceRepository $licenseUserServiceRepository;
     private PriceTextService $priceTextService;
+    private LicensePriceService $licensePriceService;
+    private UserServiceService $userServiceService;
     private Database $db;
 
     public function __construct(
@@ -59,6 +63,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         Auth $auth,
         BoughtServiceService $boughtServiceService,
         Database $db,
+        LicensePriceService $licensePriceService,
         LicenseServerService $licenseServerService,
         LicenseUserServiceRepository $licenseUserServiceRepository,
         PriceTextService $priceTextService,
@@ -72,6 +77,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;
+        $this->licensePriceService = $licensePriceService;
         $this->licenseServerService = $licenseServerService;
         $this->licenseUserServiceRepository = $licenseUserServiceRepository;
         $this->priceTextService = $priceTextService;
@@ -103,7 +109,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $amount = $validated["amount"];
         $identifier = $validated["identifier"];
-        $transferPrice = intval($this->getCost($identifier, $amount) * $amount);
+        $transferPrice = intval($this->getDailyCostForLicense($identifier, $amount) * $amount);
 
         $purchase->setOrder([
             Purchase::ORDER_QUANTITY => $amount,
@@ -258,8 +264,8 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $daysAmount = array_get($body, "amount");
             $identifier = array_get($body, "identifier");
 
-            $cost = $this->getCost($identifier, $daysAmount) * $daysAmount;
-            $bargainPercentage = $this->getBargainPercentage($daysAmount);
+            $cost = $this->getDailyCostForLicense($identifier, $daysAmount) * $daysAmount;
+            $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
 
             $output = $this->priceTextService->getPlainPrice($cost);
             if ($bargainPercentage) {
@@ -280,7 +286,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
      * @param $amount
      * @return int|null
      */
-    private function getCost($identifier, $amount): ?int
+    public function getDailyCostForLicense($identifier, $amount): ?int
     {
         if (!my_is_integer($amount) || $amount < 30) {
             return null;
@@ -296,21 +302,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             return null;
         }
 
-        return (int) ceil($costDaily * $this->getBargain($amount));
-    }
-
-    private function getBargainPercentage($daysCount): int
-    {
-        if ($daysCount >= 365) {
-            return 20;
-        }
-
-        return 0;
-    }
-
-    private function getBargain($daysCount): float
-    {
-        return (100 - $this->getBargainPercentage($daysCount)) / 100;
+        return (int) ceil($costDaily * $this->licensePriceService->getBargain($amount));
     }
 
     public function showOnWeb(): bool
