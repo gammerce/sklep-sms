@@ -157,7 +157,7 @@ class Transaction
      * @param string $key
      * @return mixed|null
      */
-    public function getExtraDatum($key): mixed
+    public function getExtraDatum($key)
     {
         return array_get($this->extraData, $key);
     }

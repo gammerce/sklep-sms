@@ -19,7 +19,7 @@ final class PaymentResult
         return $this->type;
     }
 
-    public function getData(): mixed
+    public function getData()
     {
         return $this->data;
     }

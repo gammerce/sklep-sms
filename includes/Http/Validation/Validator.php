@@ -75,7 +75,7 @@ class Validator
         $this->data = array_merge($this->data, $data);
     }
 
-    public function getData($attribute): mixed
+    public function getData($attribute)
     {
         return array_get($this->data, $attribute);
     }
