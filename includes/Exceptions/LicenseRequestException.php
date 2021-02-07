@@ -1,6 +1,7 @@
 <?php
-namespace App\License\Exceptions;
+namespace App\Exceptions;
 
+use App\Exceptions\LicenseException;
 use App\Requesting\Response;
 
 class LicenseRequestException extends LicenseException

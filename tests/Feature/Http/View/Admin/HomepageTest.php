@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Http\View\Admin;
 
-use App\License\Exceptions\LicenseRequestException;
+use App\Exceptions\LicenseRequestException;
 use App\Requesting\Response as RequestingResponse;
 use App\System\License;
 use Mockery;
