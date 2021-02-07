@@ -73,7 +73,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
      * @param mixed $default
      * @return mixed
      */
-    public function first(callable $callback = null, $default = null): mixed
+    public function first(callable $callback = null, $default = null)
     {
         if ($callback === null) {
             if (empty($this->items)) {
@@ -212,7 +212,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
         return isset($this->items[$offset]);
     }
 
-    public function offsetGet($offset): mixed
+    public function offsetGet($offset)
     {
         return $this->items[$offset];
     }

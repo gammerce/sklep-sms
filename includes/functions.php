@@ -382,7 +382,7 @@ function my_is_integer($val): bool
  * @param mixed $default
  * @return mixed|null
  */
-function array_get($array, $key, $default = null): mixed
+function array_get($array, $key, $default = null)
 {
     return isset($array[$key]) ? $array[$key] : $default;
 }
@@ -393,7 +393,7 @@ function array_get($array, $key, $default = null): mixed
  * @param mixed $default
  * @return mixed
  */
-function array_dot_get($array, $key, $default = null): mixed
+function array_dot_get($array, $key, $default = null)
 {
     foreach (explode(".", $key) as $segment) {
         if (!isset($array[$segment])) {
