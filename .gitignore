@@ -5,6 +5,7 @@
 
 /confidential/*
 !/confidential/.htaccess
+!/confidential/.meta
 
 /data/cache/*
 !/data/cache/.gitkeep
