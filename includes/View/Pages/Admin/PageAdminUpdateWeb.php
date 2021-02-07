@@ -1,9 +1,9 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\Support\Meta;
 use App\Support\Template;
 use App\Support\Version;
-use App\System\Application;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,18 +13,18 @@ class PageAdminUpdateWeb extends PageAdmin
     const PAGE_ID = "update_web";
 
     private Version $version;
-    private Application $app;
+    private Meta $meta;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         Version $version,
-        Application $app
+        Meta $meta
     ) {
         parent::__construct($template, $translationManager);
 
         $this->version = $version;
-        $this->app = $app;
+        $this->meta = $meta;
     }
 
     public function getPrivilege()
@@ -40,7 +40,7 @@ class PageAdminUpdateWeb extends PageAdmin
     public function getContent(Request $request)
     {
         $newestVersion = $this->version->getNewestWeb();
-        $currentVersion = $this->app->version();
+        $currentVersion = $this->meta->getVersion();
 
         if (version_compare($currentVersion, $newestVersion) >= 0) {
             return $this->template->render("admin/no_update");
