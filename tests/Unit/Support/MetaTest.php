@@ -19,4 +19,10 @@ class MetaTest extends TestCase
     {
         $this->assertEquals("3.16.2", $this->meta->getVersion());
     }
+
+    /** @test */
+    public function build_is_ok()
+    {
+        $this->assertEquals("dev", $this->meta->getBuild());
+    }
 }

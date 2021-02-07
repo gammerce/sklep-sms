@@ -56,9 +56,7 @@ class CssettiTest extends TestCase
         $this->assertFalse($result->isFree());
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function throw_exception_on_bad_code()
     {
         // given
@@ -73,9 +71,7 @@ class CssettiTest extends TestCase
         $this->cssetti->verifySms("foobar", "72480");
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function throw_exception_on_wrong_credentials()
     {
         // given
@@ -90,9 +86,7 @@ class CssettiTest extends TestCase
         $this->cssetti->verifySms("foobar", "72480");
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function throw_server_error_on_unexpected_response()
     {
         // given
@@ -107,9 +101,7 @@ class CssettiTest extends TestCase
         $this->cssetti->verifySms("foobar", "72480");
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function throw_bad_number_on_not_existing_amount_in_the_response()
     {
         // given
@@ -124,9 +116,7 @@ class CssettiTest extends TestCase
         $this->cssetti->verifySms("foobar", "72480");
     }
 
-    /**
-     * @test
-     */
+    /** @test */
     public function throw_bad_number_on_invalid_amount_in_the_response()
     {
         // given

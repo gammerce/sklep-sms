@@ -20,8 +20,13 @@ class MetaParser
 
         return collect($lines)
             ->flatMap(function ($line) {
-                [$key, $value] = explode("=", $line);
-                return [trim($key) => trim($value)];
+                $exploded = explode("=", $line);
+
+                if (count($exploded) != 2) {
+                    return [];
+                }
+
+                return [trim($exploded[0]) => trim($exploded[1])];
             })
             ->all();
     }
