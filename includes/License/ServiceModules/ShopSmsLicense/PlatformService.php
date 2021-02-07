@@ -26,7 +26,14 @@ class PlatformService
         ];
 
         return collect($platforms)
-            ->map(fn(Platform $platform) => $platformsNames[$platform->getValue()])
+            ->map(function ($platform) {
+                if ($platform instanceof Platform) {
+                    return $platform->getValue();
+                }
+
+                return $platform;
+            })
+            ->map(fn($platform) => $platformsNames[$platform])
             ->join(", ");
     }
 }
