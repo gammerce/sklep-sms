@@ -10,10 +10,10 @@ use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
 use App\Server\Platform;
 use App\Support\Database;
+use App\Support\Meta;
 use App\Support\PriceTextService;
 use App\Support\Template;
 use App\Support\Version;
-use App\System\Application;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\View\Html\RawHtml;
@@ -31,9 +31,9 @@ class PageAdminMain extends PageAdmin
     private PriceTextService $priceTextService;
     private TransactionRepository $transactionRepository;
     private UrlGenerator $url;
-    private Application $app;
     private ServerManager $serverManager;
     private Database $db;
+    private Meta $meta;
 
     public function __construct(
         Template $template,
@@ -45,9 +45,9 @@ class PageAdminMain extends PageAdmin
         PriceTextService $priceTextService,
         TransactionRepository $transactionRepository,
         UrlGenerator $url,
-        Application $app,
         ServerManager $serverManager,
-        Database $db
+        Database $db,
+        Meta $meta
     ) {
         parent::__construct($template, $translationManager);
 
@@ -58,9 +58,9 @@ class PageAdminMain extends PageAdmin
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
         $this->url = $url;
-        $this->app = $app;
         $this->serverManager = $serverManager;
         $this->db = $db;
+        $this->meta = $meta;
     }
 
     public function getTitle(Request $request)
@@ -112,7 +112,7 @@ class PageAdminMain extends PageAdmin
         $newestAmxXVersion = $this->version->getNewestAmxmodx();
         $newestSmVersion = $this->version->getNewestSourcemod();
 
-        if ($newestVersion && version_compare($this->app->version(), $newestVersion) < 0) {
+        if ($newestVersion && version_compare($this->meta->getVersion(), $newestVersion) < 0) {
             $updateWebLink = $this->url->to("/admin/update_web");
 
             $notes[] = $this->createNote(

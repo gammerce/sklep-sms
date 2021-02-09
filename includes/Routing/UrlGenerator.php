@@ -1,6 +1,7 @@
 <?php
 namespace App\Routing;
 
+use App\Support\Meta;
 use App\System\Application;
 use App\System\Settings;
 use Symfony\Component\HttpFoundation\Request;
@@ -9,12 +10,14 @@ class UrlGenerator
 {
     private Settings $settings;
     private Application $app;
+    private Meta $meta;
     private ?string $version = null;
 
-    public function __construct(Settings $settings, Application $app)
+    public function __construct(Settings $settings, Application $app, Meta $meta)
     {
         $this->settings = $settings;
         $this->app = $app;
+        $this->meta = $meta;
     }
 
     /**
@@ -66,7 +69,10 @@ class UrlGenerator
     private function getVersion()
     {
         if (!$this->version) {
-            $version = hash("sha256", $this->settings->getSecret() . "#" . $this->app->version());
+            $version = hash(
+                "sha256",
+                $this->settings->getSecret() . "#" . $this->meta->getVersion()
+            );
             $this->version = substr($version, 0, 7);
         }
 

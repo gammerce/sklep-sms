@@ -67,6 +67,9 @@ jobs:
       -
         run: pre-commit run --all-files || true
       -
+        name: Save build version
+        run: sed -i "s/BUILD=.*/BUILD=php${{ matrix.php_version }}/" ./confidential/.meta
+      -
         id: build_artifact
         run: |
           zip -r \

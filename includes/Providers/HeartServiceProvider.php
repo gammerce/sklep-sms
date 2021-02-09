@@ -9,6 +9,7 @@ use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\Other\OtherServiceModule;
+use App\Support\Meta;
 use App\System\Application;
 use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\Cssetti;
@@ -94,6 +95,11 @@ class HeartServiceProvider
             $this->registerServices($manager);
             return $manager;
         });
+    }
+
+    public function boot(Meta $meta)
+    {
+        $meta->load();
     }
 
     private function registerPaymentModules(PaymentModuleManager $paymentModuleManager)

@@ -7,6 +7,7 @@ use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\Support\Meta;
 use App\Support\Template;
 use App\System\Application;
 use App\System\Auth;
@@ -32,6 +33,7 @@ class AdminController
         PageManager $pageManager,
         WebsiteHeader $websiteHeader,
         ServiceModuleManager $serviceModuleManager,
+        Meta $meta,
         $pageId = "home"
     ) {
         $page = $pageManager->getAdmin($pageId);
@@ -133,7 +135,7 @@ class AdminController
             "scripts" => $websiteHeader->getScripts(),
             "styles" => $websiteHeader->getStyles(),
         ]);
-        $currentVersion = $app->version();
+        $currentVersion = $meta->getVersion();
         $logoutAction = $url->to("/admin/login");
 
         return new Response(

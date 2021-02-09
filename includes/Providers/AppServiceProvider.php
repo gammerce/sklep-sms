@@ -18,6 +18,7 @@ use App\Support\Database;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
 use App\Support\Mailer;
+use App\Support\Meta;
 use App\Support\Path;
 use App\Support\Template;
 use App\System\Application;
@@ -48,6 +49,7 @@ class AppServiceProvider
         $app->singleton(ExternalConfigProvider::class);
         $app->singleton(GroupManager::class);
         $app->singleton(License::class);
+        $app->singleton(Meta::class);
         $app->singleton(PageManager::class);
         $app->singleton(PaymentModuleManager::class);
         $app->singleton(ServerAuth::class);

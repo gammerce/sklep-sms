@@ -7,6 +7,7 @@ use App\Exceptions\LicenseRequestException;
 use App\Exceptions\RequestException;
 use App\Requesting\Requester;
 use App\Routing\UrlGenerator;
+use App\Support\Meta;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
@@ -19,6 +20,7 @@ class License
     private Requester $requester;
     private CachingRequester $cachingRequester;
     private UrlGenerator $urlGenerator;
+    private Meta $meta;
 
     /** @var int */
     private $externalLicenseId;
@@ -36,19 +38,21 @@ class License
         Settings $settings,
         Requester $requester,
         CachingRequester $cachingRequester,
-        UrlGenerator $urlGenerator
+        UrlGenerator $urlGenerator,
+        Meta $meta
     ) {
         $this->langShop = $translationManager->shop();
         $this->settings = $settings;
         $this->requester = $requester;
         $this->cachingRequester = $cachingRequester;
         $this->urlGenerator = $urlGenerator;
+        $this->meta = $meta;
     }
 
     /**
      * @throws LicenseRequestException
      */
-    public function validate()
+    public function validate(): void
     {
         try {
             $response = $this->loadLicense();
@@ -86,7 +90,7 @@ class License
         return $this->externalLicenseId;
     }
 
-    public function isForever()
+    public function isForever(): bool
     {
         return $this->expiresAt === null;
     }
@@ -126,7 +130,7 @@ class License
             [
                 "url" => $shopUrl,
                 "name" => $this->settings["shop_name"] ?: $shopUrl,
-                "version" => app()->version(),
+                "version" => $this->meta->getVersion(),
                 "language" => $this->langShop->getCurrentLanguage(),
                 "php_version" => PHP_VERSION,
             ],

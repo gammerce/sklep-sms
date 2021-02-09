@@ -16,8 +16,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Application extends Container
 {
-    const VERSION = "3.16.1";
-
     private array $providers = [
         AppServiceProvider::class,
         LicenseServiceProvider::class,
@@ -34,11 +32,6 @@ class Application extends Container
         static::setInstance($this);
         $this->registerBindings();
         $this->bootstrap();
-    }
-
-    public function version(): string
-    {
-        return self::VERSION;
     }
 
     private function registerBindings(): void
