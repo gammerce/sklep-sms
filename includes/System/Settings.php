@@ -52,7 +52,7 @@ class Settings implements ArrayAccess
         unset($this->data[$offset]);
     }
 
-    public function load()
+    public function load(): void
     {
         $result = $this->db->query("SELECT * FROM `ss_settings`");
         foreach ($result as $row) {
@@ -71,10 +71,7 @@ class Settings implements ArrayAccess
         date_default_timezone_set($this->data["timezone"]);
     }
 
-    /**
-     * @return string|null
-     */
-    public function getSmsPlatformId()
+    public function getSmsPlatformId(): ?int
     {
         return as_int(array_get($this->data, "sms_platform"));
     }
@@ -82,15 +79,12 @@ class Settings implements ArrayAccess
     /**
      * @return string[]
      */
-    public function getTransferPlatformIds()
+    public function getTransferPlatformIds(): array
     {
         return explode_int_list(array_get($this->data, "transfer_platform"), ",");
     }
 
-    /**
-     * @return string|null
-     */
-    public function getDirectBillingPlatformId()
+    public function getDirectBillingPlatformId(): ?int
     {
         return as_int(array_get($this->data, "direct_billing_platform"));
     }
@@ -175,7 +169,7 @@ class Settings implements ArrayAccess
         return array_get($this->data, "shop_url");
     }
 
-    private function formatShopUrl($url)
+    private function formatShopUrl($url): string
     {
         if (!starts_with($url, "http://") && !starts_with($url, "https://")) {
             $url = "http://" . $url;

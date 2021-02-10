@@ -7,20 +7,17 @@ class ServerAuth
 {
     private ?Server $server = null;
 
-    /**
-     * @return Server|null
-     */
-    public function server()
+    public function server(): ?Server
     {
         return $this->server;
     }
 
-    public function setServer(Server $server = null)
+    public function setServer(Server $server = null): void
     {
         $this->server = $server;
     }
 
-    public function check()
+    public function check(): bool
     {
         return $this->server !== null;
     }
