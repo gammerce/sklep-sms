@@ -2,41 +2,46 @@
 namespace App\Install;
 
 use App\Support\FileSystemContract;
+use App\Support\Meta;
 use App\Support\Path;
 
-class RequirementsStore
+class RequirementStore
 {
     private Path $path;
     private FileSystemContract $fileSystem;
+    private Meta $meta;
 
-    public function __construct(Path $path, FileSystemContract $fileSystem)
+    public function __construct(Path $path, Meta $meta, FileSystemContract $fileSystem)
     {
         $this->path = $path;
         $this->fileSystem = $fileSystem;
+        $this->meta = $meta;
     }
 
-    public function getModules()
+    public function getModules(): array
     {
+        $buildPHPVersion = $this->getBuildPHPVersion();
+
         return [
             [
-                "text" => "PHP v5.6.0 lub wyżej",
-                "value" => version_compare(PHP_VERSION, "5.6.0") >= 0,
-                "must-be" => false,
+                "text" => "PHP v{$buildPHPVersion} lub wyżej",
+                "value" => version_compare(PHP_VERSION, $buildPHPVersion) >= 0,
+                "required" => false,
             ],
             [
                 "text" => "Moduł CURL",
                 "value" => extension_loaded("curl"),
-                "must-be" => true,
+                "required" => true,
             ],
             [
                 "text" => "Moduł PDO",
                 "value" => extension_loaded("pdo") && extension_loaded("pdo_mysql"),
-                "must-be" => true,
+                "required" => true,
             ],
         ];
     }
 
-    public function getFilesWithWritePermission()
+    public function getFilesWithWritePermission(): array
     {
         return [
             "confidential/",
@@ -48,7 +53,7 @@ class RequirementsStore
         ];
     }
 
-    public function getFilesToDelete()
+    public function getFilesToDelete(): array
     {
         return [
             "errors",
@@ -67,10 +72,7 @@ class RequirementsStore
         ];
     }
 
-    /**
-     * @return bool
-     */
-    public function areFilesInCorrectState()
+    public function areFilesInCorrectState(): bool
     {
         foreach ($this->getFilesWithWritePermission() as $path) {
             $fullPath = $this->path->to($path);
@@ -87,5 +89,10 @@ class RequirementsStore
         }
 
         return true;
+    }
+
+    private function getBuildPHPVersion(): string
+    {
+        return str_replace("php", "", $this->meta->getBuild());
     }
 }
