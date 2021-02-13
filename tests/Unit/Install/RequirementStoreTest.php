@@ -2,7 +2,6 @@
 namespace Tests\Unit\Install;
 
 use App\Install\RequirementStore;
-use App\Support\FileSystemContract;
 use App\Support\Meta;
 use App\Support\MetaParser;
 use App\Support\Path;
