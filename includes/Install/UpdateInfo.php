@@ -31,7 +31,7 @@ class UpdateInfo
                 compact("title", "status")
             );
 
-            if (!$module["value"] && $module["must-be"]) {
+            if (!$module["value"] && $module["required"]) {
                 $everythingOk = false;
             }
         }

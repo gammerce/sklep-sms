@@ -8,34 +8,34 @@ class ShopState
 {
     private MigrationFiles $migrationFiles;
     private DatabaseMigration $databaseMigration;
-    private RequirementsStore $requirementsStore;
+    private RequirementStore $requirementStore;
     private Database $db;
 
     public function __construct(
         MigrationFiles $migrationFiles,
         DatabaseMigration $databaseMigration,
-        RequirementsStore $requirementsStore,
+        RequirementStore $requirementStore,
         Database $db
     ) {
         $this->migrationFiles = $migrationFiles;
         $this->databaseMigration = $databaseMigration;
-        $this->requirementsStore = $requirementsStore;
+        $this->requirementStore = $requirementStore;
         $this->db = $db;
     }
 
-    public function requiresAction()
+    public function requiresAction(): bool
     {
         return !$this->isInstalled() || !$this->isUpToDate();
     }
 
-    public function isUpToDate()
+    public function isUpToDate(): bool
     {
         return $this->databaseMigration->getLastExecutedMigration() ===
             $this->migrationFiles->getLastMigration() &&
-            $this->requirementsStore->areFilesInCorrectState();
+            $this->requirementStore->areFilesInCorrectState();
     }
 
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         if ($this->db->isConnected()) {
             return true;
