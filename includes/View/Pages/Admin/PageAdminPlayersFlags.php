@@ -43,12 +43,12 @@ class PageAdminPlayersFlags extends PageAdmin
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_PLAYER_FLAGS();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("players_flags");
     }

@@ -28,7 +28,7 @@ abstract class Page
      * @param Request $request
      * @return string
      */
-    abstract public function getTitle(Request $request);
+    abstract public function getTitle(Request $request): string;
 
     /**
      * Get page content
@@ -38,7 +38,7 @@ abstract class Page
      */
     abstract public function getContent(Request $request);
 
-    public function getId()
+    public function getId(): string
     {
         return $this::PAGE_ID;
     }
@@ -48,7 +48,7 @@ abstract class Page
         return "/page/{$this->getId()}";
     }
 
-    public function addScripts(Request $request)
+    public function addScripts(Request $request): void
     {
         /** @var FileSystem $fileSystem */
         $fileSystem = app()->make(FileSystem::class);

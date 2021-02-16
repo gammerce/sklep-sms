@@ -8,7 +8,7 @@ class PageRegulations extends Page
 {
     const PAGE_ID = "regulations";
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("regulations");
     }

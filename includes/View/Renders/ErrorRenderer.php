@@ -15,7 +15,7 @@ class ErrorRenderer
         $this->template = $template;
     }
 
-    public function render($errorId, Request $request)
+    public function render($errorId, Request $request): string
     {
         $content = $this->template->render("errors/$errorId");
         return $this->shopRenderer->render($content, "error", "$errorId", $request);

@@ -56,12 +56,12 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $this->serverServiceManager = $serverServiceManager;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_SERVICES();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("services");
     }

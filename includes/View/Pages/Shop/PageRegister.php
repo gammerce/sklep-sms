@@ -23,7 +23,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $this->siteKey = $siteKey;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("sign_up");
     }

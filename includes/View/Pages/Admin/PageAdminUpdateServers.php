@@ -32,12 +32,12 @@ class PageAdminUpdateServers extends PageAdmin
         $this->serverManager = $serverManager;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::UPDATE();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("update_servers");
     }

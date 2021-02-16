@@ -3,11 +3,8 @@ namespace App\Verification;
 
 class DataField
 {
-    /** @var string */
-    private $id;
-
-    /** @var string|null */
-    private $name;
+    private string $id;
+    private ?string $name;
 
     public function __construct($id, $name = null)
     {
@@ -15,18 +12,12 @@ class DataField
         $this->name = $name;
     }
 
-    /**
-     * @return string
-     */
-    public function getId()
+    public function getId(): string
     {
         return $this->id;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getName()
+    public function getName(): ?string
     {
         return $this->name;
     }
