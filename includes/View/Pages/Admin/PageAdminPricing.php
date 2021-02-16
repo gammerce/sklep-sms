@@ -64,12 +64,12 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::MANAGE_SETTINGS();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("pricing");
     }

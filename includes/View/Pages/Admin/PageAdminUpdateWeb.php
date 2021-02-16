@@ -27,12 +27,12 @@ class PageAdminUpdateWeb extends PageAdmin
         $this->meta = $meta;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::UPDATE();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("update_web");
     }

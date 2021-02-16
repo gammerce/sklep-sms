@@ -9,7 +9,7 @@ class PageLogin extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = "login";
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("sign_in");
     }

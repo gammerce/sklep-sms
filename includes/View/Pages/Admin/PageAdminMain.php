@@ -63,7 +63,7 @@ class PageAdminMain extends PageAdmin
         $this->meta = $meta;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("main_page");
     }

@@ -54,7 +54,7 @@ class PagePayPalApproved extends Page
         $this->paymentTransferRepository = $paymentTransferRepository;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("transfer_finalized");
     }

@@ -41,7 +41,7 @@ class Database
     /**
      * @throws PDOException
      */
-    public function connect()
+    public function connect(): void
     {
         $this->connectWithoutDb();
         $this->selectDb($this->name);
@@ -50,7 +50,7 @@ class Database
     /**
      * @throws PDOException
      */
-    public function connectWithoutDb()
+    public function connectWithoutDb(): void
     {
         $dsn = "mysql:host={$this->host};port={$this->port};charset=utf8mb4";
         $options = [
@@ -65,12 +65,12 @@ class Database
      * @param string $name
      * @throws PDOException
      */
-    public function selectDb($name)
+    public function selectDb($name): void
     {
         $this->pdo->exec("USE `$name`");
     }
 
-    public function close()
+    public function close(): void
     {
         $this->pdo = null;
     }
@@ -98,22 +98,22 @@ class Database
         return $this->pdo->prepare($statement);
     }
 
-    public function lastId()
+    public function lastId(): int
     {
         return (int) $this->pdo->lastInsertId();
     }
 
-    public function startTransaction()
+    public function startTransaction(): void
     {
         $this->pdo->beginTransaction();
     }
 
-    public function rollback()
+    public function rollback(): void
     {
         $this->pdo->rollBack();
     }
 
-    public function dropAllTables()
+    public function dropAllTables(): void
     {
         $tables = $this->getAllTables();
 
@@ -167,7 +167,7 @@ class Database
         return $this->query("SELECT UNIX_TIMESTAMP(NOW())")->fetchColumn();
     }
 
-    public function isConnected()
+    public function isConnected(): bool
     {
         return $this->pdo !== null;
     }

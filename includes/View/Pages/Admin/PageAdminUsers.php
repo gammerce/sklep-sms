@@ -56,12 +56,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_USERS();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("users");
     }

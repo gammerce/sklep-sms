@@ -28,7 +28,7 @@ class PageResetPassword extends Page implements IBeLoggedCannot
         $this->url = $url;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("reset_password");
     }

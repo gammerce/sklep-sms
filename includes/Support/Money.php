@@ -75,9 +75,6 @@ class Money
         return new Money($this->value + $money);
     }
 
-    /**
-     * @return string
-     */
     public function __toString()
     {
         return $this->asPrice();

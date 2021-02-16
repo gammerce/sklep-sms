@@ -43,12 +43,12 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_USER_SERVICES();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         $serviceModule = $this->getServiceModule($request);
         $title = $this->lang->t("users_services");
