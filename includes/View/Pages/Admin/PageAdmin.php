@@ -12,10 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 abstract class PageAdmin extends Page implements IBeLoggedMust
 {
-    /**
-     * @return Permission
-     */
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::ACP();
     }
@@ -25,7 +22,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         return "/admin/{$this->getId()}";
     }
 
-    public function addScripts(Request $request)
+    public function addScripts(Request $request): void
     {
         /** @var FileSystem $fileSystem */
         $fileSystem = app()->make(FileSystem::class);

@@ -1,31 +1,29 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\Models\User;
 use App\Repositories\UserRepository;
+use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class UserResourceTest extends HttpTestCase
 {
-    private User $user;
     private UserRepository $repository;
 
     protected function setUp(): void
     {
         parent::setUp();
-
         $this->repository = $this->app->make(UserRepository::class);
-        $this->user = $this->factory->user();
     }
 
     /** @test */
     public function updates_user()
     {
         // given
+        $user = $this->factory->user();
         $this->actingAs($this->factory->admin());
 
         // when
-        $response = $this->put("/api/admin/users/{$this->user->getId()}", [
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
             "email" => "example@example.com",
             "groups" => [1],
             "username" => "myabc",
@@ -37,7 +35,7 @@ class UserResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
 
-        $freshUser = $this->repository->get($this->user->getId());
+        $freshUser = $this->repository->get($user->getId());
         $this->assertSame("example@example.com", $freshUser->getEmail());
         $this->assertSame("", $freshUser->getForename());
         $this->assertSame("", $freshUser->getSurname());
@@ -51,6 +49,7 @@ class UserResourceTest extends HttpTestCase
     public function cannot_use_the_same_username_email_steam_id_twice()
     {
         // given
+        $user = $this->factory->user();
         $this->actingAs($this->factory->admin());
 
         $steamId = "STEAM_1:0:20340372";
@@ -63,7 +62,7 @@ class UserResourceTest extends HttpTestCase
         ]);
 
         // when
-        $response = $this->put("/api/admin/users/{$this->user->getId()}", [
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
             "email" => $email,
             "groups" => [1],
             "username" => $username,
@@ -83,5 +82,77 @@ class UserResourceTest extends HttpTestCase
             ],
             $json["warnings"]
         );
+    }
+
+    /** @test */
+    public function cannot_extend_own_permissions()
+    {
+        // given
+        $miniAdmin = $this->factory->group([
+            "permissions" => [Permission::ACP(), Permission::MANAGE_USERS()],
+        ]);
+        $sales = $this->factory->group([
+            "permissions" => [Permission::ACP(), Permission::MANAGE_SERVERS()],
+        ]);
+        $user = $this->factory->user([
+            "groups" => [$miniAdmin->getId()],
+        ]);
+        $this->actingAs($user);
+
+        // when
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
+            "email" => $user->getEmail(),
+            "groups" => [$miniAdmin->getId(), $sales->getId()],
+            "username" => $user->getUsername(),
+            "steam_id" => $user->getSteamId(),
+            "wallet" => $user->getWallet()->asFloat(),
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("warnings", $json["return_id"]);
+        $this->assertEquals(
+            [
+                "groups" => ["Wybrano błędną grupę."],
+            ],
+            $json["warnings"]
+        );
+    }
+
+    /** @test */
+    public function cannot_update_groups_of_a_user_with_wider_permissions()
+    {
+        // given
+        $sales = $this->factory->group([
+            "permissions" => [Permission::ACP(), Permission::MANAGE_USERS()],
+        ]);
+        $developers = $this->factory->group([
+            "permissions" => [Permission::MANAGE_SERVICES()],
+        ]);
+        $tom = $this->factory->user([
+            "groups" => [$sales->getId()],
+        ]);
+        $frank = $this->factory->user([
+            "groups" => [$developers->getId()],
+        ]);
+        $this->actingAs($tom);
+
+        // when
+        $response = $this->putJson("/api/admin/users/{$frank->getId()}", [
+            "email" => $frank->getEmail(),
+            "groups" => [$sales->getId()],
+            "username" => $frank->getUsername(),
+            "steam_id" => $frank->getSteamId(),
+            "wallet" => $frank->getWallet()->asFloat(),
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
+
+        $freshFrank = $this->repository->get($frank->getId());
+        $this->assertEquals([$developers->getId()], $freshFrank->getGroups());
     }
 }

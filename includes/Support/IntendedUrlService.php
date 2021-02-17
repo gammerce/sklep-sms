@@ -9,7 +9,7 @@ class IntendedUrlService
 {
     const URL_INTENDED_KEY = "url.intended";
 
-    public function set(Request $request)
+    public function set(Request $request): void
     {
         $session = $request->getSession();
 

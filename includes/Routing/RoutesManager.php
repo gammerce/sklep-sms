@@ -137,6 +137,7 @@ class RoutesManager
         $r->addGroup([], function (RouteCollector $r) {
             $r->get("/lang.js", [
                 "uses" => LanguageJsController::class . "@get",
+                "type" => RoutesManager::TYPE_INSTALL,
             ]);
 
             $r->get("/api/cron", [

@@ -23,7 +23,7 @@ class PageCashBillTransferFinalized extends Page
         $this->purchaseInformation = $purchaseInformation;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("transfer_finalized");
     }

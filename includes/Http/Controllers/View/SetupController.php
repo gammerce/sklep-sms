@@ -3,7 +3,7 @@ namespace App\Http\Controllers\View;
 
 use App\Http\Responses\HtmlResponse;
 use App\Install\OldShop;
-use App\Install\RequirementsStore;
+use App\Install\RequirementStore;
 use App\Install\ShopState;
 use App\Install\UpdateInfo;
 use App\Support\FileSystemContract;
@@ -24,7 +24,7 @@ class SetupController
         OldShop $oldShop,
         ShopState $shopState,
         UpdateInfo $updateInfo,
-        RequirementsStore $requirementsStore,
+        RequirementStore $requirementStore,
         FileSystemContract $fileSystem,
         Path $path
     ) {
@@ -33,23 +33,23 @@ class SetupController
         }
 
         if (!$shopState->isInstalled()) {
-            return $this->install($requirementsStore, $path, $fileSystem);
+            return $this->install($requirementStore, $path, $fileSystem);
         }
 
         if (!$shopState->isUpToDate()) {
-            return $this->update($updateInfo, $requirementsStore);
+            return $this->update($updateInfo, $requirementStore);
         }
 
         return new Response("Sklep nie wymaga aktualizacji.");
     }
 
     private function install(
-        RequirementsStore $requirementsStore,
+        RequirementStore $requirementStore,
         Path $path,
         FileSystemContract $fileSystem
     ) {
-        $modules = $requirementsStore->getModules();
-        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
+        $modules = $requirementStore->getModules();
+        $filesWithWritePermission = $requirementStore->getFilesWithWritePermission();
 
         $filesPrivileges = "";
         foreach ($filesWithWritePermission as $file) {
@@ -90,11 +90,11 @@ class SetupController
         return new Response($output);
     }
 
-    private function update(UpdateInfo $updateInfo, RequirementsStore $requirementsStore)
+    private function update(UpdateInfo $updateInfo, RequirementStore $requirementStore)
     {
         $modules = [];
-        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
-        $filesToDelete = $requirementsStore->getFilesToDelete();
+        $filesWithWritePermission = $requirementStore->getFilesWithWritePermission();
+        $filesToDelete = $requirementStore->getFilesToDelete();
 
         $everythingOk = true;
         // Pobieramy informacje o plikach ktore sa git i te ktore sa be

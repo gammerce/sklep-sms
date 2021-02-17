@@ -11,10 +11,10 @@ $(document).delegate("#form_reset_password", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/password/reset"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

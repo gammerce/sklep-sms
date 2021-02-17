@@ -15,7 +15,7 @@ export const restRequest = function (
         type: method,
         url: buildUrl(path),
         data: data,
-        complete: function () {
+        complete() {
             loader.hide();
         },
         success: onSuccessFunction,

@@ -9,7 +9,7 @@ class LocaleCookieService
 {
     const COOKIE_KEY = "language";
 
-    public function setLocale(Response $response, $language)
+    public function setLocale(Response $response, $language): void
     {
         $response->headers->setCookie(
             new Cookie(LocaleCookieService::COOKIE_KEY, $language, 0, "/", null, false, false)

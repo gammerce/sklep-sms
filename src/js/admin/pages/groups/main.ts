@@ -22,10 +22,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/groups/" + groupId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -53,10 +53,10 @@ $(document).delegate("#form_group_add", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/admin/groups"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -83,10 +83,10 @@ $(document).delegate("#form_group_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/groups/" + groupId),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }

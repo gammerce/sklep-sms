@@ -66,7 +66,7 @@ jQuery(document).ready(function ($) {
 
                 infobox.showInfo(content.text, content.positive);
             },
-            error: function (error) {
+            error(error) {
                 infobox.showInfo("Wystąpił błąd podczas przeprowadzania instalacji.", false);
             },
         });

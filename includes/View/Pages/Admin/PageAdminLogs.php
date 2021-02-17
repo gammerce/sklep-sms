@@ -34,12 +34,12 @@ class PageAdminLogs extends PageAdmin
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_LOGS();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("logs");
     }
@@ -68,7 +68,7 @@ class PageAdminLogs extends PageAdmin
         $bodyRows = collect($statement)
             ->map(function (array $row) {
                 $div = new Div($row["text"]);
-                $div->addClass("one_line");
+                $div->addClass("one-line");
 
                 return (new BodyRow())
                     ->setDbId($row["id"])

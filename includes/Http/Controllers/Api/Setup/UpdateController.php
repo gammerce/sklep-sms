@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Setup;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Install\DatabaseMigration;
-use App\Install\RequirementsStore;
+use App\Install\RequirementStore;
 use App\Install\SetupManager;
 use App\Install\UpdateInfo;
 use Exception;
@@ -15,11 +15,11 @@ class UpdateController
         SetupManager $setupManager,
         DatabaseMigration $migrator,
         UpdateInfo $updateInfo,
-        RequirementsStore $requirementsStore
+        RequirementStore $requirementStore
     ) {
         $modules = [];
-        $filesWithWritePermission = $requirementsStore->getFilesWithWritePermission();
-        $filesToDelete = $requirementsStore->getFilesToDelete();
+        $filesWithWritePermission = $requirementStore->getFilesWithWritePermission();
+        $filesToDelete = $requirementStore->getFilesToDelete();
 
         $everythingOk = true;
         $updateBody = $updateInfo->updateInfo(

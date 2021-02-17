@@ -40,7 +40,7 @@ class PageMain extends Page
         $this->serviceManager = $serviceManager;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("main_page");
     }

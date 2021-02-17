@@ -51,7 +51,7 @@ class PagePurchase extends Page
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         $serviceModule = $this->getServiceModule($request);
         $title = "";
@@ -103,7 +103,7 @@ class PagePurchase extends Page
         );
     }
 
-    public function addScripts(Request $request)
+    public function addScripts(Request $request): void
     {
         $path = "build/js/shop/pages/{$this->getId()}/";
         $pathFile = $path . "main.js";

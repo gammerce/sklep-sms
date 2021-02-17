@@ -7,7 +7,7 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Install\DatabaseMigration;
 use App\Install\EnvCreator;
-use App\Install\RequirementsStore;
+use App\Install\RequirementStore;
 use App\Install\SetupManager;
 use App\Support\Database;
 use App\Support\FileSystemContract;
@@ -22,7 +22,7 @@ class InstallController
 {
     public function post(
         Request $request,
-        RequirementsStore $requirementsStore,
+        RequirementStore $requirementStore,
         EnvCreator $envCreator,
         SetupManager $setupManager,
         Path $path,
@@ -42,7 +42,7 @@ class InstallController
 
         $warnings = $validator->validate();
 
-        foreach ($requirementsStore->getFilesWithWritePermission() as $file) {
+        foreach ($requirementStore->getFilesWithWritePermission() as $file) {
             if (strlen($file) && !$fileSystem->isWritable($path->to($file))) {
                 $warnings->add(
                     "general",
@@ -51,8 +51,8 @@ class InstallController
             }
         }
 
-        foreach ($requirementsStore->getModules() as $module) {
-            if (!$module["value"] && $module["must-be"]) {
+        foreach ($requirementStore->getModules() as $module) {
+            if (!$module["value"] && $module["required"]) {
                 $warnings->add(
                     "general",
                     "Wymaganie: <b>{$module["text"]}</b> nie jest spełnione."

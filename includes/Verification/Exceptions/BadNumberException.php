@@ -22,10 +22,7 @@ class BadNumberException extends SmsPaymentException
         $this->smsPrice = $smsPrice;
     }
 
-    /**
-     * @return Money
-     */
-    public function getSmsPrice()
+    public function getSmsPrice(): Money
     {
         return $this->smsPrice ?: new Money(0);
     }

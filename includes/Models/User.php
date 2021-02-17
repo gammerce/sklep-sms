@@ -145,7 +145,7 @@ class User
     }
 
     /**
-     * @param array $groups
+     * @param int[] $groups
      */
     public function setGroups(array $groups): void
     {

@@ -54,12 +54,12 @@ class PageAdminIncome extends PageAdmin
         $this->priceTextService = $priceTextService;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_INCOME();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("income");
     }

@@ -23,7 +23,7 @@ class PageProfile extends Page implements IBeLoggedMust
         $this->auth = $auth;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("profile");
     }

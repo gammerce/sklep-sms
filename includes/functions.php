@@ -947,3 +947,9 @@ function selected($value): string
 {
     return $value ? "selected" : "";
 }
+
+function is_subset(array $potentialSubset, array $items): bool
+{
+    $common = array_intersect($items, $potentialSubset);
+    return count($common) === count($potentialSubset);
+}

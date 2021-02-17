@@ -53,7 +53,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->serverManager = $serverManager;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("payment_log");
     }

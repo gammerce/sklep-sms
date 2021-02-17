@@ -71,7 +71,7 @@ class License
         return $this->externalLicenseId !== null;
     }
 
-    public function getLoadingException()
+    public function getLoadingException(): ?LicenseRequestException
     {
         return $this->loadingException;
     }

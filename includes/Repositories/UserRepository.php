@@ -2,6 +2,7 @@
 namespace App\Repositories;
 
 use App\Managers\GroupManager;
+use App\Models\Group;
 use App\Models\User;
 use App\Support\Database;
 use App\Support\Money;
@@ -266,10 +267,9 @@ class UserRepository
     private function gatherPermissions(array $groupsIds): array
     {
         return collect($groupsIds)
-            ->flatMap(function ($groupId) {
-                $group = $this->groupManager->get($groupId);
-                return $group->getPermissions();
-            })
+            ->map(fn($groupId) => $this->groupManager->get($groupId))
+            ->filter(fn($group) => $group)
+            ->flatMap(fn(Group $group) => $group->getPermissions())
             ->unique()
             ->all();
     }

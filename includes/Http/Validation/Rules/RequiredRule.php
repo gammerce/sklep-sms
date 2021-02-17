@@ -17,4 +17,9 @@ class RequiredRule extends BaseRule
     {
         return true;
     }
+
+    public function breaksPipelineOnWarning(): bool
+    {
+        return true;
+    }
 }

@@ -257,6 +257,8 @@ return [
     "usage_limit" => "Limit użyć",
     "usage_limit_placeholder" => "Zostaw puste, aby nie ustawiać limitu wykorzystań",
     "user_edit" => "Użytkownik został prawidłowo wyedytowany.",
+    "user_groups_hint" =>
+        "Nie masz wystarczających uprawnień,\naby móc zmienić grupę temu użytkownikowi.",
     "user_service_edit" => "Zezwalaj na edytowanie usług przez użytkownika",
     "users" => "Użytkownicy",
     "users_services" => "Czasowe usługi użytkowników",

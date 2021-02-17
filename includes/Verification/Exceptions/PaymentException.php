@@ -7,7 +7,7 @@ abstract class PaymentException extends Exception
 {
     protected string $errorCode;
 
-    public function getErrorCode()
+    public function getErrorCode(): string
     {
         return $this->errorCode;
     }

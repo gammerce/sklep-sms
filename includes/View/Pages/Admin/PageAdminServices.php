@@ -56,12 +56,12 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         $this->serverServiceManager = $serverServiceManager;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::VIEW_SERVICES();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("services");
     }
@@ -171,7 +171,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         }
     }
 
-    private function getServersSection(Service $service = null)
+    private function getServersSection(Service $service = null): string
     {
         $serverOptions = collect($this->serverManager->all())
             ->map(function (Server $server) use ($service) {
@@ -197,7 +197,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         ]);
     }
 
-    private function getGroupOptions(Service $service = null)
+    private function getGroupOptions(Service $service = null): string
     {
         return collect($this->groupManager->all())
             ->map(function (Group $group) use ($service) {

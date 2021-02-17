@@ -12,7 +12,7 @@ class PagePaymentError extends Page
 {
     const PAGE_ID = "payment_error";
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("payment_rejected");
     }

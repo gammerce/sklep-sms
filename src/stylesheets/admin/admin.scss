@@ -65,10 +65,6 @@ h4 {
     }
 }
 
-.form_logout {
-    display: inline-block;
-}
-
 .table-structure {
     [headers="id"] {
         white-space: nowrap;
@@ -140,17 +136,13 @@ h4 {
     }
 }
 
-#charge_amount {
-    display: inline-block;
-}
-
-.one_line {
+.one-line {
     word-break: break-all;
     height: 1.1em;
     overflow: hidden;
 }
 
-.one_line:hover {
+.one-line:hover {
     height: auto;
 }
 
@@ -192,7 +184,7 @@ h4 {
         vertical-align: middle;
     }
 
-    .version_block {
+    .version-block {
         display: inline-block;
         padding: 6px;
     }
@@ -203,7 +195,7 @@ h4 {
     position: relative;
     vertical-align: top;
 
-    .search_button {
+    .search-button {
         border-left: 1px solid #898989;
     }
 }

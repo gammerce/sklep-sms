@@ -1,10 +1,10 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
+use App\Service\UserServiceService;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserService;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
-use App\Service\UserServiceService;
 use Tests\Psr4\Concerns\PlayerFlagConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 

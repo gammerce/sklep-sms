@@ -5,6 +5,7 @@ use App\Routing\UrlGenerator;
 use App\System\Settings;
 use App\Translation\Translator;
 use App\View\Html\Div;
+use App\View\Html\DOMElement;
 use App\View\Html\Li;
 use App\View\Html\Link;
 use App\View\Html\Ul;
@@ -52,7 +53,7 @@ class Pagination
      * @param int|null $rowLimit
      * @return Div|null
      */
-    public function createComponent($totalCount, $path, $rowLimit = null)
+    public function createComponent($totalCount, $path, $rowLimit = null): ?DOMElement
     {
         $rowLimit = $rowLimit ?: $this->settings["row_limit"];
         $query = $this->request->query->all();

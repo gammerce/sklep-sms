@@ -10,10 +10,10 @@ $(document).delegate("#form_change_password", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/password"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

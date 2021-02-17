@@ -54,7 +54,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("bought_services");
     }

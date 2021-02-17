@@ -13,7 +13,7 @@ class Meta
         $this->path = $path;
     }
 
-    public function load()
+    public function load(): void
     {
         $path = $this->path->to("confidential/.meta");
         $this->meta = $this->metaParser->parse($path);

@@ -17,7 +17,7 @@ class CacheEntity
      * @param int $seconds
      * @return bool bool
      */
-    public function olderThan($seconds)
+    public function olderThan($seconds): bool
     {
         return $this->cachedAt + $seconds < time();
     }

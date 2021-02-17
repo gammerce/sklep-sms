@@ -48,12 +48,12 @@ class PageAdminSettings extends PageAdmin
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
-    public function getPrivilege()
+    public function getPrivilege(): Permission
     {
         return Permission::MANAGE_SETTINGS();
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("settings");
     }

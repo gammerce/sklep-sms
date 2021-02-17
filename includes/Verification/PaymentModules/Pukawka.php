@@ -111,6 +111,6 @@ class Pukawka extends PaymentModule implements SupportSms
             "keyapi" => $this->getApi(),
             "type" => "sms_table",
         ]);
-        $this->rates = $response ? $response->json() : null;
+        $this->rates = $response ? $response->json() : [];
     }
 }

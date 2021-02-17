@@ -29,10 +29,7 @@ abstract class PaymentModule
         $this->fileLogger = $fileLogger;
     }
 
-    /**
-     * @return string
-     */
-    public static function getName()
+    public static function getName(): string
     {
         return __(static::MODULE_ID);
     }

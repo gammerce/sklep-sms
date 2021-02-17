@@ -31,7 +31,7 @@ class PageServices extends Page
         $this->serviceListService = $serviceListService;
     }
 
-    public function getTitle(Request $request)
+    public function getTitle(Request $request): string
     {
         return $this->lang->t("services");
     }

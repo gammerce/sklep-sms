@@ -1,8 +1,8 @@
 <?php
 namespace Tests\Feature\Http\Api\Admin;
 
-use App\ServiceModules\MybbExtraGroups\MybbUserService;
 use App\Service\UserServiceService;
+use App\ServiceModules\MybbExtraGroups\MybbUserService;
 use Tests\Psr4\Concerns\MybbRepositoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
 

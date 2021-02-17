@@ -12,10 +12,10 @@ $(document).delegate("#form_profile_update", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/profile"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

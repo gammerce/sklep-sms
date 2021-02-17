@@ -30,10 +30,10 @@ $(document).ready(function ($) {
             type: "POST",
             url: buildUrl("/api/update"),
             data: $(this).serialize(),
-            complete: function () {
+            complete() {
                 loader.hide();
             },
-            success: function (content) {
+            success(content) {
                 removeFormWarnings();
                 $(".warnings").remove();
 
@@ -59,7 +59,7 @@ $(document).ready(function ($) {
 
                 infobox.showInfo(content.text, content.positive);
             },
-            error: function (error) {
+            error(error) {
                 infobox.showInfo("Wystąpił błąd podczas przeprowadzania instalacji.", false);
             },
         });

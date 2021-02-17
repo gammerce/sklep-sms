@@ -5,7 +5,6 @@ class QueryParticle
 {
     /** @var string[] */
     private array $particles = [];
-
     private array $params = [];
 
     /**
@@ -37,10 +36,7 @@ class QueryParticle
         return implode($glue, $this->particles);
     }
 
-    /**
-     * @return array
-     */
-    public function params()
+    public function params(): array
     {
         return $this->params;
     }

@@ -76,7 +76,7 @@ class Structure extends DOMElement
      * @param DOMElement $headCell
      * @return $this
      */
-    public function addHeadCell($headCell)
+    public function addHeadCell(DOMElement $headCell): self
     {
         $this->headCells[] = $headCell;
         return $this;
@@ -86,15 +86,12 @@ class Structure extends DOMElement
      * @param string     $key
      * @param DOMElement $headCell
      */
-    public function setHeadCell($key, $headCell)
+    public function setHeadCell($key, $headCell): void
     {
         $this->headCells[$key] = $headCell;
     }
 
-    /**
-     * @param BodyRow $bodyRow
-     */
-    public function addBodyRow($bodyRow)
+    public function addBodyRow(BodyRow $bodyRow): void
     {
         $this->bodyRows[] = $bodyRow;
     }
@@ -103,7 +100,7 @@ class Structure extends DOMElement
      * @param BodyRow[] $bodyRows
      * @return $this
      */
-    public function addBodyRows(array $bodyRows)
+    public function addBodyRows(array $bodyRows): self
     {
         foreach ($bodyRows as $bodyRow) {
             $this->addBodyRow($bodyRow);
@@ -118,7 +115,7 @@ class Structure extends DOMElement
      * @param int $count
      * @return $this
      */
-    public function enablePagination($path, Pagination $pagination, $count)
+    public function enablePagination($path, Pagination $pagination, $count): self
     {
         $paginationView = $pagination->createComponent($count, $path);
 
@@ -128,7 +125,7 @@ class Structure extends DOMElement
 
             $row = new Row($cell);
 
-            $this->foot = (new DOMElement("tfoot", $row))->addClass("display_tfoot");
+            $this->foot = (new DOMElement("tfoot", $row))->addClass("display-tfoot");
         }
 
         return $this;

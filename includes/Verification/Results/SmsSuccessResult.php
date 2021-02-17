@@ -3,11 +3,8 @@ namespace App\Verification\Results;
 
 class SmsSuccessResult
 {
-    /** @var bool */
-    private $free;
-
-    /** @var int|null */
-    private $income;
+    private bool $free;
+    private ?int $income;
 
     public function __construct($free = false, $income = null)
     {
@@ -15,18 +12,12 @@ class SmsSuccessResult
         $this->income = $income;
     }
 
-    /**
-     * @return bool
-     */
-    public function isFree()
+    public function isFree(): bool
     {
         return $this->free;
     }
 
-    /**
-     * @return int|null
-     */
-    public function getIncome()
+    public function getIncome(): ?int
     {
         return $this->income;
     }
