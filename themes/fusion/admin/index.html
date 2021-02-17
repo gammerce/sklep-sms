@@ -1,6 +1,6 @@
 <html lang="{{ $lang->getCurrentLanguageShort() }}">
     <head>
-        {$header}
+        {!! $header !!}
     </head>
 
     <body>
@@ -49,23 +49,23 @@
                         <li>
                             <a href="{{ $url->to('/admin/home') }}">{{ __('main_page') }}</a>
                         </li>
-                        {$settingsLink} {$transactionServicesLink} {$servicesLink} {$serversLink}
-                        {$pricingLink}
+                        {!! $settingsLink !!} {!! $transactionServicesLink !!} {!! $servicesLink !!}
+                        {!! $serversLink !!} {!! $pricingLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('users_services') }}</p>
                     <ul class="menu-list">
-                        {$userServiceLink} {$playersFlagsLink}
+                        {!! $userServiceLink !!} {!! $playersFlagsLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('users') }}</p>
                     <ul class="menu-list">
-                        {$usersLink} {$groupsLink}
+                        {!! $usersLink !!} {!! $groupsLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('additions') }}</p>
                     <ul class="menu-list">
-                        {$incomeLink} {$promoCodesLink} {$smsCodesLink}
+                        {!! $incomeLink !!} {!! $promoCodesLink !!} {!! $smsCodesLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('logs') }}</p>
@@ -78,12 +78,12 @@
                         <li>
                             <a href="{{ $url->to('/admin/payments') }}"> {{ __('payments') }} </a>
                         </li>
-                        {$logsLink}
+                        {!! $logsLink !!}
                     </ul>
                 </aside>
             </div>
 
-            <div class="main-content">{$content}</div>
+            <div class="main-content">{!! $content !!}</div>
         </div>
     </body>
 </html>

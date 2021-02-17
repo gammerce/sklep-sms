@@ -10,7 +10,7 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="service_id" name="service_id" required>
-                                {$services}
+                                {!! $services !!}
                             </select>
                         </div>
                     </div>
@@ -26,8 +26,8 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="server_id" name="server_id">
-                                <option value="" {$allServers}>{{ __('all') }}</option>
-                                {$servers}
+                                <option value="" {!! $allServers !!}>{{ __('all') }}</option>
+                                {!! $servers !!}
                             </select>
                         </div>
                     </div>
@@ -64,7 +64,7 @@
                         <div class="select is-small">
                             <select id="sms_price" name="sms_price">
                                 <option value="">{{ __('choose_sms_price') }}</option>
-                                {$smsPrices}
+                                {!! $smsPrices !!}
                             </select>
                         </div>
                     </div>

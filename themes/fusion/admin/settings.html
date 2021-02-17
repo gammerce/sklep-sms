@@ -1,4 +1,4 @@
-{$pageTitle}
+{!! $pageTitle !!}
 
 <form id="form_settings_edit" class="columns is-multiline">
     <div class="column is-one-third">
@@ -163,7 +163,7 @@
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
                                 <option value="">{{ __('none') }}</option>
-                                {$smsPlatforms}
+                                {!! $smsPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -192,7 +192,7 @@
                         <div class="select is-small">
                             <select id="direct_billing_platform" name="direct_billing_platform">
                                 <option value="">{{ __('none') }}</option>
-                                {$directBillingPlatforms}
+                                {!! $directBillingPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -220,7 +220,7 @@
                     <div class="control">
                         <div class="select is-multiple is-small">
                             <select id="transfer_platform" name="transfer_platform[]" multiple>
-                                {$transferPlatforms}
+                                {!! $transferPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -289,7 +289,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select is-small">{$userEditServiceSelect}</div>
+                        <div class="select is-small">{!! $userEditServiceSelect !!}</div>
                     </div>
                 </div>
             </div>
@@ -308,7 +308,7 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="language" name="language">
-                                {$languagesList}
+                                {!! $languagesList !!}
                             </select>
                         </div>
                     </div>
@@ -325,7 +325,7 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="theme" name="theme">
-                                {$themesList}
+                                {!! $themesList !!}
                             </select>
                         </div>
                     </div>
@@ -360,7 +360,7 @@
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select is-small">{$cronSelect}</div>
+                        <div class="select is-small">{!! $cronSelect !!}</div>
                     </div>
                 </div>
             </div>

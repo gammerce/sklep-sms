@@ -1,19 +1,19 @@
 <div class="table-structure">
-    {$pageTitle} {$aboveTable}
+    {!! $pageTitle !!} {!! $aboveTable !!}
 
     <div class="table-container">
         <table class="table is-hoverable is-fullwidth">
             <thead>
                 <tr>
-                    {$thead}
+                    {!! $thead !!}
                 </tr>
             </thead>
             <tbody>
-                {$tbody}
+                {!! $tbody !!}
             </tbody>
             <tfoot class="{{ $tfootClass }}">
                 <tr>
-                    <td colspan="31">{$pagination}</td>
+                    <td colspan="31">{!! $pagination !!}</td>
                 </tr>
             </tfoot>
         </table>
