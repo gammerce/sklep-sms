@@ -21,21 +21,13 @@ function set_cost() {
     );
 }
 
-$(document).ready(function ($) {
-    set_cost();
-});
+$(document).ready(set_cost);
 
 // Zaznaczamy jakas platformę
-$(document).delegate(".shopsms_license_purchase .platform", "click", function () {
-    set_cost();
-});
+$(document).delegate(".shopsms_license_purchase .platform", "click", set_cost);
 
 // Zmiana ilosci dni
-$(document).delegate(".shopsms_license_purchase [name=amount]", "change", function () {
-    set_cost();
-});
+$(document).delegate(".shopsms_license_purchase [name=amount]", "change", set_cost);
 
 // Kliknięcie przeładowania
-$(document).delegate(".shopsms_license_purchase #cost .reload", "click", function () {
-    set_cost();
-});
+$(document).delegate(".shopsms_license_purchase #cost .reload", "click", set_cost);

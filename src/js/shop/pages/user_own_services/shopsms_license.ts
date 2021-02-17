@@ -37,7 +37,9 @@ function regenerate_token(identifier, button) {
     }
 }
 
-function set_cost(form) {
+function set_cost() {
+    const form = $(".shopsms_license_purchase").closest("form");
+
     const serviceId = form.find("[name=service_id]").val();
     const serializedData = $(form).serialize();
     const userServiceId = form.data("row");
@@ -55,10 +57,7 @@ function set_cost(form) {
     });
 }
 
-// Zaznaczamy jakas platformę
-$(document).delegate(".shopsms_user_edit .platform", "click", function () {
-    set_cost($(this).closest("form"));
-});
+$(document).delegate(".shopsms_user_edit .platform", "click", set_cost);
 
 $(document).delegate(".regenerate-token", "click", function () {
     const identifier = $(this).data("identifier");
