@@ -213,7 +213,7 @@ class Factory
 
     public function admin(array $attributes = []): User
     {
-        return $this->user(array_merge(["groups" => "2"], $attributes));
+        return $this->user(array_merge(["groups" => [2]], $attributes));
     }
 
     public function user(array $attributes = []): User
@@ -227,7 +227,7 @@ class Factory
                 "surname" => $this->faker->lastName,
                 "steam_id" => "",
                 "ip" => $this->faker->ipv4,
-                "groups" => "1",
+                "groups" => [1],
                 "wallet" => 0,
             ],
             $attributes
@@ -241,7 +241,7 @@ class Factory
             $attributes["surname"],
             $attributes["steam_id"],
             $attributes["ip"],
-            $attributes["groups"],
+            implode(",", $attributes["groups"]),
             $attributes["wallet"]
         );
     }
@@ -381,10 +381,11 @@ class Factory
         $attributes = array_merge(
             [
                 "name" => $this->faker->word,
+                "permissions" => [],
             ],
             $attributes
         );
 
-        return $this->groupRepository->create($attributes["name"], $attributes);
+        return $this->groupRepository->create($attributes["name"], $attributes["permissions"]);
     }
 }
