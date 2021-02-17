@@ -19,7 +19,6 @@ use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Service\ServiceDescriptionService;
-use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -56,7 +55,6 @@ class LicenseProlongServiceModule extends ServiceModule implements
     private LicenseUserServiceRepository $licenseUserServiceRepository;
     private PriceTextService $priceTextService;
     private LicensePriceService $licensePriceService;
-    private UserServiceService $userServiceService;
     private Database $db;
 
     public function __construct(
