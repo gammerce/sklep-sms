@@ -8,6 +8,7 @@ use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Service\UserServiceAccessService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
+use App\ServiceModules\ServiceModule;
 use App\Support\FileSystem;
 use App\Support\Path;
 use App\Support\Template;
@@ -120,7 +121,7 @@ class PagePurchase extends Page
         }
     }
 
-    private function getServiceModule(Request $request)
+    private function getServiceModule(Request $request): ?ServiceModule
     {
         $serviceId = $request->query->get("service");
         return $this->serviceModuleManager->get($serviceId);

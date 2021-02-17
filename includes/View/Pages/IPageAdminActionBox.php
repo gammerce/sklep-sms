@@ -10,5 +10,5 @@ interface IPageAdminActionBox
      * @param array $query
      * @return string
      */
-    public function getActionBox($boxId, array $query);
+    public function getActionBox($boxId, array $query): string;
 }

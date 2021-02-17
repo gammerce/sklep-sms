@@ -50,7 +50,6 @@ return [
         "E-mail with password reset key has been sent. User: [{1}][{2}] E-mail: [{3}] Form data. User name: [{4}] E-mail: [{5}]",
     "log_reset_pass" => "Password has been reset. User ID: {1}.",
     "login_success" => "Logging in successful.",
-    "login_vert" => "L<br />O<br />G<br /><br />I<br />N",
     "logout_success" => "Logging out successful.",
     "my_services" => "My services",
     "nick_occupied" => "Given nickname is already taken.",
@@ -96,7 +95,6 @@ return [
     "purchase_success" => "Service purchased successfully.",
     "register_success" =>
         "Account registered successfully. In a moment you will be automatically logged in.",
-    "register_vert" => "R<br />E<br />G<br />I<br />S<br />T<br />E<br />R",
     "regulations" => "Regulations",
     "remove" => "Remove",
     "repeat" => "Repeat",

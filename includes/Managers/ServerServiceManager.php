@@ -22,10 +22,9 @@ class ServerServiceManager
      *
      * @param int $serverId
      * @param string $serviceId
-     *
-     * @return boolean
+     * @return bool
      */
-    public function serverServiceLinked($serverId, $serviceId)
+    public function serverServiceLinked($serverId, $serviceId): bool
     {
         if (!$this->serversServicesFetched) {
             $this->fetchServersServices();
@@ -34,7 +33,7 @@ class ServerServiceManager
         return isset($this->serversServices[$serverId][$serviceId]);
     }
 
-    private function fetchServersServices()
+    private function fetchServersServices(): void
     {
         foreach ($this->serverServiceRepository->all() as $serverService) {
             $this->serversServices[$serverService->getServerId()][

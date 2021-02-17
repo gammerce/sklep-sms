@@ -30,7 +30,7 @@ class ServiceModuleManager
      * @param string $name
      * @throws InvalidConfigException
      */
-    public function register($class, $name)
+    public function register($class, $name): void
     {
         $id = $class::MODULE_ID;
 
@@ -47,7 +47,7 @@ class ServiceModuleManager
      * @param string $serviceId Service identifier from ss_services
      * @return ServiceModule|null
      */
-    public function get($serviceId)
+    public function get($serviceId): ?ServiceModule
     {
         $service = $this->serviceManager->get($serviceId);
 
@@ -70,7 +70,7 @@ class ServiceModuleManager
      * @param $moduleId
      * @return ServiceModule|null
      */
-    public function getEmpty($moduleId)
+    public function getEmpty($moduleId): ?ServiceModule
     {
         if (!isset($this->classes[$moduleId])) {
             return null;
@@ -85,7 +85,7 @@ class ServiceModuleManager
         return $this->app->make($classname);
     }
 
-    public function getName($moduleId)
+    public function getName($moduleId): ?string
     {
         if (!isset($this->classes[$moduleId])) {
             return null;
@@ -97,7 +97,7 @@ class ServiceModuleManager
     /**
      * @return ServiceModule[]
      */
-    public function all()
+    public function all(): array
     {
         return collect($this->classes)
             ->keys()

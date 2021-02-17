@@ -1,6 +1,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <meta charset="UTF-8" />
-<title>{$lang->t('acp_short')}: {{ $pageTitle }} - {$lang->t('shop_sms')}</title>
+<title>{{ __('acp_short') }}: {{ $pageTitle }} - {{ __('shop_sms') }}</title>
 
 <script
     type="text/javascript"
@@ -18,8 +18,8 @@
     window.baseUrl = "{{ url('/') }}";
     window.currentPage = "{{ $currentPageId }}";
 </script>
-{$scripts}
+{!! $scripts !!}
 
 <link href="{{ $url->versioned('build/css/admin.css') }}" rel="stylesheet" />
 <link rel="shortcut icon" href="{{ $url->to('favicon.png') }}" />
-{$styles}
+{!! $styles !!}

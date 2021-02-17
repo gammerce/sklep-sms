@@ -90,7 +90,7 @@
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
                                 <option value="">{{ __('default') }}</option>
-                                {$smsPlatforms}
+                                {!! $smsPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -107,7 +107,7 @@
                     <div class="control">
                         <div class="select is-multiple is-small">
                             <select id="transfer_platform" name="transfer_platform[]" multiple>
-                                {$transferPlatforms}
+                                {!! $transferPlatforms !!}
                             </select>
                         </div>
                     </div>

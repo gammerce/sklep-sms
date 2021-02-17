@@ -18,6 +18,7 @@ use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
+use App\View\Html\DOMElement;
 use App\View\Html\ExpirationDateCell;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
@@ -115,7 +116,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    private function createAddButton()
+    private function createAddButton(): DOMElement
     {
         return (new Input())
             ->setParam("id", "promo_code_button_add")
@@ -124,12 +125,12 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
             ->setParam("value", $this->lang->t("add_code"));
     }
 
-    private function createViewButton()
+    private function createViewButton(): DOMElement
     {
         return (new Link($this->lang->t("view")))->addClass("dropdown-item view-action");
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_PROMO_CODES())) {
             throw new UnauthorizedException();

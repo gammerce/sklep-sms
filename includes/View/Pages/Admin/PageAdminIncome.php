@@ -116,7 +116,7 @@ class PageAdminIncome extends PageAdmin
         ]);
     }
 
-    private function getDataset(array $labels, array $data)
+    private function getDataset(array $labels, array $data): array
     {
         $dataset = [
             0 => $this->createDatasetEntry($this->lang->t("other"), $this->getColor(0)),
@@ -139,7 +139,7 @@ class PageAdminIncome extends PageAdmin
         return array_values($dataset);
     }
 
-    private function createDatasetEntry($label, $color)
+    private function createDatasetEntry($label, $color): array
     {
         return [
             "label" => $label,
@@ -150,7 +150,7 @@ class PageAdminIncome extends PageAdmin
         ];
     }
 
-    private function getColor($number)
+    private function getColor($number): string
     {
         $colors = [
             "rgb(255, 99, 132)",
@@ -165,7 +165,7 @@ class PageAdminIncome extends PageAdmin
         return $colors[$number % count($colors)];
     }
 
-    private function renderButtons($year, $month)
+    private function renderButtons($year, $month): string
     {
         $months = "";
         for ($dayId = 1; $dayId <= 12; $dayId++) {
@@ -188,7 +188,7 @@ class PageAdminIncome extends PageAdmin
         return $this->template->render("admin/income_button", compact("years", "months"));
     }
 
-    private function renderTHead()
+    private function renderTHead(): string
     {
         $tableRow = "";
 
@@ -199,7 +199,7 @@ class PageAdminIncome extends PageAdmin
         return $this->template->render("admin/income_thead", compact("tableRow"));
     }
 
-    private function renderTRow($date, array $incomes)
+    private function renderTRow($date, array $incomes): string
     {
         $dayIncome = 0;
         $tableRows = [];
@@ -222,7 +222,7 @@ class PageAdminIncome extends PageAdmin
         );
     }
 
-    private function renderSummary(array $income)
+    private function renderSummary(array $income): string
     {
         $serversIncomes = [];
         foreach ($income as $date => $incomes) {
@@ -248,10 +248,7 @@ class PageAdminIncome extends PageAdmin
         return $this->template->render("admin/income_trow2", compact("tableRow", "totalIncome"));
     }
 
-    /**
-     * @return array
-     */
-    private function getServersIds()
+    private function getServersIds(): array
     {
         return collect($this->serverManager->all())
             ->map(fn(Server $server) => $server->getId())
@@ -259,7 +256,7 @@ class PageAdminIncome extends PageAdmin
             ->all();
     }
 
-    private function getLabels($year, $month)
+    private function getLabels($year, $month): array
     {
         $labels = [];
         $daysInMonth = cal_days_in_month(CAL_GREGORIAN, $month, $year);

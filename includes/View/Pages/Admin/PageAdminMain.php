@@ -16,6 +16,7 @@ use App\Support\Template;
 use App\Support\Version;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -80,7 +81,7 @@ class PageAdminMain extends PageAdmin
         return $this->template->render("admin/home", compact("bricks", "pageTitle", "notes"));
     }
 
-    private function getNotes()
+    private function getNotes(): string
     {
         $notes = [];
 
@@ -149,7 +150,7 @@ class PageAdminMain extends PageAdmin
         return implode("", $notes);
     }
 
-    private function getBricks()
+    private function getBricks(): string
     {
         $bricks = [];
 
@@ -235,7 +236,7 @@ class PageAdminMain extends PageAdmin
      * @param string|null $newestSmVersion
      * @return bool
      */
-    private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion)
+    private function isServerNewest(Server $server, $newestAmxxVersion, $newestSmVersion): bool
     {
         if (
             Platform::AMXMODX()->equals($server->getType()) &&
@@ -256,14 +257,14 @@ class PageAdminMain extends PageAdmin
         return true;
     }
 
-    private function createNote($text, $class)
+    private function createNote($text, $class): DOMElement
     {
         return create_dom_element("div", new RawHtml($text), [
             "class" => "notification {$class}",
         ]);
     }
 
-    private function createBrick($content, $link)
+    private function createBrick($content, $link): string
     {
         return $this->template->render("admin/brick_card", compact("content", "link"));
     }

@@ -20,7 +20,7 @@ class GroupManager
     /**
      * @return Group[]
      */
-    public function all()
+    public function all(): array
     {
         if (!$this->groupsFetched) {
             $this->fetch();
@@ -33,7 +33,7 @@ class GroupManager
      * @param $id
      * @return Group|null
      */
-    public function get($id)
+    public function get($id): ?Group
     {
         if (!$this->groupsFetched) {
             $this->fetch();
@@ -42,7 +42,7 @@ class GroupManager
         return array_get($this->groups, $id, null);
     }
 
-    private function fetch()
+    private function fetch(): void
     {
         foreach ($this->groupRepository->all() as $group) {
             $this->groups[$group->getId()] = $group;

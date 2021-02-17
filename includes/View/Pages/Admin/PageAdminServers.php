@@ -20,6 +20,7 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Link;
@@ -117,14 +118,14 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    private function createRegenerateTokenButton()
+    private function createRegenerateTokenButton(): DOMElement
     {
         return (new Link($this->lang->t("regenerate_token")))->addClass(
             "dropdown-item regenerate-token"
         );
     }
 
-    private function createAddButton()
+    private function createAddButton(): DOMElement
     {
         return (new Input())
             ->setParam("id", "server_button_add")
@@ -133,7 +134,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
             ->setParam("value", $this->lang->t("add_server"));
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_SERVERS())) {
             throw new UnauthorizedException();

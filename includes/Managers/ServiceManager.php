@@ -22,7 +22,7 @@ class ServiceManager
      *
      * @return Service[]
      */
-    public function all()
+    public function all(): array
     {
         if (!$this->servicesFetched) {
             $this->fetch();
@@ -35,7 +35,7 @@ class ServiceManager
      * @param string $serviceId
      * @return Service|null
      */
-    public function get($serviceId)
+    public function get($serviceId): ?Service
     {
         if (!$this->servicesFetched) {
             $this->fetch();
@@ -44,7 +44,7 @@ class ServiceManager
         return array_get($this->services, $serviceId, null);
     }
 
-    private function fetch()
+    private function fetch(): void
     {
         foreach ($this->serviceRepository->all() as $service) {
             $this->services[$service->getId()] = $service;

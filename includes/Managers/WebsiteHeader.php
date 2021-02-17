@@ -29,7 +29,7 @@ class WebsiteHeader
      *
      * @param string $path
      */
-    public function addScript($path)
+    public function addScript($path): void
     {
         if (!in_array($path, $this->scripts)) {
             $this->scripts[] = $path;
@@ -41,21 +41,21 @@ class WebsiteHeader
      *
      * @param string $path
      */
-    public function addStyle($path)
+    public function addStyle($path): void
     {
         if (!in_array($path, $this->styles)) {
             $this->styles[] = $path;
         }
     }
 
-    public function getScripts()
+    public function getScripts(): string
     {
         return collect($this->scripts)
             ->map(fn($path) => "<script type=\"text/javascript\" src=\"{$path}\"></script>")
             ->join("\n");
     }
 
-    public function getStyles()
+    public function getStyles(): string
     {
         return collect($this->styles)
             ->map(fn($path) => "<link href=\"{$path}\" rel=\"stylesheet\" />")
