@@ -14,10 +14,11 @@ use App\Support\QueryParticle;
 use App\Support\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
-use App\User\GroupService;
 use App\User\Permission;
+use App\User\PermissionService;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\Link;
 use App\View\Html\Option;
@@ -34,7 +35,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
     private Auth $auth;
     private Database $db;
     private GroupManager $groupManager;
-    private GroupService $groupService;
+    private PermissionService $permissionService;
     private PaginationFactory $paginationFactory;
     private PriceTextService $priceTextService;
     private UserManager $userManager;
@@ -46,7 +47,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         Auth $auth,
         Database $db,
         GroupManager $groupManager,
-        GroupService $groupService,
+        PermissionService $permissionService,
         PaginationFactory $paginationFactory,
         PriceTextService $priceTextService,
         UserManager $userManager,
@@ -57,7 +58,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $this->auth = $auth;
         $this->db = $db;
         $this->groupManager = $groupManager;
-        $this->groupService = $groupService;
+        $this->permissionService = $permissionService;
         $this->paginationFactory = $paginationFactory;
         $this->priceTextService = $priceTextService;
         $this->userManager = $userManager;
@@ -163,12 +164,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             ->toHtml();
     }
 
-    private function createChargeButton()
+    private function createChargeButton(): DOMElement
     {
         return (new Link($this->lang->t("charge")))->addClass("dropdown-item charge_wallet");
     }
 
-    private function createPasswordButton()
+    private function createPasswordButton(): DOMElement
     {
         return (new Link($this->lang->t("change_password")))->addClass(
             "dropdown-item change_password"
@@ -184,25 +185,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         switch ($boxId) {
             case "edit":
                 $user = $this->userManager->get($query["user_id"]);
-
-                $groups = collect($this->groupManager->all())
-                    ->filter(
-                        fn(Group $group) => $this->groupService->canUserAssignGroup(
-                            $this->auth->user(),
-                            $group
-                        )
-                    )
-                    ->map(function (Group $group) use ($user) {
-                        $selected = in_array($group->getId(), $user->getGroups());
-                        return new Option(
-                            "{$group->getName()} ({$group->getId()})",
-                            $group->getId(),
-                            [
-                                "selected" => selected($selected),
-                            ]
-                        );
-                    })
-                    ->join();
+                $groups = $this->getGroupsSection($user);
 
                 return $this->template->render("admin/action_boxes/user_edit", [
                     "email" => $user->getEmail(),
@@ -232,5 +215,38 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
             default:
                 throw new EntityNotFoundException();
         }
+    }
+
+    private function getGroupsSection(User $user): string
+    {
+        if (!$this->permissionService->canChangeUserGroup($this->auth->user(), $user)) {
+            return $this->template->render("admin/components/action_box/text_row", [
+                "title" => $this->lang->t("groups"),
+                "text" => $this->lang->t("user_groups_hint"),
+            ]);
+        }
+
+        $groups = collect($this->groupManager->all())
+            ->filter(
+                fn(Group $group) => $this->permissionService->canUserAssignGroup(
+                    $this->auth->user(),
+                    $group
+                )
+            )
+            ->map(function (Group $group) use ($user) {
+                $selected = in_array($group->getId(), $user->getGroups());
+                return new Option("{$group->getName()} ({$group->getId()})", $group->getId(), [
+                    "selected" => selected($selected),
+                ]);
+            })
+            ->join();
+
+        return $this->template->render("admin/components/action_box/multi_select", [
+            "id" => "groups",
+            "title" => $this->lang->t("groups"),
+            "subtitle" => "",
+            "items" => $groups,
+            "size" => 4,
+        ]);
     }
 }

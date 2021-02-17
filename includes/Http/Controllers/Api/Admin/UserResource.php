@@ -17,7 +17,9 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\UserManager;
 use App\Repositories\UserRepository;
 use App\Support\Money;
+use App\System\Auth;
 use App\Translation\TranslationManager;
+use App\User\PermissionService;
 use Symfony\Component\HttpFoundation\Request;
 
 class UserResource
@@ -28,42 +30,44 @@ class UserResource
         TranslationManager $translationManager,
         UserManager $userManager,
         UserRepository $userRepository,
+        PermissionService $permissionService,
+        Auth $auth,
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
         $editedUser = $userManager->get($userId);
 
-        $validator = new Validator(
-            array_merge($request->request->all(), [
-                "groups" => $request->request->get("groups") ?: [],
-            ]),
-            [
-                "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getId())],
-                "forename" => [],
-                "groups" => [new ArrayRule(), new UserGroupsRule()],
-                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getId())],
-                "surname" => [],
-                "username" => [
-                    new RequiredRule(),
-                    new UsernameRule(),
-                    new UniqueUsernameRule($editedUser->getId()),
-                ],
-                "wallet" => [new RequiredRule(), new NumberRule()],
-            ]
-        );
+        $validator = new Validator($request->request->all(), [
+            "email" => [new RequiredRule(), new UniqueUserEmailRule($editedUser->getId())],
+            "forename" => [],
+            "groups" => [new ArrayRule(), new UserGroupsRule()],
+            "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($editedUser->getId())],
+            "surname" => [],
+            "username" => [
+                new RequiredRule(),
+                new UsernameRule(),
+                new UniqueUsernameRule($editedUser->getId()),
+            ],
+            "wallet" => [new RequiredRule(), new NumberRule()],
+        ]);
 
         $validated = $validator->validateOrFail();
 
         $editedUser->setEmail($validated["email"]);
         $editedUser->setForename($validated["forename"]);
-        $editedUser->setGroups($validated["groups"]);
         $editedUser->setSteamId($validated["steam_id"]);
         $editedUser->setSurname($validated["surname"]);
         $editedUser->setUsername($validated["username"]);
         $editedUser->setWallet(Money::fromPrice($validated["wallet"]));
 
-        $userRepository->update($editedUser);
+        if (
+            $validated["groups"] !== null &&
+            $permissionService->canChangeUserGroup($auth->user(), $editedUser)
+        ) {
+            $editedUser->setGroups($validated["groups"]);
+        }
 
+        $userRepository->update($editedUser);
         $logger->logWithActor("log_user_edited", $userId);
 
         return new SuccessApiResponse($lang->t("user_edit"));

@@ -1,8 +1,8 @@
 <form id="form_user_edit" class="action_box">
-    <div class="service_main_info">{$lang->t('edit_user')}</div>
+    <div class="service_main_info">{{ __('edit_user') }}</div>
     <table>
         <tr>
-            <td>{$lang->t('id')}</td>
+            <td>{{ __('id') }}</td>
             <td>{{ $userId }}</td>
         </tr>
         <tr>
@@ -10,7 +10,7 @@
         </tr>
         <tr>
             <td>
-                <label for="username" class="required">{$lang->t('username')}</label>
+                <label for="username" class="required">{{ __('username') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -30,7 +30,7 @@
         </tr>
         <tr>
             <td>
-                <label for="forename">{$lang->t('firstname')}</label>
+                <label for="forename">{{ __('firstname') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -49,7 +49,7 @@
         </tr>
         <tr>
             <td>
-                <label for="surname">{$lang->t('surname')}</label>
+                <label for="surname">{{ __('surname') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -68,7 +68,7 @@
         </tr>
         <tr>
             <td>
-                <label for="email" class="required">{$lang->t('email')}</label>
+                <label for="email" class="required">{{ __('email') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -88,7 +88,7 @@
         </tr>
         <tr>
             <td>
-                <label for="steam_id">{$lang->t('sid')}</label>
+                <label for="steam_id">{{ __('sid') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -108,25 +108,10 @@
         <tr>
             <td colspan="2" class="line"></td>
         </tr>
+        {!! $groups !!}
         <tr>
             <td>
-                <label for="groups">{$lang->t('groups')}</label>
-            </td>
-            <td>
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-multiple is-small">
-                            <select id="groups" name="groups[]" multiple>
-                                {$groups}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <label for="wallet" class="required">{$lang->t('wallet')}</label>
+                <label for="wallet" class="required">{{ __('wallet') }}</label>
             </td>
             <td style="vertical-align: middle">
                 <div class="field has-addons">
@@ -154,7 +139,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="user_id" value="{{ $userId }}" />
-                <input type="submit" value="{$lang->t('edit')}" class="button w100" />
+                <input type="submit" value="{{ __('edit') }}" class="button w100" />
             </td>
         </tr>
     </table>

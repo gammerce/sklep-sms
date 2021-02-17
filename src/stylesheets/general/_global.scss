@@ -66,6 +66,10 @@ tr.line + tr.line {
     font-weight: normal;
 }
 
+.prewrap {
+    white-space: pre-wrap;
+}
+
 /* Opisy usług */
 .short_description,
 .service_main_info {

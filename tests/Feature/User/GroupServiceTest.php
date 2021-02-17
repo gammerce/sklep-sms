@@ -1,18 +1,18 @@
 <?php
 namespace Tests\Feature\User;
 
-use App\User\GroupService;
+use App\User\PermissionService;
 use App\User\Permission;
 use Tests\Psr4\TestCases\TestCase;
 
 class GroupServiceTest extends TestCase
 {
-    private GroupService $groupService;
+    private PermissionService $permissionService;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->groupService = $this->app->make(GroupService::class);
+        $this->permissionService = $this->app->make(PermissionService::class);
     }
 
     /** @test */
@@ -25,7 +25,7 @@ class GroupServiceTest extends TestCase
         ]);
 
         // when
-        $result = $this->groupService->canUserAssignGroup($user, $group);
+        $result = $this->permissionService->canUserAssignGroup($user, $group);
 
         // then
         $this->assertFalse($result);
@@ -46,11 +46,11 @@ class GroupServiceTest extends TestCase
             ],
         ]);
         $user = $this->factory->user([
-            "groups" => $developers->getId(),
+            "groups" => [$developers->getId()],
         ]);
 
         // when
-        $result = $this->groupService->canUserAssignGroup($user, $sales);
+        $result = $this->permissionService->canUserAssignGroup($user, $sales);
 
         // then
         $this->assertFalse($result);
@@ -71,11 +71,67 @@ class GroupServiceTest extends TestCase
             ],
         ]);
         $user = $this->factory->user([
-            "groups" => $developers->getId(),
+            "groups" => [$developers->getId()],
         ]);
 
         // when
-        $result = $this->groupService->canUserAssignGroup($user, $sales);
+        $result = $this->permissionService->canUserAssignGroup($user, $sales);
+
+        // then
+        $this->assertTrue($result);
+    }
+
+    /** @test */
+    public function user_cannot_change_group_of_a_user_with_wider_permissions()
+    {
+        // given
+        $sales = $this->factory->group([
+            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SMS_CODES()],
+        ]);
+        $developers = $this->factory->group([
+            "permissions" => [
+                Permission::MANAGE_USERS(),
+                Permission::MANAGE_SERVERS(),
+                Permission::MANAGE_SMS_CODES(),
+            ],
+        ]);
+        $tom = $this->factory->user([
+            "groups" => [$sales->getId()],
+        ]);
+        $john = $this->factory->user([
+            "groups" => [$developers->getId()],
+        ]);
+
+        // when
+        $result = $this->permissionService->canChangeUserGroup($tom, $john);
+
+        // then
+        $this->assertFalse($result);
+    }
+
+    /** @test */
+    public function user_can_change_group_of_a_user_with_narrower_permissions()
+    {
+        // given
+        $sales = $this->factory->group([
+            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SMS_CODES()],
+        ]);
+        $developers = $this->factory->group([
+            "permissions" => [
+                Permission::MANAGE_USERS(),
+                Permission::MANAGE_SERVERS(),
+                Permission::MANAGE_SMS_CODES(),
+            ],
+        ]);
+        $tom = $this->factory->user([
+            "groups" => [$sales->getId()],
+        ]);
+        $john = $this->factory->user([
+            "groups" => [$developers->getId()],
+        ]);
+
+        // when
+        $result = $this->permissionService->canChangeUserGroup($john, $tom);
 
         // then
         $this->assertTrue($result);

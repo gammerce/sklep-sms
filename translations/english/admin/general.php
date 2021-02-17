@@ -254,6 +254,8 @@ return [
     "usage_limit" => "Usage limit",
     "usage_limit_placeholder" => "Leave blank to set no usage limit",
     "user_edit" => "User edited successfully.",
+    "user_groups_hint" =>
+        "You do not have sufficient privileges,\nto be able to change the group of this user.",
     "user_service_edit" => "Allow player services edition",
     "users" => "Users",
     "users_services" => "Users temporary services",
