@@ -50,10 +50,10 @@ $(document).delegate(".table-structure .regenerate-token", "click", function () 
     $.ajax({
         type: "POST",
         url: buildUrl("/api/admin/servers/" + serverId + "/token"),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -82,10 +82,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/servers/" + serverId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -112,10 +112,10 @@ $(document).delegate("#form_server_add", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/admin/servers"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -146,10 +146,10 @@ $(document).delegate("#form_server_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/servers/" + serverId),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

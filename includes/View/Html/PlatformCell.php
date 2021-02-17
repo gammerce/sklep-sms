@@ -8,7 +8,7 @@ class PlatformCell extends Cell
     public function __construct($platform)
     {
         parent::__construct(
-            (new Div($this->translatePlatform($platform)))->addClass("one_line"),
+            (new Div($this->translatePlatform($platform)))->addClass("one-line"),
             "platform"
         );
     }
@@ -17,7 +17,7 @@ class PlatformCell extends Cell
      * @param string $platform
      * @return string
      */
-    private function translatePlatform($platform)
+    private function translatePlatform($platform): string
     {
         $translations = [
             Platform::AMXMODX => __("amxx_server"),

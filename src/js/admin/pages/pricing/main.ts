@@ -22,10 +22,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/prices/" + priceId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -53,10 +53,10 @@ $(document).delegate("#form_price_add", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/admin/prices"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -87,10 +87,10 @@ $(document).delegate("#form_price_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/prices/" + priceId),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

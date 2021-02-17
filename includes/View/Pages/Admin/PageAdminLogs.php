@@ -68,7 +68,7 @@ class PageAdminLogs extends PageAdmin
         $bodyRows = collect($statement)
             ->map(function (array $row) {
                 $div = new Div($row["text"]);
-                $div->addClass("one_line");
+                $div->addClass("one-line");
 
                 return (new BodyRow())
                     ->setDbId($row["id"])

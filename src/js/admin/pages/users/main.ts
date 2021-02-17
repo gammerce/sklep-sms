@@ -41,10 +41,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl("/api/admin/users/" + userId),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -74,10 +74,10 @@ $(document).delegate("#form_charge_wallet", "submit", function (e) {
         type: "POST",
         url: buildUrl(`/api/admin/users/${userId}/wallet/charge`),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -120,10 +120,10 @@ $(document).delegate("#form_change_password", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/users/" + userId + "/password"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {
@@ -153,10 +153,10 @@ $(document).delegate("#form_user_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/users/" + userId),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

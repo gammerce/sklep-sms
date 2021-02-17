@@ -37,10 +37,10 @@ $(document).delegate("#user_own_services .row", "submit", function (e) {
         type: "PUT",
         url: buildUrl(`/api/user_services/${userServiceId}`),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

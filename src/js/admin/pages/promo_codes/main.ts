@@ -27,10 +27,10 @@ $(document).delegate(".table-structure .delete_row", "click", function () {
     $.ajax({
         type: "DELETE",
         url: buildUrl(`/api/admin/promo_codes/${promoCodeId}`),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -57,10 +57,10 @@ $(document).delegate("#form_promo_code_add", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/admin/promo_codes"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

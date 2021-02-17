@@ -42,17 +42,13 @@ tr.line + tr.line {
     display: none;
 }
 
-.vcenter {
-    vertical-align: middle;
-}
-
 .flex-center {
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.display_tfoot {
+.display-tfoot {
     display: table-footer-group !important;
 }
 
@@ -72,22 +68,13 @@ tr.line + tr.line {
 
 /* Opisy usług */
 .short_description,
-.service_main_info {
+.service-main-info {
     margin-bottom: 6px;
     padding: 1em;
     background: rgba(255, 255, 255, 0.1);
     box-shadow: 0 0 10px #000;
     color: #fff;
     text-shadow: 2px 2px 2px #000;
-}
-
-/* Cegiełka w dowolnym miejscu */
-.brick {
-    padding: 8px;
-    margin: 12px 6px;
-    box-shadow: 0 0 10px #000;
-    line-height: 1.4;
-    color: #bbb;
 }
 
 .button.edit_row {
@@ -100,37 +87,6 @@ tr.line + tr.line {
 [id^="delete_row_"],
 .delete_row {
     cursor: pointer;
-}
-
-.column_left {
-    display: inline-block;
-    width: 48%;
-    vertical-align: top;
-}
-
-.column_right {
-    display: inline-block;
-    width: 48%;
-    vertical-align: top;
-}
-
-.table_form {
-    display: table;
-}
-
-.table_form .row {
-    display: table-row;
-}
-
-.table_form .row .cell {
-    display: table-cell;
-    padding: 4px 0;
-}
-
-.table_form .row .cell:nth-child(1) {
-    font-weight: bold;
-    padding-right: 10px;
-    text-transform: uppercase;
 }
 
 .action-buttons {

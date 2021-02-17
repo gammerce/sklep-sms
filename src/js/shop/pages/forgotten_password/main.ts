@@ -10,10 +10,10 @@ $(document).delegate("#form_forgotten_password", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/password/forgotten"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

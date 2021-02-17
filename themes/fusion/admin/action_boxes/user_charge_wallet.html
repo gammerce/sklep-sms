@@ -1,13 +1,13 @@
 <form id="form_charge_wallet" class="action_box">
-    <div class="service_main_info">{$lang->t('charge_wallet')}</div>
+    <div class="service-main-info">{{ __('charge_wallet') }}</div>
     <table>
         <tr>
-            <td>{$lang->t('username')}</td>
+            <td>{{ __('username') }}</td>
             <td>{{ $user->getUsername() }}</td>
         </tr>
         <tr>
             <td>
-                <label for="quantity" class="required">{$lang->t('amount')}</label>
+                <label for="quantity" class="required">{{ __('amount') }}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -29,7 +29,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="user_id" value="{{ $user->getId() }}" />
-                <input type="submit" value="{$lang->t('charge')}" class="button w100" />
+                <input type="submit" value="{{ __('charge') }}" class="button w100" />
             </td>
         </tr>
     </table>

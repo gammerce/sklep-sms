@@ -10,10 +10,10 @@ $(document).delegate("#form_settings_edit", "submit", function (e) {
         type: "PUT",
         url: buildUrl("/api/admin/settings"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             removeFormWarnings();
 
             if (!content.return_id) {

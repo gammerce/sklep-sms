@@ -21,10 +21,10 @@ $(document).delegate("#form_login", "submit", function (e) {
         type: "POST",
         url: buildUrl("/api/login"),
         data: $(this).serialize(),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
@@ -57,10 +57,10 @@ $(document).delegate("#logout", "click", function (e) {
     $.ajax({
         type: "POST",
         url: buildUrl("/api/logout"),
-        complete: function () {
+        complete() {
             loader.hide();
         },
-        success: function (content) {
+        success(content) {
             if (!content.return_id) {
                 return sthWentWrong();
             }
