@@ -37,10 +37,7 @@ function regenerate_token(identifier, button) {
     }
 }
 
-function set_cost() {
-    console.log("Example 2");
-    const form = $(".shopsms_license_edit").closest("form");
-
+function set_cost(form) {
     const serviceId = form.find("[name=service_id]").val();
     const serializedData = $(form).serialize();
     const userServiceId = form.data("row");
@@ -49,6 +46,7 @@ function set_cost() {
     restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function (
         content
     ) {
+        console.log(content);
         const cost = form.find("#cost .price");
         const costMonthly = form.find("#cost-monthly");
 
@@ -58,8 +56,9 @@ function set_cost() {
     });
 }
 
-console.log("Example 1");
-$(document).delegate(".shopsms_user_edit .platform", "click", set_cost);
+$(document).delegate(".shopsms_user_edit [name='platforms[]']", "click", function () {
+    set_cost($(this).closest("form"));
+});
 
 $(document).delegate(".regenerate-token", "click", function () {
     const identifier = $(this).data("identifier");

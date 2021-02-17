@@ -24,7 +24,7 @@ function set_cost() {
 $(document).ready(set_cost);
 
 // Zaznaczamy jakas platformę
-$(document).delegate(".shopsms_license_purchase .platform", "click", set_cost);
+$(document).delegate(".shopsms_license_purchase [name='platforms[]']", "click", set_cost);
 
 // Zmiana ilosci dni
 $(document).delegate(".shopsms_license_purchase [name=amount]", "change", set_cost);
