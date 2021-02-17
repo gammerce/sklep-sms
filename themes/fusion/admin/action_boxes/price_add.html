@@ -1,16 +1,16 @@
 <form id="form_price_add" class="action_box">
-    <div class="service-main-info">{$lang->t('add_price')}</div>
+    <div class="service-main-info">{{ __('add_price') }}</div>
     <table>
         <tr>
             <td>
-                <label class="required" for="service_id">{$lang->t('service')}</label>
+                <label class="required" for="service_id">{{ __('service') }}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="service_id" name="service_id" required>
-                                <option value="">{$lang->t('choose_service')}</option>
+                                <option value="">{{ __('choose_service') }}</option>
                                 {$services}
                             </select>
                         </div>
@@ -21,14 +21,14 @@
 
         <tr>
             <td>
-                <label for="server_id">{$lang->t('server')}</label>
+                <label for="server_id">{{ __('server') }}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="server_id" name="server_id">
-                                <option value="">{$lang->t('all')}</option>
+                                <option value="">{{ __('all') }}</option>
                                 {$servers}
                             </select>
                         </div>
@@ -39,7 +39,7 @@
 
         <tr>
             <td>
-                <label for="quantity">{$lang->t('quantity')}</label>
+                <label for="quantity">{{ __('quantity') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -52,14 +52,14 @@
 
         <tr>
             <td>
-                <label for="sms_price">{$lang->t('sms_price')}</label>
+                <label for="sms_price">{{ __('sms_price') }}</label>
             </td>
             <td>
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_price" name="sms_price">
-                                <option value="">{$lang->t('choose_sms_price')}</option>
+                                <option value="">{{ __('choose_sms_price') }}</option>
                                 {$smsPrices}
                             </select>
                         </div>
@@ -70,7 +70,7 @@
 
         <tr>
             <td>
-                <label for="transfer_price">{$lang->t('transfer_price')}</label>
+                <label for="transfer_price">{{ __('transfer_price') }}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -93,7 +93,7 @@
 
         <tr>
             <td>
-                <label for="direct_billing_price">{$lang->t('direct_billing_price')}</label>
+                <label for="direct_billing_price">{{ __('direct_billing_price') }}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -116,7 +116,7 @@
 
         <tr>
             <td>
-                <label for="discount">{$lang->t('discount')}</label>
+                <label for="discount">{{ __('discount') }}</label>
             </td>
             <td>
                 <div class="field has-addons">
@@ -143,7 +143,7 @@
 
         <tr>
             <td colspan="2">
-                <input type="submit" value="{$lang->t('add')}" class="button w100" />
+                <input type="submit" value="{{ __('add') }}" class="button w100" />
             </td>
         </tr>
     </table>

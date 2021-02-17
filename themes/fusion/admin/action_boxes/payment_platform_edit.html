@@ -1,17 +1,17 @@
 <form id="form_payment_platform_edit" class="action_box">
-    <div class="service-main-info">{$lang->t('edit_payment_platform')}</div>
+    <div class="service-main-info">{{ __('edit_payment_platform') }}</div>
     <table>
         <tr>
-            <td>{$lang->t('id')}</td>
+            <td>{{ __('id') }}</td>
             <td>{{ $paymentPlatform->getId() }}</td>
         </tr>
         <tr>
-            <td>{$lang->t('payment_module')}</td>
+            <td>{{ __('payment_module') }}</td>
             <td>{{ $lang->t($paymentPlatform->getModuleId()) }}</td>
         </tr>
         <tr>
             <td>
-                <label for="name" class="required">{$lang->t('name')}</label>
+                <label for="name" class="required">{{ __('name') }}</label>
             </td>
             <td>
                 <div class="field">
@@ -39,7 +39,7 @@
         <tr>
             <td colspan="2">
                 <input type="hidden" name="id" value="{{ $paymentPlatform->getId() }}" />
-                <input type="submit" value="{$lang->t('confirm')}" class="button w100" />
+                <input type="submit" value="{{ __('confirm') }}" class="button w100" />
             </td>
         </tr>
     </table>

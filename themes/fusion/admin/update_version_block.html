@@ -3,12 +3,12 @@
     <div style="margin-left: 6px; margin-top: 6px">
         <table>
             <tr>
-                <td>{$lang->t('current_version')}</td>
+                <td>{{ __('current_version') }}</td>
                 <td style="width: 5px">&nbsp;</td>
                 <td>{{ $currentVersion }}</td>
             </tr>
             <tr>
-                <td>{$lang->t('latest_version')}</td>
+                <td>{{ __('latest_version') }}</td>
                 <td></td>
                 <td><a href="{{ $link }}" target="_blank">{{ $newestVersion }}</a></td>
             </tr>

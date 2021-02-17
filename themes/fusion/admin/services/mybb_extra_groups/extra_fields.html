@@ -9,8 +9,8 @@
                 <div class="control">
                     <div class="select is-small">
                         <select id="web" name="web" class="is-uppercase" required>
-                            <option value="0" {$webSelNo}>{$lang->t('no')}</option>
-                            <option value="1" {$webSelYes}>{$lang->t('yes')}</option>
+                            <option value="0" {$webSelNo}>{{ __('no') }}</option>
+                            <option value="1" {$webSelYes}>{{ __('yes') }}</option>
                         </select>
                     </div>
                 </div>
@@ -19,8 +19,8 @@
     </tr>
     <tr>
         <td>
-            <label for="mybb_groups" class="required">{$lang->t('mybb_groups')}</label>
-            <div class="hint">{$lang->t('comma_separated')}</div>
+            <label for="mybb_groups" class="required">{{ __('mybb_groups') }}</label>
+            <div class="hint">{{ __('comma_separated') }}</div>
         </td>
         <td>
             <div class="field">
@@ -41,11 +41,11 @@
         <td colspan="2" class="line"></td>
     </tr>
     <tr>
-        <td colspan="2" class="h2 has-text-centered">{$lang->t('mybb_db_data')}</td>
+        <td colspan="2" class="h2 has-text-centered">{{ __('mybb_db_data') }}</td>
     </tr>
     <tr>
         <td>
-            <label for="db_host" class="required">{$lang->t('db_host')}</label>
+            <label for="db_host" class="required">{{ __('db_host') }}</label>
         </td>
         <td>
             <div class="field">
@@ -64,7 +64,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_user" class="required">{$lang->t('db_user')}</label>
+            <label for="db_user" class="required">{{ __('db_user') }}</label>
         </td>
         <td>
             <div class="field">
@@ -83,7 +83,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_password">{$lang->t('db_password')}</label>
+            <label for="db_password">{{ __('db_password') }}</label>
         </td>
         <td>
             <div class="field">
@@ -101,7 +101,7 @@
     </tr>
     <tr>
         <td>
-            <label for="db_name" class="required">{$lang->t('db_name')}</label>
+            <label for="db_name" class="required">{{ __('db_name') }}</label>
         </td>
         <td>
             <div class="field">

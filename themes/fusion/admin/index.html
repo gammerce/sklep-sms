@@ -17,18 +17,18 @@
                         <a href="{{ $url->to('/') }}">
                             <img
                                 src="https://sklep-sms.pl/images/logo_simple.svg"
-                                alt="{$lang->t('shop_sms')}"
+                                alt="{{ __('shop_sms') }}"
                             />
                         </a>
                     </div>
 
                     <div class="acp-box">
                         <div class="title is-5">
-                            {$lang->t('acp')}<br />
+                            {{ __('acp') }}<br />
                             (&nbsp;v{{ $currentVersion }}&nbsp;)
                         </div>
                         <div class="subtitle is-6">
-                            {$lang->t('license_expires')}: {{ $license->getExpires() }}
+                            {{ __('license_expires') }}: {{ $license->getExpires() }}
                         </div>
                     </div>
 
@@ -37,46 +37,46 @@
                     <div class="user-box">
                         {{ $user->getUsername() }} (
                         <a onclick="document.getElementById('logout-form').submit()">
-                            {$lang->t('logout')}
+                            {{ __('logout') }}
                         </a>
                         )
                     </div>
 
                     <hr />
 
-                    <p class="menu-label">{{ $lang->t('main') }}</p>
+                    <p class="menu-label">{{ __('main') }}</p>
                     <ul class="menu-list">
                         <li>
-                            <a href="{{ $url->to('/admin/home') }}">{$lang->t('main_page')}</a>
+                            <a href="{{ $url->to('/admin/home') }}">{{ __('main_page') }}</a>
                         </li>
                         {$settingsLink} {$transactionServicesLink} {$servicesLink} {$serversLink}
                         {$pricingLink}
                     </ul>
 
-                    <p class="menu-label">{$lang->t('users_services')}</p>
+                    <p class="menu-label">{{ __('users_services') }}</p>
                     <ul class="menu-list">
                         {$userServiceLink} {$playersFlagsLink}
                     </ul>
 
-                    <p class="menu-label">{$lang->t('users')}</p>
+                    <p class="menu-label">{{ __('users') }}</p>
                     <ul class="menu-list">
                         {$usersLink} {$groupsLink}
                     </ul>
 
-                    <p class="menu-label">{$lang->t('additions')}</p>
+                    <p class="menu-label">{{ __('additions') }}</p>
                     <ul class="menu-list">
                         {$incomeLink} {$promoCodesLink} {$smsCodesLink}
                     </ul>
 
-                    <p class="menu-label">{$lang->t('logs')}</p>
+                    <p class="menu-label">{{ __('logs') }}</p>
                     <ul class="menu-list">
                         <li>
                             <a href="{{ $url->to('/admin/bought_services') }}">
-                                {$lang->t('bought_services')}
+                                {{ __('bought_services') }}
                             </a>
                         </li>
                         <li>
-                            <a href="{{ $url->to('/admin/payments') }}"> {$lang->t('payments')} </a>
+                            <a href="{{ $url->to('/admin/payments') }}"> {{ __('payments') }} </a>
                         </li>
                         {$logsLink}
                     </ul>

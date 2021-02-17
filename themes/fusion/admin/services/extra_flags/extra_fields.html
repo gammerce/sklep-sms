@@ -9,8 +9,8 @@
                 <div class="control">
                     <div class="select is-small">
                         <select id="web" name="web" class="is-uppercase" required>
-                            <option value="0" {$webSelNo}>{$lang->t('no')}</option>
-                            <option value="1" {$webSelYes}>{$lang->t('yes')}</option>
+                            <option value="0" {$webSelNo}>{{ __('no') }}</option>
+                            <option value="1" {$webSelYes}>{{ __('yes') }}</option>
                         </select>
                     </div>
                 </div>
@@ -19,7 +19,7 @@
     </tr>
     <tr>
         <td>
-            <label for="type" class="required">{$lang->t('types')}</label>
+            <label for="type" class="required">{{ __('types') }}</label>
         </td>
         <td>
             <div class="field">
@@ -35,7 +35,7 @@
     </tr>
     <tr>
         <td>
-            <label for="flags" class="required">{$lang->t('flags')}</label>
+            <label for="flags" class="required">{{ __('flags') }}</label>
         </td>
         <td>
             <div class="field">
