@@ -38,7 +38,8 @@ function regenerate_token(identifier, button) {
 }
 
 function set_cost() {
-    const form = $(".shopsms_license_purchase").closest("form");
+    console.log("Example 2");
+    const form = $(".shopsms_license_edit").closest("form");
 
     const serviceId = form.find("[name=service_id]").val();
     const serializedData = $(form).serialize();
@@ -57,6 +58,7 @@ function set_cost() {
     });
 }
 
+console.log("Example 1");
 $(document).delegate(".shopsms_user_edit .platform", "click", set_cost);
 
 $(document).delegate(".regenerate-token", "click", function () {
