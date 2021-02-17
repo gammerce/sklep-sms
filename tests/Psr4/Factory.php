@@ -381,10 +381,11 @@ class Factory
         $attributes = array_merge(
             [
                 "name" => $this->faker->word,
+                "permissions" => [],
             ],
             $attributes
         );
 
-        return $this->groupRepository->create($attributes["name"], $attributes);
+        return $this->groupRepository->create($attributes["name"], $attributes["permissions"]);
     }
 }

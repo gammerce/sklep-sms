@@ -12,7 +12,9 @@ use App\Support\Database;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\Support\Template;
+use App\System\Auth;
 use App\Translation\TranslationManager;
+use App\User\GroupService;
 use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
@@ -29,31 +31,37 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 {
     const PAGE_ID = "users";
 
-    private UserRepository $userRepository;
-    private PriceTextService $priceTextService;
-    private UserManager $userManager;
+    private Auth $auth;
     private Database $db;
     private GroupManager $groupManager;
+    private GroupService $groupService;
     private PaginationFactory $paginationFactory;
+    private PriceTextService $priceTextService;
+    private UserManager $userManager;
+    private UserRepository $userRepository;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        UserRepository $userRepository,
-        PriceTextService $priceTextService,
-        UserManager $userManager,
+        Auth $auth,
         Database $db,
         GroupManager $groupManager,
-        PaginationFactory $paginationFactory
+        GroupService $groupService,
+        PaginationFactory $paginationFactory,
+        PriceTextService $priceTextService,
+        UserManager $userManager,
+        UserRepository $userRepository
     ) {
         parent::__construct($template, $translationManager);
 
-        $this->userRepository = $userRepository;
-        $this->priceTextService = $priceTextService;
-        $this->userManager = $userManager;
+        $this->auth = $auth;
         $this->db = $db;
         $this->groupManager = $groupManager;
+        $this->groupService = $groupService;
         $this->paginationFactory = $paginationFactory;
+        $this->priceTextService = $priceTextService;
+        $this->userManager = $userManager;
+        $this->userRepository = $userRepository;
     }
 
     public function getPrivilege(): Permission
@@ -178,6 +186,12 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                 $user = $this->userManager->get($query["user_id"]);
 
                 $groups = collect($this->groupManager->all())
+                    ->filter(
+                        fn(Group $group) => $this->groupService->canUserAssignGroup(
+                            $this->auth->user(),
+                            $group
+                        )
+                    )
                     ->map(function (Group $group) use ($user) {
                         $selected = in_array($group->getId(), $user->getGroups());
                         return new Option(
