@@ -1,11 +1,11 @@
-{$pageTitle}
+{!! $pageTitle !!}
 
 <form id="form_settings_edit" class="columns is-multiline">
     <div class="column is-one-third">
-        <h4>{$lang->t('license')}</h4>
+        <h4>{{ __('license') }}</h4>
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="license_token">{$lang->t('token')}</label>
+                <label for="license_token">{{ __('token') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -25,11 +25,11 @@
     </div>
 
     <div class="column is-two-thirds">
-        <h4>{$lang->t('information')}</h4>
+        <h4>{{ __('information') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="shop_name">{$lang->t('shop_name')}</label>
+                <label for="shop_name">{{ __('shop_name') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -49,7 +49,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="shop_url">{$lang->t('shop_address')}</label>
+                <label for="shop_url">{{ __('shop_address') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -69,7 +69,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="contact">{$lang->t('contact')}</label>
+                <label for="contact">{{ __('contact') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -89,7 +89,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email">{$lang->t('auto_email')}</label>
+                <label for="sender_email">{{ __('auto_email') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -109,7 +109,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email_name">{$lang->t('email_sender_name')}</label>
+                <label for="sender_email_name">{{ __('email_sender_name') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -130,7 +130,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="signature">
-                    {$lang->t('signature')} <em>{$lang->t('eg_emails')}</em>
+                    {{ __('signature') }} <em>{{ __('eg_emails') }}</em>
                 </label>
             </div>
             <div class="field-body">
@@ -151,19 +151,19 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->t('payments')}</h4>
+        <h4>{{ __('payments') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sms_platform">{$lang->t('default_sms_payment_platform')}</label>
+                <label for="sms_platform">{{ __('default_sms_payment_platform') }}</label>
             </div>
             <div class="field-body">
                 <div class="field is-grouped">
                     <div class="control">
                         <div class="select is-small">
                             <select id="sms_platform" name="sms_platform">
-                                <option value="">{$lang->t('none')}</option>
-                                {$smsPlatforms}
+                                <option value="">{{ __('none') }}</option>
+                                {!! $smsPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ $lang->t('create') }}
+                            {{ __('create') }}
                         </a>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="direct_billing_platform">
-                    {$lang->t('default_direct_billing_payment_platform')}
+                    {{ __('default_direct_billing_payment_platform') }}
                 </label>
             </div>
             <div class="field-body">
@@ -191,8 +191,8 @@
                     <div class="control">
                         <div class="select is-small">
                             <select id="direct_billing_platform" name="direct_billing_platform">
-                                <option value="">{$lang->t('none')}</option>
-                                {$directBillingPlatforms}
+                                <option value="">{{ __('none') }}</option>
+                                {!! $directBillingPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -202,7 +202,7 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ $lang->t('create') }}
+                            {{ __('create') }}
                         </a>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="transfer_platform">
-                    {$lang->t('default_transfer_payment_platform')}
+                    {{ __('default_transfer_payment_platform') }}
                 </label>
             </div>
             <div class="field-body">
@@ -220,7 +220,7 @@
                     <div class="control">
                         <div class="select is-multiple is-small">
                             <select id="transfer_platform" name="transfer_platform[]" multiple>
-                                {$transferPlatforms}
+                                {!! $transferPlatforms !!}
                             </select>
                         </div>
                     </div>
@@ -230,7 +230,7 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ $lang->t('create') }}
+                            {{ __('create') }}
                         </a>
                     </div>
                 </div>
@@ -239,7 +239,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="currency"> {$lang->t('currency')} </label>
+                <label for="currency"> {{ __('currency') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -259,7 +259,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="vat"> {$lang->t('vat')} </label>
+                <label for="vat"> {{ __('vat') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -280,16 +280,16 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->t('users')}</h4>
+        <h4>{{ __('users') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="user_edit_service"> {$lang->t('user_service_edit')} </label>
+                <label for="user_edit_service"> {{ __('user_service_edit') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select is-small">{$userEditServiceSelect}</div>
+                        <div class="select is-small">{!! $userEditServiceSelect !!}</div>
                     </div>
                 </div>
             </div>
@@ -297,18 +297,18 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->t('global')}</h4>
+        <h4>{{ __('global') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="language"> {$lang->t('language')} </label>
+                <label for="language"> {{ __('language') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="language" name="language">
-                                {$languagesList}
+                                {!! $languagesList !!}
                             </select>
                         </div>
                     </div>
@@ -318,14 +318,14 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="theme"> {$lang->t('theme')} </label>
+                <label for="theme"> {{ __('theme') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
                         <div class="select is-small">
                             <select id="theme" name="theme">
-                                {$themesList}
+                                {!! $themesList !!}
                             </select>
                         </div>
                     </div>
@@ -335,7 +335,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="date_format"> {$lang->t('date_format')} </label>
+                <label for="date_format"> {{ __('date_format') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -355,12 +355,12 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="cron"> {$lang->t('cron_page_start')} </label>
+                <label for="cron"> {{ __('cron_page_start') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select is-small">{$cronSelect}</div>
+                        <div class="select is-small">{!! $cronSelect !!}</div>
                     </div>
                 </div>
             </div>
@@ -408,12 +408,12 @@
     </div>
 
     <div class="column is-half">
-        <h4>{$lang->t('other')}</h4>
+        <h4>{{ __('other') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="delete_logs">
-                    {$lang->t('delete_old_logs')} <em>{$lang->t('dont_delete')}</em>
+                    {{ __('delete_old_logs') }} <em>{{ __('dont_delete') }}</em>
                 </label>
             </div>
             <div class="field-body">
@@ -429,7 +429,7 @@
                         />
                     </div>
                     <div class="control">
-                        <a class="button is-static is-small"> {$lang->t('days')} </a>
+                        <a class="button is-static is-small"> {{ __('days') }} </a>
                     </div>
                 </div>
             </div>
@@ -437,7 +437,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="row_limit"> {$lang->t('lines_per_page')} </label>
+                <label for="row_limit"> {{ __('lines_per_page') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -459,6 +459,6 @@
     <div class="column is-full has-text-centered">
         <hr />
 
-        <input type="submit" value="{$lang->t('save')}" class="button" style="width: 50%" />
+        <input type="submit" value="{{ __('save') }}" class="button" style="width: 50%" />
     </div>
 </form>

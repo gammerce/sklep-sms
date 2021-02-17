@@ -17,7 +17,7 @@
             <h1 class="title is-4">Instalator Sklepu SMS</h1>
 
             <div class="section is-small">
-                {$notifyHttpServer}
+                {!! $notifyHttpServer !!}
 
                 <form id="form_install" class="columns is-multiline">
                     <div class="column is-half">
@@ -186,10 +186,10 @@
 
                     <div class="column is-half">
                         <h2 class="title is-5">Uprawnienia do zapisu</h2>
-                        <div class="data">{$filesPrivileges}</div>
+                        <div class="data">{!! $filesPrivileges !!}</div>
 
                         <h2 class="title is-5">Moduły na serwerze</h2>
-                        <div class="data">{$serverModules}</div>
+                        <div class="data">{!! $serverModules !!}</div>
                     </div>
 
                     <div class="column is-full has-text-centered">

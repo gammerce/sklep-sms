@@ -101,7 +101,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
             ->addButton($addButton);
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_SETTINGS())) {
             throw new UnauthorizedException();

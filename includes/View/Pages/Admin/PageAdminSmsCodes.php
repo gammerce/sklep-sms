@@ -114,7 +114,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         return $wrapper->toHtml();
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_SMS_CODES())) {
             throw new UnauthorizedException();

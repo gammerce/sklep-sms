@@ -1,13 +1,13 @@
-{$pageTitle}
+{!! $pageTitle !!}
 <div class="form_update">
-    <h4>{$lang->t('versions')}</h4>
+    <h4>{{ __('versions') }}</h4>
 
-    <div class="content">{$versionBricks}</div>
+    <div class="content">{!! $versionBricks !!}</div>
 
-    <h4>{$lang->t('how_to_update')}</h4>
+    <h4>{{ __('how_to_update') }}</h4>
     <div class="content">
         <ol>
-            <li>{$lang->t('unzip_arch')}</li>
+            <li>{{ __('unzip_arch') }}</li>
         </ol>
     </div>
 </div>

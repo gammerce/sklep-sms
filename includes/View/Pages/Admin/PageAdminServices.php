@@ -111,7 +111,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
         return $wrapper;
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_SERVICES())) {
             throw new UnauthorizedException();

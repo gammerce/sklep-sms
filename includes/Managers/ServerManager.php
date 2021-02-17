@@ -20,7 +20,7 @@ class ServerManager
     /**
      * @return Server[]
      */
-    public function all()
+    public function all(): array
     {
         if (!$this->serversFetched) {
             $this->fetch();
@@ -33,17 +33,17 @@ class ServerManager
      * @param int $id
      * @return Server|null
      */
-    public function get($id)
+    public function get($id): ?Server
     {
         return array_get($this->all(), $id, null);
     }
 
-    public function getCount()
+    public function getCount(): int
     {
         return count($this->all());
     }
 
-    private function fetch()
+    private function fetch(): void
     {
         foreach ($this->serverRepository->all() as $server) {
             $this->servers[$server->getId()] = $server;

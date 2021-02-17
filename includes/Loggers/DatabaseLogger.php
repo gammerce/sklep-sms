@@ -23,13 +23,13 @@ class DatabaseLogger
         $this->logRepository = $logRepository;
     }
 
-    public function log($key, ...$args)
+    public function log($key, ...$args): void
     {
         $message = $this->langShop->t($key, ...$args);
         $this->logRepository->create($message);
     }
 
-    public function logWithActor($key, ...$args)
+    public function logWithActor($key, ...$args): void
     {
         $message = $this->langShop->t($key, ...$args);
 
@@ -41,7 +41,7 @@ class DatabaseLogger
         $this->logRepository->create($message);
     }
 
-    public function logWithUser(User $user, $key, ...$args)
+    public function logWithUser(User $user, $key, ...$args): void
     {
         $message = $this->langShop->t($key, ...$args);
         $message .= " | User: {$user->getUsername()}({$user->getId()})({$user->getLastIp()})";

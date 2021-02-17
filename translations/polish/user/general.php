@@ -50,7 +50,6 @@ return [
         "Wysłano e-maila z kodem do zresetowania hasła. Użytkownik: [{1}][{2}] E-mail: [{3}] Dane formularza. Nazwa użytkownika: [{4}] E-mail: [{5}]",
     "log_reset_pass" => "Zresetowano hasło. ID Użytkownika: {1}.",
     "login_success" => "Logowanie przebiegło bez większych trudności.",
-    "login_vert" => "Z<br />A<br />L<br />O<br />G<br />U<br />J",
     "logout_success" => "Wylogowywanie przebiegło bez większych trudności.",
     "my_services" => "Moje usługi",
     "nick_occupied" => "Podana nazwa użytkownika jest już zajęta.",
@@ -97,7 +96,6 @@ return [
     "purchase_success" => "Usługa została prawidłowo zakupiona.",
     "register_success" =>
         "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.",
-    "register_vert" => "Z<br />A<br />R<br />E<br />J<br />E<br />S<br />T<br />R<br />U<br />J",
     "regulations" => "Regulamin",
     "remove" => "Usuń",
     "repeat" => "Powtórz",

@@ -14,6 +14,7 @@ use App\User\Permission;
 use App\Verification\Abstracts\SupportDirectBilling;
 use App\Verification\Abstracts\SupportSms;
 use App\Verification\Abstracts\SupportTransfer;
+use App\View\Html\DOMElement;
 use App\View\Html\Option;
 use App\View\Html\Select;
 use Symfony\Component\HttpFoundation\Request;
@@ -108,7 +109,7 @@ class PageAdminSettings extends PageAdmin
         ]);
     }
 
-    private function createUserEditServiceSelect()
+    private function createUserEditServiceSelect(): DOMElement
     {
         $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
@@ -155,7 +156,7 @@ class PageAdminSettings extends PageAdmin
     private function createPaymentPlatformOption(
         PaymentPlatform $paymentPlatform,
         array $currentIds
-    ) {
+    ): DOMElement {
         $selected = in_array($paymentPlatform->getId(), $currentIds);
         return new Option($paymentPlatform->getName(), $paymentPlatform->getId(), [
             "selected" => selected($selected),
