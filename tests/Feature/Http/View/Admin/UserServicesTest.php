@@ -28,7 +28,7 @@ class UserServicesTest extends HttpTestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString("Panel Admina", $response->getContent());
         $this->assertStringContainsString(
-            "<div class=\"title is-4\">Czasowe usługi użytkowników: Flagi Gracza",
+            "<div class=\"title is-4\">Aktywne usługi: Flagi Gracza",
             $response->getContent()
         );
     }
@@ -50,7 +50,7 @@ class UserServicesTest extends HttpTestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString("Panel Admina", $response->getContent());
         $this->assertStringContainsString(
-            "<div class=\"title is-4\">Czasowe usługi użytkowników: Grupy MyBB",
+            "<div class=\"title is-4\">Aktywne usługi: Grupy MyBB",
             $response->getContent()
         );
     }
