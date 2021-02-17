@@ -38,14 +38,9 @@ function regenerate_token(identifier, button) {
 }
 
 function set_cost(form) {
-    const tmpData = form.serializeArray();
-    const data = {};
-    $.each(tmpData, function (index, element) {
-        data[element.name] = element.value;
-    });
-    data["user_service_id"] = form.data("row");
-
     const serviceId = form.find("[name=service_id]").val();
+    const data = $(form).serialize();
+    data["user_service_id"] = form.data("row");
 
     restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function (
         content
