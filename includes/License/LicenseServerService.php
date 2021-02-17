@@ -21,7 +21,7 @@ class LicenseServerService
 
     /**
      * @param int $lifetime
-     * @param
+     * @param array $platforms
      * @return array ['id', 'token', 'expires_at']
      * @throws Exception
      */

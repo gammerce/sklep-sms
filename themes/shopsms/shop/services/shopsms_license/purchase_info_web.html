@@ -1,18 +1,18 @@
-{$lang->t('service_purchased', $e($serviceName))}<br />
+{{ __('service_purchased', $e($serviceName)) }}<br />
 <br />
-<b>{$lang->t('identifier')}</b>: {{ $identifier }}<br />
+<b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
 <br />
 <strong class="has-text-danger">Zapisz token! Nie będzie można go zobaczyć w przyszłości.</strong
 ><br />
-<b>{$lang->t('token')}</b>: {{ $token }}<br />
+<b>{{ __('token') }}</b>: {{ $token }}<br />
 <br />
-<b>{$lang->t('platforms')}</b>: {{ $platforms }}<br />
-<b>{$lang->t('expiration_date')}</b>: {{ $expire }}<br />
-<b>{$lang->t('email')}</b>: {{ $email }}<br />
+<b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
+<b>{{ __('expiration_date') }}</b>: {{ $expire }}<br />
+<b>{{ __('email') }}</b>: {{ $email }}<br />
 <hr />
-{$lang->t('script_instalation')}<a href="https://sklep-sms.pl/config" target="_blank"
-    >{$lang->t('configuration')}</a
+{{ __('script_instalation') }}<a href="https://sklep-sms.pl/config" target="_blank"
+    >{{ __('configuration') }}</a
 >.<br />
-{$lang->t('latest_script_versions')}<a href="https://sklep-sms.pl/download" target="_blank"
+{{ __('latest_script_versions') }}<a href="https://sklep-sms.pl/download" target="_blank"
     >Download</a
 >.

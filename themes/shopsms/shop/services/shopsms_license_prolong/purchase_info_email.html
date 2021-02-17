@@ -1,7 +1,7 @@
-{$lang->t('license_prolong_success', $e($identifier))}<br />
+{!! __('license_prolong_success', $e($identifier)) !!}<br />
 <br />
-<b>{$lang->t('new_expiration_date')}</b>: {{ $expire }}<br />
+<b>{{ __('new_expiration_date') }}</b>: {{ $expire }}<br />
 <br />
-{$lang->t('any_problems')}<br />
-{$lang->t('regards')},<br />
+{{ __('any_problems') }}<br />
+{{ __('regards') }},<br />
 {{ $settings['signature'] }}

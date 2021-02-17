@@ -1,6 +1,6 @@
-<b>{$lang->t('service')}</b>: {{ $serviceName }}<br />
-<b>{$lang->t('identifier')}</b>: {{ $identifier }}<br />
-<b>{$lang->t('expire')}</b>: {{ $expire }}<br />
+<b>{{ __('service') }}</b>: {{ $serviceName }}<br />
+<b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
+<b>{{ __('expire') }}</b>: {{ $expire }}<br />
 <hr />
 
 <div class="shopsms_user_edit">
@@ -27,7 +27,7 @@
                     <div class="buttons" name="platforms">
                         <label class="button platform amxmodx fas" title="Counter Strike 1.6, etc.">
                             <input type="checkbox" name="platforms[]" value="amxmodx"
-                            class="is-hidden" {$platforms['amxmodx']} />
+                            class="is-hidden" {!! $platforms['amxmodx'] !!} />
                             <span>AMX Mod X</span>
                         </label>
                         <label
@@ -35,7 +35,7 @@
                             title="Counter Strike: Global Offensive, Team Fortress 2, etc."
                         >
                             <input type="checkbox" name="platforms[]" value="sourcemod"
-                            class="is-hidden" {$platforms['sourcemod']} />
+                            class="is-hidden" {!! $platforms['sourcemod'] !!} />
                             <span>SOURCEMOD</span>
                         </label>
                     </div>

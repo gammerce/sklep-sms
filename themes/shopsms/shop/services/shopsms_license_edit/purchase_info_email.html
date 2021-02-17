@@ -1,9 +1,9 @@
-{$lang->t('license_edit_success', $e($authData))}<br />
+{!! __('license_edit_success', $e($authData)) !!}<br />
 <br />
-<u><b>{$lang->t('new_license_data')}</b></u>
+<u><b>{{ __('new_license_data') }}</b></u>
 <hr />
-<b>{$lang->t('platforms')}</b>: {{ $platforms }}<br />
+<b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
 <br />
-{$lang->t('any_problems')}<br />
-{$lang->t('regards')},<br />
+{{ __('any_problems') }}<br />
+{{ __('regards') }},<br />
 {{ $settings['signature'] }}

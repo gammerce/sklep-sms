@@ -1,19 +1,19 @@
-{$lang->t('shopsms_purchase')}<br />
+{!! __('shopsms_purchase') !!}<br />
 <br />
-{$lang->t('license_data')}:<br />
-<b>{$lang->t('identifier')}</b>: {{ $identifier }}<br />
-<b>{$lang->t('token')}</b>: {{ $token }}<br />
-<b>{$lang->t('platforms')}</b>: {{ $platforms }}<br />
-<b>{$lang->t('expiration_date')}</b>: {{ $expire }}<br />
+{{ __('license_data') }}:<br />
+<b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
+<b>{{ __('token') }}</b>: {{ $token }}<br />
+<b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
+<b>{{ __('expiration_date') }}</b>: {{ $expire }}<br />
 <br />
-{$lang->t('script_instalation')}<a href="https://sklep-sms.pl/config" target="_blank"
-    >{$lang->t('configuration')}</a
+{{ __('script_instalation') }}<a href="https://sklep-sms.pl/config" target="_blank"
+    >{{ __('configuration') }}</a
 >.
 <br />
-{$lang->t('latest_script_versions')}<a href="https://sklep-sms.pl/download" target="_blank"
+{{ __('latest_script_versions') }}<a href="https://sklep-sms.pl/download" target="_blank"
     >Download</a
 >.<br />
 <br />
-{$lang->t('any_problems')}<br />
-{$lang->t('regards')},<br />
+{{ __('any_problems') }}<br />
+{{ __('regards') }},<br />
 {{ $settings['signature'] }}
