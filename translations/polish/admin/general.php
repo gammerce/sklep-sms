@@ -261,7 +261,7 @@ return [
         "Nie masz wystarczających uprawnień,\naby móc zmienić grupę temu użytkownikowi.",
     "user_service_edit" => "Zezwalaj na edytowanie usług przez użytkownika",
     "users" => "Użytkownicy",
-    "users_services" => "Czasowe usługi użytkowników",
+    "users_services" => "Aktywne usługi",
     "vat" => "VAT",
     "version" => "Wersja",
     "versions" => "Wersje",

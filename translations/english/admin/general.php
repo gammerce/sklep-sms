@@ -258,7 +258,7 @@ return [
         "You do not have sufficient privileges,\nto be able to change the group of this user.",
     "user_service_edit" => "Allow player services edition",
     "users" => "Users",
-    "users_services" => "Users temporary services",
+    "users_services" => "Active services",
     "vat" => "VAT",
     "version" => "Version",
     "versions" => "Versions",
