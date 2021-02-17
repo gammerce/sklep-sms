@@ -18,6 +18,7 @@ use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\NoneText;
@@ -148,7 +149,7 @@ EOF
             ->toHtml();
     }
 
-    private function createAddButton()
+    private function createAddButton(): DOMElement
     {
         return (new Input())
             ->setParam("id", "price_button_add")
@@ -157,7 +158,7 @@ EOF
             ->setParam("value", $this->lang->t("add_price"));
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_SETTINGS())) {
             throw new UnauthorizedException();

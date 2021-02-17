@@ -10,11 +10,11 @@ use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
-use App\ServiceModules\ServiceModule;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\Div;
+use App\View\Html\DOMElement;
 use App\View\Html\Input;
 use App\View\Html\Option;
 use App\View\Html\Select;
@@ -83,7 +83,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             });
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_USER_SERVICES())) {
             throw new UnauthorizedException();
@@ -130,7 +130,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         }
     }
 
-    private function createModuleSelectBox($subpage)
+    private function createModuleSelectBox($subpage): DOMElement
     {
         $button = (new Select())
             ->setParam("id", "user_service_display_module")
@@ -158,11 +158,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return $selectWrapper;
     }
 
-    /**
-     * @param Request $request
-     * @return IServiceUserServiceAdminDisplay|ServiceModule
-     */
-    private function getServiceModule(Request $request)
+    private function getServiceModule(Request $request): ?IServiceUserServiceAdminDisplay
     {
         $subPage = $request->query->get("subpage");
         $serviceModule = $this->serviceModuleManager->getEmpty($subPage);

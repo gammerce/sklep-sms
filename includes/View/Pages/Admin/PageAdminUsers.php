@@ -176,7 +176,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         );
     }
 
-    public function getActionBox($boxId, array $query)
+    public function getActionBox($boxId, array $query): string
     {
         if (cannot(Permission::MANAGE_USERS())) {
             throw new UnauthorizedException();

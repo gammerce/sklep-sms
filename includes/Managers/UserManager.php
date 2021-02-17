@@ -20,7 +20,7 @@ class UserManager
      * @param int $userId
      * @return User
      */
-    public function get($userId)
+    public function get($userId): User
     {
         if ($userId && isset($this->users[$userId])) {
             return $this->users[$userId];
@@ -36,10 +36,7 @@ class UserManager
         return new User();
     }
 
-    /**
-     * @param User $user
-     */
-    public function set(User $user)
+    public function set(User $user): void
     {
         $this->users[$user->getId()] = $user;
     }
@@ -49,7 +46,7 @@ class UserManager
      * @param string $password
      * @return User|null
      */
-    public function getByLogin($login, $password)
+    public function getByLogin($login, $password): ?User
     {
         $user = $this->userRepository->findByPassword($login, $password);
 

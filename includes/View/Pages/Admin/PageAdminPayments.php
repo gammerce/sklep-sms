@@ -11,6 +11,7 @@ use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
+use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\InfoTitle;
 use App\View\Html\Li;
@@ -161,7 +162,7 @@ class PageAdminPayments extends PageAdmin
             ->toHtml();
     }
 
-    private function createAdditionalField(Transaction $transaction)
+    private function createAdditionalField(Transaction $transaction): DOMElement
     {
         $output = new Ul();
 

@@ -101,7 +101,7 @@ class PagePayPalApproved extends Page
      * @param Request $request
      * @return bool
      */
-    private function finalize(SupportTransfer $paymentModule, Request $request)
+    private function finalize(SupportTransfer $paymentModule, Request $request): bool
     {
         $finalizedPayment = $paymentModule->finalizeTransfer($request);
 

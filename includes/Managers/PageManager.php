@@ -18,13 +18,13 @@ class PageManager
         $this->app = $app;
     }
 
-    public function registerUser($className)
+    public function registerUser($className): void
     {
         $pageId = $className::PAGE_ID;
         $this->register($pageId, $className, "user");
     }
 
-    public function registerAdmin($className)
+    public function registerAdmin($className): void
     {
         $pageId = $className::PAGE_ID;
         $this->register($pageId, $className, "admin");
@@ -36,7 +36,7 @@ class PageManager
      * @param string $type
      * @throws InvalidConfigException
      */
-    private function register($pageId, $class, $type)
+    private function register($pageId, $class, $type): void
     {
         if ($this->exists($pageId, $type)) {
             throw new InvalidConfigException("There is a page with such an id: [$pageId] already.");
@@ -50,7 +50,7 @@ class PageManager
      * @param string $type
      * @return bool
      */
-    private function exists($pageId, $type)
+    private function exists($pageId, $type): bool
     {
         return isset($this->classes[$type][$pageId]);
     }
@@ -59,7 +59,7 @@ class PageManager
      * @param string $pageId
      * @return Page|null
      */
-    public function getUser($pageId)
+    public function getUser($pageId): ?Page
     {
         return $this->get($pageId, "user");
     }
@@ -68,7 +68,7 @@ class PageManager
      * @param string $pageId
      * @return PageAdmin|null
      */
-    public function getAdmin($pageId)
+    public function getAdmin($pageId): ?PageAdmin
     {
         return $this->get($pageId, "admin");
     }
@@ -78,7 +78,7 @@ class PageManager
      * @param string $type
      * @return Page|null
      */
-    private function get($pageId, $type)
+    private function get($pageId, $type): ?Page
     {
         if ($this->exists($pageId, $type)) {
             $classname = $this->classes[$type][$pageId];
