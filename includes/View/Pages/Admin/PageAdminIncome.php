@@ -9,6 +9,7 @@ use App\Support\PriceTextService;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
+use App\View\Html\Cell;
 use App\View\Html\HeadCell;
 use App\View\Html\Option;
 use Symfony\Component\HttpFoundation\Request;
@@ -207,10 +208,7 @@ class PageAdminIncome extends PageAdmin
         foreach ($this->getServersIds() as $serverId) {
             $income = array_get($incomes, $serverId, 0);
             $dayIncome += $income;
-            $tableRows[] = create_dom_element(
-                "td",
-                $this->priceTextService->getPlainPrice($income)
-            );
+            $tableRows[] = new Cell($this->priceTextService->getPlainPrice($income));
         }
 
         $dayIncome = $this->priceTextService->getPlainPrice($dayIncome);
@@ -239,7 +237,7 @@ class PageAdminIncome extends PageAdmin
             $serverIncome = array_get($serversIncomes, $serverId, 0);
             $serverIncomeText = $this->priceTextService->getPlainPrice($serverIncome);
             $totalIncome += $serverIncome;
-            $tableRows[] = create_dom_element("td", $serverIncomeText);
+            $tableRows[] = new Cell("td", $serverIncomeText);
         }
 
         $totalIncome = $this->priceTextService->getPlainPrice($totalIncome);

@@ -15,7 +15,6 @@ use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\User\Permission;
-use App\View\Html\DOMElement;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,17 +60,6 @@ function can(Permission $permission, User $user = null): bool
 function cannot(Permission $permission, User $user = null): bool
 {
     return !can($permission, $user);
-}
-
-/**
- * @param string $name
- * @param string $content
- * @param array $params
- * @return DOMElement
- */
-function create_dom_element($name, $content = "", array $params = []): DOMElement
-{
-    return new DOMElement($name, $content, $params);
 }
 
 /**

@@ -10,6 +10,7 @@ use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
+use App\View\Html\Form;
 use App\View\Html\HeadCell;
 use App\View\Html\Input;
 use App\View\Html\Option;
@@ -101,7 +102,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
             $group = $this->groupRepository->get($query["id"]);
 
             if (!$group) {
-                return create_dom_element("form", $this->lang->t("no_such_group"), [
+                return new Form($this->lang->t("no_such_group"), [
                     "class" => "action_box",
                     "style" => [
                         "padding" => "20px",
