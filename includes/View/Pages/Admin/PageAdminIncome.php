@@ -237,7 +237,7 @@ class PageAdminIncome extends PageAdmin
             $serverIncome = array_get($serversIncomes, $serverId, 0);
             $serverIncomeText = $this->priceTextService->getPlainPrice($serverIncome);
             $totalIncome += $serverIncome;
-            $tableRows[] = new Cell("td", $serverIncomeText);
+            $tableRows[] = new Cell($serverIncomeText);
         }
 
         $totalIncome = $this->priceTextService->getPlainPrice($totalIncome);
