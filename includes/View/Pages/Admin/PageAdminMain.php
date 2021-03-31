@@ -16,6 +16,7 @@ use App\Support\Template;
 use App\Support\Version;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\View\Html\Div;
 use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
@@ -259,7 +260,7 @@ class PageAdminMain extends PageAdmin
 
     private function createNote($text, $class): DOMElement
     {
-        return create_dom_element("div", new RawHtml($text), [
+        return new Div(new RawHtml($text), [
             "class" => "notification {$class}",
         ]);
     }

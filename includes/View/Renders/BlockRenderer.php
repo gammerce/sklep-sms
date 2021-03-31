@@ -5,6 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Exceptions\ForbiddenException;
 use App\Exceptions\UnauthorizedException;
 use App\View\Blocks\BlockResolver;
+use App\View\Html\Div;
 use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
 use Symfony\Component\HttpFoundation\Request;
@@ -33,7 +34,7 @@ class BlockRenderer
             return null;
         }
 
-        return create_dom_element("div", new RawHtml($block->getContent($request, $params)), [
+        return new Div(new RawHtml($block->getContent($request, $params)), [
             "id" => $blockId,
             "class" => $block->getContentClass(),
         ]);

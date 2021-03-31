@@ -25,6 +25,7 @@ use App\View\Html\Input;
 use App\View\Html\Option;
 use App\View\Html\RawHtml;
 use App\View\Html\Structure;
+use App\View\Html\Tbody;
 use App\View\Html\Wrapper;
 use App\View\Pages\IPageAdminActionBox;
 use Symfony\Component\HttpFoundation\Request;
@@ -144,8 +145,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                 $groups = $this->getGroupOptions($service);
 
                 if ($serviceModule instanceof IServiceAdminManage) {
-                    $extraFields = create_dom_element(
-                        "tbody",
+                    $extraFields = new Tbody(
                         new RawHtml($serviceModule->serviceAdminExtraFieldsGet()),
                         [
                             "class" => "extra_fields",

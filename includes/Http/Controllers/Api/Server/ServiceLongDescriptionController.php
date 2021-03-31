@@ -8,6 +8,7 @@ use App\Routing\UrlGenerator;
 use App\Support\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\RawHtml;
+use App\View\Html\Script;
 use Symfony\Component\HttpFoundation\Request;
 
 class ServiceLongDescriptionController
@@ -26,13 +27,7 @@ class ServiceLongDescriptionController
         if ($request->query->get("popup")) {
             $link = $url->to("/api/server/services/{$serviceId}/long_description");
             $safeLink = str_replace('"', '\"', $link);
-            $output = create_dom_element(
-                "script",
-                new RawHtml("window.open(\"$safeLink\", \"\", \"height=720,width=1280\");"),
-                [
-                    "type" => "text/javascript",
-                ]
-            );
+            $output = new Script("window.open(\"$safeLink\", \"\", \"height=720,width=1280\");");
 
             return new HtmlResponse($output);
         }
