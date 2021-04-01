@@ -31,7 +31,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
         $this->url = $url;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         if (!$this->license->isValid()) {
             $e = $this->license->getLoadingException();
@@ -47,7 +47,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
         return $next($request);
     }
 
-    private function getMessageFromInvalidResponse(CustomResponse $response = null)
+    private function getMessageFromInvalidResponse(CustomResponse $response = null): string
     {
         if ($response) {
             if ($response->getStatusCode() === Response::HTTP_UNAUTHORIZED) {
@@ -62,7 +62,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
         return $this->lang->t("verification_error");
     }
 
-    private function renderErrorPage($message)
+    private function renderErrorPage($message): Response
     {
         return new Response(
             $this->template->render("license/error", [

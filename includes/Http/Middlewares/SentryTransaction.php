@@ -4,12 +4,14 @@ namespace App\Http\Middlewares;
 use Closure;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
+use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionContext;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SentryTransaction implements MiddlewareContract
 {
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         $hub = SentrySdk::getCurrentHub();
         $transaction = $this->startTransaction($request, $hub);
@@ -17,7 +19,7 @@ class SentryTransaction implements MiddlewareContract
         return $next($request);
     }
 
-    private function startTransaction(Request $request, HubInterface $hub)
+    private function startTransaction(Request $request, HubInterface $hub): Transaction
     {
         $context = new TransactionContext();
         $context->setOp("http.server");

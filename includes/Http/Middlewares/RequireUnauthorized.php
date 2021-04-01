@@ -7,6 +7,7 @@ use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RequireUnauthorized implements MiddlewareContract
 {
@@ -19,7 +20,7 @@ class RequireUnauthorized implements MiddlewareContract
         $this->lang = $translationManager->user();
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         if ($this->auth->check()) {
             return new ApiResponse("logged_in", $this->lang->t("logged"), 0);

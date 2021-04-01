@@ -28,7 +28,7 @@ class SetLanguage implements MiddlewareContract
         $this->localeCookieService = $localeCookieService;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         $locale = $this->localeService->getLocale($request);
 

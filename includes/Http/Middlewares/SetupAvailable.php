@@ -5,6 +5,7 @@ use App\Http\Responses\PlainResponse;
 use App\Install\SetupManager;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class SetupAvailable implements MiddlewareContract
 {
@@ -15,7 +16,7 @@ class SetupAvailable implements MiddlewareContract
         $this->setupManager = $setupManager;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         if ($this->setupManager->hasFailed()) {
             return new PlainResponse(
