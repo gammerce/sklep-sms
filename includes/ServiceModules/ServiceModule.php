@@ -111,7 +111,7 @@ abstract class ServiceModule
         return $this::MODULE_ID;
     }
 
-    protected function getUserServiceTable(): string
+    public function getUserServiceTable(): string
     {
         return $this::USER_SERVICE_TABLE;
     }
