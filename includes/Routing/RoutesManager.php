@@ -88,6 +88,7 @@ use App\System\Settings;
 use App\User\Permission;
 use Exception;
 use FastRoute\Dispatcher;
+use phpDocumentor\Reflection\Types\ClassString;
 use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -558,7 +559,7 @@ class RoutesManager
      * @param Request $request
      * @return Response
      */
-    public function dispatch(Request $request)
+    public function dispatch(Request $request): Response
     {
         $method = $request->getMethod();
         $uri = "/" . trim($request->getPathInfo(), "/");
@@ -567,7 +568,7 @@ class RoutesManager
         return $this->handleDispatcherResponse($routeInfo, $request);
     }
 
-    private function handleDispatcherResponse($routeInfo, Request $request)
+    private function handleDispatcherResponse(array $routeInfo, Request $request): Response
     {
         if ($this->shouldRedirectToSetup($routeInfo)) {
             return new RedirectResponse($this->url->to("/setup"));
@@ -591,7 +592,7 @@ class RoutesManager
         }
     }
 
-    private function handleFoundRoute($routeInfo, Request $request)
+    private function handleFoundRoute($routeInfo, Request $request): Response
     {
         /** @var string[] $middlewares */
         $middlewares = array_merge([JsonBody::class], array_get($routeInfo[1], "middlewares", []));
@@ -605,7 +606,7 @@ class RoutesManager
             });
     }
 
-    private function createDispatcher()
+    private function createDispatcher(): Dispatcher
     {
         return simpleDispatcher(
             function (RouteCollector $r) {

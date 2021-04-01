@@ -13,7 +13,7 @@ interface ConsoleKernelContract
      * @param  OutputInterface $output
      * @return int
      */
-    public function handle(InputInterface $input, OutputInterface $output = null);
+    public function handle(InputInterface $input, OutputInterface $output): int;
 
-    public function terminate(InputInterface $input, $status);
+    public function terminate(InputInterface $input, $status): void;
 }

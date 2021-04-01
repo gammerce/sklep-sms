@@ -12,7 +12,7 @@ interface KernelContract
      * @param  Request $request
      * @return Response
      */
-    public function handle(Request $request);
+    public function handle(Request $request): Response;
 
     /**
      * Perform any final actions for the request lifecycle.
@@ -21,5 +21,5 @@ interface KernelContract
      * @param  Response $response
      * @return void
      */
-    public function terminate(Request $request, Response $response);
+    public function terminate(Request $request, Response $response): void;
 }
