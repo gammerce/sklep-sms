@@ -4,6 +4,7 @@ namespace App\Http\Middlewares;
 use App\System\Auth;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizeUser implements MiddlewareContract
 {
@@ -14,7 +15,7 @@ class AuthorizeUser implements MiddlewareContract
         $this->auth = $auth;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         $session = $request->getSession();
 

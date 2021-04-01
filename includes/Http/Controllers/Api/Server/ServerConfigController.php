@@ -15,6 +15,7 @@ use App\Repositories\UserRepository;
 use App\Server\Platform;
 use App\Server\ServerDataService;
 use App\Service\UserServiceAccessService;
+use App\System\Auth;
 use App\System\ExternalConfigProvider;
 use App\System\ServerAuth;
 use App\System\Settings;
@@ -33,6 +34,7 @@ class ServerConfigController
         PaymentModuleManager $paymentModuleManager,
         Settings $settings,
         ServerAuth $serverAuth,
+        Auth $auth,
         UserServiceAccessService $userServiceAccessService,
         ExternalConfigProvider $externalConfigProvider
     ) {
@@ -60,7 +62,10 @@ class ServerConfigController
 
         $smsNumbers = $smsModule->getSmsNumbers();
         $services = collect($serverDataService->getServices($server->getId()))->filter(
-            fn(Service $service) => $userServiceAccessService->canUserUseService($service, null)
+            fn(Service $service) => $userServiceAccessService->canUserUseService(
+                $service,
+                $auth->user()
+            )
         );
         $serviceIds = $services->map(fn(Service $service) => $service->getId())->all();
         $prices = $serverDataService->getPrices($serviceIds, $server);
@@ -131,7 +136,7 @@ class ServerConfigController
             : new AssocResponse($data);
     }
 
-    private function isVersionAcceptable($version, Platform $platform)
+    private function isVersionAcceptable($version, Platform $platform): bool
     {
         if (!$platform) {
             return false;

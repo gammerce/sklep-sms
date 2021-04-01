@@ -5,6 +5,7 @@ use App\System\CronExecutor;
 use App\System\Settings;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RunCron implements MiddlewareContract
 {
@@ -17,7 +18,7 @@ class RunCron implements MiddlewareContract
         $this->cronExecutor = $cronExecutor;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         if ($this->settings["cron_each_visit"]) {
             $this->cronExecutor->run();

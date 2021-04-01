@@ -16,7 +16,7 @@ class ConsoleKernel implements ConsoleKernelContract
         $this->app = $app;
     }
 
-    public function handle(InputInterface $input, OutputInterface $output = null)
+    public function handle(InputInterface $input, OutputInterface $output): int
     {
         $command = $input->getFirstArgument();
 
@@ -47,7 +47,7 @@ class ConsoleKernel implements ConsoleKernelContract
         return 1;
     }
 
-    public function terminate(InputInterface $input, $status)
+    public function terminate(InputInterface $input, $status): void
     {
         $this->app->terminate();
     }

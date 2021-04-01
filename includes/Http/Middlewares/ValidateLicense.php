@@ -10,6 +10,7 @@ use Closure;
 use Sentry;
 use Sentry\State\Scope;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ValidateLicense implements MiddlewareContract
 {
@@ -24,7 +25,7 @@ class ValidateLicense implements MiddlewareContract
         $this->license = $license;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         try {
             $this->license->validate();
@@ -48,7 +49,7 @@ class ValidateLicense implements MiddlewareContract
         return $next($request);
     }
 
-    private function limitPrivileges()
+    private function limitPrivileges(): void
     {
         $user = $this->auth->user();
 

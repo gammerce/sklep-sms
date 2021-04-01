@@ -5,6 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\System\Auth;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class RequireAuthorized implements MiddlewareContract
 {
@@ -15,9 +16,9 @@ class RequireAuthorized implements MiddlewareContract
         $this->auth = $auth;
     }
 
-    public function handle(Request $request, $permission, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
-        if (!$this->auth->check() || ($permission && $this->auth->user()->cannot($permission))) {
+        if (!$this->auth->check() || ($args && $this->auth->user()->cannot($args))) {
             throw new UnauthorizedException();
         }
 

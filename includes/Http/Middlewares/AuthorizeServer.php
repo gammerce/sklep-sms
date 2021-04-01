@@ -18,7 +18,7 @@ class AuthorizeServer implements MiddlewareContract
         $this->serverAuth = $serverAuth;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         $token = $request->query->get("token");
 
