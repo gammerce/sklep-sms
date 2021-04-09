@@ -51,15 +51,6 @@ function cannot(Permission $permission, User $user = null): bool
 }
 
 /**
- * @param string $platform
- * @return bool
- */
-function is_server_platform($platform): bool
-{
-    return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
-}
-
-/**
  * @param Request $request
  * @return string|null
  */
@@ -93,6 +84,78 @@ function get_ip(Request $request): ?string
     return $request->server->get("REMOTE_ADDR");
 }
 
+// ip_in_range
+// This function takes 2 arguments, an IP address and a "range" in several
+// different formats.
+// Network ranges can be specified as:
+// 1. Wildcard format:     1.2.3.*
+// 2. CIDR format:         1.2.3/24  OR  1.2.3.4/255.255.255.0
+// 3. Start-End IP format: 1.2.3.0-1.2.3.255
+// The function will return true if the supplied IP is within the range.
+// Note little validation is done on the range inputs - it expects you to
+// use one of the above 3 formats.
+function ip_in_range($ip, $range): bool
+{
+    if (strpos($range, "/") !== false) {
+        // $range is in IP/NETMASK format
+        [$range, $netmask] = explode("/", $range, 2);
+        if (strpos($netmask, ".") !== false) {
+            // $netmask is a 255.255.0.0 format
+            $netmask = str_replace("*", "0", $netmask);
+            $netmaskDec = ip2long($netmask);
+
+            return (ip2long($ip) & $netmaskDec) == (ip2long($range) & $netmaskDec);
+        } else {
+            // $netmask is a CIDR size block
+            // fix the range argument
+            $x = explode(".", $range);
+            while (count($x) < 4) {
+                $x[] = "0";
+            }
+            [$a, $b, $c, $d] = $x;
+            $range = sprintf(
+                "%u.%u.%u.%u",
+                empty($a) ? "0" : $a,
+                empty($b) ? "0" : $b,
+                empty($c) ? "0" : $c,
+                empty($d) ? "0" : $d
+            );
+            $rangeDec = ip2long($range);
+            $ipDec = ip2long($ip);
+
+            # Strategy 1 - Create the netmask with 'netmask' 1s and then fill it to 32 with 0s
+            #$netmaskDec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
+
+            # Strategy 2 - Use math to create it
+            $wildcardDec = pow(2, 32 - $netmask) - 1;
+            $netmaskDec = ~$wildcardDec;
+
+            return ($ipDec & $netmaskDec) == ($rangeDec & $netmaskDec);
+        }
+    } else {
+        // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
+        if (strpos($range, "*") !== false) {
+            // a.b.*.* format
+            // Just convert to A-B format by setting * to 0 for A and 255 for B
+            $lower = str_replace("*", "0", $range);
+            $upper = str_replace("*", "255", $range);
+            $range = "$lower-$upper";
+        }
+
+        if (strpos($range, "-") !== false) {
+            // A-B format
+            [$lower, $upper] = explode("-", $range, 2);
+            $lowerDec = (float) sprintf("%u", ip2long($lower));
+            $upperDec = (float) sprintf("%u", ip2long($upper));
+            $ipDec = (float) sprintf("%u", ip2long($ip));
+
+            return $ipDec >= $lowerDec && $ipDec <= $upperDec;
+        }
+
+        return false;
+    }
+}
+
 /**
  * Returns request platform
  *
@@ -102,6 +165,15 @@ function get_ip(Request $request): ?string
 function get_platform(Request $request): string
 {
     return $request->headers->get("User-Agent", "");
+}
+
+/**
+ * @param string $platform
+ * @return bool
+ */
+function is_server_platform($platform): bool
+{
+    return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
 }
 
 /**
@@ -178,23 +250,17 @@ function is_steam_id_valid($steamId): bool
  */
 function seconds_to_time($seconds): string
 {
-    /** @var TranslationManager $translationManager */
-    $translationManager = app()->make(TranslationManager::class);
-    $lang = $translationManager->user();
-
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");
 
-    return $dtF
-        ->diff($dtT)
-        ->format("%a " . $lang->t("days") . " " . $lang->t("and") . " %h " . $lang->t("hours"));
+    return $dtF->diff($dtT)->format("%a " . __("days") . " " . __("and") . " %h " . __("hours"));
 }
 
 /**
  * @param string $string
  * @return string[]
  */
-function custom_mb_str_split($string)
+function custom_mb_str_split($string): array
 {
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
@@ -225,78 +291,6 @@ function create_search_query($columns, $search): ?QueryParticle
     $queryParticle->add("( $query )", $values);
 
     return $queryParticle;
-}
-
-// ip_in_range
-// This function takes 2 arguments, an IP address and a "range" in several
-// different formats.
-// Network ranges can be specified as:
-// 1. Wildcard format:     1.2.3.*
-// 2. CIDR format:         1.2.3/24  OR  1.2.3.4/255.255.255.0
-// 3. Start-End IP format: 1.2.3.0-1.2.3.255
-// The function will return true if the supplied IP is within the range.
-// Note little validation is done on the range inputs - it expects you to
-// use one of the above 3 formats.
-function ip_in_range($ip, $range): bool
-{
-    if (strpos($range, "/") !== false) {
-        // $range is in IP/NETMASK format
-        [$range, $netmask] = explode("/", $range, 2);
-        if (strpos($netmask, ".") !== false) {
-            // $netmask is a 255.255.0.0 format
-            $netmask = str_replace("*", "0", $netmask);
-            $netmaskDec = ip2long($netmask);
-
-            return (ip2long($ip) & $netmaskDec) == (ip2long($range) & $netmaskDec);
-        } else {
-            // $netmask is a CIDR size block
-            // fix the range argument
-            $x = explode(".", $range);
-            while (count($x) < 4) {
-                $x[] = "0";
-            }
-            [$a, $b, $c, $d] = $x;
-            $range = sprintf(
-                "%u.%u.%u.%u",
-                empty($a) ? "0" : $a,
-                empty($b) ? "0" : $b,
-                empty($c) ? "0" : $c,
-                empty($d) ? "0" : $d
-            );
-            $rangeDec = ip2long($range);
-            $ipDec = ip2long($ip);
-
-            # Strategy 1 - Create the netmask with 'netmask' 1s and then fill it to 32 with 0s
-            #$netmaskDec = bindec(str_pad('', $netmask, '1') . str_pad('', 32-$netmask, '0'));
-
-            # Strategy 2 - Use math to create it
-            $wildcardDec = pow(2, 32 - $netmask) - 1;
-            $netmaskDec = ~$wildcardDec;
-
-            return ($ipDec & $netmaskDec) == ($rangeDec & $netmaskDec);
-        }
-    } else {
-        // range might be 255.255.*.* or 1.2.3.0-1.2.3.255
-        if (strpos($range, "*") !== false) {
-            // a.b.*.* format
-            // Just convert to A-B format by setting * to 0 for A and 255 for B
-            $lower = str_replace("*", "0", $range);
-            $upper = str_replace("*", "255", $range);
-            $range = "$lower-$upper";
-        }
-
-        if (strpos($range, "-") !== false) {
-            // A-B format
-            [$lower, $upper] = explode("-", $range, 2);
-            $lowerDec = (float) sprintf("%u", ip2long($lower));
-            $upperDec = (float) sprintf("%u", ip2long($upper));
-            $ipDec = (float) sprintf("%u", ip2long($ip));
-
-            return $ipDec >= $lowerDec && $ipDec <= $upperDec;
-        }
-
-        return false;
-    }
 }
 
 /**
@@ -507,7 +501,7 @@ function as_payment_method($value): ?PaymentMethod
  * @param string $value
  * @return Platform|null
  */
-function as_server_type($value): ?Platform
+function as_platform($value): ?Platform
 {
     try {
         return new Platform($value);
