@@ -10,7 +10,6 @@ use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\Money;
 use App\Support\QueryParticle;
-use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -20,20 +19,9 @@ use Illuminate\Contracts\Support\Arrayable;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\VarDumper\VarDumper;
 
-/**
- * Get the available container instance.
- *
- * @param string $abstract
- * @param array $parameters
- * @return mixed|Container|Application
- */
-function app($abstract = null, array $parameters = [])
+function app(): Container
 {
-    if ($abstract === null) {
-        return Container::getInstance();
-    }
-
-    return Container::getInstance()->makeWith($abstract, $parameters);
+    return Container::getInstance();
 }
 
 /**
@@ -106,7 +94,7 @@ function get_ip(Request $request): ?string
 }
 
 /**
- * Provide request platform
+ * Returns request platform
  *
  * @param Request $request
  * @return string

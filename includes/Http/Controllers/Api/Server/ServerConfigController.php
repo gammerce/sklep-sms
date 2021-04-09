@@ -40,7 +40,7 @@ class ServerConfigController
     ) {
         $acceptHeader = AcceptHeader::fromString($request->headers->get("Accept"));
         $version = $request->query->get("version");
-        $platform = as_server_type($request->headers->get("User-Agent"));
+        $platform = as_server_type(get_platform($request));
 
         $server = $serverAuth->server();
         if (!$server) {

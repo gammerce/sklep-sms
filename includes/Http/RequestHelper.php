@@ -34,14 +34,14 @@ class RequestHelper
     /**
      * @return string[]
      */
-    public function getAcceptableContentTypes()
+    public function getAcceptableContentTypes(): array
     {
         return array_keys(AcceptHeader::fromString($this->request->headers->get("Accept"))->all());
     }
 
     public function isFromServer(): bool
     {
-        return is_server_platform($this->request->headers->get("User-Agent"));
+        return is_server_platform(get_platform($this->request));
     }
 
     public function isAdminSession(): bool
