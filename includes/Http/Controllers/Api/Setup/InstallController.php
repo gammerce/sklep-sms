@@ -70,10 +70,10 @@ class InstallController
         $dbPort = $validated["db_port"];
         $dbUser = $validated["db_user"];
         $dbPassword = $validated["db_password"];
-        $dbDb = $validated["db_db"];
+        $dbName = $validated["db_db"];
 
         try {
-            $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbDb);
+            $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbName);
             $db->connect();
             $app->instance(Database::class, $db);
         } catch (PDOException $e) {
@@ -89,9 +89,10 @@ class InstallController
                 $validated["license_token"],
                 $validated["admin_username"],
                 $validated["admin_password"],
+                "",
                 get_ip($request)
             );
-            $envCreator->create($dbHost, $dbPort, $dbDb, $dbUser, $dbPassword);
+            $envCreator->create($dbHost, $dbPort, $dbName, $dbUser, $dbPassword);
         } catch (Exception $e) {
             $setupManager->markAsFailed();
             throw $e;

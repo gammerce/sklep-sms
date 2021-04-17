@@ -1,6 +1,7 @@
 <?php
 namespace App\Kernels;
 
+use App\Install\MigrateCommand;
 use App\System\Application;
 use Psy\Shell;
 use Symfony\Component\Console\Input\InputInterface;
@@ -41,6 +42,22 @@ class ConsoleKernel implements ConsoleKernelContract
             $shell = new Shell();
             $shell->run();
             return 0;
+        }
+
+        if ($command === "migrate") {
+            /** @var MigrateCommand $migration */
+            $migration = $this->app->make(MigrateCommand::class);
+            $migration->run(
+                $input->getArgument("db_host"),
+                $input->getArgument("db_port"),
+                $input->getArgument("db_user"),
+                $input->getArgument("db_password"),
+                $input->getArgument("db_name"),
+                $input->getArgument("license_token"),
+                $input->getArgument("admin_username"),
+                $input->getArgument("admin_email"),
+                $input->getArgument("admin_password")
+            );
         }
 
         $output->writeln("Invalid command.");

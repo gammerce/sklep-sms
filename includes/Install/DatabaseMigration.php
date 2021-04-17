@@ -19,13 +19,19 @@ class DatabaseMigration
     }
 
     /**
-     * @param string $token
+     * @param string $licenseToken
      * @param string $adminUsername
      * @param string $adminPassword
+     * @param string $adminEmail
      * @param string $ip
      */
-    public function setup($token, $adminUsername, $adminPassword, $ip)
-    {
+    public function setup(
+        $licenseToken,
+        $adminUsername,
+        $adminPassword,
+        $adminEmail = "",
+        $ip = ""
+    ): void {
         foreach ($this->migrationFiles->getMigrations() as $migration) {
             $this->migrate($migration);
         }
@@ -38,17 +44,23 @@ class DatabaseMigration
 
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'license_token'")
-            ->execute([$token]);
+            ->execute([$licenseToken]);
 
         $this->db
             ->statement(
                 "INSERT INTO `ss_users` " .
-                    "SET `username` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
+                    "SET `username` = ?, `email` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
             )
-            ->execute([$adminUsername, hash_password($adminPassword, $salt), $salt, $ip]);
+            ->execute([
+                $adminUsername,
+                $adminEmail,
+                hash_password($adminPassword, $salt),
+                $salt,
+                $ip,
+            ]);
     }
 
-    public function update()
+    public function update(): void
     {
         $lastExecutedMigration = $this->getLastExecutedMigration();
         $migrations = $this->migrationFiles->getMigrations();
@@ -61,7 +73,7 @@ class DatabaseMigration
         }
     }
 
-    public function getLastExecutedMigration()
+    public function getLastExecutedMigration(): string
     {
         try {
             return $this->db
@@ -82,14 +94,14 @@ class DatabaseMigration
         }
     }
 
-    private function migrate($migration)
+    private function migrate($migration): void
     {
         $path = $this->migrationFiles->getMigrationPath($migration);
         $this->executeMigration($path);
         $this->saveExecutedMigration($migration);
     }
 
-    private function executeMigration($path)
+    private function executeMigration($path): void
     {
         $className = $this->getClassFromFile($path);
 
@@ -104,7 +116,7 @@ class DatabaseMigration
         }
     }
 
-    private function saveExecutedMigration($name)
+    private function saveExecutedMigration($name): void
     {
         $this->db->statement("INSERT INTO `ss_migrations` SET `name` = ?")->execute([$name]);
     }
@@ -114,7 +126,7 @@ class DatabaseMigration
      * @return string|null
      * @link https://stackoverflow.com/questions/7153000/get-class-name-from-file/44654073
      */
-    private function getClassFromFile($path)
+    private function getClassFromFile($path): ?string
     {
         $fp = fopen($path, "r");
         $buffer = "";
