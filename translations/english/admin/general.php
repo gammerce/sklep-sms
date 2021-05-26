@@ -86,7 +86,8 @@ return [
     "group_edit" => "Group edited successfully.",
     "group_no_edit" => "Could not edit group.",
     "groups" => "Groups",
-    "groups_to_buy_service" => "Which groups can buy this service. Leave empty to allow all.",
+    "groups_hint" =>
+        "Only users belonging to these groups can buy this service. Selecting a group means that a service cannot be purchased on a server. Leave empty to allow all.",
     "how_to_update" => "How to update",
     "html_allowed" => "( HTML allowed )",
     "id_exist" => "Such ID already exists.",
