@@ -53,10 +53,6 @@ class ConsoleKernel implements ConsoleKernelContract
             $input->bind(
                 new InputDefinition([
                     new InputArgument("action", InputArgument::REQUIRED),
-                    new InputOption("db-host", null, InputOption::VALUE_REQUIRED),
-                    new InputOption("db-port", "3306", InputOption::VALUE_REQUIRED),
-                    new InputOption("db-user", null, InputOption::VALUE_REQUIRED),
-                    new InputOption("db-password", null, InputOption::VALUE_REQUIRED),
                     new InputOption("db-name", null, InputOption::VALUE_REQUIRED),
                     new InputOption("license-token", null, InputOption::VALUE_REQUIRED),
                     new InputOption("admin-username", null, InputOption::VALUE_REQUIRED),
@@ -65,10 +61,6 @@ class ConsoleKernel implements ConsoleKernelContract
                 ])
             );
             $migration->run(
-                $input->getOption("db-host"),
-                $input->getOption("db-port"),
-                $input->getOption("db-user"),
-                $input->getOption("db-password"),
                 $input->getOption("db-name"),
                 $input->getOption("license-token"),
                 $input->getOption("admin-username"),
