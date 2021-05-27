@@ -1,9 +1,13 @@
 <?php
 namespace App\Kernels;
 
+use App\Install\MigrateCommand;
 use App\System\Application;
 use Psy\Shell;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Tests\Psr4\DatabaseSetup;
 
@@ -40,6 +44,38 @@ class ConsoleKernel implements ConsoleKernelContract
             date_default_timezone_set("Europe/Warsaw");
             $shell = new Shell();
             $shell->run();
+            return 0;
+        }
+
+        if ($command === "migrate") {
+            /** @var MigrateCommand $migration */
+            $migration = $this->app->make(MigrateCommand::class);
+            $input->bind(
+                new InputDefinition([
+                    new InputArgument("action", InputArgument::REQUIRED),
+                    new InputOption("db-host", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("db-port", "3306", InputOption::VALUE_REQUIRED),
+                    new InputOption("db-user", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("db-password", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("db-name", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("license-token", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("admin-username", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("admin-email", null, InputOption::VALUE_REQUIRED),
+                    new InputOption("admin-password", null, InputOption::VALUE_REQUIRED),
+                ])
+            );
+            $migration->run(
+                $input->getOption("db-host"),
+                $input->getOption("db-port"),
+                $input->getOption("db-user"),
+                $input->getOption("db-password"),
+                $input->getOption("db-name"),
+                $input->getOption("license-token"),
+                $input->getOption("admin-username"),
+                $input->getOption("admin-email"),
+                $input->getOption("admin-password")
+            );
+            $output->writeln("Migration completed");
             return 0;
         }
 
