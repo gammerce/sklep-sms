@@ -32,10 +32,35 @@ class DatabaseMigration
         $adminEmail = "",
         $ip = ""
     ): void {
-        foreach ($this->migrationFiles->getMigrations() as $migration) {
-            $this->migrate($migration);
+        $this->update();
+        $this->seedInitialData($licenseToken, $adminUsername, $adminPassword, $adminEmail, $ip);
+    }
+
+    public function update(): array
+    {
+        $lastExecutedMigration = $this->getLastExecutedMigration();
+        $migrations = $this->migrationFiles->getMigrations();
+
+        $appliedMigrations = [];
+
+        foreach ($migrations as $migration) {
+            if ($lastExecutedMigration < $migration) {
+                $this->migrate($migration);
+                $appliedMigrations[] = $migration;
+                $lastExecutedMigration = $migration;
+            }
         }
 
+        return $appliedMigrations;
+    }
+
+    public function seedInitialData(
+        $licenseToken,
+        $adminUsername,
+        $adminPassword,
+        $adminEmail,
+        $ip
+    ): void {
         $salt = get_random_string(8);
 
         $this->db
@@ -60,19 +85,6 @@ class DatabaseMigration
             ]);
     }
 
-    public function update(): void
-    {
-        $lastExecutedMigration = $this->getLastExecutedMigration();
-        $migrations = $this->migrationFiles->getMigrations();
-
-        foreach ($migrations as $migration) {
-            if ($lastExecutedMigration < $migration) {
-                $this->migrate($migration);
-                $lastExecutedMigration = $migration;
-            }
-        }
-    }
-
     public function getLastExecutedMigration(): string
     {
         try {
@@ -81,13 +93,7 @@ class DatabaseMigration
                 ->fetchColumn();
         } catch (PDOException $e) {
             if (preg_match("/Table .*ss_migrations.* doesn't exist/", $e->getMessage())) {
-                // It means that user has installed shop sms using old codebase,
-                // that is why we want to create migration table for him and also
-                // fake init migration so as not to overwrite his database
-                $this->migrate("2018_01_14_224424_create_migrations");
-                $this->saveExecutedMigration("2018_01_14_230340_init");
-
-                return $this->getLastExecutedMigration();
+                return "";
             }
 
             throw $e;

@@ -31,6 +31,17 @@ class MigrateCommand
         /** @var DatabaseMigration $migrator */
         $migrator = $this->app->make(DatabaseMigration::class);
 
-        $migrator->setup($licenseToken, $adminUsername, $adminPassword, $adminEmail);
+        $appliedMigrations = $migrator->update();
+
+        // Do not seed initial data if there were already some tables in the database
+        if (in_array("2018_01_14_224424_create_migrations", $appliedMigrations, true)) {
+            $migrator->seedInitialData(
+                $licenseToken,
+                $adminUsername,
+                $adminPassword,
+                $adminEmail,
+                ""
+            );
+        }
     }
 }
