@@ -15,10 +15,10 @@ class EnvCreator
         $this->fileSystem = $fileSystem;
     }
 
-    public function create($host, $port, $db, $user, $password)
+    public function create($host, $port, $dbName, $user, $password)
     {
         $path = $this->path->to("confidential/.env");
-        $content = $this->getContent($host, $port, $db, $user, $password);
+        $content = $this->getContent($host, $port, $dbName, $user, $password);
         $this->fileSystem->put($path, $content);
         $this->fileSystem->setPermissions($path, 0777);
     }

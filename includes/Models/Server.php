@@ -65,7 +65,7 @@ class Server
 
     public function getType(): ?Platform
     {
-        return as_server_type($this->type);
+        return as_platform($this->type);
     }
 
     public function getSmsPlatformId(): ?int

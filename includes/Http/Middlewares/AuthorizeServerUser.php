@@ -5,6 +5,7 @@ use App\Repositories\UserRepository;
 use App\System\Auth;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class AuthorizeServerUser implements MiddlewareContract
 {
@@ -17,13 +18,13 @@ class AuthorizeServerUser implements MiddlewareContract
         $this->auth = $auth;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         $this->authorizeUser($request);
         return $next($request);
     }
 
-    private function authorizeUser(Request $request)
+    private function authorizeUser(Request $request): void
     {
         $steamId = get_authorization_value($request);
         $ip = $request->get("ip");

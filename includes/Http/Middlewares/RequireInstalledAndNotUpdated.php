@@ -15,7 +15,7 @@ class RequireInstalledAndNotUpdated implements MiddlewareContract
         $this->shopState = $shopState;
     }
 
-    public function handle(Request $request, $args, Closure $next)
+    public function handle(Request $request, $args, Closure $next): Response
     {
         if (!$this->shopState->isInstalled()) {
             return new Response("Shop needs to be installed first");

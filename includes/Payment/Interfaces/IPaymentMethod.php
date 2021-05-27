@@ -14,6 +14,7 @@ interface IPaymentMethod
         Purchase $purchase,
         ?PaymentPlatform $paymentPlatform = null
     ): ?array;
+
     public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool;
 
     /**

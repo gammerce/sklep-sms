@@ -58,9 +58,9 @@ class ExceptionHandler implements ExceptionHandlerContract
     /**
      * @param Request $request
      * @param Exception|Throwable $e
-     * @return mixed
+     * @return Response
      */
-    public function render(Request $request, $e)
+    public function render(Request $request, $e): Response
     {
         if ($e instanceof EntityNotFoundException) {
             return $this->responseFactory->createError(
@@ -131,7 +131,7 @@ class ExceptionHandler implements ExceptionHandlerContract
      * @param Exception|Throwable $e
      * @return void
      */
-    public function report($e)
+    public function report($e): void
     {
         if (!$this->shouldReport($e)) {
             return;
@@ -159,7 +159,7 @@ class ExceptionHandler implements ExceptionHandlerContract
      * @param Exception|Throwable $e
      * @return array
      */
-    private function getExceptionDetails($e)
+    private function getExceptionDetails($e): array
     {
         return [
             "message" => $e->getMessage(),
@@ -174,7 +174,7 @@ class ExceptionHandler implements ExceptionHandlerContract
      * @param Exception|Throwable $e
      * @return bool
      */
-    private function shouldReport($e)
+    private function shouldReport($e): bool
     {
         foreach ($this->dontReport as $type) {
             if ($e instanceof $type) {
@@ -185,7 +185,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         return true;
     }
 
-    private function renderForbiddenException(Request $request)
+    private function renderForbiddenException(Request $request): Response
     {
         $requestHelper = new RequestHelper($request);
 

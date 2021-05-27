@@ -32,7 +32,7 @@ class UserServiceService
         $output = [];
 
         foreach ($this->serviceModuleManager->all() as $serviceModule) {
-            $table = $serviceModule::USER_SERVICE_TABLE;
+            $table = $serviceModule->getUserServiceTable();
 
             if (!strlen($table)) {
                 continue;

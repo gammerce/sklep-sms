@@ -1,7 +1,6 @@
 <?php
 namespace App\Routing;
 
-use App\Http\Middlewares\MiddlewareContract;
 use App\System\Application;
 use Closure;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,7 +10,7 @@ class Pipeline
     private Application $app;
     private Request $passable;
 
-    /** @var MiddlewareContract[] */
+    /** @var string[] */
     private array $pipes;
 
     public function __construct(Application $app)
@@ -26,7 +25,7 @@ class Pipeline
     }
 
     /**
-     * @param MiddlewareContract[] $pipes
+     * @param string[] $pipes
      * @return Pipeline
      */
     public function through(array $pipes)

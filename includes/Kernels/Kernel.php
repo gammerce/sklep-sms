@@ -21,7 +21,7 @@ class Kernel implements KernelContract
         $this->routesManager = $routesManager;
     }
 
-    public function handle(Request $request)
+    public function handle(Request $request): Response
     {
         try {
             $this->app->instance(Request::class, $request);
@@ -41,7 +41,7 @@ class Kernel implements KernelContract
         }
     }
 
-    public function terminate(Request $request, Response $response)
+    public function terminate(Request $request, Response $response): void
     {
         $this->app->terminate($request, $response);
     }
