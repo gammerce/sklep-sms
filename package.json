@@ -18,7 +18,7 @@
     "codemirror": "^5.61.1",
     "copy-webpack-plugin": "^5.1.2",
     "core-js": "^3.6.4",
-    "css-loader": "^3.2.0",
+    "css-loader": "^5.2.6",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "^4.2.0",
     "node-sass": "^4.12.0",
