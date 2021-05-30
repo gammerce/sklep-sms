@@ -96,7 +96,7 @@ class TestCase extends BaseTestCase
         $license = Mockery::mock(License::class);
         $license->shouldReceive("validate")->andReturn();
         $license->shouldReceive("getExpires")->andReturn("");
-        $license->shouldReceive("getExternalId")->andReturn(2);
+        $license->shouldReceive("getIdentifier")->andReturn("dfb3a290939943959557c2c1800ac9d5");
         $license->shouldReceive("isForever")->andReturn(true);
         $license
             ->shouldReceive("isValid")

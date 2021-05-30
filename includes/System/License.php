@@ -22,14 +22,9 @@ class License
     private UrlGenerator $urlGenerator;
     private Meta $meta;
 
-    /** @var int */
-    private $externalLicenseId;
-
-    /** @var int */
-    private $expiresAt;
-
-    /** @var string */
-    private $footer;
+    private ?string $identifier;
+    private ?int $expiresAt;
+    private ?string $footer;
 
     private ?LicenseRequestException $loadingException;
 
@@ -61,14 +56,14 @@ class License
             throw $e;
         }
 
-        $this->externalLicenseId = array_get($response, "id");
+        $this->identifier = array_get($response, "identifier");
         $this->expiresAt = array_get($response, "expires_at");
         $this->footer = array_get($response, "f");
     }
 
     public function isValid(): bool
     {
-        return $this->externalLicenseId !== null;
+        return $this->identifier !== null;
     }
 
     public function getLoadingException(): ?LicenseRequestException
@@ -85,9 +80,9 @@ class License
         return as_datetime_string($this->expiresAt);
     }
 
-    public function getExternalId()
+    public function getIdentifier(): ?string
     {
-        return $this->externalLicenseId;
+        return $this->identifier;
     }
 
     public function isForever(): bool
@@ -95,7 +90,7 @@ class License
         return $this->expiresAt === null;
     }
 
-    public function getFooter()
+    public function getFooter(): ?string
     {
         return $this->footer;
     }
