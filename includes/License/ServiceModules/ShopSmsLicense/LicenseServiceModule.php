@@ -523,7 +523,7 @@ class LicenseServiceModule extends ServiceModule implements
 
         $validated = $validator->validateOrFail();
 
-        $costData = $this->getCostUserEdit($validated, $userService);
+        $costData = $this->getCostUserEdit($validated["platforms"], $userService);
 
         $purchase = (new Purchase($this->auth->user(), get_ip($request), get_platform($request)))
             ->setServiceId("ss_license_edit")
@@ -652,13 +652,15 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         if ($action === "get_cost_user_edit") {
-            $userService = $this->userServiceService->findOne($body["user_service_id"]);
+            $platforms = array_get($body, "platforms", []);
+            $userServiceId = array_get($body, "user_service_id");
+            $userService = $this->userServiceService->findOne($userServiceId);
 
             if (!($userService instanceof LicenseUserService)) {
                 throw new UnexpectedValueException();
             }
 
-            $costData = $this->getCostUserEdit($body, $userService);
+            $costData = $this->getCostUserEdit($platforms, $userService);
             $costData["surcharge"] = $this->priceTextService->getPlainPrice(
                 $costData["surcharge"] * $costData["bargain"]
             );
@@ -689,26 +691,31 @@ class LicenseServiceModule extends ServiceModule implements
         return "no_action";
     }
 
-    private function getCostUserEdit(array $body, LicenseUserService $userService): array
+    /**
+     * @param Platform[] $platforms
+     * @param LicenseUserService $userService
+     * @return array
+     */
+    private function getCostUserEdit(array $platforms, LicenseUserService $userService): array
     {
         $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));
 
-        $platforms = [
+        $platformsData = [
             [
                 "old" => $userService->hasPlatformAmxModX(),
-                "new" => in_array(Platform::AMXMODX(), $body["platforms"]),
+                "new" => in_array(Platform::AMXMODX(), $platforms),
             ],
             [
                 "old" => $userService->hasPlatformSourceMod(),
-                "new" => in_array(Platform::SOURCEMOD(), $body["platforms"]),
+                "new" => in_array(Platform::SOURCEMOD(), $platforms),
             ],
         ];
 
         $additionalCost = 0;
-        foreach ($platforms as $platformData) {
+        foreach ($platformsData as $platformData) {
             // If we cancel support for a platform, we lose all discounts
             if ($platformData["old"] && !$platformData["new"]) {
-                $costDaily = $this->licensePriceService->getDailyCost($body["platforms"]);
+                $costDaily = $this->licensePriceService->getDailyCost($platforms);
                 break;
             }
 
