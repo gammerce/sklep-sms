@@ -104,7 +104,8 @@ class PageAdminMain extends PageAdmin
             $notes[] = $this->createNote(
                 $this->lang->t(
                     "license_soon_expire",
-                    seconds_to_time(strtotime($this->license->getExpires()) - time())
+                    seconds_to_time(strtotime($this->license->getExpires()) - time()),
+                    $this->license->getIdentifier()
                 ),
                 "is-danger"
             );

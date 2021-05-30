@@ -105,7 +105,7 @@ return [
     "license_expires" => "Licencja wygasa",
     "license_id" => "ID licencji",
     "license_soon_expire" =>
-        'Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong" target="_blank">Przedłuż Licencję</a>.',
+        'Licencja wygaśnie za: {1} Możesz ją przedłużyć już teraz: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong&identifier={2}" target="_blank">Przedłuż Licencję</a>.',
     "lines_per_page" => "Ilość wierszy na stronę",
     "log_account_charged" => "Doładowano konto użytkownika: {1}({2}) Kwota: {3} {4}",
     "log_group_added" => "Dodano grupę. ID: {1}",
