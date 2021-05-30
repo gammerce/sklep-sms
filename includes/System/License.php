@@ -22,9 +22,9 @@ class License
     private UrlGenerator $urlGenerator;
     private Meta $meta;
 
-    private ?string $identifier;
-    private ?int $expiresAt;
-    private ?string $footer;
+    private ?string $identifier = null;
+    private ?int $expiresAt = null;
+    private ?string $footer = null;
 
     private ?LicenseRequestException $loadingException;
 
