@@ -47,7 +47,6 @@ licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo przedłużona.',
     "new_expiration_date" => "Nowa data ważności",
 
     "prolong_license" => "Przedłuż licencję",
-    "external_license_id" => "Zew. ID licencji",
     "cost_daily" => "Dzienny koszt",
     "token" => "Token",
     "identifier" => "Identyfikator licencji",

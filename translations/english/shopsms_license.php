@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "platforms" => "Platformy",
+    "platforms" => "Platforms",
     "shopsms_license" => "Shop SMS License",
 
     "license_bought" => "Shop SMS License has been bought bought for {1} day.",
@@ -45,7 +45,6 @@ Shop SMS licence with ID: <b>{1}</b> was edited successfully.',
 Shop SMS license with ID: <b>{1}</b> was prolonged successfully.',
     "new_expiration_date" => "New expiration date",
 
-    "external_license_id" => "Ext. license ID",
     "cost_daily" => "Daily cost",
     "token" => "Token",
     "identifier" => "Identifier",

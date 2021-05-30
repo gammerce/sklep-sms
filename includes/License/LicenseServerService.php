@@ -20,16 +20,18 @@ class LicenseServerService
     }
 
     /**
+     * @param string $identifier
      * @param int $lifetime
      * @param array $platforms
      * @return array ['id', 'token', 'expires_at']
      * @throws Exception
      */
-    public function create($lifetime, array $platforms)
+    public function create($identifier, $lifetime, array $platforms)
     {
         $response = $this->requester->post(
             $this->buildUrl("/v1/licenses"),
             json_encode([
+                "identifier" => $identifier,
                 "lifetime" => $lifetime,
                 "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
                 "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
@@ -46,15 +48,15 @@ class LicenseServerService
     }
 
     /**
-     * @param int $licenseId
+     * @param string $licenseIdentifier
      * @param Platform[] $platforms
      * @return array ['expires_at']
      * @throws Exception
      */
-    public function updatePlatforms($licenseId, array $platforms)
+    public function updatePlatforms($licenseIdentifier, array $platforms)
     {
         $response = $this->requester->patch(
-            $this->buildUrl("/v1/licenses/${licenseId}"),
+            $this->buildUrl("/v1/licenses/{$licenseIdentifier}"),
             json_encode([
                 "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
                 "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
@@ -71,15 +73,15 @@ class LicenseServerService
     }
 
     /**
-     * @param int $licenseId
+     * @param string $licenseIdentifier
      * @param int $lifetime
      * @return array ['expires_at']
      * @throws Exception
      */
-    public function prolong($licenseId, $lifetime)
+    public function prolong($licenseIdentifier, $lifetime)
     {
         $response = $this->requester->patch(
-            $this->buildUrl("/v1/licenses/${licenseId}"),
+            $this->buildUrl("/v1/licenses/{$licenseIdentifier}"),
             json_encode([
                 "lifetime" => $lifetime,
             ]),
@@ -95,14 +97,14 @@ class LicenseServerService
     }
 
     /**
-     * @param int $licenseId
+     * @param string $licenseIdentifier
      * @return array ['token']
      * @throws Exception
      */
-    public function regenerateToken($licenseId)
+    public function regenerateToken($licenseIdentifier): array
     {
         $response = $this->requester->post(
-            $this->buildUrl("/v1/licenses/${licenseId}/token"),
+            $this->buildUrl("/v1/licenses/{$licenseIdentifier}/token"),
             json_encode([]),
             [
                 "Authorization" => $this->licenseSecret,
@@ -116,13 +118,13 @@ class LicenseServerService
     }
 
     /**
-     * @param int $licenseId
+     * @param string $licenseIdentifier
      * @throws Exception
      */
-    public function delete($licenseId): void
+    public function delete($licenseIdentifier): void
     {
         $response = $this->requester->delete(
-            $this->buildUrl("/v1/licenses/${licenseId}"),
+            $this->buildUrl("/v1/licenses/{$licenseIdentifier}"),
             [],
             [
                 "Authorization" => $this->licenseSecret,

@@ -150,15 +150,7 @@ class LicenseServiceModule extends ServiceModule implements
         if ($request->query->has("search")) {
             $queryParticle->extend(
                 create_search_query(
-                    [
-                        "us.id",
-                        "us.user_id",
-                        "u.username",
-                        "s.name",
-                        "m.external_license_id",
-                        "m.identifier",
-                        "m.cost_daily",
-                    ],
+                    ["us.id", "us.user_id", "u.username", "s.name", "m.identifier", "m.cost_daily"],
                     $request->query->get("search")
                 )
             );
@@ -176,8 +168,8 @@ class LicenseServiceModule extends ServiceModule implements
                 u.username,
                 s.id AS `service_id`,
                 s.name AS `service`,
-                us.expire, m.identifier,
-                m.external_license_id,
+                us.expire,
+                m.identifier,
                 m.cost_daily
             FROM `ss_user_service` AS us
             INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id
@@ -202,7 +194,6 @@ class LicenseServiceModule extends ServiceModule implements
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service"])))
                     ->addCell(new Cell($row["identifier"]))
-                    ->addCell(new Cell($row["external_license_id"]))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))
@@ -216,7 +207,6 @@ class LicenseServiceModule extends ServiceModule implements
             ->addHeadCell(new HeadCell($this->lang->t("user")))
             ->addHeadCell(new HeadCell($this->lang->t("service")))
             ->addHeadCell(new HeadCell($this->lang->t("identifier")))
-            ->addHeadCell(new HeadCell($this->lang->t("external_license_id")))
             ->addHeadCell(new HeadCell($this->lang->t("cost_daily")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addHeadCell(new HeadCell($this->lang->t("comment")))
@@ -297,11 +287,10 @@ class LicenseServiceModule extends ServiceModule implements
         $platforms = $purchase->getOrder("platforms");
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
-        $result = $this->licenseServerService->create($lifetime, $platforms);
-        $externalLicenseId = $result["id"];
+        $identifier = generate_uuid4();
+        $result = $this->licenseServerService->create($identifier, $lifetime, $platforms);
         $token = $result["token"];
         $expiresAt = $result["expires_at"];
-        $identifier = generate_uuid4();
         $promoCode = $purchase->getPromoCode();
 
         // Let's add a user service to the shop database
@@ -318,7 +307,6 @@ class LicenseServiceModule extends ServiceModule implements
                     "`us_id` = ?, " .
                     "`service_id` = ?, " .
                     "`identifier` = ?, " .
-                    "`external_license_id` = ?, " .
                     "`cost_daily` = ?, " .
                     "`email` = ?, " .
                     "`platform_amxmodx` = ?, " .
@@ -328,7 +316,6 @@ class LicenseServiceModule extends ServiceModule implements
                 $userServiceId,
                 $this->service->getId(),
                 $identifier,
-                $externalLicenseId,
                 $purchase->getOrder("cost_daily"),
                 $purchase->getEmail(),
                 (int) in_array(Platform::AMXMODX(), $platforms),
@@ -596,9 +583,9 @@ class LicenseServiceModule extends ServiceModule implements
         }
 
         $statement = $this->db->statement(
-            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service_id` = ? AND `external_license_id` = ?"
+            "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service_id` = ? AND `identifier` = ?"
         );
-        $statement->execute([$validated["service_id"], $response["id"]]);
+        $statement->execute([$validated["service_id"], $response["identifier"]]);
 
         $row = $statement->fetch();
         $userServiceId = $row["us_id"];
@@ -635,7 +622,7 @@ class LicenseServiceModule extends ServiceModule implements
             return false;
         }
 
-        $this->licenseServerService->delete($userService->getExternalLicenseId());
+        $this->licenseServerService->delete($userService->getIdentifier());
 
         return true;
     }
@@ -688,20 +675,8 @@ class LicenseServiceModule extends ServiceModule implements
         if ($action === "regenerate_token") {
             $identifier = array_get($body, "identifier");
 
-            $statement = $this->db->statement(
-                "SELECT `external_license_id` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
-            );
-            $statement->execute([$identifier]);
-
-            if (!$statement->rowCount()) {
-                return "Invalid identifier";
-            }
-
-            $row = $statement->fetch();
-            $externalLicenseId = $row["external_license_id"];
-
             try {
-                $response = $this->licenseServerService->regenerateToken($externalLicenseId);
+                $response = $this->licenseServerService->regenerateToken($identifier);
             } catch (Exception $e) {
                 return $e->getMessage();
             }

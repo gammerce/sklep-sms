@@ -3,17 +3,16 @@ CREATE TABLE `ss_user_service_shopsms_license` (
   `us_id` int(11) NOT NULL,
   `service_id` varchar(16) NOT NULL,
   `identifier` varchar(40) NOT NULL,
-  `external_license_id` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `cost_daily` int(11) NOT NULL,
   `platform_amxmodx` tinyint(1) NOT NULL,
-  `platform_sourcemod` tinyint(1) NOT NULL
+  `platform_sourcemod` tinyint(1) NOT NULL,
+  `subdomain` varchar(255) NOT NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ALTER TABLE `ss_user_service_shopsms_license`
   ADD PRIMARY KEY (`us_id`),
   ADD UNIQUE KEY `identifier_unique` (`identifier`),
-  ADD UNIQUE KEY `external_license_id_unique` (`external_license_id`),
   ADD KEY `service_id` (`service_id`);
 
 ALTER TABLE `ss_user_service_shopsms_license`

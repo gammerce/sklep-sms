@@ -10,7 +10,6 @@ class LicenseUserService extends UserService
     private int $costDaily;
     private bool $platformAmxModX;
     private bool $platformSourceMod;
-    private int $externalLicenseId;
 
     public function __construct(
         $id,
@@ -19,7 +18,6 @@ class LicenseUserService extends UserService
         $expire,
         $comment,
         $identifier,
-        $externalLicenseId,
         $email,
         $costDaily,
         $platformAmxModX,
@@ -32,7 +30,6 @@ class LicenseUserService extends UserService
         $this->costDaily = $costDaily;
         $this->platformAmxModX = $platformAmxModX;
         $this->platformSourceMod = $platformSourceMod;
-        $this->externalLicenseId = $externalLicenseId;
     }
 
     public function getIdentifier(): string
@@ -58,10 +55,5 @@ class LicenseUserService extends UserService
     public function hasPlatformSourceMod(): bool
     {
         return $this->platformSourceMod;
-    }
-
-    public function getExternalLicenseId(): int
-    {
-        return $this->externalLicenseId;
     }
 }

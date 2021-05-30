@@ -14,7 +14,6 @@ class LicenseUserServiceRepository
             as_int($data["expire"]),
             as_string($data["comment"]),
             as_string($data["identifier"]),
-            as_int($data["external_license_id"]),
             as_string($data["email"]),
             as_int($data["cost_daily"]),
             (bool) $data["platform_amxmodx"],

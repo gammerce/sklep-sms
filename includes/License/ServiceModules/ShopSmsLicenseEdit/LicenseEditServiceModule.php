@@ -111,10 +111,7 @@ class LicenseEditServiceModule extends ServiceModule implements
 
         $promoCode = $purchase->getPromoCode();
 
-        $this->licenseServerService->updatePlatforms(
-            $userService->getExternalLicenseId(),
-            $platforms
-        );
+        $this->licenseServerService->updatePlatforms($userService->getIdentifier(), $platforms);
 
         $this->userServiceRepository->updateWithModule(
             $this->getUserServiceTable(),

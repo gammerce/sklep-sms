@@ -146,10 +146,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $userService = $this->mapToUserService($data);
 
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
-        $result = $this->licenseServerService->prolong(
-            $userService->getExternalLicenseId(),
-            $lifetime
-        );
+        $result = $this->licenseServerService->prolong($userService->getIdentifier(), $lifetime);
         $expiresAt = $result["expires_at"];
         $promoCode = $purchase->getPromoCode();
 
