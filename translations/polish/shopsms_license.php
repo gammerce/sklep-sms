@@ -50,4 +50,6 @@ licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo przedłużona.',
     "cost_daily" => "Dzienny koszt",
     "token" => "Token",
     "identifier" => "Identyfikator licencji",
+
+    "save_token_hint" => "Zapisz token! Nie będzie można go zobaczyć w przyszłości.",
 ];

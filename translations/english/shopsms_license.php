@@ -53,4 +53,6 @@ Shop SMS license with ID: <b>{1}</b> was prolonged successfully.',
     "Licencja Sklep SMS" => "Sklep SMS license",
     "Przedłużenie licencji" => "License renewal",
     "Edycja licencji" => "License edition",
+
+    "save_token_hint" => "Save the token! You won't be able to see it in the future.",
 ];
