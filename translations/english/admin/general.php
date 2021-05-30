@@ -105,7 +105,7 @@ return [
     "license_expires" => "License expires",
     "license_id" => "License ID",
     "license_soon_expire" =>
-        'License expires in: {1} You can prolong it just now: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong" target="_blank">Prolong License</a>',
+        'License expires in: {1} You can prolong it just now: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong&identifier={2}" target="_blank">Prolong License</a>',
     "lines_per_page" => "Quantity of lines per page",
     "log_account_charged" => 'charged user\'s account: {1}({2}) Amount: {3} {4}',
     "log_group_added" => "Group has been added. ID: {1}",
