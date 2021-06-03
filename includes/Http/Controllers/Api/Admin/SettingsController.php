@@ -42,12 +42,12 @@ class SettingsController
                 "gadugadu" => $request->request->get("gadugadu"),
                 "google_analytics" => trim($request->request->get("google_analytics")),
                 "language" => escape_filename($request->request->get("language")),
-                "license_token" => is_demo() ? null : $request->request->get("license_token"),
+                "license_token" => is_saas() ? null : $request->request->get("license_token"),
                 "row_limit" => $request->request->get("row_limit"),
                 "sender_email" => $request->request->get("sender_email"),
                 "sender_email_name" => $request->request->get("sender_email_name"),
                 "shop_name" => $request->request->get("shop_name"),
-                "shop_url" => is_demo()
+                "shop_url" => is_saas()
                     ? $settings->getShopUrl()
                     : $request->request->get("shop_url"),
                 "signature" => $request->request->get("signature"),

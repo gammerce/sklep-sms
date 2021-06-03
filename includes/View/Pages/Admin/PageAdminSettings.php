@@ -96,11 +96,15 @@ class PageAdminSettings extends PageAdmin
             "buttons" => "",
             "title" => $this->getTitle($request),
         ]);
+        $licenseSection = is_saas()
+            ? ""
+            : $this->template->render("admin/components/settings/license");
 
         return $this->template->render("admin/settings", [
             "cronSelect" => $cronSelect,
             "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
+            "licenseSection" => $licenseSection,
             "pageTitle" => $pageTitle,
             "smsPlatforms" => implode("", $smsPlatforms),
             "themesList" => implode("", $themesList),

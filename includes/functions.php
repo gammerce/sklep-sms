@@ -654,7 +654,12 @@ function is_testing(): bool
 
 function is_demo(): bool
 {
-    return getenv("APP_ENV") === "demo";
+    return getenv("APP_SUBDOMAIN") === "demo";
+}
+
+function is_saas(): bool
+{
+    return getenv("APP_ENV") === "saas";
 }
 
 /**
