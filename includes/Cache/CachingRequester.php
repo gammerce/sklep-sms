@@ -26,6 +26,8 @@ class CachingRequester
      */
     public function load($cacheKey, $ttl, $requestCaller)
     {
+        $cacheKey = $this->prepareCacheKey($cacheKey);
+
         /** @var CacheEntity $entity */
         $entity = $this->cache->get($cacheKey);
 
@@ -51,7 +53,7 @@ class CachingRequester
      * @throws RequestException
      * @throws InvalidArgumentException
      */
-    protected function fetchAndCache($cacheKey, $requestCaller)
+    private function fetchAndCache($cacheKey, $requestCaller)
     {
         $response = $this->fetch($requestCaller);
         $this->cache->set($cacheKey, $response, static::HARD_TTL);
@@ -63,7 +65,7 @@ class CachingRequester
      * @return mixed
      * @throws RequestException
      */
-    protected function fetch($requestCaller)
+    private function fetch($requestCaller)
     {
         $response = call_user_func($requestCaller);
 
@@ -72,5 +74,11 @@ class CachingRequester
         }
 
         return $response;
+    }
+
+    private function prepareCacheKey($cacheKey): string
+    {
+        $subdomain = get_identifier();
+        return $subdomain ? "{$subdomain}:$cacheKey" : $cacheKey;
     }
 }

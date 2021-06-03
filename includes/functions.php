@@ -654,12 +654,24 @@ function is_testing(): bool
 
 function is_demo(): bool
 {
-    return getenv("APP_SUBDOMAIN") === "demo";
+    return get_subdomain() === "demo";
 }
 
 function is_saas(): bool
 {
     return getenv("APP_ENV") === "saas";
+}
+
+function get_subdomain(): ?string
+{
+    $subdomain = getenv("APP_SUBDOMAIN");
+    return $subdomain === false ? null : $subdomain;
+}
+
+function get_identifier(): ?string
+{
+    $identifier = getenv("APP_IDENTIFIER");
+    return $identifier === false ? null : $identifier;
 }
 
 /**

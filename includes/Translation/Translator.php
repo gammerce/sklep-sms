@@ -85,7 +85,7 @@ class Translator
         if (
             !strlen($language) ||
             !isset($this->langList[$language]) ||
-            !$this->fileSystem->isDirectory($this->path->to("translations/" . $language))
+            !$this->fileSystem->isDirectory($this->path->to("translations/{$language}"))
         ) {
             return;
         }
