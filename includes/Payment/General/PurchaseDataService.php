@@ -23,9 +23,8 @@ class PurchaseDataService
 
     public function storePurchase(Purchase $purchase): void
     {
-        $transactionId = escape_filename($purchase->getId());
+        $path = $this->getPath($purchase->getId());
         $serialized = $this->purchaseSerializer->serialize($purchase);
-        $path = $this->path->to("data/transactions/$transactionId");
         $this->fileSystem->put($path, $serialized);
     }
 
@@ -35,17 +34,17 @@ class PurchaseDataService
      */
     public function restorePurchase($transactionId): ?Purchase
     {
-        $transactionId = escape_filename($transactionId);
-        if (
-            !$transactionId ||
-            !$this->fileSystem->exists($this->path->to("data/transactions/$transactionId"))
-        ) {
+        if (!$transactionId) {
             return null;
         }
 
-        $purchase = $this->purchaseSerializer->deserialize(
-            $this->fileSystem->get($this->path->to("data/transactions/$transactionId"))
-        );
+        $path = $this->getPath($transactionId);
+
+        if (!$this->fileSystem->exists($path)) {
+            return null;
+        }
+
+        $purchase = $this->purchaseSerializer->deserialize($this->fileSystem->get($path));
 
         if (!$purchase || $purchase->isAttempted()) {
             return null;
@@ -56,8 +55,21 @@ class PurchaseDataService
 
     public function deletePurchase(Purchase $purchase): void
     {
-        $transactionId = escape_filename($purchase->getId());
-        $this->fileSystem->delete($this->path->to("data/transactions/$transactionId"));
+        $path = $this->getPath($purchase->getId());
+        $this->fileSystem->delete($path);
         $purchase->markAsDeleted();
+    }
+
+    private function getPath($transactionId): string
+    {
+        $transactionFilename = $this->prepareFilename($transactionId);
+        return $this->path->to("data/transactions/$transactionFilename");
+    }
+
+    private function prepareFilename($transactionId): string
+    {
+        $identifier = get_identifier();
+        $filename = $identifier ? "{$identifier}_{$transactionId}" : $transactionId;
+        return escape_filename($filename);
     }
 }

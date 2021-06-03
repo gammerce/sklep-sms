@@ -20,7 +20,7 @@ class UpdateInfo
 
     public function updateInfo(&$everythingOk, $filesPriv, $filesDel, $modules)
     {
-        // Sprawdzamy ustawienia modułuów
+        // Let's check the modules settings
         $serverModules = "";
         foreach ($modules as $module) {
             $title = $module["text"];
