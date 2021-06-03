@@ -26,6 +26,7 @@ return [
     "bring_it_on" => "Dajesz!",
     "change_password" => "Zmień hasło",
     "change_password_success" => "Hasło zostało zmienione",
+    "change_token_placeholder" => "Wprowadź aby zmienić",
     "charge" => "Doładuj",
     "choose_sms_price" => "Wybierz koszt SMSa",
     "code" => "Kod",

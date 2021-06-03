@@ -16,7 +16,7 @@
                             class="input is-small"
                             type="text"
                             maxlength="256"
-                            placeholder="Wprowadź aby zmienić"
+                            placeholder="{{ __('change_token_placeholder') }}"
                         />
                     </p>
                 </div>
@@ -173,7 +173,10 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ __('create') }}
+                            <span class="icon">
+                                <i class="fa fa-external-link-alt"></i>
+                            </span>
+                            <span>{{ __('create') }}</span>
                         </a>
                     </div>
                 </div>

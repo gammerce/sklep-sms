@@ -26,6 +26,7 @@ return [
     "bring_it_on" => "Bring it on!",
     "change_password" => "Change password",
     "change_password_success" => "Password has been changed",
+    "change_token_placeholder" => "Enter to change",
     "charge" => "Charge",
     "choose_sms_price" => "Choose SMS price",
     "code" => "Code",
