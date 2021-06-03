@@ -99,6 +99,9 @@ class PageAdminSettings extends PageAdmin
         $licenseSection = is_saas()
             ? ""
             : $this->template->render("admin/components/settings/license");
+        $shopAddress = is_saas()
+            ? ""
+            : $this->template->render("admin/components/settings/shop_address");
 
         return $this->template->render("admin/settings", [
             "cronSelect" => $cronSelect,
@@ -106,6 +109,7 @@ class PageAdminSettings extends PageAdmin
             "languagesList" => implode("", $languagesList),
             "licenseSection" => $licenseSection,
             "pageTitle" => $pageTitle,
+            "shopAddress" => $shopAddress,
             "smsPlatforms" => implode("", $smsPlatforms),
             "themesList" => implode("", $themesList),
             "transferPlatforms" => implode("", $transferPlatforms),
