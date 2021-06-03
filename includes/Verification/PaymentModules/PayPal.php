@@ -49,10 +49,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         return "https://api.paypal.com";
     }
 
-    /**
-     * @return bool
-     */
-    private function isTestMode()
+    private function isTestMode(): bool
     {
         return is_demo();
     }

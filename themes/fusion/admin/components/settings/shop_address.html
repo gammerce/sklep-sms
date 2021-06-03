@@ -1,0 +1,19 @@
+<div class="field is-horizontal">
+    <div class="field-label is-small">
+        <label for="shop_url">{{ __('shop_address') }}</label>
+    </div>
+    <div class="field-body">
+        <div class="field">
+            <p class="control">
+                <input
+                    id="shop_url"
+                    name="shop_url"
+                    type="text"
+                    value="{{ $settings->getShopUrl() }}"
+                    class="input is-small"
+                    maxlength="256"
+                />
+            </p>
+        </div>
+    </div>
+</div>

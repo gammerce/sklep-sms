@@ -1,31 +1,10 @@
 {!! $pageTitle !!}
 
 <form id="form_settings_edit" class="columns is-multiline">
-    <div class="column is-one-third">
-        <h4>{{ __('license') }}</h4>
-        <div class="field is-horizontal">
-            <div class="field-label is-small">
-                <label for="license_token">{{ __('token') }}</label>
-            </div>
-            <div class="field-body">
-                <div class="field">
-                    <p class="control">
-                        <input
-                            id="license_token"
-                            name="license_token"
-                            class="input is-small"
-                            type="text"
-                            maxlength="256"
-                            placeholder="Wprowadź aby zmienić"
-                        />
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+    {!! $licenseSection !!}
 
-    <div class="column is-two-thirds">
-        <h4>{{ __('information') }}</h4>
+    <div class="column is-half">
+        <h4>{{ __('shop') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
@@ -47,18 +26,54 @@
             </div>
         </div>
 
+        {!! $shopAddress !!}
+
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="shop_url">{{ __('shop_address') }}</label>
+                <label for="language"> {{ __('language') }} </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="language" name="language">
+                                {!! $languagesList !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="theme"> {{ __('theme') }} </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control">
+                        <div class="select is-small">
+                            <select id="theme" name="theme">
+                                {!! $themesList !!}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="google_analytics">Google Analytics</label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <p class="control">
                         <input
-                            id="shop_url"
-                            name="shop_url"
+                            id="google_analytics"
+                            name="google_analytics"
                             type="text"
-                            value="{{ $settings->getShopUrl() }}"
+                            value="{{ $settings['google_analytics'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -66,6 +81,10 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="column is-half">
+        <h4>{{ __('contact') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
@@ -89,7 +108,31 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email">{{ __('auto_email') }}</label>
+                <label for="gadugadu"> Gadu Gadu </label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="gadugadu"
+                            name="gadugadu"
+                            type="text"
+                            value="{{ $settings['gadugadu'] }}"
+                            class="input is-small"
+                            maxlength="256"
+                        />
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="column is-half">
+        <h4>{{ __('e-mail') }}</h4>
+
+        <div class="field is-horizontal">
+            <div class="field-label is-small">
+                <label for="sender_email">{{ __('sender_email') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -109,7 +152,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="sender_email_name">{{ __('email_sender_name') }}</label>
+                <label for="sender_email_name">{{ __('sender_name') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -129,9 +172,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="signature">
-                    {{ __('signature') }} <em>{{ __('eg_emails') }}</em>
-                </label>
+                <label for="signature">{{ __('signature') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -173,7 +214,10 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ __('create') }}
+                            <span class="icon">
+                                <i class="fa fa-external-link-alt"></i>
+                            </span>
+                            <span>{{ __('create') }}</span>
                         </a>
                     </div>
                 </div>
@@ -202,7 +246,10 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ __('create') }}
+                            <span class="icon">
+                                <i class="fa fa-external-link-alt"></i>
+                            </span>
+                            <span>{{ __('create') }}</span>
                         </a>
                     </div>
                 </div>
@@ -230,7 +277,10 @@
                             class="button is-small"
                             href="{{ $url->to('/admin/payment_platforms') }}"
                         >
-                            {{ __('create') }}
+                            <span class="icon">
+                                <i class="fa fa-external-link-alt"></i>
+                            </span>
+                            <span>{{ __('create') }}</span>
                         </a>
                     </div>
                 </div>
@@ -280,7 +330,7 @@
     </div>
 
     <div class="column is-half">
-        <h4>{{ __('users') }}</h4>
+        <h4>{{ __('customization') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
@@ -294,40 +344,15 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <div class="column is-half">
-        <h4>{{ __('global') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="language"> {{ __('language') }} </label>
+                <label for="cron"> {{ __('cron_page_start') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <div class="control">
-                        <div class="select is-small">
-                            <select id="language" name="language">
-                                {!! $languagesList !!}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="field is-horizontal">
-            <div class="field-label is-small">
-                <label for="theme"> {{ __('theme') }} </label>
-            </div>
-            <div class="field-body">
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-small">
-                            <select id="theme" name="theme">
-                                {!! $themesList !!}
-                            </select>
-                        </div>
+                        <div class="select is-small">{!! $cronSelect !!}</div>
                     </div>
                 </div>
             </div>
@@ -355,29 +380,16 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="cron"> {{ __('cron_page_start') }} </label>
-            </div>
-            <div class="field-body">
-                <div class="field">
-                    <div class="control">
-                        <div class="select is-small">{!! $cronSelect !!}</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="field is-horizontal">
-            <div class="field-label is-small">
-                <label for="google_analytics"> Google Analytics </label>
+                <label for="row_limit"> {{ __('lines_per_page') }} </label>
             </div>
             <div class="field-body">
                 <div class="field">
                     <p class="control">
                         <input
-                            id="google_analytics"
-                            name="google_analytics"
-                            type="text"
-                            value="{{ $settings['google_analytics'] }}"
+                            id="row_limit"
+                            name="row_limit"
+                            type="number"
+                            value="{{ $settings['row_limit'] }}"
                             class="input is-small"
                             maxlength="256"
                         />
@@ -385,35 +397,12 @@
                 </div>
             </div>
         </div>
-
-        <div class="field is-horizontal">
-            <div class="field-label is-small">
-                <label for="gadugadu"> Gadu Gadu </label>
-            </div>
-            <div class="field-body">
-                <div class="field">
-                    <p class="control">
-                        <input
-                            id="gadugadu"
-                            name="gadugadu"
-                            type="text"
-                            value="{{ $settings['gadugadu'] }}"
-                            class="input is-small"
-                            maxlength="256"
-                        />
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="column is-half">
-        <h4>{{ __('other') }}</h4>
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
                 <label for="delete_logs">
-                    {{ __('delete_old_logs') }} <em>{{ __('dont_delete') }}</em>
+                    {{ __('delete_old_logs') }}<br />
+                    <em>{{ __('dont_delete') }}</em>
                 </label>
             </div>
             <div class="field-body">
@@ -431,26 +420,6 @@
                     <div class="control">
                         <a class="button is-static is-small"> {{ __('days') }} </a>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="field is-horizontal">
-            <div class="field-label is-small">
-                <label for="row_limit"> {{ __('lines_per_page') }} </label>
-            </div>
-            <div class="field-body">
-                <div class="field">
-                    <p class="control">
-                        <input
-                            id="row_limit"
-                            name="row_limit"
-                            type="number"
-                            value="{{ $settings['row_limit'] }}"
-                            class="input is-small"
-                            maxlength="256"
-                        />
-                    </p>
                 </div>
             </div>
         </div>
