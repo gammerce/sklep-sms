@@ -97,10 +97,10 @@ class PageAdminSettings extends PageAdmin
             "title" => $this->getTitle($request),
         ]);
         $licenseSection = is_saas()
-            ? ""
+            ? null
             : $this->template->render("admin/components/settings/license");
         $shopAddress = is_saas()
-            ? ""
+            ? null
             : $this->template->render("admin/components/settings/shop_address");
 
         return $this->template->render("admin/settings", [

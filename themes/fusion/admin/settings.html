@@ -88,7 +88,7 @@
 
         <div class="field is-horizontal">
             <div class="field-label is-small">
-                <label for="contact">{{ __('contact') }}</label>
+                <label for="contact">{{ __('contact_email') }}</label>
             </div>
             <div class="field-body">
                 <div class="field">
@@ -96,8 +96,8 @@
                         <input
                             id="contact"
                             name="contact"
-                            type="text"
-                            value="{{ $settings->getContact() }}"
+                            type="email"
+                            value="{{ $settings->getContactEmail() }}"
                             class="input is-small"
                             maxlength="256"
                         />

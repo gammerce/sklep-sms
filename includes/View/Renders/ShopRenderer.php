@@ -47,13 +47,18 @@ class ShopRenderer
         $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
         $userButtons = $this->blockRenderer->render(BlockUserButtons::BLOCK_ID, $request);
         $googleAnalytics = $this->getGoogleAnalytics();
-        $contact = $this->settings->getContact();
+        $contactEmail = $this->settings->getContactEmail();
 
         $navbar = $this->template->render(
             "shop/layout/navbar",
             compact("servicesButtons", "userButtons", "wallet")
         );
-        $footer = $this->template->render("shop/layout/footer", compact("contact"));
+        $contactColumn = $contactEmail
+            ? $this->template->render("shop/components/footer/contact", [
+                "email" => $contactEmail,
+            ])
+            : null;
+        $footer = $this->template->render("shop/layout/footer", compact("contactColumn"));
 
         return $this->template->render(
             "shop/index",
