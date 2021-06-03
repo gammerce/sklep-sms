@@ -89,18 +89,12 @@ class Settings implements ArrayAccess
         return as_int(array_get($this->data, "direct_billing_platform"));
     }
 
-    /**
-     * @return string
-     */
-    public function getCurrency()
+    public function getCurrency(): ?string
     {
         return array_get($this->data, "currency");
     }
 
-    /**
-     * @return string
-     */
-    public function getContact()
+    public function getContactEmail(): ?string
     {
         return array_get($this->data, "contact");
     }
