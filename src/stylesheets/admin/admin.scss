@@ -1,4 +1,6 @@
 @import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "~codemirror/lib/codemirror.css";
+@import "~codemirror/theme/material.css";
 
 $scheme-main: hsl(0, 0%, 14%);
 $scheme-main-bis: hsl(0, 0%, 21%);
@@ -25,6 +27,7 @@ $sidebar-width: 300px;
 @import "./partials/layout";
 @import "./partials/server";
 @import "./partials/settings";
+@import "./partials/theme";
 
 h3 {
     color: $grey-lighter;

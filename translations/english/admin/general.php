@@ -221,7 +221,7 @@ return [
     "service_no_edit" => "Service not edited.",
     "service_servers_hint" => "List of servers where you can purchase this service",
     "services" => "Services",
-    "settings" => "Shop settings",
+    "settings" => "Settings",
     "settings_edit" => "Settings edited successfully.",
     "settings_no_edit" => "Settings not edited.",
     "shop_address" => "Shop Address",

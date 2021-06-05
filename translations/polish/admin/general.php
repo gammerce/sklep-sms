@@ -223,7 +223,7 @@ return [
     "service_no_edit" => "Usługa nie została wyedytowana.",
     "service_servers_hint" => "Lista serwerów na których można zakupić tę usługę",
     "services" => "Usługi",
-    "settings" => "Ustawienia sklepu",
+    "settings" => "Ustawienia",
     "settings_edit" => "Ustawienia zostały prawidłowo wyedytowane.",
     "settings_no_edit" => "Nie wyedytowano ustawień.",
     "shop_address" => "Adres sklepu",

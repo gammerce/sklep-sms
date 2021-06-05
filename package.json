@@ -15,6 +15,7 @@
     "axios": "^0.21.1",
     "bulma": "^0.8.2",
     "classnames": "^2.2.6",
+    "codemirror": "^5.61.1",
     "copy-webpack-plugin": "^5.1.2",
     "core-js": "^3.6.4",
     "css-loader": "^3.2.0",
@@ -23,7 +24,9 @@
     "node-sass": "^4.12.0",
     "react": "^16.13.1",
     "react-cache": "^2.0.0-alpha.1",
+    "react-codemirror2": "^7.2.1",
     "react-dom": "^16.13.1",
+    "react-select": "^4.3.1",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
@@ -32,7 +35,7 @@
     "webpack-cli": "^3.3.11"
   },
   "devDependencies": {
-    "prettier": "^2.1.2",
-    "@prettier/plugin-php": "^0.16.0"
+    "@prettier/plugin-php": "^0.16.0",
+    "prettier": "^2.1.2"
   }
 }

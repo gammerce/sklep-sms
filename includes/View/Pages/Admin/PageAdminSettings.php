@@ -103,7 +103,7 @@ class PageAdminSettings extends PageAdmin
             ? null
             : $this->template->render("admin/components/settings/shop_address");
 
-        return $this->template->render("admin/settings", [
+        return $this->template->render("admin/pages/settings", [
             "cronSelect" => $cronSelect,
             "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
