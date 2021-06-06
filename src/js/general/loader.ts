@@ -5,7 +5,7 @@ export const loader = {
 
     show() {
         loader.blocked = true;
-        // Usuwamy poprzedni task pokazujacy ladowanie
+        // Let's remove the previous task showing the loader
         if (loader.show_task) {
             clearTimeout(loader.show_task);
             loader.show_task = 0;

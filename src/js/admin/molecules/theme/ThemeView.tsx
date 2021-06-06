@@ -1,51 +1,86 @@
-import React, { FunctionComponent, useState } from "react";
-import AsyncSelect from "react-select/async";
+import React, { FunctionComponent, useEffect, useState } from "react";
+import Select from "react-select";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/htmlmixed/htmlmixed";
+import { api } from "../../utils/container";
+import { handleError } from "../../../shop/utils/utils";
+import { loader } from "../../../general/loader";
+import { infobox } from "../../../general/infobox";
+import { __ } from "../../../general/i18n";
+
+interface SelectOption {
+    label: string;
+    value: string;
+}
 
 export const ThemeView: FunctionComponent = () => {
+    const [templateList, setTemplateList] = useState<SelectOption[]>();
+    const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
+    const [selectedTemplate, setSelectedTemplate] = useState<SelectOption>();
     const [templateContent, setTemplateContent] = useState<string>();
-    const [templateName, setTemplateName] = useState<string>();
 
     // TODO Don't allow to change template when there are changes in content
     // TODO Provide the ability to save changes
     // TODO Provide the ability to reset changes
+    // TODO Selectable theme
 
-    const loadTemplateList = (inputValue, callback) => {
-        // TODO Load data from backend
-        setTimeout(() => {
-            callback([{ label: inputValue, value: inputValue }]);
-        }, 1000);
+    const loadTemplateList = async () => {
+        try {
+            setTemplateListLoading(true);
+            const response = await api.getThemeTemplateList();
+            const options = response.data.map((template) => ({
+                label: template.name,
+                value: template.name,
+            }));
+            setTemplateList(options);
+        } catch (e) {
+            infobox.showError(e.toString());
+        } finally {
+            setTemplateListLoading(false);
+        }
     };
 
-    const loadTemplateContent = (name: string) => {
-        // TODO Add loader
-        setTimeout(() => {
-            setTemplateContent(`
-            <html>
-            <head></head>
-            <body>Test</body>
-</html>`);
-        }, 1000);
+    const loadTemplateContent = async (name: string) => {
+        try {
+            loader.show();
+            const response = await api.getThemeTemplate(name);
+            setTemplateContent(response.content);
+        } catch (e) {
+            infobox.showError(e.toString());
+        } finally {
+            loader.hide();
+        }
     };
 
     const handleTemplateNameChange = (e) => {
-        setTemplateName(e.value);
-        loadTemplateContent(e.value);
+        setSelectedTemplate(e);
+        loadTemplateContent(e.value).catch(handleError);
     };
     const handleTemplateContentChange = (editor, data, value) => setTemplateContent(value);
 
+    useEffect(() => {
+        loadTemplateList().catch(handleError);
+    }, []);
+
     return (
-        <div>
-            <div className="field">
-                <div className="control">
-                    <AsyncSelect
-                        className="theme-selector"
-                        cacheOptions
-                        loadOptions={loadTemplateList}
-                        defaultOptions
-                        onChange={handleTemplateNameChange}
-                    />
+        <>
+            <div className="columns">
+                <div className="column is-two-thirds">
+                    <div className="field">
+                        <div className="control">
+                            <Select
+                                className="theme-selector"
+                                options={templateList}
+                                value={selectedTemplate}
+                                onChange={handleTemplateNameChange}
+                                isLoading={templateListLoading}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="column" style={{ textAlign: "right" }}>
+                    <button className="button is-success">{__("save")}</button>
                 </div>
             </div>
 
@@ -58,6 +93,6 @@ export const ThemeView: FunctionComponent = () => {
                 }}
                 onBeforeChange={handleTemplateContentChange}
             />
-        </div>
+        </>
     );
 };

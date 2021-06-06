@@ -37,6 +37,10 @@ export const infobox = {
         }, length); // <-- time in milliseconds
     },
 
+    showError(message: string): void {
+        infobox.showInfo(message, false);
+    },
+
     remove() {
         infobox.element.stop().fadeOut("slow", function () {
             $(this).remove();
@@ -44,5 +48,5 @@ export const infobox = {
     },
 };
 
-export const handleErrorResponse = () => infobox.showInfo(__("ajax_error"), false);
-export const sthWentWrong = () => infobox.showInfo(__("sth_went_wrong"), false);
+export const handleErrorResponse = () => infobox.showError(__("ajax_error"));
+export const sthWentWrong = () => infobox.showError(__("sth_went_wrong"));

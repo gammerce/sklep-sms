@@ -22,6 +22,8 @@ use App\Http\Controllers\Api\Admin\ServiceResource;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
+use App\Http\Controllers\Api\Admin\ThemeTemplateCollection;
+use App\Http\Controllers\Api\Admin\ThemeTemplateResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
@@ -528,6 +530,14 @@ class RoutesManager
 
                 $r->post("/api/admin/services/{service}/actions/{action}", [
                     "uses" => ServiceActionController::class . "@post",
+                ]);
+
+                $r->get("/api/admin/theme-templates", [
+                    "uses" => ThemeTemplateCollection::class . "@get",
+                ]);
+
+                $r->get("/api/admin/theme-templates/{template}", [
+                    "uses" => ThemeTemplateResource::class . "@get",
                 ]);
             }
         );

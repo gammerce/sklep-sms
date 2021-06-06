@@ -1,3 +1,7 @@
 .theme-selector {
     z-index: 6;
 }
+
+.CodeMirror {
+    height: calc(100% - 8rem);
+}

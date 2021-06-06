@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssocResponse extends Response
 {
-    public function __construct(array $data, $status = 200)
+    public function __construct(array $data, $status = self::HTTP_OK)
     {
         $items = $this->formatArray("", $data);
         $content = implode("\n", $items);
