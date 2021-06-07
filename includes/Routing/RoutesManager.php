@@ -22,6 +22,7 @@ use App\Http\Controllers\Api\Admin\ServiceResource;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
+use App\Http\Controllers\Api\Admin\ThemeCollection;
 use App\Http\Controllers\Api\Admin\ThemeTemplateCollection;
 use App\Http\Controllers\Api\Admin\ThemeTemplateResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
@@ -532,6 +533,9 @@ class RoutesManager
                     "uses" => ServiceActionController::class . "@post",
                 ]);
 
+                $r->get("/api/admin/themes", [
+                    "uses" => ThemeCollection::class . "@get",
+                ]);
                 $r->get("/api/admin/theme-templates", [
                     "uses" => ThemeTemplateCollection::class . "@get",
                 ]);
