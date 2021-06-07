@@ -18,7 +18,8 @@ export const ThemeView: FunctionComponent = () => {
     const [templateList, setTemplateList] = useState<SelectOption[]>();
     const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
     const [selectedTemplate, setSelectedTemplate] = useState<SelectOption>();
-    const [templateContent, setTemplateContent] = useState<string>();
+    const [fetchedTemplateContent, setFetchedTemplateContent] = useState<string>("");
+    const [templateContent, setTemplateContent] = useState<string>("");
 
     const [themeList, setThemeList] = useState<SelectOption[]>();
     const [themeListLoading, setThemeListLoading] = useState<boolean>(true);
@@ -49,6 +50,7 @@ export const ThemeView: FunctionComponent = () => {
             loader.show();
             const response = await api.getThemeTemplate(name);
             setTemplateContent(response.content);
+            setFetchedTemplateContent(response.content);
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
@@ -75,7 +77,7 @@ export const ThemeView: FunctionComponent = () => {
     const handleTemplateChange = (selectedOption: SelectOption) => {
         if (selectedOption === null) {
             setSelectedTemplate(undefined);
-            setTemplateContent(undefined);
+            setTemplateContent("");
         } else {
             setSelectedTemplate(selectedOption);
             loadTemplate(selectedOption.value).catch(handleError);
@@ -110,6 +112,7 @@ export const ThemeView: FunctionComponent = () => {
                         className="template-selector"
                         options={templateList}
                         value={selectedTemplate}
+                        placeholder="Select template..."
                         onChange={handleTemplateChange}
                         isLoading={templateListLoading}
                         isClearable
@@ -117,7 +120,12 @@ export const ThemeView: FunctionComponent = () => {
                 </div>
 
                 <div className="control">
-                    <button className="button is-success">{__("save")}</button>
+                    <button
+                        className="button is-success"
+                        disabled={fetchedTemplateContent === templateContent}
+                    >
+                        {__("save")}
+                    </button>
                 </div>
             </div>
 
