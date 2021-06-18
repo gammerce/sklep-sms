@@ -539,6 +539,9 @@ class RoutesManager
                 $r->get("/api/admin/themes/{theme}/templates/{template}", [
                     "uses" => ThemeTemplateResource::class . "@get",
                 ]);
+                $r->put("/api/admin/themes/{theme}/templates/{template}", [
+                    "uses" => ThemeTemplateResource::class . "@put",
+                ]);
                 $r->get("/api/admin/templates", [
                     "uses" => TemplateCollection::class . "@get",
                 ]);

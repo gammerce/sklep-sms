@@ -95,6 +95,20 @@ EOF
         return !!$statement->rowCount();
     }
 
+    /**
+     * @return string[]
+     */
+    public function listThemes(): array
+    {
+        $statement = $this->db->query(
+            "SELECT `theme` FROM `ss_templates` GROUP BY `theme` ORDER BY `theme` ASC"
+        );
+
+        return collect($statement)
+            ->map(fn(array $row) => $row["theme"])
+            ->all();
+    }
+
     private function mapToModel(array $data): Template
     {
         return new Template(

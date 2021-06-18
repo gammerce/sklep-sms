@@ -23,7 +23,10 @@ export const ThemeView: FunctionComponent = () => {
 
     const [themeList, setThemeList] = useState<SelectOption[]>();
     const [themeListLoading, setThemeListLoading] = useState<boolean>(true);
-    const [selectedTheme, setSelectedTheme] = useState<SelectOption>();
+    const [selectedTheme, setSelectedTheme] = useState<SelectOption>({
+        label: "fusion",
+        value: "fusion",
+    });
 
     // TODO Don't allow to change template when there are changes in content
     // TODO Provide the ability to save changes
@@ -32,7 +35,7 @@ export const ThemeView: FunctionComponent = () => {
     const loadTemplateList = async () => {
         try {
             setTemplateListLoading(true);
-            const response = await api.getThemeTemplateList();
+            const response = await api.getTemplateList();
             const options = response.data.map((template) => ({
                 label: template.name,
                 value: template.name,
@@ -45,10 +48,10 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadTemplate = async (name: string) => {
+    const loadTemplate = async (theme: string, name: string) => {
         try {
             loader.show();
-            const response = await api.getThemeTemplate(name);
+            const response = await api.getTemplate(theme, name);
             setTemplateContent(response.content);
             setFetchedTemplateContent(response.content);
         } catch (e) {
@@ -74,19 +77,34 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
+    const updateTemplate = async () => {
+        try {
+            loader.show();
+            await api.putTemplate(selectedTheme.value, selectedTemplate.value, templateContent);
+            infobox.showSuccess(__("template_updated"));
+        } catch (e) {
+            infobox.showError(e.toString());
+        } finally {
+            loader.hide();
+        }
+    };
+
+    const handleThemeChange = (selectedOption: SelectOption) => {
+        setSelectedTheme(selectedOption);
+        loadTemplate(selectedOption.value, selectedTemplate.value).catch(handleError);
+    };
+
     const handleTemplateChange = (selectedOption: SelectOption) => {
         if (selectedOption === null) {
             setSelectedTemplate(undefined);
             setTemplateContent("");
         } else {
             setSelectedTemplate(selectedOption);
-            loadTemplate(selectedOption.value).catch(handleError);
+            loadTemplate(selectedTheme.value, selectedOption.value).catch(handleError);
         }
     };
 
     const handleTemplateContentChange = (editor, data, value) => setTemplateContent(value);
-
-    const handleThemeChange = (e) => setSelectedTheme(e);
 
     useEffect(() => {
         loadThemeList().catch(handleError);
@@ -99,7 +117,6 @@ export const ThemeView: FunctionComponent = () => {
                 <div className="control" style={{ minWidth: "150px" }}>
                     <Creatable
                         className="theme-selector"
-                        defaultValue={{ label: "fusion", value: "fusion" }}
                         options={themeList}
                         value={selectedTheme}
                         onChange={handleThemeChange}
@@ -112,7 +129,7 @@ export const ThemeView: FunctionComponent = () => {
                         className="template-selector"
                         options={templateList}
                         value={selectedTemplate}
-                        placeholder="Select template..."
+                        placeholder={__("select_template")}
                         onChange={handleTemplateChange}
                         isLoading={templateListLoading}
                         isClearable
@@ -123,6 +140,7 @@ export const ThemeView: FunctionComponent = () => {
                     <button
                         className="button is-success"
                         disabled={fetchedTemplateContent === templateContent}
+                        onClick={updateTemplate}
                     >
                         {__("save")}
                     </button>
@@ -135,6 +153,7 @@ export const ThemeView: FunctionComponent = () => {
                     mode: "htmlmixed",
                     theme: "material",
                     lineNumbers: true,
+                    readOnly: selectedTemplate ? false : "nocursor",
                 }}
                 onBeforeChange={handleTemplateContentChange}
             />

@@ -11,6 +11,7 @@ class Template
     private string $content;
     private DateTime $createdAt;
     private DateTime $updatedAt;
+    // TODO Add language
 
     public function __construct(
         $id,

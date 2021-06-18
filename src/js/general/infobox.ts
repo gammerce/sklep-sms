@@ -37,6 +37,10 @@ export const infobox = {
         }, length); // <-- time in milliseconds
     },
 
+    showSuccess(message: string): void {
+        infobox.showInfo(message, true);
+    },
+
     showError(message: string): void {
         infobox.showInfo(message, false);
     },

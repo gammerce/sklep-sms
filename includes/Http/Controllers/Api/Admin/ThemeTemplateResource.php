@@ -2,29 +2,68 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Support\FileSystemContract;
+use App\Repositories\TemplateRepository;
 use App\Theme\ThemeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class ThemeTemplateResource
 {
-    public function get(
-        $theme,
-        $template,
-        ThemeService $themeService,
-        FileSystemContract $fileSystem
-    ): JsonResponse {
-        $decodedTemplate = str_replace("-", "/", $template);
+    private ThemeService $themeService;
 
-        if (!in_array($decodedTemplate, $themeService->getEditableTemplates())) {
-            throw new EntityNotFoundException();
-        }
+    public function __construct(ThemeService $themeService)
+    {
+        $this->themeService = $themeService;
+    }
 
-        $content = $fileSystem->get("themes/fusion/{$decodedTemplate}.html");
+    public function get($theme, $template, ThemeService $themeService): JsonResponse
+    {
+        $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
+        $content = $themeService->getTemplateContent($theme, $decodedTemplate);
 
         return new JsonResponse([
             "name" => $decodedTemplate,
             "content" => $content,
         ]);
+    }
+
+    public function put(
+        $theme,
+        $template,
+        Request $request,
+        TemplateRepository $templateRepository
+    ): Response {
+        $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
+        $content = trim($request->request->get("content"));
+        $templateModel = $templateRepository->find($theme, $decodedTemplate);
+
+        // Delete
+        if (!strlen($content)) {
+            if ($templateModel) {
+                $templateRepository->delete($templateModel->getId());
+            }
+        }
+        // Update
+        elseif ($templateModel) {
+            $templateRepository->update($templateModel->getId(), $content);
+        }
+        // Create
+        else {
+            $templateRepository->create($theme, $decodedTemplate, $content);
+        }
+
+        return new Response("", Response::HTTP_NO_CONTENT);
+    }
+
+    private function guardAgainstInvalidTemplate($name): string
+    {
+        $template = $this->themeService->resolveTemplate($name);
+
+        if (!in_array($template, $this->themeService->getEditableTemplates())) {
+            throw new EntityNotFoundException();
+        }
+
+        return $template;
     }
 }

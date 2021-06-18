@@ -12,14 +12,27 @@ export class Api {
         return response.data;
     }
 
-    public async getThemeTemplateList(): Promise<TemplateCollectionResponse> {
-        const response = await this.axios.get("/api/admin/theme-templates");
+    public async getTemplateList(): Promise<TemplateCollectionResponse> {
+        const response = await this.axios.get("/api/admin/templates");
         return response.data;
     }
 
-    public async getThemeTemplate(id: string): Promise<TemplateResourceResponse> {
-        const name = id.replaceAll("/", "-");
-        const response = await this.axios.get(`/api/admin/theme-templates/${name}`);
+    public async getTemplate(theme: string, name: string): Promise<TemplateResourceResponse> {
+        const encodedName = name.replaceAll("/", "-");
+        const encodedTheme = encodeURIComponent(theme);
+        const response = await this.axios.get(
+            `/api/admin/themes/${encodedTheme}/templates/${encodedName}`
+        );
+        return response.data;
+    }
+
+    public async putTemplate(theme: string, name: string, content: string): Promise<void> {
+        const encodedName = name.replaceAll("/", "-");
+        const encodedTheme = encodeURIComponent(theme);
+        const response = await this.axios.put(
+            `/api/admin/themes/${encodedTheme}/templates/${encodedName}`,
+            { content }
+        );
         return response.data;
     }
 }
