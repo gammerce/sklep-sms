@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Theme\ThemeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ThemeTemplateCollection
+class TemplateCollection
 {
     public function get(ThemeService $themeService): JsonResponse
     {

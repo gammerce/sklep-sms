@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ThemeTemplateResource
 {
     public function get(
+        $theme,
         $template,
         ThemeService $themeService,
         FileSystemContract $fileSystem

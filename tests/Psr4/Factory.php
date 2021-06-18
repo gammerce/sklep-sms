@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\Models\ServerService;
 use App\Models\Service;
 use App\Models\SmsCode;
+use App\Models\Template;
 use App\Models\User;
 use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
@@ -20,6 +21,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\SmsCodeRepository;
+use App\Repositories\TemplateRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
@@ -57,6 +59,7 @@ class Factory
     private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
     private MybbUserServiceRepository $mybbUserServiceRepository;
     private GroupRepository $groupRepository;
+    private TemplateRepository $templateRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -70,7 +73,8 @@ class Factory
         SmsCodeRepository $smsCodeRepository,
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
         MybbUserServiceRepository $mybbUserServiceRepository,
-        GroupRepository $groupRepository
+        GroupRepository $groupRepository,
+        TemplateRepository $templateRepository
     ) {
         $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
@@ -85,6 +89,7 @@ class Factory
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
         $this->mybbUserServiceRepository = $mybbUserServiceRepository;
         $this->groupRepository = $groupRepository;
+        $this->templateRepository = $templateRepository;
     }
 
     public function server(array $attributes = []): Server
@@ -387,5 +392,23 @@ class Factory
         );
 
         return $this->groupRepository->create($attributes["name"], $attributes["permissions"]);
+    }
+
+    public function template(array $attributes = []): Template
+    {
+        $attributes = array_merge(
+            [
+                "theme" => "example",
+                "name" => $this->faker->word,
+                "content" => $this->faker->sentence,
+            ],
+            $attributes
+        );
+
+        return $this->templateRepository->create(
+            $attributes["theme"],
+            $attributes["name"],
+            $attributes["content"]
+        );
     }
 }
