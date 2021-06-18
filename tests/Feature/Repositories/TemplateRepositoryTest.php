@@ -127,4 +127,36 @@ class TemplateRepositoryTest extends TestCase
         // then
         $this->assertNull($foundTemplate);
     }
+
+    /** @test */
+    public function list_themes()
+    {
+        // given
+        $this->factory->template(["theme" => "foo"]);
+        $this->factory->template(["theme" => "bar"]);
+
+        // when
+        $themes = $this->templateRepository->listThemes();
+
+        // then
+        $this->assertEquals(["foo", "bar"], $themes);
+    }
+
+    /** @test */
+    public function list_templates()
+    {
+        // given
+        $template = $this->factory->template([
+            "theme" => "foo",
+            "template" => "shop/pages/contact",
+            "content" => "a b c",
+        ]);
+
+        // when
+        $result = $this->templateRepository->listTemplates("foo");
+
+        // then
+        $this->assertCount(1, $result);
+        $this->assertEquals($template->getId(), $result[0]->getId());
+    }
 }
