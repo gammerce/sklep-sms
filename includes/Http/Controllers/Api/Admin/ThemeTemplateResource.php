@@ -38,20 +38,27 @@ class ThemeTemplateResource
         $content = trim($request->request->get("content"));
         $templateModel = $templateRepository->find($theme, $decodedTemplate);
 
-        // Delete
-        if (!strlen($content)) {
-            if ($templateModel) {
-                $templateRepository->delete($templateModel->getId());
-            }
-        }
         // Update
-        elseif ($templateModel) {
+        if ($templateModel) {
             $templateRepository->update($templateModel->getId(), $content);
         }
         // Create
         else {
             $templateRepository->create($theme, $decodedTemplate, $content);
         }
+
+        return new Response("", Response::HTTP_NO_CONTENT);
+    }
+
+    public function delete($theme, $template, TemplateRepository $templateRepository)
+    {
+        $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
+        $templateModel = $templateRepository->find($theme, $decodedTemplate);
+        if (!$templateModel) {
+            throw new EntityNotFoundException();
+        }
+
+        $templateRepository->delete($templateModel->getId());
 
         return new Response("", Response::HTTP_NO_CONTENT);
     }
