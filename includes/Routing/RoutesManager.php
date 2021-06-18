@@ -23,7 +23,7 @@ use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
 use App\Http\Controllers\Api\Admin\ThemeCollection;
-use App\Http\Controllers\Api\Admin\TemplateCollection;
+use App\Http\Controllers\Api\Admin\ThemeTemplateCollection;
 use App\Http\Controllers\Api\Admin\ThemeTemplateResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
@@ -536,6 +536,9 @@ class RoutesManager
                 $r->get("/api/admin/themes", [
                     "uses" => ThemeCollection::class . "@get",
                 ]);
+                $r->get("/api/admin/themes/{theme}/templates", [
+                    "uses" => ThemeTemplateCollection::class . "@get",
+                ]);
                 $r->get("/api/admin/themes/{theme}/templates/{template}", [
                     "uses" => ThemeTemplateResource::class . "@get",
                 ]);
@@ -544,9 +547,6 @@ class RoutesManager
                 ]);
                 $r->delete("/api/admin/themes/{theme}/templates/{template}", [
                     "uses" => ThemeTemplateResource::class . "@delete",
-                ]);
-                $r->get("/api/admin/templates", [
-                    "uses" => TemplateCollection::class . "@get",
                 ]);
             }
         );

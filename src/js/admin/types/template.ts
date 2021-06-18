@@ -1,5 +1,6 @@
 export interface Template {
     name: string;
+    deletable: boolean;
 }
 
 export interface TemplateCollectionResponse {

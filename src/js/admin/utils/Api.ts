@@ -2,6 +2,12 @@ import { AxiosInstance } from "axios";
 import { TemplateCollectionResponse, TemplateResourceResponse } from "../types/template";
 import { ThemeCollectionResponse } from "../types/theme";
 
+const prepareTemplateUrl = (theme: string, name: string): string => {
+    const encodedName = name.replaceAll("/", "-");
+    const encodedTheme = encodeURIComponent(theme);
+    return `/api/admin/themes/${encodedTheme}/templates/${encodedName}`;
+};
+
 export class Api {
     public constructor(private readonly axios: AxiosInstance) {
         //
@@ -12,27 +18,21 @@ export class Api {
         return response.data;
     }
 
-    public async getTemplateList(): Promise<TemplateCollectionResponse> {
-        const response = await this.axios.get("/api/admin/templates");
+    public async getTemplateList(theme: string): Promise<TemplateCollectionResponse> {
+        const response = await this.axios.get(prepareTemplateUrl(theme, ""));
         return response.data;
     }
 
     public async getTemplate(theme: string, name: string): Promise<TemplateResourceResponse> {
-        const encodedName = name.replaceAll("/", "-");
-        const encodedTheme = encodeURIComponent(theme);
-        const response = await this.axios.get(
-            `/api/admin/themes/${encodedTheme}/templates/${encodedName}`
-        );
+        const response = await this.axios.get(prepareTemplateUrl(theme, name));
         return response.data;
     }
 
     public async putTemplate(theme: string, name: string, content: string): Promise<void> {
-        const encodedName = name.replaceAll("/", "-");
-        const encodedTheme = encodeURIComponent(theme);
-        const response = await this.axios.put(
-            `/api/admin/themes/${encodedTheme}/templates/${encodedName}`,
-            { content }
-        );
-        return response.data;
+        await this.axios.put(prepareTemplateUrl(theme, name), { content });
+    }
+
+    public async deleteTemplate(theme: string, name: string): Promise<void> {
+        await this.axios.delete(prepareTemplateUrl(theme, name));
     }
 }

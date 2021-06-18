@@ -8,16 +8,23 @@ import { handleError } from "../../../shop/utils/utils";
 import { loader } from "../../../general/loader";
 import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
+import { onKeyPress } from "../../../general/effects";
 
 interface SelectOption {
     label: string;
     value: string;
 }
 
+interface TemplateSelectOption {
+    label: string;
+    value: string;
+    deletable: boolean;
+}
+
 export const ThemeView: FunctionComponent = () => {
     const [templateList, setTemplateList] = useState<SelectOption[]>();
     const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
-    const [selectedTemplate, setSelectedTemplate] = useState<SelectOption>();
+    const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelectOption>();
     const [fetchedTemplateContent, setFetchedTemplateContent] = useState<string>("");
     const [templateContent, setTemplateContent] = useState<string>("");
 
@@ -28,17 +35,32 @@ export const ThemeView: FunctionComponent = () => {
         value: "fusion",
     });
 
-    // TODO Don't allow to change template when there are changes in content
-    // TODO Provide the ability to save changes
-    // TODO Provide the ability to reset changes
+    const areChangesUnsaved = fetchedTemplateContent !== templateContent;
 
-    const loadTemplateList = async () => {
+    const loadThemeList = async () => {
+        try {
+            setThemeListLoading(true);
+            const response = await api.getThemeList();
+            const options = response.data.map((theme) => ({
+                label: theme.name,
+                value: theme.name,
+            }));
+            setThemeList(options);
+        } catch (e) {
+            infobox.showError(e.toString());
+        } finally {
+            setThemeListLoading(false);
+        }
+    };
+
+    const loadTemplateList = async (theme: string) => {
         try {
             setTemplateListLoading(true);
-            const response = await api.getTemplateList();
+            const response = await api.getTemplateList(theme);
             const options = response.data.map((template) => ({
                 label: template.name,
                 value: template.name,
+                deletable: template.deletable,
             }));
             setTemplateList(options);
         } catch (e) {
@@ -61,26 +83,15 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadThemeList = async () => {
-        try {
-            setThemeListLoading(true);
-            const response = await api.getThemeList();
-            const options = response.data.map((theme) => ({
-                label: theme.name,
-                value: theme.name,
-            }));
-            setThemeList(options);
-        } catch (e) {
-            infobox.showError(e.toString());
-        } finally {
-            setThemeListLoading(false);
-        }
-    };
-
     const updateTemplate = async () => {
+        if (!areChangesUnsaved) {
+            return;
+        }
+
         try {
             loader.show();
             await api.putTemplate(selectedTheme.value, selectedTemplate.value, templateContent);
+            setFetchedTemplateContent(templateContent);
             infobox.showSuccess(__("template_updated"));
         } catch (e) {
             infobox.showError(e.toString());
@@ -89,18 +100,44 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const handleThemeChange = (selectedOption: SelectOption) => {
-        setSelectedTheme(selectedOption);
-        loadTemplate(selectedOption.value, selectedTemplate.value).catch(handleError);
+    const deleteTemplate = async () => {
+        const theme = selectedTheme.value;
+        const name = selectedTemplate.value;
+
+        if (!confirm(__("delete_template_confirmation", name, theme))) {
+            return;
+        }
+
+        try {
+            loader.show();
+            await api.deleteTemplate(theme, name);
+            infobox.showSuccess(__("template_deleted"));
+        } catch (e) {
+            infobox.showError(e.toString());
+        } finally {
+            loader.hide();
+        }
     };
 
-    const handleTemplateChange = (selectedOption: SelectOption) => {
+    const handleThemeChange = (selectedOption: SelectOption) => {
+        if (areChangesUnsaved && !confirm(__("template_unsaved_changes_confirmation"))) {
+            return;
+        }
+
+        setSelectedTheme(selectedOption);
+    };
+
+    const handleTemplateChange = (selectedOption: TemplateSelectOption) => {
+        if (areChangesUnsaved && !confirm(__("template_unsaved_changes_confirmation"))) {
+            return;
+        }
+
         if (selectedOption === null) {
             setSelectedTemplate(undefined);
             setTemplateContent("");
+            setFetchedTemplateContent("");
         } else {
             setSelectedTemplate(selectedOption);
-            loadTemplate(selectedTheme.value, selectedOption.value).catch(handleError);
         }
     };
 
@@ -108,8 +145,19 @@ export const ThemeView: FunctionComponent = () => {
 
     useEffect(() => {
         loadThemeList().catch(handleError);
-        loadTemplateList().catch(handleError);
     }, []);
+
+    useEffect(() => {
+        loadTemplateList(selectedTheme.value).catch(handleError);
+    }, [selectedTheme]);
+    useEffect(() => {
+        if (selectedTemplate) {
+            loadTemplate(selectedTheme.value, selectedTemplate.value).catch(handleError);
+        }
+    }, [selectedTheme, selectedTemplate]);
+    useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
+        templateContent,
+    ]);
 
     return (
         <>
@@ -139,10 +187,19 @@ export const ThemeView: FunctionComponent = () => {
                 <div className="control">
                     <button
                         className="button is-success"
-                        disabled={fetchedTemplateContent === templateContent}
+                        disabled={!areChangesUnsaved}
                         onClick={updateTemplate}
                     >
                         {__("save")}
+                    </button>
+                </div>
+                <div className="control">
+                    <button
+                        className="button is-danger"
+                        disabled={!selectedTemplate?.deletable}
+                        onClick={deleteTemplate}
+                    >
+                        {__("delete")}
                     </button>
                 </div>
             </div>

@@ -1,4 +1,4 @@
-const sprintf = (text: string, ...args: any[]): string => {
+const sprintf = (text: string, ...args: string[]): string => {
     for (const [index, arg] of args.entries()) {
         text = text.replace(`{${index + 1}}`, arg);
     }
@@ -6,4 +6,5 @@ const sprintf = (text: string, ...args: any[]): string => {
     return text;
 };
 
-export const __ = (key: string, ...args: any[]): string => sprintf(window.lang[key] ?? key, args);
+export const __ = (key: string, ...args: string[]): string =>
+    sprintf(window.lang[key] ?? key, ...args);

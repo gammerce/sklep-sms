@@ -109,6 +109,22 @@ EOF
             ->all();
     }
 
+    /**
+     * @param string $theme
+     * @return Template[]
+     */
+    public function listTemplates($theme): array
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_templates` WHERE `theme` = ? ORDER BY `name` ASC"
+        );
+        $statement->execute([$theme]);
+
+        return collect($statement)
+            ->map(fn(array $row) => $this->mapToModel($row))
+            ->all();
+    }
+
     private function mapToModel(array $data): Template
     {
         return new Template(
