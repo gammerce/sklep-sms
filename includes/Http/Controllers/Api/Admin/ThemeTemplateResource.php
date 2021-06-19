@@ -2,25 +2,29 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Theme\TemplateContentService;
 use App\Theme\TemplateRepository;
-use App\Theme\ThemeService;
+use App\Theme\TemplateService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class ThemeTemplateResource
 {
-    private ThemeService $themeService;
+    private TemplateService $templateService;
 
-    public function __construct(ThemeService $themeService)
+    public function __construct(TemplateService $templateService)
     {
-        $this->themeService = $themeService;
+        $this->templateService = $templateService;
     }
 
-    public function get($theme, $template, ThemeService $themeService): JsonResponse
-    {
+    public function get(
+        $theme,
+        $template,
+        TemplateContentService $templateContentService
+    ): JsonResponse {
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
-        $content = $themeService->getTemplateContent($theme, $decodedTemplate);
+        $content = $templateContentService->get($theme, $decodedTemplate);
 
         return new JsonResponse([
             "name" => $decodedTemplate,
@@ -65,9 +69,9 @@ class ThemeTemplateResource
 
     private function guardAgainstInvalidTemplate($name): string
     {
-        $template = $this->themeService->resolveTemplate($name);
+        $template = $this->templateService->resolveName($name);
 
-        if (!in_array($template, $this->themeService->getEditableTemplates())) {
+        if (!in_array($template, $this->templateService->listEditable())) {
             throw new EntityNotFoundException();
         }
 
