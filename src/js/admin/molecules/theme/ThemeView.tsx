@@ -21,8 +21,6 @@ interface TemplateSelectOption {
     deletable: boolean;
 }
 
-// TODO Fix reset button activity
-
 export const ThemeView: FunctionComponent = () => {
     const [templateList, setTemplateList] = useState<TemplateSelectOption[]>([]);
     const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
@@ -98,6 +96,7 @@ export const ThemeView: FunctionComponent = () => {
             setUpdating(true);
             await api.putTemplate(selectedTheme.value, selectedTemplate.value, templateContent);
             setFetchedTemplateContent(templateContent);
+            changeDeletabilityTo(true);
             infobox.showSuccess(__("template_updated"));
         } catch (e) {
             infobox.showError(e.toString());
@@ -118,12 +117,29 @@ export const ThemeView: FunctionComponent = () => {
             setResetting(true);
             await api.deleteTemplate(theme, name);
             await loadTemplate(theme, name);
+            changeDeletabilityTo(false);
             infobox.showSuccess(__("template_reset"));
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
             setResetting(false);
         }
+    };
+
+    const changeDeletabilityTo = (value: boolean): void => {
+        // Don't change deletability to a current value
+        if (selectedTemplate.deletable === value) {
+            return;
+        }
+
+        const newTemplateList = templateList.map((t) => {
+            if (t.value == selectedTemplate.value) {
+                return { ...t, deletable: value };
+            }
+
+            return t;
+        });
+        setTemplateList(newTemplateList);
     };
 
     const handleThemeChange = (selectedOption: SelectOption) => {
@@ -141,8 +157,6 @@ export const ThemeView: FunctionComponent = () => {
 
         if (selectedOption === null) {
             setSelectedTemplate(undefined);
-            setTemplateContent("");
-            setFetchedTemplateContent("");
         } else {
             setSelectedTemplate(selectedOption);
         }
@@ -163,13 +177,24 @@ export const ThemeView: FunctionComponent = () => {
     useEffect(() => {
         if (selectedTemplate) {
             loadTemplate(selectedTheme.value, selectedTemplate.value).catch(handleError);
+        } else {
+            setTemplateContent("");
+            setFetchedTemplateContent("");
         }
-    }, [selectedTheme, selectedTemplate]);
+    }, [selectedTheme, selectedTemplate?.value]);
 
     // Handle saving using ctrl + s
     useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
         templateContent,
     ]);
+
+    // Update selected template
+    useEffect(() => {
+        if (selectedTemplate) {
+            const newTemplate = templateList.find((t) => t.value === selectedTemplate.value);
+            setSelectedTemplate(newTemplate);
+        }
+    }, [templateList]);
 
     // Set template if query is passed
     useEffect(() => {
@@ -193,6 +218,17 @@ export const ThemeView: FunctionComponent = () => {
     // Display loader
     useEffect(() => toggleLoader(templateLoading), [templateLoading]);
 
+    const templateStyles = {
+        option: (styles, data) => {
+            const selectOption: TemplateSelectOption = data.data;
+
+            return {
+                ...styles,
+                fontWeight: selectOption.deletable ? "bold" : "normal",
+            };
+        },
+    };
+
     return (
         <>
             <div className="field is-grouped">
@@ -212,6 +248,7 @@ export const ThemeView: FunctionComponent = () => {
                         options={templateList}
                         value={selectedTemplate}
                         placeholder={__("select_template")}
+                        styles={templateStyles}
                         onChange={handleTemplateChange}
                         isLoading={templateListLoading}
                         isClearable
