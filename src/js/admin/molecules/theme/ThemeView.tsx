@@ -5,10 +5,10 @@ import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/htmlmixed/htmlmixed";
 import { api } from "../../utils/container";
 import { handleError } from "../../../shop/utils/utils";
-import { loader } from "../../../general/loader";
 import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
-import { onKeyPress } from "../../../general/effects";
+import { onKeyPress, toggleLoader } from "../../../general/effects";
+import classNames from "classnames";
 
 interface SelectOption {
     label: string;
@@ -21,8 +21,10 @@ interface TemplateSelectOption {
     deletable: boolean;
 }
 
+// TODO Fix reset button activity
+
 export const ThemeView: FunctionComponent = () => {
-    const [templateList, setTemplateList] = useState<SelectOption[]>();
+    const [templateList, setTemplateList] = useState<TemplateSelectOption[]>([]);
     const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
     const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelectOption>();
     const [fetchedTemplateContent, setFetchedTemplateContent] = useState<string>("");
@@ -34,6 +36,10 @@ export const ThemeView: FunctionComponent = () => {
         label: "fusion",
         value: "fusion",
     });
+
+    const [templateLoading, setTemplateLoading] = useState<boolean>(false);
+    const [updating, setUpdating] = useState<boolean>(false);
+    const [resetting, setResetting] = useState<boolean>(false);
 
     const areChangesUnsaved = fetchedTemplateContent !== templateContent;
 
@@ -72,14 +78,14 @@ export const ThemeView: FunctionComponent = () => {
 
     const loadTemplate = async (theme: string, name: string) => {
         try {
-            loader.show();
+            setTemplateLoading(true);
             const response = await api.getTemplate(theme, name);
             setTemplateContent(response.content);
             setFetchedTemplateContent(response.content);
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
-            loader.hide();
+            setTemplateLoading(false);
         }
     };
 
@@ -89,14 +95,14 @@ export const ThemeView: FunctionComponent = () => {
         }
 
         try {
-            loader.show();
+            setUpdating(true);
             await api.putTemplate(selectedTheme.value, selectedTemplate.value, templateContent);
             setFetchedTemplateContent(templateContent);
             infobox.showSuccess(__("template_updated"));
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
-            loader.hide();
+            setUpdating(false);
         }
     };
 
@@ -109,13 +115,14 @@ export const ThemeView: FunctionComponent = () => {
         }
 
         try {
-            loader.show();
+            setResetting(true);
             await api.deleteTemplate(theme, name);
+            await loadTemplate(theme, name);
             infobox.showSuccess(__("template_reset"));
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
-            loader.hide();
+            setResetting(false);
         }
     };
 
@@ -147,17 +154,44 @@ export const ThemeView: FunctionComponent = () => {
         loadThemeList().catch(handleError);
     }, []);
 
+    // Reload templates on theme change
     useEffect(() => {
         loadTemplateList(selectedTheme.value).catch(handleError);
     }, [selectedTheme]);
+
+    // Load template on theme/template change
     useEffect(() => {
         if (selectedTemplate) {
             loadTemplate(selectedTheme.value, selectedTemplate.value).catch(handleError);
         }
     }, [selectedTheme, selectedTemplate]);
+
+    // Handle saving using ctrl + s
     useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
         templateContent,
     ]);
+
+    // Set template if query is passed
+    useEffect(() => {
+        if (selectedTemplate) {
+            return;
+        }
+
+        const searchParams = new URLSearchParams(window.location.search);
+        const templateName = searchParams.get("name");
+        if (!templateName) {
+            return;
+        }
+
+        const template = templateList.find((t) => t.value == templateName);
+        if (template) {
+            history.replaceState("theme", document.title, window.location.pathname);
+            setSelectedTemplate(template);
+        }
+    }, [templateList]);
+
+    // Display loader
+    useEffect(() => toggleLoader(templateLoading), [templateLoading]);
 
     return (
         <>
@@ -186,7 +220,7 @@ export const ThemeView: FunctionComponent = () => {
 
                 <div className="control">
                     <button
-                        className="button is-success"
+                        className={classNames(["button is-success"], { "is-loading": updating })}
                         disabled={!areChangesUnsaved}
                         onClick={updateTemplate}
                     >
@@ -195,7 +229,7 @@ export const ThemeView: FunctionComponent = () => {
                 </div>
                 <div className="control">
                     <button
-                        className="button is-danger"
+                        className={classNames(["button is-danger"], { "is-loading": resetting })}
                         disabled={!selectedTemplate?.deletable}
                         onClick={resetTemplate}
                     >
