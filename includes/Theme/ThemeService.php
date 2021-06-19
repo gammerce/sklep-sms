@@ -1,20 +1,22 @@
 <?php
 namespace App\Theme;
 
-use App\Repositories\TemplateRepository;
 use App\Support\FileSystemContract;
 
 class ThemeService
 {
     private TemplateRepository $templateRepository;
     private FileSystemContract $fileSystem;
+    private Template $template;
 
     public function __construct(
         TemplateRepository $templateRepository,
-        FileSystemContract $fileSystem
+        FileSystemContract $fileSystem,
+        Template $template
     ) {
         $this->templateRepository = $templateRepository;
         $this->fileSystem = $fileSystem;
+        $this->template = $template;
     }
 
     public function getEditableTemplates(): array
@@ -34,11 +36,11 @@ class ThemeService
             return $template->getContent();
         }
 
-        $template = $this->templateRepository->find("fusion", $name);
+        $template = $this->templateRepository->find(Config::DEFAULT_THEME, $name);
         if ($template) {
             return $template->getContent();
         }
 
-        return $this->fileSystem->get("themes/fusion/$name.html");
+        return $this->template->get($name);
     }
 }

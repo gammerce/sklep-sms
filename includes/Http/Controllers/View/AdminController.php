@@ -8,7 +8,7 @@ use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\Support\Meta;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Application;
 use App\System\Auth;
 use App\System\License;

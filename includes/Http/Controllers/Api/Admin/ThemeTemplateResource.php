@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Repositories\TemplateRepository;
+use App\Theme\TemplateRepository;
 use App\Theme\ThemeService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

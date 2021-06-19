@@ -10,7 +10,7 @@ use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\Div;

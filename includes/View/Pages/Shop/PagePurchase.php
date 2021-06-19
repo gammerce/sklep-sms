@@ -11,7 +11,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Support\FileSystem;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;

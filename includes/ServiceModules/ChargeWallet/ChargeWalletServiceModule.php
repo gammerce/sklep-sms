@@ -17,7 +17,7 @@ use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Support\Money;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;

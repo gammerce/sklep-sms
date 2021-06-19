@@ -6,7 +6,7 @@ use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
 use App\Service\UserServiceAccessService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;

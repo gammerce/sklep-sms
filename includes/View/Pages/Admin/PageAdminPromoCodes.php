@@ -11,7 +11,7 @@ use App\Models\Service;
 use App\PromoCode\QuantityType;
 use App\Repositories\PromoCodeRepository;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\User\Permission;

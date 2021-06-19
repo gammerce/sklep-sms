@@ -8,7 +8,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;

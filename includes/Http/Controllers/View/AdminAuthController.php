@@ -5,7 +5,7 @@ use App\Managers\UserManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\IntendedUrlService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\RedirectResponse;

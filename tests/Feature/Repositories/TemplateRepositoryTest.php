@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Feature\Repositories;
 
-use App\Repositories\TemplateRepository;
+use App\Theme\TemplateRepository;
 use Tests\Psr4\TestCases\TestCase;
 
 class TemplateRepositoryTest extends TestCase

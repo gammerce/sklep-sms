@@ -4,7 +4,7 @@ namespace App\View\Pages\Shop;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
 use App\Service\ServiceListService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;

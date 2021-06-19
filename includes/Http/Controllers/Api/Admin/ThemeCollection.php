@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Repositories\TemplateRepository;
+use App\Theme\TemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ThemeCollection

@@ -13,7 +13,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\Verification\Abstracts\SupportSms;

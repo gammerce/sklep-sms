@@ -20,7 +20,7 @@ use App\Support\FileSystemContract;
 use App\Support\Mailer;
 use App\Support\Meta;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Application;
 use App\System\Auth;
 use App\System\ExternalConfigProvider;

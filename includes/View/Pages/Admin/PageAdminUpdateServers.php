@@ -4,7 +4,7 @@ namespace App\View\Pages\Admin;
 use App\Managers\ServerManager;
 use App\Requesting\Requester;
 use App\Server\Platform;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Support\Version;
 use App\Translation\TranslationManager;
 use App\User\Permission;

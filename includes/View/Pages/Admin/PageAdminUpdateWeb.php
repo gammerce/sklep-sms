@@ -2,7 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Support\Meta;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Support\Version;
 use App\Translation\TranslationManager;
 use App\User\Permission;

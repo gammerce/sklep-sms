@@ -13,7 +13,7 @@ use App\Payment\General\PurchaseInformation;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Repositories\PaymentTransferRepository;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\PayPal;

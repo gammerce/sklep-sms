@@ -15,7 +15,7 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;

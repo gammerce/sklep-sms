@@ -21,7 +21,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\SmsCodeRepository;
-use App\Repositories\TemplateRepository;
+use App\Theme\TemplateRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;

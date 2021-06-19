@@ -5,7 +5,7 @@ use App\Exceptions\EntityNotFoundException;
 use App\Managers\ServiceModuleManager;
 use App\Payment\General\PurchaseDataService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;

@@ -6,7 +6,7 @@ use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\FileSystem;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

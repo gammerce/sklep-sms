@@ -1,5 +1,5 @@
 <?php
-namespace App\Repositories;
+namespace App\Theme;
 
 use App\Models\Template;
 use App\Support\Database;

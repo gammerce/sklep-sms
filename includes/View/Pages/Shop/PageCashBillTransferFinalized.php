@@ -3,7 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseInformation;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;

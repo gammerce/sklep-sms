@@ -8,7 +8,7 @@ use App\Managers\PaymentModuleManager;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;

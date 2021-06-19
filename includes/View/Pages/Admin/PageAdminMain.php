@@ -12,7 +12,7 @@ use App\Server\Platform;
 use App\Support\Database;
 use App\Support\Meta;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Support\Version;
 use App\System\License;
 use App\Translation\TranslationManager;

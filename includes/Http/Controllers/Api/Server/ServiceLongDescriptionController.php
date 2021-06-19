@@ -5,7 +5,7 @@ use App\Http\Responses\HtmlResponse;
 use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\RawHtml;
 use App\View\Html\Script;

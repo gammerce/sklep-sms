@@ -11,7 +11,7 @@ use App\Repositories\UserRepository;
 use App\Support\Database;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\User\Permission;

@@ -4,7 +4,7 @@ namespace App\ServiceModules;
 use App\Models\Service;
 use App\Models\UserService;
 use App\Service\ServiceDescriptionService;
-use App\Support\Template;
+use App\Theme\Template;
 
 abstract class ServiceModule
 {

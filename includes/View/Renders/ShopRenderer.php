@@ -2,7 +2,7 @@
 namespace App\View\Renders;
 
 use App\Managers\WebsiteHeader;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\License;
 use App\System\Settings;
 use App\View\Blocks\BlockLoggedInfo;

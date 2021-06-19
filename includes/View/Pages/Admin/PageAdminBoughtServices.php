@@ -8,7 +8,7 @@ use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;

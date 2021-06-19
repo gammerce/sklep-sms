@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;

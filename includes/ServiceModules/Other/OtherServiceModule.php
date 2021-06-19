@@ -14,7 +14,7 @@ use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
 use App\ServiceModules\ServiceModule;
-use App\Support\Template;
+use App\Theme\Template;
 
 class OtherServiceModule extends ServiceModule implements
     IServiceCreate,

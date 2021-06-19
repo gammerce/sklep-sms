@@ -1,12 +1,13 @@
 <?php
-namespace App\Support;
+namespace App\Theme;
 
 use App\Routing\UrlGenerator;
+use App\Support\FileSystemContract;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
-class Template
+final class Template
 {
     private Settings $settings;
     private Translator $lang;
@@ -26,20 +27,37 @@ class Template
         $this->fileSystem = $fileSystem;
     }
 
+    /**
+     * @param string $templateName
+     * @param array $data
+     * @param bool $escapeSlashes
+     * @param bool $htmlComments
+     * @return string
+     */
     public function render(
         $templateName,
         array $data = [],
-        $eslashes = true,
-        $htmlcomments = true
+        $escapeSlashes = true,
+        $htmlComments = true
     ): string {
-        $template = $this->getTemplate($templateName, $eslashes, $htmlcomments);
+        $template = $this->getTemplate($templateName, $escapeSlashes, $htmlComments);
         $compiled = $this->compileTemplate($template);
         return $this->evalTemplate($compiled, $data);
     }
 
+    /**
+     * @param string $templateName
+     * @param array $data
+     * @return string
+     */
     public function renderNoComments($templateName, array $data = []): string
     {
         return $this->render($templateName, $data, true, false);
+    }
+
+    public function get($name): string
+    {
+        return $this->fileSystem->get("themes/{${Config::DEFAULT_THEME}}/$name.html");
     }
 
     /**
@@ -84,14 +102,14 @@ class Template
         if (strlen($language)) {
             $paths[] = "themes/$theme/$title.$language";
             $paths[] = "themes/$theme/$title.$language.html";
-            $paths[] = "themes/fusion/$title.$language";
-            $paths[] = "themes/fusion/$title.$language.html";
+            $paths[] = "themes/{${Config::DEFAULT_THEME}}/$title.$language";
+            $paths[] = "themes/{${Config::DEFAULT_THEME}}/$title.$language.html";
         }
 
         $paths[] = "themes/$theme/$title";
         $paths[] = "themes/$theme/$title.html";
-        $paths[] = "themes/fusion/$title";
-        $paths[] = "themes/fusion/$title.html";
+        $paths[] = "themes/{${Config::DEFAULT_THEME}}/$title";
+        $paths[] = "themes/{${Config::DEFAULT_THEME}}/$title.html";
 
         return $paths;
     }

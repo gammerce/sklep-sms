@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Exceptions\UnauthorizedException;
 use App\Managers\UserManager;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\User\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

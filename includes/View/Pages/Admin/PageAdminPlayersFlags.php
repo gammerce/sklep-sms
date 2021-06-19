@@ -5,7 +5,7 @@ use App\Managers\ServerManager;
 use App\ServiceModules\ExtraFlags\PlayerFlag;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;

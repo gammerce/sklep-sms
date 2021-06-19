@@ -3,7 +3,7 @@ namespace App\View\Pages\Shop;
 
 use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Pages\Page;
