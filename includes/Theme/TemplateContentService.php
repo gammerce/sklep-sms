@@ -111,17 +111,43 @@ class TemplateContentService
         $paths = [];
 
         if (strlen($language)) {
-            $paths[] = "themes/$theme/$templateName.$language";
-            $paths[] = "themes/$theme/$templateName.$language.html";
-            $paths[] = "themes/{${Config::DEFAULT_THEME}}/$templateName.$language";
-            $paths[] = "themes/{${Config::DEFAULT_THEME}}/$templateName.$language.html";
+            $paths[] = $this->getTemplatePath($theme, $templateName, $language);
+            $paths[] = $this->getTemplatePath($theme, $templateName, $language, "html");
+            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $language);
+            $paths[] = $this->getTemplatePath(
+                Config::DEFAULT_THEME,
+                $templateName,
+                $language,
+                "html"
+            );
         }
 
-        $paths[] = "themes/$theme/$templateName";
-        $paths[] = "themes/$theme/$templateName.html";
-        $paths[] = "themes/{${Config::DEFAULT_THEME}}/$templateName";
-        $paths[] = "themes/{${Config::DEFAULT_THEME}}/$templateName.html";
+        $paths[] = $this->getTemplatePath($theme, $templateName);
+        $paths[] = $this->getTemplatePath($theme, $templateName, null, "html");
+        $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName);
+        $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, null, "html");
 
         return $paths;
+    }
+
+    /**
+     * @param string $theme
+     * @param string $templateName
+     * @param string|null $language
+     * @param string|null $ext
+     * @return string
+     */
+    private function getTemplatePath($theme, $templateName, $language = null, $ext = null): string
+    {
+        $output = "themes/$theme/$templateName";
+        if ($language) {
+            $output .= ".$language";
+        }
+
+        if ($ext) {
+            $output .= ".$ext";
+        }
+
+        return $output;
     }
 }

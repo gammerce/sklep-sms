@@ -1,22 +1,17 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
-use App\Theme\TemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Theme\ThemeRepository;
 
 class ThemeCollection
 {
-    public function get(TemplateRepository $templateRepository): JsonResponse
+    public function get(ThemeRepository $themeService): JsonResponse
     {
-        $themes = $templateRepository->listThemes();
-        if (!in_array("fusion", $themes, true)) {
-            $themes = array_merge(["fusion"], $themes);
-        }
+        $data = collect($themeService->list())
+            ->map(fn($name) => compact("name"))
+            ->all();
 
-        return new JsonResponse([
-            "data" => collect($themes)
-                ->map(fn($name) => compact("name"))
-                ->all(),
-        ]);
+        return new JsonResponse(compact("data"));
     }
 }
