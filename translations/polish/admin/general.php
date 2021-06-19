@@ -59,7 +59,6 @@ return [
     "delete_service_er_row_is_referenced" =>
         "Nie można usunąć tej usługi, ponieważ wciąz istnieją usługi graczy.",
     "delete_sms_code" => "Kod SMS został prawidłowo usunięty.",
-    "delete_template_confirmation" => "Czy na pewno chcesz usunąć szablon '{1}' z motywu '{2}'?",
     "delete_user" => "Użytkownik został prawidłowo usunięty.",
     "description_on_server" => "Opis na serwerze\nHTML: niedozwolony",
     "description_on_www" => "Opis na stronie WWW\nHTML: dozwolony",
@@ -210,6 +209,9 @@ return [
     "provision" => "Prowizja",
     "regenerate_token" => "Wygeneruj token",
     "remaining_usage" => "Pozostałe użycia",
+    "reset" => "Reset",
+    "reset_template_confirmation" =>
+        "Czy na pewno chcesz usunąć zmiany w szablonie '{1}' z motywu '{2}'?",
     "script_updated" => "Skrypt sklepu jest zaktualizowany do najnowszej wersji.",
     "select_template" => "Wybierz szablon...",
     "sender_email" => "E-mail nadawcy",
@@ -242,7 +244,7 @@ return [
     "sum" => "Suma",
     "tag" => "Tag",
     "text" => "Tekst",
-    "template_deleted" => "Szablon został usunięty",
+    "template_reset" => "Szablon został zresetowany",
     "template_unsaved_changes_confirmation" =>
         "Twoje niezapisane zmiany zostaną utracone. Czy na pewno chcesz kontynuować?",
     "template_updated" => "Szablon został zaktualizowany",

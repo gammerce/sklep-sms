@@ -59,8 +59,6 @@ return [
     "delete_service_er_row_is_referenced" =>
         'This service cannot be deleted, there are still users\' services.',
     "delete_sms_code" => "SMS code removed successfully.",
-    "delete_template_confirmation" =>
-        "Are you sure you want to remove the '{1}' template from the '{2}' theme?",
     "delete_user" => "User removed successfully.",
     "description_on_server" => "Description on server\nHTML: not allowed",
     "description_on_www" => "Description on WWW website\nHTML: allowed",
@@ -209,6 +207,9 @@ return [
     "provision" => "Provision",
     "regenerate_token" => "Regenerate token",
     "remaining_usage" => "Remaining usage",
+    "reset" => "Reset",
+    "reset_template_confirmation" =>
+        "Are you sure you want to reset changes from the '{1}' template from the '{2}' theme?",
     "script_updated" => "Shop script is updated to the latest version.",
     "select_template" => "Select template...",
     "sender_email" => "Sender's e-mail",
@@ -241,7 +242,7 @@ return [
     "sum" => "Sum",
     "tag" => "Tag",
     "text" => "Text",
-    "template_deleted" => "Template's been deleted",
+    "template_reset" => "Template's been reset",
     "template_unsaved_changes_confirmation" =>
         "Your unsaved changes will be lost. Are you sure you want to continue?",
     "template_updated" => "Template's been updated",

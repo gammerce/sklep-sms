@@ -100,18 +100,18 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const deleteTemplate = async () => {
+    const resetTemplate = async () => {
         const theme = selectedTheme.value;
         const name = selectedTemplate.value;
 
-        if (!confirm(__("delete_template_confirmation", name, theme))) {
+        if (!confirm(__("reset_template_confirmation", name, theme))) {
             return;
         }
 
         try {
             loader.show();
             await api.deleteTemplate(theme, name);
-            infobox.showSuccess(__("template_deleted"));
+            infobox.showSuccess(__("template_reset"));
         } catch (e) {
             infobox.showError(e.toString());
         } finally {
@@ -197,9 +197,9 @@ export const ThemeView: FunctionComponent = () => {
                     <button
                         className="button is-danger"
                         disabled={!selectedTemplate?.deletable}
-                        onClick={deleteTemplate}
+                        onClick={resetTemplate}
                     >
-                        {__("delete")}
+                        {__("reset")}
                     </button>
                 </div>
             </div>
