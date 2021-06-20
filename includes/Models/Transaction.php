@@ -14,7 +14,7 @@ class Transaction
     private ?string $externalPaymentId;
     private string $serviceId;
     private int $serverId;
-    private float $quantity;
+    private ?float $quantity;
     private string $authData;
     private string $email;
     private ?string $promoCode;
@@ -123,7 +123,7 @@ class Transaction
         return $this->serverId;
     }
 
-    public function getQuantity(): float
+    public function getQuantity(): ?float
     {
         return $this->quantity;
     }

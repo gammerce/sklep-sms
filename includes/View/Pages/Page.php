@@ -25,10 +25,10 @@ abstract class Page
     /**
      * Get page title
      *
-     * @param Request $request
+     * @param Request|null $request
      * @return string
      */
-    abstract public function getTitle(Request $request): string;
+    abstract public function getTitle(Request $request = null): string;
 
     /**
      * Get page content

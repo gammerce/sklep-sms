@@ -30,7 +30,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
         $this->serviceManager = $serviceManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("service_takeover");
     }

@@ -46,8 +46,13 @@
 
                     <p class="menu-label">{{ __('main') }}</p>
                     <ul class="menu-list">
-                        {!! $mainLink !!} {!! $settingsLink !!} {!! $transactionServicesLink !!} {!!
-                        $servicesLink !!} {!! $serversLink !!} {!! $pricingLink !!}
+                        {!! $mainLink !!} {!! $settingsLink !!} {!! $servicesLink !!} {!!
+                        $serversLink !!} {!! $transactionServicesLink !!}
+                    </ul>
+
+                    <p class="menu-label">{{ __('shopping') }}</p>
+                    <ul class="menu-list">
+                        {!! $pricingLink !!} {!! $promoCodesLink !!} {!! $smsCodesLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('users_services') }}</p>
@@ -55,19 +60,19 @@
                         {!! $userServiceLink !!} {!! $playersFlagsLink !!}
                     </ul>
 
+                    <p class="menu-label">{{ __('finance') }}</p>
+                    <ul class="menu-list">
+                        {!! $boughtServicesLink !!} {!! $paymentsLink !!} {!! $incomeLink !!}
+                    </ul>
+
                     <p class="menu-label">{{ __('users') }}</p>
                     <ul class="menu-list">
                         {!! $usersLink !!} {!! $groupsLink !!}
                     </ul>
 
-                    <p class="menu-label">{{ __('additions') }}</p>
-                    <ul class="menu-list">
-                        {!! $incomeLink !!} {!! $promoCodesLink !!} {!! $smsCodesLink !!}
-                    </ul>
-
                     <p class="menu-label">{{ __('logs') }}</p>
                     <ul class="menu-list">
-                        {!! $boughtServicesLink !!} {!! $paymentsLink !!} {!! $logsLink !!}
+                        {!! $logsLink !!}
                     </ul>
                 </aside>
             </div>

@@ -43,30 +43,30 @@ EOF;
     public function mapToModel(array $data): Transaction
     {
         return new Transaction(
-            as_int($data["id"]),
+            (int) $data["id"],
             as_int($data["user_id"]),
             as_string($data["username"]),
-            $data["payment"],
-            $data["payment_id"],
-            $data["external_payment_id"],
-            as_string($data["service_id"]),
-            as_int($data["server_id"]),
+            (string) $data["payment"],
+            (string) $data["payment_id"],
+            as_string($data["external_payment_id"]),
+            (string) $data["service_id"],
+            (int) $data["server_id"],
             as_float($data["amount"]),
-            as_string($data["auth_data"]),
-            as_string($data["email"]),
+            (string) $data["auth_data"],
+            (string) $data["email"],
             as_string($data["promo_code"]),
             json_decode($data["extra_data"], true),
-            as_string($data["ip"]),
-            as_string($data["platform"]),
+            (string) $data["ip"],
+            (string) $data["platform"],
             as_money($data["income"]),
             as_money($data["cost"]),
             as_int($data["aid"]),
             as_string($data["adminname"]),
             as_string($data["sms_code"]),
             as_string($data["sms_text"]),
-            $data["sms_number"],
+            as_string($data["sms_number"]),
             (bool) $data["free"],
-            $data["timestamp"]
+            (string) $data["timestamp"]
         );
     }
 

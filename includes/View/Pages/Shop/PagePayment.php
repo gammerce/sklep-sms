@@ -29,7 +29,7 @@ class PagePayment extends Page
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("title_payment");
     }

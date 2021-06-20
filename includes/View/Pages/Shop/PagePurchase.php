@@ -52,13 +52,15 @@ class PagePurchase extends Page
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
-        $serviceModule = $this->getServiceModule($request);
         $title = "";
 
-        if ($serviceModule) {
-            $title .= $serviceModule->service->getNameI18n() . " - ";
+        if ($request) {
+            $serviceModule = $this->getServiceModule($request);
+            if ($serviceModule) {
+                $title .= $serviceModule->service->getNameI18n() . " - ";
+            }
         }
 
         return $title . $this->lang->t("purchase");

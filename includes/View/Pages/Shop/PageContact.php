@@ -22,7 +22,7 @@ class PageContact extends Page
         $this->settings = $settings;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("contact");
     }

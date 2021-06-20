@@ -1,13 +1,19 @@
 <?php
 namespace App\View\Pages\Admin;
 
+use App\User\Permission;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminTheme extends PageAdmin
 {
     const PAGE_ID = "theme";
 
-    public function getTitle(Request $request): string
+    public function getPrivilege(): Permission
+    {
+        return Permission::MANAGE_SETTINGS();
+    }
+
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("theme");
     }

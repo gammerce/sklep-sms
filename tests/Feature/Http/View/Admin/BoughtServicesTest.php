@@ -28,7 +28,7 @@ class BoughtServicesTest extends HttpTestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString("Panel Admina", $response->getContent());
         $this->assertStringContainsString(
-            '<div class="title is-4">Kupione usługi',
+            '<div class="title is-4">Zakupione usługi',
             $response->getContent()
         );
     }

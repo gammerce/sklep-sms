@@ -70,7 +70,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
         return Permission::MANAGE_SETTINGS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("pricing");
     }

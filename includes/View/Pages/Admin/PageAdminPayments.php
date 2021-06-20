@@ -8,6 +8,7 @@ use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\Theme\Template;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
@@ -50,7 +51,12 @@ class PageAdminPayments extends PageAdmin
         $this->paginationFactory = $paginationFactory;
     }
 
-    public function getTitle(Request $request): string
+    public function getPrivilege(): Permission
+    {
+        return Permission::VIEW_INCOME();
+    }
+
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("payments");
     }

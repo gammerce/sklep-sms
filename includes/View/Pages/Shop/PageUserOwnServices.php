@@ -48,7 +48,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("user_own_services");
     }
