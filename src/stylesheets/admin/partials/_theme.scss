@@ -1,4 +1,8 @@
 #theme {
+    .theme-control {
+        min-width: 250px;
+    }
+
     .template-selector,
     .theme-selector {
         z-index: 6;

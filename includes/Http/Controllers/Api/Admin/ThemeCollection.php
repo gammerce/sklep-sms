@@ -1,14 +1,14 @@
 <?php
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Theme\TemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use App\Theme\ThemeRepository;
 
 class ThemeCollection
 {
-    public function get(ThemeRepository $themeService): JsonResponse
+    public function get(TemplateRepository $templateRepository): JsonResponse
     {
-        $data = collect($themeService->list())
+        $data = collect($templateRepository->listThemes())
             ->map(fn($name) => compact("name"))
             ->all();
 

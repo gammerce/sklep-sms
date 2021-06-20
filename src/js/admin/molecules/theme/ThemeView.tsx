@@ -23,17 +23,14 @@ interface TemplateSelectOption {
 
 export const ThemeView: FunctionComponent = () => {
     const [templateList, setTemplateList] = useState<TemplateSelectOption[]>([]);
-    const [templateListLoading, setTemplateListLoading] = useState<boolean>(true);
-    const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelectOption>();
+    const [templateListLoading, setTemplateListLoading] = useState<boolean>(false);
+    const [selectedTemplate, setSelectedTemplate] = useState<TemplateSelectOption | null>(null);
     const [fetchedTemplateContent, setFetchedTemplateContent] = useState<string>("");
     const [templateContent, setTemplateContent] = useState<string>("");
 
     const [themeList, setThemeList] = useState<SelectOption[]>();
-    const [themeListLoading, setThemeListLoading] = useState<boolean>(true);
-    const [selectedTheme, setSelectedTheme] = useState<SelectOption>({
-        label: "fusion",
-        value: "fusion",
-    });
+    const [themeListLoading, setThemeListLoading] = useState<boolean>(false);
+    const [selectedTheme, setSelectedTheme] = useState<SelectOption | null>(null);
 
     const [templateLoading, setTemplateLoading] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
@@ -142,7 +139,7 @@ export const ThemeView: FunctionComponent = () => {
         setTemplateList(newTemplateList);
     };
 
-    const handleThemeChange = (selectedOption: SelectOption) => {
+    const handleThemeChange = (selectedOption: SelectOption | null) => {
         if (areChangesUnsaved && !confirm(__("template_unsaved_changes_confirmation"))) {
             return;
         }
@@ -150,16 +147,12 @@ export const ThemeView: FunctionComponent = () => {
         setSelectedTheme(selectedOption);
     };
 
-    const handleTemplateChange = (selectedOption: TemplateSelectOption) => {
+    const handleTemplateChange = (selectedOption: TemplateSelectOption | null) => {
         if (areChangesUnsaved && !confirm(__("template_unsaved_changes_confirmation"))) {
             return;
         }
 
-        if (selectedOption === null) {
-            setSelectedTemplate(undefined);
-        } else {
-            setSelectedTemplate(selectedOption);
-        }
+        setSelectedTemplate(selectedOption);
     };
 
     const handleTemplateContentChange = (editor, data, value) => setTemplateContent(value);
@@ -170,12 +163,17 @@ export const ThemeView: FunctionComponent = () => {
 
     // Reload templates on theme change
     useEffect(() => {
-        loadTemplateList(selectedTheme.value).catch(handleError);
+        if (selectedTheme) {
+            loadTemplateList(selectedTheme.value).catch(handleError);
+        } else {
+            setTemplateList([]);
+            setSelectedTemplate(null);
+        }
     }, [selectedTheme]);
 
     // Load template on theme/template change
     useEffect(() => {
-        if (selectedTemplate) {
+        if (selectedTheme && selectedTemplate) {
             loadTemplate(selectedTheme.value, selectedTemplate.value).catch(handleError);
         } else {
             setTemplateContent("");
@@ -237,13 +235,15 @@ export const ThemeView: FunctionComponent = () => {
             </div>
 
             <div className="field is-grouped">
-                <div className="control" style={{ minWidth: "150px" }}>
+                <div className="control theme-control">
                     <Creatable
                         className="theme-selector"
                         options={themeList}
                         value={selectedTheme}
+                        placeholder={__("select_theme")}
                         onChange={handleThemeChange}
                         isLoading={themeListLoading}
+                        isClearable
                     />
                 </div>
 

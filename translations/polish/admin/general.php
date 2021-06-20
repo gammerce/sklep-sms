@@ -214,6 +214,7 @@ return [
         "Czy na pewno chcesz usunąć zmiany w szablonie '{1}' z motywu '{2}'?",
     "script_updated" => "Skrypt sklepu jest zaktualizowany do najnowszej wersji.",
     "select_template" => "Wybierz szablon...",
+    "select_theme" => "Wybierz motyw...",
     "sender_email" => "E-mail nadawcy",
     "sender_name" => "Nazwa nadawcy",
     "separated" => '( oddzielone średnikiem \';\' )',
