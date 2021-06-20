@@ -35,7 +35,7 @@
                     <hr />
 
                     <div class="user-box">
-                        {{ $user->getUsername() }} (
+                        {{ $username }} (
                         <a onclick="document.getElementById('logout-form').submit()">
                             {{ __('logout') }}
                         </a>
@@ -46,11 +46,8 @@
 
                     <p class="menu-label">{{ __('main') }}</p>
                     <ul class="menu-list">
-                        <li>
-                            <a href="{{ $url->to('/admin/home') }}">{{ __('main_page') }}</a>
-                        </li>
-                        {!! $settingsLink !!} {!! $transactionServicesLink !!} {!! $servicesLink !!}
-                        {!! $serversLink !!} {!! $pricingLink !!}
+                        {!! $mainLink !!} {!! $settingsLink !!} {!! $transactionServicesLink !!} {!!
+                        $servicesLink !!} {!! $serversLink !!} {!! $pricingLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('users_services') }}</p>
@@ -70,15 +67,7 @@
 
                     <p class="menu-label">{{ __('logs') }}</p>
                     <ul class="menu-list">
-                        <li>
-                            <a href="{{ $url->to('/admin/bought_services') }}">
-                                {{ __('bought_services') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $url->to('/admin/payments') }}"> {{ __('payments') }} </a>
-                        </li>
-                        {!! $logsLink !!}
+                        {!! $boughtServicesLink !!} {!! $paymentsLink !!} {!! $logsLink !!}
                     </ul>
                 </aside>
             </div>

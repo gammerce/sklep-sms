@@ -7,12 +7,13 @@ use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
+use App\ServiceModules\ServiceModule;
 use App\Support\Meta;
 use App\Theme\Template;
-use App\System\Application;
 use App\System\Auth;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\User\Permission;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Renders\BlockRenderer;
@@ -21,9 +22,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminController
 {
+    private Template $template;
+    private Translator $lang;
+    private UrlGenerator $url;
+
+    public function __construct(
+        TranslationManager $translationManager,
+        Template $template,
+        UrlGenerator $url
+    ) {
+        $this->template = $template;
+        $this->lang = $translationManager->user();
+        $this->url = $url;
+    }
+
     public function get(
         Request $request,
-        Application $app,
         Auth $auth,
         License $license,
         Template $template,
@@ -46,87 +60,61 @@ class AdminController
         $lang = $translationManager->user();
 
         $page->addScripts($request);
-
         $content = $blockRenderer->render(BlockAdminContent::BLOCK_ID, $request, [$page]);
 
+        $mainLink = $this->renderLink("home", $pageId, $lang->t("main_page"));
+
         if ($user->can(Permission::VIEW_PLAYER_FLAGS())) {
-            $pid = "players_flags";
-            $name = $lang->t($pid);
-            $playersFlagsLink = $template->render("admin/page_link", compact("pid", "name"));
+            $playersFlagsLink = $this->renderLink("players_flags", $pageId);
         }
 
         if ($user->can(Permission::VIEW_USER_SERVICES())) {
-            $pid = "";
-            foreach ($serviceModuleManager->all() as $serviceModule) {
-                if ($serviceModule instanceof IServiceUserServiceAdminDisplay) {
-                    $pid = "user_service?subpage=" . urlencode($serviceModule->getModuleId());
-                    break;
-                }
-            }
-            $name = $lang->t("users_services");
-            $userServiceLink = $template->render("admin/page_link", compact("pid", "name"));
+            /** @var ServiceModule $serviceModule */
+            $serviceModule = collect($serviceModuleManager->all())->first(
+                fn($s) => $s instanceof IServiceUserServiceAdminDisplay
+            );
+            $pid = "user_service?subpage=" . urlencode($serviceModule->getModuleId());
+            $userServiceLink = $this->renderLink($pid, $pageId, $lang->t("users_services"));
         }
 
         if ($user->can(Permission::VIEW_INCOME())) {
-            $pid = "income";
-            $name = $lang->t($pid);
-            $incomeLink = $template->render("admin/page_link", compact("pid", "name"));
+            $boughtServicesLink = $this->renderLink("bought_services", $pageId);
+            $incomeLink = $this->renderLink("income", $pageId);
+            $paymentsLink = $this->renderLink("payments", $pageId);
         }
 
         if ($user->can(Permission::MANAGE_SETTINGS())) {
-            $pid = "settings";
-            $name = $lang->t($pid);
-            $settingsLink = $template->render("admin/page_link", compact("pid", "name"));
-
-            $pid = "payment_platforms";
-            $name = $lang->t($pid);
-            $transactionServicesLink = $template->render("admin/page_link", compact("pid", "name"));
-
-            $pid = "pricing";
-            $name = $lang->t($pid);
-            $pricingLink = $template->render("admin/page_link", compact("pid", "name"));
+            $settingsLink = $this->renderLink("settings", $pageId);
+            $transactionServicesLink = $this->renderLink("payment_platforms", $pageId);
+            $pricingLink = $this->renderLink("pricing", $pageId);
         }
 
         if ($user->can(Permission::VIEW_USERS())) {
-            $pid = "users";
-            $name = $lang->t($pid);
-            $usersLink = $template->render("admin/page_link", compact("pid", "name"));
+            $usersLink = $this->renderLink("users", $pageId);
         }
 
         if ($user->can(Permission::VIEW_GROUPS())) {
-            $pid = "groups";
-            $name = $lang->t($pid);
-            $groupsLink = $template->render("admin/page_link", compact("pid", "name"));
+            $groupsLink = $this->renderLink("groups", $pageId);
         }
 
         if ($user->can(Permission::VIEW_SERVERS())) {
-            $pid = "servers";
-            $name = $lang->t($pid);
-            $serversLink = $template->render("admin/page_link", compact("pid", "name"));
+            $serversLink = $this->renderLink("servers", $pageId);
         }
 
         if ($user->can(Permission::VIEW_SERVICES())) {
-            $pid = "services";
-            $name = $lang->t($pid);
-            $servicesLink = $template->render("admin/page_link", compact("pid", "name"));
+            $servicesLink = $this->renderLink("services", $pageId);
         }
 
         if ($user->can(Permission::VIEW_SMS_CODES())) {
-            $pid = "sms_codes";
-            $name = $lang->t($pid);
-            $smsCodesLink = $template->render("admin/page_link", compact("pid", "name"));
+            $smsCodesLink = $this->renderLink("sms_codes", $pageId);
         }
 
         if ($user->can(Permission::VIEW_PROMO_CODES())) {
-            $pid = "promo_codes";
-            $name = $lang->t($pid);
-            $promoCodesLink = $template->render("admin/page_link", compact("pid", "name"));
+            $promoCodesLink = $this->renderLink("promo_codes", $pageId);
         }
 
         if ($user->can(Permission::VIEW_LOGS())) {
-            $pid = "logs";
-            $name = $lang->t($pid);
-            $logsLink = $template->render("admin/page_link", compact("pid", "name"));
+            $logsLink = $this->renderLink("logs", $pageId);
         }
 
         $header = $template->render("admin/header", [
@@ -136,11 +124,13 @@ class AdminController
         ]);
         $currentVersion = $meta->getVersion();
         $logoutAction = $url->to("/admin/login");
+        $username = $user->getUsername();
 
         return new Response(
             $template->render(
                 "admin/index",
                 compact(
+                    "boughtServicesLink",
                     "content",
                     "currentVersion",
                     "groupsLink",
@@ -149,6 +139,8 @@ class AdminController
                     "license",
                     "logoutAction",
                     "logsLink",
+                    "mainLink",
+                    "paymentsLink",
                     "playersFlagsLink",
                     "pricingLink",
                     "promoCodesLink",
@@ -157,11 +149,25 @@ class AdminController
                     "settingsLink",
                     "smsCodesLink",
                     "transactionServicesLink",
-                    "user",
+                    "username",
                     "userServiceLink",
                     "usersLink"
                 )
             )
         );
+    }
+
+    /**
+     * @param string $pageId
+     * @param string $activePageId
+     * @param string|null $name
+     * @return string
+     */
+    private function renderLink($pageId, $activePageId, $name = null): string
+    {
+        $name = $name ?: $this->lang->t($pageId);
+        $path = $this->url->to("/admin/$pageId");
+        $isActiveClass = $pageId === $activePageId ? "is-active" : null;
+        return $this->template->render("admin/page_link", compact("path", "name", "isActiveClass"));
     }
 }
