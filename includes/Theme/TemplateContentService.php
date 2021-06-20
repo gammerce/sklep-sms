@@ -11,6 +11,7 @@ class TemplateContentService
     private FileSystemContract $fileSystem;
     private Settings $settings;
     private TemplateRepository $templateRepository;
+    private TemplateService $templateService;
     private Translator $lang;
     private array $cachedTemplates = [];
 
@@ -18,12 +19,14 @@ class TemplateContentService
         FileSystemContract $fileSystem,
         Settings $settings,
         TemplateRepository $templateRepository,
+        TemplateService $templateService,
         TranslationManager $translationManager
     ) {
         $this->fileSystem = $fileSystem;
         $this->settings = $settings;
         $this->templateRepository = $templateRepository;
         $this->lang = $translationManager->user();
+        $this->templateService = $templateService;
     }
 
     /**
@@ -62,24 +65,50 @@ class TemplateContentService
         return $this->cachedTemplates[$cacheKey];
     }
 
-    private function read($theme, $name): ?string
+    private function read($theme, $name): string
     {
-        $template = $this->templateRepository->find($theme, $name);
-        if ($template) {
-            return $template->getContent();
+        try {
+            return $this->readFromDB($theme, $name);
+        } catch (TemplateNotFoundException $e) {
+            return $this->getFromFile($theme, $name);
         }
-
-        $template = $this->templateRepository->find(Config::DEFAULT_THEME, $name);
-        if ($template) {
-            return $template->getContent();
-        }
-
-        return $this->getFromFile($theme, $name);
     }
 
+    /**
+     * @param string $theme
+     * @param string $name
+     * @return string
+     * @throws TemplateNotFoundException
+     */
+    private function readFromDB($theme, $name): string
+    {
+        if ($this->templateService->isEditable($name)) {
+            $template = $this->templateRepository->find($theme, $name);
+            if ($template) {
+                return $template->getContent();
+            }
+
+            $template = $this->templateRepository->find(Config::DEFAULT_THEME, $name);
+            if ($template) {
+                return $template->getContent();
+            }
+        }
+
+        throw new TemplateNotFoundException();
+    }
+
+    /**
+     * @param string $theme
+     * @param string $name
+     * @return string|null
+     * @throws TemplateNotFoundException
+     */
     private function getFromFile($theme, $name): ?string
     {
         $path = $this->resolvePath($theme, $name);
+        if ($path === null) {
+            throw new TemplateNotFoundException();
+        }
         return $this->fileSystem->get($path);
     }
 

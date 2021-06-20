@@ -10,6 +10,15 @@ class TemplateService
 
     /**
      * @param string $name
+     * @return bool
+     */
+    public function isEditable($name): bool
+    {
+        return in_array($name, $this->listEditable(), true);
+    }
+
+    /**
+     * @param string $name
      * @return string
      */
     public function resolveName($name): string
