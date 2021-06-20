@@ -35,12 +35,13 @@ class ShopRenderer
 
     public function render($content, $pageId, $pageTitle, Request $request): string
     {
+        $customStyles = $this->template->render("shop/styles/general");
         $header = $this->template->render("shop/layout/header", [
             "currentPageId" => $pageId,
+            "customStyles" => $customStyles,
             "footer" => $this->license->getFooter(),
             "pageTitle" => $pageTitle,
             "scripts" => $this->websiteHeader->getScripts(),
-            "styles" => $this->websiteHeader->getStyles(),
         ]);
         $loggedInfo = $this->blockRenderer->render(BlockLoggedInfo::BLOCK_ID, $request);
         $wallet = $this->blockRenderer->render(BlockWallet::BLOCK_ID, $request);

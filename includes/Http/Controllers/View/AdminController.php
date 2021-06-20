@@ -133,7 +133,6 @@ class AdminController
             "currentPageId" => $page->getId(),
             "pageTitle" => $page->getTitle($request),
             "scripts" => $websiteHeader->getScripts(),
-            "styles" => $websiteHeader->getStyles(),
         ]);
         $currentVersion = $meta->getVersion();
         $logoutAction = $url->to("/admin/login");

@@ -46,7 +46,6 @@ class ServiceLongDescriptionController
             "footer" => "",
             "pageTitle" => $pageTitle,
             "scripts" => $websiteHeader->getScripts(),
-            "styles" => $websiteHeader->getStyles(),
         ]);
 
         $output = $template->render(

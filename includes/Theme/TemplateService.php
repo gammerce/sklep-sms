@@ -5,7 +5,7 @@ class TemplateService
 {
     public function listEditable(): array
     {
-        return ["styles", "shop/pages/contact", "shop/pages/regulations"];
+        return ["shop/styles/general", "shop/pages/contact", "shop/pages/regulations"];
     }
 
     /**

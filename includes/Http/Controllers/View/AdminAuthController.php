@@ -37,7 +37,6 @@ class AdminAuthController
             "currentPageId" => "login",
             "pageTitle" => "Login",
             "scripts" => $websiteHeader->getScripts(),
-            "styles" => $websiteHeader->getStyles(),
         ]);
 
         $action = $url->to("/admin/login", $request->query->all());
