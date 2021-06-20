@@ -3,7 +3,6 @@ namespace App\ServiceModules;
 
 use App\Models\Service;
 use App\Models\UserService;
-use App\Service\ServiceDescriptionService;
 use App\Theme\Template;
 
 abstract class ServiceModule
@@ -20,16 +19,11 @@ abstract class ServiceModule
 
     public ?Service $service;
     protected Template $template;
-    protected ServiceDescriptionService $serviceDescriptionService;
 
-    public function __construct(
-        Template $template,
-        ServiceDescriptionService $serviceDescriptionService,
-        ?Service $service = null
-    ) {
+    public function __construct(Template $template, ?Service $service = null)
+    {
         $this->service = $service;
         $this->template = $template;
-        $this->serviceDescriptionService = $serviceDescriptionService;
     }
 
     public function mapToUserService(array $data): UserService
@@ -97,8 +91,12 @@ abstract class ServiceModule
      */
     public function descriptionLongGet(): string
     {
-        $templatePath = $this->serviceDescriptionService->getTemplatePath($this->service->getId());
-        return $this->template->render($templatePath, [], true, false);
+        return $this->template->render(
+            "shop/services/{$this->service->getId()}_desc",
+            [],
+            true,
+            false
+        );
     }
 
     public function descriptionShortGet(): string

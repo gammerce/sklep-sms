@@ -12,14 +12,13 @@ use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Payment\Wallet\WalletPaymentService;
 use App\Repositories\PaymentPlatformRepository;
-use App\Service\ServiceDescriptionService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Support\Money;
 use App\Support\PriceTextService;
-use App\Theme\Template;
 use App\System\Auth;
 use App\System\Settings;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Interfaces\IBeLoggedMust;
@@ -44,14 +43,13 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
         ChargeWalletFactory $chargeWalletFactory,
         PaymentPlatformRepository $paymentPlatformRepository,
         PriceTextService $priceTextService,
-        ServiceDescriptionService $serviceDescriptionService,
         Settings $settings,
         Template $template,
         TranslationManager $translationManager,
         WalletPaymentService $walletPaymentService,
         ?Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->lang = $translationManager->user();
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;

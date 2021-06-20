@@ -25,7 +25,6 @@ use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchasePriceService;
-use App\Service\ServiceDescriptionService;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -37,8 +36,8 @@ use App\ServiceModules\ServiceModule;
 use App\Support\Database;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
-use App\Theme\Template;
 use App\System\Auth;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
@@ -106,13 +105,12 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         PriceTextService $priceTextService,
         PurchasePriceRenderer $purchasePriceRenderer,
         PurchasePriceService $purchasePriceService,
-        ServiceDescriptionService $serviceDescriptionService,
         Template $template,
         TranslationManager $translationManager,
         UserManager $userManager,
         ?Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->adminPaymentService = $adminPaymentService;
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;

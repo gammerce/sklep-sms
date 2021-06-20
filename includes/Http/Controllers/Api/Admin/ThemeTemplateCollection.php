@@ -3,14 +3,14 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\Template;
 use App\Theme\TemplateRepository;
-use App\Theme\TemplateService;
+use App\Theme\EditableTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ThemeTemplateCollection
 {
     public function get(
         $theme,
-        TemplateService $templateService,
+        EditableTemplateRepository $editableTemplateRepository,
         TemplateRepository $templateRepository
     ): JsonResponse {
         $templateMapping = collect($templateRepository->listTemplates($theme))->flatMap(
@@ -18,7 +18,7 @@ class ThemeTemplateCollection
         );
 
         return new JsonResponse([
-            "data" => collect($templateService->listEditable())
+            "data" => collect($editableTemplateRepository->list())
                 ->map(
                     fn($name) => [
                         "name" => $name,

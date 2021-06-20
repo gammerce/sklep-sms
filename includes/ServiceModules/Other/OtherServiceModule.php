@@ -9,7 +9,6 @@ use App\Http\Validation\Validator;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\General\BoughtServiceService;
-use App\Service\ServiceDescriptionService;
 use App\ServiceModules\Interfaces\IServiceAdminManage;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
@@ -27,11 +26,10 @@ class OtherServiceModule extends ServiceModule implements
 
     public function __construct(
         BoughtServiceService $boughtServiceService,
-        ServiceDescriptionService $serviceDescriptionService,
         Template $template,
         ?Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->boughtServiceService = $boughtServiceService;
     }
 

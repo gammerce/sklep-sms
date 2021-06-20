@@ -11,7 +11,7 @@ class TemplateContentService
     private FileSystemContract $fileSystem;
     private Settings $settings;
     private TemplateRepository $templateRepository;
-    private TemplateService $templateService;
+    private EditableTemplateRepository $editableTemplateRepository;
     private Translator $lang;
     private array $cachedTemplates = [];
 
@@ -19,14 +19,14 @@ class TemplateContentService
         FileSystemContract $fileSystem,
         Settings $settings,
         TemplateRepository $templateRepository,
-        TemplateService $templateService,
+        EditableTemplateRepository $editableTemplateRepository,
         TranslationManager $translationManager
     ) {
         $this->fileSystem = $fileSystem;
         $this->settings = $settings;
         $this->templateRepository = $templateRepository;
         $this->lang = $translationManager->user();
-        $this->templateService = $templateService;
+        $this->editableTemplateRepository = $editableTemplateRepository;
     }
 
     /**
@@ -36,8 +36,8 @@ class TemplateContentService
      * @param string $name Template's name
      * @param bool $escapeSlashes Escape template's content
      * @param bool $htmlComments Wrap with comments
-     *
      * @return string|null
+     * @throws TemplateNotFoundException
      */
     public function get($theme, $name, $escapeSlashes = false, $htmlComments = false): ?string
     {
@@ -65,6 +65,12 @@ class TemplateContentService
         return $this->cachedTemplates[$cacheKey];
     }
 
+    /**
+     * @param string $theme
+     * @param string $name
+     * @return string
+     * @throws TemplateNotFoundException
+     */
     private function read($theme, $name): string
     {
         try {
@@ -82,7 +88,7 @@ class TemplateContentService
      */
     private function readFromDB($theme, $name): string
     {
-        if ($this->templateService->isEditable($name)) {
+        if ($this->editableTemplateRepository->isEditable($name)) {
             $template = $this->templateRepository->find($theme, $name);
             if ($template) {
                 return $template->getContent();
