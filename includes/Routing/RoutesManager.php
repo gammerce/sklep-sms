@@ -534,18 +534,23 @@ class RoutesManager
                 ]);
 
                 $r->get("/api/admin/themes", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeCollection::class . "@get",
                 ]);
                 $r->get("/api/admin/themes/{theme}/templates", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateCollection::class . "@get",
                 ]);
                 $r->get("/api/admin/themes/{theme}/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@get",
                 ]);
                 $r->put("/api/admin/themes/{theme}/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@put",
                 ]);
                 $r->delete("/api/admin/themes/{theme}/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@delete",
                 ]);
             }

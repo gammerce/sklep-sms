@@ -1,8 +1,22 @@
-.template-selector,
-.theme-selector {
-    z-index: 6;
-}
+#theme {
+    .template-selector,
+    .theme-selector {
+        z-index: 6;
+    }
 
-.CodeMirror {
-    height: calc(100% - 10rem);
+    .CodeMirror {
+        height: calc(100% - 10rem);
+    }
+
+    @include mobile {
+        .field.is-grouped {
+            flex-wrap: wrap;
+
+            .control {
+                width: 100%;
+                margin-bottom: 0.25rem;
+                margin-right: 0;
+            }
+        }
+    }
 }

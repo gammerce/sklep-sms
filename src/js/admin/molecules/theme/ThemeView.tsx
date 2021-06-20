@@ -231,6 +231,11 @@ export const ThemeView: FunctionComponent = () => {
 
     return (
         <>
+            <div className="subtitle">
+                Dostosuj wygląd sklepu poprzez edycję szablonów HTML. Wybierz motyw z listy lub
+                stwórz nowy wpisując wybraną przez siebie nazwę.
+            </div>
+
             <div className="field is-grouped">
                 <div className="control" style={{ minWidth: "150px" }}>
                     <Creatable
@@ -256,22 +261,27 @@ export const ThemeView: FunctionComponent = () => {
                 </div>
 
                 <div className="control">
-                    <button
-                        className={classNames(["button is-success"], { "is-loading": updating })}
-                        disabled={!areChangesUnsaved}
-                        onClick={updateTemplate}
-                    >
-                        {__("save")}
-                    </button>
-                </div>
-                <div className="control">
-                    <button
-                        className={classNames(["button is-danger"], { "is-loading": resetting })}
-                        disabled={!selectedTemplate?.deletable}
-                        onClick={resetTemplate}
-                    >
-                        {__("reset")}
-                    </button>
+                    <p className="buttons">
+                        <button
+                            className={classNames(["button is-success"], {
+                                "is-loading": updating,
+                            })}
+                            disabled={!areChangesUnsaved}
+                            onClick={updateTemplate}
+                        >
+                            {__("save")}
+                        </button>
+
+                        <button
+                            className={classNames(["button is-danger"], {
+                                "is-loading": resetting,
+                            })}
+                            disabled={!selectedTemplate?.deletable}
+                            onClick={resetTemplate}
+                        >
+                            {__("reset")}
+                        </button>
+                    </p>
                 </div>
             </div>
 
