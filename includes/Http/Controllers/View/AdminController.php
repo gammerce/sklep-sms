@@ -58,6 +58,7 @@ class AdminController
         $servicesLink = $pageLinkRenderer->renderLink("services", $pageId);
         $settingsLink = $pageLinkRenderer->renderLink("settings", $pageId);
         $smsCodesLink = $pageLinkRenderer->renderLink("sms_codes", $pageId);
+        $themeLink = $pageLinkRenderer->renderLink("theme", $pageId);
         $transactionServicesLink = $pageLinkRenderer->renderLink("payment_platforms", $pageId);
         $usersLink = $pageLinkRenderer->renderLink("users", $pageId);
 
@@ -100,6 +101,7 @@ class AdminController
                     "servicesLink",
                     "settingsLink",
                     "smsCodesLink",
+                    "themeLink",
                     "transactionServicesLink",
                     "username",
                     "userServiceLink",
