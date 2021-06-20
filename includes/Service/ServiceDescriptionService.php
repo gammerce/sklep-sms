@@ -1,46 +1,27 @@
 <?php
 namespace App\Service;
 
-use App\Support\FileSystemContract;
-use App\Support\Path;
-use App\System\Settings;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
+use App\Theme\Config;
+use App\Theme\TemplateRepository;
+
+// TODO Think about resetting fusion
+// TODO Think about editable templates
 
 class ServiceDescriptionService
 {
-    private Path $path;
-    private Settings $settings;
-    private Translator $lang;
-    private FileSystemContract $fileSystem;
+    private TemplateRepository $templateRepository;
 
-    public function __construct(
-        Path $path,
-        Settings $settings,
-        TranslationManager $translationManager,
-        FileSystemContract $fileSystem
-    ) {
-        $this->path = $path;
-        $this->settings = $settings;
-        $this->lang = $translationManager->user();
-        $this->fileSystem = $fileSystem;
+    public function __construct(TemplateRepository $templateRepository)
+    {
+        $this->templateRepository = $templateRepository;
     }
 
     public function create($serviceId): void
     {
-        $path = $this->path->to(
-            "themes/" . $this->settings->getTheme() . "/" . $this->getTemplatePath($serviceId)
+        $this->templateRepository->create(
+            Config::DEFAULT_THEME,
+            "shop/services/{$serviceId}_desc",
+            ""
         );
-
-        if (!$this->fileSystem->exists($path)) {
-            $this->fileSystem->put($path, "");
-            $this->fileSystem->setPermissions($path, 0777);
-        }
-    }
-
-    public function getTemplatePath($serviceId): string
-    {
-        $escapedName = escape_filename($serviceId);
-        return "/shop/services/{$escapedName}_desc.html";
     }
 }
