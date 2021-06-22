@@ -31,6 +31,7 @@ final class Template
      * @param bool $escapeSlashes
      * @param bool $htmlComments
      * @return string
+     * @throws TemplateNotFoundException
      */
     public function render(
         $templateName,
@@ -52,6 +53,7 @@ final class Template
      * @param string $templateName
      * @param array $data
      * @return string
+     * @throws TemplateNotFoundException
      */
     public function renderNoComments($templateName, array $data = []): string
     {

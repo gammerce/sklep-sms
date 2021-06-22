@@ -4,6 +4,7 @@ namespace App\ServiceModules;
 use App\Models\Service;
 use App\Models\UserService;
 use App\Theme\Template;
+use App\Theme\TemplateNotFoundException;
 
 abstract class ServiceModule
 {
@@ -91,12 +92,16 @@ abstract class ServiceModule
      */
     public function descriptionLongGet(): string
     {
-        return $this->template->render(
-            "shop/services/{$this->service->getId()}_desc",
-            [],
-            true,
-            false
-        );
+        try {
+            return $this->template->render(
+                "shop/services/{$this->service->getId()}_desc",
+                [],
+                true,
+                false
+            );
+        } catch (TemplateNotFoundException $e) {
+            return "";
+        }
     }
 
     public function descriptionShortGet(): string
