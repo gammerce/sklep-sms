@@ -31,6 +31,7 @@ use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbUserService;
 use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
 use App\Support\Money;
+use App\User\Permission;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -219,6 +220,17 @@ class Factory
     public function admin(array $attributes = []): User
     {
         return $this->user(array_merge(["groups" => [2]], $attributes));
+    }
+
+    /**
+     * @param Permission[] $permissions
+     * @param array $attributes
+     * @return User
+     */
+    public function privilegedUser(array $permissions, array $attributes = []): User
+    {
+        $group = $this->group(compact("permissions"));
+        return $this->user(array_merge(["groups" => [$group->getId()]], $attributes));
     }
 
     public function user(array $attributes = []): User

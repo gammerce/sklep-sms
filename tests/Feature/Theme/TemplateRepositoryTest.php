@@ -1,5 +1,5 @@
 <?php
-namespace Tests\Feature\Repositories;
+namespace Tests\Feature\Theme;
 
 use App\Theme\TemplateRepository;
 use Tests\Psr4\TestCases\TestCase;
