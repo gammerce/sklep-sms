@@ -19,7 +19,7 @@ class SettingsTest extends HttpTestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $this->assertStringContainsString("Panel Admina", $response->getContent());
         $this->assertStringContainsString(
-            '<div class="title is-4">Ustawienia sklepu',
+            '<div class="title is-4">Ustawienia',
             $response->getContent()
         );
     }

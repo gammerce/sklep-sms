@@ -139,7 +139,7 @@ class TemplateRepositoryTest extends TestCase
         $themes = $this->templateRepository->listThemes();
 
         // then
-        $this->assertEquals(["foo", "bar"], $themes);
+        $this->assertEquals(["bar", "foo"], $themes);
     }
 
     /** @test */

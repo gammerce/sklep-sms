@@ -16,7 +16,7 @@ class ApiResponse extends JsonResponse
         $output["text"] = $message;
         $output["positive"] = $positive;
 
-        if (is_array($data) && !empty($data)) {
+        if (!empty($data)) {
             $output = array_merge($output, $data);
         }
 
