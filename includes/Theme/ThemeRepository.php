@@ -30,6 +30,7 @@ class ThemeRepository
         return $this->listAll()
             ->sort()
             ->unique()
+            ->values()
             ->all();
     }
 

@@ -124,9 +124,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
     public function sort(?callable $callback = null): self
     {
         $items = $this->items;
-
         $callback ? uasort($items, $callback) : asort($items);
-
         return new Collection($items);
     }
 

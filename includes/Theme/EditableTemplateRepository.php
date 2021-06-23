@@ -15,6 +15,9 @@ class EditableTemplateRepository
         $this->serviceRepository = $serviceRepository;
     }
 
+    /**
+     * @return string[]
+     */
     public function list(): array
     {
         if (empty($this->cachedTemplates)) {
@@ -22,6 +25,15 @@ class EditableTemplateRepository
         }
 
         return $this->cachedTemplates;
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isEditable($name): bool
+    {
+        return in_array($name, $this->list(), true);
     }
 
     private function listInner(): array
@@ -35,15 +47,7 @@ class EditableTemplateRepository
         return collect(["shop/styles/general", "shop/pages/contact", "shop/pages/regulations"])
             ->extend($serviceTemplates)
             ->sort()
+            ->values()
             ->all();
-    }
-
-    /**
-     * @param string $name
-     * @return bool
-     */
-    public function isEditable($name): bool
-    {
-        return in_array($name, $this->list(), true);
     }
 }
