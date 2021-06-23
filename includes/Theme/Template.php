@@ -42,6 +42,7 @@ final class Template
         $template = $this->templateContentService->get(
             $this->settings->getTheme(),
             $templateName,
+            $this->lang->getCurrentLanguageShort(),
             $escapeSlashes,
             $htmlComments
         );

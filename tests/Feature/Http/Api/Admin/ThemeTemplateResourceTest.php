@@ -57,11 +57,38 @@ EOF
         $this->factory->template([
             "theme" => "foo",
             "name" => "shop/pages/contact",
+            "lang" => null,
             "content" => "baz",
         ]);
 
         // when
         $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact");
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame(
+            [
+                "name" => "shop/pages/contact",
+                "content" => "baz",
+            ],
+            $json
+        );
+    }
+
+    /** @test */
+    public function get_overridden_i18n_template()
+    {
+        // given
+        $this->factory->template([
+            "theme" => "foo",
+            "name" => "shop/pages/contact",
+            "lang" => "pl",
+            "content" => "baz",
+        ]);
+
+        // when
+        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact/languages/pl");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -86,6 +113,16 @@ EOF
     }
 
     /** @test */
+    public function fails_on_getting_unsupported_lang()
+    {
+        // when
+        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact/languages/us");
+
+        // then
+        $this->assertSame(404, $response->getStatusCode());
+    }
+
+    /** @test */
     public function create_template()
     {
         // when
@@ -98,6 +135,24 @@ EOF
         $this->assertDatabaseHas("ss_templates", [
             "theme" => "foo",
             "name" => "shop/pages/contact",
+            "content" => "bar",
+        ]);
+    }
+
+    /** @test */
+    public function create_i18n_template()
+    {
+        // when
+        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact/languages/pl", [
+            "content" => "bar",
+        ]);
+
+        // then
+        $this->assertSame(204, $response->getStatusCode());
+        $this->assertDatabaseHas("ss_templates", [
+            "theme" => "foo",
+            "name" => "shop/pages/contact",
+            "lang" => "pl",
             "content" => "bar",
         ]);
     }
@@ -122,6 +177,32 @@ EOF
         $this->assertDatabaseHas("ss_templates", [
             "theme" => "foo",
             "name" => "shop/pages/contact",
+            "content" => "bar",
+        ]);
+    }
+
+    /** @test */
+    public function update_i18n_template()
+    {
+        // given
+        $this->factory->template([
+            "theme" => "foo",
+            "name" => "shop/pages/contact",
+            "lang" => "en",
+            "content" => "quy",
+        ]);
+
+        // when
+        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact/languages/en", [
+            "content" => "bar",
+        ]);
+
+        // then
+        $this->assertSame(204, $response->getStatusCode());
+        $this->assertDatabaseHas("ss_templates", [
+            "theme" => "foo",
+            "name" => "shop/pages/contact",
+            "lang" => "en",
             "content" => "bar",
         ]);
     }

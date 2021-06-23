@@ -16,11 +16,12 @@ class ThemeTemplateCollectionTest extends HttpTestCase
         $this->factory->template([
             "theme" => "foo",
             "name" => "shop/pages/contact",
+            "lang" => "pl",
             "content" => "foobar",
         ]);
 
         // when
-        $response = $this->get("/api/admin/themes/foo/templates");
+        $response = $this->get("/api/admin/themes/foo/templates", ["lang" => "pl"]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());

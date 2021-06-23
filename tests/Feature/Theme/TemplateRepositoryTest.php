@@ -20,12 +20,14 @@ class TemplateRepositoryTest extends TestCase
         // when
         $theme = "example";
         $name = "foobar";
+        $lang = "pl";
         $content = "a b c";
-        $template = $this->templateRepository->create($theme, $name, $content);
+        $template = $this->templateRepository->create($theme, $name, $lang, $content);
 
         // then
         $this->assertEquals($template->getTheme(), $theme);
         $this->assertEquals($template->getName(), $name);
+        $this->assertEquals($template->getLang(), $lang);
         $this->assertEquals($template->getContent(), $content);
     }
 
@@ -78,22 +80,24 @@ class TemplateRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function find_by_theme_and_name()
+    public function find_by_theme_name_and_lang()
     {
         // given
         $template = $this->factory->template([
             "theme" => "foo",
             "name" => "bar",
+            "lang" => "pl",
         ]);
 
         // when
-        $foundTemplate = $this->templateRepository->find("foo", "bar");
+        $foundTemplate = $this->templateRepository->find("foo", "bar", "pl");
 
         // then
         $this->assertNotNull($foundTemplate);
         $this->assertEquals($template->getId(), $foundTemplate->getId());
         $this->assertEquals("foo", $foundTemplate->getTheme());
         $this->assertEquals("bar", $foundTemplate->getName());
+        $this->assertEquals("pl", $foundTemplate->getLang());
     }
 
     /** @test */
@@ -103,10 +107,11 @@ class TemplateRepositoryTest extends TestCase
         $this->factory->template([
             "theme" => "foo",
             "name" => "bAr",
+            "lang" => null,
         ]);
 
         // when
-        $foundTemplate = $this->templateRepository->find("foo", "bar");
+        $foundTemplate = $this->templateRepository->find("foo", "bar", null);
 
         // then
         $this->assertNull($foundTemplate);
@@ -119,10 +124,11 @@ class TemplateRepositoryTest extends TestCase
         $this->factory->template([
             "theme" => "fOo",
             "name" => "bar",
+            "lang" => null,
         ]);
 
         // when
-        $foundTemplate = $this->templateRepository->find("foo", "bar");
+        $foundTemplate = $this->templateRepository->find("foo", "bar", null);
 
         // then
         $this->assertNull($foundTemplate);
@@ -148,12 +154,13 @@ class TemplateRepositoryTest extends TestCase
         // given
         $template = $this->factory->template([
             "theme" => "foo",
-            "template" => "shop/pages/contact",
+            "name" => "shop/pages/contact",
+            "lang" => null,
             "content" => "a b c",
         ]);
 
         // when
-        $result = $this->templateRepository->listTemplates("foo");
+        $result = $this->templateRepository->listTemplates("foo", null);
 
         // then
         $this->assertCount(1, $result);

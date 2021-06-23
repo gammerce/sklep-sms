@@ -8,15 +8,16 @@ class Template
     private int $id;
     private string $theme;
     private string $name;
+    private ?string $lang;
     private string $content;
     private DateTime $createdAt;
     private DateTime $updatedAt;
-    // TODO Add language
 
     public function __construct(
         $id,
         $theme,
         $name,
+        $lang,
         $content,
         DateTime $createdAt,
         DateTime $updatedAt
@@ -24,6 +25,7 @@ class Template
         $this->id = $id;
         $this->theme = $theme;
         $this->name = $name;
+        $this->lang = $lang;
         $this->content = $content;
         $this->createdAt = $createdAt;
         $this->updatedAt = $updatedAt;
@@ -42,6 +44,11 @@ class Template
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getLang(): ?string
+    {
+        return $this->lang;
     }
 
     public function getContent(): string

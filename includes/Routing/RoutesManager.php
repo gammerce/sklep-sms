@@ -91,7 +91,6 @@ use App\System\Settings;
 use App\User\Permission;
 use Exception;
 use FastRoute\Dispatcher;
-use phpDocumentor\Reflection\Types\ClassString;
 use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -545,11 +544,23 @@ class RoutesManager
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@get",
                 ]);
+                $r->get("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => ThemeTemplateResource::class . "@get",
+                ]);
                 $r->put("/api/admin/themes/{theme}/templates/{template}", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@put",
                 ]);
+                $r->put("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => ThemeTemplateResource::class . "@put",
+                ]);
                 $r->delete("/api/admin/themes/{theme}/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => ThemeTemplateResource::class . "@delete",
+                ]);
+                $r->delete("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeTemplateResource::class . "@delete",
                 ]);

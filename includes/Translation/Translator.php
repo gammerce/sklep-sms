@@ -20,17 +20,51 @@ class Translator
     private ?string $loadedLanguage = null;
 
     /**
-     * Array of language => language short
-     */
-    private array $langList = [
-        "polish" => "pl",
-        "english" => "en",
-    ];
-
-    /**
      * Array of translations
      */
     private array $translations = [];
+
+    /**
+     * Array of language => language short
+     * @return string[]
+     */
+    public static function langList(): array
+    {
+        return [
+            "polish" => "pl",
+            "english" => "en",
+        ];
+    }
+
+    /**
+     * @param string $lang
+     * @return bool
+     */
+    public static function languageExists($lang): bool
+    {
+        return array_key_exists($lang, self::langList());
+    }
+
+    /**
+     * @param string $lang
+     * @return bool
+     */
+    public static function languageShortExists($lang): bool
+    {
+        return in_array($lang, array_values(self::langList()), true);
+    }
+
+    /**
+     * Returns full language name by its shortcut
+     *
+     * @param string $short
+     * @return string|null
+     */
+    public static function getLanguageByShort($short): ?string
+    {
+        $mapping = array_flip(self::langList());
+        return array_get($mapping, strtolower($short));
+    }
 
     public function __construct($lang = "polish")
     {
@@ -47,30 +81,9 @@ class Translator
     /**
      * @return string
      */
-    public function getCurrentLanguageShort()
+    public function getCurrentLanguageShort(): string
     {
-        return $this->langList[$this->getCurrentLanguage()];
-    }
-
-    /**
-     * @param string $lang
-     * @return bool
-     */
-    public function languageExists($lang): bool
-    {
-        return array_key_exists($lang, $this->langList);
-    }
-
-    /**
-     * Returns full language name by its shortcut
-     *
-     * @param string $short
-     * @return string|null
-     */
-    public function getLanguageByShort($short)
-    {
-        $mapping = array_flip($this->langList);
-        return array_get($mapping, strtolower($short));
+        return self::langList()[$this->getCurrentLanguage()];
     }
 
     /**
@@ -84,7 +97,7 @@ class Translator
 
         if (
             !strlen($language) ||
-            !isset($this->langList[$language]) ||
+            !array_key_exists($language, $this->langList()) ||
             !$this->fileSystem->isDirectory($this->path->to("translations/{$language}"))
         ) {
             return;

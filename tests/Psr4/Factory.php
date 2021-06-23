@@ -412,6 +412,7 @@ class Factory
             [
                 "theme" => "example",
                 "name" => $this->faker->word,
+                "lang" => $this->faker->languageCode,
                 "content" => $this->faker->sentence,
             ],
             $attributes
@@ -420,6 +421,7 @@ class Factory
         return $this->templateRepository->create(
             $attributes["theme"],
             $attributes["name"],
+            $attributes["lang"],
             $attributes["content"]
         );
     }

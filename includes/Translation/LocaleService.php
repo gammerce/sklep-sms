@@ -1,30 +1,21 @@
 <?php
 namespace App\Translation;
 
-use App\Requesting\Requester;
 use App\System\Settings;
 use Symfony\Component\HttpFoundation\Request;
 
 class LocaleService
 {
-    private TranslationManager $translationManager;
     private Settings $settings;
-    private Requester $requester;
     private LocaleCookieService $localeCookieService;
 
-    public function __construct(
-        TranslationManager $translationManager,
-        LocaleCookieService $localeCookieService,
-        Settings $settings,
-        Requester $requester
-    ) {
-        $this->translationManager = $translationManager;
+    public function __construct(LocaleCookieService $localeCookieService, Settings $settings)
+    {
         $this->settings = $settings;
-        $this->requester = $requester;
         $this->localeCookieService = $localeCookieService;
     }
 
-    public function getLocale(Request $request)
+    public function getLocale(Request $request): string
     {
         $queryLocale = $this->resolveLocale($request->query->get("language"));
         if ($queryLocale) {
@@ -36,9 +27,9 @@ class LocaleService
             return $cookieLocale;
         }
 
-        $locale = $this->getLocaleFromHeader($request);
-        if ($locale) {
-            return $locale;
+        $headerLocale = $this->getLocaleFromHeader($request);
+        if ($headerLocale) {
+            return $headerLocale;
         }
 
         return $this->settings->getLanguage();
@@ -48,16 +39,14 @@ class LocaleService
      * @param string|null $locale
      * @return string|null
      */
-    private function resolveLocale($locale)
+    private function resolveLocale($locale): ?string
     {
-        $translator = $this->translationManager->user();
-
-        if ($translator->languageExists($locale)) {
+        if (Translator::languageExists($locale)) {
             return $locale;
         }
 
-        $locale = $translator->getLanguageByShort($locale);
-        if ($translator->languageExists($locale)) {
+        $locale = Translator::getLanguageByShort($locale);
+        if (Translator::languageExists($locale)) {
             return $locale;
         }
 
@@ -68,12 +57,10 @@ class LocaleService
      * @param Request $request
      * @return string|null
      */
-    private function getLocaleFromHeader(Request $request)
+    private function getLocaleFromHeader(Request $request): ?string
     {
-        $translator = $this->translationManager->user();
-
         foreach ($request->getLanguages() as $shortLocale) {
-            $locale = $translator->getLanguageByShort($shortLocale);
+            $locale = Translator::getLanguageByShort($shortLocale);
             if ($locale) {
                 return $locale;
             }

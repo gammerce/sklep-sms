@@ -34,14 +34,15 @@ class TemplateRepository
     /**
      * @param string $theme
      * @param string $name
+     * @param string|null $lang
      * @return Template|null
      */
-    public function find($theme, $name): ?Template
+    public function find($theme, $name, $lang): ?Template
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_templates` WHERE `theme` = ? AND `name` = ?"
+            "SELECT * FROM `ss_templates` WHERE `theme` = ? AND `name` = ? AND `lang` <=> ?"
         );
-        $statement->execute([$theme, $name]);
+        $statement->execute([$theme, $name, $lang]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
@@ -50,19 +51,20 @@ class TemplateRepository
     /**
      * @param string $theme
      * @param string $name
+     * @param string|null $lang
      * @param string $content
      * @return Template
      */
-    public function create($theme, $name, $content): Template
+    public function create($theme, $name, $lang, $content): Template
     {
         $this->db
             ->statement(
                 <<<EOF
                 INSERT INTO `ss_templates` 
-                SET `theme` = ?, `name` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
+                SET `theme` = ?, `name` = ?, `lang` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
 EOF
             )
-            ->execute([$theme, $name, $content]);
+            ->execute([$theme, $name, $lang, $content]);
 
         return $this->get($this->db->lastId());
     }
@@ -111,14 +113,19 @@ EOF
 
     /**
      * @param string $theme
+     * @param string|null $lang
      * @return Template[]
      */
-    public function listTemplates($theme): array
+    public function listTemplates($theme, $lang): array
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_templates` WHERE `theme` = ? ORDER BY `name` ASC"
+            <<<EOF
+            SELECT * FROM `ss_templates`
+            WHERE `theme` = ? AND `lang` <=> ?
+            ORDER BY `name` ASC
+EOF
         );
-        $statement->execute([$theme]);
+        $statement->execute([$theme, $lang]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -128,10 +135,11 @@ EOF
     private function mapToModel(array $data): Template
     {
         return new Template(
-            as_int($data["id"]),
-            as_string($data["theme"]),
-            as_string($data["name"]),
-            as_string($data["content"]),
+            (int) $data["id"],
+            (string) $data["theme"],
+            (string) $data["name"],
+            as_string($data["lang"]),
+            (string) $data["content"],
             as_datetime($data["created_at"]),
             as_datetime($data["updated_at"])
         );

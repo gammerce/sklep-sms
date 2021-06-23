@@ -3,8 +3,6 @@ namespace App\Theme;
 
 use App\Support\FileSystemContract;
 use App\System\Settings;
-use App\Translation\TranslationManager;
-use App\Translation\Translator;
 
 class TemplateContentService
 {
@@ -12,20 +10,19 @@ class TemplateContentService
     private Settings $settings;
     private TemplateRepository $templateRepository;
     private EditableTemplateRepository $editableTemplateRepository;
-    private Translator $lang;
     private array $cachedTemplates = [];
+
+    // TODO Add cache contract
 
     public function __construct(
         FileSystemContract $fileSystem,
         Settings $settings,
         TemplateRepository $templateRepository,
-        EditableTemplateRepository $editableTemplateRepository,
-        TranslationManager $translationManager
+        EditableTemplateRepository $editableTemplateRepository
     ) {
         $this->fileSystem = $fileSystem;
         $this->settings = $settings;
         $this->templateRepository = $templateRepository;
-        $this->lang = $translationManager->user();
         $this->editableTemplateRepository = $editableTemplateRepository;
     }
 
@@ -34,17 +31,23 @@ class TemplateContentService
      *
      * @param string $theme
      * @param string $name Template's name
+     * @param string|null $lang
      * @param bool $escapeSlashes Escape template's content
      * @param bool $htmlComments Wrap with comments
      * @return string|null
      * @throws TemplateNotFoundException
      */
-    public function get($theme, $name, $escapeSlashes = false, $htmlComments = false): ?string
-    {
-        $cacheKey = "$theme#$name#$escapeSlashes#$htmlComments";
+    public function get(
+        $theme,
+        $name,
+        $lang,
+        $escapeSlashes = false,
+        $htmlComments = false
+    ): ?string {
+        $cacheKey = "$theme#$name#$lang#$escapeSlashes#$htmlComments";
 
         if (!array_key_exists($cacheKey, $this->cachedTemplates)) {
-            $content = $this->read($theme, $name);
+            $content = $this->read($theme, $name, $lang);
 
             if ($htmlComments) {
                 $content =
@@ -68,33 +71,33 @@ class TemplateContentService
     /**
      * @param string $theme
      * @param string $name
+     * @param string|null $lang
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function read($theme, $name): string
+    private function read($theme, $name, $lang): string
     {
         try {
-            return $this->readFromDB($theme, $name);
+            return $this->readFromDB($theme, $name, $lang);
         } catch (TemplateNotFoundException $e) {
-            return $this->getFromFile($theme, $name);
+            return $this->getFromFile($theme, $name, $lang);
         }
     }
 
     /**
      * @param string $theme
      * @param string $name
+     * @param string|null $lang
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function readFromDB($theme, $name): string
+    private function readFromDB($theme, $name, $lang): string
     {
         if ($this->editableTemplateRepository->isEditable($name)) {
-            $template = $this->templateRepository->find($theme, $name);
-            if ($template) {
-                return $template->getContent();
-            }
+            $template =
+                $this->templateRepository->find($theme, $name, $lang) ??
+                $this->templateRepository->find($theme, $name, null);
 
-            $template = $this->templateRepository->find(Config::DEFAULT_THEME, $name);
             if ($template) {
                 return $template->getContent();
             }
@@ -106,12 +109,13 @@ class TemplateContentService
     /**
      * @param string $theme
      * @param string $name
-     * @return string|null
+     * @param string|null $lang
+     * @return string
      * @throws TemplateNotFoundException
      */
-    private function getFromFile($theme, $name): ?string
+    private function getFromFile($theme, $name, $lang): string
     {
-        $path = $this->resolvePath($theme, $name);
+        $path = $this->resolvePath($theme, $name, $lang);
         if ($path === null) {
             throw new TemplateNotFoundException();
         }
@@ -121,11 +125,12 @@ class TemplateContentService
     /**
      * @param string $theme
      * @param string $templateName
+     * @param string|null $lang
      * @return string|null
      */
-    private function resolvePath($theme, $templateName): ?string
+    private function resolvePath($theme, $templateName, $lang): ?string
     {
-        foreach ($this->getPossiblePaths($theme, $templateName) as $path) {
+        foreach ($this->getPossiblePaths($theme, $templateName, $lang) as $path) {
             if ($this->fileSystem->exists($path)) {
                 return $path;
             }
@@ -137,24 +142,18 @@ class TemplateContentService
     /**
      * @param string $theme
      * @param string $templateName
+     * @param string|null $lang
      * @return string[]
      */
-    private function getPossiblePaths($theme, $templateName): array
+    private function getPossiblePaths($theme, $templateName, $lang): array
     {
-        $language = $this->lang->getCurrentLanguageShort();
-
         $paths = [];
 
-        if (strlen($language)) {
-            $paths[] = $this->getTemplatePath($theme, $templateName, $language);
-            $paths[] = $this->getTemplatePath($theme, $templateName, $language, "html");
-            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $language);
-            $paths[] = $this->getTemplatePath(
-                Config::DEFAULT_THEME,
-                $templateName,
-                $language,
-                "html"
-            );
+        if ($lang) {
+            $paths[] = $this->getTemplatePath($theme, $templateName, $lang);
+            $paths[] = $this->getTemplatePath($theme, $templateName, $lang, "html");
+            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $lang);
+            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $lang, "html");
         }
 
         $paths[] = $this->getTemplatePath($theme, $templateName);
