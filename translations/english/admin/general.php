@@ -211,8 +211,9 @@ return [
     "reset_template_confirmation" =>
         "Are you sure you want to reset changes from the '{1}' template from the '{2}' theme?",
     "script_updated" => "Shop script is updated to the latest version.",
+    "select_language" => "Select language",
     "select_template" => "Select template...",
-    "select_theme" => "Select theme...",
+    "select_theme" => "Select theme",
     "sender_email" => "Sender's e-mail",
     "sender_name" => "Sender's name",
     "separated" => '( separated with semicolon \';\' )',

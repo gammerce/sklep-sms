@@ -9,6 +9,7 @@ import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
 import { onKeyPress, toggleLoader } from "../../../general/effects";
 import classNames from "classnames";
+import { Lang } from "../../types/template";
 
 interface SelectOption {
     label: string;
@@ -32,6 +33,9 @@ export const ThemeView: FunctionComponent = () => {
     const [themeListLoading, setThemeListLoading] = useState<boolean>(false);
     const [selectedTheme, setSelectedTheme] = useState<SelectOption | null>(null);
 
+    const [selectedLang, setSelectedLang] = useState<SelectOption | null>(null);
+    const languageList = ["pl", "en"].map((val) => ({ label: val, value: val }));
+
     const [templateLoading, setTemplateLoading] = useState<boolean>(false);
     const [updating, setUpdating] = useState<boolean>(false);
     const [resetting, setResetting] = useState<boolean>(false);
@@ -54,10 +58,10 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadTemplateList = async (theme: string) => {
+    const loadTemplateList = async (theme: string, lang: Lang) => {
         try {
             setTemplateListLoading(true);
-            const response = await api.getTemplateList(theme);
+            const response = await api.getTemplateList(theme, lang);
             const options = response.data.map((template) => ({
                 label: template.name,
                 value: template.name,
@@ -71,10 +75,10 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadTemplate = async (theme: string, name: string) => {
+    const loadTemplate = async (theme: string, name: string, lang: Lang) => {
         try {
             setTemplateLoading(true);
-            const response = await api.getTemplate(theme, name);
+            const response = await api.getTemplate(theme, name, lang);
             setTemplateContent(response.content);
             setFetchedTemplateContent(response.content);
         } catch (e) {
@@ -91,7 +95,12 @@ export const ThemeView: FunctionComponent = () => {
 
         try {
             setUpdating(true);
-            await api.putTemplate(selectedTheme.value, selectedTemplate.value, templateContent);
+            await api.putTemplate(
+                selectedTheme.value,
+                selectedTemplate.value,
+                selectedLang?.value ?? null,
+                templateContent
+            );
             setFetchedTemplateContent(templateContent);
             changeDeletabilityTo(true);
             infobox.showSuccess(__("template_updated"));
@@ -105,6 +114,7 @@ export const ThemeView: FunctionComponent = () => {
     const resetTemplate = async () => {
         const theme = selectedTheme.value;
         const name = selectedTemplate.value;
+        const lang = selectedLang?.value ?? null;
 
         if (!confirm(__("reset_template_confirmation", name, theme))) {
             return;
@@ -112,8 +122,8 @@ export const ThemeView: FunctionComponent = () => {
 
         try {
             setResetting(true);
-            await api.deleteTemplate(theme, name);
-            await loadTemplate(theme, name);
+            await api.deleteTemplate(theme, name, lang);
+            await loadTemplate(theme, name, lang);
             changeDeletabilityTo(false);
             infobox.showSuccess(__("template_reset"));
         } catch (e) {
@@ -155,6 +165,14 @@ export const ThemeView: FunctionComponent = () => {
         setSelectedTemplate(selectedOption);
     };
 
+    const handleLangChange = (selectedOption: SelectOption | null) => {
+        if (areChangesUnsaved && !confirm(__("template_unsaved_changes_confirmation"))) {
+            return;
+        }
+
+        setSelectedLang(selectedOption);
+    };
+
     const handleTemplateContentChange = (editor, data, value) => setTemplateContent(value);
 
     useEffect(() => {
@@ -164,22 +182,26 @@ export const ThemeView: FunctionComponent = () => {
     // Reload templates on theme change
     useEffect(() => {
         if (selectedTheme) {
-            loadTemplateList(selectedTheme.value).catch(handleError);
+            loadTemplateList(selectedTheme.value, selectedLang?.value ?? null).catch(handleError);
         } else {
             setTemplateList([]);
             setSelectedTemplate(null);
         }
     }, [selectedTheme]);
 
-    // Load template on theme/template change
+    // Load template on theme/template/language change
     useEffect(() => {
         if (selectedTheme && selectedTemplate) {
-            loadTemplate(selectedTheme.value, selectedTemplate.value).catch(handleError);
+            loadTemplate(
+                selectedTheme.value,
+                selectedTemplate.value,
+                selectedLang?.value ?? null
+            ).catch(handleError);
         } else {
             setTemplateContent("");
             setFetchedTemplateContent("");
         }
-    }, [selectedTheme, selectedTemplate?.value]);
+    }, [selectedTheme, selectedTemplate?.value, selectedLang]);
 
     // Handle saving using ctrl + s
     useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
@@ -199,6 +221,9 @@ export const ThemeView: FunctionComponent = () => {
         if (selectedTemplate) {
             return;
         }
+
+        // TODO Theme needs to be selected as well
+        // TODO Think about nullable theme
 
         const searchParams = new URLSearchParams(window.location.search);
         const templateName = searchParams.get("name");
@@ -256,6 +281,17 @@ export const ThemeView: FunctionComponent = () => {
                         styles={templateStyles}
                         onChange={handleTemplateChange}
                         isLoading={templateListLoading}
+                        isClearable
+                    />
+                </div>
+
+                <div className="control">
+                    <Select
+                        className="lang-selector"
+                        options={languageList}
+                        value={selectedLang}
+                        placeholder={__("select_language")}
+                        onChange={handleLangChange}
                         isClearable
                     />
                 </div>
