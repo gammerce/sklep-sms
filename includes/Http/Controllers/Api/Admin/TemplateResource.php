@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
+use App\Theme\Config;
 use App\Theme\TemplateContentService;
 use App\Theme\TemplateNotFoundException;
 use App\Theme\TemplateRepository;
@@ -23,18 +24,29 @@ class TemplateResource
     public function get(
         $template,
         Request $request,
-        TemplateContentService $templateContentService
+        TemplateContentService $templateContentService,
+        TemplateRepository $templateRepository
     ): JsonResponse {
         $theme = $request->query->get("theme");
         $lang = $request->query->get("lang");
 
         $this->guardAgainstInvalidLang($lang);
+        $this->guardAgainstInvalidTheme($theme);
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
 
-        try {
-            $content = $templateContentService->get($decodedTemplate, $theme, $lang);
-        } catch (TemplateNotFoundException $e) {
-            $content = "";
+        $templateModel = $templateRepository->find($decodedTemplate, $theme, $lang);
+        if ($templateModel) {
+            $content = $templateModel->getContent();
+        } else {
+            try {
+                $content = $templateContentService->readFromFile(
+                    $theme ?? Config::DEFAULT_THEME,
+                    $decodedTemplate,
+                    $lang
+                );
+            } catch (TemplateNotFoundException $e) {
+                $content = "";
+            }
         }
 
         return new JsonResponse([
@@ -53,6 +65,7 @@ class TemplateResource
         $content = trim($request->request->get("content"));
 
         $this->guardAgainstInvalidLang($lang);
+        $this->guardAgainstInvalidTheme($theme);
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
 
         $templateModel = $templateRepository->find($decodedTemplate, $theme, $lang);
@@ -78,6 +91,7 @@ class TemplateResource
         $lang = $request->query->get("lang");
 
         $this->guardAgainstInvalidLang($lang);
+        $this->guardAgainstInvalidTheme($theme);
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
 
         $templateModel = $templateRepository->find($decodedTemplate, $theme, $lang);
@@ -103,6 +117,13 @@ class TemplateResource
     private function guardAgainstInvalidLang($lang): void
     {
         if ($lang !== null && !Translator::languageShortExists($lang)) {
+            throw new EntityNotFoundException();
+        }
+    }
+
+    private function guardAgainstInvalidTheme($theme): void
+    {
+        if ($theme === TemplateRepository::DEFAULT) {
             throw new EntityNotFoundException();
         }
     }

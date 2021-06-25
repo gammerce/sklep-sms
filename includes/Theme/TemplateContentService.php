@@ -114,7 +114,7 @@ class TemplateContentService
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function readFromFile($theme, $name, $lang): string
+    public function readFromFile($theme, $name, $lang): string
     {
         $path = $this->resolvePath($theme, $name, $lang);
         if ($path === null) {

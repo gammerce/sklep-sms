@@ -6,7 +6,7 @@ use App\Support\Database;
 
 class TemplateRepository
 {
-    const DEFAULT = "default";
+    const DEFAULT = Config::DEFAULT_THEME;
 
     private Database $db;
 
