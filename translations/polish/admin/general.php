@@ -86,6 +86,7 @@ return [
     "groups" => "Grupy",
     "groups_hint" =>
         "Tylko użytkownicy należący do tych grup mogą zakupić tę usługę. Wybór grupy powoduje, że usługi nie da się zakupić na serwerze. Zostaw puste, aby zezwolić wszystkim.",
+    "hint_create_new_theme" => "Napisz, aby utworzyć nowy motyw",
     "how_to_update" => "Jak zaktualizować",
     "html_allowed" => "( dozwolony HTML )",
     "id_exist" => "Takie ID już istnieje.",
@@ -210,11 +211,10 @@ return [
     "regenerate_token" => "Wygeneruj token",
     "remaining_usage" => "Pozostałe użycia",
     "reset" => "Reset",
-    "reset_template_confirmation" =>
-        "Czy na pewno chcesz usunąć zmiany w szablonie '{1}' z motywu '{2}'?",
+    "reset_template_confirmation" => "Czy na pewno chcesz usunąć zmiany w szablonie '{1}'?",
     "script_updated" => "Skrypt sklepu jest zaktualizowany do najnowszej wersji.",
     "select_language" => "Wybierz język",
-    "select_template" => "Wybierz szablon...",
+    "select_template" => "Wybierz szablon",
     "select_theme" => "Wybierz motyw",
     "sender_email" => "E-mail nadawcy",
     "sender_name" => "Nazwa nadawcy",

@@ -86,6 +86,7 @@ return [
     "groups" => "Groups",
     "groups_hint" =>
         "Only users belonging to these groups can buy this service. Selecting a group means that a service cannot be purchased on a server. Leave empty to allow all.",
+    "hint_create_new_theme" => "Type to create new theme",
     "how_to_update" => "How to update",
     "html_allowed" => "( HTML allowed )",
     "id_exist" => "Such ID already exists.",
@@ -209,10 +210,10 @@ return [
     "remaining_usage" => "Remaining usage",
     "reset" => "Reset",
     "reset_template_confirmation" =>
-        "Are you sure you want to reset changes from the '{1}' template from the '{2}' theme?",
+        "Are you sure you want to reset changes from the '{1}' template?",
     "script_updated" => "Shop script is updated to the latest version.",
     "select_language" => "Select language",
-    "select_template" => "Select template...",
+    "select_template" => "Select template",
     "select_theme" => "Select theme",
     "sender_email" => "Sender's e-mail",
     "sender_name" => "Sender's name",

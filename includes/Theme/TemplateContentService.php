@@ -80,7 +80,7 @@ class TemplateContentService
         try {
             return $this->readFromDB($name, $theme, $lang);
         } catch (TemplateNotFoundException $e) {
-            return $this->getFromFile($theme ?? Config::DEFAULT_THEME, $name, $lang);
+            return $this->readFromFile($theme ?? Config::DEFAULT_THEME, $name, $lang);
         }
     }
 
@@ -94,12 +94,10 @@ class TemplateContentService
     private function readFromDB($name, $theme, $lang): string
     {
         if ($this->editableTemplateRepository->isEditable($name)) {
-            // TODO Think about it
+            // TODO No fallback when reading for theme page?
             $template =
                 $this->templateRepository->find($name, $theme, $lang) ??
-                ($this->templateRepository->find($name, $theme, null) ??
-                    ($this->templateRepository->find($name, null, $lang) ??
-                        $this->templateRepository->find($name, null, null)));
+                $this->templateRepository->find($name, $theme, null);
 
             if ($template) {
                 return $template->getContent();
@@ -116,7 +114,7 @@ class TemplateContentService
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function getFromFile($theme, $name, $lang): string
+    private function readFromFile($theme, $name, $lang): string
     {
         $path = $this->resolvePath($theme, $name, $lang);
         if ($path === null) {

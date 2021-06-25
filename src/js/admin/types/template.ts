@@ -3,7 +3,8 @@ export interface Template {
     deletable: boolean;
 }
 
-export type Lang = string | null;
+export type TemplateLang = string | null;
+export type TemplateTheme = string | null;
 
 export interface TemplateCollectionResponse {
     data: Template[];

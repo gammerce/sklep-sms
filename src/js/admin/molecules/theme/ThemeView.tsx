@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import Creatable from "react-select/creatable";
 import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/htmlmixed/htmlmixed";
@@ -9,7 +9,7 @@ import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
 import { onKeyPress, toggleLoader } from "../../../general/effects";
 import classNames from "classnames";
-import { Lang } from "../../types/template";
+import { TemplateLang, TemplateTheme } from "../../types/template";
 
 interface SelectOption {
     label: string;
@@ -41,6 +41,8 @@ export const ThemeView: FunctionComponent = () => {
     const [resetting, setResetting] = useState<boolean>(false);
 
     const areChangesUnsaved = fetchedTemplateContent !== templateContent;
+    const selectedThemeValue = selectedTheme?.value ?? null;
+    const selectedLangValue = selectedLang?.value ?? null;
 
     const loadThemeList = async () => {
         try {
@@ -58,7 +60,7 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadTemplateList = async (theme: string, lang: Lang) => {
+    const loadTemplateList = async (theme: TemplateTheme, lang: TemplateLang) => {
         try {
             setTemplateListLoading(true);
             const response = await api.getTemplateList(theme, lang);
@@ -75,10 +77,10 @@ export const ThemeView: FunctionComponent = () => {
         }
     };
 
-    const loadTemplate = async (theme: string, name: string, lang: Lang) => {
+    const loadTemplate = async (name: string, theme: TemplateTheme, lang: TemplateLang) => {
         try {
             setTemplateLoading(true);
-            const response = await api.getTemplate(theme, name, lang);
+            const response = await api.getTemplate(name, theme, lang);
             setTemplateContent(response.content);
             setFetchedTemplateContent(response.content);
         } catch (e) {
@@ -96,9 +98,9 @@ export const ThemeView: FunctionComponent = () => {
         try {
             setUpdating(true);
             await api.putTemplate(
-                selectedTheme.value,
                 selectedTemplate.value,
-                selectedLang?.value ?? null,
+                selectedThemeValue,
+                selectedLangValue,
                 templateContent
             );
             setFetchedTemplateContent(templateContent);
@@ -112,18 +114,16 @@ export const ThemeView: FunctionComponent = () => {
     };
 
     const resetTemplate = async () => {
-        const theme = selectedTheme.value;
         const name = selectedTemplate.value;
-        const lang = selectedLang?.value ?? null;
 
-        if (!confirm(__("reset_template_confirmation", name, theme))) {
+        if (!confirm(__("reset_template_confirmation", name))) {
             return;
         }
 
         try {
             setResetting(true);
-            await api.deleteTemplate(theme, name, lang);
-            await loadTemplate(theme, name, lang);
+            await api.deleteTemplate(name, selectedThemeValue, selectedLangValue);
+            await loadTemplate(name, selectedThemeValue, selectedLangValue);
             changeDeletabilityTo(false);
             infobox.showSuccess(__("template_reset"));
         } catch (e) {
@@ -179,29 +179,22 @@ export const ThemeView: FunctionComponent = () => {
         loadThemeList().catch(handleError);
     }, []);
 
-    // Reload templates on theme change
+    // Reload templates on theme or lang change
     useEffect(() => {
-        if (selectedTheme) {
-            loadTemplateList(selectedTheme.value, selectedLang?.value ?? null).catch(handleError);
-        } else {
-            setTemplateList([]);
-            setSelectedTemplate(null);
-        }
-    }, [selectedTheme]);
+        loadTemplateList(selectedThemeValue, selectedLangValue).catch(handleError);
+    }, [selectedTheme, selectedLang]);
 
     // Load template on theme/template/language change
     useEffect(() => {
-        if (selectedTheme && selectedTemplate) {
-            loadTemplate(
-                selectedTheme.value,
-                selectedTemplate.value,
-                selectedLang?.value ?? null
-            ).catch(handleError);
+        if (selectedTemplate) {
+            loadTemplate(selectedTemplate.value, selectedThemeValue, selectedLangValue).catch(
+                handleError
+            );
         } else {
             setTemplateContent("");
             setFetchedTemplateContent("");
         }
-    }, [selectedTheme, selectedTemplate?.value, selectedLang]);
+    }, [selectedTemplate?.value, selectedTheme, selectedLang]);
 
     // Handle saving using ctrl + s
     useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
@@ -221,9 +214,6 @@ export const ThemeView: FunctionComponent = () => {
         if (selectedTemplate) {
             return;
         }
-
-        // TODO Theme needs to be selected as well
-        // TODO Think about nullable theme
 
         const searchParams = new URLSearchParams(window.location.search);
         const templateName = searchParams.get("name");
@@ -252,6 +242,14 @@ export const ThemeView: FunctionComponent = () => {
         },
     };
 
+    const ThemeNoOptionsMessage = (props) => {
+        return (
+            <components.NoOptionsMessage {...props}>
+                {__("hint_create_new_theme")}
+            </components.NoOptionsMessage>
+        );
+    };
+
     return (
         <>
             <div className="subtitle">
@@ -260,18 +258,6 @@ export const ThemeView: FunctionComponent = () => {
             </div>
 
             <div className="field is-grouped">
-                <div className="control theme-control">
-                    <Creatable
-                        className="theme-selector"
-                        options={themeList}
-                        value={selectedTheme}
-                        placeholder={__("select_theme")}
-                        onChange={handleThemeChange}
-                        isLoading={themeListLoading}
-                        isClearable
-                    />
-                </div>
-
                 <div className="control is-expanded">
                     <Select
                         className="template-selector"
@@ -285,7 +271,20 @@ export const ThemeView: FunctionComponent = () => {
                     />
                 </div>
 
-                <div className="control">
+                <div className="control theme-control">
+                    <Creatable
+                        className="theme-selector"
+                        options={themeList}
+                        value={selectedTheme}
+                        placeholder={__("select_theme")}
+                        components={{ NoOptionsMessage: ThemeNoOptionsMessage }}
+                        onChange={handleThemeChange}
+                        isLoading={themeListLoading}
+                        isClearable
+                    />
+                </div>
+
+                <div className="control lang-control">
                     <Select
                         className="lang-selector"
                         options={languageList}

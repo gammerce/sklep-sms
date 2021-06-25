@@ -104,9 +104,16 @@ EOF
      */
     public function listThemes(): array
     {
-        $statement = $this->db->query(
-            "SELECT `theme` FROM `ss_templates` GROUP BY `theme` ORDER BY `theme` ASC"
+        $statement = $this->db->statement(
+            <<<EOF
+            SELECT `theme`
+            FROM `ss_templates`
+            WHERE `theme` != ?
+            GROUP BY `theme`
+            ORDER BY `theme` ASC
+EOF
         );
+        $statement->execute([self::DEFAULT]);
 
         return collect($statement)
             ->map(fn(array $row) => $row["theme"])

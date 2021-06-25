@@ -1,17 +1,11 @@
 import { AxiosInstance } from "axios";
-import { Lang, TemplateCollectionResponse, TemplateResourceResponse } from "../types/template";
+import {
+    TemplateLang,
+    TemplateCollectionResponse,
+    TemplateResourceResponse,
+    TemplateTheme,
+} from "../types/template";
 import { ThemeCollectionResponse } from "../types/theme";
-
-const prepareTemplateUrl = (theme: string, name: string, lang: Lang): string => {
-    const encodedName = name.replaceAll("/", "-");
-    const encodedTheme = encodeURIComponent(theme);
-
-    if (lang === null) {
-        return `/api/admin/themes/${encodedTheme}/templates/${encodedName}`;
-    } else {
-        return `/api/admin/themes/${encodedTheme}/templates/${encodedName}/languages/${lang}`;
-    }
-};
 
 export class Api {
     public constructor(private readonly axios: AxiosInstance) {
@@ -23,33 +17,47 @@ export class Api {
         return response.data;
     }
 
-    public async getTemplateList(theme: string, lang: Lang): Promise<TemplateCollectionResponse> {
-        const response = await this.axios.get(
-            `/api/admin/themes/${encodeURIComponent(theme)}/templates`,
-            { params: { lang } }
-        );
+    public async getTemplateList(
+        theme: TemplateTheme,
+        lang: TemplateLang
+    ): Promise<TemplateCollectionResponse> {
+        const response = await this.axios.get(`/api/admin/templates`, { params: { theme, lang } });
         return response.data;
     }
 
     public async getTemplate(
-        theme: string,
         name: string,
-        lang: Lang
+        theme: TemplateTheme,
+        lang: TemplateLang
     ): Promise<TemplateResourceResponse> {
-        const response = await this.axios.get(prepareTemplateUrl(theme, name, lang));
+        const encodedName = name.replaceAll("/", "-");
+
+        const response = await this.axios.get(`/api/admin/templates/${encodedName}`, {
+            params: { theme, lang },
+        });
         return response.data;
     }
 
     public async putTemplate(
-        theme: string,
         name: string,
-        lang: Lang,
+        theme: TemplateTheme,
+        lang: TemplateLang,
         content: string
     ): Promise<void> {
-        await this.axios.put(prepareTemplateUrl(theme, name, lang), { content });
+        const encodedName = name.replaceAll("/", "-");
+        await this.axios.put(
+            `/api/admin/templates/${encodedName}`,
+            { content },
+            { params: { theme, lang } }
+        );
     }
 
-    public async deleteTemplate(theme: string, name: string, lang: Lang): Promise<void> {
-        await this.axios.delete(prepareTemplateUrl(theme, name, lang));
+    public async deleteTemplate(
+        name: string,
+        theme: TemplateTheme,
+        lang: TemplateLang
+    ): Promise<void> {
+        const encodedName = name.replaceAll("/", "-");
+        await this.axios.delete(`/api/admin/templates/${encodedName}`, { params: { theme, lang } });
     }
 }
