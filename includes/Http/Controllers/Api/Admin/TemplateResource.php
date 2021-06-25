@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class ThemeTemplateResource
+class TemplateResource
 {
     private EditableTemplateRepository $editableTemplateRepository;
 
@@ -21,16 +21,18 @@ class ThemeTemplateResource
     }
 
     public function get(
-        TemplateContentService $templateContentService,
-        $theme,
         $template,
-        $lang = null
+        Request $request,
+        TemplateContentService $templateContentService
     ): JsonResponse {
+        $theme = $request->query->get("theme");
+        $lang = $request->query->get("lang");
+
         $this->guardAgainstInvalidLang($lang);
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
 
         try {
-            $content = $templateContentService->get($theme, $decodedTemplate, $lang);
+            $content = $templateContentService->get($decodedTemplate, $theme, $lang);
         } catch (TemplateNotFoundException $e) {
             $content = "";
         }
@@ -42,17 +44,18 @@ class ThemeTemplateResource
     }
 
     public function put(
-        Request $request,
-        TemplateRepository $templateRepository,
-        $theme,
         $template,
-        $lang = null
+        Request $request,
+        TemplateRepository $templateRepository
     ): Response {
-        $this->guardAgainstInvalidLang($lang);
-        $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
+        $theme = $request->query->get("theme");
+        $lang = $request->query->get("lang");
         $content = trim($request->request->get("content"));
 
-        $templateModel = $templateRepository->find($theme, $decodedTemplate, $lang);
+        $this->guardAgainstInvalidLang($lang);
+        $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
+
+        $templateModel = $templateRepository->find($decodedTemplate, $theme, $lang);
 
         // Update
         if ($templateModel) {
@@ -60,21 +63,27 @@ class ThemeTemplateResource
         }
         // Create
         else {
-            $templateRepository->create($theme, $decodedTemplate, $lang, $content);
+            $templateRepository->create($decodedTemplate, $theme, $lang, $content);
         }
 
         return new Response("", Response::HTTP_NO_CONTENT);
     }
 
-    public function delete(TemplateRepository $templateRepository, $theme, $template, $lang = null)
-    {
+    public function delete(
+        $template,
+        Request $request,
+        TemplateRepository $templateRepository
+    ): Response {
+        $theme = $request->query->get("theme");
+        $lang = $request->query->get("lang");
+
         $this->guardAgainstInvalidLang($lang);
         $decodedTemplate = $this->guardAgainstInvalidTemplate($template);
-        $templateModel = $templateRepository->find($theme, $decodedTemplate, $lang);
+
+        $templateModel = $templateRepository->find($decodedTemplate, $theme, $lang);
         if (!$templateModel) {
             throw new EntityNotFoundException();
         }
-
         $templateRepository->delete($templateModel->getId());
 
         return new Response("", Response::HTTP_NO_CONTENT);

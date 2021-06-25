@@ -16,7 +16,7 @@ export const getAndSetTemplate = function (
 
     $.ajax({
         type: "GET",
-        url: buildUrl(`/api/admin/templates/${template}`),
+        url: buildUrl(`/api/admin/rendered-templates/${template}`),
         data: data,
         complete() {
             loader.hide();

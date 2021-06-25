@@ -9,7 +9,7 @@ use App\User\Permission;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class TemplateResource
+class RenderedTemplateResource
 {
     public function get(
         $name,

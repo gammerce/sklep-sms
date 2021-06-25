@@ -6,8 +6,8 @@ use DateTime;
 class Template
 {
     private int $id;
-    private string $theme;
     private string $name;
+    private ?string $theme;
     private ?string $lang;
     private string $content;
     private DateTime $createdAt;
@@ -15,16 +15,16 @@ class Template
 
     public function __construct(
         $id,
-        $theme,
         $name,
+        $theme,
         $lang,
         $content,
         DateTime $createdAt,
         DateTime $updatedAt
     ) {
         $this->id = $id;
-        $this->theme = $theme;
         $this->name = $name;
+        $this->theme = $theme;
         $this->lang = $lang;
         $this->content = $content;
         $this->createdAt = $createdAt;
@@ -36,14 +36,14 @@ class Template
         return $this->id;
     }
 
-    public function getTheme(): string
-    {
-        return $this->theme;
-    }
-
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getTheme(): ?string
+    {
+        return $this->theme;
     }
 
     public function getLang(): ?string

@@ -29,8 +29,8 @@ class TemplateContentService
     /**
      * Get template's content
      *
-     * @param string $theme
      * @param string $name Template's name
+     * @param string|null $theme
      * @param string|null $lang
      * @param bool $escapeSlashes Escape template's content
      * @param bool $htmlComments Wrap with comments
@@ -38,16 +38,16 @@ class TemplateContentService
      * @throws TemplateNotFoundException
      */
     public function get(
-        $theme,
         $name,
+        $theme,
         $lang,
         $escapeSlashes = false,
         $htmlComments = false
     ): ?string {
-        $cacheKey = "$theme#$name#$lang#$escapeSlashes#$htmlComments";
+        $cacheKey = "$name#$theme#$lang#$escapeSlashes#$htmlComments";
 
         if (!array_key_exists($cacheKey, $this->cachedTemplates)) {
-            $content = $this->read($theme, $name, $lang);
+            $content = $this->read($name, $theme, $lang);
 
             if ($htmlComments) {
                 $content =
@@ -69,34 +69,37 @@ class TemplateContentService
     }
 
     /**
-     * @param string $theme
      * @param string $name
+     * @param string|null $theme
      * @param string|null $lang
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function read($theme, $name, $lang): string
+    private function read($name, $theme, $lang): string
     {
         try {
-            return $this->readFromDB($theme, $name, $lang);
+            return $this->readFromDB($name, $theme, $lang);
         } catch (TemplateNotFoundException $e) {
-            return $this->getFromFile($theme, $name, $lang);
+            return $this->getFromFile($theme ?? Config::DEFAULT_THEME, $name, $lang);
         }
     }
 
     /**
-     * @param string $theme
      * @param string $name
+     * @param string|null $theme
      * @param string|null $lang
      * @return string
      * @throws TemplateNotFoundException
      */
-    private function readFromDB($theme, $name, $lang): string
+    private function readFromDB($name, $theme, $lang): string
     {
         if ($this->editableTemplateRepository->isEditable($name)) {
+            // TODO Think about it
             $template =
-                $this->templateRepository->find($theme, $name, $lang) ??
-                $this->templateRepository->find($theme, $name, null);
+                $this->templateRepository->find($name, $theme, $lang) ??
+                ($this->templateRepository->find($name, $theme, null) ??
+                    ($this->templateRepository->find($name, null, $lang) ??
+                        $this->templateRepository->find($name, null, null)));
 
             if ($template) {
                 return $template->getContent();

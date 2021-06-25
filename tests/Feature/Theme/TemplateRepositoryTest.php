@@ -18,17 +18,17 @@ class TemplateRepositoryTest extends TestCase
     public function create_template()
     {
         // when
-        $theme = "example";
         $name = "foobar";
+        $theme = "example";
         $lang = "pl";
         $content = "a b c";
-        $template = $this->templateRepository->create($theme, $name, $lang, $content);
+        $template = $this->templateRepository->create($name, $theme, $lang, $content);
 
         // then
-        $this->assertEquals($template->getTheme(), $theme);
-        $this->assertEquals($template->getName(), $name);
-        $this->assertEquals($template->getLang(), $lang);
-        $this->assertEquals($template->getContent(), $content);
+        $this->assertEquals($name, $template->getName());
+        $this->assertEquals($theme, $template->getTheme());
+        $this->assertEquals($lang, $template->getLang());
+        $this->assertEquals($content, $template->getContent());
     }
 
     /** @test */
@@ -42,8 +42,8 @@ class TemplateRepositoryTest extends TestCase
 
         // then
         $this->assertEquals($template->getId(), $fetchedTemplate->getId());
-        $this->assertEquals($template->getTheme(), $fetchedTemplate->getTheme());
         $this->assertEquals($template->getName(), $fetchedTemplate->getName());
+        $this->assertEquals($template->getTheme(), $fetchedTemplate->getTheme());
         $this->assertEquals($template->getContent(), $fetchedTemplate->getContent());
         $this->assertEquals($template->getCreatedAt(), $fetchedTemplate->getCreatedAt());
         $this->assertEquals($template->getUpdatedAt(), $fetchedTemplate->getUpdatedAt());
@@ -80,23 +80,23 @@ class TemplateRepositoryTest extends TestCase
     }
 
     /** @test */
-    public function find_by_theme_name_and_lang()
+    public function find_by_name_theme_and_lang()
     {
         // given
         $template = $this->factory->template([
-            "theme" => "foo",
             "name" => "bar",
+            "theme" => "foo",
             "lang" => "pl",
         ]);
 
         // when
-        $foundTemplate = $this->templateRepository->find("foo", "bar", "pl");
+        $foundTemplate = $this->templateRepository->find("bar", "foo", "pl");
 
         // then
         $this->assertNotNull($foundTemplate);
         $this->assertEquals($template->getId(), $foundTemplate->getId());
-        $this->assertEquals("foo", $foundTemplate->getTheme());
         $this->assertEquals("bar", $foundTemplate->getName());
+        $this->assertEquals("foo", $foundTemplate->getTheme());
         $this->assertEquals("pl", $foundTemplate->getLang());
     }
 
@@ -105,8 +105,8 @@ class TemplateRepositoryTest extends TestCase
     {
         // given
         $this->factory->template([
-            "theme" => "foo",
             "name" => "bAr",
+            "theme" => "foo",
             "lang" => null,
         ]);
 
@@ -122,8 +122,8 @@ class TemplateRepositoryTest extends TestCase
     {
         // given
         $this->factory->template([
-            "theme" => "fOo",
             "name" => "bar",
+            "theme" => "fOo",
             "lang" => null,
         ]);
 
@@ -153,8 +153,8 @@ class TemplateRepositoryTest extends TestCase
     {
         // given
         $template = $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => null,
             "content" => "a b c",
         ]);

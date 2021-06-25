@@ -6,6 +6,8 @@ use App\Support\Database;
 
 class TemplateRepository
 {
+    const DEFAULT = "default";
+
     private Database $db;
 
     public function __construct(Database $db)
@@ -32,39 +34,39 @@ class TemplateRepository
     }
 
     /**
-     * @param string $theme
      * @param string $name
+     * @param string|null $theme
      * @param string|null $lang
      * @return Template|null
      */
-    public function find($theme, $name, $lang): ?Template
+    public function find($name, $theme, $lang): ?Template
     {
         $statement = $this->db->statement(
-            "SELECT * FROM `ss_templates` WHERE `theme` = ? AND `name` = ? AND `lang` <=> ?"
+            "SELECT * FROM `ss_templates` WHERE `name` = ? AND `theme` = ? AND `lang` = ?"
         );
-        $statement->execute([$theme, $name, $lang]);
+        $statement->execute([$name, $theme ?? self::DEFAULT, $lang ?? self::DEFAULT]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
     }
 
     /**
-     * @param string $theme
      * @param string $name
+     * @param string|null $theme
      * @param string|null $lang
      * @param string $content
      * @return Template
      */
-    public function create($theme, $name, $lang, $content): Template
+    public function create($name, $theme, $lang, $content): Template
     {
         $this->db
             ->statement(
                 <<<EOF
                 INSERT INTO `ss_templates` 
-                SET `theme` = ?, `name` = ?, `lang` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
+                SET `name` = ?, `theme` = ?, `lang` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
 EOF
             )
-            ->execute([$theme, $name, $lang, $content]);
+            ->execute([$name, $theme ?? self::DEFAULT, $lang ?? self::DEFAULT, $content]);
 
         return $this->get($this->db->lastId());
     }
@@ -112,7 +114,7 @@ EOF
     }
 
     /**
-     * @param string $theme
+     * @param string|null $theme
      * @param string|null $lang
      * @return Template[]
      */
@@ -121,11 +123,11 @@ EOF
         $statement = $this->db->statement(
             <<<EOF
             SELECT * FROM `ss_templates`
-            WHERE `theme` = ? AND `lang` <=> ?
+            WHERE `theme` = ? AND `lang` = ?
             ORDER BY `name` ASC
 EOF
         );
-        $statement->execute([$theme, $lang]);
+        $statement->execute([$theme ?? self::DEFAULT, $lang ?? self::DEFAULT]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -136,9 +138,9 @@ EOF
     {
         return new Template(
             (int) $data["id"],
-            (string) $data["theme"],
             (string) $data["name"],
-            as_string($data["lang"]),
+            $data["theme"] === self::DEFAULT ? null : (string) $data["theme"],
+            $data["lang"] === self::DEFAULT ? null : (string) $data["lang"],
             (string) $data["content"],
             as_datetime($data["created_at"]),
             as_datetime($data["updated_at"])

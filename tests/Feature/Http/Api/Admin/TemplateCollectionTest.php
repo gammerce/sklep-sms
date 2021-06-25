@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class ThemeTemplateCollectionTest extends HttpTestCase
+class TemplateCollectionTest extends HttpTestCase
 {
     /** @test */
     public function list_theme_templates()
@@ -14,8 +14,8 @@ class ThemeTemplateCollectionTest extends HttpTestCase
             $this->factory->privilegedUser([Permission::ACP(), Permission::MANAGE_SETTINGS()])
         );
         $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => "pl",
             "content" => "foobar",
         ]);

@@ -23,8 +23,8 @@ use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
 use App\Http\Controllers\Api\Admin\ThemeCollection;
-use App\Http\Controllers\Api\Admin\ThemeTemplateCollection;
-use App\Http\Controllers\Api\Admin\ThemeTemplateResource;
+use App\Http\Controllers\Api\Admin\TemplateCollection;
+use App\Http\Controllers\Api\Admin\TemplateResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
@@ -56,7 +56,7 @@ use App\Http\Controllers\Api\Shop\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverController;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
-use App\Http\Controllers\Api\Shop\TemplateResource;
+use App\Http\Controllers\Api\Shop\RenderedTemplateResource;
 use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
 use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
@@ -248,7 +248,7 @@ class RoutesManager
                         ]);
 
                         $r->get("/api/templates/{name}", [
-                            "uses" => TemplateResource::class . "@get",
+                            "uses" => RenderedTemplateResource::class . "@get",
                         ]);
 
                         $r->post("/api/purchases", [
@@ -524,8 +524,8 @@ class RoutesManager
                     "uses" => BrickResource::class . "@get",
                 ]);
 
-                $r->get("/api/admin/templates/{name}", [
-                    "uses" => TemplateResource::class . "@get",
+                $r->get("/api/admin/rendered-templates/{name}", [
+                    "uses" => RenderedTemplateResource::class . "@get",
                 ]);
 
                 $r->post("/api/admin/services/{service}/actions/{action}", [
@@ -536,33 +536,21 @@ class RoutesManager
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
                     "uses" => ThemeCollection::class . "@get",
                 ]);
-                $r->get("/api/admin/themes/{theme}/templates", [
+                $r->get("/api/admin/templates", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateCollection::class . "@get",
+                    "uses" => TemplateCollection::class . "@get",
                 ]);
-                $r->get("/api/admin/themes/{theme}/templates/{template}", [
+                $r->get("/api/admin/templates/{template}", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@get",
+                    "uses" => TemplateResource::class . "@get",
                 ]);
-                $r->get("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
+                $r->put("/api/admin/templates/{template}", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@get",
+                    "uses" => TemplateResource::class . "@put",
                 ]);
-                $r->put("/api/admin/themes/{theme}/templates/{template}", [
+                $r->delete("/api/admin/templates/{template}", [
                     "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@put",
-                ]);
-                $r->put("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@put",
-                ]);
-                $r->delete("/api/admin/themes/{theme}/templates/{template}", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@delete",
-                ]);
-                $r->delete("/api/admin/themes/{theme}/templates/{template}/languages/{lang}", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
-                    "uses" => ThemeTemplateResource::class . "@delete",
+                    "uses" => TemplateResource::class . "@delete",
                 ]);
             }
         );

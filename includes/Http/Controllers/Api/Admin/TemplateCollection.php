@@ -7,14 +7,14 @@ use App\Theme\TemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
-class ThemeTemplateCollection
+class TemplateCollection
 {
     public function get(
-        $theme,
         Request $request,
         EditableTemplateRepository $editableTemplateRepository,
         TemplateRepository $templateRepository
     ): JsonResponse {
+        $theme = $request->query->get("theme");
         $lang = $request->query->get("lang");
 
         $templateMapping = collect($templateRepository->listTemplates($theme, $lang))->flatMap(

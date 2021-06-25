@@ -4,7 +4,7 @@ namespace Tests\Feature\Http\Api\Admin;
 use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
-class ThemeTemplateResourceTest extends HttpTestCase
+class TemplateResourceTest extends HttpTestCase
 {
     protected function setUp(): void
     {
@@ -19,7 +19,7 @@ class ThemeTemplateResourceTest extends HttpTestCase
     public function get_template()
     {
         // when
-        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact");
+        $response = $this->get("/api/admin/templates/shop-pages-contact");
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -55,14 +55,14 @@ EOF
     {
         // given
         $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => null,
             "content" => "baz",
         ]);
 
         // when
-        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact");
+        $response = $this->get("/api/admin/templates/shop-pages-contact", ["theme" => "foo"]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -81,14 +81,17 @@ EOF
     {
         // given
         $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => "pl",
             "content" => "baz",
         ]);
 
         // when
-        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact/languages/pl");
+        $response = $this->get("/api/admin/templates/shop-pages-contact", [
+            "theme" => "foo",
+            "lang" => "pl",
+        ]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
@@ -106,7 +109,7 @@ EOF
     public function fails_on_getting_invalid_template()
     {
         // when
-        $response = $this->get("/api/admin/themes/foo/templates/example");
+        $response = $this->get("/api/admin/templates/example");
 
         // then
         $this->assertSame(404, $response->getStatusCode());
@@ -116,7 +119,7 @@ EOF
     public function fails_on_getting_unsupported_lang()
     {
         // when
-        $response = $this->get("/api/admin/themes/foo/templates/shop-pages-contact/languages/us");
+        $response = $this->get("/api/admin/templates/shop-pages-contact", ["lang" => "us"]);
 
         // then
         $this->assertSame(404, $response->getStatusCode());
@@ -126,15 +129,21 @@ EOF
     public function create_template()
     {
         // when
-        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact", [
-            "content" => "bar",
-        ]);
+        $response = $this->put(
+            "/api/admin/templates/shop-pages-contact",
+            [
+                "content" => "bar",
+            ],
+            [
+                "theme" => "foo",
+            ]
+        );
 
         // then
         $this->assertSame(204, $response->getStatusCode());
         $this->assertDatabaseHas("ss_templates", [
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "content" => "bar",
         ]);
     }
@@ -143,15 +152,22 @@ EOF
     public function create_i18n_template()
     {
         // when
-        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact/languages/pl", [
-            "content" => "bar",
-        ]);
+        $response = $this->put(
+            "/api/admin/templates/shop-pages-contact",
+            [
+                "content" => "bar",
+            ],
+            [
+                "theme" => "foo",
+                "lang" => "pl",
+            ]
+        );
 
         // then
         $this->assertSame(204, $response->getStatusCode());
         $this->assertDatabaseHas("ss_templates", [
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => "pl",
             "content" => "bar",
         ]);
@@ -162,15 +178,21 @@ EOF
     {
         // given
         $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "content" => "quy",
         ]);
 
         // when
-        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact", [
-            "content" => "bar",
-        ]);
+        $response = $this->put(
+            "/api/admin/templates/shop-pages-contact",
+            [
+                "content" => "bar",
+            ],
+            [
+                "theme" => "foo",
+            ]
+        );
 
         // then
         $this->assertSame(204, $response->getStatusCode());
@@ -186,22 +208,29 @@ EOF
     {
         // given
         $this->factory->template([
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => "en",
             "content" => "quy",
         ]);
 
         // when
-        $response = $this->put("/api/admin/themes/foo/templates/shop-pages-contact/languages/en", [
-            "content" => "bar",
-        ]);
+        $response = $this->put(
+            "/api/admin/templates/shop-pages-contact",
+            [
+                "content" => "bar",
+            ],
+            [
+                "theme" => "foo",
+                "lang" => "en",
+            ]
+        );
 
         // then
         $this->assertSame(204, $response->getStatusCode());
         $this->assertDatabaseHas("ss_templates", [
-            "theme" => "foo",
             "name" => "shop/pages/contact",
+            "theme" => "foo",
             "lang" => "en",
             "content" => "bar",
         ]);

@@ -410,8 +410,8 @@ class Factory
     {
         $attributes = array_merge(
             [
-                "theme" => "example",
                 "name" => $this->faker->word,
+                "theme" => "example",
                 "lang" => $this->faker->languageCode,
                 "content" => $this->faker->sentence,
             ],
@@ -419,8 +419,8 @@ class Factory
         );
 
         return $this->templateRepository->create(
-            $attributes["theme"],
             $attributes["name"],
+            $attributes["theme"],
             $attributes["lang"],
             $attributes["content"]
         );

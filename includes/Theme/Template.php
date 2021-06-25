@@ -40,8 +40,8 @@ final class Template
         $htmlComments = true
     ): string {
         $template = $this->templateContentService->get(
-            $this->settings->getTheme(),
             $templateName,
+            $this->settings->getTheme(),
             $this->lang->getCurrentLanguageShort(),
             $escapeSlashes,
             $htmlComments
