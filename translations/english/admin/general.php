@@ -251,6 +251,8 @@ return [
         "Your unsaved changes will be lost. Are you sure you want to continue?",
     "template_updated" => "Template's been updated",
     "theme" => "Theme",
+    "theme_page_subtitle" =>
+        'Customize the look of your shop by editing HTML templates. The current theme can be changed in <a href="{1}">the store settings</a>.',
     "transfer" => "Transfer",
     "transfer_payment_platform" => "Transfer payment platform",
     "transfer_price" => "Transfer/Wallet price",

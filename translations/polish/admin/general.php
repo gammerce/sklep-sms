@@ -252,6 +252,8 @@ return [
         "Twoje niezapisane zmiany zostaną utracone. Czy na pewno chcesz kontynuować?",
     "template_updated" => "Szablon został zaktualizowany",
     "theme" => "Motyw",
+    "theme_page_subtitle" =>
+        'Dostosuj wygląd sklepu poprzez edycję szablonów HTML. Aktualny motyw możesz zmienić w <a href="{1}">ustawieniach sklepu</a>.',
     "transfer" => "Przelew",
     "transfer_payment_platform" => "Platforma płatności internetowych",
     "transfer_price" => "Koszt przelew / portfel",

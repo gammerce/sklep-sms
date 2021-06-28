@@ -10,6 +10,7 @@ import { __ } from "../../../general/i18n";
 import { onKeyPress, toggleLoader } from "../../../general/effects";
 import classNames from "classnames";
 import { TemplateLang, TemplateTheme } from "../../types/template";
+import { buildUrl } from "../../../general/global";
 
 interface SelectOption {
     label: string;
@@ -252,10 +253,12 @@ export const ThemeView: FunctionComponent = () => {
 
     return (
         <>
-            <div className="subtitle">
-                Dostosuj wygląd sklepu poprzez edycję szablonów HTML. Wybierz motyw z listy lub
-                stwórz nowy wpisując wybraną przez siebie nazwę.
-            </div>
+            <div
+                className="subtitle"
+                dangerouslySetInnerHTML={{
+                    __html: __("theme_page_subtitle", buildUrl("/admin/settings")),
+                }}
+            ></div>
 
             <div className="field is-grouped">
                 <div className="control is-expanded">
