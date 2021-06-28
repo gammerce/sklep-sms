@@ -47,7 +47,7 @@ final class Template
             $htmlComments
         );
         $compiled = $this->compile($template);
-        return $this->eval($compiled, $data);
+        return $this->evalTemplate($compiled, $data);
     }
 
     /**
@@ -61,7 +61,7 @@ final class Template
         return $this->render($templateName, $data, true, false);
     }
 
-    private function eval($__content, array $data): string
+    private function evalTemplate($__content, array $data): string
     {
         $data = $this->addDefaultVariables($data);
         extract($data);
