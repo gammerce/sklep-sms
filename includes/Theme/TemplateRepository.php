@@ -44,7 +44,7 @@ class TemplateRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_templates` WHERE `name` = ? AND `theme` = ? AND `lang` = ?"
         );
-        $statement->execute([$name, $theme ?? self::DEFAULT_THEME, $lang ?? self::DEFAULT_THEME]);
+        $statement->execute([$name, $theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
@@ -68,8 +68,8 @@ EOF
             )
             ->execute([
                 $name,
-                $theme ?? self::DEFAULT_THEME,
-                $lang ?? self::DEFAULT_THEME,
+                $theme ?: self::DEFAULT_THEME,
+                $lang ?: self::DEFAULT_THEME,
                 $content,
             ]);
 
@@ -139,7 +139,7 @@ EOF
             ORDER BY `name` ASC
 EOF
         );
-        $statement->execute([$theme ?? self::DEFAULT_THEME, $lang ?? self::DEFAULT_THEME]);
+        $statement->execute([$theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))

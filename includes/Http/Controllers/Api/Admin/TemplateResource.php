@@ -39,7 +39,7 @@ class TemplateResource
         } else {
             try {
                 $content = $templateContentService->readFromFile(
-                    $theme ?? TemplateRepository::DEFAULT_THEME,
+                    $theme ?: TemplateRepository::DEFAULT_THEME,
                     $decodedTemplate,
                     $lang
                 );

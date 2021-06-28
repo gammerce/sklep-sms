@@ -80,7 +80,7 @@ class TemplateContentService
         try {
             return $this->readFromDB($name, $theme, $lang);
         } catch (TemplateNotFoundException $e) {
-            return $this->readFromFile($theme ?? TemplateRepository::DEFAULT_THEME, $name, $lang);
+            return $this->readFromFile($theme ?: TemplateRepository::DEFAULT_THEME, $name, $lang);
         }
     }
 
@@ -95,7 +95,7 @@ class TemplateContentService
     {
         if ($this->editableTemplateRepository->isEditable($name)) {
             $template =
-                $this->templateRepository->find($name, $theme, $lang) ??
+                $this->templateRepository->find($name, $theme, $lang) ?:
                 $this->templateRepository->find($name, $theme, null);
 
             if ($template) {
