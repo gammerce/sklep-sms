@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: 3.8
       -
-        run: pip install pre-commit
+        run: pip install pre-commit==2.6.0
       -
         run: pre-commit run --all-files -c .pre-commit-config-ci.yaml
 
