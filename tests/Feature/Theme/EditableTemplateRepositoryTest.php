@@ -21,7 +21,7 @@ class EditableTemplateRepositoryTest extends TestCase
         $this->factory->template(["theme" => "foo"]);
 
         // when
-        $templates = $this->editableTemplateRepository->list();
+        $templates = $this->editableTemplateRepository->all();
 
         // then
         $this->assertEquals(

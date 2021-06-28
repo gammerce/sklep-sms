@@ -106,7 +106,7 @@ class TemplateResource
     {
         $template = str_replace("-", "/", $name);
 
-        if (!in_array($template, $this->editableTemplateRepository->list())) {
+        if (!in_array($template, $this->editableTemplateRepository->all())) {
             throw new EntityNotFoundException();
         }
 

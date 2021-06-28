@@ -22,7 +22,7 @@ class TemplateCollection
         );
 
         return new JsonResponse([
-            "data" => collect($editableTemplateRepository->list())
+            "data" => collect($editableTemplateRepository->all())
                 ->map(
                     fn($name) => [
                         "name" => $name,

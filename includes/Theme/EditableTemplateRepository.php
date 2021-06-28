@@ -18,7 +18,7 @@ class EditableTemplateRepository
     /**
      * @return string[]
      */
-    public function list(): array
+    public function all(): array
     {
         if (empty($this->cachedTemplates)) {
             $this->cachedTemplates = $this->listInner();
@@ -33,7 +33,7 @@ class EditableTemplateRepository
      */
     public function isEditable($name): bool
     {
-        return in_array($name, $this->list(), true);
+        return in_array($name, $this->all(), true);
     }
 
     private function listInner(): array
