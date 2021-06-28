@@ -8,7 +8,7 @@ class PagePaymentSuccess extends Page
 {
     const PAGE_ID = "payment_success";
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("payment_success");
     }

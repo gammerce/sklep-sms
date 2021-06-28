@@ -12,10 +12,12 @@ use App\Server\Platform;
 use App\Support\Database;
 use App\Support\Meta;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\System\Auth;
+use App\Theme\Template;
 use App\Support\Version;
 use App\System\License;
 use App\Translation\TranslationManager;
+use App\User\Permission;
 use App\View\Html\Div;
 use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
@@ -36,6 +38,7 @@ class PageAdminMain extends PageAdmin
     private ServerManager $serverManager;
     private Database $db;
     private Meta $meta;
+    private Auth $auth;
 
     public function __construct(
         Template $template,
@@ -49,7 +52,8 @@ class PageAdminMain extends PageAdmin
         UrlGenerator $url,
         ServerManager $serverManager,
         Database $db,
-        Meta $meta
+        Meta $meta,
+        Auth $auth
     ) {
         parent::__construct($template, $translationManager);
 
@@ -63,9 +67,10 @@ class PageAdminMain extends PageAdmin
         $this->serverManager = $serverManager;
         $this->db = $db;
         $this->meta = $meta;
+        $this->auth = $auth;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("main_page");
     }
@@ -154,80 +159,87 @@ class PageAdminMain extends PageAdmin
 
     private function getBricks(): string
     {
+        $user = $this->auth->user();
         $bricks = [];
 
         // Server
-        $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_servers", $this->serverManager->getCount()),
-            $this->url->to("/admin/servers")
-        );
+        if ($user->can(Permission::MANAGE_SERVERS())) {
+            $bricks[] = $this->createBrick(
+                $this->lang->t("number_of_servers", $this->serverManager->getCount()),
+                $this->url->to("/admin/servers")
+            );
+        }
 
         // User
-        $bricks[] = $this->createBrick(
-            $this->lang->t(
-                "number_of_users",
-                $this->db->query("SELECT COUNT(*) FROM `ss_users`")->fetchColumn()
-            ),
-            $this->url->to("/admin/users")
-        );
-
-        // Bought service
-        $quantity = $this->db
-            ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")
-            ->fetchColumn();
-        $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_bought_services", $quantity),
-            $this->url->to("/admin/bought_services")
-        );
-
-        // SMS
-        $quantity = $this->db
-            ->query(
-                "SELECT COUNT(*) " .
-                    "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                    "WHERE t.payment = 'sms' AND t.free='0'"
-            )
-            ->fetchColumn();
-        $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_sent_smses", $quantity),
-            $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::SMS()])
-        );
-
-        // Transfer
-        $quantity = $this->db
-            ->query(
-                "SELECT COUNT(*) " .
-                    "FROM ({$this->transactionRepository->getQuery()}) as t " .
-                    "WHERE t.payment = 'transfer' AND t.free='0'"
-            )
-            ->fetchColumn();
-        $bricks[] = $this->createBrick(
-            $this->lang->t("number_of_transfers", $quantity),
-            $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::TRANSFER()])
-        );
-
-        // Income
-        $incomeData = $this->incomeService->get(date("Y"), date("m"));
-        $income = 0;
-        foreach ($incomeData as $date) {
-            foreach ($date as $value) {
-                $income += $value;
-            }
+        if ($user->can(Permission::MANAGE_USERS())) {
+            $bricks[] = $this->createBrick(
+                $this->lang->t(
+                    "number_of_users",
+                    $this->db->query("SELECT COUNT(*) FROM `ss_users`")->fetchColumn()
+                ),
+                $this->url->to("/admin/users")
+            );
         }
-        $incomeText = $this->priceTextService->getPriceText($income);
-        $bricks[] = $this->createBrick(
-            $this->lang->t("note_income", $incomeText),
-            $this->url->to("/admin/income")
-        );
 
-        // Whole income
-        $wholeIncomeText = $this->priceTextService->getPriceText(
-            $this->incomeService->getWholeIncome()
-        );
-        $bricks[] = $this->createBrick(
-            $this->lang->t("note_whole_income", $wholeIncomeText),
-            $this->url->to("/admin/income")
-        );
+        if ($user->can(Permission::VIEW_INCOME())) {
+            // Bought service
+            $quantity = $this->db
+                ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")
+                ->fetchColumn();
+            $bricks[] = $this->createBrick(
+                $this->lang->t("number_of_bought_services", $quantity),
+                $this->url->to("/admin/bought_services")
+            );
+
+            // SMS
+            $quantity = $this->db
+                ->query(
+                    "SELECT COUNT(*) " .
+                        "FROM ({$this->transactionRepository->getQuery()}) as t " .
+                        "WHERE t.payment = 'sms' AND t.free='0'"
+                )
+                ->fetchColumn();
+            $bricks[] = $this->createBrick(
+                $this->lang->t("number_of_sent_smses", $quantity),
+                $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::SMS()])
+            );
+
+            // Transfer
+            $quantity = $this->db
+                ->query(
+                    "SELECT COUNT(*) " .
+                        "FROM ({$this->transactionRepository->getQuery()}) as t " .
+                        "WHERE t.payment = 'transfer' AND t.free='0'"
+                )
+                ->fetchColumn();
+            $bricks[] = $this->createBrick(
+                $this->lang->t("number_of_transfers", $quantity),
+                $this->url->to("/admin/payments", ["method" => (string) PaymentMethod::TRANSFER()])
+            );
+
+            // Income
+            $incomeData = $this->incomeService->get(date("Y"), date("m"));
+            $income = 0;
+            foreach ($incomeData as $date) {
+                foreach ($date as $value) {
+                    $income += $value;
+                }
+            }
+            $incomeText = $this->priceTextService->getPriceText($income);
+            $bricks[] = $this->createBrick(
+                $this->lang->t("note_income", $incomeText),
+                $this->url->to("/admin/income")
+            );
+
+            // Whole income
+            $wholeIncomeText = $this->priceTextService->getPriceText(
+                $this->incomeService->getWholeIncome()
+            );
+            $bricks[] = $this->createBrick(
+                $this->lang->t("note_whole_income", $wholeIncomeText),
+                $this->url->to("/admin/income")
+            );
+        }
 
         return implode("", $bricks);
     }

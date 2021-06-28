@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers\View;
 
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Response;
 

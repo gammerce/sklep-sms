@@ -13,7 +13,7 @@ use App\Payment\General\PaymentMethod;
 use App\Payment\Interfaces\IChargeWallet;
 use App\Support\Money;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\Verification\Abstracts\SupportTransfer;

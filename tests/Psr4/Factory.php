@@ -9,6 +9,7 @@ use App\Models\Server;
 use App\Models\ServerService;
 use App\Models\Service;
 use App\Models\SmsCode;
+use App\Models\Template;
 use App\Models\User;
 use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
@@ -20,6 +21,7 @@ use App\Repositories\ServerRepository;
 use App\Repositories\ServerServiceRepository;
 use App\Repositories\ServiceRepository;
 use App\Repositories\SmsCodeRepository;
+use App\Theme\TemplateRepository;
 use App\Repositories\UserRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagsServiceModule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
@@ -29,6 +31,7 @@ use App\ServiceModules\MybbExtraGroups\MybbExtraGroupsServiceModule;
 use App\ServiceModules\MybbExtraGroups\MybbUserService;
 use App\ServiceModules\MybbExtraGroups\MybbUserServiceRepository;
 use App\Support\Money;
+use App\User\Permission;
 use App\Verification\PaymentModules\Cssetti;
 use Faker\Factory as FakerFactory;
 use Faker\Generator;
@@ -57,6 +60,7 @@ class Factory
     private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
     private MybbUserServiceRepository $mybbUserServiceRepository;
     private GroupRepository $groupRepository;
+    private TemplateRepository $templateRepository;
 
     public function __construct(
         UserRepository $userRepository,
@@ -70,7 +74,8 @@ class Factory
         SmsCodeRepository $smsCodeRepository,
         ExtraFlagUserServiceRepository $extraFlagUserServiceRepository,
         MybbUserServiceRepository $mybbUserServiceRepository,
-        GroupRepository $groupRepository
+        GroupRepository $groupRepository,
+        TemplateRepository $templateRepository
     ) {
         $this->faker = FakerFactory::create();
         $this->userRepository = $userRepository;
@@ -85,6 +90,7 @@ class Factory
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
         $this->mybbUserServiceRepository = $mybbUserServiceRepository;
         $this->groupRepository = $groupRepository;
+        $this->templateRepository = $templateRepository;
     }
 
     public function server(array $attributes = []): Server
@@ -214,6 +220,17 @@ class Factory
     public function admin(array $attributes = []): User
     {
         return $this->user(array_merge(["groups" => [2]], $attributes));
+    }
+
+    /**
+     * @param Permission[] $permissions
+     * @param array $attributes
+     * @return User
+     */
+    public function privilegedUser(array $permissions, array $attributes = []): User
+    {
+        $group = $this->group(compact("permissions"));
+        return $this->user(array_merge(["groups" => [$group->getId()]], $attributes));
     }
 
     public function user(array $attributes = []): User
@@ -387,5 +404,25 @@ class Factory
         );
 
         return $this->groupRepository->create($attributes["name"], $attributes["permissions"]);
+    }
+
+    public function template(array $attributes = []): Template
+    {
+        $attributes = array_merge(
+            [
+                "name" => $this->faker->word,
+                "theme" => "example",
+                "lang" => $this->faker->languageCode,
+                "content" => $this->faker->sentence,
+            ],
+            $attributes
+        );
+
+        return $this->templateRepository->create(
+            $attributes["name"],
+            $attributes["theme"],
+            $attributes["lang"],
+            $attributes["content"]
+        );
     }
 }

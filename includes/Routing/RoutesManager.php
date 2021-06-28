@@ -22,6 +22,9 @@ use App\Http\Controllers\Api\Admin\ServiceResource;
 use App\Http\Controllers\Api\Admin\SettingsController;
 use App\Http\Controllers\Api\Admin\SmsCodeCollection;
 use App\Http\Controllers\Api\Admin\SmsCodeResource;
+use App\Http\Controllers\Api\Admin\ThemeCollection;
+use App\Http\Controllers\Api\Admin\TemplateCollection;
+use App\Http\Controllers\Api\Admin\TemplateResource;
 use App\Http\Controllers\Api\Admin\UserPasswordResource;
 use App\Http\Controllers\Api\Admin\UserResource;
 use App\Http\Controllers\Api\Admin\UserServiceAddFormController;
@@ -53,7 +56,7 @@ use App\Http\Controllers\Api\Shop\ServiceLongDescriptionResource;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverController;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
-use App\Http\Controllers\Api\Shop\TemplateResource;
+use App\Http\Controllers\Api\Shop\RenderedTemplateResource;
 use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
 use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
@@ -88,7 +91,6 @@ use App\System\Settings;
 use App\User\Permission;
 use Exception;
 use FastRoute\Dispatcher;
-use phpDocumentor\Reflection\Types\ClassString;
 use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -246,7 +248,7 @@ class RoutesManager
                         ]);
 
                         $r->get("/api/templates/{name}", [
-                            "uses" => TemplateResource::class . "@get",
+                            "uses" => RenderedTemplateResource::class . "@get",
                         ]);
 
                         $r->post("/api/purchases", [
@@ -522,12 +524,33 @@ class RoutesManager
                     "uses" => BrickResource::class . "@get",
                 ]);
 
-                $r->get("/api/admin/templates/{name}", [
-                    "uses" => TemplateResource::class . "@get",
+                $r->get("/api/admin/rendered-templates/{name}", [
+                    "uses" => RenderedTemplateResource::class . "@get",
                 ]);
 
                 $r->post("/api/admin/services/{service}/actions/{action}", [
                     "uses" => ServiceActionController::class . "@post",
+                ]);
+
+                $r->get("/api/admin/themes", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => ThemeCollection::class . "@get",
+                ]);
+                $r->get("/api/admin/templates", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => TemplateCollection::class . "@get",
+                ]);
+                $r->get("/api/admin/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => TemplateResource::class . "@get",
+                ]);
+                $r->put("/api/admin/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => TemplateResource::class . "@put",
+                ]);
+                $r->delete("/api/admin/templates/{template}", [
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "uses" => TemplateResource::class . "@delete",
                 ]);
             }
         );

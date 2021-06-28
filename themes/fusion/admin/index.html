@@ -35,7 +35,7 @@
                     <hr />
 
                     <div class="user-box">
-                        {{ $user->getUsername() }} (
+                        {{ $username }} (
                         <a onclick="document.getElementById('logout-form').submit()">
                             {{ __('logout') }}
                         </a>
@@ -46,11 +46,13 @@
 
                     <p class="menu-label">{{ __('main') }}</p>
                     <ul class="menu-list">
-                        <li>
-                            <a href="{{ $url->to('/admin/home') }}">{{ __('main_page') }}</a>
-                        </li>
-                        {!! $settingsLink !!} {!! $transactionServicesLink !!} {!! $servicesLink !!}
-                        {!! $serversLink !!} {!! $pricingLink !!}
+                        {!! $mainLink !!} {!! $settingsLink !!} {!! $servicesLink !!} {!!
+                        $serversLink !!} {!! $transactionServicesLink !!} {!! $themeLink !!}
+                    </ul>
+
+                    <p class="menu-label">{{ __('shopping') }}</p>
+                    <ul class="menu-list">
+                        {!! $pricingLink !!} {!! $promoCodesLink !!} {!! $smsCodesLink !!}
                     </ul>
 
                     <p class="menu-label">{{ __('users_services') }}</p>
@@ -58,26 +60,18 @@
                         {!! $userServiceLink !!} {!! $playersFlagsLink !!}
                     </ul>
 
+                    <p class="menu-label">{{ __('finance') }}</p>
+                    <ul class="menu-list">
+                        {!! $boughtServicesLink !!} {!! $paymentsLink !!} {!! $incomeLink !!}
+                    </ul>
+
                     <p class="menu-label">{{ __('users') }}</p>
                     <ul class="menu-list">
                         {!! $usersLink !!} {!! $groupsLink !!}
                     </ul>
 
-                    <p class="menu-label">{{ __('additions') }}</p>
-                    <ul class="menu-list">
-                        {!! $incomeLink !!} {!! $promoCodesLink !!} {!! $smsCodesLink !!}
-                    </ul>
-
                     <p class="menu-label">{{ __('logs') }}</p>
                     <ul class="menu-list">
-                        <li>
-                            <a href="{{ $url->to('/admin/bought_services') }}">
-                                {{ __('bought_services') }}
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ $url->to('/admin/payments') }}"> {{ __('payments') }} </a>
-                        </li>
                         {!! $logsLink !!}
                     </ul>
                 </aside>

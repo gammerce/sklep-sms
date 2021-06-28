@@ -6,7 +6,7 @@ use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\FileSystem;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -17,6 +17,8 @@ use App\Verification\Abstracts\SupportTransfer;
 use App\View\Html\DOMElement;
 use App\View\Html\Option;
 use App\View\Html\Select;
+use App\Theme\ThemeRepository;
+use Generator;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminSettings extends PageAdmin
@@ -29,6 +31,7 @@ class PageAdminSettings extends PageAdmin
     private FileSystem $fileSystem;
     private Path $path;
     private PaymentModuleManager $paymentModuleManager;
+    private ThemeRepository $themeService;
 
     public function __construct(
         Template $template,
@@ -37,7 +40,8 @@ class PageAdminSettings extends PageAdmin
         PaymentPlatformRepository $paymentPlatformRepository,
         PaymentModuleManager $paymentModuleManager,
         FileSystem $fileSystem,
-        Path $path
+        Path $path,
+        ThemeRepository $themeService
     ) {
         parent::__construct($template, $translationManager);
 
@@ -47,6 +51,7 @@ class PageAdminSettings extends PageAdmin
         $this->fileSystem = $fileSystem;
         $this->path = $path;
         $this->paymentModuleManager = $paymentModuleManager;
+        $this->themeService = $themeService;
     }
 
     public function getPrivilege(): Permission
@@ -54,7 +59,7 @@ class PageAdminSettings extends PageAdmin
         return Permission::MANAGE_SETTINGS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("settings");
     }
@@ -90,8 +95,8 @@ class PageAdminSettings extends PageAdmin
 
         $cronSelect = $this->createCronSelect();
         $userEditServiceSelect = $this->createUserEditServiceSelect();
-        $themesList = to_array($this->createThemesList());
-        $languagesList = to_array($this->createLanguagesList());
+        $themesList = to_array($this->listThemes());
+        $languagesList = to_array($this->listLanguages());
         $pageTitle = $this->template->render("admin/page_title", [
             "buttons" => "",
             "title" => $this->getTitle($request),
@@ -103,7 +108,7 @@ class PageAdminSettings extends PageAdmin
             ? null
             : $this->template->render("admin/components/settings/shop_address");
 
-        return $this->template->render("admin/settings", [
+        return $this->template->render("admin/pages/settings", [
             "cronSelect" => $cronSelect,
             "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
@@ -140,7 +145,7 @@ class PageAdminSettings extends PageAdmin
         return $userEditServiceSelect;
     }
 
-    private function createCronSelect()
+    private function createCronSelect(): DOMElement
     {
         $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
@@ -171,23 +176,16 @@ class PageAdminSettings extends PageAdmin
         ]);
     }
 
-    private function createThemesList()
+    private function listThemes(): Generator
     {
-        $dirList = $this->fileSystem->scanDirectory($this->path->to("themes"));
-
-        foreach ($dirList as $dirName) {
-            if (
-                $dirName[0] != "." &&
-                $this->fileSystem->isDirectory($this->path->to("themes/$dirName"))
-            ) {
-                yield new Option($dirName, $dirName, [
-                    "selected" => selected($dirName == $this->settings->getTheme()),
-                ]);
-            }
+        foreach ($this->themeService->all() as $theme) {
+            yield new Option($theme, $theme, [
+                "selected" => selected($theme === $this->settings->getTheme()),
+            ]);
         }
     }
 
-    private function createLanguagesList()
+    private function listLanguages(): Generator
     {
         $dirList = $this->fileSystem->scanDirectory($this->path->to("translations"));
 

@@ -13,7 +13,7 @@ use App\Payment\General\PurchaseInformation;
 use App\Payment\Transfer\TransferPaymentService;
 use App\Payment\Transfer\TransferPriceService;
 use App\Repositories\PaymentTransferRepository;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Verification\Abstracts\SupportTransfer;
 use App\Verification\PaymentModules\PayPal;
@@ -54,7 +54,7 @@ class PagePayPalApproved extends Page
         $this->paymentTransferRepository = $paymentTransferRepository;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("transfer_finalized");
     }

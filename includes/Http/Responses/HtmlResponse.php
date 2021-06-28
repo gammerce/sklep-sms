@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class HtmlResponse extends Response
 {
-    public function __construct($output, $status = 200)
+    public function __construct($output, $status = self::HTTP_OK)
     {
         parent::__construct($output, $status, [
             "Expires" => "Sat, 1 Jan 2000 01:00:00 GMT",

@@ -9,7 +9,7 @@ use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
 use App\Support\Mailer;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;

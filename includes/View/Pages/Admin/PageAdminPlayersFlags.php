@@ -5,7 +5,7 @@ use App\Managers\ServerManager;
 use App\ServiceModules\ExtraFlags\PlayerFlag;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
@@ -48,7 +48,7 @@ class PageAdminPlayersFlags extends PageAdmin
         return Permission::VIEW_PLAYER_FLAGS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("players_flags");
     }

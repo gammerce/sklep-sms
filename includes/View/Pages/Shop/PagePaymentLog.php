@@ -8,7 +8,7 @@ use App\Repositories\TransactionRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\Support\Database;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedMust;
@@ -53,7 +53,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
         $this->serverManager = $serverManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("payment_log");
     }

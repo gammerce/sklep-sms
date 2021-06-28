@@ -4,6 +4,8 @@ import { handleErrorResponse, sthWentWrong } from "../../general/infobox";
 import { action_box } from "../../general/action_box";
 import { Dict } from "../../shop/types/general";
 
+export const handleError = (e: Error) => console.error(e);
+
 export const getAndSetTemplate = function (
     element: JQuery,
     template: string,
@@ -14,7 +16,7 @@ export const getAndSetTemplate = function (
 
     $.ajax({
         type: "GET",
-        url: buildUrl(`/api/admin/templates/${template}`),
+        url: buildUrl(`/api/admin/rendered-templates/${template}`),
         data: data,
         complete() {
             loader.hide();

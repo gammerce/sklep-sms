@@ -3,7 +3,7 @@ namespace App\Install;
 
 use App\Support\FileSystemContract;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 
 class UpdateInfo
 {

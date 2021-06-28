@@ -8,7 +8,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServices;
 use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -48,7 +48,7 @@ class PageUserOwnServices extends Page implements IBeLoggedMust
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("user_own_services");
     }

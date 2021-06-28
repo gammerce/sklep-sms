@@ -5,9 +5,8 @@ use App\Http\Responses\HtmlResponse;
 use App\Managers\ServiceModuleManager;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
-use App\View\Html\RawHtml;
 use App\View\Html\Script;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -41,12 +40,13 @@ class ServiceLongDescriptionController
             $pageTitle .= $serviceModule->service->getNameI18n();
         }
 
+        $customStyles = $template->render("shop/styles/general");
         $header = $template->render("shop/layout/header", [
+            "customStyles" => $customStyles,
             "currentPageId" => "service_long_description",
             "footer" => "",
             "pageTitle" => $pageTitle,
             "scripts" => $websiteHeader->getScripts(),
-            "styles" => $websiteHeader->getStyles(),
         ]);
 
         $output = $template->render(

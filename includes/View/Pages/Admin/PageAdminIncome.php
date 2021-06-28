@@ -6,7 +6,7 @@ use App\Managers\ServerManager;
 use App\Managers\WebsiteHeader;
 use App\Models\Server;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\Cell;
@@ -60,7 +60,7 @@ class PageAdminIncome extends PageAdmin
         return Permission::VIEW_INCOME();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("income");
     }

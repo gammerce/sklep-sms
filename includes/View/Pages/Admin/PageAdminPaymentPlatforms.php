@@ -8,7 +8,7 @@ use App\Managers\PaymentModuleManager;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
@@ -55,7 +55,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         return Permission::MANAGE_SETTINGS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("payment_platforms");
     }

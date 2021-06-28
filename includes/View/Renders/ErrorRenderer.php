@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Renders;
 
-use App\Support\Template;
+use App\Theme\Template;
 use Symfony\Component\HttpFoundation\Request;
 
 class ErrorRenderer

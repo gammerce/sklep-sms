@@ -4,7 +4,7 @@ namespace App\View\Blocks;
 use App\Managers\ServiceManager;
 use App\Routing\UrlGenerator;
 use App\Service\UserServiceAccessService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

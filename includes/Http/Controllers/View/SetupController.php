@@ -8,7 +8,7 @@ use App\Install\ShopState;
 use App\Install\UpdateInfo;
 use App\Support\FileSystemContract;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use Symfony\Component\HttpFoundation\Response;
 
 class SetupController
