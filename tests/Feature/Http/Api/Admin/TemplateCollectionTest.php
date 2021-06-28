@@ -21,7 +21,7 @@ class TemplateCollectionTest extends HttpTestCase
         ]);
 
         // when
-        $response = $this->get("/api/admin/themes/foo/templates", ["lang" => "pl"]);
+        $response = $this->get("/api/admin/templates", ["lang" => "pl", "theme" => "foo"]);
 
         // then
         $this->assertSame(200, $response->getStatusCode());
