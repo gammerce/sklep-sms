@@ -231,6 +231,7 @@ return [
     "settings" => "Settings",
     "settings_edit" => "Settings edited successfully.",
     "settings_no_edit" => "Settings not edited.",
+    "shop" => "Shop",
     "shop_address" => "Shop Address",
     "shop_name" => "Shop Name",
     "shopping" => "Shopping",

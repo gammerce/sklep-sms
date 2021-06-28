@@ -232,6 +232,7 @@ return [
     "settings" => "Ustawienia",
     "settings_edit" => "Ustawienia zostały prawidłowo wyedytowane.",
     "settings_no_edit" => "Nie wyedytowano ustawień.",
+    "shop" => "Sklep",
     "shop_address" => "Adres sklepu",
     "shop_name" => "Nazwa sklepu",
     "shopping" => "Zakupy",

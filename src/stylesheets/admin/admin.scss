@@ -29,22 +29,14 @@ $sidebar-width: 300px;
 @import "./partials/settings";
 @import "./partials/theme";
 
-h3 {
-    color: $grey-lighter;
-    padding: 2px 5px;
-    box-shadow: 0 0 1px #fff;
-    margin: 12px 2px 5px 2px;
-}
+.section-title {
+    @extend .title;
+    @extend .is-5;
 
-h4 {
-    color: #fff;
-    text-shadow: 2px 2px 1px #000;
     margin: 12px 0;
-    font-size: 20px;
     text-transform: uppercase;
-    border-top: 1px inset #5f5f5f !important;
-    border-bottom: 1px inset #5f5f5f !important;
-    padding: 4px;
+    border-bottom: 1px solid #363636;
+    padding-bottom: 0.25rem;
 }
 
 .header {
