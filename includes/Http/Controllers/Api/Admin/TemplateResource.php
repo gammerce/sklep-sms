@@ -2,11 +2,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Exceptions\EntityNotFoundException;
-use App\Theme\Config;
+use App\Theme\EditableTemplateRepository;
 use App\Theme\TemplateContentService;
 use App\Theme\TemplateNotFoundException;
 use App\Theme\TemplateRepository;
-use App\Theme\EditableTemplateRepository;
 use App\Translation\Translator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -40,7 +39,7 @@ class TemplateResource
         } else {
             try {
                 $content = $templateContentService->readFromFile(
-                    $theme ?? Config::DEFAULT_THEME,
+                    $theme ?? TemplateRepository::DEFAULT_THEME,
                     $decodedTemplate,
                     $lang
                 );
@@ -123,7 +122,7 @@ class TemplateResource
 
     private function guardAgainstInvalidTheme($theme): void
     {
-        if ($theme === TemplateRepository::DEFAULT) {
+        if ($theme === TemplateRepository::DEFAULT_THEME) {
             throw new EntityNotFoundException();
         }
     }

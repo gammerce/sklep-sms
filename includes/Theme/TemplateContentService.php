@@ -80,7 +80,7 @@ class TemplateContentService
         try {
             return $this->readFromDB($name, $theme, $lang);
         } catch (TemplateNotFoundException $e) {
-            return $this->readFromFile($theme ?? Config::DEFAULT_THEME, $name, $lang);
+            return $this->readFromFile($theme ?? TemplateRepository::DEFAULT_THEME, $name, $lang);
         }
     }
 
@@ -152,14 +152,28 @@ class TemplateContentService
         if ($lang) {
             $paths[] = $this->getTemplatePath($theme, $templateName, $lang);
             $paths[] = $this->getTemplatePath($theme, $templateName, $lang, "html");
-            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $lang);
-            $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, $lang, "html");
+            $paths[] = $this->getTemplatePath(
+                TemplateRepository::DEFAULT_THEME,
+                $templateName,
+                $lang
+            );
+            $paths[] = $this->getTemplatePath(
+                TemplateRepository::DEFAULT_THEME,
+                $templateName,
+                $lang,
+                "html"
+            );
         }
 
         $paths[] = $this->getTemplatePath($theme, $templateName);
         $paths[] = $this->getTemplatePath($theme, $templateName, null, "html");
-        $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName);
-        $paths[] = $this->getTemplatePath(Config::DEFAULT_THEME, $templateName, null, "html");
+        $paths[] = $this->getTemplatePath(TemplateRepository::DEFAULT_THEME, $templateName);
+        $paths[] = $this->getTemplatePath(
+            TemplateRepository::DEFAULT_THEME,
+            $templateName,
+            null,
+            "html"
+        );
 
         return $paths;
     }

@@ -4,7 +4,7 @@ namespace App\System;
 use App\Support\Database;
 use App\Support\FileSystemContract;
 use App\Support\Path;
-use App\Theme\Config;
+use App\Theme\TemplateRepository;
 use App\Theme\ThemeRepository;
 use ArrayAccess;
 
@@ -28,7 +28,7 @@ class Settings implements ArrayAccess
         $this->data = [
             "date_format" => "Y-m-d H:i",
             "shop_url" => "",
-            "theme" => Config::DEFAULT_THEME,
+            "theme" => TemplateRepository::DEFAULT_THEME,
             "timezone" => "Europe/Warsaw",
         ];
         $this->fileSystem = $fileSystem;
@@ -73,7 +73,7 @@ class Settings implements ArrayAccess
 
         // Fallback to fusion theme if selected does not exist
         if (!$this->themeRepository->exists($this->data["theme"])) {
-            $this->data["theme"] = Config::DEFAULT_THEME;
+            $this->data["theme"] = TemplateRepository::DEFAULT_THEME;
         }
 
         date_default_timezone_set($this->data["timezone"]);

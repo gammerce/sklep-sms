@@ -6,7 +6,7 @@ use App\Support\Database;
 
 class TemplateRepository
 {
-    const DEFAULT = Config::DEFAULT_THEME;
+    const DEFAULT_THEME = "fusion";
 
     private Database $db;
 
@@ -44,7 +44,7 @@ class TemplateRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_templates` WHERE `name` = ? AND `theme` = ? AND `lang` = ?"
         );
-        $statement->execute([$name, $theme ?? self::DEFAULT, $lang ?? self::DEFAULT]);
+        $statement->execute([$name, $theme ?? self::DEFAULT_THEME, $lang ?? self::DEFAULT_THEME]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
@@ -66,7 +66,12 @@ class TemplateRepository
                 SET `name` = ?, `theme` = ?, `lang` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
 EOF
             )
-            ->execute([$name, $theme ?? self::DEFAULT, $lang ?? self::DEFAULT, $content]);
+            ->execute([
+                $name,
+                $theme ?? self::DEFAULT_THEME,
+                $lang ?? self::DEFAULT_THEME,
+                $content,
+            ]);
 
         return $this->get($this->db->lastId());
     }
@@ -113,7 +118,7 @@ EOF
             ORDER BY `theme` ASC
 EOF
         );
-        $statement->execute([self::DEFAULT]);
+        $statement->execute([self::DEFAULT_THEME]);
 
         return collect($statement)
             ->map(fn(array $row) => $row["theme"])
@@ -134,7 +139,7 @@ EOF
             ORDER BY `name` ASC
 EOF
         );
-        $statement->execute([$theme ?? self::DEFAULT, $lang ?? self::DEFAULT]);
+        $statement->execute([$theme ?? self::DEFAULT_THEME, $lang ?? self::DEFAULT_THEME]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -146,8 +151,8 @@ EOF
         return new Template(
             (int) $data["id"],
             (string) $data["name"],
-            $data["theme"] === self::DEFAULT ? null : (string) $data["theme"],
-            $data["lang"] === self::DEFAULT ? null : (string) $data["lang"],
+            $data["theme"] === self::DEFAULT_THEME ? null : (string) $data["theme"],
+            $data["lang"] === self::DEFAULT_THEME ? null : (string) $data["lang"],
             (string) $data["content"],
             as_datetime($data["created_at"]),
             as_datetime($data["updated_at"])
