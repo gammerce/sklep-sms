@@ -178,7 +178,7 @@ class PageAdminSettings extends PageAdmin
 
     private function listThemes(): Generator
     {
-        foreach ($this->themeService->list() as $theme) {
+        foreach ($this->themeService->all() as $theme) {
             yield new Option($theme, $theme, [
                 "selected" => selected($theme === $this->settings->getTheme()),
             ]);

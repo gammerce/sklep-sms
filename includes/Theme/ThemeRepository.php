@@ -25,7 +25,7 @@ class ThemeRepository
     /**
      * @return string[]
      */
-    public function list(): array
+    public function all(): array
     {
         return $this->listAll()
             ->sort()
