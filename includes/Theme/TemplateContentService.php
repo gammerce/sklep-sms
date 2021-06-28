@@ -94,7 +94,6 @@ class TemplateContentService
     private function readFromDB($name, $theme, $lang): string
     {
         if ($this->editableTemplateRepository->isEditable($name)) {
-            // TODO No fallback when reading for theme page?
             $template =
                 $this->templateRepository->find($name, $theme, $lang) ??
                 $this->templateRepository->find($name, $theme, null);
