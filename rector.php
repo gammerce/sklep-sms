@@ -1,13 +1,9 @@
 <?php
 
-use Rector\Core\Configuration\Option;
 use Rector\Set\ValueObject\DowngradeSetList;
-use Rector\DowngradePhp70\Rector\Declare_\DowngradeStrictTypeDeclarationRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator) {
-    $services = $containerConfigurator->services();
-
     $phpVersion = getenv("PHP_VERSION");
     if (version_compare($phpVersion, "8.0") < 0) {
         $containerConfigurator->import(DowngradeSetList::PHP_80);
@@ -25,8 +21,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
         $containerConfigurator->import(DowngradeSetList::PHP_71);
     }
     if (version_compare($phpVersion, "7.0") < 0) {
-        // It doesn't work correctly with function argument type definition
-        // $sets[] = DowngradeSetList::PHP_70;
-        $services->set(DowngradeStrictTypeDeclarationRector::class);
+        $containerConfigurator->import(DowngradeSetList::PHP_70);
     }
 };
