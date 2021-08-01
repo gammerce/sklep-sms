@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/budziam/prettier-plugin-php-pre-commit
-  rev: master
+  rev: 890ab72eb90811bfef62d687c1e695122ec7a5ae
   hooks:
     - id: prettier
       args: [--write]
