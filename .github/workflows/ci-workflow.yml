@@ -88,7 +88,7 @@ jobs:
           --env PHP_VERSION=${{ matrix.php_version }} \
           -v $(pwd):/project \
           -w /rector \
-          rector/rector:0.9.33 \
+          rector/rector:0.11.40 \
           process \
           /project/includes \
           /project/tests \
