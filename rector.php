@@ -2,7 +2,7 @@
 
 use Rector\Core\Configuration\Option;
 use Rector\Set\ValueObject\DowngradeSetList;
-use Rector\DowngradePhp70\Rector\FunctionLike\DowngradeTypeReturnDeclarationRector;
+use Rector\DowngradePhp70\Rector\Declare_\DowngradeStrictTypeDeclarationRector;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 
 return static function (ContainerConfigurator $containerConfigurator) {
@@ -27,6 +27,6 @@ return static function (ContainerConfigurator $containerConfigurator) {
     if (version_compare($phpVersion, "7.0") < 0) {
         // It doesn't work correctly with function argument type definition
         // $sets[] = DowngradeSetList::PHP_70;
-        $services->set(DowngradeTypeReturnDeclarationRector::class);
+        $services->set(DowngradeStrictTypeDeclarationRector::class);
     }
 };
