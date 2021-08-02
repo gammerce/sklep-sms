@@ -51,19 +51,17 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                    outputPath: 'images/'
-                }
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/[name][ext][query]'
+                },
             },
             {
                 test: /\.(otf|eot|woff2?|ttf)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                    outputPath: 'fonts/'
-                }
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext][query]'
+                },
             },
             {
                 test: /\.css$/,
