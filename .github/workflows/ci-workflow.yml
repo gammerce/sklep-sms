@@ -20,7 +20,7 @@ jobs:
       -
         run: pip install pre-commit
       -
-        run: pre-commit run --all-files -c .pre-commit-config-ci.yaml
+        run: pre-commit run --all-files
 
   frontend:
     name: Build frontend
