@@ -110,9 +110,11 @@ module.exports = {
         },
     },
     plugins: [
-        new CopyWebpackPlugin([
-            {from: './src/images/', to: './images/'},
-        ]),
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: './src/images/', to: './images/'},
+            ],
+        }),
         new MiniCssExtractPlugin({
             filename: 'css/[name].css',
         }),
