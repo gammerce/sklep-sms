@@ -2,7 +2,7 @@ import { __ } from "./i18n";
 
 export const infobox = {
     element: $(""),
-    hide_task: 0,
+    hide_task: undefined,
 
     showInfo(message: string, positive: boolean, length: number = 4000): void {
         if (!message) {
@@ -15,7 +15,7 @@ export const infobox = {
         // Usuwamy poprzedni task usuwajacy info
         if (infobox.hide_task) {
             clearTimeout(infobox.hide_task);
-            infobox.hide_task = 0;
+            infobox.hide_task = undefined;
         }
 
         infobox.element = $("<div>", {
