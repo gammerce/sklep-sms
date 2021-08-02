@@ -60,6 +60,7 @@ class Mailer
             $mail->Port = $this->config["port"];
 
             $mail->setFrom($this->getSenderMail(), $this->getSenderName());
+            $mail->addReplyTo($this->getReplyToMail(), $this->getSenderName());
             $mail->addAddress($email, $name);
 
             $mail->isHTML(true);
@@ -119,12 +120,17 @@ class Mailer
             strlen(array_get($this->config, "password"));
     }
 
-    private function getSenderMail()
+    private function getSenderMail(): string
     {
         return $this->config["username"] ?: $this->settings["sender_email"];
     }
 
-    private function getSenderName()
+    public function getReplyToMail(): string
+    {
+        return $this->settings["sender_email"] ?: $this->config["username"];
+    }
+
+    private function getSenderName(): string
     {
         return $this->settings["sender_email_name"];
     }
