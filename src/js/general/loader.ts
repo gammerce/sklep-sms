@@ -1,6 +1,6 @@
 export const loader = {
     element: $(""),
-    show_task: 0,
+    show_task: undefined,
     blocked: false,
 
     show() {
@@ -8,7 +8,7 @@ export const loader = {
         // Let's remove the previous task showing the loader
         if (loader.show_task) {
             clearTimeout(loader.show_task);
-            loader.show_task = 0;
+            loader.show_task = undefined;
         }
 
         loader.show_task = setTimeout(function () {
@@ -23,7 +23,7 @@ export const loader = {
             );
 
             loader.element.appendTo("body").fadeIn("slow");
-            loader.show_task = 0;
+            loader.show_task = undefined;
         }, 300);
     },
 
@@ -31,7 +31,7 @@ export const loader = {
         loader.blocked = false;
         if (loader.show_task) {
             clearTimeout(loader.show_task);
-            loader.show_task = 0;
+            loader.show_task = undefined;
         }
         loader.element.remove();
     },

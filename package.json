@@ -19,8 +19,8 @@
     "copy-webpack-plugin": "^5.1.2",
     "core-js": "^3.6.4",
     "css-loader": "^5.2.6",
-    "extract-text-webpack-plugin": "4.0.0-beta.0",
     "file-loader": "^4.2.0",
+    "mini-css-extract-plugin": "^2.1.0",
     "node-sass": "^4.12.0",
     "react": "^16.13.1",
     "react-cache": "^2.0.0-alpha.1",
@@ -31,8 +31,8 @@
     "style-loader": "^1.0.0",
     "ts-loader": "^6.2.1",
     "typescript": "^3.8.3",
-    "webpack": "^4.44.2",
-    "webpack-cli": "^3.3.11"
+    "webpack": "^5.48.0",
+    "webpack-cli": "^4.7.2"
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.16.0",
