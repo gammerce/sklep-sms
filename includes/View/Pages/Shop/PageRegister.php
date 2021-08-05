@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Interfaces\IBeLoggedCannot;
 use App\View\Pages\Page;
@@ -23,7 +23,7 @@ class PageRegister extends Page implements IBeLoggedCannot
         $this->siteKey = $siteKey;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("sign_up");
     }

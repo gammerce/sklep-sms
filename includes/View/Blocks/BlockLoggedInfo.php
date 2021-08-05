@@ -1,7 +1,7 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\Auth;
 use App\View\Interfaces\IBeLoggedMust;
 use Symfony\Component\HttpFoundation\Request;

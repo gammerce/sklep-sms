@@ -18,6 +18,7 @@ return [
     "choose_service" => "Choose service",
     "choose_type" => "Choose type",
     "contact" => "Contact",
+    "contact_email" => "Contact e-mail",
     "content" => "Content",
     "cost" => "Cost",
     "date" => "Date",

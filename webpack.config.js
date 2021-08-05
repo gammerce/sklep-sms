@@ -1,4 +1,4 @@
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const fs = require("fs");
 
@@ -51,19 +51,17 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg|svg|gif)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                    outputPath: 'images/'
-                }
+                type: 'asset/resource',
+                generator: {
+                    filename: 'images/[name][ext][query]'
+                },
             },
             {
                 test: /\.(otf|eot|woff2?|ttf)$/,
-                loader: 'file-loader',
-                options: {
-                    name: '[name].[ext]',
-                    outputPath: 'fonts/'
-                }
+                type: 'asset/resource',
+                generator: {
+                    filename: 'fonts/[name][ext][query]'
+                },
             },
             {
                 test: /\.css$/,
@@ -74,23 +72,21 @@ module.exports = {
             },
             {
                 test: /\.scss$/,
-                use: ExtractTextPlugin.extract({
-                    fallback: 'style-loader',
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                sourceMap: true
-                            }
-                        },
-                        {
-                            loader: 'sass-loader',
-                            options: {
-                                sourceMap: true
-                            }
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: true
                         }
-                    ]
-                })
+                    },
+                    {
+                        loader: 'sass-loader',
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ],
             }
         ]
     },
@@ -112,11 +108,13 @@ module.exports = {
         },
     },
     plugins: [
-        new CopyWebpackPlugin([
-            {from: './src/images/', to: './images/'},
-        ]),
-        new ExtractTextPlugin({
-            filename: 'css/[name].css'
-        })
+        new CopyWebpackPlugin({
+            patterns: [
+                {from: './src/images/', to: './images/'},
+            ],
+        }),
+        new MiniCssExtractPlugin({
+            filename: 'css/[name].css',
+        }),
     ]
 };

@@ -5,7 +5,6 @@ use App\Install\EnvCreator;
 use App\Install\OldShop;
 use App\Install\SetupManager;
 use App\Payment\General\PurchaseDataService;
-use App\Service\ServiceDescriptionService;
 use Tests\Psr4\MemoryFileSystem;
 
 trait FileSystemConcern
@@ -13,12 +12,6 @@ trait FileSystemConcern
     protected function mockFileSystem(): MemoryFileSystem
     {
         $fileSystem = new MemoryFileSystem();
-
-        $serviceDescriptionService = $this->app->makeWith(
-            ServiceDescriptionService::class,
-            compact("fileSystem")
-        );
-        $this->app->instance(ServiceDescriptionService::class, $serviceDescriptionService);
 
         $envCreator = $this->app->makeWith(EnvCreator::class, compact("fileSystem"));
         $this->app->instance(EnvCreator::class, $envCreator);

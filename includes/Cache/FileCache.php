@@ -7,12 +7,12 @@ use Psr\SimpleCache\CacheInterface;
 
 class FileCache implements CacheInterface
 {
-    private FileSystemContract $files;
+    private FileSystemContract $fileSystem;
     private string $directory;
 
-    public function __construct(FileSystemContract $files, $directory)
+    public function __construct(FileSystemContract $fileSystem, $directory)
     {
-        $this->files = $files;
+        $this->fileSystem = $fileSystem;
         $this->directory = $directory;
     }
 
@@ -33,13 +33,13 @@ class FileCache implements CacheInterface
 
         $expiration = time() + $ttl;
 
-        $this->files->put($path, $expiration . serialize(new CacheEntity($value)), true);
+        $this->fileSystem->put($path, $expiration . serialize(new CacheEntity($value)), true);
     }
 
     public function delete($key)
     {
-        if ($this->files->exists($file = $this->path($key))) {
-            return $this->files->delete($file);
+        if ($this->fileSystem->exists($file = $this->path($key))) {
+            return $this->fileSystem->delete($file);
         }
 
         return false;
@@ -78,8 +78,8 @@ class FileCache implements CacheInterface
      */
     private function ensureCacheDirectoryExists($path)
     {
-        if (!$this->files->exists(dirname($path))) {
-            $this->files->makeDirectory(dirname($path), 0777, true, true);
+        if (!$this->fileSystem->exists(dirname($path))) {
+            $this->fileSystem->makeDirectory(dirname($path), 0777, true, true);
         }
     }
 
@@ -97,7 +97,7 @@ class FileCache implements CacheInterface
         // just return null. Otherwise, we'll get the contents of the file and get
         // the expiration UNIX timestamps from the start of the file's contents.
         try {
-            $expire = substr($contents = $this->files->get($path, true), 0, 10);
+            $expire = substr($contents = $this->fileSystem->get($path, true), 0, 10);
         } catch (Exception $e) {
             return null;
         }

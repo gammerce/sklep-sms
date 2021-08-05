@@ -83,12 +83,19 @@ class FileLogger implements LoggerInterface
      */
     public function log($level, $message, array $data = [])
     {
-        $filename = escape_filename($level);
+        $filename = $this->prepareFilename($level);
         $filePath = $this->path->to("data/logs/{$filename}.log");
         $dataText = $data ? " | " . json_encode($data) : "";
         $text = date($this->settings->getDateFormat()) . ": " . $message . $dataText;
 
         $this->fileSystem->append($filePath, $text);
         $this->fileSystem->setPermissions($filePath, 0777);
+    }
+
+    private function prepareFilename($level): string
+    {
+        $subdomain = get_identifier();
+        $filename = $subdomain ? "{$subdomain}_{$level}" : $level;
+        return escape_filename($filename);
     }
 }

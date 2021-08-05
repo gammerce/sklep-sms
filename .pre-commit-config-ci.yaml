@@ -1,7 +1,0 @@
-repos:
-- repo: https://github.com/budziam/prettier-plugin-php-pre-commit
-  rev: master
-  hooks:
-    - id: prettier
-      args: [--check]
-      files: ^(includes|migrations|src|tests|themes|translations)/.+\.(php|js|ts|tsx|css|scss|html)$

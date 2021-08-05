@@ -3,7 +3,7 @@ namespace App\View\Pages\Admin;
 
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
@@ -39,7 +39,7 @@ class PageAdminLogs extends PageAdmin
         return Permission::VIEW_LOGS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("logs");
     }

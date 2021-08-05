@@ -9,7 +9,7 @@ class PageChangePassword extends Page implements IBeLoggedMust
 {
     const PAGE_ID = "change_password";
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("change_password");
     }

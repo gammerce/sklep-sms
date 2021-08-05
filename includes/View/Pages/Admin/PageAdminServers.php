@@ -13,7 +13,7 @@ use App\Models\Server;
 use App\Models\Service;
 use App\Repositories\PaymentPlatformRepository;
 use App\ServiceModules\Interfaces\IServicePurchaseExternal;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\Verification\Abstracts\SupportSms;
@@ -66,7 +66,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
         return Permission::VIEW_SERVERS();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("servers");
     }

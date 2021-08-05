@@ -2,7 +2,7 @@ import { __ } from "./i18n";
 
 export const infobox = {
     element: $(""),
-    hide_task: 0,
+    hide_task: undefined,
 
     showInfo(message: string, positive: boolean, length: number = 4000): void {
         if (!message) {
@@ -15,7 +15,7 @@ export const infobox = {
         // Usuwamy poprzedni task usuwajacy info
         if (infobox.hide_task) {
             clearTimeout(infobox.hide_task);
-            infobox.hide_task = 0;
+            infobox.hide_task = undefined;
         }
 
         infobox.element = $("<div>", {
@@ -37,6 +37,14 @@ export const infobox = {
         }, length); // <-- time in milliseconds
     },
 
+    showSuccess(message: string): void {
+        infobox.showInfo(message, true);
+    },
+
+    showError(message: string): void {
+        infobox.showInfo(message, false);
+    },
+
     remove() {
         infobox.element.stop().fadeOut("slow", function () {
             $(this).remove();
@@ -44,5 +52,5 @@ export const infobox = {
     },
 };
 
-export const handleErrorResponse = () => infobox.showInfo(__("ajax_error"), false);
-export const sthWentWrong = () => infobox.showInfo(__("sth_went_wrong"), false);
+export const handleErrorResponse = () => infobox.showError(__("ajax_error"));
+export const sthWentWrong = () => infobox.showError(__("sth_went_wrong"));

@@ -3,27 +3,21 @@ namespace App\Http\Validation\Rules;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
-use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Theme\ThemeRepository;
 
 class ThemeRule extends BaseRule
 {
-    private FileSystemContract $fileSystem;
-    private Path $path;
+    private ThemeRepository $themeService;
 
     public function __construct()
     {
         parent::__construct();
-        $this->fileSystem = app()->make(FileSystemContract::class);
-        $this->path = app()->make(Path::class);
+        $this->themeService = app()->make(ThemeRepository::class);
     }
 
     public function validate($attribute, $value, array $data): void
     {
-        if (
-            !$this->fileSystem->isDirectory($this->path->to("themes/$value")) ||
-            $value[0] === "."
-        ) {
+        if (!$this->themeService->exists($value) || $value[0] === ".") {
             throw new ValidationException($this->lang->t("no_theme"));
         }
     }

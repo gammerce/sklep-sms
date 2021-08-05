@@ -9,7 +9,7 @@ use App\Repositories\SmsPriceRepository;
 use App\Support\Database;
 use App\Support\Money;
 use App\Support\PriceTextService;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\BodyRow;
@@ -57,7 +57,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         return Permission::VIEW_SMS_CODES();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("sms_codes");
     }

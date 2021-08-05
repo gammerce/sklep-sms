@@ -5,13 +5,18 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ApiResponse extends JsonResponse
 {
-    public function __construct($id, $text = "", $positive = false, $data = [], $status = 200)
-    {
-        $output["return_id"] = $id;
-        $output["text"] = $text;
+    public function __construct(
+        $code,
+        $message = "",
+        $positive = false,
+        array $data = [],
+        $status = self::HTTP_OK
+    ) {
+        $output["return_id"] = $code;
+        $output["text"] = $message;
         $output["positive"] = $positive;
 
-        if (is_array($data) && !empty($data)) {
+        if (!empty($data)) {
             $output = array_merge($output, $data);
         }
 

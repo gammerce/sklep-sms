@@ -13,18 +13,15 @@ class MigrateCommand
         $this->app = $app;
     }
 
-    public function run(
-        $dbHost,
-        $dbPort,
-        $dbUser,
-        $dbPassword,
-        $dbName,
-        $licenseToken,
-        $adminUsername,
-        $adminEmail,
-        $adminPassword
-    ): void {
-        $db = new Database($dbHost, $dbPort, $dbUser, $dbPassword, $dbName);
+    public function run($dbName, $licenseToken, $adminUsername, $adminEmail, $adminPassword): void
+    {
+        $db = new Database(
+            getenv("DB_HOST"),
+            getenv("DB_PORT") ?: 3306,
+            getenv("DB_USERNAME"),
+            getenv("DB_PASSWORD"),
+            $dbName
+        );
         $db->connect();
         $this->app->instance(Database::class, $db);
 

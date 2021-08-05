@@ -2,7 +2,7 @@
 namespace App\View\Renders;
 
 use App\Managers\WebsiteHeader;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\License;
 use App\System\Settings;
 use App\View\Blocks\BlockLoggedInfo;
@@ -35,25 +35,31 @@ class ShopRenderer
 
     public function render($content, $pageId, $pageTitle, Request $request): string
     {
+        $customStyles = $this->template->render("shop/styles/general");
         $header = $this->template->render("shop/layout/header", [
             "currentPageId" => $pageId,
+            "customStyles" => $customStyles,
             "footer" => $this->license->getFooter(),
             "pageTitle" => $pageTitle,
             "scripts" => $this->websiteHeader->getScripts(),
-            "styles" => $this->websiteHeader->getStyles(),
         ]);
         $loggedInfo = $this->blockRenderer->render(BlockLoggedInfo::BLOCK_ID, $request);
         $wallet = $this->blockRenderer->render(BlockWallet::BLOCK_ID, $request);
         $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
         $userButtons = $this->blockRenderer->render(BlockUserButtons::BLOCK_ID, $request);
         $googleAnalytics = $this->getGoogleAnalytics();
-        $contact = $this->settings->getContact();
+        $contactEmail = $this->settings->getContactEmail();
 
         $navbar = $this->template->render(
             "shop/layout/navbar",
             compact("servicesButtons", "userButtons", "wallet")
         );
-        $footer = $this->template->render("shop/layout/footer", compact("contact"));
+        $contactColumn = $contactEmail
+            ? $this->template->render("shop/components/footer/contact", [
+                "email" => $contactEmail,
+            ])
+            : null;
+        $footer = $this->template->render("shop/layout/footer", compact("contactColumn"));
 
         return $this->template->render(
             "shop/index",

@@ -121,7 +121,7 @@ class ServerConfigController
                 "sms_text" => $smsModule->getSmsCode(),
                 "steam_ids" => "$steamIds;",
                 "currency" => $settings->getCurrency(),
-                "contact" => $settings->getContact(),
+                "contact" => $settings->getContactEmail(),
                 "vat" => $settings->getVat(),
                 "sn" => $smsNumberItems->all(),
                 "se" => $serviceItems->all(),

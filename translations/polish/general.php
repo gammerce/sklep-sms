@@ -18,6 +18,7 @@ return [
     "choose_service" => "Wybierz usługę",
     "choose_type" => "Wybierz rodzaj",
     "contact" => "Kontakt",
+    "contact_email" => "E-mail kontaktowy",
     "content" => "Treść",
     "cost" => "Koszt",
     "date" => "Data",

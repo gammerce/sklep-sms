@@ -10,7 +10,7 @@ use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminEdit;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\User\Permission;
 use App\View\Html\Div;
@@ -48,13 +48,15 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return Permission::VIEW_USER_SERVICES();
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
-        $serviceModule = $this->getServiceModule($request);
         $title = $this->lang->t("users_services");
 
-        if ($serviceModule) {
-            $title .= ": {$serviceModule->userServiceAdminDisplayTitleGet()}";
+        if ($request) {
+            $serviceModule = $this->getServiceModule($request);
+            if ($serviceModule) {
+                $title .= ": {$serviceModule->userServiceAdminDisplayTitleGet()}";
+            }
         }
 
         return $title;

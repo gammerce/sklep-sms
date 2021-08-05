@@ -25,7 +25,8 @@ class ShopState
 
     public function requiresAction(): bool
     {
-        return !$this->isInstalled() || !$this->isUpToDate();
+        // SaaS version of a shop shouldn't give a user ability to perform update / install
+        return !is_saas() && (!$this->isInstalled() || !$this->isUpToDate());
     }
 
     public function isUpToDate(): bool

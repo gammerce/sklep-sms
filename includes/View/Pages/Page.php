@@ -5,7 +5,7 @@ use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
 use App\Support\Path;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Html\I_ToHtml;
@@ -25,10 +25,10 @@ abstract class Page
     /**
      * Get page title
      *
-     * @param Request $request
+     * @param Request|null $request
      * @return string
      */
-    abstract public function getTitle(Request $request): string;
+    abstract public function getTitle(Request $request = null): string;
 
     /**
      * Get page content

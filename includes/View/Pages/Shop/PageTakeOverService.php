@@ -5,7 +5,7 @@ use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Models\Service;
 use App\ServiceModules\Interfaces\IServiceTakeOver;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Html\Option;
 use App\View\Interfaces\IBeLoggedMust;
@@ -30,7 +30,7 @@ class PageTakeOverService extends Page implements IBeLoggedMust
         $this->serviceManager = $serviceManager;
     }
 
-    public function getTitle(Request $request): string
+    public function getTitle(Request $request = null): string
     {
         return $this->lang->t("service_takeover");
     }

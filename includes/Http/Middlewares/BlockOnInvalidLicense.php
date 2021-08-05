@@ -3,7 +3,7 @@ namespace App\Http\Middlewares;
 
 use App\Requesting\Response as CustomResponse;
 use App\Routing\UrlGenerator;
-use App\Support\Template;
+use App\Theme\Template;
 use App\System\License;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;

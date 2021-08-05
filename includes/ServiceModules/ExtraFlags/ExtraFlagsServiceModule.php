@@ -36,7 +36,6 @@ use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchasePriceService;
 use App\Payment\General\ServiceTakeOverFactory;
 use App\Repositories\UserServiceRepository;
-use App\Service\ServiceDescriptionService;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagAuthDataRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordDiffersRule;
 use App\ServiceModules\ExtraFlags\Rules\ExtraFlagPasswordRule;
@@ -60,8 +59,8 @@ use App\Support\Database;
 use App\Support\Expression;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
-use App\Support\Template;
 use App\System\Auth;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
@@ -133,7 +132,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         PurchasePriceService $purchasePriceService,
         ServerManager $serverManager,
         ServerServiceManager $serverServiceManager,
-        ServiceDescriptionService $serviceDescriptionService,
         ServiceManager $serviceManager,
         ServiceModuleManager $serviceModuleManager,
         ServiceTakeOverFactory $serviceTakeOverFactory,
@@ -143,7 +141,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         UserServiceRepository $userServiceRepository,
         ?Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->adminPaymentService = $adminPaymentService;
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;
@@ -212,8 +210,6 @@ class ExtraFlagsServiceModule extends ServiceModule implements
 
         $data = $this->service ? $this->service->getData() : [];
         $data["web"] = $body["web"];
-
-        $this->serviceDescriptionService->create($body["id"]);
 
         return [
             "types" => $types,
