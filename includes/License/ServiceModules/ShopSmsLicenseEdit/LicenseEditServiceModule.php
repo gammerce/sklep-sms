@@ -16,10 +16,9 @@ use App\ServiceModules\ServiceModule;
 use App\License\ServiceModules\ShopSmsLicense\PlatformService;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
-use App\Service\ServiceDescriptionService;
 use App\Service\UserServiceService;
 use App\Support\Database;
-use App\Support\Template;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use UnexpectedValueException;
@@ -48,14 +47,13 @@ class LicenseEditServiceModule extends ServiceModule implements
         PlatformService $platformService,
         LicenseServerService $licenseServerService,
         PriceTextService $priceTextService,
-        ServiceDescriptionService $serviceDescriptionService,
         Template $template,
         TranslationManager $translationManager,
         UserServiceRepository $userServiceRepository,
         UserServiceService $userServiceService,
         Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->licenseServerService = $licenseServerService;
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;

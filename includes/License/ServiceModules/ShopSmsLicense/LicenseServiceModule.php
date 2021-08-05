@@ -38,13 +38,12 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
 use App\License\LicenseServerService;
 use App\Support\PriceTextService;
-use App\Service\ServiceDescriptionService;
 use App\Service\UserServiceService;
 use App\Support\Database;
 use App\Support\QueryParticle;
-use App\Support\Template;
 use App\System\Auth;
 use App\System\Settings;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\User\Permission;
@@ -105,7 +104,6 @@ class LicenseServiceModule extends ServiceModule implements
         PaginationFactory $paginationFactory,
         PriceTextService $priceTextService,
         PurchaseDataService $purchaseDataService,
-        ServiceDescriptionService $serviceDescriptionService,
         Settings $settings,
         Template $template,
         TranslationManager $translationManager,
@@ -114,7 +112,7 @@ class LicenseServiceModule extends ServiceModule implements
         AdminPaymentService $adminPaymentService,
         Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;
@@ -160,25 +158,25 @@ class LicenseServiceModule extends ServiceModule implements
 
         $statement = $this->db->statement(
             <<<EOF
-            SELECT 
-                SQL_CALC_FOUND_ROWS
-                us.id,
-                us.user_id,
-                us.comment,
-                u.username,
-                s.id AS `service_id`,
-                s.name AS `service`,
-                us.expire,
-                m.identifier,
-                m.cost_daily
-            FROM `ss_user_service` AS us
-            INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id
-            LEFT JOIN `ss_services` AS s ON s.id = m.service_id
-            LEFT JOIN `ss_users` AS u ON u.uid = us.user_id
-            {$where}
-            ORDER BY us.id DESC
-            LIMIT ?, ?
-            EOF
+SELECT 
+    SQL_CALC_FOUND_ROWS
+    us.id,
+    us.user_id,
+    us.comment,
+    u.username,
+    s.id AS `service_id`,
+    s.name AS `service`,
+    us.expire,
+    m.identifier,
+    m.cost_daily
+FROM `ss_user_service` AS us
+INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id
+LEFT JOIN `ss_services` AS s ON s.id = m.service_id
+LEFT JOIN `ss_users` AS u ON u.uid = us.user_id
+{$where}
+ORDER BY us.id DESC
+LIMIT ?, ?
+EOF
         );
         $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();

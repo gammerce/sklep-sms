@@ -18,7 +18,6 @@ use App\Payment\Admin\AdminPaymentService;
 use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
-use App\Service\ServiceDescriptionService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -28,8 +27,8 @@ use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\ServiceModule;
 use App\Support\Database;
 use App\Support\PriceTextService;
-use App\Support\Template;
 use App\System\Auth;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Html\DOMElement;
@@ -66,12 +65,11 @@ class LicenseProlongServiceModule extends ServiceModule implements
         LicenseServerService $licenseServerService,
         LicenseUserServiceRepository $licenseUserServiceRepository,
         PriceTextService $priceTextService,
-        ServiceDescriptionService $serviceDescriptionService,
         Template $template,
         TranslationManager $translationManager,
         Service $service = null
     ) {
-        parent::__construct($template, $serviceDescriptionService, $service);
+        parent::__construct($template, $service);
         $this->adminPaymentService = $adminPaymentService;
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;
