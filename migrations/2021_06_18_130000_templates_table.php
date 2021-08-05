@@ -14,8 +14,8 @@ CREATE TABLE IF NOT EXISTS `ss_templates` (
   `theme`           VARCHAR(32)  NOT NULL,
   `lang`            VARCHAR(16)  NOT NULL,
   `content`         TEXT         NOT NULL,
-  `created_at`      TIMESTAMP    NOT NULL,
-  `updated_at`      TIMESTAMP    NOT NULL,
+  `created_at`      TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`      TIMESTAMP    NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `name_theme_lang` (`name`, `theme`, `lang`)
