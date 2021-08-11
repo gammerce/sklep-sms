@@ -17,7 +17,7 @@ class MetaTest extends TestCase
     /** @test */
     public function version_is_ok()
     {
-        $this->assertEquals("3.16.3", $this->meta->getVersion());
+        $this->assertEquals("3.17.0", $this->meta->getVersion());
     }
 
     /** @test */
