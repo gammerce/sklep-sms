@@ -34,7 +34,7 @@ class TPay extends PaymentModule implements SupportTransfer
                 "kwota" => $price->asPrice(),
                 "opis" => $purchase->getTransferDescription(),
                 "crc" => $crc,
-                "md5sum" => md5($this->getAccountId() . $price->asPrice() . $crc . $this->getKey()),
+                "md5sum" => $this->calculateMD5($price->asPrice(), $crc),
                 "imie" => $purchase->user->getForename(),
                 "nazwisko" => $purchase->user->getSurname(),
                 "email" => $purchase->getEmail(),
@@ -86,6 +86,18 @@ class TPay extends PaymentModule implements SupportTransfer
         );
 
         return $md5sum === $sign;
+    }
+
+    /**
+     * @param string $price
+     * @param string $crc
+     * @return string
+     */
+    private function calculateMD5($price, $crc): string
+    {
+        $parts = [$this->getAccountId(), $price, $crc, $this->getKey()];
+        $joined = collect($parts)->join("&");
+        return md5($joined);
     }
 
     private function getKey()
