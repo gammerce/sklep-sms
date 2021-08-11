@@ -79,7 +79,19 @@
         <div class="column is-full">
             <div class="field">
                 <div class="control">
-                    <input type="text" id="subdomain" name="email" class="input" />
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input
+                                type="text"
+                                id="subdomain"
+                                name="subdomain"
+                                class="input has-text-right"
+                            />
+                        </div>
+                        <div class="control">
+                            <a class="button is-static">.sklep-sms.cloud</a>
+                        </div>
+                    </div>
                 </div>
                 <div class="help">{!! __('price_per_hosting', $hostingMonthlyPrice) !!}</div>
             </div>

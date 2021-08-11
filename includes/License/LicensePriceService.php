@@ -24,14 +24,15 @@ class LicensePriceService
      * Calculate license daily cost
      *
      * @param Platform[] $platforms
-     * @param bool $hosting
+     * @param string|null $subdomain
      * @return int
      */
-    public function getDailyCost(array $platforms, $hosting): int
+    public function getDailyCost(array $platforms, $subdomain): int
     {
         // -1, because the first platform is free
         $platformsCost = max(0, (count($platforms) - 1) * self::COST_PLATFORM_PER_DAY);
-        return (int) ceil(self::COST_SHOP_PER_DAY + $platformsCost);
+        $hostingCost = strlen($subdomain) ? self::COST_HOSTING_PER_DAY : 0;
+        return (int) ceil(self::COST_SHOP_PER_DAY + $platformsCost + $hostingCost);
     }
 
     public function getBargainPercentage($daysCount): int

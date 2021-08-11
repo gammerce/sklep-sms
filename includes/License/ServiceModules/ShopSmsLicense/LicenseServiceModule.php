@@ -15,6 +15,7 @@ use App\Http\Validation\Validator;
 use App\License\LicensePriceService;
 use App\License\Models\LicenseUserService;
 use App\Managers\ServiceManager;
+use App\License\SubdomainRule;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -228,6 +229,9 @@ EOF
             "platformMonthlyPrice" => $this->priceTextService->getPriceText(
                 LicensePriceService::COST_PLATFORM_PER_DAY * 30
             ),
+            "hostingMonthlyPrice" => $this->priceTextService->getPriceText(
+                LicensePriceService::COST_HOSTING_PER_DAY * 30
+            ),
         ]);
     }
 
@@ -240,6 +244,7 @@ EOF
             [
                 "amount" => [new RequiredRule(), new IntegerRule(), new MinValueRule(30)],
                 "email" => [new RequiredRule(), new EmailRule()],
+                "subdomain" => [new SubdomainRule()],
                 "platforms" => [
                     new RequiredRule(),
                     new ArrayRule(),
@@ -250,7 +255,10 @@ EOF
 
         $validated = $validator->validateOrFail();
 
-        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"]);
+        $costDaily = $this->licensePriceService->getDailyCost(
+            $validated["platforms"],
+            $validated["subdomain"]
+        );
         $purchase
             ->setOrder([
                 Purchase::ORDER_QUANTITY => $validated["amount"],
@@ -417,6 +425,7 @@ EOF
                 "quantity" => $forever
                     ? []
                     : [new RequiredRule(), new NumberRule(), new MinValueRule(0)],
+                "subdomain" => [new SubdomainRule()],
                 "user_id" => [new UserExistsRule()],
             ]
         );
@@ -430,7 +439,10 @@ EOF
             get_platform($request)
         );
 
-        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"]);
+        $costDaily = $this->licensePriceService->getDailyCost(
+            $validated["platforms"],
+            $validated["subdomain"]
+        );
 
         $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
             ->setService($this->service->getId(), $this->service->getName())
@@ -504,6 +516,9 @@ EOF
             "platformMonthlyPrice" => $this->priceTextService->getPriceText(
                 LicensePriceService::COST_PLATFORM_PER_DAY * 30
             ),
+            "hostingMonthlyPrice" => $this->priceTextService->getPriceText(
+                LicensePriceService::COST_HOSTING_PER_DAY * 30
+            ),
         ]);
     }
 
@@ -522,12 +537,17 @@ EOF
                 new IterateRule(new EnumRule(Platform::class)),
             ],
             "password" => [new PasswordRule()],
+            "subdomain" => [new SubdomainRule()],
         ]);
 
         $validated = $validator->validateOrFail();
 
         $licenseEditService = $this->serviceManager->get("ss_license_edit");
-        $costData = $this->getCostUserEdit($validated["platforms"], $userService);
+        $costData = $this->getCostUserEdit(
+            $validated["platforms"],
+            $validated["subdomain"],
+            $userService
+        );
 
         $purchase = (new Purchase($this->auth->user(), get_ip($request), get_platform($request)))
             ->setService($licenseEditService->getId(), $licenseEditService->getName())
@@ -636,12 +656,13 @@ EOF
         if ($action === "get_cost") {
             $daysAmount = (int) $body["amount"];
             $platforms = to_array(array_get($body, "platforms"));
+            $subdomain = array_get($body, "subdomain");
 
             if ($daysAmount < 30) {
                 return "0.00";
             }
 
-            $dailyCost = $this->licensePriceService->getDailyCost($platforms);
+            $dailyCost = $this->licensePriceService->getDailyCost($platforms, $subdomain);
             $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
             $bargain = (100 - $bargainPercentage) / 100;
             $cost = (int) ceil($dailyCost * $daysAmount * $bargain);
@@ -657,6 +678,7 @@ EOF
 
         if ($action === "get_cost_user_edit") {
             $platforms = array_get($body, "platforms", []);
+            $subdomain = array_get($body, "subdomain");
             $userServiceId = array_get($body, "user_service_id");
             $userService = $this->userServiceService->findOne($userServiceId);
 
@@ -664,7 +686,7 @@ EOF
                 throw new UnexpectedValueException();
             }
 
-            $costData = $this->getCostUserEdit($platforms, $userService);
+            $costData = $this->getCostUserEdit($platforms, $subdomain, $userService);
             $costData["surcharge"] = $this->priceTextService->getPlainPrice(
                 $costData["surcharge"] * $costData["bargain"]
             );
@@ -697,11 +719,15 @@ EOF
 
     /**
      * @param Platform[] $platforms
+     * @param string|null $subdomain
      * @param LicenseUserService $userService
      * @return array
      */
-    private function getCostUserEdit(array $platforms, LicenseUserService $userService): array
-    {
+    private function getCostUserEdit(
+        array $platforms,
+        $subdomain,
+        LicenseUserService $userService
+    ): array {
         $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));
 
         $platformsData = [
@@ -719,7 +745,7 @@ EOF
         foreach ($platformsData as $platformData) {
             // If we cancel support for a platform, we lose all discounts
             if ($platformData["old"] && !$platformData["new"]) {
-                $costDaily = $this->licensePriceService->getDailyCost($platforms);
+                $costDaily = $this->licensePriceService->getDailyCost($platforms, $subdomain);
                 break;
             }
 

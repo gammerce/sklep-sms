@@ -22,15 +22,15 @@ return [
     "service_not_taken_over" => "Service takeover failure. Maybe you already are its owner?",
 
     "invalid_subdomain" => "Invalid subdomain. It can only contains digits, letters, and -",
-    "hosting_subtitle" => "Don't worry about your own hosting and run your shop under the <strong>sklep-sms.pl</strong> domain.<br/>
-        Enter a subdomain name, e.g. entering <b>cs16</b> your shop will be available under https://<b>cs16</b>.sklep-sms.pl",
+    "hosting_subtitle" => "Don't worry about your own hosting and run your shop under the <strong>sklep-sms.cloud</strong> domain.<br/>
+        Enter a subdomain name, e.g. entering <b>cs16</b> your shop will be available under https://<b>cs16</b>.sklep-sms.cloud",
     "hosting" => "Hosting",
     "platforms_for_shop" => "Choose game platforms, on which you will run a shop",
     "price_per_hosting" => "Cost {1}/msc",
     "price_per_option" => "Choosing one option is free, each additional is the cost of {1}/month",
     "license_duration" => "License duration",
     "license_price" => "Above <b>364 days</b>, you pay only <u><b>80%</b></u> of the price",
-    "give_email" => "Give your e-mail address",
+    "give_email" => "Enter your e-mail address",
     "shopsms_purchase" => 'Hello,<br/>
 you have just purchased SMS Shop License. Great choice! ;)',
     "license_data" => "License data",
