@@ -1,3 +1,18 @@
+<style>
+    hr {
+        background-color: #dbdbdb;
+        height: 1px;
+    }
+
+    .columns {
+        padding-bottom: 2rem;
+    }
+
+    #email::placeholder {
+        color: #ccc;
+    }
+</style>
+
 <form id="form_purchase" class="shopsms_license_purchase">
     <div class="columns is-multiline">
         <div class="column is-half">
@@ -34,7 +49,7 @@
 
         <div class="column is-half">
             <div class="field">
-                <label for="amount" class="label required"> {{ __('license_duration') }} </label>
+                <label for="amount" class="label required">{{ __('license_duration') }}</label>
                 <div class="control">
                     <div class="field has-addons">
                         <div class="control">
@@ -49,17 +64,33 @@
                             />
                         </div>
                         <div class="control">
-                            <a class="button is-static"> {{ $serviceTag }} </a>
+                            <a class="button is-static">{{ $serviceTag }}</a>
                         </div>
                     </div>
                 </div>
                 <span class="help">{!! __('license_price') !!}</span>
             </div>
         </div>
+    </div>
 
-        <div class="column is-half">
+    <h4 class="title is-4">{{ __('hosting') }}</h4>
+    <h5 class="subtitle is-6">{!! __('hosting_subtitle') !!}</h5>
+    <div class="columns is-multiline">
+        <div class="column is-full">
             <div class="field">
-                <label for="email" class="label required">{{ __('give_email') }}</label>
+                <div class="control">
+                    <input type="text" id="subdomain" name="email" class="input" />
+                </div>
+                <div class="help">{!! __('price_per_hosting', $hostingMonthlyPrice) !!}</div>
+            </div>
+        </div>
+    </div>
+
+    <h4 class="title is-4">{{ __('contact') }}</h4>
+    <h5 class="subtitle is-6 required">{{ __('give_email') }}</h5>
+    <div class="columns is-multiline">
+        <div class="column is-full">
+            <div class="field">
                 <div class="control">
                     <input
                         type="email"
@@ -72,11 +103,11 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div id="cost" class="column is-full has-text-centered">
-            <sup class="currency">{{ $settings->getCurrency() }}</sup>
-            <span class="price">0.00</span>
-        </div>
+    <div id="cost" class="column is-full has-text-centered">
+        <sup class="currency">{{ $settings->getCurrency() }}</sup>
+        <span class="price">0.00</span>
     </div>
 
     <div class="form-footer">

@@ -22,11 +22,16 @@ return [
     "service_taken_over" => "Usługa została prawidłowo przejęta.",
     "service_not_taken_over" => "Nie udało się przejąć usługi. Może już jesteś jej właścicelem?",
 
-    "platforms_for_shop" => "Wybierz platformy gier, na których chesz móc uruchomić sklep.",
+    "invalid_subdomain" => "Nieprawidłowa subdomena. Dozwolone są jedynie cyfry, litery i znak -",
+    "hosting" => "Hosting",
+    "hosting_subtitle" => "Nie martw się o własny hosting i uruchom sklep w domenie <strong>sklep-sms.pl</strong>.<br/>
+        Podaj nazwę subdomeny, np. wpisując <b>cs16</b> twój sklep będzie dostępny pod adresem https://<b>cs16</b>.sklep-sms.pl",
+    "platforms_for_shop" => "Wybierz platformy gier, na których chesz uruchomić sklep",
+    "price_per_hosting" => "Koszt {1}/msc",
     "price_per_option" => "Wybranie jednej opcji jest darmowe, każda kolejna to koszt {1}/msc",
-    "license_duration" => "Podaj na jaki okres chcesz zakupić licencję.",
+    "license_duration" => "Okres trwania licencji",
     "license_price" => "Powyżej <b>364 dni</b>, płacisz tylko <u><b>80%</b></u> ceny",
-    "give_email" => "Podaj swój adres e-mail.",
+    "give_email" => "Podaj swój adres e-mail",
     "shopsms_purchase" => 'Witaj,<br/>
 przed chwilą dokonałeś/aś zakupu licencji Sklepu SMS. Gratuluję świetnego wyboru! ;)',
     "license_data" => "Dane licencji",
