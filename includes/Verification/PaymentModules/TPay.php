@@ -34,7 +34,7 @@ class TPay extends PaymentModule implements SupportTransfer
                 "kwota" => $price->asPrice(),
                 "opis" => $purchase->getTransferDescription(),
                 "crc" => $crc,
-                "md5sum" => md5($this->getAccountId() . $price->asPrice() . $crc . $this->getKey()),
+                "md5sum" => $this->calculateMD5($price->asPrice(), $crc),
                 "imie" => $purchase->user->getForename(),
                 "nazwisko" => $purchase->user->getSurname(),
                 "email" => $purchase->getEmail(),
@@ -61,7 +61,7 @@ class TPay extends PaymentModule implements SupportTransfer
             ->setOutput("TRUE");
     }
 
-    private function isPaymentValid(Request $request)
+    private function isPaymentValid(Request $request): bool
     {
         $isMd5Valid = $this->isMd5Valid(
             $request->request->get("md5sum"),
@@ -75,7 +75,7 @@ class TPay extends PaymentModule implements SupportTransfer
             $request->request->get("tr_error") === "none";
     }
 
-    private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)
+    private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId): bool
     {
         if (!is_string($md5sum) || strlen($md5sum) !== 32) {
             return false;
@@ -86,6 +86,18 @@ class TPay extends PaymentModule implements SupportTransfer
         );
 
         return $md5sum === $sign;
+    }
+
+    /**
+     * @param string $price
+     * @param string $crc
+     * @return string
+     */
+    private function calculateMD5($price, $crc): string
+    {
+        $parts = [$this->getAccountId(), $price, $crc, $this->getKey()];
+        $joined = collect($parts)->join("&");
+        return md5($joined);
     }
 
     private function getKey()
