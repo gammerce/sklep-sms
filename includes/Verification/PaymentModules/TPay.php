@@ -61,7 +61,7 @@ class TPay extends PaymentModule implements SupportTransfer
             ->setOutput("TRUE");
     }
 
-    private function isPaymentValid(Request $request)
+    private function isPaymentValid(Request $request): bool
     {
         $isMd5Valid = $this->isMd5Valid(
             $request->request->get("md5sum"),
@@ -75,7 +75,7 @@ class TPay extends PaymentModule implements SupportTransfer
             $request->request->get("tr_error") === "none";
     }
 
-    private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId)
+    private function isMd5Valid($md5sum, $transactionAmount, $crc, $transactionId): bool
     {
         if (!is_string($md5sum) || strlen($md5sum) !== 32) {
             return false;
