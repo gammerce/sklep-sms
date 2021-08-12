@@ -276,6 +276,14 @@ EOF
 
     public function orderDetails(Purchase $purchase): string
     {
+        $subdomain = "";
+        if (strlen($purchase->getOrder(self::PURCHASE_SUBDOMAIN))) {
+            $subdomainValue = htmlspecialchars($purchase->getOrder(self::PURCHASE_SUBDOMAIN));
+            $subdomain = "<strong>{$this->lang->t(
+                "hosting"
+            )}</strong>: https://$subdomainValue.sklep-sms.cloud<br />";
+        }
+
         return $this->template->renderNoComments("shop/services/shopsms_license/order_details", [
             "costMonthly" => $this->priceTextService->getPriceText(
                 $purchase->getOrder("cost_daily") * 30
@@ -287,6 +295,7 @@ EOF
             "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
             "serviceName" => $this->service->getName(),
             "serviceTag" => $this->service->getTag(),
+            "subdomain" => $subdomain,
         ]);
     }
 
