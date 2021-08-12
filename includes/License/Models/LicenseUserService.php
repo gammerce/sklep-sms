@@ -10,6 +10,7 @@ class LicenseUserService extends UserService
     private int $costDaily;
     private bool $platformAmxModX;
     private bool $platformSourceMod;
+    private ?string $subdomain;
 
     public function __construct(
         $id,
@@ -21,7 +22,8 @@ class LicenseUserService extends UserService
         $email,
         $costDaily,
         $platformAmxModX,
-        $platformSourceMod
+        $platformSourceMod,
+        $subdomain
     ) {
         parent::__construct($id, $serviceId, $uid, $expire, $comment);
 
@@ -30,6 +32,7 @@ class LicenseUserService extends UserService
         $this->costDaily = $costDaily;
         $this->platformAmxModX = $platformAmxModX;
         $this->platformSourceMod = $platformSourceMod;
+        $this->subdomain = $subdomain;
     }
 
     public function getIdentifier(): string
@@ -55,5 +58,10 @@ class LicenseUserService extends UserService
     public function hasPlatformSourceMod(): bool
     {
         return $this->platformSourceMod;
+    }
+
+    public function getSubdomain(): ?string
+    {
+        return $this->subdomain;
     }
 }

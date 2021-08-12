@@ -25,7 +25,6 @@ use App\Payment\General\BoughtServiceService;
 use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchaseDataService;
-use App\Repositories\UserServiceRepository;
 use App\Server\Platform;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
@@ -78,6 +77,7 @@ class LicenseServiceModule extends ServiceModule implements
 {
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
+    const PURCHASE_SUBDOMAIN = "subdomain";
 
     private Translator $lang;
     private Auth $auth;
@@ -85,7 +85,6 @@ class LicenseServiceModule extends ServiceModule implements
     private LicensePriceService $licensePriceService;
     private LicenseServerService $licenseServerService;
     private UserServiceService $userServiceService;
-    private UserServiceRepository $userServiceRepository;
     private PurchaseDataService $purchaseDataService;
     private LicenseUserServiceRepository $licenseUserServiceRepository;
     private PriceTextService $priceTextService;
@@ -111,7 +110,6 @@ class LicenseServiceModule extends ServiceModule implements
         ServiceManager $serviceManager,
         Template $template,
         TranslationManager $translationManager,
-        UserServiceRepository $userServiceRepository,
         UserServiceService $userServiceService,
         AdminPaymentService $adminPaymentService,
         Service $service = null
@@ -129,7 +127,6 @@ class LicenseServiceModule extends ServiceModule implements
         $this->purchaseDataService = $purchaseDataService;
         $this->settings = $settings;
         $this->serviceManager = $serviceManager;
-        $this->userServiceRepository = $userServiceRepository;
         $this->userServiceService = $userServiceService;
         $this->adminPaymentService = $adminPaymentService;
         $this->lang = $translationManager->user();
@@ -264,6 +261,7 @@ EOF
                 Purchase::ORDER_QUANTITY => $validated["amount"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
+                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
             ])
             ->setEmail($validated["email"])
             ->setPayment([
@@ -295,6 +293,7 @@ EOF
     public function purchase(Purchase $purchase): int
     {
         $platforms = $purchase->getOrder("platforms");
+        $subdomain = $purchase->getOrder(self::PURCHASE_SUBDOMAIN);
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
         $identifier = generate_uuid4();
@@ -304,33 +303,17 @@ EOF
         $promoCode = $purchase->getPromoCode();
 
         // Let's add a user service to the shop database
-        $userServiceId = $this->userServiceRepository->createFixedExpire(
+        $this->licenseUserServiceRepository->create(
             $this->service->getId(),
             $expiresAt,
             $purchase->user->getId(),
-            $purchase->getComment()
+            $purchase->getComment(),
+            $identifier,
+            $purchase->getOrder("cost_daily"),
+            $purchase->getEmail(),
+            $platforms,
+            $subdomain
         );
-
-        $this->db
-            ->statement(
-                "INSERT INTO `{$this->getUserServiceTable()}` SET " .
-                    "`us_id` = ?, " .
-                    "`service_id` = ?, " .
-                    "`identifier` = ?, " .
-                    "`cost_daily` = ?, " .
-                    "`email` = ?, " .
-                    "`platform_amxmodx` = ?, " .
-                    "`platform_sourcemod` = ?"
-            )
-            ->execute([
-                $userServiceId,
-                $this->service->getId(),
-                $identifier,
-                $purchase->getOrder("cost_daily"),
-                $purchase->getEmail(),
-                (int) in_array(Platform::AMXMODX(), $platforms),
-                (int) in_array(Platform::SOURCEMOD(), $platforms),
-            ]);
 
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
@@ -350,6 +333,7 @@ EOF
                 "identifier" => $identifier,
                 "expire" => as_datetime_string($expiresAt),
                 "engines" => $this->platformService->formatPlatforms($platforms),
+                "subdomain" => $subdomain,
             ]
         );
     }
@@ -454,6 +438,7 @@ EOF
                 Purchase::ORDER_QUANTITY => $validated["quantity"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
+                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
             ])
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
@@ -558,6 +543,7 @@ EOF
                 "bargain" => $costData["bargain"],
                 "password" => $validated["password"],
                 "platforms" => $validated["platforms"],
+                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
             ])
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => intval(
