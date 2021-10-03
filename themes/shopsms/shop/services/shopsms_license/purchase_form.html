@@ -73,27 +73,29 @@
         </div>
     </div>
 
-    <h4 class="title is-4">{{ __('hosting') }}</h4>
-    <h5 class="subtitle is-6">{!! __('hosting_subtitle') !!}</h5>
-    <div class="columns is-multiline">
-        <div class="column is-full">
-            <div class="field">
-                <div class="control">
-                    <div class="field has-addons">
-                        <div class="control is-expanded">
-                            <input
-                                type="text"
-                                id="subdomain"
-                                name="subdomain"
-                                class="input has-text-right"
-                            />
-                        </div>
-                        <div class="control">
-                            <a class="button is-static">.sklep-sms.cloud</a>
+    <div class="is-hidden">
+        <h4 class="title is-4">{{ __('hosting') }}</h4>
+        <h5 class="subtitle is-6">{!! __('hosting_subtitle') !!}</h5>
+        <div class="columns is-multiline">
+            <div class="column is-full">
+                <div class="field">
+                    <div class="control">
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input
+                                    type="text"
+                                    id="subdomain"
+                                    name="subdomain"
+                                    class="input has-text-right"
+                                />
+                            </div>
+                            <div class="control">
+                                <a class="button is-static">.sklep-sms.cloud</a>
+                            </div>
                         </div>
                     </div>
+                    <div class="help">{!! __('price_per_hosting', $hostingMonthlyPrice) !!}</div>
                 </div>
-                <div class="help">{!! __('price_per_hosting', $hostingMonthlyPrice) !!}</div>
             </div>
         </div>
     </div>
