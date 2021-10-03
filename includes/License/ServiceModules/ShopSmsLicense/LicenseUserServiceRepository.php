@@ -72,7 +72,7 @@ EOF
             $subdomain,
         ]);
 
-        return $this->get($this->db->lastId());
+        return $this->get($userServiceId);
     }
 
     public function get($id): ?LicenseUserService
