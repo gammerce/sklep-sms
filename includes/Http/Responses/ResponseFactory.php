@@ -7,6 +7,7 @@ use App\Support\IntendedUrlService;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 use App\View\Renders\ErrorRenderer;
+use Exception;
 use Symfony\Component\HttpFoundation\AcceptHeader;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -94,7 +95,12 @@ class ResponseFactory
             return new ApiResponse($id, $text, false, [], $status ?: 200);
         }
 
-        return new HtmlResponse($this->errorRenderer->render("$status", $request), $status);
+        try {
+            $body = $this->errorRenderer->render("$status", $request);
+            return new HtmlResponse($body, $status);
+        } catch (Exception $e) {
+            return new HtmlResponse("$id: $text", $status);
+        }
     }
 
     public function createUnauthorized(Request $request)
