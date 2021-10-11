@@ -29,6 +29,7 @@ use App\Verification\PaymentModules\Zabijaka;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
+use App\View\Blocks\BlockServersButtons;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
@@ -177,6 +178,7 @@ class HeartServiceProvider
         $blockManager->register(BlockContent::class);
         $blockManager->register(BlockLoggedInfo::class);
         $blockManager->register(BlockServicesButtons::class);
+        $blockManager->register(BlockServersButtons::class);
         $blockManager->register(BlockUserButtons::class);
         $blockManager->register(BlockWallet::class);
     }
