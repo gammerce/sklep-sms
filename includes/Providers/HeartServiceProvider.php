@@ -67,6 +67,7 @@ use App\View\Pages\Shop\PagePurchase;
 use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
+use App\View\Pages\Shop\PageServer;
 use App\View\Pages\Shop\PageServices;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
@@ -141,6 +142,7 @@ class HeartServiceProvider
         $pageManager->registerUser(PageRegulations::class);
         $pageManager->registerUser(PageResetPassword::class);
         $pageManager->registerUser(PageServices::class);
+        $pageManager->registerUser(PageServer::class);
         $pageManager->registerUser(PageTPaySuccess::class);
         $pageManager->registerUser(PageTakeOverService::class);
         $pageManager->registerUser(PageUserOwnServices::class);

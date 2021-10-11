@@ -59,6 +59,7 @@ class ServerResourceTest extends HttpTestCase
         $this->assertSame("My Example2", $freshServer->getName());
         $this->assertSame("192.168.0.2", $freshServer->getIp());
         $this->assertSame("27016", $freshServer->getPort());
+        $this->assertSame("192.168.0.2:27016", $freshServer->getAddress());
         $this->assertSame($smsPaymentPlatform->getId(), $freshServer->getSmsPlatformId());
         $this->assertSame(
             [$transferPaymentPlatform1->getId(), $transferPaymentPlatform2->getId()],

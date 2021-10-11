@@ -63,6 +63,11 @@ class Server
         return $this->port;
     }
 
+    public function getAddress(): string
+    {
+        return $this->getIp() . ":" . $this->getPort();
+    }
+
     public function getType(): ?Platform
     {
         return as_platform($this->type);
