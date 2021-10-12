@@ -29,6 +29,7 @@ use App\Verification\PaymentModules\Zabijaka;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
+use App\View\Blocks\BlockServersButtons;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
@@ -67,6 +68,8 @@ use App\View\Pages\Shop\PagePurchase;
 use App\View\Pages\Shop\PageRegister;
 use App\View\Pages\Shop\PageRegulations;
 use App\View\Pages\Shop\PageResetPassword;
+use App\View\Pages\Shop\PageServer;
+use App\View\Pages\Shop\PageServers;
 use App\View\Pages\Shop\PageServices;
 use App\View\Pages\Shop\PageTakeOverService;
 use App\View\Pages\Shop\PageTPaySuccess;
@@ -141,6 +144,8 @@ class HeartServiceProvider
         $pageManager->registerUser(PageRegulations::class);
         $pageManager->registerUser(PageResetPassword::class);
         $pageManager->registerUser(PageServices::class);
+        $pageManager->registerUser(PageServer::class);
+        $pageManager->registerUser(PageServers::class);
         $pageManager->registerUser(PageTPaySuccess::class);
         $pageManager->registerUser(PageTakeOverService::class);
         $pageManager->registerUser(PageUserOwnServices::class);
@@ -175,6 +180,7 @@ class HeartServiceProvider
         $blockManager->register(BlockContent::class);
         $blockManager->register(BlockLoggedInfo::class);
         $blockManager->register(BlockServicesButtons::class);
+        $blockManager->register(BlockServersButtons::class);
         $blockManager->register(BlockUserButtons::class);
         $blockManager->register(BlockWallet::class);
     }

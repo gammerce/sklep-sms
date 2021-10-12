@@ -2,8 +2,10 @@ import { get_type_name } from "../../../general/extra_flags";
 import { hide, hideAndDisable, restRequest, showAndEnable } from "../../../general/global";
 
 $(document).ready(function ($) {
+    const form = $("#form_purchase");
     // So as no option is selected when somebody returned to the previous page
-    $("#form_purchase").find("#purchase_value").val("0");
+    form.find("#purchase_value").val("0");
+    loadQuantityOptions(form);
 });
 
 $(document).delegate("#form_purchase input[name=type]", "change", function () {
@@ -23,24 +25,28 @@ $(document).delegate("#form_purchase input[name=type]", "change", function () {
 
 $(document).delegate("#form_purchase [name=server_id]", "change", function () {
     const form = $(this).closest("form");
+    loadQuantityOptions(form);
+});
+
+function loadQuantityOptions(form: JQuery) {
+    const serviceId = form.find("[name=service_id]").val();
+    const serverId = form.find("[name=server_id]").val();
 
     hide(form.find("#cost_box"));
 
-    if ($(this).val() == "") {
+    if (serverId == "") {
         form.find("[name=quantity]").children().not("[value='']").remove();
         return;
     }
-
-    const serviceId = form.find("[name=service_id]").val();
 
     restRequest(
         "POST",
         `/api/services/${serviceId}/actions/prices_for_server`,
         {
-            server_id: $(this).val(),
+            server_id: serverId,
         },
         function (html) {
             form.find("[name=quantity]").html(html);
         }
     );
-});
+}

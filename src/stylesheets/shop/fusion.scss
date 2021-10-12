@@ -75,14 +75,9 @@ body {
     padding-bottom: 5rem;
 }
 
-.user-buttons {
-    display: contents;
-}
-
-.services-buttons {
-    display: contents;
-}
-
+.servers-buttons,
+.services-buttons,
+.user-buttons,
 .wallet-status {
     display: contents;
 }
@@ -212,8 +207,8 @@ body {
     }
 }
 
-.services-container {
-    .service-card {
+.entity-card-container {
+    .entity-card {
         display: grid;
         grid-template-rows: min-content auto min-content;
         width: calc(50% - 4rem);

@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Server\Platform;
+use DateTime;
 
 class Server
 {
@@ -63,6 +64,11 @@ class Server
         return $this->port;
     }
 
+    public function getAddress(): string
+    {
+        return $this->getIp() . ":" . $this->getPort();
+    }
+
     public function getType(): ?Platform
     {
         return as_platform($this->type);
@@ -89,6 +95,15 @@ class Server
     public function getLastActiveAt(): ?string
     {
         return $this->lastActiveAt;
+    }
+
+    public function isActive(): bool
+    {
+        if (!$this->lastActiveAt) {
+            return false;
+        }
+
+        return as_datetime($this->lastActiveAt) > new DateTime("-7 days");
     }
 
     public function getToken(): ?string
