@@ -3,6 +3,7 @@ namespace App\Theme;
 
 use App\Support\FileSystemContract;
 use App\System\Settings;
+use PDOException;
 
 class TemplateContentService
 {
@@ -79,7 +80,7 @@ class TemplateContentService
     {
         try {
             return $this->readFromDB($name, $theme, $lang);
-        } catch (TemplateNotFoundException $e) {
+        } catch (TemplateNotFoundException | PDOException $e) {
             return $this->readFromFile($theme ?: TemplateRepository::DEFAULT_THEME, $name, $lang);
         }
     }
@@ -90,6 +91,7 @@ class TemplateContentService
      * @param string|null $lang
      * @return string
      * @throws TemplateNotFoundException
+     * @throws PDOException
      */
     private function readFromDB($name, $theme, $lang): string
     {

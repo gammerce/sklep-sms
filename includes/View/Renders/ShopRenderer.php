@@ -6,6 +6,7 @@ use App\Theme\Template;
 use App\System\License;
 use App\System\Settings;
 use App\View\Blocks\BlockLoggedInfo;
+use App\View\Blocks\BlockServersButtons;
 use App\View\Blocks\BlockServicesButtons;
 use App\View\Blocks\BlockUserButtons;
 use App\View\Blocks\BlockWallet;
@@ -45,6 +46,7 @@ class ShopRenderer
         ]);
         $loggedInfo = $this->blockRenderer->render(BlockLoggedInfo::BLOCK_ID, $request);
         $wallet = $this->blockRenderer->render(BlockWallet::BLOCK_ID, $request);
+        $serversButtons = $this->blockRenderer->render(BlockServersButtons::BLOCK_ID, $request);
         $servicesButtons = $this->blockRenderer->render(BlockServicesButtons::BLOCK_ID, $request);
         $userButtons = $this->blockRenderer->render(BlockUserButtons::BLOCK_ID, $request);
         $googleAnalytics = $this->getGoogleAnalytics();
@@ -52,7 +54,7 @@ class ShopRenderer
 
         $navbar = $this->template->render(
             "shop/layout/navbar",
-            compact("servicesButtons", "userButtons", "wallet")
+            compact("serversButtons", "servicesButtons", "userButtons", "wallet")
         );
         $contactColumn = $contactEmail
             ? $this->template->render("shop/components/footer/contact", [

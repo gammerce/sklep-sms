@@ -1,0 +1,10 @@
+<div class="navbar-item has-dropdown is-hoverable">
+    <a class="navbar-link" href="{{ url('/page/servers') }}">
+        <span class="icon">
+            <i class="fas fa-server"></i>
+        </span>
+        <span>{{ __('servers') }}</span>
+    </a>
+
+    <div class="navbar-dropdown is-right">{!! $servers !!}</div>
+</div>

@@ -19,27 +19,7 @@
                 </div>
             </div>
 
-            <div class="column">
-                <div class="section has-text-centered">
-                    <div class="title is-3" style="margin-bottom: 2.5rem">
-                        {{ __('available_services') }}
-                    </div>
-
-                    <div class="buttons services-group">{!! $services !!}</div>
-
-                    <div>
-                        <a
-                            class="button is-show-more is-rounded"
-                            href="{{ url('/page/services') }}"
-                        >
-                            <span class="icon">
-                                <i class="fa fa-angle-double-right"></i>
-                            </span>
-                            <strong>{{ __('show_more') }}</strong>
-                        </a>
-                    </div>
-                </div>
-            </div>
+            <div class="column">{!! $servicesSection !!} {!! $serversSection !!}</div>
         </div>
     </div>
 </div>

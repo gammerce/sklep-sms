@@ -27,6 +27,7 @@ class Settings implements ArrayAccess
 
         $this->data = [
             "date_format" => "Y-m-d H:i",
+            "language" => "polish",
             "shop_url" => "",
             "theme" => TemplateRepository::DEFAULT_THEME,
             "timezone" => "Europe/Warsaw",

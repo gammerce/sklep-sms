@@ -52,6 +52,7 @@ class ServerCollectionTest extends HttpTestCase
         $this->assertSame("My Example", $server->getName());
         $this->assertSame("192.168.0.1", $server->getIp());
         $this->assertSame("27015", $server->getPort());
+        $this->assertSame("192.168.0.1:27015", $server->getAddress());
         $this->assertSame($smsPaymentPlatform->getId(), $server->getSmsPlatformId());
         $this->assertSame([$transferPaymentPlatform->getId()], $server->getTransferPlatformIds());
 

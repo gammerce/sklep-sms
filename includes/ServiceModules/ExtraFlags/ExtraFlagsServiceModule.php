@@ -312,6 +312,7 @@ EOF
 
     public function purchaseFormGet(array $query): string
     {
+        $serverId = as_int(array_get($query, "server"));
         $types = collect(ExtraFlagType::ALL)
             ->filter(fn($type) => $this->service->getTypes() & $type)
             ->map(
@@ -322,7 +323,7 @@ EOF
             )
             ->join();
 
-        $servers = $this->getServerOptions();
+        $servers = $this->getServerOptions($serverId);
         $costBox = $this->template->render("shop/components/purchase/cost_box");
 
         return $this->template->render("shop/services/extra_flags/purchase_form", [

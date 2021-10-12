@@ -1,0 +1,19 @@
+<div class="section has-text-centered">
+    <div class="title is-3 mb-5">
+        <span class="icon mr-3 has-text-primary">
+            <i class="fas {{ $icon }}"></i>
+        </span>
+        <span>{{ $title }}</span>
+    </div>
+
+    <div class="buttons services-group">{!! $entities !!}</div>
+
+    <div>
+        <a class="button is-show-more is-rounded" href="{{ $moreUrl }}">
+            <span class="icon">
+                <i class="fa fa-angle-double-right"></i>
+            </span>
+            <strong>{{ __('show_more') }}</strong>
+        </a>
+    </div>
+</div>

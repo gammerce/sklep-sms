@@ -4,6 +4,7 @@ return [
     "admin" => "Admin",
     "answer" => "Odpowiedź",
     "available_services" => "Dostępne usługi",
+    "available_servers" => "Nasze serwery",
     "change_password" => "Zmiana hasła",
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",
@@ -115,6 +116,7 @@ W kolejnym etapie, zostanie do Ciebie wysłany e-mail z linkiem do zresetowania 
     "service_taken_over" => "Usługa została przejęta.",
     "service_was_bought" => "Zakupiono usługę {1} na serwerze {2}",
     "services_subtitle" => "Wybierz jedną z poniższych usług, aby przejść do formularza zakupu.",
+    "servers_subtitle" => "Wybierz serwer, aby zobaczyć listę dostępnych usług do zakupienia.",
     "show_more" => "Pokaż więcej",
     "sign_in_subtitle" => "Zaloguj się na swoje konto.",
     "sign_up_info" => 'Twoje konto zostało prawidłowo zarejestrowane na adres email: {1}.<br/>
