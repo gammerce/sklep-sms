@@ -1,9 +1,9 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Managers\ServerManager;
 use App\Models\Server;
 use App\Routing\UrlGenerator;
+use App\Server\ServerListService;
 use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
@@ -14,17 +14,17 @@ class PageServers extends Page
     const PAGE_ID = "servers";
 
     private UrlGenerator $url;
-    private ServerManager $serverManager;
+    private ServerListService $serverListService;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
         UrlGenerator $url,
-        ServerManager $serverManager
+        ServerListService $serverListService
     ) {
         parent::__construct($template, $translationManager);
         $this->url = $url;
-        $this->serverManager = $serverManager;
+        $this->serverListService = $serverListService;
     }
 
     public function getTitle(Request $request = null): string
@@ -34,7 +34,7 @@ class PageServers extends Page
 
     public function getContent(Request $request)
     {
-        $cards = collect($this->serverManager->all())
+        $cards = collect($this->serverListService->listActive())
             ->map(
                 fn(Server $server) => $this->template->render(
                     "shop/components/entity/entity_card",
