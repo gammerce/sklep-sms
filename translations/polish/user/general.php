@@ -4,6 +4,7 @@ return [
     "admin" => "Admin",
     "answer" => "Odpowiedź",
     "available_services" => "Dostępne usługi",
+    "available_servers" => "Nasze serwery",
     "change_password" => "Zmiana hasła",
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",

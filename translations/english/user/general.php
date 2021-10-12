@@ -4,6 +4,7 @@ return [
     "admin" => "Admin",
     "answer" => "Answer",
     "available_services" => "Available services",
+    "available_servers" => "Our servers",
     "change_password" => "Change password",
     "change_password_subtitle" =>
         "In order to change your enter an old password. Then enter a new password and type it again.",
