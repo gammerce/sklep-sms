@@ -3,13 +3,14 @@ namespace App\View\Pages\Shop;
 
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
-use App\Managers\ServiceModuleManager;
 use App\Models\Server;
 use App\Models\Service;
 use App\Routing\UrlGenerator;
+use App\Server\ServerListService;
+use App\Service\ServiceListService;
 use App\Service\UserServiceAccessService;
-use App\Theme\Template;
 use App\System\Auth;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\View\Pages\Page;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,7 +22,8 @@ class PageMain extends Page
     const SERVER_LIMIT = 5;
 
     private Auth $auth;
-    private ServiceModuleManager $serviceModuleManager;
+    private ServerListService $serverListService;
+    private ServiceListService $serviceListService;
     private UserServiceAccessService $userServiceAccessService;
     private UrlGenerator $url;
     private ServerManager $serverManager;
@@ -32,14 +34,16 @@ class PageMain extends Page
         TranslationManager $translationManager,
         Auth $auth,
         ServerManager $serverManager,
-        ServiceModuleManager $serviceModuleManager,
+        ServerListService $serverListService,
+        ServiceListService $serviceListService,
         ServiceManager $serviceManager,
         UserServiceAccessService $userServiceAccessService,
         UrlGenerator $url
     ) {
         parent::__construct($template, $translationManager);
         $this->auth = $auth;
-        $this->serviceModuleManager = $serviceModuleManager;
+        $this->serverListService = $serverListService;
+        $this->serviceListService = $serviceListService;
         $this->userServiceAccessService = $userServiceAccessService;
         $this->url = $url;
         $this->serviceManager = $serviceManager;
@@ -65,16 +69,7 @@ class PageMain extends Page
 
     private function getServicesSection(): string
     {
-        $services = collect($this->serviceManager->all())
-            ->filter(function (Service $service) {
-                $serviceModule = $this->serviceModuleManager->get($service->getId());
-                return $serviceModule &&
-                    $serviceModule->showOnWeb() &&
-                    $this->userServiceAccessService->canUserUseService(
-                        $service,
-                        $this->auth->user()
-                    );
-            })
+        $services = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->limit($this::SERVICE_LIMIT)
             ->map(
                 fn(Service $service) => $this->template->render(
@@ -103,7 +98,7 @@ class PageMain extends Page
 
     private function getServersSection(): string
     {
-        $servers = collect($this->serverManager->all())
+        $servers = collect($this->serverListService->listActive())
             ->limit($this::SERVER_LIMIT)
             ->map(
                 fn(Server $server) => $this->template->render("shop/components/home/entity_tile", [

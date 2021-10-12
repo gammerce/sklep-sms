@@ -4,6 +4,7 @@ namespace App\View\Blocks;
 use App\Managers\ServerManager;
 use App\Models\Server;
 use App\Routing\UrlGenerator;
+use App\Server\ServerListService;
 use App\Theme\Template;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -13,13 +14,16 @@ class BlockServersButtons extends Block
 
     private Template $template;
     private UrlGenerator $url;
-    private ServerManager $serverManager;
+    private ServerListService $serverListService;
 
-    public function __construct(Template $template, UrlGenerator $url, ServerManager $serverManager)
-    {
+    public function __construct(
+        Template $template,
+        UrlGenerator $url,
+        ServerListService $serverListService
+    ) {
         $this->template = $template;
         $this->url = $url;
-        $this->serverManager = $serverManager;
+        $this->serverListService = $serverListService;
     }
 
     public function getContentClass(): string
@@ -29,7 +33,7 @@ class BlockServersButtons extends Block
 
     public function getContent(Request $request, array $params): string
     {
-        $servers = collect($this->serverManager->all())
+        $servers = collect($this->serverListService->listActive())
             ->map(
                 fn(Server $server) => $this->template->render(
                     "shop/components/navbar/navigation_item",

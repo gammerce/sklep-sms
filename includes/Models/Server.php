@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use App\Server\Platform;
+use DateTime;
 
 class Server
 {
@@ -94,6 +95,15 @@ class Server
     public function getLastActiveAt(): ?string
     {
         return $this->lastActiveAt;
+    }
+
+    public function isActive(): bool
+    {
+        if (!$this->lastActiveAt) {
+            return false;
+        }
+
+        return as_datetime($this->lastActiveAt) > new DateTime("-7 days");
     }
 
     public function getToken(): ?string
