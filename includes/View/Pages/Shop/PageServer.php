@@ -50,14 +50,14 @@ class PageServer extends Page
         )
             ->map(
                 fn(Service $service) => $this->template->render(
-                    "shop/components/services/service_card",
+                    "shop/components/entity/entity_card",
                     [
                         "link" => $this->url->to("/page/purchase", [
                             "service" => $service->getId(),
                             "server" => $server->getId(),
                         ]),
-                        "description" => $service->getDescriptionI18n(),
                         "name" => $service->getNameI18n(),
+                        "description" => $service->getDescriptionI18n(),
                     ]
                 )
             )
@@ -72,7 +72,7 @@ class PageServer extends Page
 
     private function getServer(Request $request): Server
     {
-        $serverId = $request->query->get("server");
+        $serverId = $request->query->get("id");
         $server = $this->serverRepository->get($serverId);
         if ($server) {
             return $server;

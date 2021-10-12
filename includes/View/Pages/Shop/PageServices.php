@@ -41,13 +41,13 @@ class PageServices extends Page
         $cards = collect($this->serviceListService->getWebSupportedForUser($this->auth->user()))
             ->map(
                 fn(Service $service) => $this->template->render(
-                    "shop/components/services/service_card",
+                    "shop/components/entity/entity_card",
                     [
                         "link" => $this->url->to("/page/purchase", [
                             "service" => $service->getId(),
                         ]),
-                        "description" => $service->getDescriptionI18n(),
                         "name" => $service->getNameI18n(),
+                        "description" => $service->getDescriptionI18n(),
                     ]
                 )
             )

@@ -36,7 +36,7 @@ class BlockServersButtons extends Block
                     [
                         "text" => $server->getName(),
                         "link" => $this->url->to("/page/server", [
-                            "server" => $server->getId(),
+                            "id" => $server->getId(),
                         ]),
                     ]
                 )
