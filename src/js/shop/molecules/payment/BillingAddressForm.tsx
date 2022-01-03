@@ -15,7 +15,7 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
     const [billingAddress, setBillingAddress] = useState<BillingAddress>({
         name: address?.name ?? "",
         vat_id: address?.vat_id ?? "",
-        address: address?.address ?? "",
+        street: address?.street ?? "",
         postal_code: address?.postal_code ?? "",
         city: address?.city ?? "",
     });
@@ -26,8 +26,8 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
         setBillingAddress({ ...billingAddress, name: e.target.value });
     const setVatID = (e: ChangeEvent<HTMLInputElement>) =>
         setBillingAddress({ ...billingAddress, vat_id: e.target.value });
-    const setAddress = (e: ChangeEvent<HTMLInputElement>) =>
-        setBillingAddress({ ...billingAddress, address: e.target.value });
+    const setStreet = (e: ChangeEvent<HTMLInputElement>) =>
+        setBillingAddress({ ...billingAddress, street: e.target.value });
     const setPostalCode = (e: ChangeEvent<HTMLInputElement>) =>
         setBillingAddress({ ...billingAddress, postal_code: e.target.value });
     const setCity = (e: ChangeEvent<HTMLInputElement>) =>
@@ -79,18 +79,18 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
 
                 <div className="column is-full">
                     <div className="field">
-                        <label htmlFor="billing_address_address" className="label required">
-                            {__("address")}
+                        <label htmlFor="billing_address_street" className="label required">
+                            {__("street")}
                         </label>
                         <div className="control">
                             <input
                                 type="text"
-                                id="billing_address_address"
-                                name="billing_address_address"
+                                id="billing_address_street"
+                                name="billing_address_street"
                                 className="input"
                                 maxLength={128}
-                                onChange={setAddress}
-                                value={billingAddress.address}
+                                onChange={setStreet}
+                                value={billingAddress.street}
                                 required
                             />
                         </div>

@@ -5,20 +5,20 @@ final class BillingAddress
 {
     private string $name;
     private string $vatID;
-    private string $address;
+    private string $street;
     private string $postalCode;
     private string $city;
 
     public function __construct(
         string $name,
         string $vatID,
-        string $address,
+        string $street,
         string $postalCode,
         string $city
     ) {
         $this->name = $name;
         $this->vatID = $vatID;
-        $this->address = $address;
+        $this->street = $street;
         $this->postalCode = $postalCode;
         $this->city = $city;
     }
@@ -33,9 +33,9 @@ final class BillingAddress
         return $this->vatID;
     }
 
-    public function getAddress(): string
+    public function getStreet(): string
     {
-        return $this->address;
+        return $this->street;
     }
 
     public function getPostalCode(): string
