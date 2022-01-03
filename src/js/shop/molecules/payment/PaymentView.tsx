@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useEffect, useState } from "react";
-import { PaymentMethod, Transaction } from "../../types/transaction";
+import { BillingAddress, PaymentMethod, Transaction } from "../../types/transaction";
 import { api } from "../../utils/container";
 import { Loader } from "../../components/Loader";
 import { Dict } from "../../types/general";
@@ -11,9 +11,11 @@ import { AxiosError } from "axios";
 import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
 import { PaymentOption } from "./PaymentOptions";
+import { BillingAddressForm } from "./BillingAddressForm";
 
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
+    const [billingAddress, setBillingAddress] = useState<BillingAddress>();
 
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
@@ -28,7 +30,9 @@ export const PaymentView: FunctionComponent = () => {
     };
 
     const onPay = (method: PaymentMethod, paymentPlatformId?: number, body: Dict = {}): void => {
-        purchaseService(transactionId, method, paymentPlatformId, body).catch(handleError);
+        purchaseService(transactionId, method, paymentPlatformId, billingAddress, body).catch(
+            handleError
+        );
     };
 
     const applyPromoCode = async (promoCode: string) => {
@@ -77,19 +81,24 @@ export const PaymentView: FunctionComponent = () => {
     ));
 
     return (
-        <div className="columns">
-            {acceptsPromoCode && (
-                <div className="column is-one-third">
-                    <PromoCodeBox
-                        promoCode={transaction.promo_code}
-                        onPromoCodeApply={applyPromoCode}
-                        onPromoCodeRemove={removePromoCode}
-                    />
+        <form id="payment-form">
+            <BillingAddressForm onAddressChange={setBillingAddress} />
+
+            <h3 className="title is-4">Payment method</h3>
+            <div className="columns">
+                {acceptsPromoCode && (
+                    <div className="column is-one-third">
+                        <PromoCodeBox
+                            promoCode={transaction.promo_code}
+                            onPromoCodeApply={applyPromoCode}
+                            onPromoCodeRemove={removePromoCode}
+                        />
+                    </div>
+                )}
+                <div className="column">
+                    <div className="payment-options-box">{paymentOptions}</div>
                 </div>
-            )}
-            <div className="column">
-                <div className="payment-options-box">{paymentOptions}</div>
             </div>
-        </div>
+        </form>
     );
 };

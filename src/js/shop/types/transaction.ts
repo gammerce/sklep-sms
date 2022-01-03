@@ -64,3 +64,11 @@ export interface Transaction {
     promo_code?: string;
     payment_options: Array<PaymentOption>;
 }
+
+export interface BillingAddress {
+    name: string;
+    vatID: string;
+    address: string;
+    postalCode: string;
+    city: string;
+}
