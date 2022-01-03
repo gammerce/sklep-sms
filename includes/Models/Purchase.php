@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\BillingAddress;
 use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentSelect;
 
@@ -35,6 +36,8 @@ class Purchase
     private PaymentSelect $paymentSelect;
 
     private ?PaymentOption $paymentOption = null;
+
+    private ?BillingAddress $billingAddress = null;
 
     /**
      * Payment details like method, sms_code et.c
@@ -261,10 +264,6 @@ class Purchase
         return $this->promoCode;
     }
 
-    /**
-     * @param PromoCode|null $promoCode
-     * @return self
-     */
     public function setPromoCode(PromoCode $promoCode = null): self
     {
         $this->promoCode = $promoCode;
@@ -281,13 +280,20 @@ class Purchase
         return $this->paymentOption;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     * @return self
-     */
     public function setPaymentOption(PaymentOption $paymentOption): self
     {
         $this->paymentOption = $paymentOption;
+        return $this;
+    }
+
+    public function getBillingAddress(): ?BillingAddress
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(BillingAddress $billingAddress): self
+    {
+        $this->billingAddress = $billingAddress;
         return $this;
     }
 }

@@ -67,8 +67,8 @@ export interface Transaction {
 
 export interface BillingAddress {
     name: string;
-    vatID: string;
+    vat_id: string;
     address: string;
-    postalCode: string;
+    postal_code: string;
     city: string;
 }

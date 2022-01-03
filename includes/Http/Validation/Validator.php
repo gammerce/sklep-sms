@@ -24,7 +24,7 @@ class Validator
                     continue;
                 }
 
-                $value = array_get($this->data, $attribute);
+                $value = array_dot_get($this->data, $attribute);
 
                 if ($rule->acceptsEmptyValue() || has_value($value)) {
                     try {
