@@ -73,7 +73,6 @@ return [
     "pay_transfer" => "Pay with {1}",
     "pay_wallet" => "Pay by wallet",
     "payment_direct_billing" => "Direct Billing",
-    "payment_for_service" => "Payment for service: {1}",
     "payment_log" => "Payment log",
     "payment_method_unavailable" =>
         'You can\'t use that payment method for that quantity. Choose another payment method.',

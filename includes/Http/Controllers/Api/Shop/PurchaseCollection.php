@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Exceptions\InvalidServiceModuleException;
 use App\Http\Responses\ApiResponse;
 use App\Managers\ServiceModuleManager;
+use App\Models\PurchaseItem;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\General\PurchaseFactory;
 use App\Service\UserServiceAccessService;
@@ -39,10 +40,7 @@ class PurchaseCollection
 
         $purchase = $purchaseFactory
             ->create($user, get_ip($request), get_platform($request))
-            ->setServiceId($serviceModule->service->getId())
-            ->setTransferDescription(
-                $lang->t("payment_for_service", $serviceModule->service->getNameI18n())
-            );
+            ->setService($serviceModule->service->getId(), $serviceModule->service->getName());
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseDataService->storePurchase($purchase);

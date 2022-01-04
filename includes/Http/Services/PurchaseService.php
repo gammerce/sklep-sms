@@ -25,20 +25,17 @@ class PurchaseService
     private Auth $auth;
     private PriceRepository $priceRepository;
     private Settings $settings;
-    private Translator $lang;
 
     public function __construct(
         PaymentService $paymentService,
         Auth $auth,
         PriceRepository $priceRepository,
-        Settings $settings,
-        TranslationManager $translationManager
+        Settings $settings
     ) {
         $this->paymentService = $paymentService;
         $this->auth = $auth;
         $this->priceRepository = $priceRepository;
         $this->settings = $settings;
-        $this->lang = $translationManager->user();
     }
 
     /**
@@ -71,10 +68,7 @@ class PurchaseService
         $price = $this->priceRepository->get($priceId);
 
         $purchase = (new Purchase($this->auth->user(), $ip, $platform))
-            ->setServiceId($serviceModule->service->getId())
-            ->setTransferDescription(
-                $this->lang->t("payment_for_service", $serviceModule->service->getNameI18n())
-            )
+            ->setService($serviceModule->service->getId(), $serviceModule->service->getName())
             ->setEmail($email)
             ->setPaymentOption($paymentOption)
             ->setOrder([

@@ -622,7 +622,7 @@ EOF
 
         $purchasingUser = $this->userManager->get($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser, get_ip($request), get_platform($request)))
-            ->setServiceId($this->service->getId())
+            ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,

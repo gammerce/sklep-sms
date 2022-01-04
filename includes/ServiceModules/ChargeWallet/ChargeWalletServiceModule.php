@@ -134,7 +134,8 @@ class ChargeWalletServiceModule extends ServiceModule implements IServicePurchas
 
         $purchase->getPaymentSelect()->allowPaymentOption($paymentOption);
 
-        $purchase->setServiceId($this->service->getId())->setPaymentOption($paymentOption);
+        $purchase->setService($this->service->getId(), $this->service->getName());
+        $purchase->setPaymentOption($paymentOption);
 
         $this->chargeWalletFactory->create($paymentMethod)->setup($purchase, $body);
     }

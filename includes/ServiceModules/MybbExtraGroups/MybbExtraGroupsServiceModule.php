@@ -560,7 +560,7 @@ EOF
         );
 
         $purchase = (new Purchase($user, get_ip($request), get_platform($request)))
-            ->setServiceId($this->service->getId())
+            ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,

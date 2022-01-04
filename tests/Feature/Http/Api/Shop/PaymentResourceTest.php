@@ -51,7 +51,7 @@ class PaymentResourceTest extends HttpTestCase
         ]);
 
         $this->purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_SMS => 500,
                 Purchase::PAYMENT_PRICE_TRANSFER => 500,

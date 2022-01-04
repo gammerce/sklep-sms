@@ -74,7 +74,6 @@ return [
     "pay_transfer" => "Płacę z {1}",
     "pay_wallet" => "Płacę z portfela",
     "payment_direct_billing" => "Direct Billing",
-    "payment_for_service" => "Płatność za usługę: {1}",
     "payment_log" => "Historia płatności",
     "payment_method_unavailable" =>
         "Nie można zapłacić tą metodą płatności za tę ilość usługi. Wybierz inną metodę płatności.",

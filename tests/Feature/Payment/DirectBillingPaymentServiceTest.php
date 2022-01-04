@@ -71,7 +71,7 @@ class DirectBillingPaymentServiceTest extends TestCase
                 new PaymentOption(PaymentMethod::DIRECT_BILLING(), $paymentPlatform->getId())
             )
             ->setUsingPrice($price)
-            ->setServiceId($serviceId);
+            ->setService($serviceId, "VIP");
 
         $purchase->getPaymentSelect()->setDirectBillingPaymentPlatform($paymentPlatform->getId());
 

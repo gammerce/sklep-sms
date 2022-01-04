@@ -24,6 +24,7 @@ class Purchase
      * @var string|null
      */
     private ?string $serviceId = null;
+    private ?string $serviceName = null;
 
     /** @var User */
     public $user;
@@ -36,7 +37,6 @@ class Purchase
     private PaymentSelect $paymentSelect;
 
     private ?PaymentOption $paymentOption = null;
-
     private ?BillingAddress $billingAddress = null;
 
     /**
@@ -53,11 +53,6 @@ class Purchase
     private $promoCode = null;
 
     private ?string $comment = null;
-
-    /**
-     * Purchase description ( useful for transfer payments )
-     */
-    private ?string $transferDescription = null;
 
     /**
      * Platform from which the purchase was made
@@ -93,21 +88,20 @@ class Purchase
         $this->paymentSelect = new PaymentSelect();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getServiceId()
+    public function getServiceId(): ?string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @param string $serviceId
-     * @return self
-     */
-    public function setServiceId($serviceId): self
+    public function getServiceName(): ?string
     {
-        $this->serviceId = (string) $serviceId;
+        return $this->serviceName;
+    }
+
+    public function setService(string $serviceId, string $serviceName): self
+    {
+        $this->serviceId = $serviceId;
+        $this->serviceName = $serviceName;
         return $this;
     }
 
@@ -193,17 +187,7 @@ class Purchase
 
     public function getTransferDescription(): ?string
     {
-        return $this->transferDescription;
-    }
-
-    /**
-     * @param string $transferDescription
-     * @return self
-     */
-    public function setTransferDescription($transferDescription): self
-    {
-        $this->transferDescription = $transferDescription;
-        return $this;
+        return "Płatność za usługę: {$this->serviceName}";
     }
 
     public function getPlatform(): ?string
