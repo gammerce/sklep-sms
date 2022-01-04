@@ -1,8 +1,8 @@
 <?php
 namespace App\Payment\Invoice;
 
+use App\Models\PurchaseItem;
 use App\Payment\General\BillingAddress;
-use App\Support\Money;
 
 class InvoiceService
 {
@@ -16,11 +16,10 @@ class InvoiceService
     /**
      * @throws InvoiceIssueException
      */
-    public function create(
-        BillingAddress $billingAddress,
-        string $serviceName,
-        Money $servicePrice
-    ): void {
-        $this->infaktClient->issue($billingAddress, $serviceName, $servicePrice);
+    public function create(BillingAddress $billingAddress, PurchaseItem $purchaseItem): string
+    {
+        return $this->infaktClient->issue($billingAddress, $purchaseItem);
+
+        // TODO Mark as paid
     }
 }

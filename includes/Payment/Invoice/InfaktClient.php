@@ -2,9 +2,9 @@
 
 namespace App\Payment\Invoice;
 
+use App\Models\PurchaseItem;
 use App\Payment\General\BillingAddress;
 use App\Requesting\Requester;
-use App\Support\Money;
 
 class InfaktClient
 {
@@ -15,11 +15,8 @@ class InfaktClient
         $this->requester = $requester;
     }
 
-    public function issue(
-        BillingAddress $billingAddress,
-        string $serviceName,
-        Money $servicePrice
-    ): string {
+    public function issue(BillingAddress $billingAddress, PurchaseItem $purchaseItem): string
+    {
         $response = $this->requester->post("https://api.infakt.pl/v3/invoices.json", [
             "invoice" => [
                 "payment_method" => "tpay",
@@ -31,9 +28,9 @@ class InfaktClient
                 "client_tax_code" => $billingAddress->getVatID(),
                 "services" => [
                     [
-                        "name" => $serviceName,
-                        "gross_price" => $servicePrice->asInt(),
-                        "tax_symbol" => 8,
+                        "name" => $purchaseItem->getServiceName(),
+                        "gross_price" => $purchaseItem->getPrice()->asInt(),
+                        "tax_symbol" => $purchaseItem->getTaxRate(),
                     ],
                 ],
             ],
@@ -48,5 +45,6 @@ class InfaktClient
 
     public function markInvoiceAsPaid(string $invoiceID): void
     {
+        //
     }
 }

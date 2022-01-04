@@ -44,6 +44,8 @@ return [
         "Nie znaleziono pliku [{1}] z danymi transakcji dla płatności: [{2}]",
     "log_external_payment_not_accepted" =>
         "Nieudana autoryzacja transakcji. Metoda [{1}] ID transakcji [{2}] Kwota: [{3}] Usługa: [{4}]",
+    "log_invoice_issue_failure" => "Błąd podczas wystawiania faktury. ID zakupu: [{1}] Błąd: [{2}]",
+    "log_invoice_issue_success" => "Faktura została wystawiona. ID zakupu: [{1}] ID faktury: [{2}]",
     "log_new_account" => "Założono nowe konto. ID: [{1}] Nazwa Użytkownika: [{2}], IP: [{3}]",
     "log_password_changed" => "Użytkownik zmienił swoje hasło.",
     "log_purchase_code" => "Wykorzystano kod [{1}] do zakupu usługi. ID płatności: [{2}]",

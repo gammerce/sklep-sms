@@ -9,14 +9,10 @@ class PurchaseItem
     private string $serviceId;
     private string $serviceName;
     private Money $price;
-    private ?int $taxRate;
+    private int $taxRate;
 
-    public function __construct(
-        string $serviceId,
-        string $serviceName,
-        Money $price,
-        ?int $taxRate = null
-    ) {
+    public function __construct(string $serviceId, string $serviceName, Money $price, int $taxRate)
+    {
         $this->serviceId = $serviceId;
         $this->serviceName = $serviceName;
         $this->price = $price;
@@ -38,7 +34,7 @@ class PurchaseItem
         return $this->price;
     }
 
-    public function getTaxRate(): ?int
+    public function getTaxRate(): int
     {
         return $this->taxRate;
     }

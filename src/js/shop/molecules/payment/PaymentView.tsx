@@ -82,6 +82,7 @@ export const PaymentView: FunctionComponent = () => {
 
     return (
         <form id="payment-form">
+            {/* TODO make it optional*/}
             <BillingAddressForm onAddressChange={setBillingAddress} />
 
             <h3 className="title is-4">Payment method</h3>

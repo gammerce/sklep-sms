@@ -3,10 +3,11 @@ namespace App\Payment\Transfer;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Loggers\DatabaseLogger;
-use App\Loggers\FileLogger;
 use App\Managers\ServiceModuleManager;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
+use App\Models\PurchaseItem;
+use App\Models\Service;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\PurchaseDataService;
@@ -23,7 +24,6 @@ class TransferPaymentService
     private ServiceModuleManager $serviceModuleManager;
     private TransferPriceService $transferPriceService;
     private InvoiceService $invoiceService;
-    private FileLogger $fileLogger;
 
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
@@ -31,8 +31,7 @@ class TransferPaymentService
         PurchaseDataService $purchaseDataService,
         TransferPriceService $transferPriceService,
         InvoiceService $invoiceService,
-        DatabaseLogger $logger,
-        FileLogger $fileLogger
+        DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->logger = $logger;
@@ -40,7 +39,6 @@ class TransferPaymentService
         $this->serviceModuleManager = $serviceModuleManager;
         $this->transferPriceService = $transferPriceService;
         $this->invoiceService = $invoiceService;
-        $this->fileLogger = $fileLogger;
     }
 
     /**
@@ -83,19 +81,6 @@ class TransferPaymentService
         ]);
 
         $boughtServiceId = $serviceModule->purchase($purchase);
-
-        if (!$finalizedPayment->isTestMode()) {
-            try {
-                $this->invoiceService->create(
-                    $purchase->getBillingAddress(),
-                    $finalizedPayment->getCost(),
-                    $serviceModule->service->getName()
-                );
-            } catch (InvoiceIssueException $e) {
-                $this->fileLogger->error("Couldn't issue an invoice {$e->getMessage()}");
-            }
-        }
-
         $this->logger->logWithUser(
             $purchase->user,
             "log_external_payment_accepted",
@@ -106,8 +91,44 @@ class TransferPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
+        if (!$finalizedPayment->isTestMode()) {
+            $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+        }
+
         $this->purchaseDataService->deletePurchase($purchase);
 
         return $boughtServiceId;
+    }
+
+    private function issueInvoice(
+        Purchase $purchase,
+        FinalizedPayment $finalizedPayment,
+        Service $service
+    ) {
+        try {
+            $invoiceId = $this->invoiceService->create(
+                $purchase->getBillingAddress(),
+                new PurchaseItem(
+                    $purchase->getServiceId(),
+                    $purchase->getServiceName(),
+                    $finalizedPayment->getCost(),
+                    $service->getTaxRate()
+                )
+            );
+
+            $this->logger->logWithUser(
+                $purchase->user,
+                "log_invoice_issue_success",
+                $finalizedPayment->getOrderId(),
+                $invoiceId
+            );
+        } catch (InvoiceIssueException $e) {
+            $this->logger->logWithUser(
+                $purchase->user,
+                "log_invoice_issue_failure",
+                $finalizedPayment->getOrderId(),
+                $e->getMessage()
+            );
+        }
     }
 }

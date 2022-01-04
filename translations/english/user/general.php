@@ -44,6 +44,8 @@ return [
         "There is no file [{1}] with transaction data for payment: [{2}]",
     "log_external_payment_not_accepted" =>
         "Transaction authorization failure. Method: [{1}] Transaction ID: [{2}] Amount: [{3}] Service: [{4}]",
+    "log_invoice_issue_failure" => "Failed to issue an invoice. Purchase ID: [{1}] Error: [{2}]",
+    "log_invoice_issue_success" => "Invoice\'s been issued. Purchase ID: [{1}] Invoice ID: [{2}]",
     "log_new_account" => "Create new account. ID: [{1}] User name: [{2}], IP: [{3}]",
     "log_password_changed" => "User has changed their password.",
     "log_purchase_code" => "Service code [{1}] was used to purchase service. Payment ID: [{2}]",
