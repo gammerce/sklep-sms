@@ -6,13 +6,14 @@ use App\Loggers\DatabaseLogger;
 use App\Managers\ServiceModuleManager;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
-use App\Models\PurchaseItem;
 use App\Models\Service;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Invoice\InvoiceIssueException;
 use App\Payment\Invoice\InvoiceService;
+use App\Payment\Invoice\InvoiceServiceUnavailableException;
+use App\Payment\Invoice\PurchaseItem;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 
@@ -104,7 +105,11 @@ class TransferPaymentService
         Purchase $purchase,
         FinalizedPayment $finalizedPayment,
         Service $service
-    ) {
+    ): void {
+        if (!$purchase->getBillingAddress()) {
+            return;
+        }
+
         try {
             $invoiceId = $this->invoiceService->create(
                 $purchase->getBillingAddress(),
@@ -129,6 +134,8 @@ class TransferPaymentService
                 $finalizedPayment->getOrderId(),
                 $e->getMessage()
             );
+        } catch (InvoiceServiceUnavailableException $e) {
+            // Infakt client is not configured
         }
     }
 }
