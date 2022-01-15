@@ -16,6 +16,7 @@ use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
+use App\Payment\Invoice\InvoiceService;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -25,6 +26,7 @@ class PaymentResource
     public function post(
         $transactionId,
         Request $request,
+        InvoiceService $invoiceService,
         PaymentService $paymentService,
         PurchaseDataService $purchaseDataService,
         TranslationManager $translationManager
@@ -36,15 +38,16 @@ class PaymentResource
             throw new EntityNotFoundException();
         }
 
+        $billingRequiredRule = $invoiceService->isConfigured() ? [new RequiredRule()] : [];
         $validator = new Validator($request->request->all(), [
-            "billing_address_name" => [new RequiredRule(), new MaxLengthRule(128)],
-            "billing_address_vat_id" => [new MaxLengthRule(128)],
-            "billing_address_street" => [new RequiredRule(), new MaxLengthRule(128)],
-            "billing_address_postal_code" => [new RequiredRule(), new MaxLengthRule(128)],
-            "billing_address_city" => [new RequiredRule(), new MaxLengthRule(128)],
             "method" => [new EnumRule(PaymentMethod::class)],
             "payment_platform_id" => [],
             "sms_code" => [],
+            "billing_address_name" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "billing_address_vat_id" => [new MaxLengthRule(128)],
+            "billing_address_street" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "billing_address_postal_code" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "billing_address_city" => [...$billingRequiredRule, new MaxLengthRule(128)],
         ]);
         $validated = $validator->validateOrFail();
 

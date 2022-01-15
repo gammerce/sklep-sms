@@ -71,6 +71,7 @@ export const PaymentView: FunctionComponent = () => {
     }
 
     const acceptsPromoCode = transaction.promo_code !== undefined;
+    const supportsBillingAddress = transaction.supports_billing_address;
 
     const paymentOptions = transaction.payment_options.map((paymentOption) => (
         <PaymentOption
@@ -82,8 +83,7 @@ export const PaymentView: FunctionComponent = () => {
 
     return (
         <form id="payment-form">
-            {/* TODO make it optional*/}
-            <BillingAddressForm onAddressChange={setBillingAddress} />
+            {supportsBillingAddress && <BillingAddressForm onAddressChange={setBillingAddress} />}
 
             <h3 className="title is-4">Payment method</h3>
             <div className="columns">

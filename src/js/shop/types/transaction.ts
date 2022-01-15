@@ -63,6 +63,7 @@ export interface WalletPaymentOption extends BasePaymentOption {
 export interface Transaction {
     promo_code?: string;
     payment_options: Array<PaymentOption>;
+    supports_billing_address: boolean;
 }
 
 export interface BillingAddress {

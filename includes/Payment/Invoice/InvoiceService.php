@@ -12,6 +12,11 @@ class InvoiceService
         $this->infaktClient = $infaktClient;
     }
 
+    public function isConfigured(): bool
+    {
+        return $this->infaktClient->isConfigured();
+    }
+
     /**
      * @throws InvoiceIssueException
      * @throws InvoiceServiceUnavailableException
