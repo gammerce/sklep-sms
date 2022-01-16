@@ -3,6 +3,7 @@ import { __ } from "../../../general/i18n";
 import { BillingAddress } from "../../types/transaction";
 import { FormError } from "../../components/FormError";
 import { Dict } from "../../types/general";
+import { Hint } from "../../components/Hint";
 
 interface Props {
     address?: BillingAddress;
@@ -35,7 +36,7 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
 
     return (
         <>
-            <h3 className="title is-4">Billing Address</h3>
+            <h3 className="title is-4">{__("billing_address")}</h3>
             <div className="columns is-multiline billing-address-form">
                 <div className="column is-two-thirds">
                     <div className="field">
@@ -60,7 +61,8 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
                 <div className="column">
                     <div className="field">
                         <label htmlFor="billing_address_vat_id" className="label">
-                            {__("vat_id")}
+                            <span>{__("vat_id")}</span>
+                            <Hint message={__("vat_id_hint")} />
                         </label>
                         <div className="control">
                             <input
