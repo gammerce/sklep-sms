@@ -146,7 +146,9 @@ class TransferPaymentService
                     $purchase->getServiceId(),
                     $purchase->getServiceName(),
                     $finalizedPayment->getCost(),
-                    $service->getTaxRate()
+                    $service->getTaxRate(),
+                    $service->getFlatRateTax(),
+                    $service->getPKWiUSymbol()
                 ),
                 $email
             );

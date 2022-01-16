@@ -124,17 +124,20 @@ class TransferPaymentServiceTest extends TestCase
                 "https://api.infakt.pl/v3/invoices.json",
                 json_encode([
                     "invoice" => [
-                        "payment_method" => "tpay",
                         "client_company_name" => "Jan Kowalski",
                         "client_country" => "pl",
                         "client_street" => "Złota 59",
                         "client_city" => "Warszawa",
                         "client_post_code" => "01-687",
                         "client_tax_code" => "",
+                        "kind" => "vat",
+                        "payment_method" => "tpay",
                         "services" => [
                             [
-                                "name" => "VIP",
+                                "flat_rate_tax_symbol" => null,
                                 "gross_price" => 4080,
+                                "name" => "VIP",
+                                "symbol" => null,
                                 "tax_symbol" => 0,
                             ],
                         ],

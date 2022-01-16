@@ -31,17 +31,20 @@ class InfaktClient
             "https://api.infakt.pl/v3/invoices.json",
             json_encode([
                 "invoice" => [
-                    "payment_method" => "tpay",
                     "client_company_name" => $billingAddress->getName(),
                     "client_country" => "pl",
                     "client_street" => $billingAddress->getStreet(),
                     "client_city" => $billingAddress->getCity(),
                     "client_post_code" => $billingAddress->getPostalCode(),
                     "client_tax_code" => $billingAddress->getVatID(),
+                    "kind" => "vat",
+                    "payment_method" => "tpay",
                     "services" => [
                         [
-                            "name" => $purchaseItem->getServiceName(),
+                            "flat_rate_tax_symbol" => $purchaseItem->getFlatRateTax(),
                             "gross_price" => $purchaseItem->getPrice()->asInt(),
+                            "name" => $purchaseItem->getServiceName(),
+                            "symbol" => $purchaseItem->getPKWiUSymbol(),
                             "tax_symbol" => $purchaseItem->getTaxRate(),
                         ],
                     ],
