@@ -38,6 +38,7 @@ class TransactionService
         $serviceModule = $this->serviceModuleManager->get($purchase->getServiceId());
 
         $output = [
+            "billing_address" => $purchase->user->getBillingAddress()->toArray(),
             "payment_options" => iterator_to_array($this->getPaymentOptions($purchase)),
             "supports_billing_address" => $this->invoiceService->isConfigured(),
         ];

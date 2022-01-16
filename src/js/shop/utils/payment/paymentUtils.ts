@@ -22,7 +22,11 @@ export const purchaseService = async (
         await makePayment(transactionId, {
             method,
             payment_platform_id: paymentPlatformId,
-            billing_address: billingAddress,
+            billing_address_name: billingAddress.name,
+            billing_address_vat_id: billingAddress.vat_id,
+            billing_address_postal_code: billingAddress.postal_code,
+            billing_address_street: billingAddress.street,
+            billing_address_city: billingAddress.city,
             ...body,
         });
     } catch (e) {

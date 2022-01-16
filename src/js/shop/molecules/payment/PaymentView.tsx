@@ -83,7 +83,12 @@ export const PaymentView: FunctionComponent = () => {
 
     return (
         <form id="payment-form">
-            {supportsBillingAddress && <BillingAddressForm onAddressChange={setBillingAddress} />}
+            {supportsBillingAddress && (
+                <BillingAddressForm
+                    address={transaction.billing_address}
+                    onAddressChange={setBillingAddress}
+                />
+            )}
 
             <h3 className="title is-4">{__("payment_method")}</h3>
             <div className="columns">
