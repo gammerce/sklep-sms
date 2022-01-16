@@ -25,7 +25,7 @@ final class BillingAddress implements Arrayable
         $this->city = $city;
     }
 
-    public static function empty(): self
+    public static function blank(): self
     {
         return new self("", "", "", "", "");
     }
@@ -68,7 +68,7 @@ final class BillingAddress implements Arrayable
 
     public function isEmpty(): bool
     {
-        return $this->toArray() == self::empty()->toArray();
+        return $this->toArray() == self::blank()->toArray();
     }
 
     public function toArray()

@@ -3,6 +3,7 @@ namespace App\Payment\Transfer;
 
 use App\Exceptions\InvalidServiceModuleException;
 use App\Loggers\DatabaseLogger;
+use App\Loggers\FileLogger;
 use App\Managers\ServiceModuleManager;
 use App\Models\FinalizedPayment;
 use App\Models\Purchase;
@@ -21,6 +22,7 @@ class TransferPaymentService
 {
     private PaymentTransferRepository $paymentTransferRepository;
     private DatabaseLogger $logger;
+    private FileLogger $fileLogger;
     private PurchaseDataService $purchaseDataService;
     private ServiceModuleManager $serviceModuleManager;
     private TransferPriceService $transferPriceService;
@@ -32,9 +34,11 @@ class TransferPaymentService
         PurchaseDataService $purchaseDataService,
         TransferPriceService $transferPriceService,
         InvoiceService $invoiceService,
+        FileLogger $fileLogger,
         DatabaseLogger $logger
     ) {
         $this->paymentTransferRepository = $paymentTransferRepository;
+        $this->fileLogger = $fileLogger;
         $this->logger = $logger;
         $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
@@ -109,6 +113,32 @@ class TransferPaymentService
         FinalizedPayment $finalizedPayment,
         Service $service
     ): ?string {
+        if (!$this->invoiceService->isConfigured()) {
+            return null;
+        }
+
+        if ($finalizedPayment->isTestMode()) {
+            $this->fileLogger->info(
+                "Invoice wasn't issued due to test mode. Payment ID: {$finalizedPayment->getOrderId()}"
+            );
+            return null;
+        }
+
+        if ($purchase->getBillingAddress()->isEmpty()) {
+            $this->fileLogger->info(
+                "Invoice wasn't issued due to empty billing address. Payment ID: {$finalizedPayment->getOrderId()}"
+            );
+            return null;
+        }
+
+        $email = $purchase->getEmail() ?? $purchase->user->getEmail();
+        if (!$email) {
+            $this->fileLogger->info(
+                "Invoice won't be sent due to lack of email. Payment ID: {$finalizedPayment->getOrderId()}"
+            );
+            return null;
+        }
+
         try {
             $invoiceId = $this->invoiceService->create(
                 $purchase->getBillingAddress(),
@@ -118,7 +148,7 @@ class TransferPaymentService
                     $finalizedPayment->getCost(),
                     $service->getTaxRate()
                 ),
-                $purchase->getEmail()
+                $email
             );
         } catch (InvoiceException $e) {
             $this->logger->logWithUser(

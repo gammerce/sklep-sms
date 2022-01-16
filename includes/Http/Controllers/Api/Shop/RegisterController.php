@@ -68,7 +68,7 @@ class RegisterController
             $validated["forename"],
             $validated["surname"],
             $validated["steam_id"],
-            BillingAddress::empty(),
+            BillingAddress::blank(),
             get_ip($request),
             "1",
             0

@@ -9,12 +9,10 @@ use App\Payment\General\PaymentMethod;
 use App\Payment\General\PurchaseDataService;
 use App\PromoCode\QuantityType;
 use App\Repositories\UserRepository;
-use App\Requesting\Response as RequestingResponse;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
-use Mockery;
 use Symfony\Component\HttpFoundation\Response;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -33,7 +31,7 @@ class PaymentResourceTest extends HttpTestCase
         parent::setUp();
 
         $this->purchaseDataService = $this->app->make(PurchaseDataService::class);
-        $this->userRepository = $this->app->get(UserRepository::class);
+        $this->userRepository = $this->app->make(UserRepository::class);
 
         $promoCode = $this->factory->promoCode([
             "code" => "MYCODE",
@@ -79,18 +77,6 @@ class PaymentResourceTest extends HttpTestCase
             ->setDirectBillingPaymentPlatform($this->directBillingPlatform->getId());
 
         $this->purchaseDataService->storePurchase($this->purchase);
-
-        $this->requesterMock
-            ->shouldReceive("post")
-            ->withArgs(["https://api.infakt.pl/v3/invoices.json", Mockery::any(), Mockery::any()])
-            ->andReturn(
-                new RequestingResponse(
-                    Response::HTTP_OK,
-                    json_encode([
-                        "id" => "128",
-                    ])
-                )
-            );
     }
 
     /** @test */

@@ -68,7 +68,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [
@@ -152,7 +152,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [
@@ -268,7 +268,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [

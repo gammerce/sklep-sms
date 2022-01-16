@@ -87,7 +87,7 @@ class Purchase
         $this->ip = $ip;
         $this->platform = $platform;
         $this->paymentSelect = new PaymentSelect();
-        $this->billingAddress = BillingAddress::empty();
+        $this->billingAddress = BillingAddress::blank();
     }
 
     public function getServiceId(): ?string

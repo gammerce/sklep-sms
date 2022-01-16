@@ -35,6 +35,8 @@ class TransferPaymentServiceTest extends TestCase
     {
         parent::setUp();
 
+        putenv("INFAKT_API_KEY=invalid");
+
         $this->transferPaymentService = $this->app->make(TransferPaymentService::class);
         $this->transferPaymentMethod = $this->app->make(TransferPaymentMethod::class);
         $this->paymentTransferRepository = $this->app->make(PaymentTransferRepository::class);
@@ -71,11 +73,18 @@ class TransferPaymentServiceTest extends TestCase
             ->setService(
                 $this->serviceModule->service->getId(),
                 $this->serviceModule->service->getName()
-            );
+            )
+            ->setEmail("example@example.com");
 
         $this->purchase
             ->getPaymentSelect()
             ->setTransferPaymentPlatforms([$paymentPlatform->getId()]);
+    }
+
+    public function tearDown(): void
+    {
+        parent::tearDown();
+        putenv("INFAKT_API_KEY=");
     }
 
     /** @test */
@@ -144,6 +153,34 @@ class TransferPaymentServiceTest extends TestCase
                     ])
                 )
             );
+
+        $this->requesterMock
+            ->shouldReceive("post")
+            ->withArgs([
+                "https://api.infakt.pl/v3/invoices/128/paid.json",
+                json_encode([]),
+                [
+                    "Content-Type" => "application/json",
+                    "X-inFakt-ApiKey" => "invalid",
+                ],
+            ])
+            ->andReturn(new RequestingResponse(Response::HTTP_NO_CONTENT, ""));
+
+        $this->requesterMock
+            ->shouldReceive("post")
+            ->withArgs([
+                "https://api.infakt.pl/v3/invoices/128/deliver_via_email.json",
+                json_encode([
+                    "print_type" => "original",
+                    "locale" => "pl",
+                    "recipient" => "example@example.com",
+                ]),
+                [
+                    "Content-Type" => "application/json",
+                    "X-inFakt-ApiKey" => "invalid",
+                ],
+            ])
+            ->andReturn(new RequestingResponse(Response::HTTP_ACCEPTED, ""));
 
         // when
         $paymentResult = $this->transferPaymentMethod->pay($this->purchase, $this->serviceModule);

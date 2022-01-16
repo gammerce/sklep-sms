@@ -57,7 +57,7 @@ class User
         $this->forename = $forename;
         $this->surname = $surname;
         $this->steamId = $steamId;
-        $this->billingAddress = $billingAddress ?: BillingAddress::empty();
+        $this->billingAddress = $billingAddress ?: BillingAddress::blank();
         $this->groups = $groups;
         $this->regDate = $regDate;
         $this->lastActive = $lastActive;

@@ -24,7 +24,7 @@ class InvoiceService
     public function create(
         BillingAddress $billingAddress,
         PurchaseItem $purchaseItem,
-        string $email
+        ?string $email
     ): string {
         if (!$this->infaktClient->isConfigured()) {
             throw new InvoiceServiceUnavailableException();

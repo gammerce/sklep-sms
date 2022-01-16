@@ -65,6 +65,13 @@ class TransactionResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame(
             [
+                "billing_address" => [
+                    "name" => "",
+                    "vat_id" => "",
+                    "street" => "",
+                    "postal_code" => "",
+                    "city" => "",
+                ],
                 "payment_options" => [
                     [
                         "method" => "sms",
@@ -101,6 +108,7 @@ class TransactionResourceTest extends HttpTestCase
                         ],
                     ],
                 ],
+                "supports_billing_address" => false,
                 "promo_code" => "",
             ],
             $json
@@ -149,7 +157,7 @@ class TransactionResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [
@@ -224,7 +232,7 @@ class TransactionResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [

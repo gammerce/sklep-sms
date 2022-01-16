@@ -244,7 +244,7 @@ class Factory
                 "forename" => $this->faker->firstName,
                 "surname" => $this->faker->lastName,
                 "steam_id" => "",
-                "billing_address" => BillingAddress::empty(),
+                "billing_address" => BillingAddress::blank(),
                 "ip" => $this->faker->ipv4,
                 "groups" => [1],
                 "wallet" => 0,

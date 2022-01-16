@@ -63,7 +63,7 @@ class RegisterTest extends HttpTestCase
         $this->assertEquals($forename, $user->getForename());
         $this->assertEquals($surname, $user->getSurname());
         $this->assertEquals($steamId, $user->getSteamId());
-        $this->assertEquals(BillingAddress::empty(), $user->getBillingAddress());
+        $this->assertEquals(BillingAddress::blank(), $user->getBillingAddress());
         $this->assertNotNull($user->getRegDate());
     }
 
