@@ -18,7 +18,7 @@ jobs:
           python-version: 3.9
 
       - run: pip install pre-commit
-      - run: pre-commit run --all-files --show-diff-on-failure
+      - run: npm exec --package=@prettier/plugin-php@0.17.6 --package=prettier@2.5.1 -- prettier --check "{includes,migrations,src,tests,themes,translations}/**/*.{php,js,ts,tsx,css,scss,html}"
 
   frontend:
     name: Build frontend
