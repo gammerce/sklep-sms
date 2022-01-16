@@ -1,6 +1,7 @@
 <?php
 namespace Tests\Feature\Http\Api\Shop;
 
+use App\Payment\General\BillingAddress;
 use App\Repositories\UserRepository;
 use App\Requesting\Response;
 use Mockery;
@@ -62,6 +63,7 @@ class RegisterTest extends HttpTestCase
         $this->assertEquals($forename, $user->getForename());
         $this->assertEquals($surname, $user->getSurname());
         $this->assertEquals($steamId, $user->getSteamId());
+        $this->assertEquals(BillingAddress::empty(), $user->getBillingAddress());
         $this->assertNotNull($user->getRegDate());
     }
 

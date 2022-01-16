@@ -1,7 +1,9 @@
 <?php
 namespace App\Payment\General;
 
-final class BillingAddress
+use Illuminate\Contracts\Support\Arrayable;
+
+final class BillingAddress implements Arrayable
 {
     private string $name;
     private string $vatID;
@@ -21,6 +23,22 @@ final class BillingAddress
         $this->street = $street;
         $this->postalCode = $postalCode;
         $this->city = $city;
+    }
+
+    public static function empty(): self
+    {
+        return new self("", "", "", "", "");
+    }
+
+    public static function fromArray($data): self
+    {
+        return new self(
+            array_get($data, "name") ?? "",
+            array_get($data, "vat_id") ?? "",
+            array_get($data, "street") ?? "",
+            array_get($data, "postal_code") ?? "",
+            array_get($data, "city") ?? ""
+        );
     }
 
     public function getName(): string
@@ -46,5 +64,16 @@ final class BillingAddress
     public function getCity(): string
     {
         return $this->city;
+    }
+
+    public function toArray()
+    {
+        return [
+            "name" => $this->name,
+            "vat_id" => $this->vatID,
+            "street" => $this->street,
+            "postal_code" => $this->postalCode,
+            "city" => $this->city,
+        ];
     }
 }
