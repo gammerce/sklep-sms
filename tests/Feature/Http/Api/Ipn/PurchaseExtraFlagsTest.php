@@ -53,7 +53,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => "vippro",
-            "method" => PaymentMethod::SMS(),
+            "method" => PaymentMethod::SMS()->getValue(),
             "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "mama",
             "password" => "manq12a",
@@ -67,7 +67,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => PaymentMethod::SMS(),
+            "method" => PaymentMethod::SMS()->getValue(),
             "payment_platform_id" => $paymentPlatform->getId(),
             "sms_code" => "abc123",
         ]);
@@ -119,7 +119,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
 
         $validationResponse = $this->post("/api/purchases", [
             "service_id" => "vippro",
-            "method" => PaymentMethod::TRANSFER(),
+            "method" => PaymentMethod::TRANSFER()->getValue(),
             "type" => ExtraFlagType::TYPE_NICK,
             "auth_data" => "mama",
             "password" => "manq12a",
@@ -133,7 +133,7 @@ class PurchaseExtraFlagsTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => PaymentMethod::TRANSFER(),
+            "method" => PaymentMethod::TRANSFER()->getValue(),
             "payment_platform_id" => $paymentPlatform->getId(),
         ]);
         $this->assertSame(200, $response->getStatusCode());

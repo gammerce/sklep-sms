@@ -62,7 +62,7 @@ class PaymentServiceTest extends TestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
-            ->setServiceId($serviceId)
+            ->setService($serviceId, "COD Exp Transfer")
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",
@@ -115,7 +115,7 @@ class PaymentServiceTest extends TestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
-            ->setServiceId($serviceId)
+            ->setService($serviceId, "VIP")
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
@@ -165,7 +165,7 @@ class PaymentServiceTest extends TestCase
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
-            ->setServiceId($serviceId)
+            ->setService($serviceId, "VIP")
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
                 Purchase::PAYMENT_SMS_CODE => "QWERTY",
@@ -200,7 +200,7 @@ class PaymentServiceTest extends TestCase
                 "auth_data" => "STEAM_1:0:22309350",
             ])
             ->setUsingPrice($price)
-            ->setServiceId($serviceId)
+            ->setService($serviceId, "VIP")
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
                 Purchase::PAYMENT_SMS_CODE => "abcd1234",

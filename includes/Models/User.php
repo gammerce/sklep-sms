@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\BillingAddress;
 use App\Support\Money;
 use App\User\Permission;
 
@@ -14,12 +15,12 @@ class User
     private ?string $forename;
     private ?string $surname;
     private ?string $steamId;
+    private BillingAddress $billingAddress;
 
     /** @var int[] */
     private array $groups;
 
     private ?string $regDate;
-
     private ?string $lastActive;
     private Money $wallet;
     private ?string $regIp;
@@ -38,6 +39,7 @@ class User
         $forename = null,
         $surname = null,
         $steamId = null,
+        BillingAddress $billingAddress = null,
         array $groups = [],
         $regDate = null,
         $lastActive = null,
@@ -55,6 +57,7 @@ class User
         $this->forename = $forename;
         $this->surname = $surname;
         $this->steamId = $steamId;
+        $this->billingAddress = $billingAddress ?: BillingAddress::blank();
         $this->groups = $groups;
         $this->regDate = $regDate;
         $this->lastActive = $lastActive;
@@ -247,5 +250,15 @@ class User
     public function setSteamId($steamId): void
     {
         $this->steamId = $steamId;
+    }
+
+    public function getBillingAddress(): BillingAddress
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(BillingAddress $billingAddress): void
+    {
+        $this->billingAddress = $billingAddress;
     }
 }

@@ -44,7 +44,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase($user, "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
                 Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
@@ -68,7 +68,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [
@@ -128,7 +128,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase($user, "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
                 Purchase::PAYMENT_PRICE_DIRECT_BILLING => 1200,
@@ -152,7 +152,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [
@@ -214,7 +214,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             ]);
@@ -252,7 +252,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         $promoCode = $this->factory->promoCode();
 
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             ])
@@ -268,7 +268,7 @@ class TransactionPromoCodeResourceTest extends HttpTestCase
         // then
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
         $json = $this->decodeJsonResponse($response);
-        $this->assertSame(
+        $this->assertArraySubset(
             [
                 "payment_options" => [
                     [

@@ -1,6 +1,7 @@
 <?php
 namespace App\Payment\Transfer;
 
+use App\Managers\ServiceManager;
 use App\Models\Purchase;
 use App\PromoCode\PromoCodeService;
 use App\Support\Money;
@@ -10,18 +11,21 @@ class TransferPriceService
 {
     private PromoCodeService $promoCodeService;
     private PriceTextService $priceTextService;
+    private ServiceManager $serviceManager;
 
     public function __construct(
         PromoCodeService $promoCodeService,
-        PriceTextService $priceTextService
+        PriceTextService $priceTextService,
+        ServiceManager $serviceManager
     ) {
         $this->promoCodeService = $promoCodeService;
         $this->priceTextService = $priceTextService;
+        $this->serviceManager = $serviceManager;
     }
 
     public function getPrice(Purchase $purchase): ?Money
     {
-        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER));
+        $price = $this->getPriceMoney($purchase);
         if ($price === null) {
             return null;
         }
@@ -36,7 +40,7 @@ class TransferPriceService
 
     public function getOldAndNewPrice(Purchase $purchase): array
     {
-        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER));
+        $price = $this->getPriceMoney($purchase);
         $promoCode = $purchase->getPromoCode();
 
         if ($promoCode) {
@@ -51,5 +55,17 @@ class TransferPriceService
         return [
             "price" => $this->priceTextService->getPriceText($price),
         ];
+    }
+
+    private function getPriceMoney(Purchase $purchase): ?Money
+    {
+        $service = $this->serviceManager->get($purchase->getServiceId());
+        $price = as_money($purchase->getPayment(Purchase::PAYMENT_PRICE_TRANSFER));
+
+        if ($service && $price) {
+            return $price->multiply(1.0 + $service->getTaxRate() / 100.0);
+        }
+
+        return $price;
     }
 }

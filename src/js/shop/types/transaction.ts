@@ -61,6 +61,16 @@ export interface WalletPaymentOption extends BasePaymentOption {
 }
 
 export interface Transaction {
+    billing_address: BillingAddress;
     promo_code?: string;
     payment_options: Array<PaymentOption>;
+    supports_billing_address: boolean;
+}
+
+export interface BillingAddress {
+    name: string;
+    vat_id: string;
+    street: string;
+    postal_code: string;
+    city: string;
 }

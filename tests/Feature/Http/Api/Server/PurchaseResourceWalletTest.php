@@ -63,7 +63,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => PaymentMethod::WALLET(),
+                "method" => PaymentMethod::WALLET()->getValue(),
                 "sign" => $sign,
             ],
             [
@@ -115,7 +115,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => PaymentMethod::WALLET(),
+                "method" => PaymentMethod::WALLET()->getValue(),
                 "sign" => $sign,
             ],
             [
@@ -155,7 +155,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => PaymentMethod::WALLET(),
+                "method" => PaymentMethod::WALLET()->getValue(),
                 "sign" => $sign,
             ],
             [
@@ -202,7 +202,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
                 "price_id" => $this->price->getId(),
-                "method" => PaymentMethod::WALLET(),
+                "method" => PaymentMethod::WALLET()->getValue(),
                 "sign" => $sign,
             ],
             [

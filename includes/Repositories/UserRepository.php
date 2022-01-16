@@ -4,6 +4,7 @@ namespace App\Repositories;
 use App\Managers\GroupManager;
 use App\Models\Group;
 use App\Models\User;
+use App\Payment\General\BillingAddress;
 use App\Support\Database;
 use App\Support\Money;
 use App\User\Permission;
@@ -26,6 +27,7 @@ class UserRepository
         $forename,
         $surname,
         $steamId,
+        BillingAddress $billingAddress,
         $ip,
         $groups,
         $wallet = 0
@@ -33,8 +35,23 @@ class UserRepository
         $salt = get_random_string(8);
         $this->db
             ->statement(
-                "INSERT INTO `ss_users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`) " .
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())"
+                <<<EOF
+                INSERT INTO `ss_users` (
+                    `username`,
+                    `password`,
+                    `salt`,
+                    `email`,
+                    `forename`,
+                    `surname`,
+                    `regip`,
+                    `groups`,
+                    `wallet`,
+                    `steam_id`,
+                    `billing_address`,
+                    `regdate`
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+EOF
             )
             ->execute([
                 (string) $username,
@@ -47,6 +64,7 @@ class UserRepository
                 $groups,
                 (int) $wallet,
                 $steamId ?: null,
+                json_encode($billingAddress->toArray()),
             ]);
 
         return $this->get($this->db->lastId());
@@ -56,9 +74,18 @@ class UserRepository
     {
         $this->db
             ->statement(
-                "UPDATE `ss_users` " .
-                    "SET `username` = ?, `forename` = ?, `surname` = ?, `email` = ?, `groups` = ?, `wallet` = ?, `steam_id` = ? " .
-                    "WHERE `uid` = ?"
+                <<<EOF
+                UPDATE `ss_users` 
+                SET `username` = ?,
+                    `forename` = ?,
+                    `surname` = ?,
+                    `email` = ?,
+                    `groups` = ?,
+                    `wallet` = ?,
+                    `steam_id` = ?,
+                    `billing_address` = ?
+                WHERE `uid` = ?
+EOF
             )
             ->execute([
                 (string) $user->getUsername(),
@@ -68,6 +95,7 @@ class UserRepository
                 implode(";", $user->getGroups()),
                 $user->getWallet()->asInt(),
                 $user->getSteamId() ?: null,
+                json_encode($user->getBillingAddress()->toArray()),
                 $user->getId(),
             ]);
     }
@@ -239,6 +267,8 @@ class UserRepository
     public function mapToModel(array $data): User
     {
         $groupsIds = explode_int_list($data["groups"], ";");
+        $billingAddress = BillingAddress::fromArray(json_decode($data["billing_address"], true));
+        $permissions = $this->gatherPermissions($groupsIds);
 
         return new User(
             as_int($data["uid"]),
@@ -249,6 +279,7 @@ class UserRepository
             $data["forename"],
             $data["surname"],
             $data["steam_id"],
+            $billingAddress,
             $groupsIds,
             $data["regdate"],
             $data["lastactiv"],
@@ -256,7 +287,7 @@ class UserRepository
             $data["regip"],
             $data["lastip"],
             $data["reset_password_key"],
-            $this->gatherPermissions($groupsIds)
+            $permissions
         );
     }
 

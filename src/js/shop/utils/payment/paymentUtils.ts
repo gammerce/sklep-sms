@@ -4,12 +4,14 @@ import { infobox, sthWentWrong } from "../../../general/infobox";
 import { handleError, refreshBlocks } from "../utils";
 import { api } from "../container";
 import { Dict } from "../../types/general";
-import { PaymentMethod } from "../../types/transaction";
+import { BillingAddress, PaymentMethod } from "../../types/transaction";
 
 export const purchaseService = async (
     transactionId: string,
     method: PaymentMethod,
     paymentPlatformId: number | undefined,
+    billingAddress: BillingAddress | undefined,
+    rememberBillingAddress: boolean | undefined,
     body: Dict = {}
 ) => {
     if (loader.blocked) {
@@ -21,6 +23,12 @@ export const purchaseService = async (
         await makePayment(transactionId, {
             method,
             payment_platform_id: paymentPlatformId,
+            billing_address_name: billingAddress.name,
+            billing_address_vat_id: billingAddress.vat_id,
+            billing_address_postal_code: billingAddress.postal_code,
+            billing_address_street: billingAddress.street,
+            billing_address_city: billingAddress.city,
+            remember_billing_address: rememberBillingAddress,
             ...body,
         });
     } catch (e) {

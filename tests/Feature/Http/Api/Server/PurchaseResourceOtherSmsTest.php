@@ -65,7 +65,7 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
                 "auth_data" => $authData,
                 "password" => "",
                 "sms_code" => $smsCode,
-                "method" => PaymentMethod::SMS(),
+                "method" => PaymentMethod::SMS()->getValue(),
                 "price_id" => $price->getId(),
                 "ip" => "192.0.2.1",
                 "sign" => $sign,

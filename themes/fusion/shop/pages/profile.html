@@ -8,7 +8,7 @@
 <main class="section section-body">
     <div class="container">
         <form id="form_profile_update">
-            <div class="columns is-multiline">
+            <div class="columns is-multiline mb-5">
                 <div class="column is-full">
                     <div class="field">
                         <label for="email" class="label required"> {{ __('email') }} </label>
@@ -40,9 +40,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="columns is-multiline">
                 <div class="column is-half">
                     <div class="field">
                         <label for="forename" class="label">{{ __('firstname') }}</label>
@@ -91,6 +89,104 @@
                                 placeholder="{{ __('steam_id_hint') }}"
                                 value="{{ $steamId }}"
                             />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="billing-address-form {{ $billingAddressFormClass }}">
+                <h3 class="title is-4">{{ __('billing_address') }}</h3>
+                <div class="columns is-multiline">
+                    <div class="column is-two-thirds">
+                        <div class="field">
+                            <label for="billing_address_name" class="label">
+                                {{ __('name') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="billing_address_name"
+                                    name="billing_address_name"
+                                    class="input"
+                                    maxlength="128"
+                                    value="{{ $billingAddressName }}"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label for="billing_address_vat_id" class="label">
+                                <span>{{ __('vat_id') }}</span>
+                                <span class="icon" title="{{ __('vat_id_hint') }}">
+                                    <i class="fas fa-question-circle"></i>
+                                </span>
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="billing_address_vat_id"
+                                    name="billing_address_vat_id"
+                                    class="input"
+                                    maxlength="128"
+                                    value="{{ $billingAddressVatID }}"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-full">
+                        <div class="field">
+                            <label for="billing_address_street" class="label">
+                                {{ __('street') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="billing_address_street"
+                                    name="billing_address_street"
+                                    class="input"
+                                    maxlength="128"
+                                    value="{{ $billingAddressStreet }}"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column is-one-third">
+                        <div class="field">
+                            <label for="billing_address_postal_code" class="label">
+                                {{ __('postal_code') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="billing_address_postal_code"
+                                    name="billing_address_postal_code"
+                                    class="input"
+                                    maxlength="128"
+                                    value="{{ $billingAddressPostalCode }}"
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="column">
+                        <div class="field">
+                            <label for="billing_address_city" class="label">
+                                {{ __('city') }}
+                            </label>
+                            <div class="control">
+                                <input
+                                    type="text"
+                                    id="billing_address_city"
+                                    name="billing_address_city"
+                                    class="input"
+                                    maxlength="128"
+                                    value="{{ $billingAddressCity }}"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -11,6 +11,7 @@ use App\Models\Service;
 use App\Models\SmsCode;
 use App\Models\Template;
 use App\Models\User;
+use App\Payment\General\BillingAddress;
 use App\PromoCode\QuantityType;
 use App\Repositories\GroupRepository;
 use App\Repositories\LogRepository;
@@ -243,6 +244,7 @@ class Factory
                 "forename" => $this->faker->firstName,
                 "surname" => $this->faker->lastName,
                 "steam_id" => "",
+                "billing_address" => BillingAddress::blank(),
                 "ip" => $this->faker->ipv4,
                 "groups" => [1],
                 "wallet" => 0,
@@ -257,6 +259,7 @@ class Factory
             $attributes["forename"],
             $attributes["surname"],
             $attributes["steam_id"],
+            $attributes["billing_address"],
             $attributes["ip"],
             implode(",", $attributes["groups"]),
             $attributes["wallet"]
