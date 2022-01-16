@@ -27,6 +27,7 @@ class UserRepository
         $forename,
         $surname,
         $steamId,
+        BillingAddress $billingAddress,
         $ip,
         $groups,
         $wallet = 0
@@ -35,8 +36,21 @@ class UserRepository
         $this->db
             ->statement(
                 <<<EOF
-                INSERT INTO `ss_users` (`username`, `password`, `salt`, `email`, `forename`, `surname`, `regip`, `groups`, `wallet`, `steam_id`, `regdate`)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+                INSERT INTO `ss_users` (
+                    `username`,
+                    `password`,
+                    `salt`,
+                    `email`,
+                    `forename`,
+                    `surname`,
+                    `regip`,
+                    `groups`,
+                    `wallet`,
+                    `steam_id`,
+                    `billing_address`,
+                    `regdate`
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 EOF
             )
             ->execute([
@@ -50,6 +64,7 @@ EOF
                 $groups,
                 (int) $wallet,
                 $steamId ?: null,
+                json_encode($billingAddress->toArray()),
             ]);
 
         return $this->get($this->db->lastId());

@@ -66,6 +66,11 @@ final class BillingAddress implements Arrayable
         return $this->city;
     }
 
+    public function isEmpty(): bool
+    {
+        return $this->toArray() == self::empty()->toArray();
+    }
+
     public function toArray()
     {
         return [

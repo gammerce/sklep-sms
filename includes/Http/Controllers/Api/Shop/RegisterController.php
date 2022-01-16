@@ -14,6 +14,7 @@ use App\Http\Validation\Rules\UniqueUsernameRule;
 use App\Http\Validation\Rules\UsernameRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
+use App\Payment\General\BillingAddress;
 use App\Repositories\UserRepository;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -67,6 +68,7 @@ class RegisterController
             $validated["forename"],
             $validated["surname"],
             $validated["steam_id"],
+            BillingAddress::empty(),
             get_ip($request),
             "1",
             0

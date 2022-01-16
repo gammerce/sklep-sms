@@ -17,6 +17,7 @@ use App\Payment\General\PaymentResultType;
 use App\Payment\General\PaymentService;
 use App\Payment\General\PurchaseDataService;
 use App\Payment\Invoice\InvoiceService;
+use App\Repositories\UserRepository;
 use App\Translation\TranslationManager;
 use Symfony\Component\HttpFoundation\Request;
 use UnexpectedValueException;
@@ -29,7 +30,8 @@ class PaymentResource
         InvoiceService $invoiceService,
         PaymentService $paymentService,
         PurchaseDataService $purchaseDataService,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        UserRepository $userRepository
     ) {
         $lang = $translationManager->user();
 
@@ -56,7 +58,7 @@ class PaymentResource
         $smsCode = trim($validated["sms_code"]);
         $billingAddress = new BillingAddress(
             trim($validated["billing_address_name"]),
-            trim($validated["billing_address_vat_id"]) ?? "",
+            trim($validated["billing_address_vat_id"]),
             trim($validated["billing_address_street"]),
             trim($validated["billing_address_postal_code"]),
             trim($validated["billing_address_city"])
@@ -66,6 +68,11 @@ class PaymentResource
 
         if (!$purchase->getPaymentSelect()->contains($paymentOption)) {
             return new ErrorApiResponse("Invalid payment option");
+        }
+
+        if (!$billingAddress->isEmpty() && $purchase->user->getBillingAddress()->isEmpty()) {
+            $purchase->user->setBillingAddress($billingAddress);
+            $userRepository->update($purchase->user);
         }
 
         $purchase
