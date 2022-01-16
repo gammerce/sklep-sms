@@ -4,7 +4,7 @@ namespace App\Payment\Invoice;
 
 use Exception;
 
-class InvoiceIssueException extends Exception
+class InvoiceException extends Exception
 {
     //
 }

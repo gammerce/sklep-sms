@@ -18,17 +18,22 @@ class InvoiceService
     }
 
     /**
-     * @throws InvoiceIssueException
+     * @throws InvoiceException
      * @throws InvoiceServiceUnavailableException
      */
-    public function create(BillingAddress $billingAddress, PurchaseItem $purchaseItem): string
-    {
+    public function create(
+        BillingAddress $billingAddress,
+        PurchaseItem $purchaseItem,
+        string $email
+    ): string {
         if (!$this->infaktClient->isConfigured()) {
             throw new InvoiceServiceUnavailableException();
         }
 
-        return $this->infaktClient->issue($billingAddress, $purchaseItem);
+        $invoiceID = $this->infaktClient->issue($billingAddress, $purchaseItem);
+        $this->infaktClient->markAsPaid($invoiceID);
+        $this->infaktClient->sendByEmail($invoiceID, $email);
 
-        // TODO Mark as paid
+        return $invoiceID;
     }
 }

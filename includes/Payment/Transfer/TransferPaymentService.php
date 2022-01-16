@@ -10,7 +10,7 @@ use App\Models\Service;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\General\PurchaseDataService;
-use App\Payment\Invoice\InvoiceIssueException;
+use App\Payment\Invoice\InvoiceException;
 use App\Payment\Invoice\InvoiceService;
 use App\Payment\Invoice\InvoiceServiceUnavailableException;
 use App\Payment\Invoice\PurchaseItem;
@@ -117,9 +117,10 @@ class TransferPaymentService
                     $purchase->getServiceName(),
                     $finalizedPayment->getCost(),
                     $service->getTaxRate()
-                )
+                ),
+                $purchase->getEmail()
             );
-        } catch (InvoiceIssueException $e) {
+        } catch (InvoiceException $e) {
             $this->logger->logWithUser(
                 $purchase->user,
                 "log_invoice_issue_failure",
