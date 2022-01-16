@@ -1,6 +1,7 @@
 <?php
 namespace App\Models;
 
+use App\Payment\General\BillingAddress;
 use App\Payment\General\PaymentOption;
 use App\Payment\General\PaymentSelect;
 
@@ -10,6 +11,7 @@ class Purchase
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
     const PAYMENT_PAYMENT_ID = "payment_id";
+    const PAYMENT_INVOICE_ID = "invoice_id";
     const PAYMENT_SMS_CODE = "sms_code";
 
     const ORDER_QUANTITY = "quantity";
@@ -23,6 +25,7 @@ class Purchase
      * @var string|null
      */
     private ?string $serviceId = null;
+    private ?string $serviceName = null;
 
     /** @var User */
     public $user;
@@ -35,6 +38,7 @@ class Purchase
     private PaymentSelect $paymentSelect;
 
     private ?PaymentOption $paymentOption = null;
+    private BillingAddress $billingAddress;
 
     /**
      * Payment details like method, sms_code et.c
@@ -50,11 +54,6 @@ class Purchase
     private $promoCode = null;
 
     private ?string $comment = null;
-
-    /**
-     * Purchase description ( useful for transfer payments )
-     */
-    private ?string $transferDescription = null;
 
     /**
      * Platform from which the purchase was made
@@ -88,23 +87,23 @@ class Purchase
         $this->ip = $ip;
         $this->platform = $platform;
         $this->paymentSelect = new PaymentSelect();
+        $this->billingAddress = BillingAddress::blank();
     }
 
-    /**
-     * @return string|null
-     */
-    public function getServiceId()
+    public function getServiceId(): ?string
     {
         return $this->serviceId;
     }
 
-    /**
-     * @param string $serviceId
-     * @return self
-     */
-    public function setServiceId($serviceId): self
+    public function getServiceName(): ?string
     {
-        $this->serviceId = (string) $serviceId;
+        return $this->serviceName;
+    }
+
+    public function setService(string $serviceId, string $serviceName): self
+    {
+        $this->serviceId = $serviceId;
+        $this->serviceName = $serviceName;
         return $this;
     }
 
@@ -190,17 +189,7 @@ class Purchase
 
     public function getTransferDescription(): ?string
     {
-        return $this->transferDescription;
-    }
-
-    /**
-     * @param string $transferDescription
-     * @return self
-     */
-    public function setTransferDescription($transferDescription): self
-    {
-        $this->transferDescription = $transferDescription;
-        return $this;
+        return "Płatność za usługę: {$this->serviceName}";
     }
 
     public function getPlatform(): ?string
@@ -261,10 +250,6 @@ class Purchase
         return $this->promoCode;
     }
 
-    /**
-     * @param PromoCode|null $promoCode
-     * @return self
-     */
     public function setPromoCode(PromoCode $promoCode = null): self
     {
         $this->promoCode = $promoCode;
@@ -281,13 +266,20 @@ class Purchase
         return $this->paymentOption;
     }
 
-    /**
-     * @param PaymentOption $paymentOption
-     * @return self
-     */
     public function setPaymentOption(PaymentOption $paymentOption): self
     {
         $this->paymentOption = $paymentOption;
+        return $this;
+    }
+
+    public function getBillingAddress(): BillingAddress
+    {
+        return $this->billingAddress;
+    }
+
+    public function setBillingAddress(BillingAddress $billingAddress): self
+    {
+        $this->billingAddress = $billingAddress;
         return $this;
     }
 }

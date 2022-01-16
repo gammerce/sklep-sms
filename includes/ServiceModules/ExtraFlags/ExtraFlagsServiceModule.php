@@ -485,12 +485,14 @@ EOF
 
         $promoCode = $purchase->getPromoCode();
 
+        // TODO Store PAYMENT_INVOICE_ID
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->getAddressIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
+            $purchase->getPayment(Purchase::PAYMENT_INVOICE_ID),
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
@@ -622,7 +624,7 @@ EOF
 
         $purchasingUser = $this->userManager->get($validated["user_id"]);
         $purchase = (new Purchase($purchasingUser, get_ip($request), get_platform($request)))
-            ->setServiceId($this->service->getId())
+            ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,

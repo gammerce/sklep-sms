@@ -84,7 +84,7 @@ trait MakePurchaseConcern
         assert($serviceModule);
 
         $purchase = (new Purchase($attributes["user"], "192.0.2.1", "example"))
-            ->setServiceId($serviceId)
+            ->setService($serviceId, "VIP")
             ->setEmail($attributes["email"])
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
@@ -180,7 +180,7 @@ trait MakePurchaseConcern
         assert($serviceModule);
 
         $purchase = (new Purchase($attributes["user"], "192.0.2.1", "example"))
-            ->setServiceId($service->getId())
+            ->setService($service->getId(), $service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::SMS(), $paymentPlatform->getId()))
             ->setPayment([
                 Purchase::PAYMENT_SMS_CODE => $attributes["sms_code"],

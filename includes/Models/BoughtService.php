@@ -13,6 +13,7 @@ class BoughtService
     private ?int $userId;
     private string $method;
     private string $paymentId;
+    private ?string $invoiceId;
     private string $serviceId;
 
     /**
@@ -31,6 +32,7 @@ class BoughtService
         $userId,
         $method,
         $paymentId,
+        $invoiceId,
         $serviceId,
         $serverId,
         $amount,
@@ -43,6 +45,7 @@ class BoughtService
         $this->userId = $userId;
         $this->method = $method;
         $this->paymentId = $paymentId;
+        $this->invoiceId = $invoiceId;
         $this->serviceId = $serviceId;
         $this->serverId = $serverId;
         $this->amount = $amount;
@@ -68,6 +71,11 @@ class BoughtService
     }
 
     public function getPaymentId(): string
+    {
+        return $this->paymentId;
+    }
+
+    public function getInvoiceId(): string
     {
         return $this->paymentId;
     }

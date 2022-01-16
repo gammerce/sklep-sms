@@ -198,9 +198,10 @@ export const ThemeView: FunctionComponent = () => {
     }, [selectedTemplate?.value, selectedTheme, selectedLang]);
 
     // Handle saving using ctrl + s
-    useEffect(() => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate), [
-        templateContent,
-    ]);
+    useEffect(
+        () => onKeyPress((e) => (e.ctrlKey || e.metaKey) && e.key == "s", updateTemplate),
+        [templateContent]
+    );
 
     // Update selected template
     useEffect(() => {

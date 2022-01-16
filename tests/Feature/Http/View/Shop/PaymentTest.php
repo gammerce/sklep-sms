@@ -39,7 +39,7 @@ class PaymentTest extends HttpTestCase
     {
         // given
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId("vip")
+            ->setService("vip", "VIP")
             ->setOrder([
                 Purchase::ORDER_SERVER => $this->factory->server()->getId(),
             ])
@@ -78,7 +78,7 @@ class PaymentTest extends HttpTestCase
         ]);
 
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId("example")
+            ->setService("example", "Example")
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => 1000,
             ]);

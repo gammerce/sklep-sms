@@ -1,5 +1,5 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
-import { PaymentMethod, Transaction } from "../../types/transaction";
+import React, { ChangeEvent, FunctionComponent, useEffect, useState } from "react";
+import { BillingAddress, PaymentMethod, Transaction } from "../../types/transaction";
 import { api } from "../../utils/container";
 import { Loader } from "../../components/Loader";
 import { Dict } from "../../types/general";
@@ -11,9 +11,12 @@ import { AxiosError } from "axios";
 import { infobox } from "../../../general/infobox";
 import { __ } from "../../../general/i18n";
 import { PaymentOption } from "./PaymentOptions";
+import { BillingAddressForm } from "./BillingAddressForm";
 
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
+    const [billingAddress, setBillingAddress] = useState<BillingAddress>();
+    const [rememberBillingAddress, setRememberBillingAddress] = useState<boolean>(false);
 
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
@@ -28,7 +31,14 @@ export const PaymentView: FunctionComponent = () => {
     };
 
     const onPay = (method: PaymentMethod, paymentPlatformId?: number, body: Dict = {}): void => {
-        purchaseService(transactionId, method, paymentPlatformId, body).catch(handleError);
+        purchaseService(
+            transactionId,
+            method,
+            paymentPlatformId,
+            billingAddress,
+            rememberBillingAddress,
+            body
+        ).catch(handleError);
     };
 
     const applyPromoCode = async (promoCode: string) => {
@@ -62,11 +72,15 @@ export const PaymentView: FunctionComponent = () => {
         }
     };
 
+    const changeRememberBillingAddress = (e: ChangeEvent<HTMLInputElement>) =>
+        setRememberBillingAddress(e.target.checked);
+
     if (!transaction) {
         return <Loader />;
     }
 
     const acceptsPromoCode = transaction.promo_code !== undefined;
+    const supportsBillingAddress = transaction.supports_billing_address;
 
     const paymentOptions = transaction.payment_options.map((paymentOption) => (
         <PaymentOption
@@ -77,19 +91,44 @@ export const PaymentView: FunctionComponent = () => {
     ));
 
     return (
-        <div className="columns">
-            {acceptsPromoCode && (
-                <div className="column is-one-third">
-                    <PromoCodeBox
-                        promoCode={transaction.promo_code}
-                        onPromoCodeApply={applyPromoCode}
-                        onPromoCodeRemove={removePromoCode}
+        <form id="payment-form">
+            {supportsBillingAddress && (
+                <div className="billing-address-form">
+                    <BillingAddressForm
+                        address={transaction.billing_address}
+                        onAddressChange={setBillingAddress}
                     />
+
+                    <div className="field">
+                        <label htmlFor="remember_billing_address" className="checkbox">
+                            <input
+                                id="remember_billing_address"
+                                name="remember_billing_address"
+                                type="checkbox"
+                                checked={rememberBillingAddress}
+                                onChange={changeRememberBillingAddress}
+                            />{" "}
+                            {__("remember_billing_address")}
+                        </label>
+                    </div>
                 </div>
             )}
-            <div className="column">
-                <div className="payment-options-box">{paymentOptions}</div>
+
+            <h3 className="title is-4">{__("payment_method")}</h3>
+            <div className="columns">
+                {acceptsPromoCode && (
+                    <div className="column is-one-third">
+                        <PromoCodeBox
+                            promoCode={transaction.promo_code}
+                            onPromoCodeApply={applyPromoCode}
+                            onPromoCodeRemove={removePromoCode}
+                        />
+                    </div>
+                )}
+                <div className="column">
+                    <div className="payment-options-box">{paymentOptions}</div>
+                </div>
             </div>
-        </div>
+        </form>
     );
 };

@@ -115,4 +115,9 @@ class Service
     {
         return $this->data;
     }
+
+    public function getTaxRate(): int
+    {
+        return 0;
+    }
 }

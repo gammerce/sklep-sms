@@ -4,6 +4,7 @@ namespace App\View\Pages\Admin;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
 use App\Models\Transaction;
+use App\Payment\Invoice\InvoiceService;
 use App\Repositories\TransactionRepository;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\Support\Database;
@@ -14,6 +15,7 @@ use App\View\Html\BodyRow;
 use App\View\Html\Cell;
 use App\View\Html\DateTimeCell;
 use App\View\Html\HeadCell;
+use App\View\Html\InvoiceRef;
 use App\View\Html\NoneText;
 use App\View\Html\PaymentRef;
 use App\View\Html\PlainTextCell;
@@ -30,20 +32,22 @@ class PageAdminBoughtServices extends PageAdmin
 {
     const PAGE_ID = "bought_services";
 
-    private TransactionRepository $transactionRepository;
     private Database $db;
-    private ServiceManager $serviceManager;
-    private ServerManager $serverManager;
+    private InvoiceService $invoiceService;
     private PaginationFactory $paginationFactory;
+    private ServerManager $serverManager;
+    private ServiceManager $serviceManager;
+    private TransactionRepository $transactionRepository;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        TransactionRepository $transactionRepository,
         Database $db,
-        ServiceManager $serviceManager,
+        InvoiceService $invoiceService,
+        PaginationFactory $paginationFactory,
         ServerManager $serverManager,
-        PaginationFactory $paginationFactory
+        ServiceManager $serviceManager,
+        TransactionRepository $transactionRepository
     ) {
         parent::__construct($template, $translationManager);
 
@@ -52,6 +56,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->serviceManager = $serviceManager;
         $this->serverManager = $serverManager;
         $this->paginationFactory = $paginationFactory;
+        $this->invoiceService = $invoiceService;
     }
 
     public function getTitle(Request $request = null): string
@@ -121,6 +126,10 @@ class PageAdminBoughtServices extends PageAdmin
                     ? new PaymentRef($transaction->getPaymentId(), $transaction->getPaymentMethod())
                     : new NoneText();
 
+                $invoiceEntry = $transaction->getInvoiceId()
+                    ? new InvoiceRef($transaction->getInvoiceId())
+                    : new NoneText();
+
                 $extraData = collect($transaction->getExtraData())
                     ->filter(fn($value) => strlen($value))
                     ->mapWithKeys(function ($value, $key) {
@@ -138,6 +147,10 @@ class PageAdminBoughtServices extends PageAdmin
                 return (new BodyRow())
                     ->setDbId($transaction->getId())
                     ->addCell(new Cell($paymentEntry))
+                    ->when(
+                        $this->invoiceService->isConfigured(),
+                        fn(BodyRow $bodyRow) => $bodyRow->addCell($invoiceEntry)
+                    )
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($serverEntry))
                     ->addCell(new Cell($serviceEntry))
@@ -154,6 +167,12 @@ class PageAdminBoughtServices extends PageAdmin
         $table = (new Structure())
             ->addHeadCell(new HeadCell($this->lang->t("id"), "id"))
             ->addHeadCell(new HeadCell($this->lang->t("payment_id")))
+            ->when(
+                $this->invoiceService->isConfigured(),
+                fn(Structure $structure) => $structure->addHeadCell(
+                    new HeadCell($this->lang->t("invoice"))
+                )
+            )
             ->addHeadCell(new HeadCell($this->lang->t("user")))
             ->addHeadCell(new HeadCell($this->lang->t("server")))
             ->addHeadCell(new HeadCell($this->lang->t("service")))

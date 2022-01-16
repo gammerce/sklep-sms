@@ -61,7 +61,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
         ]);
 
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
-            ->setServiceId($service->getId())
+            ->setService($service->getId(), $service->getName())
             ->setUsingPrice($price)
             ->setOrder([
                 "username" => "seek",
@@ -136,7 +136,7 @@ class PurchaseMybbExtraGroupsTest extends TestCase
         ]);
 
         $purchase = (new Purchase($user, "192.0.2.1", "example"))
-            ->setServiceId($service->getId())
+            ->setService($service->getId(), $service->getName())
             ->setUsingPrice($price)
             ->setOrder([
                 "username" => "seek",

@@ -6,11 +6,17 @@ interface Props {
 }
 
 export const FormError: FunctionComponent<Props> = (props) => {
-    const errors = Array.isArray(props.errors) ? props.errors : [props.errors];
+    const { errors } = props;
+
+    if (!errors) {
+        return null;
+    }
+
+    const errorsList = Array.isArray(errors) ? errors : [errors];
     return (
         <ul className="help is-danger">
-            {errors.map((error) => (
-                <li>{error}</li>
+            {errorsList.map((error) => (
+                <li key={error}>{error}</li>
             ))}
         </ul>
     );

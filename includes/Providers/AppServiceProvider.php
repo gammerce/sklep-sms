@@ -14,6 +14,8 @@ use App\Managers\ServiceManager;
 use App\Managers\ServiceModuleManager;
 use App\Managers\UserManager;
 use App\Managers\WebsiteHeader;
+use App\Payment\Invoice\InfaktClient;
+use App\Requesting\Requester;
 use App\Support\Database;
 use App\Support\FileSystem;
 use App\Support\FileSystemContract;
@@ -44,6 +46,7 @@ class AppServiceProvider
         $this->registerDatabase($app);
         $this->registerCache($app);
         $this->registerMailer($app);
+        $this->registerInfaktClient($app);
         $this->registerPageRegister($app);
 
         $app->singleton(Auth::class);
@@ -109,6 +112,13 @@ class AppServiceProvider
                 $app->make(FileLogger::class),
                 $config
             );
+        });
+    }
+
+    private function registerInfaktClient(Application $app)
+    {
+        $app->bind(InfaktClient::class, function (Application $app) {
+            return new InfaktClient($app->make(Requester::class), getenv("INFAKT_API_KEY") ?: "");
         });
     }
 

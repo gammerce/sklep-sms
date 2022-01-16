@@ -11,6 +11,7 @@ class Transaction
     private ?string $userName;
     private string $paymentMethod;
     private string $paymentId;
+    private ?string $invoiceId;
     private ?string $externalPaymentId;
     private string $serviceId;
     private int $serverId;
@@ -37,6 +38,7 @@ class Transaction
         $userName,
         $paymentMethod,
         $paymentId,
+        $invoiceId,
         $externalPaymentId,
         $serviceId,
         $serverId,
@@ -62,6 +64,7 @@ class Transaction
         $this->userName = $userName;
         $this->paymentMethod = $paymentMethod;
         $this->paymentId = $paymentId;
+        $this->invoiceId = $invoiceId;
         $this->externalPaymentId = $externalPaymentId;
         $this->serviceId = $serviceId;
         $this->serverId = $serverId;
@@ -111,6 +114,11 @@ class Transaction
     public function getExternalPaymentId(): ?string
     {
         return $this->externalPaymentId;
+    }
+
+    public function getInvoiceId(): string
+    {
+        return $this->invoiceId;
     }
 
     public function getServiceId(): string

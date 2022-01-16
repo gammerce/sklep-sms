@@ -11,16 +11,14 @@ jobs:
     name: Static code analysis
     runs-on: ubuntu-latest
     steps:
-      -
-        uses: actions/checkout@v2
-      -
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
         with:
           python-version: 3.9
-      -
-        run: pip install pre-commit
-      -
-        run: pre-commit run --all-files
+
+      - run: pip install pre-commit
+      - run: pre-commit run --all-files --show-diff-on-failure
 
   frontend:
     name: Build frontend
@@ -62,26 +60,24 @@ jobs:
           - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-      -
-        uses: actions/checkout@v2
-      -
-        run: sudo /etc/init.d/mysql start
-      -
-        name: Setup PHP ${{ matrix.php_version }}
+      - uses: actions/checkout@v2
+      - run: sudo /etc/init.d/mysql start
+
+      - name: Setup PHP ${{ matrix.php_version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php_version }}
           extensions: mysqli
           coverage: xdebug
-      -
-        uses: ramsey/composer-install@v1
+
+      - uses: ramsey/composer-install@v1
         with:
           composer-options: "--optimize-autoloader"
-      -
-        # We need to remove psy/psysh cause otherwise rector doesn't work for php 5.6
-        run: composer remove --dev psy/psysh
-      -
-        name: Transpile to PHP ${{ matrix.php_version }}
+
+      # We need to remove psy/psysh cause otherwise rector doesn't work for php 5.6
+      - run: composer remove --dev psy/psysh
+
+      - name: Transpile to PHP ${{ matrix.php_version }}
         run: |
           docker run \
           --rm \
@@ -94,18 +90,18 @@ jobs:
           /project/tests \
           --autoload-file=/project/vendor/autoload.php \
           --config /project/rector.php
-      -
-        run: php artisan test:setup
+
+      - run: php artisan test:setup
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-      -
-        name: Run tests
+
+      - name: Run tests
         run: ./vendor/bin/phpunit --coverage-clover clover.xml
         env:
           XDEBUG_MODE: coverage
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
-      -
-        name: Upload coverage results to Coveralls
+
+      - name: Upload coverage results to Coveralls
         run: |
           if [[ ${{ matrix.php_version }} == 8.0 ]]; then
             ./vendor/bin/php-coveralls --coverage_clover clover.xml --json_path coveralls.json

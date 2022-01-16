@@ -141,7 +141,7 @@ class PromoCodeServiceTest extends TestCase
     public function cannot_find_promo_code_assigned_to_another_service()
     {
         // given
-        $this->purchase->setServiceId("vip");
+        $this->purchase->setService("vip", "VIP");
         $this->factory->promoCode([
             "code" => "example",
             "service_id" => "vippro",

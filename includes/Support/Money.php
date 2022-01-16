@@ -75,6 +75,11 @@ class Money
         return new Money($this->value + $money);
     }
 
+    public function multiply(float $multiplier): Money
+    {
+        return new Money($this->value * $multiplier);
+    }
+
     public function __toString()
     {
         return $this->asPrice();

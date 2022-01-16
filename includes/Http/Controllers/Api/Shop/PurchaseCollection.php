@@ -39,10 +39,7 @@ class PurchaseCollection
 
         $purchase = $purchaseFactory
             ->create($user, get_ip($request), get_platform($request))
-            ->setServiceId($serviceModule->service->getId())
-            ->setTransferDescription(
-                $lang->t("payment_for_service", $serviceModule->service->getNameI18n())
-            );
+            ->setService($serviceModule->service->getId(), $serviceModule->service->getName());
 
         $serviceModule->purchaseFormValidate($purchase, $request->request->all());
         $purchaseDataService->storePurchase($purchase);

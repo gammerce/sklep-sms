@@ -111,9 +111,8 @@ class PurchaseSerializerTest extends TestCase
                 Purchase::ORDER_SERVER => $server->getId(),
                 "type" => ExtraFlagType::TYPE_SID,
             ])
-            ->setServiceId("vip")
-            ->setEmail("example@example.com")
-            ->setTransferDescription("example");
+            ->setService("vip", "VIP")
+            ->setEmail("example@example.com");
 
         $purchase
             ->getPaymentSelect()

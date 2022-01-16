@@ -52,7 +52,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $paymentResponse = $this->post("/api/payment/{$transactionId}", [
-            "method" => PaymentMethod::TRANSFER(),
+            "method" => PaymentMethod::TRANSFER()->getValue(),
             "payment_platform_id" => $paymentPlatform->getId(),
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
@@ -107,7 +107,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $paymentResponse = $this->post("/api/payment/{$transactionId}", [
-            "method" => PaymentMethod::DIRECT_BILLING(),
+            "method" => PaymentMethod::DIRECT_BILLING()->getValue(),
             "payment_platform_id" => $paymentPlatform->getId(),
         ]);
         $this->assertSame(200, $paymentResponse->getStatusCode());
@@ -159,7 +159,7 @@ class ChargeWalletTest extends HttpTestCase
         $transactionId = $json["transaction_id"];
 
         $response = $this->post("/api/payment/{$transactionId}", [
-            "method" => PaymentMethod::SMS(),
+            "method" => PaymentMethod::SMS()->getValue(),
             "payment_platform_id" => $paymentPlatform->getId(),
             "sms_code" => "abc123",
         ]);
