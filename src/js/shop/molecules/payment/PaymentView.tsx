@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from "react";
+import React, { ChangeEvent, FunctionComponent, useEffect, useState } from "react";
 import { BillingAddress, PaymentMethod, Transaction } from "../../types/transaction";
 import { api } from "../../utils/container";
 import { Loader } from "../../components/Loader";
@@ -16,6 +16,7 @@ import { BillingAddressForm } from "./BillingAddressForm";
 export const PaymentView: FunctionComponent = () => {
     const [transaction, setTransaction] = useState<Transaction>();
     const [billingAddress, setBillingAddress] = useState<BillingAddress>();
+    const [rememberBillingAddress, setRememberBillingAddress] = useState<boolean>(false);
 
     const queryParams = new URLSearchParams(window.location.search);
     const transactionId = queryParams.get("tid");
@@ -30,9 +31,14 @@ export const PaymentView: FunctionComponent = () => {
     };
 
     const onPay = (method: PaymentMethod, paymentPlatformId?: number, body: Dict = {}): void => {
-        purchaseService(transactionId, method, paymentPlatformId, billingAddress, body).catch(
-            handleError
-        );
+        purchaseService(
+            transactionId,
+            method,
+            paymentPlatformId,
+            billingAddress,
+            rememberBillingAddress,
+            body
+        ).catch(handleError);
     };
 
     const applyPromoCode = async (promoCode: string) => {
@@ -66,6 +72,9 @@ export const PaymentView: FunctionComponent = () => {
         }
     };
 
+    const changeRememberBillingAddress = (e: ChangeEvent<HTMLInputElement>) =>
+        setRememberBillingAddress(e.target.checked);
+
     if (!transaction) {
         return <Loader />;
     }
@@ -84,10 +93,25 @@ export const PaymentView: FunctionComponent = () => {
     return (
         <form id="payment-form">
             {supportsBillingAddress && (
-                <BillingAddressForm
-                    address={transaction.billing_address}
-                    onAddressChange={setBillingAddress}
-                />
+                <div className="billing-address-form">
+                    <BillingAddressForm
+                        address={transaction.billing_address}
+                        onAddressChange={setBillingAddress}
+                    />
+
+                    <div className="field">
+                        <label htmlFor="remember_billing_address" className="checkbox">
+                            <input
+                                id="remember_billing_address"
+                                name="remember_billing_address"
+                                type="checkbox"
+                                checked={rememberBillingAddress}
+                                onChange={changeRememberBillingAddress}
+                            />{" "}
+                            {__("remember_billing_address")}
+                        </label>
+                    </div>
+                </div>
             )}
 
             <h3 className="title is-4">{__("payment_method")}</h3>

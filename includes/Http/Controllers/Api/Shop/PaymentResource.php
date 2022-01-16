@@ -50,6 +50,7 @@ class PaymentResource
             "billing_address_street" => [...$billingRequiredRule, new MaxLengthRule(128)],
             "billing_address_postal_code" => [...$billingRequiredRule, new MaxLengthRule(128)],
             "billing_address_city" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "remember_billing_address" => [],
         ]);
         $validated = $validator->validateOrFail();
 
@@ -70,7 +71,7 @@ class PaymentResource
             return new ErrorApiResponse("Invalid payment option");
         }
 
-        if (!$billingAddress->isEmpty() && $purchase->user->getBillingAddress()->isEmpty()) {
+        if (!$billingAddress->isEmpty() && $validated["remember_billing_address"]) {
             $purchase->user->setBillingAddress($billingAddress);
             $userRepository->update($purchase->user);
         }

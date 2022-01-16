@@ -11,6 +11,7 @@ export const purchaseService = async (
     method: PaymentMethod,
     paymentPlatformId: number | undefined,
     billingAddress: BillingAddress | undefined,
+    rememberBillingAddress: boolean | undefined,
     body: Dict = {}
 ) => {
     if (loader.blocked) {
@@ -27,6 +28,7 @@ export const purchaseService = async (
             billing_address_postal_code: billingAddress.postal_code,
             billing_address_street: billingAddress.street,
             billing_address_city: billingAddress.city,
+            remember_billing_address: rememberBillingAddress,
             ...body,
         });
     } catch (e) {

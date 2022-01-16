@@ -1,18 +1,15 @@
 import React, { ChangeEvent, FunctionComponent, useEffect, useState } from "react";
 import { __ } from "../../../general/i18n";
 import { BillingAddress } from "../../types/transaction";
-import { FormError } from "../../components/FormError";
-import { Dict } from "../../types/general";
 import { Hint } from "../../components/Hint";
 
 interface Props {
     address?: BillingAddress;
-    errors?: Dict;
     onAddressChange(address: BillingAddress): void;
 }
 
 export const BillingAddressForm: FunctionComponent<Props> = (props) => {
-    const { address, errors, onAddressChange } = props;
+    const { address, onAddressChange } = props;
     const [billingAddress, setBillingAddress] = useState<BillingAddress>({
         name: address?.name ?? "",
         vat_id: address?.vat_id ?? "",
@@ -37,7 +34,7 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
     return (
         <>
             <h3 className="title is-4">{__("billing_address")}</h3>
-            <div className="columns is-multiline billing-address-form">
+            <div className="columns is-multiline">
                 <div className="column is-two-thirds">
                     <div className="field">
                         <label htmlFor="billing_address_name" className="label required">
@@ -75,7 +72,6 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
                                 value={billingAddress.vat_id}
                             />
                         </div>
-                        <FormError errors={errors?.["business_address.vat_id"]} />
                     </div>
                 </div>
 

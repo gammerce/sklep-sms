@@ -215,6 +215,7 @@ class PaymentResourceTest extends HttpTestCase
             "billing_address_street" => "Sesame Street",
             "billing_address_postal_code" => "00-000",
             "billing_address_city" => "Gdansk",
+            "remember_billing_address" => true,
         ]);
 
         // then
@@ -255,6 +256,7 @@ class PaymentResourceTest extends HttpTestCase
             "billing_address_street" => "Sesame Street",
             "billing_address_postal_code" => "00-000",
             "billing_address_city" => "Gdansk",
+            "remember_billing_address" => false,
         ]);
 
         // then

@@ -327,10 +327,6 @@ body {
         }
     }
 
-    .billing-address-form {
-        margin-bottom: 3rem;
-    }
-
     .order-details {
         border: 2px solid $danger;
         padding: 1rem;
@@ -358,4 +354,8 @@ body {
             flex-basis: 90px;
         }
     }
+}
+
+.billing-address-form {
+    margin-bottom: 3rem;
 }

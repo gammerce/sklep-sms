@@ -102,6 +102,7 @@ return [
     "register_success" =>
         "Account registered successfully. In a moment you will be automatically logged in.",
     "regulations" => "Regulations",
+    "remember_billing_address" => "Remember billing address",
     "remove" => "Remove",
     "repeat" => "Repeat",
     "required_data" => "Required data",

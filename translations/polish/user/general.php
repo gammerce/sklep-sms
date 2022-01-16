@@ -5,7 +5,7 @@ return [
     "answer" => "Odpowiedź",
     "available_services" => "Dostępne usługi",
     "available_servers" => "Nasze serwery",
-    "billing_address" => "Adres do faktury",
+    "billing_address" => "Dane do faktury",
     "change_password" => "Zmiana hasła",
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",
@@ -103,6 +103,7 @@ return [
     "register_success" =>
         "Konto zostało prawidłowo zarejestrowane. Za chwilę nastąpi automatyczne zalogowanie.",
     "regulations" => "Regulamin",
+    "remember_billing_address" => "Zapamiętaj dane do faktury",
     "remove" => "Usuń",
     "repeat" => "Powtórz",
     "required_data" => "Wymagane dane",
