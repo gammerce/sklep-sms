@@ -11,6 +11,7 @@ class Purchase
     const PAYMENT_PRICE_SMS = "sms_price";
     const PAYMENT_PRICE_TRANSFER = "transfer_price";
     const PAYMENT_PAYMENT_ID = "payment_id";
+    const PAYMENT_INVOICE_ID = "invoice_id";
     const PAYMENT_SMS_CODE = "sms_code";
 
     const ORDER_QUANTITY = "quantity";
@@ -37,7 +38,7 @@ class Purchase
     private PaymentSelect $paymentSelect;
 
     private ?PaymentOption $paymentOption = null;
-    private ?BillingAddress $billingAddress = null;
+    private BillingAddress $billingAddress;
 
     /**
      * Payment details like method, sms_code et.c
@@ -86,6 +87,7 @@ class Purchase
         $this->ip = $ip;
         $this->platform = $platform;
         $this->paymentSelect = new PaymentSelect();
+        $this->billingAddress = BillingAddress::empty();
     }
 
     public function getServiceId(): ?string
@@ -270,7 +272,7 @@ class Purchase
         return $this;
     }
 
-    public function getBillingAddress(): ?BillingAddress
+    public function getBillingAddress(): BillingAddress
     {
         return $this->billingAddress;
     }

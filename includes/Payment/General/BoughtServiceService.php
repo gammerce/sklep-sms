@@ -46,6 +46,7 @@ class BoughtServiceService
      * @param string $ip
      * @param string $method
      * @param string $paymentId
+     * @param string|null $invoiceId
      * @param string $serviceId
      * @param int $serverId
      * @param int|null $quantity
@@ -61,6 +62,7 @@ class BoughtServiceService
         $ip,
         $method,
         $paymentId,
+        $invoiceId,
         $serviceId,
         $serverId,
         $quantity,
@@ -75,6 +77,7 @@ class BoughtServiceService
             $userId,
             $method,
             $paymentId,
+            $invoiceId,
             $serviceId,
             $serverId,
             $forever ? -1 : $quantity,

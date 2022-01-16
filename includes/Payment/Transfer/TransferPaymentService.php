@@ -77,8 +77,15 @@ class TransferPaymentService
             $finalizedPayment->isTestMode()
         );
 
+        if ($finalizedPayment->isTestMode()) {
+            $invoiceId = null;
+        } else {
+            $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+        }
+
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId(),
+            Purchase::PAYMENT_INVOICE_ID => $invoiceId,
         ]);
 
         $boughtServiceId = $serviceModule->purchase($purchase);
@@ -92,10 +99,6 @@ class TransferPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
-        if (!$finalizedPayment->isTestMode()) {
-            $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
-        }
-
         $this->purchaseDataService->deletePurchase($purchase);
 
         return $boughtServiceId;
@@ -105,11 +108,7 @@ class TransferPaymentService
         Purchase $purchase,
         FinalizedPayment $finalizedPayment,
         Service $service
-    ): void {
-        if (!$purchase->getBillingAddress()) {
-            return;
-        }
-
+    ): ?string {
         try {
             $invoiceId = $this->invoiceService->create(
                 $purchase->getBillingAddress(),
@@ -120,13 +119,6 @@ class TransferPaymentService
                     $service->getTaxRate()
                 )
             );
-
-            $this->logger->logWithUser(
-                $purchase->user,
-                "log_invoice_issue_success",
-                $finalizedPayment->getOrderId(),
-                $invoiceId
-            );
         } catch (InvoiceIssueException $e) {
             $this->logger->logWithUser(
                 $purchase->user,
@@ -134,8 +126,19 @@ class TransferPaymentService
                 $finalizedPayment->getOrderId(),
                 $e->getMessage()
             );
+            return null;
         } catch (InvoiceServiceUnavailableException $e) {
-            // Infakt client is not configured
+            // The infakt client is not configured
+            return null;
         }
+
+        $this->logger->logWithUser(
+            $purchase->user,
+            "log_invoice_issue_success",
+            $finalizedPayment->getOrderId(),
+            $invoiceId
+        );
+
+        return $invoiceId;
     }
 }

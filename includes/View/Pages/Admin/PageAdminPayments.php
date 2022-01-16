@@ -2,6 +2,7 @@
 namespace App\View\Pages\Admin;
 
 use App\Models\Transaction;
+use App\Payment\Invoice\InvoiceService;
 use App\Repositories\TransactionRepository;
 use App\Support\Database;
 use App\Support\PriceTextService;
@@ -15,6 +16,7 @@ use App\View\Html\DateTimeCell;
 use App\View\Html\DOMElement;
 use App\View\Html\HeadCell;
 use App\View\Html\InfoTitle;
+use App\View\Html\InvoiceRef;
 use App\View\Html\Li;
 use App\View\Html\NoneText;
 use App\View\Html\PlainTextCell;
@@ -34,6 +36,7 @@ class PageAdminPayments extends PageAdmin
     private Database $db;
     private PriceTextService $priceTextService;
     private PaginationFactory $paginationFactory;
+    private InvoiceService $invoiceService;
 
     public function __construct(
         Template $template,
@@ -41,7 +44,8 @@ class PageAdminPayments extends PageAdmin
         TransactionRepository $transactionRepository,
         PriceTextService $priceTextService,
         Database $db,
-        PaginationFactory $paginationFactory
+        PaginationFactory $paginationFactory,
+        InvoiceService $invoiceService
     ) {
         parent::__construct($template, $translationManager);
 
@@ -49,6 +53,7 @@ class PageAdminPayments extends PageAdmin
         $this->db = $db;
         $this->priceTextService = $priceTextService;
         $this->paginationFactory = $paginationFactory;
+        $this->invoiceService = $invoiceService;
     }
 
     public function getPrivilege(): Permission
@@ -83,6 +88,7 @@ class PageAdminPayments extends PageAdmin
                 create_search_query(
                     [
                         "t.payment_id",
+                        "t.invoice_id",
                         "t.external_payment_id",
                         "t.cost",
                         "t.income",
@@ -126,6 +132,10 @@ class PageAdminPayments extends PageAdmin
                     ? to_upper($this->lang->t("yes"))
                     : to_upper($this->lang->t("no"));
 
+                $invoiceEntry = $transaction->getInvoiceId()
+                    ? new InvoiceRef($transaction->getInvoiceId())
+                    : new NoneText();
+
                 return (new BodyRow())
                     ->setDbId($transaction->getPaymentId())
                     ->addCell(
@@ -136,13 +146,18 @@ class PageAdminPayments extends PageAdmin
                     ->addCell(new PlainTextCell($free))
                     ->addCell(new Cell($transaction->getPromoCode() ?: new NoneText()))
                     ->addCell(new Cell($transaction->getExternalPaymentId() ?: new NoneText()))
+                    ->when(
+                        $this->invoiceService->isConfigured(),
+                        fn(BodyRow $bodyRow) => $bodyRow->addCell($invoiceEntry)
+                    )
                     ->addCell(new DateTimeCell($transaction->getTimestamp()))
                     ->addCell(new PlainTextCell($transaction->getIp(), "ip"))
                     ->addCell(new PlatformCell($transaction->getPlatform()))
                     ->addCell(new Cell($this->createAdditionalField($transaction)))
-                    ->when($recordId == $transaction->getPaymentId(), function (BodyRow $bodyRow) {
-                        $bodyRow->addClass("highlighted");
-                    });
+                    ->when(
+                        $recordId == $transaction->getPaymentId(),
+                        fn(BodyRow $bodyRow) => $bodyRow->addClass("highlighted")
+                    );
             })
             ->all();
 
@@ -154,6 +169,12 @@ class PageAdminPayments extends PageAdmin
             ->addHeadCell(new HeadCell($this->lang->t("free_of_charge")))
             ->addHeadCell(new HeadCell($this->lang->t("promo_code")))
             ->addHeadCell(new HeadCell($this->lang->t("external_id")))
+            ->when(
+                $this->invoiceService->isConfigured(),
+                fn(Structure $structure) => $structure->addHeadCell(
+                    new HeadCell($this->lang->t("invoice"))
+                )
+            )
             ->addHeadCell(new HeadCell($this->lang->t("date")))
             ->addHeadCell(new HeadCell($this->lang->t("ip"), "ip"))
             ->addHeadCell(new HeadCell($this->lang->t("platform"), "platform"))
