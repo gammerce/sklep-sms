@@ -63,6 +63,7 @@ use App\View\Pages\Shop\PagePaymentError;
 use App\View\Pages\Shop\PagePaymentLog;
 use App\View\Pages\Shop\PagePaymentSuccess;
 use App\View\Pages\Shop\PagePayPalApproved;
+use App\View\Pages\Shop\PagePrivacyPolicy;
 use App\View\Pages\Shop\PageProfile;
 use App\View\Pages\Shop\PagePurchase;
 use App\View\Pages\Shop\PageRegister;
@@ -139,6 +140,7 @@ class HeartServiceProvider
         $pageManager->registerUser(PagePaymentLog::class);
         $pageManager->registerUser(PagePaymentSuccess::class);
         $pageManager->registerUser(PageProfile::class);
+        $pageManager->registerUser(PagePrivacyPolicy::class);
         $pageManager->registerUser(PagePurchase::class);
         $pageManager->registerUser(PageRegister::class);
         $pageManager->registerUser(PageRegulations::class);
