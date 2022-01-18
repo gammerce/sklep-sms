@@ -10,13 +10,23 @@ class PurchaseItem
     private string $serviceName;
     private Money $price;
     private int $taxRate;
+    private ?string $flatRateTax;
+    private ?string $PKWiUSymbol;
 
-    public function __construct(string $serviceId, string $serviceName, Money $price, int $taxRate)
-    {
+    public function __construct(
+        string $serviceId,
+        string $serviceName,
+        Money $price,
+        int $taxRate,
+        ?string $flatRateTax,
+        ?string $PKWiUSymbol
+    ) {
         $this->serviceId = $serviceId;
         $this->serviceName = $serviceName;
         $this->price = $price;
         $this->taxRate = $taxRate;
+        $this->flatRateTax = $flatRateTax;
+        $this->PKWiUSymbol = $PKWiUSymbol;
     }
 
     public function getServiceId(): string
@@ -37,5 +47,15 @@ class PurchaseItem
     public function getTaxRate(): int
     {
         return $this->taxRate;
+    }
+
+    public function getFlatRateTax(): ?string
+    {
+        return $this->flatRateTax;
+    }
+
+    public function getPKWiUSymbol()
+    {
+        return $this->PKWiUSymbol;
     }
 }

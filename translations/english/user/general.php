@@ -92,6 +92,7 @@ return [
     "payment_wallet" => "Wallet",
     "postal_code" => "Postal code",
     "price" => "Price",
+    "privacy_policy" => "Privacy Policy",
     "profile" => "Profile",
     "profile_edit" => "Profile has been updated.",
     "profile_subtitle" => "Tell us a little more about yourself.",

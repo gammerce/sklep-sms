@@ -116,8 +116,24 @@ class Service
         return $this->data;
     }
 
+    /**
+     * VAT tax rate
+     */
     public function getTaxRate(): int
     {
-        return 0;
+        return array_get($this->data, "tax_rate", 0);
+    }
+
+    /**
+     * In case of ryczałt ewidencjonowany
+     */
+    public function getFlatRateTax(): ?string
+    {
+        return array_get($this->data, "flat_rate_tax");
+    }
+
+    public function getPKWiUSymbol(): ?string
+    {
+        return array_get($this->data, "pkwiu");
     }
 }
