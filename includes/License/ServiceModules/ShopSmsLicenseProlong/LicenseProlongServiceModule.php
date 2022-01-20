@@ -159,6 +159,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $purchase->user->getLastIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
+            $purchase->getPayment(Purchase::PAYMENT_INVOICE_ID),
             $this->service->getId(),
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
@@ -238,7 +239,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         );
 
         $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
-            ->setServiceId($this->service->getId())
+            ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,

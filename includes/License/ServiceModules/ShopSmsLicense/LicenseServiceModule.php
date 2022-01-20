@@ -14,6 +14,7 @@ use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\License\LicensePriceService;
 use App\License\Models\LicenseUserService;
+use App\Managers\ServiceManager;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -89,6 +90,7 @@ class LicenseServiceModule extends ServiceModule implements
     private PriceTextService $priceTextService;
     private PlatformService $platformService;
     private Settings $settings;
+    private ServiceManager $serviceManager;
     private Database $db;
     private PaginationFactory $paginationFactory;
     private AdminPaymentService $adminPaymentService;
@@ -105,6 +107,7 @@ class LicenseServiceModule extends ServiceModule implements
         PriceTextService $priceTextService,
         PurchaseDataService $purchaseDataService,
         Settings $settings,
+        ServiceManager $serviceManager,
         Template $template,
         TranslationManager $translationManager,
         UserServiceRepository $userServiceRepository,
@@ -124,6 +127,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->priceTextService = $priceTextService;
         $this->purchaseDataService = $purchaseDataService;
         $this->settings = $settings;
+        $this->serviceManager = $serviceManager;
         $this->userServiceRepository = $userServiceRepository;
         $this->userServiceService = $userServiceService;
         $this->adminPaymentService = $adminPaymentService;
@@ -326,6 +330,7 @@ EOF
             $purchase->user->getLastIp(),
             (string) $purchase->getPaymentOption()->getPaymentMethod(),
             $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID),
+            $purchase->getPayment(Purchase::PAYMENT_INVOICE_ID),
             $this->service->getId(),
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
@@ -428,7 +433,7 @@ EOF
         $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"]);
 
         $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
-            ->setServiceId($this->service->getId())
+            ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
                 Purchase::PAYMENT_PAYMENT_ID => $paymentId,
@@ -521,10 +526,11 @@ EOF
 
         $validated = $validator->validateOrFail();
 
+        $licenseEditService = $this->serviceManager->get("ss_license_edit");
         $costData = $this->getCostUserEdit($validated["platforms"], $userService);
 
         $purchase = (new Purchase($this->auth->user(), get_ip($request), get_platform($request)))
-            ->setServiceId("ss_license_edit")
+            ->setService($licenseEditService->getId(), $licenseEditService->getName())
             ->setEmail($validated["email"])
             ->setOrder([
                 "user_service_id" => $validated["id"],
