@@ -166,9 +166,8 @@ You can now profit from many add-ons.',
     "way_of_payment" => "Payment method",
     "welcome_message" =>
         "We encourage everyone to <strong>sign up</strong>!<br />You will gain access to the services management panel.",
-    "welcome_subtitle" =>
-        "makes it easier to earn money on your game servers! Allow players to purchase services 24/7 both in-game and through your website.<br/>More information: <a href=\"https://sklep-sms.pl\">https://sklep-sms.pl</a>",
-    "welcome_title" => "Sklep SMS",
+    "welcome_subtitle" => "Welcome to the Sklep SMS!",
+    "welcome_title" => "Welcome to the Sklep SMS!",
     "wrong_id" => "Wrong ID",
     "wrong_payment_method" => "Wrong payment method was chosen.",
     "wrong_reset_key" => 'Reset key incorrect.<br />
