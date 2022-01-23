@@ -18,6 +18,10 @@ class SetupAvailable implements MiddlewareContract
 
     public function handle(Request $request, $args, Closure $next): Response
     {
+        if (is_saas()) {
+            return new PlainResponse("Setup is not available for SaaS.");
+        }
+
         if ($this->setupManager->hasFailed()) {
             return new PlainResponse(
                 "Wystąpił błąd podczas aktualizacji. Poinformuj o swoim problemie. Nie zapomnij dołączyć pliku data/logs/errors.log"
