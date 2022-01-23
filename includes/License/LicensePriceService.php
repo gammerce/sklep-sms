@@ -27,7 +27,7 @@ class LicensePriceService
      * @param string|null $subdomain
      * @return int
      */
-    public function getDailyCost(array $platforms, $subdomain): int
+    public function getDailyCost(array $platforms, ?string $subdomain): int
     {
         // -1, because the first platform is free
         $platformsCost = max(0, (count($platforms) - 1) * self::COST_PLATFORM_PER_DAY);

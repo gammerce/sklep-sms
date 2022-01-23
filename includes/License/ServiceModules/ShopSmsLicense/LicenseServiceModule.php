@@ -41,6 +41,7 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
+use App\Support\Collection;
 use App\Support\Database;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
@@ -746,22 +747,22 @@ EOF
             ],
         ];
 
-        $additionalCost = 0;
-        foreach ($platformsData as $platformData) {
-            // If we cancel support for a platform, we lose all discounts
-            if ($platformData["old"] && !$platformData["new"]) {
-                $costDaily = $this->licensePriceService->getDailyCost($platforms, $subdomain);
-                break;
-            }
+        // If we cancel support for a platform, we lose all discounts
+        $loseDiscounts = (new Collection($platformsData))->some(
+            fn(array $platformData) => $platformData["old"] && !$platformData["new"]
+        );
+
+        if ($loseDiscounts) {
+            $costDaily = $this->licensePriceService->getDailyCost($platforms, $subdomain);
+        } else {
+            $newPlatformsCount = (new Collection($platformsData))
+                ->filter(fn(array $platformData) => $platformData["new"] && !$platformData["old"])
+                ->count();
 
             // If we add support for a new platform, we add it to the daily cost
-            if ($platformData["new"] && !$platformData["old"]) {
-                $additionalCost += LicensePriceService::COST_PLATFORM_PER_DAY;
-            }
-        }
-
-        if (!isset($costDaily)) {
-            $costDaily = $userService->getCostDaily() + $additionalCost;
+            $costDaily =
+                $userService->getCostDaily() +
+                $newPlatformsCount * LicensePriceService::COST_PLATFORM_PER_DAY;
         }
 
         return [

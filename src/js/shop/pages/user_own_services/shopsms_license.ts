@@ -43,20 +43,27 @@ function set_cost(form) {
     const userServiceId = form.data("row");
     const data = `${serializedData}&user_service_id=${userServiceId}`;
 
-    restRequest("POST", `/api/services/${serviceId}/actions/get_cost_user_edit`, data, function (
-        content
-    ) {
-        console.log(content);
-        const cost = form.find("#cost .price");
-        const costMonthly = form.find("#cost-monthly");
+    restRequest(
+        "POST",
+        `/api/services/${serviceId}/actions/get_cost_user_edit`,
+        data,
+        function (content) {
+            console.log(content);
+            const cost = form.find("#cost .price");
+            const costMonthly = form.find("#cost-monthly");
 
-        content = JSON.parse(content);
-        cost.html(content.surcharge);
-        costMonthly.html(content.cost_monthly);
-    });
+            content = JSON.parse(content);
+            cost.html(content.surcharge);
+            costMonthly.html(content.cost_monthly);
+        }
+    );
 }
 
 $(document).delegate(".shopsms_user_edit [name='platforms[]']", "click", function () {
+    set_cost($(this).closest("form"));
+});
+
+$(document).delegate(".shopsms_user_edit [name='subdomain']", "click", function () {
     set_cost($(this).closest("form"));
 });
 
