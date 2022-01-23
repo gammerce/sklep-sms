@@ -259,17 +259,15 @@ EOF
         );
 
         $validated = $validator->validateOrFail();
+        $subdomain = $validated["subdomain"] ?: null;
 
-        $costDaily = $this->licensePriceService->getDailyCost(
-            $validated["platforms"],
-            $validated["subdomain"]
-        );
+        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"], $subdomain);
         $purchase
             ->setOrder([
                 Purchase::ORDER_QUANTITY => $validated["amount"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
-                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $subdomain,
             ])
             ->setEmail($validated["email"])
             ->setPayment([
@@ -433,6 +431,7 @@ EOF
         );
 
         $validated = $validator->validateOrFail();
+        $subdomain = $validated["subdomain"] ?: null;
 
         $admin = $this->auth->user();
         $paymentId = $this->adminPaymentService->payByAdmin(
@@ -441,10 +440,7 @@ EOF
             get_platform($request)
         );
 
-        $costDaily = $this->licensePriceService->getDailyCost(
-            $validated["platforms"],
-            $validated["subdomain"]
-        );
+        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"], $subdomain);
 
         $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
             ->setService($this->service->getId(), $this->service->getName())
@@ -456,7 +452,7 @@ EOF
                 Purchase::ORDER_QUANTITY => $validated["quantity"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
-                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $subdomain,
             ])
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
@@ -546,13 +542,10 @@ EOF
         ]);
 
         $validated = $validator->validateOrFail();
+        $subdomain = $validated["subdomain"] ?: null;
 
         $licenseEditService = $this->serviceManager->get("ss_license_edit");
-        $costData = $this->getCostUserEdit(
-            $validated["platforms"],
-            $validated["subdomain"],
-            $userService
-        );
+        $costData = $this->getCostUserEdit($validated["platforms"], $subdomain, $userService);
 
         $purchase = (new Purchase($this->auth->user(), get_ip($request), get_platform($request)))
             ->setService($licenseEditService->getId(), $licenseEditService->getName())
@@ -563,7 +556,7 @@ EOF
                 "bargain" => $costData["bargain"],
                 "password" => $validated["password"],
                 "platforms" => $validated["platforms"],
-                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $subdomain,
             ])
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => intval(
