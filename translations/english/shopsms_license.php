@@ -25,6 +25,8 @@ return [
     "hosting_subtitle" => "Don't worry about your own hosting and run your shop under the <strong>sklep-sms.cloud</strong> domain.<br/>
         Enter a subdomain name, e.g. entering <b>cs16</b> your shop will be available under https://<b>cs16</b>.sklep-sms.cloud",
     "hosting" => "Hosting",
+    "subdomain" => "Subdomain",
+    "subdomain_subtitle" => "Subdomain under which your shop is available.",
     "platforms_for_shop" => "Choose game platforms, on which you will run a shop",
     "price_per_hosting" => "Cost {1}/msc",
     "price_per_option" => "Choosing one option is free, each additional is the cost of {1}/month",

@@ -56,6 +56,7 @@ use App\View\Html\Cell;
 use App\View\Html\DOMElement;
 use App\View\Html\ExpirationCell;
 use App\View\Html\HeadCell;
+use App\View\Html\NoneText;
 use App\View\Html\PreWrapCell;
 use App\View\Html\ServiceRef;
 use App\View\Html\Structure;
@@ -200,7 +201,7 @@ EOF
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service"])))
                     ->addCell(new Cell($row["identifier"]))
-                    ->addCell(new Cell($row["subdomain"]))
+                    ->addCell(new Cell($row["subdomain"] ?: new NoneText()))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))

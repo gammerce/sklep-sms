@@ -26,6 +26,8 @@ return [
     "hosting" => "Hosting",
     "hosting_subtitle" => "Nie martw się o własny hosting i uruchom sklep w domenie <strong>sklep-sms.cloud</strong>.<br/>
         Podaj nazwę subdomeny, np. wpisując <b>cs16</b> twój sklep będzie dostępny pod adresem https://<b>cs16</b>.sklep-sms.cloud",
+    "subdomain" => "Subdomena",
+    "subdomain_subtitle" => "Subdomena, pod którą dostępny jest twój sklep.",
     "platforms_for_shop" => "Wybierz platformy gier, na których chesz uruchomić sklep",
     "price_per_hosting" => "Koszt {1}/msc",
     "price_per_option" => "Wybranie jednej opcji jest darmowe, każda kolejna to koszt {1}/msc",
