@@ -87,7 +87,7 @@ return [
     "previous" => "Wcześniej",
     "quantity" => "Ilość",
     "question" => "Pytanie",
-    "regards" => "Pozdrawiamy",
+    "regards" => "Z poważaniem",
     "save" => "Zapisz",
     "seconds" => "sekund",
     "september" => "Wrzesień",
