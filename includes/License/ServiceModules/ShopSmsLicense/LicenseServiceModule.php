@@ -760,7 +760,10 @@ EOF
                 ->filter(fn(array $platformData) => $platformData["new"] && !$platformData["old"])
                 ->count();
 
-            $subdomainCost = strlen($subdomain) ? LicensePriceService::COST_HOSTING_PER_DAY : 0;
+            $subdomainCost =
+                strlen($subdomain) && !$userService->getSubdomain()
+                    ? LicensePriceService::COST_HOSTING_PER_DAY
+                    : 0;
 
             $costDaily =
                 $userService->getCostDaily() +
