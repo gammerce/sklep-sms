@@ -20,7 +20,7 @@ class PlayerFlagRepository
      */
     public function findOrFail(array $data): PlayerFlag
     {
-        [$params, $values] = map_to_params($data);
+        [$params, $values] = map_to_params($data, true);
         $params = implode(" AND ", $params);
 
         $statement = $this->db->statement(
