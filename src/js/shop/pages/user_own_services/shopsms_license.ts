@@ -63,7 +63,7 @@ $(document).delegate(".shopsms_user_edit [name='platforms[]']", "click", functio
     set_cost($(this).closest("form"));
 });
 
-$(document).delegate(".shopsms_user_edit [name='subdomain']", "click", function () {
+$(document).delegate(".shopsms_user_edit [name='subdomain']", "change", function () {
     set_cost($(this).closest("form"));
 });
 
