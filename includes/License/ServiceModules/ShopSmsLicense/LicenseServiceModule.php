@@ -755,14 +755,17 @@ EOF
         if ($loseDiscounts) {
             $costDaily = $this->licensePriceService->getDailyCost($platforms, $subdomain);
         } else {
+            // If we add support for a new platform, we add it to the daily cost
             $newPlatformsCount = (new Collection($platformsData))
                 ->filter(fn(array $platformData) => $platformData["new"] && !$platformData["old"])
                 ->count();
 
-            // If we add support for a new platform, we add it to the daily cost
+            $subdomainCost = strlen($subdomain) ? LicensePriceService::COST_HOSTING_PER_DAY : 0;
+
             $costDaily =
                 $userService->getCostDaily() +
-                $newPlatformsCount * LicensePriceService::COST_PLATFORM_PER_DAY;
+                $newPlatformsCount * LicensePriceService::COST_PLATFORM_PER_DAY +
+                $subdomainCost;
         }
 
         return [
