@@ -38,12 +38,12 @@ class CronExecutor
         $this->expiredSmsCodeService->deleteExpired();
 
         // Remove old logs
-        if (intval($this->settings["delete_logs"]) != 0) {
+        if ($this->settings->getDeleteLogs() > 0) {
             $this->db
                 ->statement(
                     "DELETE FROM `ss_logs` WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL ? DAY)"
                 )
-                ->execute([$this->settings["delete_logs"]]);
+                ->execute([$this->settings->getDeleteLogs()]);
         }
 
         // Remove files older than 30 days from data/transactions
