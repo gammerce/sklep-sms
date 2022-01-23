@@ -203,7 +203,7 @@ class TestCase extends BaseTestCase
         /** @var Database $db */
         $db = $this->app->make(Database::class);
 
-        [$params, $values] = map_to_params($data);
+        [$params, $values] = map_to_params($data, true);
         $params = implode(" AND ", $params);
 
         $statement = $db->statement("SELECT 1 FROM `{$table}` WHERE {$params}");

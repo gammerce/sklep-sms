@@ -700,15 +700,16 @@ function log_info($text, array $data = []): void
 
 /**
  * @param mixed $data
+ * @param bool $read
  * @return array
  */
-function map_to_params($data): array
+function map_to_params($data, bool $read): array
 {
     $params = [];
     $values = [];
 
     foreach (to_array($data) as $key => $value) {
-        if ($value === null) {
+        if ($value === null && $read) {
             $params[] = "$key IS NULL";
         } elseif ($value instanceof Expression && my_is_integer($key)) {
             $params[] = "$value";
