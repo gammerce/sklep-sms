@@ -172,6 +172,11 @@ class Settings implements ArrayAccess
         return array_get($this->data, "shop_url");
     }
 
+    public function getDeleteLogs(): int
+    {
+        return intval(array_get($this->data, "delete_logs"));
+    }
+
     private function formatShopUrl($url): string
     {
         if (!starts_with($url, "http://") && !starts_with($url, "https://")) {

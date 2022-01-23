@@ -3,6 +3,7 @@ namespace App\Kernels;
 
 use App\Install\MigrateCommand;
 use App\System\Application;
+use App\System\CronExecutor;
 use Psy\Shell;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -37,6 +38,14 @@ class ConsoleKernel implements ConsoleKernelContract
             $databaseSetup = $this->app->make(DatabaseSetup::class);
             $databaseSetup->run();
             $output->writeln("Environment set up.");
+            return 0;
+        }
+
+        if ($command === "cron:run") {
+            /** @var CronExecutor $cronExecutor */
+            $cronExecutor = $this->app->make(CronExecutor::class);
+            $cronExecutor->run();
+            $output->writeln("Cron executed.");
             return 0;
         }
 
