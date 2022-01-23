@@ -34,23 +34,21 @@ return [
     "license_duration" => "Okres trwania licencji",
     "license_price" => "Powyżej <b>364 dni</b>, płacisz tylko <u><b>80%</b></u> ceny",
     "give_email" => "Podaj swój adres e-mail",
-    "shopsms_purchase" => 'Witaj,<br/>
-przed chwilą dokonałeś/aś zakupu licencji Sklepu SMS. Gratuluję świetnego wyboru! ;)',
+    "shopsms_purchase" =>
+        "przed chwilą dokonałeś/aś zakupu licencji Sklepu SMS. Gratuluję świetnego wyboru!",
     "license_data" => "Dane licencji",
     "expiration_date" => "Data ważności",
     "shop_setup" =>
         "W celu zainstalowania sklepu na własnej stronie WWW, zapoznaj się z <a href=\"https://sklep-sms.pl/config\" target=\"_blank\">Konfiguracja</a>.",
     "latest_shop_versions" =>
         "Najnowszą wersję sklepu można znaleźć na stronie <a href=\"https://sklep-sms.pl/download\" target=\"_blank\">Download</a>.",
-    "any_problems" => "W razie problemów służę pomocą: seek@sklep-sms.pl",
     "service_purchased" => "Zakupiono prawidłowo usługę: {1}",
     "new_license_data" => "Nowe dane licencji",
-    "license_edit_success" => 'Witaj,<br/>
-licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo wyedytowana.',
-    "license_edit_success1" => "Wyedytowano prawidłowo licencję: {1}",
+    "license_edit_success" =>
+        "licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo wyedytowana.",
     "license_prolong_time" => "Podaj na jaki okres chcesz przedłużyć licencję.",
-    "license_prolong_success" => 'Witaj,<br/>
-licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo przedłużona.',
+    "license_prolong_success" =>
+        "licencja Sklepu SMS o ID: <b>{1}</b> została prawidłowo przedłużona.",
     "new_expiration_date" => "Nowa data ważności",
 
     "prolong_license" => "Przedłuż licencję",

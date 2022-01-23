@@ -33,23 +33,18 @@ return [
     "license_duration" => "License duration",
     "license_price" => "Above <b>364 days</b>, you pay only <u><b>80%</b></u> of the price",
     "give_email" => "Enter your e-mail address",
-    "shopsms_purchase" => 'Hello,<br/>
-you have just purchased SMS Shop License. Great choice! ;)',
+    "shopsms_purchase" => "you have just purchased SMS Shop License. Great choice!",
     "license_data" => "License data",
     "expiration_date" => "Expiration date",
     "shop_setup" =>
         "In order to setup a shop on your own WWW, please refer to <a href=\"https://sklep-sms.pl/config\" target=\"_blank\">Configuration</a>.",
     "latest_shop_versions" =>
         "Latest shop version can be found on <a href=\"https://sklep-sms.pl/download\" target=\"_blank\">Download</a>.",
-    "any_problems" => "In case of any problems I offer my help: seek@sklep-sms.pl",
     "service_purchased" => "Service: {1} purchased successfully",
     "new_license_data" => "New license data",
-    "license_edit_success" => 'Hello,<br/>
-Shop SMS licence with ID: <b>{1}</b> was edited successfully.',
-    "license_edit_success1" => "License: {1} edited successfully",
+    "license_edit_success" => "Shop SMS licence with ID: <b>{1}</b> was edited successfully.",
     "license_prolong_time" => "Enter for what period you want to extend the license.",
-    "license_prolong_success" => 'Hello,<br/>
-Shop SMS license with ID: <b>{1}</b> was prolonged successfully.',
+    "license_prolong_success" => "Shop SMS license with ID: <b>{1}</b> was prolonged successfully.",
     "new_expiration_date" => "New expiration date",
 
     "cost_daily" => "Daily cost",
