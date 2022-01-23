@@ -5,15 +5,11 @@
 <b>{{ __('token') }}</b>: {{ $token }}<br />
 <b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
 <b>{{ __('expiration_date') }}</b>: {{ $expire }}<br />
+{!! $subdomain !!}}
 <br />
-{{ __('script_instalation') }}<a href="https://sklep-sms.pl/config" target="_blank"
-    >{{ __('configuration') }}</a
->.
-<br />
-{{ __('latest_script_versions') }}<a href="https://sklep-sms.pl/download" target="_blank"
-    >Download</a
->.<br />
+{{ __('shop_setup') }}<br />
+{{ __('latest_script_versions') }}<br />
 <br />
 {{ __('any_problems') }}<br />
 {{ __('regards') }},<br />
-{{ $settings['signature'] }}
+{!! $settings['signature'] !!}

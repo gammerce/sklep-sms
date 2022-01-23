@@ -2,6 +2,7 @@
 namespace App\License\ServiceModules\ShopSmsLicenseEdit;
 
 use App\License\Models\LicenseUserService;
+use App\License\SubdomainUtil;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -81,6 +82,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         );
         $statement->execute([$purchase->getOrder("user_service_id")]);
         $identifier = $statement->fetchColumn();
+        $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
 
         return $this->template->renderNoComments(
             "shop/services/shopsms_license_edit/order_details",
@@ -89,11 +91,12 @@ class LicenseEditServiceModule extends ServiceModule implements
                     $purchase->getOrder("cost_daily") * 30
                 ),
                 "email" => $purchase->getEmail() ?: $this->lang->t("none"),
+                "identifier" => $identifier,
                 "platforms" => $this->platformService->formatPlatforms(
                     $purchase->getOrder("platforms")
                 ),
-                "identifier" => $identifier,
                 "serviceName" => $this->service->getName(),
+                "subdomain" => SubdomainUtil::getElement($subdomain),
             ]
         );
     }
@@ -108,6 +111,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         }
 
         $promoCode = $purchase->getPromoCode();
+        $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
 
         $this->licenseServerService->updatePlatforms($userService->getIdentifier(), $platforms);
 
@@ -119,6 +123,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                 "email" => $purchase->getEmail(),
                 "platform_amxmodx" => (int) in_array(Platform::AMXMODX(), $platforms),
                 "platform_sourcemod" => (int) in_array(Platform::SOURCEMOD(), $platforms),
+                "subdomain" => $subdomain,
             ]
         );
 
@@ -135,13 +140,17 @@ class LicenseEditServiceModule extends ServiceModule implements
             $userService->getIdentifier(),
             $purchase->getEmail(),
             $promoCode ? $promoCode->getCode() : null,
-            ["engines" => $this->platformService->formatPlatforms($platforms)]
+            [
+                "engines" => $this->platformService->formatPlatforms($platforms),
+                "subdomain" => $subdomain,
+            ]
         );
     }
 
     public function purchaseInfo($action, Transaction $transaction)
     {
         $platforms = $transaction->getExtraDatum("engines");
+        $subdomain = $transaction->getExtraDatum("subdomain");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
@@ -149,6 +158,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                 [
                     "authData" => $transaction->getAuthData(),
                     "platforms" => $platforms,
+                    "subdomain" => SubdomainUtil::getElement($subdomain),
                 ]
             );
         }
@@ -160,6 +170,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
                     "platforms" => $platforms,
+                    "subdomain" => SubdomainUtil::getElement($subdomain),
                 ]
             );
         }

@@ -36,10 +36,10 @@ return [
 przed chwilą dokonałeś/aś zakupu licencji Sklepu SMS. Gratuluję świetnego wyboru! ;)',
     "license_data" => "Dane licencji",
     "expiration_date" => "Data ważności",
-    "script_instalation" =>
-        "W celu zainstalowania skryptu, koniecznie zapoznaj się z treścią strony ",
-    "configuration" => "Konfiguracja",
-    "latest_script_versions" => "Najnowsze wersje skryptu zawsze są dostępne w zakładce ",
+    "shop_setup" =>
+        "W celu zainstalowania sklepu na własnej stronie WWW, zapoznaj się z <a href=\"https://sklep-sms.pl/config\" target=\"_blank\">Konfiguracja</a>.",
+    "latest_shop_versions" =>
+        "Najnowszą wersję sklepu można znaleźć na stronie <a href=\"https://sklep-sms.pl/download\" target=\"_blank\">Download</a>.",
     "any_problems" => "W razie problemów służę pomocą: seek@sklep-sms.pl",
     "service_purchased" => "Zakupiono prawidłowo usługę: {1}",
     "new_license_data" => "Nowe dane licencji",

@@ -35,10 +35,10 @@ return [
 you have just purchased SMS Shop License. Great choice! ;)',
     "license_data" => "License data",
     "expiration_date" => "Expiration date",
-    "script_instalation" =>
-        "In order to install the script, you need to become acquainted with the page content ",
-    "configuration" => "Configuration",
-    "latest_script_versions" => "Latest script versions are always available in tab ",
+    "shop_setup" =>
+        "In order to setup a shop on your own WWW, please refer to <a href=\"https://sklep-sms.pl/config\" target=\"_blank\">Configuration</a>.",
+    "latest_shop_versions" =>
+        "Latest shop version can be found on <a href=\"https://sklep-sms.pl/download\" target=\"_blank\">Download</a>.",
     "any_problems" => "In case of any problems I offer my help: seek@sklep-sms.pl",
     "service_purchased" => "Service: {1} purchased successfully",
     "new_license_data" => "New license data",

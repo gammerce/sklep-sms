@@ -44,6 +44,29 @@
             </div>
         </div>
 
+        <div class="column is-full is-hidden">
+            <div class="field">
+                <label for="subdomain" class="label required">{{ __('hosting') }}</label>
+                <div class="control">
+                    <div class="field has-addons">
+                        <div class="control is-expanded">
+                            <input
+                                type="text"
+                                id="subdomain"
+                                name="subdomain"
+                                class="input has-text-right"
+                                value="{{ $subdomain }}"
+                            />
+                        </div>
+                        <div class="control">
+                            <a class="button is-static">.sklep-sms.cloud</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="help">{{ __('subdomain_subtitle') }}</div>
+            </div>
+        </div>
+
         <div class="column is-full">
             <div class="field">
                 <label class="label">{{ __('price_monthly') }}</label>

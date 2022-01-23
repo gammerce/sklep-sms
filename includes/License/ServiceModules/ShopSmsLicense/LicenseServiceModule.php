@@ -13,9 +13,11 @@ use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UserExistsRule;
 use App\Http\Validation\Validator;
 use App\License\LicensePriceService;
+use App\License\LicenseServerService;
 use App\License\Models\LicenseUserService;
-use App\Managers\ServiceManager;
 use App\License\SubdomainRule;
+use App\License\SubdomainUtil;
+use App\Managers\ServiceManager;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -26,6 +28,7 @@ use App\Payment\General\PaymentMethod;
 use App\Payment\General\PaymentOption;
 use App\Payment\General\PurchaseDataService;
 use App\Server\Platform;
+use App\Service\UserServiceService;
 use App\ServiceModules\Interfaces\IServiceActionExecute;
 use App\ServiceModules\Interfaces\IServiceCreate;
 use App\ServiceModules\Interfaces\IServicePromoCode;
@@ -37,10 +40,8 @@ use App\ServiceModules\Interfaces\IServiceUserOwnServicesEdit;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminAdd;
 use App\ServiceModules\Interfaces\IServiceUserServiceAdminDisplay;
 use App\ServiceModules\ServiceModule;
-use App\License\LicenseServerService;
-use App\Support\PriceTextService;
-use App\Service\UserServiceService;
 use App\Support\Database;
+use App\Support\PriceTextService;
 use App\Support\QueryParticle;
 use App\System\Auth;
 use App\System\Settings;
@@ -77,7 +78,6 @@ class LicenseServiceModule extends ServiceModule implements
 {
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
-    const PURCHASE_SUBDOMAIN = "subdomain";
 
     private Translator $lang;
     private Auth $auth;
@@ -170,6 +170,7 @@ SELECT
     s.name AS `service`,
     us.expire,
     m.identifier,
+    m.subdomain,
     m.cost_daily
 FROM `ss_user_service` AS us
 INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id
@@ -194,6 +195,7 @@ EOF
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell(new ServiceRef($row["service_id"], $row["service"])))
                     ->addCell(new Cell($row["identifier"]))
+                    ->addCell(new Cell($row["subdomain"]))
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))
@@ -207,6 +209,7 @@ EOF
             ->addHeadCell(new HeadCell($this->lang->t("user")))
             ->addHeadCell(new HeadCell($this->lang->t("service")))
             ->addHeadCell(new HeadCell($this->lang->t("identifier")))
+            ->addHeadCell(new HeadCell($this->lang->t("subdomain")))
             ->addHeadCell(new HeadCell($this->lang->t("cost_daily")))
             ->addHeadCell(new HeadCell($this->lang->t("expires")))
             ->addHeadCell(new HeadCell($this->lang->t("comment")))
@@ -261,7 +264,7 @@ EOF
                 Purchase::ORDER_QUANTITY => $validated["amount"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
-                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
             ])
             ->setEmail($validated["email"])
             ->setPayment([
@@ -276,13 +279,7 @@ EOF
 
     public function orderDetails(Purchase $purchase): string
     {
-        $subdomain = "";
-        if (strlen($purchase->getOrder(self::PURCHASE_SUBDOMAIN))) {
-            $subdomainValue = htmlspecialchars($purchase->getOrder(self::PURCHASE_SUBDOMAIN));
-            $subdomain = "<strong>{$this->lang->t(
-                "hosting"
-            )}</strong>: https://$subdomainValue.sklep-sms.cloud<br />";
-        }
+        $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
 
         return $this->template->renderNoComments("shop/services/shopsms_license/order_details", [
             "costMonthly" => $this->priceTextService->getPriceText(
@@ -295,14 +292,14 @@ EOF
             "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
             "serviceName" => $this->service->getName(),
             "serviceTag" => $this->service->getTag(),
-            "subdomain" => $subdomain,
+            "subdomain" => SubdomainUtil::getElement($subdomain),
         ]);
     }
 
     public function purchase(Purchase $purchase): int
     {
         $platforms = $purchase->getOrder("platforms");
-        $subdomain = $purchase->getOrder(self::PURCHASE_SUBDOMAIN);
+        $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
         $identifier = generate_uuid4();
@@ -350,14 +347,16 @@ EOF
     public function purchaseInfo($action, Transaction $transaction)
     {
         $platforms = $transaction->getExtraDatum("engines");
+        $subdomain = $transaction->getExtraDatum("subdomain");
 
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "shop/services/shopsms_license/purchase_info_email",
                 [
-                    "platforms" => $platforms,
                     "expire" => $transaction->getExtraDatum("expire"),
                     "identifier" => $transaction->getExtraDatum("identifier"),
+                    "platforms" => $platforms,
+                    "subdomain" => SubdomainUtil::getElement($subdomain),
                     "token" => $transaction->getExtraDatum("token"),
                 ]
             );
@@ -368,11 +367,12 @@ EOF
                 "shop/services/shopsms_license/purchase_info_web",
                 [
                     "email" => $transaction->getEmail(),
-                    "platforms" => $platforms,
                     "expire" => $transaction->getExtraDatum("expire"),
                     "identifier" => $transaction->getExtraDatum("identifier"),
-                    "token" => $transaction->getExtraDatum("token"),
+                    "platforms" => $platforms,
                     "serviceName" => $this->service->getName(),
+                    "subdomain" => SubdomainUtil::getElement($subdomain),
+                    "token" => $transaction->getExtraDatum("token"),
                 ]
             );
         }
@@ -447,7 +447,7 @@ EOF
                 Purchase::ORDER_QUANTITY => $validated["quantity"],
                 "platforms" => $validated["platforms"],
                 "cost_daily" => $costDaily,
-                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
             ])
             ->setEmail($validated["email"])
             ->setComment($validated["comment"]);
@@ -477,11 +477,12 @@ EOF
                 $userService->getCostDaily() * 30
             ),
             "email" => $userService->getEmail() ?: $this->lang->t("none"),
-            "platforms" => $this->platformService->formatPlatforms($platforms),
             "expire" => as_expiration_datetime_string($userService->getExpire()),
             "identifier" => $userService->getIdentifier(),
             "moduleId" => $this->getModuleId(),
+            "platforms" => $this->platformService->formatPlatforms($platforms),
             "serviceName" => $this->service->getName(),
+            "subdomain" => SubdomainUtil::getElement($userService->getSubdomain()),
             "userServiceId" => $userService->getId(),
         ]);
     }
@@ -502,17 +503,18 @@ EOF
                 $userService->getCostDaily() * 30
             ),
             "email" => $userService->getEmail(),
-            "platforms" => $platforms,
             "expire" => as_expiration_datetime_string($userService->getExpire()),
-            "identifier" => $userService->getIdentifier(),
-            "serviceId" => $this->service->getId(),
-            "serviceName" => $this->service->getName(),
-            "platformMonthlyPrice" => $this->priceTextService->getPriceText(
-                LicensePriceService::COST_PLATFORM_PER_DAY * 30
-            ),
             "hostingMonthlyPrice" => $this->priceTextService->getPriceText(
                 LicensePriceService::COST_HOSTING_PER_DAY * 30
             ),
+            "identifier" => $userService->getIdentifier(),
+            "platformMonthlyPrice" => $this->priceTextService->getPriceText(
+                LicensePriceService::COST_PLATFORM_PER_DAY * 30
+            ),
+            "platforms" => $platforms,
+            "serviceId" => $this->service->getId(),
+            "serviceName" => $this->service->getName(),
+            "subdomain" => $userService->getSubdomain(),
         ]);
     }
 
@@ -552,7 +554,7 @@ EOF
                 "bargain" => $costData["bargain"],
                 "password" => $validated["password"],
                 "platforms" => $validated["platforms"],
-                self::PURCHASE_SUBDOMAIN => $validated["subdomain"],
+                SubdomainUtil::PURCHASE_KEY => $validated["subdomain"],
             ])
             ->setPayment([
                 Purchase::PAYMENT_PRICE_TRANSFER => intval(
@@ -720,7 +722,7 @@ EOF
      */
     private function getCostUserEdit(
         array $platforms,
-        $subdomain,
+        ?string $subdomain,
         LicenseUserService $userService
     ): array {
         $daysLeft = ceil(($userService->getExpire() - time()) / (24 * 60 * 60));

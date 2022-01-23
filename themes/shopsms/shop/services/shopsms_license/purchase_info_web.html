@@ -8,10 +8,7 @@
 <b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
 <b>{{ __('expiration_date') }}</b>: {{ $expire }}<br />
 <b>{{ __('email') }}</b>: {{ $email }}<br />
+{!! $subdomain !!}}
 <hr />
-{{ __('script_instalation') }}<a href="https://sklep-sms.pl/config" target="_blank"
-    >{{ __('configuration') }}</a
->.<br />
-{{ __('latest_script_versions') }}<a href="https://sklep-sms.pl/download" target="_blank"
-    >Download</a
->.
+{!! __('shop_setup') !!}<br />
+{!! __('latest_shop_versions') !!}
