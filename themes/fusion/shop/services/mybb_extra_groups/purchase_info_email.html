@@ -1,10 +1,7 @@
-{!! __('just_purchased', $e($username)) !!}<br />
+{{ __('just_purchased') }}<br />
 <br />
 <strong>{{ __('service') }}</strong>: {{ $serviceName }}<br />
 <strong>{{ __('quantity') }}</strong>: {{ $quantity }}<br />
 <strong>{{ __('mybb_user') }}</strong>: {{ $username }}<br />
 <br />
-<strong>{{ __('price') }}</strong>: {{ $cost }}<br />
-<br />
-{{ __('regards') }},<br />
-{!! $settings['signature'] !!}
+<strong>{{ __('price') }}</strong>: {{ $cost }}

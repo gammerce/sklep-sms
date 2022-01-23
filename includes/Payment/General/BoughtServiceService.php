@@ -7,35 +7,39 @@ use App\Managers\ServiceManager;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\Support\Mailer;
+use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
 
 class BoughtServiceService
 {
-    private Mailer $mailer;
-    private Translator $lang;
     private BoughtServiceRepository $boughtServiceRepository;
-    private PurchaseInformation $purchaseInformation;
     private DatabaseLogger $logger;
+    private Mailer $mailer;
+    private PurchaseInformation $purchaseInformation;
     private ServerManager $serverManager;
     private ServiceManager $serviceManager;
+    private Template $template;
+    private Translator $lang;
 
     public function __construct(
-        TranslationManager $translationManager,
+        BoughtServiceRepository $boughtServiceRepository,
+        DatabaseLogger $logger,
         Mailer $mailer,
+        PurchaseInformation $purchaseInformation,
         ServerManager $serverManager,
         ServiceManager $serviceManager,
-        BoughtServiceRepository $boughtServiceRepository,
-        PurchaseInformation $purchaseInformation,
-        DatabaseLogger $logger
+        Template $template,
+        TranslationManager $translationManager
     ) {
-        $this->mailer = $mailer;
-        $this->lang = $translationManager->user();
         $this->boughtServiceRepository = $boughtServiceRepository;
+        $this->lang = $translationManager->user();
         $this->logger = $logger;
+        $this->mailer = $mailer;
         $this->purchaseInformation = $purchaseInformation;
         $this->serverManager = $serverManager;
         $this->serviceManager = $serviceManager;
+        $this->template = $template;
     }
 
     /**
@@ -118,12 +122,12 @@ class BoughtServiceService
             return $this->lang->t("none");
         }
 
-        $message = $this->purchaseInformation->get([
+        $content = $this->purchaseInformation->get([
             "purchase_id" => $boughtService->getId(),
             "action" => "email",
         ]);
 
-        if (!strlen($message)) {
+        if (!strlen($content)) {
             return $this->lang->t("none");
         }
 
@@ -132,7 +136,12 @@ class BoughtServiceService
                 ? $this->lang->t("charge_wallet")
                 : $this->lang->t("purchase");
 
-        $ret = $this->mailer->send($email, $authData, $title, $message);
+        $text = $this->template->renderNoComments("emails/layout", [
+            "who" => $authData,
+            "content" => $content,
+        ]);
+
+        $ret = $this->mailer->send($email, $authData, $title, $text);
 
         if ($ret == "not_sent") {
             return "nie wysłano";

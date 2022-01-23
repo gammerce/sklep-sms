@@ -9,8 +9,7 @@ return [
     "extra_flags" => "Flagi Gracza",
     "flags" => "Flagi",
     "if_displayed_in_shop" => "Czy ma być wyświetlane <br/>w sklepie internetowym.",
-    "just_purchased" => 'Witaj {1},<br/>
-przed chwilą dokonałeś/aś zakupu w naszym sklepie.',
+    "just_purchased" => "przed chwilą dokonałeś/aś zakupu w naszym sklepie.",
     "log_user_service_added" => "Dodano użytkownikowi usługę. ID zakupu: {1}",
     "log_user_service_edited" => "Wyedytowano usługę użytkownika. ID: {1}",
     "log_user_edited_service" => "Użytkownik wyedytował swoją usługę. ID: {1}",

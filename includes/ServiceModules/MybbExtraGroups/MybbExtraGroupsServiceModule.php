@@ -426,8 +426,11 @@ EOF
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "shop/services/mybb_extra_groups/purchase_info_email",
-                compact("username", "quantity", "cost") + [
+                [
+                    "cost" => $cost,
+                    "quantity" => $quantity,
                     "serviceName" => $this->service->getNameI18n(),
+                    "username" => $username,
                 ]
             );
         }
