@@ -296,7 +296,7 @@ EOF
             "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
             "serviceName" => $this->service->getName(),
             "serviceTag" => $this->service->getTag(),
-            "subdomain" => SubdomainUtil::getElement($subdomain),
+            "subdomain" => SubdomainUtil::getText($subdomain),
         ]);
     }
 
@@ -364,7 +364,7 @@ EOF
                     "expire" => $transaction->getExtraDatum("expire"),
                     "identifier" => $transaction->getExtraDatum("identifier"),
                     "platforms" => $platforms,
-                    "subdomain" => SubdomainUtil::getElement($subdomain),
+                    "subdomain" => SubdomainUtil::getText($subdomain),
                     "token" => $transaction->getExtraDatum("token"),
                 ]
             );
@@ -379,7 +379,7 @@ EOF
                     "identifier" => $transaction->getExtraDatum("identifier"),
                     "platforms" => $platforms,
                     "serviceName" => $this->service->getName(),
-                    "subdomain" => SubdomainUtil::getElement($subdomain),
+                    "subdomain" => SubdomainUtil::getText($subdomain),
                     "token" => $transaction->getExtraDatum("token"),
                 ]
             );
@@ -488,7 +488,7 @@ EOF
             "moduleId" => $this->getModuleId(),
             "platforms" => $this->platformService->formatPlatforms($platforms),
             "serviceName" => $this->service->getName(),
-            "subdomain" => SubdomainUtil::getElement($userService->getSubdomain()),
+            "subdomain" => SubdomainUtil::getLink($userService->getSubdomain()),
             "userServiceId" => $userService->getId(),
         ]);
     }

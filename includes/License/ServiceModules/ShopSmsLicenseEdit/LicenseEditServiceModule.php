@@ -100,7 +100,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                     $purchase->getOrder("platforms")
                 ),
                 "serviceName" => $this->service->getName(),
-                "subdomain" => SubdomainUtil::getElement($subdomain),
+                "subdomain" => SubdomainUtil::getText($subdomain),
             ]
         );
     }
@@ -166,7 +166,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                 [
                     "authData" => $transaction->getAuthData(),
                     "platforms" => $platforms,
-                    "subdomain" => SubdomainUtil::getElement($subdomain),
+                    "subdomain" => SubdomainUtil::getText($subdomain),
                 ]
             );
         }
@@ -178,7 +178,7 @@ class LicenseEditServiceModule extends ServiceModule implements
                     "authData" => $transaction->getAuthData(),
                     "email" => $transaction->getEmail(),
                     "platforms" => $platforms,
-                    "subdomain" => SubdomainUtil::getElement($subdomain),
+                    "subdomain" => SubdomainUtil::getText($subdomain),
                 ]
             );
         }

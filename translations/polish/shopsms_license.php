@@ -22,10 +22,12 @@ return [
     "service_taken_over" => "Usługa została prawidłowo przejęta.",
     "service_not_taken_over" => "Nie udało się przejąć usługi. Może już jesteś jej właścicelem?",
 
+    "cloud" => "Chmura",
     "invalid_subdomain" => "Nieprawidłowa subdomena. Dozwolone są jedynie cyfry, litery i znak -",
     "hosting" => "Hosting",
     "hosting_subtitle" => "Nie martw się o własny hosting i uruchom sklep w domenie <strong>sklep-sms.cloud</strong>.<br/>
-        Podaj nazwę subdomeny, np. wpisując <b>cs16</b> twój sklep będzie dostępny pod adresem https://<b>cs16</b>.sklep-sms.cloud",
+        Podaj nazwę subdomeny, np. wpisując <b>cs16</b> twój sklep będzie dostępny pod adresem https://<b>cs16</b>.sklep-sms.cloud<br/>
+        Więcej informacji: <a href='https://sklep-sms.pl#cloud'>https://sklep-sms.pl#cloud</a>",
     "subdomain" => "Subdomena",
     "subdomain_subtitle" => "Subdomena, pod którą dostępny jest twój sklep.",
     "platforms_for_shop" => "Wybierz platformy gier, na których chesz uruchomić sklep",
