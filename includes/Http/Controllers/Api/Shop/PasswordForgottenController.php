@@ -49,8 +49,10 @@ class PasswordForgottenController
 
         $code = $userRepository->createResetPasswordKey($editedUser->getId());
 
-        $link = $url->to("/page/reset_password?code=" . urlencode($code));
-        $text = $template->render("emails/forgotten_password", compact("editedUser", "link"));
+        $text = $template->renderNoComments("emails/forgotten_password", [
+            "ip" => $editedUser->getLastip(),
+            "link" => $url->to("/page/reset_password", compact("code")),
+        ]);
         $ret = $mailer->send(
             $editedUser->getEmail(),
             $editedUser->getUsername(),
