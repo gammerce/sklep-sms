@@ -541,11 +541,14 @@ EOF
         if ($action === "email") {
             return $this->template->renderNoComments(
                 "shop/services/extra_flags/purchase_info_email",
-                compact("quantity", "password", "setinfo") + [
+                [
                     "authData" => $transaction->getAuthData(),
-                    "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
-                    "serviceName" => $this->service->getNameI18n(),
+                    "password" => $password,
+                    "quantity" => $quantity,
                     "serverName" => $server ? $server->getName() : "n/a",
+                    "serviceName" => $this->service->getNameI18n(),
+                    "setinfo" => $setinfo,
+                    "typeName" => $this->getTypeName($transaction->getExtraDatum("type")),
                 ]
             );
         }

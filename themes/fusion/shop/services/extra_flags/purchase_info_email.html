@@ -1,4 +1,4 @@
-{!! __('just_purchased', $e($authData)) !!}<br />
+{{ __('just_purchased') }}<br />
 <br />
 <strong>{{ __('service') }}</strong>: {{ $serviceName }}<br />
 <strong>{{ __('quantity') }}</strong>: {{ $quantity }}<br />
@@ -7,7 +7,4 @@
 <strong>{{ $typeName }}:</strong> {{ $authData }}<br />
 {!! $password !!}
 <br />
-{{ $setinfo }}<br />
-<br />
-{{ __('regards') }},<br />
-{!! $settings['signature'] !!}
+{{ $setinfo }}
