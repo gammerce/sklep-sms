@@ -15,6 +15,7 @@ use App\Http\Validation\Validator;
 use App\License\LicensePriceService;
 use App\License\LicenseServerService;
 use App\License\Models\LicenseUserService;
+use App\License\ProxyManagerClient;
 use App\License\SubdomainRule;
 use App\License\SubdomainUtil;
 use App\Managers\ServiceManager;
@@ -79,57 +80,60 @@ class LicenseServiceModule extends ServiceModule implements
     const MODULE_ID = "shopsms_license";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
-    private Translator $lang;
+    private AdminPaymentService $adminPaymentService;
     private Auth $auth;
     private BoughtServiceService $boughtServiceService;
+    private Database $db;
     private LicensePriceService $licensePriceService;
     private LicenseServerService $licenseServerService;
-    private UserServiceService $userServiceService;
-    private PurchaseDataService $purchaseDataService;
     private LicenseUserServiceRepository $licenseUserServiceRepository;
-    private PriceTextService $priceTextService;
-    private PlatformService $platformService;
-    private Settings $settings;
-    private ServiceManager $serviceManager;
-    private Database $db;
     private PaginationFactory $paginationFactory;
-    private AdminPaymentService $adminPaymentService;
+    private PlatformService $platformService;
+    private PriceTextService $priceTextService;
+    private ProxyManagerClient $proxyManagerClient;
+    private PurchaseDataService $purchaseDataService;
+    private ServiceManager $serviceManager;
+    private Settings $settings;
+    private Translator $lang;
+    private UserServiceService $userServiceService;
 
     public function __construct(
+        AdminPaymentService $adminPaymentService,
         Auth $auth,
         BoughtServiceService $boughtServiceService,
         Database $db,
         LicensePriceService $licensePriceService,
-        PlatformService $platformService,
         LicenseServerService $licenseServerService,
         LicenseUserServiceRepository $licenseUserServiceRepository,
         PaginationFactory $paginationFactory,
+        PlatformService $platformService,
         PriceTextService $priceTextService,
+        ProxyManagerClient $proxyManagerClient,
         PurchaseDataService $purchaseDataService,
-        Settings $settings,
         ServiceManager $serviceManager,
+        Settings $settings,
         Template $template,
         TranslationManager $translationManager,
         UserServiceService $userServiceService,
-        AdminPaymentService $adminPaymentService,
         Service $service = null
     ) {
         parent::__construct($template, $service);
+        $this->adminPaymentService = $adminPaymentService;
         $this->auth = $auth;
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;
-        $this->platformService = $platformService;
+        $this->lang = $translationManager->user();
         $this->licensePriceService = $licensePriceService;
         $this->licenseServerService = $licenseServerService;
         $this->licenseUserServiceRepository = $licenseUserServiceRepository;
         $this->paginationFactory = $paginationFactory;
+        $this->platformService = $platformService;
         $this->priceTextService = $priceTextService;
+        $this->proxyManagerClient = $proxyManagerClient;
         $this->purchaseDataService = $purchaseDataService;
-        $this->settings = $settings;
         $this->serviceManager = $serviceManager;
+        $this->settings = $settings;
         $this->userServiceService = $userServiceService;
-        $this->adminPaymentService = $adminPaymentService;
-        $this->lang = $translationManager->user();
     }
 
     public function mapToUserService(array $data): LicenseUserService
@@ -321,7 +325,7 @@ EOF
             $subdomain
         );
 
-        return $this->boughtServiceService->create(
+        $boughtServiceId = $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
@@ -342,6 +346,10 @@ EOF
                 "subdomain" => $subdomain,
             ]
         );
+
+        $this->proxyManagerClient->reload();
+
+        return $boughtServiceId;
     }
 
     public function purchaseInfo($action, Transaction $transaction)

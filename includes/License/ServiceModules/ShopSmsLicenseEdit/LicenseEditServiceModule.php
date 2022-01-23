@@ -2,6 +2,7 @@
 namespace App\License\ServiceModules\ShopSmsLicenseEdit;
 
 use App\License\Models\LicenseUserService;
+use App\License\ProxyManagerClient;
 use App\License\SubdomainUtil;
 use App\Models\Purchase;
 use App\Models\Service;
@@ -33,21 +34,23 @@ class LicenseEditServiceModule extends ServiceModule implements
     const MODULE_ID = "shopsms_license_edit";
     const USER_SERVICE_TABLE = "ss_user_service_shopsms_license";
 
-    private Translator $lang;
-    private LicenseServerService $licenseServerService;
     private BoughtServiceService $boughtServiceService;
-    private UserServiceService $userServiceService;
-    private PriceTextService $priceTextService;
-    private PlatformService $platformService;
-    private UserServiceRepository $userServiceRepository;
     private Database $db;
+    private LicenseServerService $licenseServerService;
+    private PlatformService $platformService;
+    private PriceTextService $priceTextService;
+    private ProxyManagerClient $proxyManagerClient;
+    private Translator $lang;
+    private UserServiceRepository $userServiceRepository;
+    private UserServiceService $userServiceService;
 
     public function __construct(
         BoughtServiceService $boughtServiceService,
         Database $db,
-        PlatformService $platformService,
         LicenseServerService $licenseServerService,
+        PlatformService $platformService,
         PriceTextService $priceTextService,
+        ProxyManagerClient $proxyManagerClient,
         Template $template,
         TranslationManager $translationManager,
         UserServiceRepository $userServiceRepository,
@@ -55,14 +58,15 @@ class LicenseEditServiceModule extends ServiceModule implements
         Service $service = null
     ) {
         parent::__construct($template, $service);
-        $this->licenseServerService = $licenseServerService;
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;
-        $this->userServiceService = $userServiceService;
-        $this->priceTextService = $priceTextService;
-        $this->platformService = $platformService;
-        $this->userServiceRepository = $userServiceRepository;
         $this->lang = $translationManager->user();
+        $this->licenseServerService = $licenseServerService;
+        $this->platformService = $platformService;
+        $this->priceTextService = $priceTextService;
+        $this->proxyManagerClient = $proxyManagerClient;
+        $this->userServiceRepository = $userServiceRepository;
+        $this->userServiceService = $userServiceService;
     }
 
     public function purchaseFormGet(array $query): string
@@ -127,7 +131,7 @@ class LicenseEditServiceModule extends ServiceModule implements
             ]
         );
 
-        return $this->boughtServiceService->create(
+        $boughtServiceId = $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
             $purchase->user->getLastIp(),
@@ -145,6 +149,10 @@ class LicenseEditServiceModule extends ServiceModule implements
                 "subdomain" => $subdomain,
             ]
         );
+
+        $this->proxyManagerClient->reload();
+
+        return $boughtServiceId;
     }
 
     public function purchaseInfo($action, Transaction $transaction)

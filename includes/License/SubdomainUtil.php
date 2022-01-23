@@ -14,6 +14,6 @@ final class SubdomainUtil
         $subdomainValue = htmlspecialchars($subdomain);
         $url = "https://$subdomainValue.sklep-sms.cloud";
         $hosting = __("hosting");
-        return "<b>$hosting</b>: <a href=\"$url\" target=\"_blank\">$url</a><br />";
+        return "<b>$hosting</b>: $url<br />";
     }
 }
