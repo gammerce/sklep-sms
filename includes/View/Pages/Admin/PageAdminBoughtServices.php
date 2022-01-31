@@ -149,7 +149,7 @@ class PageAdminBoughtServices extends PageAdmin
                     ->addCell(new Cell($paymentEntry))
                     ->when(
                         $this->invoiceService->isConfigured(),
-                        fn(BodyRow $bodyRow) => $bodyRow->addCell($invoiceEntry)
+                        fn(BodyRow $bodyRow) => $bodyRow->addCell(new Cell($invoiceEntry))
                     )
                     ->addCell(new Cell($userEntry))
                     ->addCell(new Cell($serverEntry))

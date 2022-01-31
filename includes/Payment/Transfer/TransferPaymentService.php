@@ -81,11 +81,7 @@ class TransferPaymentService
             $finalizedPayment->isTestMode()
         );
 
-        if ($finalizedPayment->isTestMode()) {
-            $invoiceId = null;
-        } else {
-            $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
-        }
+        $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
 
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId(),
