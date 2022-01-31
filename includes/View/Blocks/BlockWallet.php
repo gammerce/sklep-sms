@@ -47,13 +47,9 @@ class BlockWallet extends Block implements IBeLoggedMust
     {
         $user = $this->auth->user();
         $balance = $user->getWallet();
+        $service = $this->serviceManager->get("charge_wallet");
 
-        if (
-            $this->userServiceAccessService->canUserUseService(
-                $this->serviceManager->get("charge_wallet"),
-                $user
-            )
-        ) {
+        if ($service && $this->userServiceAccessService->canUserUseService($service, $user)) {
             $chargeWalletButton = $this->template->render(
                 "shop/components/navbar/navigation_item_icon",
                 [
