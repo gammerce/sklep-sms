@@ -189,7 +189,7 @@ class Purchase
 
     public function getTransferDescription(): ?string
     {
-        return "Płatność za usługę: {$this->serviceName}";
+        return $this->serviceName;
     }
 
     public function getPlatform(): ?string
