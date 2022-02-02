@@ -7,7 +7,6 @@ use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
 use App\Payment\Interfaces\IPaymentMethod;
-use App\Payment\Transfer\TransferPriceService;
 use App\ServiceModules\Interfaces\IServicePurchase;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -17,18 +16,18 @@ class WalletPaymentMethod implements IPaymentMethod
 {
     private Translator $lang;
     private WalletPaymentService $walletPaymentService;
-    private TransferPriceService $transferPriceService;
+    private WalletPriceService $walletPriceService;
     private Auth $auth;
 
     public function __construct(
         TranslationManager $translationManager,
-        TransferPriceService $transferPriceService,
+        WalletPriceService $walletPriceService,
         WalletPaymentService $walletPaymentService,
         Auth $auth
     ) {
         $this->lang = $translationManager->user();
         $this->walletPaymentService = $walletPaymentService;
-        $this->transferPriceService = $transferPriceService;
+        $this->walletPriceService = $walletPriceService;
         $this->auth = $auth;
     }
 
@@ -36,12 +35,12 @@ class WalletPaymentMethod implements IPaymentMethod
         Purchase $purchase,
         ?PaymentPlatform $paymentPlatform = null
     ): array {
-        return $this->transferPriceService->getOldAndNewPrice($purchase);
+        return $this->walletPriceService->getOldAndNewPrice($purchase);
     }
 
     public function isAvailable(Purchase $purchase, ?PaymentPlatform $paymentPlatform = null): bool
     {
-        $price = $this->transferPriceService->getPrice($purchase);
+        $price = $this->walletPriceService->getPrice($purchase);
         return $this->auth->check() && $price !== null;
     }
 
@@ -60,7 +59,7 @@ class WalletPaymentMethod implements IPaymentMethod
             );
         }
 
-        $price = $this->transferPriceService->getPrice($purchase);
+        $price = $this->walletPriceService->getPrice($purchase);
 
         if ($price === null) {
             throw new PaymentProcessingException(
