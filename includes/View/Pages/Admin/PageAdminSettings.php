@@ -109,7 +109,7 @@ class PageAdminSettings extends PageAdmin
             : $this->template->render("admin/components/settings/shop_address");
 
         return $this->template->render("admin/pages/settings", [
-            "cronSelect" => $cronSelect,
+            "cron" => $cronSelect,
             "directBillingPlatforms" => implode("", $directBillingPlatforms),
             "languagesList" => implode("", $languagesList),
             "licenseSection" => $licenseSection,
@@ -145,8 +145,12 @@ class PageAdminSettings extends PageAdmin
         return $userEditServiceSelect;
     }
 
-    private function createCronSelect(): DOMElement
+    private function createCronSelect(): ?string
     {
+        if (is_saas()) {
+            return null;
+        }
+
         $yesOption = new Option($this->lang->t("yes"));
         $yesOption->setParam("value", "1");
         if ($this->settings["cron_each_visit"]) {
@@ -159,11 +163,13 @@ class PageAdminSettings extends PageAdmin
             $noOption->setParam("selected", "selected");
         }
 
-        return (new Select())
+        $cronSelect = (new Select())
             ->setParam("id", "cron")
             ->setParam("name", "cron")
             ->addContent($yesOption)
             ->addContent($noOption);
+
+        return $this->template->render("admin/components/settings/cron", compact("cronSelect"));
     }
 
     private function createPaymentPlatformOption(
