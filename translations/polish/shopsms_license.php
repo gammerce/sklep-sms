@@ -23,7 +23,8 @@ return [
     "service_not_taken_over" => "Nie udało się przejąć usługi. Może już jesteś jej właścicelem?",
 
     "cloud" => "Chmura",
-    "invalid_subdomain" => "Nieprawidłowa subdomena. Dozwolone są jedynie cyfry, litery i znak -",
+    "invalid_subdomain" =>
+        "Nieprawidłowa subdomena. Dozwolone są jedynie cyfry, małe litery i znak -",
     "hosting" => "Hosting",
     "hosting_subtitle" => "Nie martw się o własny hosting i uruchom sklep w domenie <strong>sklep-sms.cloud</strong>.<br/>
         Podaj nazwę subdomeny, np. wpisując <b>cs16</b> twój sklep będzie dostępny pod adresem https://<b>cs16</b>.sklep-sms.cloud<br/>

@@ -22,7 +22,7 @@ return [
     "service_not_taken_over" => "Service takeover failure. Maybe you already are its owner?",
 
     "cloud" => "Cloud",
-    "invalid_subdomain" => "Invalid subdomain. It can only contains digits, letters, and -",
+    "invalid_subdomain" => "Invalid subdomain. It can only contains digits, lower letters, and -",
     "hosting_subtitle" => "Don't worry about your own hosting and run your shop under the <strong>sklep-sms.cloud</strong> domain.<br/>
         Enter a subdomain name, e.g. by entering <b>cs16</b> your shop will be available under https://<b>cs16</b>.sklep-sms.cloud<br/>
         More information: <a href='https://sklep-sms.pl#cloud' target='_blank'>https://sklep-sms.pl#cloud</a>",
