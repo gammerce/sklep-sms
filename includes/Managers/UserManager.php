@@ -17,7 +17,7 @@ class UserManager
     }
 
     /**
-     * @param int $userId
+     * @param int|null $userId
      * @return User
      */
     public function get($userId): User

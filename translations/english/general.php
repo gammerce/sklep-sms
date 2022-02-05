@@ -37,7 +37,7 @@ return [
     "field_length_min_warn" => "Field must consist of min. {1} chars.",
     "field_must_be_number" => "Field must contain a number.",
     "field_no_empty" => "Field cannot be empty.",
-    "firstname" => "Name",
+    "firstname" => "Firstname",
     "forever" => "Forever",
     "form_wrong_filled" => "Not all the form fields were filled correctly.",
     "go" => "Go",
