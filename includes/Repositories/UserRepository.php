@@ -112,7 +112,7 @@ EOF
     }
 
     /**
-     * @param int $id
+     * @param int|null $id
      * @return User|null
      */
     public function get($id): ?User
