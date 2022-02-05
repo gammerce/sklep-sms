@@ -120,8 +120,11 @@ class BoughtServiceService
         return $boughtService->getId();
     }
 
-    private function sendEmail(string $service, string $email, BoughtService $boughtService): string
-    {
+    private function sendEmail(
+        string $service,
+        ?string $email,
+        BoughtService $boughtService
+    ): string {
         if (!strlen($email)) {
             return $this->lang->t("none");
         }
