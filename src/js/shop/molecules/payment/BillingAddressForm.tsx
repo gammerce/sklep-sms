@@ -49,6 +49,7 @@ export const BillingAddressForm: FunctionComponent<Props> = (props) => {
                                 maxLength={128}
                                 onChange={setName}
                                 value={billingAddress.name}
+                                placeholder={`${__("firstname")} ${__("surname")}`}
                                 required
                             />
                         </div>

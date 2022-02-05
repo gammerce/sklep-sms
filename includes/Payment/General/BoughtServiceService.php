@@ -4,6 +4,7 @@ namespace App\Payment\General;
 use App\Loggers\DatabaseLogger;
 use App\Managers\ServerManager;
 use App\Managers\ServiceManager;
+use App\Managers\UserManager;
 use App\Models\BoughtService;
 use App\Repositories\BoughtServiceRepository;
 use App\Support\Mailer;
@@ -21,6 +22,7 @@ class BoughtServiceService
     private ServiceManager $serviceManager;
     private Template $template;
     private Translator $lang;
+    private UserManager $userManager;
 
     public function __construct(
         BoughtServiceRepository $boughtServiceRepository,
@@ -30,7 +32,8 @@ class BoughtServiceService
         ServerManager $serverManager,
         ServiceManager $serviceManager,
         Template $template,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        UserManager $userManager
     ) {
         $this->boughtServiceRepository = $boughtServiceRepository;
         $this->lang = $translationManager->user();
@@ -40,6 +43,7 @@ class BoughtServiceService
         $this->serverManager = $serverManager;
         $this->serviceManager = $serviceManager;
         $this->template = $template;
+        $this->userManager = $userManager;
     }
 
     /**
@@ -91,7 +95,7 @@ class BoughtServiceService
             $extraData
         );
 
-        $returnMessage = $this->sendEmail($serviceId, $authData, $email, $boughtService);
+        $returnMessage = $this->sendEmail($serviceId, $email, $boughtService);
 
         $service = $this->serviceManager->get($serviceId);
         $server = $this->serverManager->get($serverId);
@@ -116,8 +120,11 @@ class BoughtServiceService
         return $boughtService->getId();
     }
 
-    private function sendEmail($service, $authData, $email, BoughtService $boughtService): string
-    {
+    private function sendEmail(
+        string $service,
+        ?string $email,
+        BoughtService $boughtService
+    ): string {
         if (!strlen($email)) {
             return $this->lang->t("none");
         }
@@ -131,26 +138,19 @@ class BoughtServiceService
             return $this->lang->t("none");
         }
 
+        $user = $this->userManager->get($boughtService->getUserId());
+        $who = $user->getForename() ?: $boughtService->getAuthData();
+
         $title =
             $service == "charge_wallet"
                 ? $this->lang->t("charge_wallet")
                 : $this->lang->t("purchase");
 
         $text = $this->template->renderNoComments("emails/layout", [
-            "who" => $authData,
+            "who" => $who,
             "content" => $content,
         ]);
 
-        $ret = $this->mailer->send($email, $authData, $title, $text);
-
-        if ($ret == "not_sent") {
-            return "nie wysłano";
-        }
-
-        if ($ret == "sent") {
-            return "wysłano";
-        }
-
-        return $ret;
+        return $this->mailer->send($email, $who, $title, $text);
     }
 }
