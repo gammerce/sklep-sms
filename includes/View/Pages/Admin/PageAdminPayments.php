@@ -148,7 +148,7 @@ class PageAdminPayments extends PageAdmin
                     ->addCell(new Cell($transaction->getExternalPaymentId() ?: new NoneText()))
                     ->when(
                         $this->invoiceService->isConfigured(),
-                        fn(BodyRow $bodyRow) => $bodyRow->addCell($invoiceEntry)
+                        fn(BodyRow $bodyRow) => $bodyRow->addCell(new Cell($invoiceEntry))
                     )
                     ->addCell(new DateTimeCell($transaction->getTimestamp()))
                     ->addCell(new PlainTextCell($transaction->getIp(), "ip"))
