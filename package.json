@@ -20,7 +20,7 @@
     "core-js": "^3.16.0",
     "css-loader": "^6.2.0",
     "mini-css-extract-plugin": "^2.1.0",
-    "node-sass": "^6.0.1",
+    "node-sass": "^7.0.0",
     "react": "^16.14.0",
     "react-cache": "^2.0.0-alpha.1",
     "react-codemirror2": "^7.2.1",
