@@ -16,6 +16,6 @@ License can be purchased here: https://sklep.sklep-sms.pl
 How to install the Sklep SMS step by step: https://sklep-sms.pl/config
 
 ## Contact
-* kanał [#wsparcie](https://discord.gg/fz47ngSzGy) 
-* zakładka [issues](https://github.com/gammerce/sklep-sms/issues) 
+* [#wsparcie](https://discord.gg/fz47ngSzGy) channel
+* [Issues](https://github.com/gammerce/sklep-sms/issues) tab
 * email seek@sklep-sms.pl

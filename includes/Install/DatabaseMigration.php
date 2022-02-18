@@ -73,8 +73,18 @@ class DatabaseMigration
 
         $this->db
             ->statement(
-                "INSERT INTO `ss_users` " .
-                    "SET `username` = ?, `email` = ?, `password` = ?, `salt` = ?, `regip` = ?, `groups` = '2', `regdate` = NOW();"
+                <<<EOF
+INSERT INTO `ss_users`
+SET
+`username` = ?,
+`email` = ?,
+`password` = ?,
+`salt` = ?,
+`regip` = ?,
+`groups` = '2',
+`regdate` = NOW(),
+`billing_address` = '{}'
+EOF
             )
             ->execute([
                 $adminUsername,
