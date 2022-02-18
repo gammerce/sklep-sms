@@ -100,7 +100,7 @@ EOF
         $statement = $this->db->statement(
             "SELECT * FROM `ss_user_service` AS us " .
                 "INNER JOIN `$table` AS m ON m.us_id = us.id " .
-                "WHERE us.subdomain = ?"
+                "WHERE m.subdomain = ?"
         );
         $statement->execute([$subdomain]);
 
