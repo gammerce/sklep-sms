@@ -94,6 +94,23 @@ EOF
         return null;
     }
 
+    public function findBySubdomain(string $subdomain): ?LicenseUserService
+    {
+        $table = LicenseServiceModule::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_user_service` AS us " .
+                "INNER JOIN `$table` AS m ON m.us_id = us.id " .
+                "WHERE us.subdomain = ?"
+        );
+        $statement->execute([$subdomain]);
+
+        if ($data = $statement->fetch()) {
+            return $this->mapToModel($data);
+        }
+
+        return null;
+    }
+
     public function mapToModel(array $data): LicenseUserService
     {
         return new LicenseUserService(
