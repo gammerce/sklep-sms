@@ -59,7 +59,7 @@ class SettingsController
             ],
             [
                 "contact" => [],
-                "cron" => [new RequiredRule(), new YesNoRule()],
+                "cron" => [new YesNoRule()],
                 "currency" => [],
                 "date_format" => [],
                 "delete_logs" => [new NumberRule()],
@@ -86,7 +86,7 @@ class SettingsController
 
         $values = [
             "contact" => $validated["contact"],
-            "cron_each_visit" => $validated["cron"],
+            "cron_each_visit" => $validated["cron"] ?: "0",
             "currency" => $validated["currency"],
             "date_format" => $validated["date_format"],
             "delete_logs" => $validated["delete_logs"],

@@ -41,6 +41,7 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                                     className="button is-primary"
                                     onClick={applyPromoCode}
                                     disabled={!promoCode}
+                                    type="button"
                                 >
                                     <span className="icon">
                                         <i className="fas fa-tag" />
@@ -51,7 +52,11 @@ export const PromoCodeBox: FunctionComponent<Props> = (props) => {
                         )}
                         {!!transactionPromoCode && (
                             <div className="control">
-                                <button className="button is-primary" onClick={onPromoCodeRemove}>
+                                <button
+                                    className="button is-primary"
+                                    onClick={onPromoCodeRemove}
+                                    type="button"
+                                >
                                     <span className="icon">
                                         <i className="fas fa-trash" />
                                     </span>
