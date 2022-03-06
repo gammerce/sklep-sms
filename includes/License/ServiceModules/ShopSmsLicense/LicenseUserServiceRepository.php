@@ -75,14 +75,34 @@ EOF
         return $this->get($userServiceId);
     }
 
+    /**
+     * @return LicenseUserService[]
+     */
+    public function all(): array
+    {
+        $table = LicenseServiceModule::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            <<<EOF
+                SELECT * FROM `ss_user_service` AS us 
+                INNER JOIN `$table` AS m ON m.us_id = us.id 
+EOF
+        );
+
+        return collect($statement)
+            ->map(fn(array $row) => $this->mapToModel($row))
+            ->all();
+    }
+
     public function get($id): ?LicenseUserService
     {
         if ($id) {
             $table = LicenseServiceModule::USER_SERVICE_TABLE;
             $statement = $this->db->statement(
-                "SELECT * FROM `ss_user_service` AS us " .
-                    "INNER JOIN `$table` AS m ON m.us_id = us.id " .
-                    "WHERE `id` = ?"
+                <<<EOF
+                SELECT * FROM `ss_user_service` AS us 
+                INNER JOIN `$table` AS m ON m.us_id = us.id 
+                WHERE `id` = ?
+EOF
             );
             $statement->execute([$id]);
 
