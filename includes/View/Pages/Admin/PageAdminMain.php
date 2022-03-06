@@ -242,7 +242,9 @@ class PageAdminMain extends PageAdmin
 
             // Daily
             $incomeDailyText = $this->priceTextService->getPriceText(
-                app(\App\License\LicenseIncomeService::class)->sumDaily()
+                app()
+                    ->make(\App\License\LicenseIncomeService::class)
+                    ->sumDaily()
             );
             $bricks[] = $this->createBrick(
                 "Dzienny dochód sklepu wynosi <strong>{$incomeDailyText}</strong>.",
