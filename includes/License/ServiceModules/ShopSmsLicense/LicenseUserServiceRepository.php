@@ -81,7 +81,7 @@ EOF
     public function all(): array
     {
         $table = LicenseServiceModule::USER_SERVICE_TABLE;
-        $statement = $this->db->statement(
+        $statement = $this->db->query(
             <<<EOF
                 SELECT * FROM `ss_user_service` AS us 
                 INNER JOIN `$table` AS m ON m.us_id = us.id 
