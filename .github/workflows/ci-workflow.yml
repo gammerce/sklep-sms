@@ -38,10 +38,10 @@ jobs:
         include:
           - php_version: "5.6"
             composer: "composer-v5.json"
-          - php_version: "7.4"
-            composer: "composer-v5.json"
-          - php_version: "8.0"
-            composer: "composer.json"
+#          - php_version: "7.4"
+#            composer: "composer-v5.json"
+#          - php_version: "8.0"
+#            composer: "composer.json"
 #          - php_version: "8.1"
 #            composer: "composer.json"
     env:
@@ -96,6 +96,9 @@ jobs:
       - run: php artisan test:setup
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Run tests
         run: ./vendor/bin/phpunit --coverage-clover clover.xml
