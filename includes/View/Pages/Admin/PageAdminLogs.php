@@ -36,7 +36,7 @@ class PageAdminLogs extends PageAdmin
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_LOGS();
+        return Permission::LOGS_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -74,7 +74,7 @@ class PageAdminLogs extends PageAdmin
                     ->setDbId($row["id"])
                     ->addCell(new Cell($div))
                     ->addCell(new DateTimeCell($row["timestamp"]))
-                    ->setDeleteAction(can(Permission::MANAGE_LOGS()));
+                    ->setDeleteAction(can(Permission::LOGS_MANAGEMENT()));
             })
             ->all();
 

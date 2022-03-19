@@ -57,7 +57,7 @@ class PageAdminIncome extends PageAdmin
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_INCOME();
+        return Permission::INCOME_VIEW();
     }
 
     public function getTitle(Request $request = null): string

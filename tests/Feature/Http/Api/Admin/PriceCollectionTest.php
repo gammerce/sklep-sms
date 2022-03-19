@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\PriceRepository;
+use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PriceCollectionTest extends HttpTestCase
@@ -12,6 +13,10 @@ class PriceCollectionTest extends HttpTestCase
     {
         parent::setUp();
         $this->priceRepository = $this->app->make(PriceRepository::class);
+
+        $this->actingAs(
+            $this->factory->privilegedUser([Permission::ACP(), Permission::PRICING_MANAGEMENT()])
+        );
     }
 
     /** @test */
@@ -19,7 +24,6 @@ class PriceCollectionTest extends HttpTestCase
     {
         // given
         $server = $this->factory->server();
-        $this->actingAs($this->factory->admin());
 
         // when
         $response = $this->post("/api/admin/prices", [
@@ -45,7 +49,6 @@ class PriceCollectionTest extends HttpTestCase
     public function cannot_create_twice_the_same_price()
     {
         $server = $this->factory->server();
-        $this->actingAs($this->factory->admin());
 
         $body = [
             "service_id" => "vip",

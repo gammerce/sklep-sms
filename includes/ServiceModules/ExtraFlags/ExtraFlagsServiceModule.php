@@ -283,8 +283,8 @@ EOF
                     ->addCell(new Cell($row["auth_data"]))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))
-                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
-                    ->setEditAction(can(Permission::MANAGE_USER_SERVICES()));
+                    ->setDeleteAction(can(Permission::USER_SERVICES_MANAGEMENT()))
+                    ->setEditAction(can(Permission::USER_SERVICES_MANAGEMENT()));
             })
             ->all();
 

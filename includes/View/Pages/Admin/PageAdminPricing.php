@@ -67,7 +67,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::MANAGE_SETTINGS();
+        return Permission::PRICING_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -126,8 +126,10 @@ EOF
                     ->addCell(new Cell($smsPrice))
                     ->addCell(new Cell($transferPrice))
                     ->addCell(new Cell($directBillingPrice))
-                    ->setDeleteAction(true)
-                    ->setEditAction(true);
+                    ->when(
+                        can(Permission::PRICING_MANAGEMENT()),
+                        fn(BodyRow $bodyRow) => $bodyRow->setDeleteAction(true)->setEditAction(true)
+                    );
             })
             ->all();
 
@@ -142,11 +144,13 @@ EOF
             ->addBodyRows($bodyRows)
             ->enablePagination($this->getPagePath(), $pagination, $rowsCount);
 
-        return (new Wrapper())
-            ->setTitle($this->getTitle($request))
-            ->setTable($table)
-            ->addButton($this->createAddButton())
-            ->toHtml();
+        $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
+
+        if (can(Permission::PRICING_MANAGEMENT())) {
+            $wrapper->addButton($this->createAddButton());
+        }
+
+        return $wrapper->toHtml();
     }
 
     private function createAddButton(): DOMElement
@@ -160,7 +164,7 @@ EOF
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_SETTINGS())) {
+        if (cannot(Permission::PRICING_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

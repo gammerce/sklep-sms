@@ -54,7 +54,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_SMS_CODES();
+        return Permission::SMS_CODES_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -87,7 +87,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
                         )
                     )
                     ->addCell(new ExpirationDateCell($smsCode->getExpiresAt()))
-                    ->setDeleteAction(can(Permission::MANAGE_SMS_CODES()))
+                    ->setDeleteAction(can(Permission::SMS_CODES_MANAGEMENT()))
             )
             ->all();
 
@@ -101,7 +101,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_SMS_CODES())) {
+        if (can(Permission::SMS_CODES_MANAGEMENT())) {
             $button = (new Input())
                 ->setParam("id", "sms_code_button_add")
                 ->setParam("type", "button")
@@ -116,7 +116,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_SMS_CODES())) {
+        if (cannot(Permission::SMS_CODES_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 
