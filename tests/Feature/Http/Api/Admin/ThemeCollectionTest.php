@@ -11,7 +11,7 @@ class ThemeCollectionTest extends HttpTestCase
     {
         // given
         $this->actingAs(
-            $this->factory->privilegedUser([Permission::ACP(), Permission::MANAGE_SETTINGS()])
+            $this->factory->privilegedUser([Permission::ACP(), Permission::SETTINGS_MANAGEMENT()])
         );
         $this->factory->template(["theme" => "foo"]);
         $this->factory->template(["theme" => "bar"]);

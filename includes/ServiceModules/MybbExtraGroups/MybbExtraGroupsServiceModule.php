@@ -270,7 +270,7 @@ EOF
                     ->addCell(new Cell($row["mybb_uid"]))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))
-                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
+                    ->setDeleteAction(can(Permission::USER_SERVICES_MANAGEMENT()))
                     ->setEditAction(false);
             })
             ->all();

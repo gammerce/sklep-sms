@@ -63,7 +63,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_PROMO_CODES();
+        return Permission::PROMO_CODES_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -92,7 +92,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new ExpirationDateCell($promoCode->getExpiresAt()))
                     ->addCell(new DateTimeCell($promoCode->getCreatedAt()))
                     ->addAction($this->createViewButton())
-                    ->setDeleteAction(can(Permission::MANAGE_PROMO_CODES()))
+                    ->setDeleteAction(can(Permission::PROMO_CODES_MANAGEMENT()))
             )
             ->all();
 
@@ -108,7 +108,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_PROMO_CODES())) {
+        if (can(Permission::PROMO_CODES_MANAGEMENT())) {
             $addButton = $this->createAddButton();
             $wrapper->addButton($addButton);
         }
@@ -132,7 +132,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_PROMO_CODES())) {
+        if (cannot(Permission::PROMO_CODES_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

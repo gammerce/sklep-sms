@@ -53,7 +53,7 @@ class ValidateLicense implements MiddlewareContract
     {
         $user = $this->auth->user();
 
-        if ($user->can(Permission::MANAGE_SETTINGS())) {
+        if ($user->can(Permission::SETTINGS_MANAGEMENT())) {
             $user->removePermissions();
             $user->setPermissions([
                 "acp" => true,

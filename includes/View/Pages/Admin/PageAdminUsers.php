@@ -67,7 +67,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_USERS();
+        return Permission::USERS_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -137,8 +137,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                     )
                     ->addAction($this->createChargeButton())
                     ->addAction($this->createPasswordButton())
-                    ->setDeleteAction(can(Permission::MANAGE_USERS()))
-                    ->setEditAction(can(Permission::MANAGE_USERS()))
+                    ->setDeleteAction(can(Permission::USERS_MANAGEMENT()))
+                    ->setEditAction(can(Permission::USERS_MANAGEMENT()))
                     ->when($recordId === $user->getId(), function (BodyRow $bodyRow) {
                         $bodyRow->addClass("highlighted");
                     });
@@ -178,7 +178,7 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_USERS())) {
+        if (cannot(Permission::USERS_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

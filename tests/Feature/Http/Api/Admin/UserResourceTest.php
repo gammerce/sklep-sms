@@ -89,10 +89,10 @@ class UserResourceTest extends HttpTestCase
     {
         // given
         $miniAdmin = $this->factory->group([
-            "permissions" => [Permission::ACP(), Permission::MANAGE_USERS()],
+            "permissions" => [Permission::ACP(), Permission::USERS_MANAGEMENT()],
         ]);
         $sales = $this->factory->group([
-            "permissions" => [Permission::ACP(), Permission::MANAGE_SERVERS()],
+            "permissions" => [Permission::ACP(), Permission::SERVERS_MANAGEMENT()],
         ]);
         $user = $this->factory->user([
             "groups" => [$miniAdmin->getId()],
@@ -125,10 +125,10 @@ class UserResourceTest extends HttpTestCase
     {
         // given
         $sales = $this->factory->group([
-            "permissions" => [Permission::ACP(), Permission::MANAGE_USERS()],
+            "permissions" => [Permission::ACP(), Permission::USERS_MANAGEMENT()],
         ]);
         $developers = $this->factory->group([
-            "permissions" => [Permission::MANAGE_SERVICES()],
+            "permissions" => [Permission::SERVICES_MANAGEMENT()],
         ]);
         $tom = $this->factory->user([
             "groups" => [$sales->getId()],

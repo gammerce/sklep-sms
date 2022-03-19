@@ -67,7 +67,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::MANAGE_PRICING();
+        return Permission::PRICING_MANAGEMENT();
     }
 
     public function getTitle(Request $request = null): string
@@ -127,7 +127,7 @@ EOF
                     ->addCell(new Cell($transferPrice))
                     ->addCell(new Cell($directBillingPrice))
                     ->when(
-                        can(Permission::MANAGE_PRICING()),
+                        can(Permission::PRICING_MANAGEMENT()),
                         fn(BodyRow $bodyRow) => $bodyRow->setDeleteAction(true)->setEditAction(true)
                     );
             })
@@ -146,7 +146,7 @@ EOF
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_PRICING())) {
+        if (can(Permission::PRICING_MANAGEMENT())) {
             $wrapper->addButton($this->createAddButton());
         }
 
@@ -164,7 +164,7 @@ EOF
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_PRICING())) {
+        if (cannot(Permission::PRICING_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 
