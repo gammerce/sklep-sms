@@ -35,6 +35,7 @@ class AdminAuthController
 
         $header = $template->render("admin/header", [
             "currentPageId" => "login",
+            "langJsPath" => $url->versioned("lang.js", ["language" => $lang->getCurrentLanguage()]),
             "pageTitle" => "Login",
             "scripts" => $websiteHeader->getScripts(),
         ]);

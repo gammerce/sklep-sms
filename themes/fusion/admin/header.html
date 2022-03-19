@@ -9,10 +9,7 @@
 <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
 <script type="text/javascript" src="{{ $url->versioned('build/js/vendors.js') }}"></script>
 <script type="text/javascript" src="{{ $url->versioned('build/js/admin.js') }}"></script>
-<script
-    type="text/javascript"
-    src="{{ $url->versioned('lang.js', ['language' => $lang->getCurrentLanguage()]) }}"
-></script>
+<script type="text/javascript" src="{!! $langJsPath !!}"></script>
 <script type="text/javascript">
     window.language = "{{ $lang->getCurrentLanguage() }}";
     window.baseUrl = "{{ url('/') }}";

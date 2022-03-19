@@ -10,10 +10,7 @@
 ></script>
 <script type="text/javascript" src="{{ versioned('build/js/vendors.js') }}"></script>
 <script type="text/javascript" src="{{ versioned('build/js/shop.js') }}"></script>
-<script
-    type="text/javascript"
-    src="{{ versioned('lang.js', ['language' => $lang->getCurrentLanguage()]) }}"
-></script>
+<script type="text/javascript" src="{!! $langJsPath !!}"></script>
 <script type="text/javascript">
     window.f = "{!! $footer !!}";
     window.language = "{{ $lang->getCurrentLanguage() }}";

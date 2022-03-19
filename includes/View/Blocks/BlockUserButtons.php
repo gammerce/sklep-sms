@@ -1,9 +1,7 @@
 <?php
 namespace App\View\Blocks;
 
-use App\Managers\ServiceManager;
 use App\Routing\UrlGenerator;
-use App\Service\UserServiceAccessService;
 use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -17,25 +15,19 @@ class BlockUserButtons extends Block
 
     private Auth $auth;
     private Template $template;
-    private ServiceManager $serviceManager;
     private UrlGenerator $url;
     private Translator $lang;
-    private UserServiceAccessService $userServiceAccessService;
 
     public function __construct(
         Auth $auth,
         Template $template,
         TranslationManager $translationManager,
-        ServiceManager $serviceManager,
-        UrlGenerator $url,
-        UserServiceAccessService $userServiceAccessService
+        UrlGenerator $url
     ) {
         $this->auth = $auth;
         $this->template = $template;
-        $this->serviceManager = $serviceManager;
         $this->url = $url;
         $this->lang = $translationManager->user();
-        $this->userServiceAccessService = $userServiceAccessService;
     }
 
     public function getContentClass(): string
