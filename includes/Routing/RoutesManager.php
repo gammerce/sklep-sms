@@ -471,17 +471,17 @@ class RoutesManager
                 ]);
 
                 $r->post("/api/admin/prices", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_PRICING()]],
                     "uses" => PriceCollection::class . "@post",
                 ]);
 
                 $r->put("/api/admin/prices/{priceId}", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_PRICING()]],
                     "uses" => PriceResource::class . "@put",
                 ]);
 
                 $r->delete("/api/admin/prices/{priceId}", [
-                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_SETTINGS()]],
+                    "middlewares" => [[RequireAuthorized::class, Permission::MANAGE_PRICING()]],
                     "uses" => PriceResource::class . "@delete",
                 ]);
 
