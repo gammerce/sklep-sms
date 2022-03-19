@@ -12,42 +12,38 @@ final class Template
     private Translator $lang;
     private UrlGenerator $urlGenerator;
     private TemplateContentService $templateContentService;
+    private ContentEvaluator $contentEvaluator;
 
     public function __construct(
         Settings $settings,
         TranslationManager $translationManager,
         UrlGenerator $urlGenerator,
-        TemplateContentService $templateContentService
+        TemplateContentService $templateContentService,
+        ContentEvaluator $contentEvaluator
     ) {
         $this->settings = $settings;
         $this->lang = $translationManager->user();
         $this->urlGenerator = $urlGenerator;
         $this->templateContentService = $templateContentService;
+        $this->contentEvaluator = $contentEvaluator;
     }
 
     /**
-     * @param string $templateName
-     * @param array $data
-     * @param bool $escapeSlashes
-     * @param bool $htmlComments
-     * @return string
      * @throws TemplateNotFoundException
      */
     public function render(
-        $templateName,
+        string $templateName,
         array $data = [],
-        $escapeSlashes = true,
-        $htmlComments = true
+        bool $htmlComments = true
     ): string {
         $template = $this->templateContentService->get(
             $templateName,
             $this->settings->getTheme(),
             $this->lang->getCurrentLanguageShort(),
-            $escapeSlashes,
             $htmlComments
         );
-        $compiled = $this->compile($template);
-        return $this->evalTemplate($compiled, $data);
+        $data = $this->enrichData($data);
+        return $this->contentEvaluator->evaluate($template, $data);
     }
 
     /**
@@ -58,44 +54,14 @@ final class Template
      */
     public function renderNoComments($templateName, array $data = []): string
     {
-        return $this->render($templateName, $data, true, false);
+        return $this->render($templateName, $data, false);
     }
 
-    private function evalTemplate($__content, array $data): string
+    private function enrichData(array $data): array
     {
-        $data = $this->addDefaultVariables($data);
-        extract($data);
-
-        $e = fn($value) => htmlspecialchars($value);
-        $v = fn($value) => $value;
-        $addSlashes = fn($value) => addslashes($value);
-
-        return eval("return \"$__content\";");
-    }
-
-    private function addDefaultVariables(array $data): array
-    {
-        if (!array_key_exists("lang", $data)) {
-            $data["lang"] = $this->lang;
-        }
-
-        if (!array_key_exists("settings", $data)) {
-            $data["settings"] = $this->settings;
-        }
-
-        if (!array_key_exists("url", $data)) {
-            $data["url"] = $this->urlGenerator;
-        }
-
+        $data["lang"] = $data["lang"] ?? $this->lang;
+        $data["settings"] = $data["settings"] ?? $this->settings;
+        $data["url"] = $data["url"] ?? $this->urlGenerator;
         return $data;
-    }
-
-    private function compile($template): string
-    {
-        return preg_replace(
-            ["/{{\s*/", "/\s*}}/", "/{!!\s*/", "/\s*!!}/"],
-            ['{$e(', ")}", '{$v(', ")}"],
-            $template
-        );
     }
 }

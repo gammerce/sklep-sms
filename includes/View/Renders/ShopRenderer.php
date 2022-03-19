@@ -2,9 +2,12 @@
 namespace App\View\Renders;
 
 use App\Managers\WebsiteHeader;
+use App\Routing\UrlGenerator;
 use App\Theme\Template;
 use App\System\License;
 use App\System\Settings;
+use App\Translation\TranslationManager;
+use App\Translation\Translator;
 use App\View\Blocks\BlockLoggedInfo;
 use App\View\Blocks\BlockServersButtons;
 use App\View\Blocks\BlockServicesButtons;
@@ -15,23 +18,29 @@ use Symfony\Component\HttpFoundation\Request;
 class ShopRenderer
 {
     private Template $template;
+    private Translator $lang;
     private License $license;
     private BlockRenderer $blockRenderer;
     private Settings $settings;
     private WebsiteHeader $websiteHeader;
+    private UrlGenerator $url;
 
     public function __construct(
         Template $template,
         License $license,
         BlockRenderer $blockRenderer,
         Settings $settings,
-        WebsiteHeader $websiteHeader
+        WebsiteHeader $websiteHeader,
+        TranslationManager $translationManager,
+        UrlGenerator $urlGenerator
     ) {
         $this->template = $template;
+        $this->lang = $translationManager->user();
         $this->license = $license;
         $this->blockRenderer = $blockRenderer;
         $this->settings = $settings;
         $this->websiteHeader = $websiteHeader;
+        $this->url = $urlGenerator;
     }
 
     public function render($content, $pageId, $pageTitle, Request $request): string
@@ -41,6 +50,9 @@ class ShopRenderer
             "currentPageId" => $pageId,
             "customStyles" => $customStyles,
             "footer" => $this->license->getFooter(),
+            "langJsPath" => $this->url->versioned("lang.js", [
+                "language" => $this->lang->getCurrentLanguage(),
+            ]),
             "pageTitle" => $pageTitle,
             "scripts" => $this->websiteHeader->getScripts(),
         ]);

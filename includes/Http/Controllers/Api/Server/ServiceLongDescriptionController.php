@@ -42,8 +42,9 @@ class ServiceLongDescriptionController
 
         $customStyles = $template->render("shop/styles/general");
         $header = $template->render("shop/layout/header", [
-            "customStyles" => $customStyles,
             "currentPageId" => "service_long_description",
+            "customStyles" => $customStyles,
+            "langJsPath" => $url->versioned("lang.js", ["language" => $lang->getCurrentLanguage()]),
             "footer" => "",
             "pageTitle" => $pageTitle,
             "scripts" => $websiteHeader->getScripts(),
