@@ -21,6 +21,7 @@
     "illuminate/container": "^5.4",
     "symfony/console": "^3.4",
     "symfony/debug": "^3.4",
+    "symfony/expression-language": "^3.4",
     "symfony/http-foundation": "^3.4",
     "sentry/sentry": "^1.9",
     "psr/simple-cache": "^1.0",
