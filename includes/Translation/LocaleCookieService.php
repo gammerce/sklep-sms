@@ -12,7 +12,17 @@ class LocaleCookieService
     public function setLocale(Response $response, $language): void
     {
         $response->headers->setCookie(
-            new Cookie(LocaleCookieService::COOKIE_KEY, $language, 0, "/", null, false, false)
+            new Cookie(
+                LocaleCookieService::COOKIE_KEY,
+                $language,
+                0,
+                "/",
+                null,
+                false,
+                false,
+                false,
+                "lax"
+            )
         );
     }
 

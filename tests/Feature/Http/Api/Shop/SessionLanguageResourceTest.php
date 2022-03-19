@@ -13,6 +13,9 @@ class SessionLanguageResourceTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame("language=pl; path=/", $response->headers->get("set-cookie"));
+        $this->assertSame(
+            "language=pl; path=/; samesite=lax",
+            $response->headers->get("set-cookie")
+        );
     }
 }
