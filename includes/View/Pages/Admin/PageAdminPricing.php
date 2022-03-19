@@ -67,7 +67,7 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::PRICING_MANAGEMENT();
+        return Permission::PRICING_VIEW();
     }
 
     public function getTitle(Request $request = null): string
