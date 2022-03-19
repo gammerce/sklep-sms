@@ -10,17 +10,36 @@ services:
             - "8888:8888"
         links:
             - app
+            - app-v5
+
     app:
         build:
             context: ./docker
             dockerfile: app.docker
         volumes:
             - ./:/var/www
+            - ./composer.json:/var/www/composer.json
+            - ./composer.lock:/var/www/composer.lock
         links:
             - database
         environment:
             - "DB_PORT=3306"
             - "DB_HOST=database"
+
+    app-v5:
+        build:
+            context: ./docker
+            dockerfile: app-v5.docker
+        volumes:
+            - ./:/var/www
+            - ./composer-v5.json:/var/www/composer.json
+            - ./composer-v5.lock:/var/www/composer.lock
+        links:
+            - database
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=database"
+
     database:
         image: mysql:5.5
         environment:
