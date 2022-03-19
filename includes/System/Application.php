@@ -53,7 +53,7 @@ class Application extends Container
         $path = $this->make(Path::class);
 
         try {
-            (new Dotenv($path->to("confidential")))->load();
+            Dotenv::createImmutable($path->to("confidential"))->load();
         } catch (InvalidPathException $e) {
             //
         }
