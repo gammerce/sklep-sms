@@ -15,7 +15,7 @@ class ContentEvaluator
         $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("__"));
         $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("url"));
         $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("versioned"));
-        $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("e"));
+        $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("htmlspecialchars"));
         $this->expressionLanguage->addFunction(ExpressionFunction::fromPhp("addSlashes"));
     }
 
