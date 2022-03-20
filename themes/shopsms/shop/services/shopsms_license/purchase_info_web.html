@@ -1,14 +1,14 @@
-{{ __('service_purchased', $e($serviceName)) }}<br />
+{{ __('service_purchased', htmlspecialchars(serviceName)) }}<br />
 <br />
-<b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
+<b>{{ __('identifier') }}</b>: {{ identifier }}<br />
 <br />
 <strong class="has-text-danger">{{ __('save_token_hint') }}</strong><br />
-<b>{{ __('token') }}</b>: {{ $token }}<br />
+<b>{{ __('token') }}</b>: {{ token }}<br />
 <br />
-<b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
-<b>{{ __('expiration_date') }}</b>: {{ $expire }}<br />
-<b>{{ __('email') }}</b>: {{ $email }}<br />
-{!! $subdomain !!}
+<b>{{ __('platforms') }}</b>: {{ platforms }}<br />
+<b>{{ __('expiration_date') }}</b>: {{ expire }}<br />
+<b>{{ __('email') }}</b>: {{ email }}<br />
+{!! subdomain !!}
 <hr />
 {!! __('shop_setup') !!}<br />
 {!! __('latest_shop_versions') !!}

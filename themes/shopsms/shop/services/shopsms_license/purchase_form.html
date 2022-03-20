@@ -43,7 +43,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="help">{!! __('price_per_option', $platformMonthlyPrice) !!}</div>
+                <div class="help">{!! __('price_per_option', platformMonthlyPrice) !!}</div>
             </div>
         </div>
 
@@ -59,12 +59,12 @@
                                 name="amount"
                                 min="0"
                                 class="input"
-                                value="{{ $days }}"
+                                value="{{ days }}"
                                 required
                             />
                         </div>
                         <div class="control">
-                            <a class="button is-static">{{ $serviceTag }}</a>
+                            <a class="button is-static">{{ serviceTag }}</a>
                         </div>
                     </div>
                 </div>
@@ -93,7 +93,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="help">{!! __('price_per_hosting', $hostingMonthlyPrice) !!}</div>
+                <div class="help">{!! __('price_per_hosting', hostingMonthlyPrice) !!}</div>
             </div>
         </div>
     </div>
@@ -109,7 +109,7 @@
                         id="email"
                         name="email"
                         class="input"
-                        value="{{ $user->getEmail() }}"
+                        value="{{ user.getEmail() }}"
                         required
                     />
                 </div>
@@ -118,7 +118,7 @@
     </div>
 
     <div id="cost" class="column is-full has-text-centered">
-        <sup class="currency">{{ $settings->getCurrency() }}</sup>
+        <sup class="currency">{{ settings.getCurrency() }}</sup>
         <span class="price">0.00</span>
     </div>
 
@@ -131,5 +131,5 @@
         </button>
     </div>
 
-    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+    <input type="hidden" name="service_id" value="{{ serviceId }}" />
 </form>

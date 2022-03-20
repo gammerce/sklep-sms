@@ -1,4 +1,4 @@
-<form class="row" data-module="{{ $moduleId }}" data-row="{{ $userServiceId }}">
+<form class="row" data-module="{{ moduleId }}" data-row="{{ userServiceId }}">
     <div class="notification regenerated-token-box is-success is-hidden">
         Token: <strong class="token-value"></strong>
     </div>
@@ -6,24 +6,24 @@
     <div class="fright buttons">
         <a
             class="button prolong-license"
-            href="{{ url('/page/purchase?service=ss_license_plong&identifier=' . $identifier) }}"
+            href="{{ url('/page/purchase?service=ss_license_plong&identifier=' ~ identifier) }}"
         >
             {{ __('prolong_license') }}
         </a>
 
-        <button class="button regenerate-token" type="button" data-identifier="{{ $identifier }}">
+        <button class="button regenerate-token" type="button" data-identifier="{{ identifier }}">
             {{ __('regenerate_token') }}
         </button>
 
-        {!! $buttonEdit !!}
+        {!! buttonEdit !!}
     </div>
 
-    <b>{{ __('service') }}</b>: {{ $serviceName }}<br />
-    <b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
-    <b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
-    <b>{{ __('email') }}</b>: {{ $email }}<br />
-    {!! $subdomain !!}
+    <b>{{ __('service') }}</b>: {{ serviceName }}<br />
+    <b>{{ __('identifier') }}</b>: {{ identifier }}<br />
+    <b>{{ __('platforms') }}</b>: {{ platforms }}<br />
+    <b>{{ __('email') }}</b>: {{ email }}<br />
+    {!! subdomain !!}
     <br />
-    <b>{{ __('expire') }}</b>: {{ $expire }}<br />
-    <b>{{ __('price_monthly') }}</b>: {{ $costMonthly }}
+    <b>{{ __('expire') }}</b>: {{ expire }}<br />
+    <b>{{ __('price_monthly') }}</b>: {{ costMonthly }}
 </form>

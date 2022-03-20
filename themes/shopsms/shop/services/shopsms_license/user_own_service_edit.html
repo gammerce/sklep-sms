@@ -1,6 +1,6 @@
-<b>{{ __('service') }}</b>: {{ $serviceName }}<br />
-<b>{{ __('identifier') }}</b>: {{ $identifier }}<br />
-<b>{{ __('expire') }}</b>: {{ $expire }}<br />
+<b>{{ __('service') }}</b>: {{ serviceName }}<br />
+<b>{{ __('identifier') }}</b>: {{ identifier }}<br />
+<b>{{ __('expire') }}</b>: {{ expire }}<br />
 <hr />
 
 <div class="shopsms_user_edit">
@@ -9,13 +9,7 @@
             <div class="field">
                 <label for="email" class="label required">{{ __('email') }}</label>
                 <div class="control">
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        class="input"
-                        value="{{ $email }}"
-                    />
+                    <input type="email" id="email" name="email" class="input" value="{{ email }}" />
                 </div>
             </div>
         </div>
@@ -27,7 +21,7 @@
                     <div class="buttons" name="platforms">
                         <label class="button platform amxmodx fas" title="Counter Strike 1.6, etc.">
                             <input type="checkbox" name="platforms[]" value="amxmodx"
-                            class="is-hidden" {!! $platforms['amxmodx'] !!} />
+                            class="is-hidden" {!! platforms['amxmodx'] !!} />
                             <span>AMX Mod X</span>
                         </label>
                         <label
@@ -35,12 +29,12 @@
                             title="Counter Strike: Global Offensive, Team Fortress 2, etc."
                         >
                             <input type="checkbox" name="platforms[]" value="sourcemod"
-                            class="is-hidden" {!! $platforms['sourcemod'] !!} />
+                            class="is-hidden" {!! platforms['sourcemod'] !!} />
                             <span>SOURCEMOD</span>
                         </label>
                     </div>
                 </div>
-                <div class="help">{!! __('price_per_option', $platformMonthlyPrice) !!}</div>
+                <div class="help">{!! __('price_per_option', platformMonthlyPrice) !!}</div>
             </div>
         </div>
 
@@ -55,7 +49,7 @@
                                 id="subdomain"
                                 name="subdomain"
                                 class="input has-text-right"
-                                value="{{ $subdomain }}"
+                                value="{{ subdomain }}"
                             />
                         </div>
                         <div class="control">
@@ -70,7 +64,7 @@
         <div class="column is-full">
             <div class="field">
                 <label class="label">{{ __('price_monthly') }}</label>
-                <div id="cost-monthly" class="control">{{ $costMonthly }}</div>
+                <div id="cost-monthly" class="control">{{ costMonthly }}</div>
             </div>
         </div>
     </div>
@@ -78,9 +72,9 @@
     <hr />
 
     <div id="cost" class="column is-full has-text-centered">
-        <sup class="currency">{{ $settings->getCurrency() }}</sup>
+        <sup class="currency">{{ settings.getCurrency() }}</sup>
         <span class="price">0.00</span>
     </div>
 </div>
 
-<input type="hidden" name="service_id" value="{{ $serviceId }}" />
+<input type="hidden" name="service_id" value="{{ serviceId }}" />

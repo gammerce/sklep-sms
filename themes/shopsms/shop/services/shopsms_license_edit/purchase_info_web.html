@@ -1,8 +1,8 @@
-{!! __('license_edit_success', $e($authData)) !!}
+{!! __('license_edit_success', htmlspecialchars(authData)) !!}
 <hr />
 <u><b>{{ __('new_license_data') }}</b></u
 ><br />
 <br />
-<b>{{ __('email') }}</b>: {{ $email }}<br />
-<b>{{ __('platforms') }}</b>: {{ $platforms }}<br />
-{!! $subdomain !!}
+<b>{{ __('email') }}</b>: {{ email }}<br />
+<b>{{ __('platforms') }}</b>: {{ platforms }}<br />
+{!! subdomain !!}

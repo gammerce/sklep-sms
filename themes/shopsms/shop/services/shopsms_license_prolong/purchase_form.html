@@ -1,6 +1,6 @@
 <form id="form_purchase" class="shopsms_license_prolong_purchase">
     <input type="password" class="is-hidden" />
-    <input type="hidden" name="service_id" value="{{ $serviceId }}" />
+    <input type="hidden" name="service_id" value="{{ serviceId }}" />
 
     <div class="columns is-multiline">
         <div class="column is-half">
@@ -11,7 +11,7 @@
                         type="text"
                         id="identifier"
                         name="identifier"
-                        value="{{ $identifier }}"
+                        value="{{ identifier }}"
                         class="input"
                         required
                     />
@@ -35,9 +35,7 @@
                             />
                         </div>
                         <div class="control">
-                            <a class="button is-static">
-                                {{ $serviceTag }}
-                            </a>
+                            <a class="button is-static"> {{ serviceTag }} </a>
                         </div>
                     </div>
                 </div>
@@ -46,7 +44,7 @@
         </div>
 
         <div id="cost" class="column is-full has-text-centered">
-            <sup class="currency">{{ $settings->getCurrency() }}</sup>
+            <sup class="currency">{{ settings.getCurrency() }}</sup>
             <span class="price">0.00</span>
         </div>
     </div>
