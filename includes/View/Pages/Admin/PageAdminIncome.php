@@ -99,7 +99,6 @@ class PageAdminIncome extends PageAdmin
             "height" => "{$height}px",
             "labels" => json_encode($labels),
             "dataset" => json_encode($this->getDataset($labels, $incomeFromPeriod)),
-            "addSlashes" => fn($value) => addslashes($value),
         ]);
 
         $pageTitle = $this->template->render("admin/page_title", [
