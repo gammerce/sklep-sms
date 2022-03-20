@@ -63,7 +63,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_SERVERS();
+        return Permission::SERVERS_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -85,10 +85,10 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($server->getType() ?: new NoneText()))
                     ->addCell(new Cell($server->getVersion() ?: new NoneText()))
                     ->addCell(new Cell($server->getLastActiveAt() ?: new NoneText()))
-                    ->setDeleteAction(can(Permission::MANAGE_SERVERS()))
-                    ->setEditAction(can(Permission::MANAGE_SERVERS()))
+                    ->setDeleteAction(can(Permission::SERVERS_MANAGEMENT()))
+                    ->setEditAction(can(Permission::SERVERS_MANAGEMENT()))
                     ->when(
-                        can(Permission::MANAGE_SERVERS()),
+                        can(Permission::SERVERS_MANAGEMENT()),
                         fn(BodyRow $bodyRow) => $bodyRow->addAction(
                             $this->createRegenerateTokenButton()
                         )
@@ -111,7 +111,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_SERVERS())) {
+        if (can(Permission::SERVERS_MANAGEMENT())) {
             $wrapper->addButton($this->createAddButton());
         }
 
@@ -136,7 +136,7 @@ class PageAdminServers extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_SERVERS())) {
+        if (cannot(Permission::SERVERS_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

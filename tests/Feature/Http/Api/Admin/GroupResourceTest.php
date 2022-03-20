@@ -37,7 +37,7 @@ class GroupResourceTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $freshGroup = $this->groupRepository->get($this->group->getId());
         $this->assertSame("example2", $freshGroup->getName());
-        $this->assertTrue($freshGroup->hasPermission(Permission::VIEW_GROUPS()));
+        $this->assertTrue($freshGroup->hasPermission(Permission::GROUPS_VIEW()));
     }
 
     /** @test */

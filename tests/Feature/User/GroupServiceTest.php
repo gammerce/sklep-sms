@@ -36,13 +36,13 @@ class GroupServiceTest extends TestCase
     {
         // given
         $sales = $this->factory->group([
-            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SERVICES()],
+            "permissions" => [Permission::SERVERS_MANAGEMENT(), Permission::SERVICES_MANAGEMENT()],
         ]);
         $developers = $this->factory->group([
             "permissions" => [
-                Permission::MANAGE_USERS(),
-                Permission::MANAGE_SERVERS(),
-                Permission::MANAGE_SMS_CODES(),
+                Permission::USERS_MANAGEMENT(),
+                Permission::SERVERS_MANAGEMENT(),
+                Permission::SMS_CODES_MANAGEMENT(),
             ],
         ]);
         $user = $this->factory->user([
@@ -61,13 +61,13 @@ class GroupServiceTest extends TestCase
     {
         // given
         $sales = $this->factory->group([
-            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SMS_CODES()],
+            "permissions" => [Permission::SERVERS_MANAGEMENT(), Permission::SMS_CODES_MANAGEMENT()],
         ]);
         $developers = $this->factory->group([
             "permissions" => [
-                Permission::MANAGE_USERS(),
-                Permission::MANAGE_SERVERS(),
-                Permission::MANAGE_SMS_CODES(),
+                Permission::USERS_MANAGEMENT(),
+                Permission::SERVERS_MANAGEMENT(),
+                Permission::SMS_CODES_MANAGEMENT(),
             ],
         ]);
         $user = $this->factory->user([
@@ -86,13 +86,13 @@ class GroupServiceTest extends TestCase
     {
         // given
         $sales = $this->factory->group([
-            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SMS_CODES()],
+            "permissions" => [Permission::SERVERS_MANAGEMENT(), Permission::SMS_CODES_MANAGEMENT()],
         ]);
         $developers = $this->factory->group([
             "permissions" => [
-                Permission::MANAGE_USERS(),
-                Permission::MANAGE_SERVERS(),
-                Permission::MANAGE_SMS_CODES(),
+                Permission::USERS_MANAGEMENT(),
+                Permission::SERVERS_MANAGEMENT(),
+                Permission::SMS_CODES_MANAGEMENT(),
             ],
         ]);
         $tom = $this->factory->user([
@@ -114,13 +114,13 @@ class GroupServiceTest extends TestCase
     {
         // given
         $sales = $this->factory->group([
-            "permissions" => [Permission::MANAGE_SERVERS(), Permission::MANAGE_SMS_CODES()],
+            "permissions" => [Permission::SERVERS_MANAGEMENT(), Permission::SMS_CODES_MANAGEMENT()],
         ]);
         $developers = $this->factory->group([
             "permissions" => [
-                Permission::MANAGE_USERS(),
-                Permission::MANAGE_SERVERS(),
-                Permission::MANAGE_SMS_CODES(),
+                Permission::USERS_MANAGEMENT(),
+                Permission::SERVERS_MANAGEMENT(),
+                Permission::SMS_CODES_MANAGEMENT(),
             ],
         ]);
         $tom = $this->factory->user([

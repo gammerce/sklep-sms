@@ -5,48 +5,52 @@ use MyCLabs\Enum\Enum;
 
 /**
  * @method static Permission ACP()
- * @method static Permission MANAGE_SETTINGS()
- * @method static Permission VIEW_GROUPS()
- * @method static Permission MANAGE_GROUPS()
- * @method static Permission VIEW_PLAYER_FLAGS()
- * @method static Permission VIEW_USER_SERVICES()
- * @method static Permission MANAGE_USER_SERVICES()
- * @method static Permission VIEW_INCOME()
- * @method static Permission VIEW_USERS()
- * @method static Permission MANAGE_USERS()
- * @method static Permission VIEW_SMS_CODES()
- * @method static Permission MANAGE_SMS_CODES()
- * @method static Permission VIEW_PROMO_CODES()
- * @method static Permission MANAGE_PROMO_CODES()
- * @method static Permission VIEW_SERVICES()
- * @method static Permission MANAGE_SERVICES()
- * @method static Permission VIEW_SERVERS()
- * @method static Permission MANAGE_SERVERS()
- * @method static Permission VIEW_LOGS()
- * @method static Permission MANAGE_LOGS()
+ * @method static Permission GROUPS_MANAGEMENT()
+ * @method static Permission GROUPS_VIEW()
+ * @method static Permission INCOME_VIEW()
+ * @method static Permission LOGS_MANAGEMENT()
+ * @method static Permission LOGS_VIEW()
+ * @method static Permission PLAYER_FLAGS_VIEW()
+ * @method static Permission PRICING_MANAGEMENT()
+ * @method static Permission PRICING_VIEW()
+ * @method static Permission PROMO_CODES_MANAGEMENT()
+ * @method static Permission PROMO_CODES_VIEW()
+ * @method static Permission SERVERS_MANAGEMENT()
+ * @method static Permission SERVERS_VIEW()
+ * @method static Permission SERVICES_MANAGEMENT()
+ * @method static Permission SERVICES_VIEW()
+ * @method static Permission SETTINGS_MANAGEMENT()
+ * @method static Permission SMS_CODES_MANAGEMENT()
+ * @method static Permission SMS_CODES_VIEW()
  * @method static Permission UPDATE()
+ * @method static Permission USERS_MANAGEMENT()
+ * @method static Permission USERS_VIEW()
+ * @method static Permission USER_SERVICES_MANAGEMENT()
+ * @method static Permission USER_SERVICES_VIEW()
  */
 final class Permission extends Enum
 {
     const ACP = "acp";
-    const MANAGE_SETTINGS = "manage_settings";
-    const VIEW_GROUPS = "view_groups";
-    const MANAGE_GROUPS = "manage_groups";
-    const VIEW_PLAYER_FLAGS = "view_player_flags";
-    const VIEW_USER_SERVICES = "view_user_services";
-    const MANAGE_USER_SERVICES = "manage_user_services";
-    const VIEW_INCOME = "view_income";
-    const VIEW_USERS = "view_users";
-    const MANAGE_USERS = "manage_users";
-    const VIEW_SMS_CODES = "view_sms_codes";
-    const MANAGE_SMS_CODES = "manage_sms_codes";
-    const VIEW_PROMO_CODES = "view_promo_codes";
-    const MANAGE_PROMO_CODES = "manage_promo_codes";
-    const VIEW_SERVICES = "view_services";
-    const MANAGE_SERVICES = "manage_services";
-    const VIEW_SERVERS = "view_servers";
-    const MANAGE_SERVERS = "manage_servers";
-    const VIEW_LOGS = "view_logs";
-    const MANAGE_LOGS = "manage_logs";
+    const GROUPS_MANAGEMENT = "manage_groups";
+    const GROUPS_VIEW = "view_groups";
+    const INCOME_VIEW = "view_income";
+    const LOGS_MANAGEMENT = "manage_logs";
+    const LOGS_VIEW = "view_logs";
+    const PLAYER_FLAGS_VIEW = "view_player_flags";
+    const PRICING_MANAGEMENT = "manage_pricing";
+    const PRICING_VIEW = "view_pricing";
+    const PROMO_CODES_MANAGEMENT = "manage_promo_codes";
+    const PROMO_CODES_VIEW = "view_promo_codes";
+    const SERVERS_MANAGEMENT = "manage_servers";
+    const SERVERS_VIEW = "view_servers";
+    const SERVICES_MANAGEMENT = "manage_services";
+    const SERVICES_VIEW = "view_services";
+    const SETTINGS_MANAGEMENT = "manage_settings";
+    const SMS_CODES_MANAGEMENT = "manage_sms_codes";
+    const SMS_CODES_VIEW = "view_sms_codes";
     const UPDATE = "update";
+    const USERS_MANAGEMENT = "manage_users";
+    const USERS_VIEW = "view_users";
+    const USER_SERVICES_MANAGEMENT = "manage_user_services";
+    const USER_SERVICES_VIEW = "view_user_services";
 }

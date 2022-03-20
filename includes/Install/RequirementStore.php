@@ -69,6 +69,7 @@ class RequirementStore
             "jsonhttp_admin.php",
             "servers_stuff.php",
             "transfer_finalize.php",
+            "themes/fusion/js/language.js",
         ];
     }
 

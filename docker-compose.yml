@@ -10,6 +10,8 @@ services:
             - "8888:8888"
         links:
             - app
+            - app-v5
+
     app:
         build:
             context: ./docker
@@ -21,6 +23,19 @@ services:
         environment:
             - "DB_PORT=3306"
             - "DB_HOST=database"
+
+    app-v5:
+        build:
+            context: ./docker
+            dockerfile: app-v5.docker
+        volumes:
+            - ./:/var/www
+        links:
+            - database
+        environment:
+            - "DB_PORT=3306"
+            - "DB_HOST=database"
+
     database:
         image: mysql:5.5
         environment:

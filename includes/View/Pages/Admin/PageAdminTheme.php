@@ -10,7 +10,7 @@ class PageAdminTheme extends PageAdmin
 
     public function getPrivilege(): Permission
     {
-        return Permission::MANAGE_SETTINGS();
+        return Permission::SETTINGS_MANAGEMENT();
     }
 
     public function getTitle(Request $request = null): string

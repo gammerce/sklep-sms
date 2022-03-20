@@ -36,7 +36,7 @@ class GroupCollectionTest extends HttpTestCase
         $this->assertNotNull($group);
         $this->assertSame("example", $group->getName());
         $this->assertEquals(
-            [Permission::VIEW_PLAYER_FLAGS(), Permission::MANAGE_LOGS()],
+            [Permission::PLAYER_FLAGS_VIEW(), Permission::LOGS_MANAGEMENT()],
             $group->getPermissions()
         );
     }

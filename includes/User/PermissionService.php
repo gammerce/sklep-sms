@@ -8,7 +8,7 @@ class PermissionService
 {
     public function canUserAssignGroup(User $user, Group $group): bool
     {
-        if (!$user->can(Permission::MANAGE_USERS())) {
+        if (!$user->can(Permission::USERS_MANAGEMENT())) {
             return false;
         }
         return is_subset($group->getPermissions(), $user->getPermissions());

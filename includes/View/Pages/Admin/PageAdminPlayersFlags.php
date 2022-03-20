@@ -45,7 +45,7 @@ class PageAdminPlayersFlags extends PageAdmin
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_PLAYER_FLAGS();
+        return Permission::PLAYER_FLAGS_VIEW();
     }
 
     public function getTitle(Request $request = null): string

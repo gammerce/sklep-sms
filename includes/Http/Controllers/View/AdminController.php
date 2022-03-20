@@ -12,6 +12,7 @@ use App\Support\Meta;
 use App\Theme\Template;
 use App\System\Auth;
 use App\System\License;
+use App\Translation\TranslationManager;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Renders\BlockRenderer;
 use App\View\Renders\PageLinkRenderer;
@@ -21,19 +22,22 @@ use Symfony\Component\HttpFoundation\Response;
 class AdminController
 {
     public function get(
-        Request $request,
         Auth $auth,
-        License $license,
-        Template $template,
         BlockRenderer $blockRenderer,
-        UrlGenerator $url,
-        PageManager $pageManager,
-        WebsiteHeader $websiteHeader,
-        ServiceModuleManager $serviceModuleManager,
+        License $license,
         Meta $meta,
         PageLinkRenderer $pageLinkRenderer,
+        PageManager $pageManager,
+        Request $request,
+        ServiceModuleManager $serviceModuleManager,
+        Template $template,
+        TranslationManager $translationManager,
+        UrlGenerator $url,
+        WebsiteHeader $websiteHeader,
         $pageId = "home"
     ) {
+        $lang = $translationManager->user();
+
         $page = $pageManager->getAdmin($pageId);
 
         if (!$page) {
@@ -72,6 +76,7 @@ class AdminController
 
         $header = $template->render("admin/header", [
             "currentPageId" => $page->getId(),
+            "langJsPath" => $url->versioned("lang.js", ["language" => $lang->getCurrentLanguage()]),
             "pageTitle" => $page->getTitle($request),
             "scripts" => $websiteHeader->getScripts(),
         ]);

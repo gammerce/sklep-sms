@@ -59,7 +59,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_SERVICES();
+        return Permission::SERVICES_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -80,8 +80,8 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
                     ->addCell(new Cell($service->getShortDescription()))
                     ->addCell(new Cell($service->getDescription()))
                     ->addCell(new Cell($service->getOrder()))
-                    ->setDeleteAction(can(Permission::MANAGE_SERVICES()))
-                    ->setEditAction(can(Permission::MANAGE_SERVICES()))
+                    ->setDeleteAction(can(Permission::SERVICES_MANAGEMENT()))
+                    ->setEditAction(can(Permission::SERVICES_MANAGEMENT()))
                     ->when(
                         $recordId === $service->getId(),
                         fn(BodyRow $bodyRow) => $bodyRow->addClass("highlighted")
@@ -99,7 +99,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_SERVICES())) {
+        if (can(Permission::SERVICES_MANAGEMENT())) {
             $button = (new Input())
                 ->setParam("id", "service_button_add")
                 ->setParam("type", "button")
@@ -114,7 +114,7 @@ class PageAdminServices extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_SERVICES())) {
+        if (cannot(Permission::SERVICES_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

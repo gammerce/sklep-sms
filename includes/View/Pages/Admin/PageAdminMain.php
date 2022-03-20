@@ -163,7 +163,7 @@ class PageAdminMain extends PageAdmin
         $bricks = [];
 
         // Server
-        if ($user->can(Permission::MANAGE_SERVERS())) {
+        if ($user->can(Permission::SERVERS_MANAGEMENT())) {
             $bricks[] = $this->createBrick(
                 $this->lang->t("number_of_servers", $this->serverManager->getCount()),
                 $this->url->to("/admin/servers")
@@ -171,7 +171,7 @@ class PageAdminMain extends PageAdmin
         }
 
         // User
-        if ($user->can(Permission::MANAGE_USERS())) {
+        if ($user->can(Permission::USERS_MANAGEMENT())) {
             $bricks[] = $this->createBrick(
                 $this->lang->t(
                     "number_of_users",
@@ -181,7 +181,7 @@ class PageAdminMain extends PageAdmin
             );
         }
 
-        if ($user->can(Permission::VIEW_INCOME())) {
+        if ($user->can(Permission::INCOME_VIEW())) {
             // Bought service
             $quantity = $this->db
                 ->query("SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) AS t")

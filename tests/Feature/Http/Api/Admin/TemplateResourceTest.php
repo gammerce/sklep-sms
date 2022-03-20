@@ -11,7 +11,7 @@ class TemplateResourceTest extends HttpTestCase
         parent::setUp();
 
         $this->actingAs(
-            $this->factory->privilegedUser([Permission::ACP(), Permission::MANAGE_SETTINGS()])
+            $this->factory->privilegedUser([Permission::ACP(), Permission::SETTINGS_MANAGEMENT()])
         );
     }
 

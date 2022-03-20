@@ -2,6 +2,7 @@
 namespace Tests\Feature\Http\Api\Admin;
 
 use App\Repositories\PriceRepository;
+use App\User\Permission;
 use Tests\Psr4\TestCases\HttpTestCase;
 
 class PriceResourceTest extends HttpTestCase
@@ -12,13 +13,16 @@ class PriceResourceTest extends HttpTestCase
     {
         parent::setUp();
         $this->priceRepository = $this->app->make(PriceRepository::class);
+
+        $this->actingAs(
+            $this->factory->privilegedUser([Permission::ACP(), Permission::PRICING_MANAGEMENT()])
+        );
     }
 
     /** @test */
     public function updates_price()
     {
         // given
-        $this->actingAs($this->factory->admin());
         $price = $this->factory->price();
 
         // when
@@ -44,7 +48,6 @@ class PriceResourceTest extends HttpTestCase
     /** @test */
     public function deletes_price()
     {
-        $this->actingAs($this->factory->admin());
         $price = $this->factory->price();
 
         // when

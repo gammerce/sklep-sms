@@ -22,6 +22,7 @@ use App\Support\FileSystemContract;
 use App\Support\Mailer;
 use App\Support\Meta;
 use App\Support\Path;
+use App\Theme\ContentEvaluator;
 use App\Theme\EditableTemplateRepository;
 use App\Theme\Template;
 use App\System\Application;
@@ -51,6 +52,7 @@ class AppServiceProvider
 
         $app->singleton(Auth::class);
         $app->singleton(BlockManager::class);
+        $app->singleton(ContentEvaluator::class);
         $app->singleton(ExternalConfigProvider::class);
         $app->singleton(EditableTemplateRepository::class);
         $app->singleton(GroupManager::class);
@@ -65,6 +67,7 @@ class AppServiceProvider
         $app->singleton(ServerServiceManager::class);
         $app->singleton(Session::class);
         $app->singleton(Settings::class);
+        $app->singleton(TemplateContentService::class);
         $app->singleton(TemplateContentService::class);
         $app->singleton(TranslationManager::class);
         $app->singleton(UserManager::class);

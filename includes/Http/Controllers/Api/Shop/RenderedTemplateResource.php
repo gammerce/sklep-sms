@@ -33,7 +33,7 @@ class RenderedTemplateResource
         $email = $request->query->get("email");
 
         if ($templateName === "admin_user_wallet") {
-            if (cannot(Permission::MANAGE_USERS())) {
+            if (cannot(Permission::USERS_MANAGEMENT())) {
                 throw new UnauthorizedException();
             }
 

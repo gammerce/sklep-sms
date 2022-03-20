@@ -52,7 +52,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::MANAGE_SETTINGS();
+        return Permission::SETTINGS_MANAGEMENT();
     }
 
     public function getTitle(Request $request = null): string
@@ -103,7 +103,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_SETTINGS())) {
+        if (cannot(Permission::SETTINGS_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

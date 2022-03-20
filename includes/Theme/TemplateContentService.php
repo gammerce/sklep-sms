@@ -8,7 +8,6 @@ use PDOException;
 class TemplateContentService
 {
     private FileSystemContract $fileSystem;
-    private Settings $settings;
     private TemplateRepository $templateRepository;
     private EditableTemplateRepository $editableTemplateRepository;
     private array $cachedTemplates = [];
@@ -17,12 +16,10 @@ class TemplateContentService
 
     public function __construct(
         FileSystemContract $fileSystem,
-        Settings $settings,
         TemplateRepository $templateRepository,
         EditableTemplateRepository $editableTemplateRepository
     ) {
         $this->fileSystem = $fileSystem;
-        $this->settings = $settings;
         $this->templateRepository = $templateRepository;
         $this->editableTemplateRepository = $editableTemplateRepository;
     }
@@ -33,19 +30,13 @@ class TemplateContentService
      * @param string $name Template's name
      * @param string|null $theme
      * @param string|null $lang
-     * @param bool $escapeSlashes Escape template's content
      * @param bool $htmlComments Wrap with comments
      * @return string|null
      * @throws TemplateNotFoundException
      */
-    public function get(
-        $name,
-        $theme,
-        $lang,
-        $escapeSlashes = false,
-        $htmlComments = false
-    ): ?string {
-        $cacheKey = "$name#$theme#$lang#$escapeSlashes#$htmlComments";
+    public function get($name, $theme, $lang, $htmlComments = false): ?string
+    {
+        $cacheKey = "$name#$theme#$lang#$htmlComments";
 
         if (!array_key_exists($cacheKey, $this->cachedTemplates)) {
             $content = $this->read($name, $theme, $lang);
@@ -57,10 +48,6 @@ class TemplateContentService
                     " -->\n{$content}\n<!-- end: " .
                     htmlspecialchars($name) .
                     " -->";
-            }
-
-            if ($escapeSlashes) {
-                $content = str_replace("\\'", "'", addslashes($content));
             }
 
             $this->cachedTemplates[$cacheKey] = $content;

@@ -43,7 +43,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_GROUPS();
+        return Permission::GROUPS_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -66,8 +66,8 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
                 fn(array $row) => (new BodyRow())
                     ->setDbId($row["id"])
                     ->addCell(new Cell($row["name"]))
-                    ->setDeleteAction(can(Permission::MANAGE_GROUPS()))
-                    ->setEditAction(can(Permission::MANAGE_GROUPS()))
+                    ->setDeleteAction(can(Permission::GROUPS_MANAGEMENT()))
+                    ->setEditAction(can(Permission::GROUPS_MANAGEMENT()))
             )
             ->all();
 
@@ -79,7 +79,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
         $wrapper = (new Wrapper())->setTitle($this->getTitle($request))->setTable($table);
 
-        if (can(Permission::MANAGE_GROUPS())) {
+        if (can(Permission::GROUPS_MANAGEMENT())) {
             $button = (new Input())
                 ->setParam("id", "group_button_add")
                 ->setParam("type", "button")
@@ -94,7 +94,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_GROUPS())) {
+        if (cannot(Permission::GROUPS_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 

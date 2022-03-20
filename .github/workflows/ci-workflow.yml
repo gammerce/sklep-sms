@@ -98,7 +98,7 @@ jobs:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
       - name: Run tests
-        run: ./vendor/bin/phpunit --coverage-clover clover.xml
+        run: ./vendor/bin/phpunit --coverage-clover clover.xml --testdox
         env:
           XDEBUG_MODE: coverage
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}

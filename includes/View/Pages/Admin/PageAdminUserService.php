@@ -45,7 +45,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function getPrivilege(): Permission
     {
-        return Permission::VIEW_USER_SERVICES();
+        return Permission::USER_SERVICES_VIEW();
     }
 
     public function getTitle(Request $request = null): string
@@ -75,7 +75,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
             ->userServiceAdminDisplayGet($request)
             ->setTitle($this->getTitle($request))
             ->addButton($this->createModuleSelectBox($subPage))
-            ->when(can(Permission::MANAGE_USER_SERVICES()), function (Wrapper $wrapper) {
+            ->when(can(Permission::USER_SERVICES_MANAGEMENT()), function (Wrapper $wrapper) {
                 $button = (new Input())
                     ->setParam("id", "user_service_button_add")
                     ->setParam("type", "button")
@@ -87,7 +87,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
 
     public function getActionBox($boxId, array $query): string
     {
-        if (cannot(Permission::MANAGE_USER_SERVICES())) {
+        if (cannot(Permission::USER_SERVICES_MANAGEMENT())) {
             throw new UnauthorizedException();
         }
 
