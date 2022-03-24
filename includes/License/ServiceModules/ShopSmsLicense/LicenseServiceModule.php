@@ -205,7 +205,7 @@ EOF
                     ->addCell(new Cell($this->priceTextService->getPriceText($row["cost_daily"])))
                     ->addCell(new ExpirationCell($row["expire"]))
                     ->addCell(new PreWrapCell($row["comment"]))
-                    ->setDeleteAction(can(Permission::MANAGE_USER_SERVICES()))
+                    ->setDeleteAction(can(Permission::USER_SERVICES_MANAGEMENT()))
                     ->setEditAction(false);
             })
             ->all();
