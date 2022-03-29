@@ -98,7 +98,7 @@ class InfaktClient
     /**
      * @throws InvoiceException
      */
-    private function throwOnError(Response $response): void
+    private function throwOnError(?Response $response): void
     {
         if (!$response) {
             throw new InvoiceException("Couldn't connect to infakt");
