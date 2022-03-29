@@ -27,7 +27,7 @@ class TPay extends PaymentModule implements SupportTransfer
         $crc = $purchase->getId();
 
         return [
-            "url" => "https://secure.transferuj.pl",
+            "url" => "https://secure.tpay.com",
             "method" => "POST",
             "data" => [
                 "id" => $this->getAccountId(),
