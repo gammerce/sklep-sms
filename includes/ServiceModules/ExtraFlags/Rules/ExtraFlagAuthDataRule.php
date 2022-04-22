@@ -4,6 +4,7 @@ namespace App\ServiceModules\ExtraFlags\Rules;
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
+use App\Support\SteamIDConverter;
 
 class ExtraFlagAuthDataRule extends BaseRule
 {
@@ -24,7 +25,8 @@ class ExtraFlagAuthDataRule extends BaseRule
                 throw new ValidationException($this->lang->t("wrong_ip"));
             }
         } elseif ($type === ExtraFlagType::TYPE_SID) {
-            if (!is_steam_id_valid($value) || strlen($value) > 32) {
+            $converter = new SteamIDConverter();
+            if (!$converter->isAnySteamID($value)) {
                 throw new ValidationException($this->lang->t("wrong_sid"));
             }
         }
