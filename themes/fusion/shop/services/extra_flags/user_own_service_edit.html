@@ -35,8 +35,9 @@ $serviceInfo['service'] }}<br />
     <div class="field type_sid {{ $classes['sid'] }}">
         <label for="sid" class="label required">{{ __('sid') }}</label>
         <div class="control">
-            <input type="text" id="sid" name="auth_data" class="input" maxlength="32" value="{{
-            $serviceInfo['player_sid'] }}" {!! $disabled['sid'] !!} />
+            <input type="text" id="sid" name="auth_data" class="input" maxlength="32"
+            placeholder="{{ __('steam_id_hint') }}" value="{{ $serviceInfo['player_sid'] }}" {!!
+            $disabled['sid'] !!} />
         </div>
     </div>
 

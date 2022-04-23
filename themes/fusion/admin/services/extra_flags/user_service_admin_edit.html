@@ -75,8 +75,8 @@
             <div class="field">
                 <div class="control">
                     <input type="text" id="sid" name="auth_data" class="input is-small"
-                    maxlength="32" value="{{ $sid }}" autocomplete="off" required {!!
-                    $disabled['sid'] !!} />
+                    maxlength="32" placeholder="{{ __('steam_id_hint') }}" value="{{ $sid }}"
+                    autocomplete="off" required {!! $disabled['sid'] !!} />
                 </div>
             </div>
         </td>

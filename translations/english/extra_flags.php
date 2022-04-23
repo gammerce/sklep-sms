@@ -21,6 +21,7 @@ return [
     "service_bought" => "Service purchased successfully",
     "service_not_affordable" => "Holy shit, you cannot buy such amount of this service.",
     "sms_code_transfer_id" => "sms code, transfer ID etc.",
+    "steam_id_hint" => "Provide steam ID in any, valid format.",
     "types" => "Types",
     "wrong_date_format" => "Wrong date format.",
     "wrong_type_chosen" => "Wrong type was chosen.",
