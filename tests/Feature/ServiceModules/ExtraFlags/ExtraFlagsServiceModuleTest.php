@@ -15,8 +15,8 @@ class ExtraFlagsServiceModuleTest extends TestCase
     {
         // when
         $boughtService = $this->createRandomExtraFlagsPurchase([
-            "type" => ExtraFlagType::TYPE_SID,
             "auth_data" => "76561198004234833",
+            "type" => ExtraFlagType::TYPE_SID,
         ]);
 
         // then
