@@ -58,13 +58,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "service_id" => $this->serviceId,
-                "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
-                "price_id" => $this->price->getId(),
                 "method" => PaymentMethod::WALLET()->getValue(),
+                "price_id" => $this->price->getId(),
+                "service_id" => $this->serviceId,
                 "sign" => $sign,
+                "type" => ExtraFlagType::TYPE_SID,
             ],
             [
                 "token" => $this->server->getToken(),
@@ -110,13 +110,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "service_id" => $this->serviceId,
-                "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
-                "price_id" => $this->price->getId(),
                 "method" => PaymentMethod::WALLET()->getValue(),
+                "price_id" => $this->price->getId(),
+                "service_id" => $this->serviceId,
                 "sign" => $sign,
+                "type" => ExtraFlagType::TYPE_SID,
             ],
             [
                 "token" => $this->server->getToken(),
@@ -150,13 +150,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "service_id" => $this->serviceId,
-                "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
-                "price_id" => $this->price->getId(),
                 "method" => PaymentMethod::WALLET()->getValue(),
+                "price_id" => $this->price->getId(),
+                "service_id" => $this->serviceId,
                 "sign" => $sign,
+                "type" => ExtraFlagType::TYPE_SID,
             ],
             [
                 "token" => $this->server->getToken(),
@@ -197,13 +197,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
         $response = $this->post(
             "/api/server/purchase",
             [
-                "service_id" => $this->serviceId,
-                "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => $this->steamId,
                 "ip" => $this->ip,
-                "price_id" => $this->price->getId(),
                 "method" => PaymentMethod::WALLET()->getValue(),
+                "price_id" => $this->price->getId(),
+                "service_id" => $this->serviceId,
                 "sign" => $sign,
+                "type" => ExtraFlagType::TYPE_SID,
             ],
             [
                 "token" => $this->server->getToken(),

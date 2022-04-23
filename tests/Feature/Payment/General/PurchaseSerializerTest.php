@@ -109,6 +109,7 @@ class PurchaseSerializerTest extends TestCase
             ])
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setService("vip", "VIP")
