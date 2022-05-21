@@ -50,7 +50,7 @@ class PlayerFlagService
         $comment = null
     ): void {
         $authData = trim($authData);
-        $password = strlen($password) ? $password : "";
+        $password = $password ?? "";
         $table = ExtraFlagsServiceModule::USER_SERVICE_TABLE;
         $seconds = multiply($days, 24 * 60 * 60);
 

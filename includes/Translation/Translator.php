@@ -36,31 +36,20 @@ class Translator
         ];
     }
 
-    /**
-     * @param string $lang
-     * @return bool
-     */
-    public static function languageExists($lang): bool
+    public static function languageExists(string $lang): bool
     {
         return array_key_exists($lang, self::langList());
     }
 
-    /**
-     * @param string $lang
-     * @return bool
-     */
-    public static function languageShortExists($lang): bool
+    public static function languageShortExists(string $lang): bool
     {
         return in_array($lang, array_values(self::langList()), true);
     }
 
     /**
      * Returns full language name by its shortcut
-     *
-     * @param string $short
-     * @return string|null
      */
-    public static function getLanguageByShort($short): ?string
+    public static function getLanguageByShort(string $short): ?string
     {
         $mapping = array_flip(self::langList());
         return array_get($mapping, strtolower($short));
@@ -128,17 +117,13 @@ class Translator
         return array_get($this->translations, $key, $key);
     }
 
-    /**
-     * @param $string
-     * @return string
-     */
-    private function sprintf($string): string
+    private function sprintf(string $string): string
     {
         $argList = func_get_args();
         $numArgs = count($argList);
 
         for ($i = 1; $i < $numArgs; $i++) {
-            $string = str_replace("{{$i}}", $argList[$i], $string);
+            $string = str_replace("{{$i}}", (string) $argList[$i], $string);
         }
 
         return $string;
