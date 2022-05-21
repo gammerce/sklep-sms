@@ -55,12 +55,12 @@ class PurchaseService
         $platform
     ): PaymentResult {
         $type = as_int(array_get($body, "type"));
-        $authData = trim(array_get($body, "auth_data"));
+        $authData = trim(array_get($body, "auth_data", ""));
         $password = array_get($body, "password");
         $ip = array_get($body, "ip");
-        $smsCode = trim(array_get($body, "sms_code"));
+        $smsCode = trim(array_get($body, "sms_code", ""));
         $priceId = as_int(array_get($body, "price_id"));
-        $email = trim(array_get($body, "email"));
+        $email = trim(array_get($body, "email", ""));
         $paymentMethod = as_payment_method(array_get($body, "method"));
 
         $paymentPlatformId = $server->getSmsPlatformId() ?: $this->settings->getSmsPlatformId();

@@ -35,8 +35,8 @@ class ServerService
     {
         return new Validator(
             array_merge($body, [
-                "ip" => trim(array_get($body, "ip")),
-                "port" => trim(array_get($body, "port")),
+                "ip" => trim(array_get($body, "ip", "")),
+                "port" => trim(array_get($body, "port", "")),
                 "service_ids" => array_get($body, "service_ids"),
                 "sms_platform" => as_int(array_get($body, "sms_platform")),
                 "transfer_platform" => array_get($body, "transfer_platform"),

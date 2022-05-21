@@ -40,7 +40,7 @@ class SettingsController
                 "delete_logs" => $request->request->get("delete_logs"),
                 "direct_billing_platform" => $request->request->get("direct_billing_platform"),
                 "gadugadu" => $request->request->get("gadugadu"),
-                "google_analytics" => trim($request->request->get("google_analytics")),
+                "google_analytics" => trim($request->request->get("google_analytics", "")),
                 "language" => escape_filename($request->request->get("language")),
                 "license_token" => is_saas() ? null : $request->request->get("license_token"),
                 "row_limit" => $request->request->get("row_limit"),

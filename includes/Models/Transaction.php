@@ -163,11 +163,12 @@ class Transaction
 
     /**
      * @param string $key
+     * @param mixed $default
      * @return mixed|null
      */
-    public function getExtraDatum($key)
+    public function getExtraDatum(string $key, $default = null)
     {
-        return array_get($this->extraData, $key);
+        return array_get($this->extraData, $key, $default);
     }
 
     public function getIp(): string

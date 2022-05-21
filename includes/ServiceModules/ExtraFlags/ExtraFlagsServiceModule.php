@@ -346,7 +346,7 @@ EOF
         $quantity = as_int(array_get($body, "quantity"));
         $serverId = as_int(array_get($body, "server_id"));
         $type = as_int(array_get($body, "type"));
-        $authData = trim(array_get($body, "auth_data"));
+        $authData = trim(array_get($body, "auth_data", ""));
         $password = array_get($body, "password");
         $passwordRepeat = array_get($body, "password_repeat");
         $email = array_get($body, "email");
@@ -445,7 +445,7 @@ EOF
         $authTypeName = $this->getTypeName($authType);
 
         $authPassword = "";
-        if (strlen($purchase->getOrder("password"))) {
+        if (strlen($purchase->getOrder("password", ""))) {
             $authPassword =
                 "<strong>" .
                 $this->lang->t("password") .
@@ -524,7 +524,7 @@ EOF
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        if (strlen($transaction->getExtraDatum("password"))) {
+        if (strlen($transaction->getExtraDatum("password", ""))) {
             $password =
                 "<strong>" .
                 $this->lang->t("password") .
@@ -957,7 +957,7 @@ EOF
             $password = array_get($data, "password", "");
             $shouldPasswordBeUpdated = true;
         } else {
-            $password = array_get($data, "password");
+            $password = array_get($data, "password", "");
             $shouldPasswordBeUpdated = !!strlen($password);
         }
 
@@ -1090,7 +1090,7 @@ EOF
 
         $validator = new Validator(
             array_merge($body, [
-                "auth_data" => trim(array_get($body, "auth_data")),
+                "auth_data" => trim(array_get($body, "auth_data", "")),
                 "password" => array_get($body, "password") ?: "",
                 "server_id" => as_int(array_get($body, "server_id")),
                 "type" => as_int(array_get($body, "type")),
