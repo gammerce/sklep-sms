@@ -49,7 +49,7 @@ class CronExecutor
         // Remove files older than 30 days from data/transactions
         $path = $this->path->to("data/transactions");
         foreach ($this->fileSystem->scanDirectory($path) as $file) {
-            if (starts_with($file, ".")) {
+            if (str_starts_with($file, ".")) {
                 continue;
             }
 

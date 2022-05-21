@@ -19,7 +19,7 @@ class MigrationFiles
         $dir = new DirectoryIterator($this->buildPath(""));
 
         foreach ($dir as $fileInfo) {
-            if (ends_at($fileInfo->getFilename(), ".php")) {
+            if (str_ends_with($fileInfo->getFilename(), ".php")) {
                 $migrations[] = $fileInfo->getBasename(".php");
             }
         }
