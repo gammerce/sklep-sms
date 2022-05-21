@@ -28,17 +28,21 @@ class UserProfileResource
 
         $validator = new Validator(
             [
-                "username" => trim($request->request->get("username")),
-                "forename" => trim($request->request->get("forename")),
-                "surname" => trim($request->request->get("surname")),
-                "steam_id" => trim($request->request->get("steam_id")),
-                "billing_address_name" => trim($request->request->get("billing_address_name")),
-                "billing_address_vat_id" => trim($request->request->get("billing_address_vat_id")),
-                "billing_address_street" => trim($request->request->get("billing_address_street")),
-                "billing_address_postal_code" => trim(
-                    $request->request->get("billing_address_postal_code")
+                "username" => trim($request->request->get("username", "")),
+                "forename" => trim($request->request->get("forename", "")),
+                "surname" => trim($request->request->get("surname", "")),
+                "steam_id" => trim($request->request->get("steam_id", "")),
+                "billing_address_name" => trim($request->request->get("billing_address_name", "")),
+                "billing_address_vat_id" => trim(
+                    $request->request->get("billing_address_vat_id", "")
                 ),
-                "billing_address_city" => trim($request->request->get("billing_address_city")),
+                "billing_address_street" => trim(
+                    $request->request->get("billing_address_street", "")
+                ),
+                "billing_address_postal_code" => trim(
+                    $request->request->get("billing_address_postal_code", "")
+                ),
+                "billing_address_city" => trim($request->request->get("billing_address_city", "")),
             ],
             [
                 "username" => [

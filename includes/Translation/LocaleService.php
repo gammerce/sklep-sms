@@ -17,7 +17,7 @@ class LocaleService
 
     public function getLocale(Request $request): string
     {
-        $queryLocale = $this->resolveLocale($request->query->get("language"));
+        $queryLocale = $this->resolveLocale($request->query->get("language", ""));
         if ($queryLocale) {
             return $queryLocale;
         }
@@ -35,18 +35,14 @@ class LocaleService
         return $this->settings->getLanguage();
     }
 
-    /**
-     * @param string|null $locale
-     * @return string|null
-     */
-    private function resolveLocale($locale): ?string
+    private function resolveLocale(string $locale): ?string
     {
         if (Translator::languageExists($locale)) {
             return $locale;
         }
 
         $locale = Translator::getLanguageByShort($locale);
-        if (Translator::languageExists($locale)) {
+        if ($locale && Translator::languageExists($locale)) {
             return $locale;
         }
 

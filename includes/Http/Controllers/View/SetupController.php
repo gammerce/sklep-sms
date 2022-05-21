@@ -118,7 +118,7 @@ class SetupController
 
     protected function generateHttpServerNotification()
     {
-        if (str_contains(strtolower(array_get($_SERVER, "SERVER_SOFTWARE")), "apache")) {
+        if (str_contains(strtolower(array_get($_SERVER, "SERVER_SOFTWARE", "")), "apache")) {
             return "";
         }
 

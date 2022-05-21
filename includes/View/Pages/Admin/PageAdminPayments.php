@@ -68,7 +68,7 @@ class PageAdminPayments extends PageAdmin
 
     public function getContent(Request $request)
     {
-        $recordId = $request->query->get("record");
+        $recordId = $request->query->get("record", "");
         $search = $request->query->get("search");
         $method = as_payment_method($request->query->get("method"));
 

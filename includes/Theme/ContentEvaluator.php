@@ -40,7 +40,7 @@ class ContentEvaluator
 
     private function evalMatchSafely(string $match, array $data): string
     {
-        return htmlspecialchars($this->evalMatch($match, $data));
+        return htmlspecialchars($this->evalMatch($match, $data), ENT_COMPAT);
     }
 
     private function evalMatch(string $match, array $data): string

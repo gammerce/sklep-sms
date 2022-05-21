@@ -29,8 +29,8 @@ class PasswordForgottenController
 
         $validator = new Validator(
             [
-                "username" => trim($request->request->get("username")),
-                "email" => trim($request->request->get("email")),
+                "username" => trim($request->request->get("username", "")),
+                "email" => trim($request->request->get("email", "")),
             ],
             [
                 "username" => [new UsernameRule()],

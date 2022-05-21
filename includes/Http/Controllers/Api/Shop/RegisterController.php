@@ -33,14 +33,14 @@ class RegisterController
 
         $validator = new Validator(
             [
-                "username" => trim($request->request->get("username")),
+                "username" => trim($request->request->get("username", "")),
                 "password" => $request->request->get("password"),
                 "password_repeat" => $request->request->get("password_repeat"),
-                "email" => trim($request->request->get("email")),
-                "email_repeat" => trim($request->request->get("email_repeat")),
-                "forename" => trim($request->request->get("forename")),
-                "surname" => trim($request->request->get("surname")),
-                "steam_id" => trim($request->request->get("steam_id")),
+                "email" => trim($request->request->get("email", "")),
+                "email_repeat" => trim($request->request->get("email_repeat", "")),
+                "forename" => trim($request->request->get("forename", "")),
+                "surname" => trim($request->request->get("surname", "")),
+                "steam_id" => trim($request->request->get("steam_id", "")),
                 "h-captcha-response" => $request->request->get("h-captcha-response"),
             ],
             [
