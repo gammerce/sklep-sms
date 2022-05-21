@@ -17,7 +17,7 @@
     "ext-mysqli": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
-    "vlucas/phpdotenv": "^2.4",
+    "vlucas/phpdotenv": "^4.2",
     "illuminate/container": "^5.4",
     "symfony/console": "^3.4",
     "symfony/debug": "^3.4",
