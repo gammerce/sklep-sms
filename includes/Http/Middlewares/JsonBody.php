@@ -9,7 +9,7 @@ class JsonBody implements MiddlewareContract
 {
     public function handle(Request $request, $args, Closure $next): Response
     {
-        if (starts_with($request->headers->get("Content-Type"), "application/json")) {
+        if (str_starts_with($request->headers->get("Content-Type", ""), "application/json")) {
             $data = json_decode($request->getContent(), true);
             $request->request->replace(is_array($data) ? $data : []);
         }

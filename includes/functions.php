@@ -293,33 +293,22 @@ function create_search_query($columns, $search): ?QueryParticle
     return $queryParticle;
 }
 
-/**
- * @param string $string
- * @param string $end
- * @return bool
- */
-function ends_at($string, $end): bool
-{
-    return substr($string, -strlen($end)) == $end;
+if (!function_exists("str_ends_with")) {
+    function str_ends_with(string $string, string $end): bool
+    {
+        return substr($string, -strlen($end)) == $end;
+    }
 }
 
-/**
- * @param string $haystack
- * @param string $needle
- * @return bool
- */
-function starts_with($haystack, $needle): bool
-{
-    return substr($haystack, 0, strlen($needle)) === (string) $needle;
+if (!function_exists("str_starts_with")) {
+    function str_starts_with(string $haystack, string $needle): bool
+    {
+        return substr($haystack, 0, strlen($needle)) === $needle;
+    }
 }
 
 if (!function_exists("str_contains")) {
-    /**
-     * @param string $string
-     * @param string $needle
-     * @return bool
-     */
-    function str_contains($string, $needle): bool
+    function str_contains(string $string, string $needle): bool
     {
         return strpos($string, $needle) !== false;
     }
