@@ -37,7 +37,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
             $e = $this->license->getLoadingException();
             $message = $this->getMessageFromInvalidResponse($e->response);
 
-            if (starts_with($request->getPathInfo(), "/api")) {
+            if (str_starts_with($request->getPathInfo(), "/api")) {
                 return new JsonResponse(compact("message"), Response::HTTP_PAYMENT_REQUIRED);
             }
 
