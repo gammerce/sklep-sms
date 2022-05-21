@@ -52,11 +52,8 @@ class Application extends Container
         /** @var Path $path */
         $path = $this->make(Path::class);
 
-        try {
-            (new Dotenv($path->to("confidential")))->load();
-        } catch (InvalidPathException $e) {
-            //
-        }
+        $dotenv = Dotenv::createImmutable($path->to("confidential"));
+        $dotenv->safeLoad();
     }
 
     private function registerServiceProviders(): void
