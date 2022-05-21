@@ -236,6 +236,7 @@ function get_random_string($length): string
 }
 
 /**
+ *
  * @param string $steamId
  * @return bool
  */
