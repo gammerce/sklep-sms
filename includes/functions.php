@@ -24,12 +24,7 @@ function app(): Container
     return Container::getInstance();
 }
 
-/**
- * @param Permission $permission
- * @param User|null $user
- * @return bool
- */
-function can(Permission $permission, User $user = null): bool
+function can(Permission $permission, ?User $user = null): bool
 {
     if (!$user) {
         /** @var Auth $auth */
@@ -40,20 +35,11 @@ function can(Permission $permission, User $user = null): bool
     return $user->can($permission);
 }
 
-/**
- * @param Permission $permission
- * @param User|null $user
- * @return bool
- */
-function cannot(Permission $permission, User $user = null): bool
+function cannot(Permission $permission, ?User $user = null): bool
 {
     return !can($permission, $user);
 }
 
-/**
- * @param Request $request
- * @return string|null
- */
 function get_ip(Request $request): ?string
 {
     if ($request->server->has("HTTP_CF_CONNECTING_IP")) {
@@ -158,31 +144,21 @@ function ip_in_range($ip, $range): bool
 
 /**
  * Returns request platform
- *
- * @param Request $request
- * @return string
  */
 function get_platform(Request $request): string
 {
     return $request->headers->get("User-Agent", "");
 }
 
-/**
- * @param string $platform
- * @return bool
- */
-function is_server_platform($platform): bool
+function is_server_platform(string $platform): bool
 {
     return in_array($platform, [Platform::AMXMODX, Platform::SOURCEMOD], true);
 }
 
 /**
  * Returns sms cost net by number
- *
- * @param string $number
- * @return Money
  */
-function get_sms_cost($number): Money
+function get_sms_cost(string $number): Money
 {
     if (strlen($number) < 4) {
         return new Money(0);
@@ -201,30 +177,25 @@ function get_sms_cost($number): Money
 
 /**
  * Returns sms provision from given net price
- *
- * @param Money $smsPrice
- * @return Money
  */
 function get_sms_provision(Money $smsPrice): Money
 {
     return new Money(ceil($smsPrice->asInt() / 2));
 }
 
-function hash_password($password, $salt): string
+function hash_password(string $password, string $salt): string
 {
     return md5(md5($password) . md5($salt));
 }
 
-function escape_filename($filename): string
+function escape_filename(string $filename): string
 {
     $filename = str_replace("/", "_", $filename);
     $filename = str_replace(" ", "_", $filename);
-    $filename = str_replace(".", "_", $filename);
-
-    return $filename;
+    return str_replace(".", "_", $filename);
 }
 
-function get_random_string($length): string
+function get_random_string(int $length): string
 {
     $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"; //length:36
     $finalRand = "";
@@ -235,11 +206,7 @@ function get_random_string($length): string
     return $finalRand;
 }
 
-/**
- * @param int $seconds
- * @return string
- */
-function seconds_to_time($seconds): string
+function seconds_to_time(int $seconds): string
 {
     $dtF = new DateTime("@0");
     $dtT = new DateTime("@$seconds");
@@ -251,7 +218,7 @@ function seconds_to_time($seconds): string
  * @param string $string
  * @return string[]
  */
-function custom_mb_str_split($string): array
+function custom_mb_str_split(string $string): array
 {
     return preg_split('/(?<!^)(?!$)/u', $string);
 }
@@ -261,7 +228,7 @@ function custom_mb_str_split($string): array
  * @param string $search
  * @return QueryParticle|null
  */
-function create_search_query($columns, $search): ?QueryParticle
+function create_search_query(array $columns, string $search): ?QueryParticle
 {
     if (!$columns) {
         return null;
@@ -307,43 +274,25 @@ if (!function_exists("str_contains")) {
 
 /**
  * Prints var_dump in pre
- *
- * @param mixed $a
  */
-function pr($a)
+function pr(mixed $a): void
 {
     echo "<pre>";
     var_dump($a);
     echo "</pre>";
 }
 
-/**
- * @param mixed $val
- * @return bool
- */
-function my_is_integer($val): bool
+function my_is_integer(mixed $val): bool
 {
     return strlen($val) && trim($val) === strval(intval($val));
 }
 
-/**
- * @param mixed $array
- * @param mixed $key
- * @param mixed $default
- * @return mixed|null
- */
-function array_get($array, $key, $default = null)
+function array_get(ArrayAccess|array|null $array, mixed $key, mixed $default = null): mixed
 {
-    return isset($array[$key]) ? $array[$key] : $default;
+    return $array[$key] ?? $default;
 }
 
-/**
- * @param array $array
- * @param string $key
- * @param mixed $default
- * @return mixed
- */
-function array_dot_get($array, $key, $default = null)
+function array_dot_get(ArrayAccess|array|null $array, string $key, mixed $default = null): mixed
 {
     foreach (explode(".", $key) as $segment) {
         if (!isset($array[$segment])) {
@@ -369,28 +318,16 @@ function captureRequest(): Request
     return $request;
 }
 
-/**
- * @param PDOException $e
- * @return int
- */
-function get_error_code(PDOException $e)
+function get_error_code(PDOException $e): int
 {
     return $e->errorInfo[1];
 }
 
-/**
- * @param mixed $items
- * @return Collection
- */
-function collect($items = []): Collection
+function collect(mixed $items = []): Collection
 {
     return new Collection($items);
 }
 
-/**
- * @param array $array
- * @return bool
- */
 function is_list(array $array): bool
 {
     if (empty($array)) {
@@ -400,11 +337,7 @@ function is_list(array $array): bool
     return ctype_digit(implode("", array_keys($array)));
 }
 
-/**
- * @param mixed $value
- * @return Money|null
- */
-function as_money($value): ?Money
+function as_money(mixed $value): ?Money
 {
     if ($value === null || $value === "") {
         return null;
@@ -413,11 +346,7 @@ function as_money($value): ?Money
     return new Money($value);
 }
 
-/**
- * @param mixed $value
- * @return int|null
- */
-function as_int($value): ?int
+function as_int(mixed $value): ?int
 {
     if ($value === null || $value === "") {
         return null;
@@ -430,11 +359,7 @@ function as_int($value): ?int
     return (int) $value;
 }
 
-/**
- * @param mixed $value
- * @return float|null
- */
-function as_float($value): ?float
+function as_float(mixed $value): ?float
 {
     if ($value === null || $value === "") {
         return null;
@@ -447,11 +372,7 @@ function as_float($value): ?float
     return (float) $value;
 }
 
-/**
- * @param mixed $value
- * @return string|null
- */
-function as_string($value): ?string
+function as_string(mixed $value): ?string
 {
     if ($value === null) {
         return null;
@@ -464,37 +385,25 @@ function as_string($value): ?string
     return (string) $value;
 }
 
-/**
- * @param string $value
- * @return PaymentMethod|null
- */
-function as_payment_method($value): ?PaymentMethod
+function as_payment_method(?string $value): ?PaymentMethod
 {
     try {
         return new PaymentMethod($value);
-    } catch (UnexpectedValueException $e) {
+    } catch (UnexpectedValueException) {
         return null;
     }
 }
 
-/**
- * @param string $value
- * @return Platform|null
- */
-function as_platform($value): ?Platform
+function as_platform(?string $value): ?Platform
 {
     try {
         return new Platform($value);
-    } catch (UnexpectedValueException $e) {
+    } catch (UnexpectedValueException) {
         return null;
     }
 }
 
-/**
- * @param string|int|DateTime|null $value
- * @return DateTime|null
- */
-function as_datetime($value): ?DateTime
+function as_datetime(string|int|DateTime|null $value): ?DateTime
 {
     if (!$value) {
         return null;
@@ -516,22 +425,13 @@ function as_datetime($value): ?DateTime
     return $date;
 }
 
-/**
- * @param string|int|DateTime|null $value
- * @return string
- */
-function as_date_string($value): string
+function as_date_string(string|int|DateTime|null $value): ?string
 {
     $date = as_datetime($value);
-    return $date ? $date->format("Y-m-d") : "";
+    return $date?->format("Y-m-d");
 }
 
-/**
- * @param int|string|DateTime|null $value
- * @param string $format
- * @return string|null
- */
-function as_datetime_string($value, $format = ""): ?string
+function as_datetime_string(int|string|DateTime|null $value, string $format = ""): ?string
 {
     if (!strlen($format)) {
         /** @var Settings $settings */
@@ -540,14 +440,10 @@ function as_datetime_string($value, $format = ""): ?string
     }
 
     $date = as_datetime($value);
-    return $date ? $date->format($format) : null;
+    return $date?->format($format);
 }
 
-/**
- * @param int|string|DateTime|null $value
- * @return string
- */
-function as_expiration_date_string($value): string
+function as_expiration_date_string(int|string|DateTime|null $value): ?string
 {
     if ($value === -1 || $value === null) {
         return __("never");
@@ -567,7 +463,7 @@ function as_expiration_datetime_string(int|string|DateTime|null $value): ?string
 
 function serialize_date(?DateTime $date): ?string
 {
-    return $date ? $date->format("Y-m-d H:i:s") : null;
+    return $date?->format("Y-m-d H:i:s");
 }
 
 function price_to_int(string|float|null $value): ?int
