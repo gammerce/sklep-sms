@@ -160,7 +160,7 @@ class Translator
             $this->fileSystem->scanDirectory($this->path->to("translations/{$language}"))
             as $file
         ) {
-            if (ends_at($file, ".php")) {
+            if (str_ends_with($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/{$file}");
             }
         }
@@ -169,7 +169,7 @@ class Translator
             $this->fileSystem->scanDirectory($this->path->to("translations/{$language}/admin"))
             as $file
         ) {
-            if (ends_at($file, ".php")) {
+            if (str_ends_with($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/admin/{$file}");
             }
         }
@@ -178,7 +178,7 @@ class Translator
             $this->fileSystem->scanDirectory($this->path->to("translations/{$language}/user"))
             as $file
         ) {
-            if (ends_at($file, ".php")) {
+            if (str_ends_with($file, ".php")) {
                 $filesToInclude[] = $this->path->to("translations/{$language}/user/{$file}");
             }
         }

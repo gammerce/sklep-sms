@@ -177,9 +177,9 @@ class Settings implements ArrayAccess
         return intval(array_get($this->data, "delete_logs"));
     }
 
-    private function formatShopUrl($url): string
+    private function formatShopUrl(string $url): string
     {
-        if (!starts_with($url, "http://") && !starts_with($url, "https://")) {
+        if (!str_starts_with($url, "http://") && !str_starts_with($url, "https://")) {
             $url = "http://" . $url;
         }
 

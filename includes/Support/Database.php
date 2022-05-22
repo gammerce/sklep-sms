@@ -105,12 +105,18 @@ class Database
 
     public function startTransaction(): void
     {
+        if (!$this->isConnected()) {
+            $this->connect();
+        }
+
         $this->pdo->beginTransaction();
     }
 
     public function rollback(): void
     {
-        $this->pdo->rollBack();
+        if ($this->isConnected()) {
+            $this->pdo->rollBack();
+        }
     }
 
     public function dropAllTables(): void

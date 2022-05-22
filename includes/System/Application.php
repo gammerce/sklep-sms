@@ -96,7 +96,7 @@ class Application extends Container
 
             $dir = new DirectoryIterator($path->to("/includes/Providers"));
             foreach ($dir as $fileInfo) {
-                if (ends_at($fileInfo->getFilename(), ".php")) {
+                if (str_ends_with($fileInfo->getFilename(), ".php")) {
                     $fileName = $fileInfo->getBasename(".php");
                     $providerClassName = "App\\Providers\\{$fileName}";
 
