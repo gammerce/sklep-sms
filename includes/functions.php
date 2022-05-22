@@ -556,11 +556,7 @@ function as_expiration_date_string($value): string
     return as_date_string($value);
 }
 
-/**
- * @param int|string|DateTime|null $value
- * @return string
- */
-function as_expiration_datetime_string($value): ?string
+function as_expiration_datetime_string(int|string|DateTime|null $value): ?string
 {
     if ($value === -1 || $value === "-1" || $value === null) {
         return __("never");
@@ -569,20 +565,12 @@ function as_expiration_datetime_string($value): ?string
     return as_datetime_string($value);
 }
 
-/**
- * @param DateTime|null $date
- * @return string|null
- */
-function serialize_date($date): ?string
+function serialize_date(?DateTime $date): ?string
 {
     return $date ? $date->format("Y-m-d H:i:s") : null;
 }
 
-/**
- * @param string|float $value
- * @return int|null
- */
-function price_to_int($value): ?int
+function price_to_int(string|float|null $value): ?int
 {
     if ($value === null || $value === "") {
         return null;
@@ -611,11 +599,7 @@ function as_permission_list($permissions): array
 }
 
 if (!function_exists("is_iterable")) {
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    function is_iterable($value): bool
+    function is_iterable(mixed $value): bool
     {
         return is_array($value) || $value instanceof Traversable;
     }
@@ -654,11 +638,7 @@ function get_identifier(): ?string
     return $identifier === false ? null : $identifier;
 }
 
-/**
- * @param mixed $value
- * @return bool
- */
-function has_value($value): bool
+function has_value(mixed $value): bool
 {
     if (is_array($value) || is_object($value)) {
         return !!$value;
@@ -667,23 +647,14 @@ function has_value($value): bool
     return strlen((string) $value) > 0;
 }
 
-/**
- * @param string $text
- * @param array $data
- */
-function log_info($text, array $data = []): void
+function log_info(string $text, array $data = []): void
 {
     /** @var FileLogger $logger */
     $logger = app()->make(FileLogger::class);
     $logger->info($text, $data);
 }
 
-/**
- * @param mixed $data
- * @param bool $read
- * @return array
- */
-function map_to_params($data, bool $read): array
+function map_to_params(mixed $data, bool $read): array
 {
     $params = [];
     $values = [];
@@ -704,11 +675,7 @@ function map_to_params($data, bool $read): array
     return [$params, $values];
 }
 
-/**
- * @param mixed $items
- * @return array
- */
-function to_array($items): array
+function to_array(mixed $items): array
 {
     if ($items instanceof Traversable) {
         return iterator_to_array($items);
@@ -729,36 +696,21 @@ function to_array($items): array
     return [$items];
 }
 
-/**
- * @param string $key
- * @param mixed ...$args
- * @return string
- */
-function __($key, ...$args): string
+function __(string $key, mixed ...$args): string
 {
     /** @var TranslationManager $translationManager */
     $translationManager = app()->make(TranslationManager::class);
     return $translationManager->user()->t($key, ...$args);
 }
 
-/**
- * @param string $path
- * @param array $query
- * @return string
- */
-function url($path, array $query = []): string
+function url(string $path, array $query = []): string
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
     return $url->to($path, $query);
 }
 
-/**
- * @param string $path
- * @param array $query
- * @return string
- */
-function versioned($path, $query = []): string
+function versioned(string $path, array $query = []): string
 {
     /** @var UrlGenerator $url */
     $url = app()->make(UrlGenerator::class);
@@ -766,7 +718,7 @@ function versioned($path, $query = []): string
 }
 
 if (!function_exists("dd")) {
-    function dd(...$vars): void
+    function dd(mixed ...$vars): void
     {
         foreach ($vars as $v) {
             VarDumper::dump($v);
@@ -778,7 +730,6 @@ if (!function_exists("dd")) {
 
 /**
  * @link https://stackoverflow.com/a/2040279
- * @return string
  */
 function generate_uuid4(): string
 {
@@ -807,30 +758,17 @@ function generate_uuid4(): string
     );
 }
 
-/**
- * @param int $length
- * @return string
- */
-function generate_id($length): string
+function generate_id(int $length): string
 {
     return substr(hash("sha256", generate_uuid4()), 0, $length);
 }
 
-/**
- * @param $string
- * @return string
- */
-function to_upper($string): string
+function to_upper(string $string): string
 {
     return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
 }
 
-/**
- * @param mixed $a
- * @param mixed $b
- * @return mixed
- */
-function merge_recursive($a, $b)
+function merge_recursive(mixed $a, mixed $b): mixed
 {
     if (!is_array($a) || !is_array($b)) {
         return $b;
@@ -851,12 +789,7 @@ function merge_recursive($a, $b)
     return $output;
 }
 
-/**
- * @param int|float $a
- * @param int|float $b
- * @return float|int|null
- */
-function multiply($a, $b)
+function multiply(int|float|null $a, int|float|null $b): int|float|null
 {
     if ($a === null || $b === null) {
         return null;
@@ -865,11 +798,6 @@ function multiply($a, $b)
     return $a * $b;
 }
 
-/**
- * @param PaymentMethod $paymentMethod
- * @param PaymentPlatform $paymentPlatform
- * @return string
- */
 function make_charge_wallet_option(
     PaymentMethod $paymentMethod,
     PaymentPlatform $paymentPlatform
@@ -877,12 +805,7 @@ function make_charge_wallet_option(
     return $paymentMethod . "," . $paymentPlatform->getId();
 }
 
-/**
- * @param string $list
- * @param string $delimiter
- * @return array
- */
-function explode_int_list($list, $delimiter = ","): array
+function explode_int_list(?string $list, string $delimiter = ","): array
 {
     if ($list === "" || $list === null) {
         return [];
@@ -893,7 +816,7 @@ function explode_int_list($list, $delimiter = ","): array
         ->all();
 }
 
-function get_authorization_value(Request $request)
+function get_authorization_value(Request $request): ?string
 {
     $authorization = $request->headers->get("Authorization");
     if (!$authorization) {
@@ -907,11 +830,7 @@ function get_authorization_value(Request $request)
     return $authorization;
 }
 
-/**
- * @param mixed $value
- * @return string
- */
-function selected($value): string
+function selected(mixed $value): string
 {
     return $value ? "selected" : "";
 }
