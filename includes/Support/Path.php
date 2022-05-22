@@ -10,6 +10,11 @@ class Path
         $this->basePath = $basePath;
     }
 
+    public static function temporary(): Path
+    {
+        return new Path(sys_get_temp_dir());
+    }
+
     public function to($path = ""): string
     {
         if (!strlen($path)) {
