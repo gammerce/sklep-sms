@@ -97,6 +97,8 @@ jobs:
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
+#      - uses: mxschmitt/action-tmate@v3
+
       - name: Run tests
         run: ./vendor/bin/phpunit --coverage-clover clover.xml --testdox
         env:
