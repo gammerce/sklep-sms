@@ -10,13 +10,9 @@ class MetaParser
         $this->fileSystem = $fileSystem;
     }
 
-    /**
-     * @param string $path
-     * @return array
-     */
-    public function parse($path): array
+    public function parse(string $path): array
     {
-        $lines = explode(PHP_EOL, $this->fileSystem->get($path));
+        $lines = preg_split('/[\n\r]/', $this->fileSystem->get($path));
 
         return collect($lines)
             ->flatMap(function ($line) {
