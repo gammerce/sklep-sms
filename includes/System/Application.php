@@ -6,8 +6,6 @@ use App\Providers\HeartServiceProvider;
 use App\Providers\SentryServiceProvider;
 use App\Support\Path;
 use DirectoryIterator;
-use Dotenv\Dotenv;
-use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
 use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,19 +39,9 @@ class Application extends Container
 
     private function bootstrap(): void
     {
-        $this->loadEnvironmentVariables();
         $this->getProviders();
         $this->registerServiceProviders();
         $this->bootServiceProviders();
-    }
-
-    private function loadEnvironmentVariables(): void
-    {
-        /** @var Path $path */
-        $path = $this->make(Path::class);
-
-        $dotenv = Dotenv::createImmutable($path->to("confidential"));
-        $dotenv->safeLoad();
     }
 
     private function registerServiceProviders(): void
