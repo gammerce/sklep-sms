@@ -38,12 +38,12 @@ jobs:
         include:
           - php_version: "5.6"
             composer: "composer-v5.json"
-          - php_version: "7.4"
-            composer: "composer-v5.json"
-          - php_version: "8.0"
-            composer: "composer.json"
-          - php_version: "8.1"
-            composer: "composer.json"
+#          - php_version: "7.4"
+#            composer: "composer-v5.json"
+#          - php_version: "8.0"
+#            composer: "composer.json"
+#          - php_version: "8.1"
+#            composer: "composer.json"
     env:
       APP_DEBUG: true
       DB_HOST: 127.0.0.1
