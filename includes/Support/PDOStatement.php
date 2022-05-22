@@ -7,14 +7,12 @@ use PDOStatement as BasePDOStatement;
 
 class PDOStatement extends BasePDOStatement
 {
-    public function bindAndExecute(array $params)
+    public function bindAndExecute(array $params): bool
     {
-        if ($params) {
-            $i = 1;
-            foreach ($params as $p) {
-                $parameterType = $this->getParamType($p);
-                $this->bindValue($i++, $p, $parameterType);
-            }
+        $i = 1;
+        foreach ($params as $param) {
+            $parameterType = $this->getParamType($param);
+            $this->bindValue($i++, $param, $parameterType);
         }
 
         return parent::execute();
