@@ -47,13 +47,13 @@ class RequirementStoreTest extends UnitTestCase
     public function invalid_php_version()
     {
         // given
-        $path = new Path("");
+        $path = Path::temporary();
         $fileSystem = new MemoryFileSystem();
         $meta = new Meta(new MetaParser($fileSystem), $path);
         $requirementStore = new RequirementStore($path, $meta, $fileSystem);
 
         $fileSystem->put(
-            "/confidential/.meta",
+            $path->to("/confidential/.meta"),
             <<<EOF
 BUILD=php20.0
 EOF

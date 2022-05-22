@@ -25,7 +25,7 @@ class PathTest extends UnitTestCase
         $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->path->to() . "/foo/bar.sql", $absolutePath);
+        $this->assertEquals($this->path->to("/foo/bar.sql"), $absolutePath);
     }
 
     /** @test */
@@ -38,6 +38,6 @@ class PathTest extends UnitTestCase
         $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->path->to() . "/foo/bar.sql", $absolutePath);
+        $this->assertEquals($this->path->to("/foo/bar.sql"), $absolutePath);
     }
 }

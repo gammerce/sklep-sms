@@ -15,12 +15,11 @@ class Path
         return new Path(sys_get_temp_dir());
     }
 
-    public function to($path = ""): string
+    public function to(string $subpath): string
     {
-        if (!strlen($path)) {
+        if (!strlen($subpath)) {
             return $this->basePath;
         }
-
-        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($path, "/");
+        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($subpath, "/");
     }
 }
