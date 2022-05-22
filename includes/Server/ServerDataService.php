@@ -54,7 +54,7 @@ class ServerDataService
                 "AND `service_id` IN ({$keys}) " .
                 "ORDER BY `service_id` ASC, `quantity` ASC"
         );
-        $statement->execute(array_merge([$server->getId()], $serviceIds));
+        $statement->bindAndExecute(array_merge([$server->getId()], $serviceIds));
 
         return collect($statement)
             ->map(fn(array $row) => $this->priceRepository->mapToModel($row))
@@ -116,7 +116,7 @@ WHERE s.id = ?
 ORDER BY f.auth_data, f.type DESC
 EOF
         );
-        $statement->execute([$serverId]);
+        $statement->bindAndExecute([$serverId]);
 
         return collect($statement)
             ->map(function (array $data) {

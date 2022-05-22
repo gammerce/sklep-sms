@@ -44,7 +44,7 @@ class RefactorGroups extends Migration
                 ->keys()
                 ->join(",");
 
-            $statement->execute([$permissions, $row["id"]]);
+            $statement->bindAndExecute([$permissions, $row["id"]]);
         }
 
         foreach ($privileges as $permission) {

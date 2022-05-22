@@ -7,7 +7,7 @@ use PDOStatement as BasePDOStatement;
 
 class PDOStatement extends BasePDOStatement
 {
-    public function execute($params = null)
+    public function bindAndExecute(array $params)
     {
         if ($params) {
             $i = 1;

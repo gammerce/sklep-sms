@@ -68,7 +68,7 @@ class TestCase extends UnitTestCase
         $params = implode(" AND ", $params);
 
         $statement = $db->statement("SELECT 1 FROM `{$table}` WHERE {$params}");
-        $statement->execute($values);
+        $statement->bindAndExecute($values);
 
         return $statement->rowCount() > 0;
     }

@@ -29,7 +29,7 @@ class ReplaceServiceCodeWithPromoCode extends Migration
                 ->statement(
                     "UPDATE `ss_promo_codes` SET `quantity_type` = 'percentage', `server_id` = ?, `user_id` = ? WHERE `id` = ?"
                 )
-                ->execute([
+                ->bindAndExecute([
                     $serviceCode["server"] ?: null,
                     $serviceCode["user_id"] ?: null,
                     $serviceCode["id"],

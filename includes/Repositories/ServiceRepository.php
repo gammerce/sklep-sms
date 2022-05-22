@@ -29,7 +29,7 @@ class ServiceRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_services` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -53,7 +53,7 @@ class ServiceRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_services` WHERE `id` IN ({$keys}) ORDER BY `order` ASC"
         );
-        $statement->execute($ids);
+        $statement->bindAndExecute($ids);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -79,7 +79,7 @@ class ServiceRepository
                     "SET `id` = ?, `name` = ?, `short_description` = ?, `description` = ?, `tag` = ?, " .
                     "`module` = ?, `groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ?"
             )
-            ->execute([
+            ->bindAndExecute([
                 $id,
                 $name,
                 $shortDescription ?: "",
@@ -115,7 +115,7 @@ class ServiceRepository
                 "`groups` = ?, `order` = ?, `data` = ?, `types` = ?, `flags` = ? " .
                 "WHERE `id` = ?"
         );
-        $statement->execute([
+        $statement->bindAndExecute([
             $newId,
             $name,
             $shortDescription ?: "",
@@ -135,7 +135,7 @@ class ServiceRepository
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_services` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }

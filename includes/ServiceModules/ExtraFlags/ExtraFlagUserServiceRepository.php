@@ -53,7 +53,7 @@ class ExtraFlagUserServiceRepository
                 "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                 ($params ? "WHERE {$params}" : "")
         );
-        $statement->execute($values);
+        $statement->bindAndExecute($values);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -82,7 +82,14 @@ class ExtraFlagUserServiceRepository
             "INSERT INTO `$table` (`us_id`, `server_id`, `service_id`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
-        $statement->execute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
+        $statement->bindAndExecute([
+            $userServiceId,
+            $serverId,
+            $serviceId,
+            $type,
+            $authData,
+            $password,
+        ]);
 
         return $this->get($userServiceId);
     }
@@ -96,7 +103,7 @@ class ExtraFlagUserServiceRepository
                     "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                     "WHERE `id` = ?"
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -123,7 +130,7 @@ SET `password` = ?
 WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?
 EOF
             )
-            ->execute([$password, $serverId, $type, $authData]);
+            ->bindAndExecute([$password, $serverId, $type, $authData]);
     }
 
     public function mapToModel(array $data): ExtraFlagUserService

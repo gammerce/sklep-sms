@@ -23,7 +23,7 @@ class SmsCodeRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_sms_codes` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -43,7 +43,7 @@ class SmsCodeRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_sms_codes` WHERE `code` = ? AND `sms_price` = ? AND (`expires_at` IS NULL OR `expires_at` > NOW())"
         );
-        $statement->execute([$code, $smsPrice->asInt()]);
+        $statement->bindAndExecute([$code, $smsPrice->asInt()]);
 
         if ($data = $statement->fetch()) {
             return $this->mapToModel($data);
@@ -65,7 +65,7 @@ class SmsCodeRepository
             ->statement(
                 "INSERT INTO `ss_sms_codes` SET `code` = ?, `sms_price` = ?, `free` = ?, `expires_at` = ?"
             )
-            ->execute([$code, $smsPrice->asInt(), $free ? 1 : 0, serialize_date($expires)]);
+            ->bindAndExecute([$code, $smsPrice->asInt(), $free ? 1 : 0, serialize_date($expires)]);
 
         return $this->get($this->db->lastId());
     }
@@ -77,7 +77,7 @@ class SmsCodeRepository
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_sms_codes` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }

@@ -25,7 +25,7 @@ class UserServiceRepository
             "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`, `comment`) " .
                 "VALUES (?, IF(? IS NULL, '-1', UNIX_TIMESTAMP() + ?), ?, ?)"
         );
-        $statement->execute([$serviceId, $seconds, $seconds, $userId ?: 0, $comment ?: ""]);
+        $statement->bindAndExecute([$serviceId, $seconds, $seconds, $userId ?: 0, $comment ?: ""]);
         return $this->db->lastId();
     }
 
@@ -42,14 +42,14 @@ class UserServiceRepository
             "INSERT INTO `ss_user_service` (`service_id`, `expire`, `user_id`, `comment`) " .
                 "VALUES (?, ?, ?, ?)"
         );
-        $statement->execute([$serviceId, $expiresAt, $userId ?: 0, $comment ?: ""]);
+        $statement->bindAndExecute([$serviceId, $expiresAt, $userId ?: 0, $comment ?: ""]);
         return $this->db->lastId();
     }
 
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
         return !!$statement->rowCount();
     }
 
@@ -61,7 +61,7 @@ class UserServiceRepository
 
         $keys = implode(",", array_fill(0, count($ids), "?"));
         $statement = $this->db->statement("DELETE FROM `ss_user_service` WHERE `id` IN ({$keys})");
-        $statement->execute($ids);
+        $statement->bindAndExecute($ids);
 
         return !!$statement->rowCount();
     }
@@ -84,7 +84,7 @@ class UserServiceRepository
         $params = implode(", ", $params);
 
         $statement = $this->db->statement("UPDATE `ss_user_service` SET {$params} WHERE `id` = ?");
-        $statement->execute(array_merge($values, [$id]));
+        $statement->bindAndExecute(array_merge($values, [$id]));
 
         return $statement->rowCount();
     }
@@ -106,7 +106,7 @@ class UserServiceRepository
             $params = implode(", ", $params);
 
             $statement = $this->db->statement("UPDATE `$table` SET {$params} WHERE `us_id` = ?");
-            $statement->execute(array_merge($values, [$userServiceId]));
+            $statement->bindAndExecute(array_merge($values, [$userServiceId]));
             $affected = max($affected, $statement->rowCount());
         }
 
@@ -118,7 +118,7 @@ class UserServiceRepository
         $statement = $this->db->statement(
             "UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?"
         );
-        $statement->execute([$userId, $id]);
+        $statement->bindAndExecute([$userId, $id]);
 
         return !!$statement->rowCount();
     }
