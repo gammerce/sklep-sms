@@ -51,7 +51,9 @@ class MybbUserGroupRepository
      */
     public function delete($id): void
     {
-        $this->db->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")->bindAndExecute([$id]);
+        $this->db
+            ->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")
+            ->bindAndExecute([$id]);
     }
 
     /**

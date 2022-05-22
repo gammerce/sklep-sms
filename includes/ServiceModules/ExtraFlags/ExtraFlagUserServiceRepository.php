@@ -82,7 +82,14 @@ class ExtraFlagUserServiceRepository
             "INSERT INTO `$table` (`us_id`, `server_id`, `service_id`, `type`, `auth_data`, `password`) " .
                 "VALUES (?, ?, ?, ?, ?, ?)"
         );
-        $statement->bindAndExecute([$userServiceId, $serverId, $serviceId, $type, $authData, $password]);
+        $statement->bindAndExecute([
+            $userServiceId,
+            $serverId,
+            $serviceId,
+            $type,
+            $authData,
+            $password,
+        ]);
 
         return $this->get($userServiceId);
     }

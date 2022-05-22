@@ -44,7 +44,11 @@ class TemplateRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_templates` WHERE `name` = ? AND `theme` = ? AND `lang` = ?"
         );
-        $statement->bindAndExecute([$name, $theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
+        $statement->bindAndExecute([
+            $name,
+            $theme ?: self::DEFAULT_THEME,
+            $lang ?: self::DEFAULT_THEME,
+        ]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;

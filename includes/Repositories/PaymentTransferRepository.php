@@ -42,7 +42,15 @@ class PaymentTransferRepository
                 "INSERT INTO `ss_payment_transfer` " .
                     "SET `id` = ?, `income` = ?, `cost` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
-            ->bindAndExecute([$id, $income, $cost, $transferService, $ip, $platform, $free ? 1 : 0]);
+            ->bindAndExecute([
+                $id,
+                $income,
+                $cost,
+                $transferService,
+                $ip,
+                $platform,
+                $free ? 1 : 0,
+            ]);
 
         return $this->get($id);
     }

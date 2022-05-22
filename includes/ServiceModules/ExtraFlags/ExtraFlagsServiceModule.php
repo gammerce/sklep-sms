@@ -270,7 +270,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             LIMIT ?, ?
 EOF
         );
-        $statement->bindAndExecute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -1124,7 +1126,13 @@ EOF
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service_id = ? AND `server_id` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
         );
-        $statement->bindAndExecute([$this->service->getId(), $serverId, $type, $authData, $password]);
+        $statement->bindAndExecute([
+            $this->service->getId(),
+            $serverId,
+            $type,
+            $authData,
+            $password,
+        ]);
 
         if (!$statement->rowCount()) {
             return [

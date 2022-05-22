@@ -87,7 +87,14 @@ class ServerRepository
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `transfer_platform` = ? " .
                     "WHERE `id` = ?"
             )
-            ->bindAndExecute([$name, $ip, $port, $smsPlatformId, implode(",", $transferPlatformIds), $id]);
+            ->bindAndExecute([
+                $name,
+                $ip,
+                $port,
+                $smsPlatformId,
+                implode(",", $transferPlatformIds),
+                $id,
+            ]);
     }
 
     public function delete($id): bool
