@@ -69,7 +69,7 @@ class PagePaymentLog extends Page implements IBeLoggedMust
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge([$user->getId()], $pagination->getSqlLimit(10)));
+        $statement->bindAndExecute(array_merge([$user->getId()], $pagination->getSqlLimit(10)));
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $paymentLogs = "";

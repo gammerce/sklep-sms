@@ -23,7 +23,7 @@ class TemplateRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_templates` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -44,7 +44,7 @@ class TemplateRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_templates` WHERE `name` = ? AND `theme` = ? AND `lang` = ?"
         );
-        $statement->execute([$name, $theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
+        $statement->bindAndExecute([$name, $theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
@@ -66,7 +66,7 @@ class TemplateRepository
                 SET `name` = ?, `theme` = ?, `lang` = ?, `content` = ?, `created_at` = NOW(), `updated_at` = NOW()
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 $name,
                 $theme ?: self::DEFAULT_THEME,
                 $lang ?: self::DEFAULT_THEME,
@@ -90,7 +90,7 @@ EOF
                 WHERE `id` = ?
 EOF
             )
-            ->execute([$content, $id]);
+            ->bindAndExecute([$content, $id]);
     }
 
     /**
@@ -100,7 +100,7 @@ EOF
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_templates` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
         return !!$statement->rowCount();
     }
 
@@ -118,7 +118,7 @@ EOF
             ORDER BY `theme` ASC
 EOF
         );
-        $statement->execute([self::DEFAULT_THEME]);
+        $statement->bindAndExecute([self::DEFAULT_THEME]);
 
         return collect($statement)
             ->map(fn(array $row) => $row["theme"])
@@ -139,7 +139,7 @@ EOF
             ORDER BY `name` ASC
 EOF
         );
-        $statement->execute([$theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
+        $statement->bindAndExecute([$theme ?: self::DEFAULT_THEME, $lang ?: self::DEFAULT_THEME]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))

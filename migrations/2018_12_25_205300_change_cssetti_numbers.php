@@ -43,6 +43,6 @@ class ChangeCssettiNumbers extends Migration
 
         $this->db
             ->statement("UPDATE `ss_transaction_services` SET `data` = ? WHERE `id` = 'cssetti';")
-            ->execute([json_encode($data)]);
+            ->bindAndExecute([json_encode($data)]);
     }
 }

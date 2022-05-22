@@ -37,7 +37,7 @@ class ServerRepository
             $statement = $this->db->statement(
                 "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `ss_servers` WHERE `id` = ?"
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -52,7 +52,7 @@ class ServerRepository
         $statement = $this->db->statement(
             "SELECT *, UNIX_TIMESTAMP(`last_active_at`) FROM `ss_servers` WHERE `token` = ?"
         );
-        $statement->execute([$token]);
+        $statement->bindAndExecute([$token]);
         $data = $statement->fetch();
 
         return $data ? $this->mapToModel($data) : null;
@@ -67,7 +67,7 @@ class ServerRepository
                 "INSERT INTO `ss_servers` " .
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `transfer_platform` = ?, `token` = ?"
             )
-            ->execute([
+            ->bindAndExecute([
                 $name,
                 $ip,
                 $port,
@@ -87,13 +87,13 @@ class ServerRepository
                     "SET `name` = ?, `ip` = ?, `port` = ?, `sms_platform` = ?, `transfer_platform` = ? " .
                     "WHERE `id` = ?"
             )
-            ->execute([$name, $ip, $port, $smsPlatformId, implode(",", $transferPlatformIds), $id]);
+            ->bindAndExecute([$name, $ip, $port, $smsPlatformId, implode(",", $transferPlatformIds), $id]);
     }
 
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_servers` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }
@@ -104,7 +104,7 @@ class ServerRepository
             ->statement(
                 "UPDATE `ss_servers` SET `type` = ?, `version` = ?, `last_active_at` = NOW() WHERE `id` = ?"
             )
-            ->execute([$type, $version, $id]);
+            ->bindAndExecute([$type, $version, $id]);
     }
 
     /**
@@ -117,7 +117,7 @@ class ServerRepository
 
         $this->db
             ->statement("UPDATE `ss_servers` SET `token` = ? WHERE `id` = ?")
-            ->execute([$token, $id]);
+            ->bindAndExecute([$token, $id]);
 
         return $token;
     }

@@ -53,7 +53,7 @@ class MigrateTransactionServices extends Migration
                         "INSERT INTO `ss_payment_platforms` " .
                             "SET `name` = ?, `module` = ?, `data` = ?"
                     )
-                    ->execute([$row["name"], $row["id"], json_encode($data)]);
+                    ->bindAndExecute([$row["name"], $row["id"], json_encode($data)]);
 
                 $paymentPlatforms[$row["id"]] = $this->db->lastId();
             }
@@ -63,20 +63,20 @@ class MigrateTransactionServices extends Migration
         $newSmsPlatformId = array_get($paymentPlatforms, $smsService, "");
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'sms_service'")
-            ->execute([$newSmsPlatformId]);
+            ->bindAndExecute([$newSmsPlatformId]);
 
         /** @var PaymentPlatform|null $newTransferPlatform */
         $newTransferPlatformId = array_get($paymentPlatforms, $transferService, "");
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'transfer_service'")
-            ->execute([$newTransferPlatformId]);
+            ->bindAndExecute([$newTransferPlatformId]);
 
         $statement = $this->db->query("SELECT * FROM ss_servers");
         foreach ($statement as $row) {
             $smsPlatformId = array_get($paymentPlatforms, $row["sms_service"]);
             $this->db
                 ->statement("UPDATE `ss_servers` SET `sms_service` = ? WHERE `id` = ?")
-                ->execute([$smsPlatformId, $row["id"]]);
+                ->bindAndExecute([$smsPlatformId, $row["id"]]);
         }
 
         $this->db->query(

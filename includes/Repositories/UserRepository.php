@@ -53,7 +53,7 @@ class UserRepository
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 (string) $username,
                 hash_password($password, $salt),
                 $salt,
@@ -87,7 +87,7 @@ EOF
                 WHERE `uid` = ?
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 (string) $user->getUsername(),
                 (string) $user->getForename(),
                 (string) $user->getSurname(),
@@ -119,7 +119,7 @@ EOF
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `uid` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -143,7 +143,7 @@ EOF
         $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
 
         $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` IN (?, ?)");
-        $statement->execute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
+        $statement->bindAndExecute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -160,7 +160,7 @@ EOF
         }
 
         $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `username` = ?");
-        $statement->execute([$username]);
+        $statement->bindAndExecute([$username]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -177,7 +177,7 @@ EOF
         }
 
         $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `email` = ?");
-        $statement->execute([$email]);
+        $statement->bindAndExecute([$email]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -198,7 +198,7 @@ EOF
             "SELECT * FROM `ss_users` " .
                 "WHERE (`username` = ? OR `email` = ?) AND `password` = md5(CONCAT(md5(?), md5(`salt`)))"
         );
-        $statement->execute([$emailOrUsername, $emailOrUsername, $password]);
+        $statement->bindAndExecute([$emailOrUsername, $emailOrUsername, $password]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -217,7 +217,7 @@ EOF
         $statement = $this->db->statement(
             "SELECT * FROM `ss_users` WHERE `reset_password_key` = ?"
         );
-        $statement->execute([$resetKey]);
+        $statement->bindAndExecute([$resetKey]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
@@ -228,7 +228,7 @@ EOF
         $key = get_random_string(32);
         $this->db
             ->statement("UPDATE `ss_users` SET `reset_password_key` = ? WHERE `uid` = ?")
-            ->execute([$key, $userId]);
+            ->bindAndExecute([$key, $userId]);
 
         return $key;
     }
@@ -246,20 +246,20 @@ EOF
             ->statement(
                 "UPDATE `ss_users` SET `password` = ?, `salt` = ?, `reset_password_key` = '' WHERE `uid` = ?"
             )
-            ->execute([hash_password($password, $salt), $salt, $userId]);
+            ->bindAndExecute([hash_password($password, $salt), $salt, $userId]);
     }
 
     public function touch(User $user): void
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `lastactiv` = NOW(), `lastip` = ? WHERE `uid` = ?")
-            ->execute([$user->getLastIp(), $user->getId()]);
+            ->bindAndExecute([$user->getLastIp(), $user->getId()]);
     }
 
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_users` WHERE `uid` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }

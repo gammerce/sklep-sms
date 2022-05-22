@@ -39,7 +39,7 @@ class GroupRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_groups` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -56,7 +56,7 @@ class GroupRepository
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_groups` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
         return !!$statement->rowCount();
     }
 
@@ -70,7 +70,7 @@ class GroupRepository
         $statement = $this->db->statement(
             "INSERT INTO `ss_groups` SET `name` = ?, `permissions` = ?"
         );
-        $statement->execute([$name, implode(",", $permissions)]);
+        $statement->bindAndExecute([$name, implode(",", $permissions)]);
         return $this->get($this->db->lastId());
     }
 
@@ -85,7 +85,7 @@ class GroupRepository
         $statement = $this->db->statement(
             "UPDATE `ss_groups` SET `name` = ?, `permissions` = ? WHERE `id` = ?"
         );
-        $statement->execute([$name, implode(",", $permissions), $id]);
+        $statement->bindAndExecute([$name, implode(",", $permissions), $id]);
         return !!$statement->rowCount();
     }
 

@@ -29,7 +29,7 @@ class IncomeService
                 "WHERE t.free = '0' AND IFNULL(t.income,'') != '' AND t.payment != 'wallet' AND t.timestamp LIKE ? " .
                 "ORDER BY t.timestamp ASC"
         );
-        $statement->execute(["$year-$month-%"]);
+        $statement->bindAndExecute(["$year-$month-%"]);
 
         // Let's sum income by date (day precision) and server
         $data = [];

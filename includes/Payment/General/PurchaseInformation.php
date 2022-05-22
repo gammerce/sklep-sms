@@ -51,7 +51,7 @@ class PurchaseInformation
         $statement = $this->db->statement(
             "SELECT * FROM ({$this->transactionRepository->getQuery()}) as t WHERE {$queryParticle}"
         );
-        $statement->execute($queryParticle->params());
+        $statement->bindAndExecute($queryParticle->params());
 
         if (!$statement->rowCount()) {
             return "";

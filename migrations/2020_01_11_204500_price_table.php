@@ -56,7 +56,7 @@ INSERT INTO `ss_prices` (`service`, `server`, `sms_price`, `transfer_price`, `qu
 VALUES (?, ?, ?, ?, ?)
 EOF
                     )
-                    ->execute([
+                    ->bindAndExecute([
                         $row["service"],
                         $row["server"] === -1 ? null : $row["server"],
                         $this->tariffToSmsPrice($row["tariff"]),
@@ -89,7 +89,7 @@ EOF
             try {
                 $this->db
                     ->statement("UPDATE ss_service_codes SET `price` = ? WHERE `id` = ?")
-                    ->execute([array_get($tariffPrice, $row["tariff"]), $row["id"]]);
+                    ->bindAndExecute([array_get($tariffPrice, $row["tariff"]), $row["id"]]);
             } catch (PDOException $e) {
                 $this->fileLogger->install("Migrate service_code error. {$e->getMessage()}");
             }

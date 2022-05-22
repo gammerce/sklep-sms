@@ -32,7 +32,7 @@ class WalletPaymentService
 
         $this->db
             ->statement("INSERT INTO `ss_payment_wallet` SET `cost` = ?, `ip` = ?, `platform` = ?")
-            ->execute([$cost->asInt(), $ip, $platform]);
+            ->bindAndExecute([$cost->asInt(), $ip, $platform]);
 
         return $this->db->lastId();
     }
@@ -45,7 +45,7 @@ class WalletPaymentService
     {
         $this->db
             ->statement("UPDATE `ss_users` SET `wallet` = `wallet` + ? WHERE `uid` = ?")
-            ->execute([$quantity, $user->getId()]);
+            ->bindAndExecute([$quantity, $user->getId()]);
 
         $user->setWallet($user->getWallet()->add($quantity));
     }

@@ -65,11 +65,11 @@ class DatabaseMigration
 
         $this->db
             ->statement("UPDATE `ss_settings` SET `value`= ? WHERE `key` = 'random_key'")
-            ->execute([get_random_string(16)]);
+            ->bindAndExecute([get_random_string(16)]);
 
         $this->db
             ->statement("UPDATE `ss_settings` SET `value` = ? WHERE `key` = 'license_token'")
-            ->execute([$licenseToken]);
+            ->bindAndExecute([$licenseToken]);
 
         $this->db
             ->statement(
@@ -86,7 +86,7 @@ SET
 `billing_address` = '{}'
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 $adminUsername,
                 $adminEmail,
                 hash_password($adminPassword, $salt),
@@ -134,7 +134,7 @@ EOF
 
     private function saveExecutedMigration($name): void
     {
-        $this->db->statement("INSERT INTO `ss_migrations` SET `name` = ?")->execute([$name]);
+        $this->db->statement("INSERT INTO `ss_migrations` SET `name` = ?")->bindAndExecute([$name]);
     }
 
     /**

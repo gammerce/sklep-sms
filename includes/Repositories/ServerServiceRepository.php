@@ -29,7 +29,7 @@ class ServerServiceRepository
     {
         $this->db
             ->statement("INSERT INTO `ss_servers_services` SET `server_id` = ?, `service_id` = ?")
-            ->execute([$serverId, $serviceId]);
+            ->bindAndExecute([$serverId, $serviceId]);
 
         return $this->mapToModel([
             "server_id" => $serverId,
@@ -46,7 +46,7 @@ class ServerServiceRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_servers_services` WHERE `server_id` = ?"
         );
-        $statement->execute([$serverId]);
+        $statement->bindAndExecute([$serverId]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -62,7 +62,7 @@ class ServerServiceRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_servers_services` WHERE `service_id` = ?"
         );
-        $statement->execute([$serviceId]);
+        $statement->bindAndExecute([$serviceId]);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))

@@ -43,7 +43,7 @@ class MybbUserGroupRepository
                 "INSERT INTO `ss_mybb_user_group` (`uid`, `gid`, `expire`, `was_before`) VALUES " .
                     $queryParticle->text(", ")
             )
-            ->execute($queryParticle->params());
+            ->bindAndExecute($queryParticle->params());
     }
 
     /**
@@ -51,7 +51,7 @@ class MybbUserGroupRepository
      */
     public function delete($id): void
     {
-        $this->db->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")->execute([$id]);
+        $this->db->statement("DELETE FROM `ss_mybb_user_group` WHERE `uid` = ?")->bindAndExecute([$id]);
     }
 
     /**
@@ -64,7 +64,7 @@ class MybbUserGroupRepository
             "SELECT `gid`, UNIX_TIMESTAMP(`expire`) - UNIX_TIMESTAMP() AS `expire`, `was_before` FROM `ss_mybb_user_group` " .
                 "WHERE `uid` = ?"
         );
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
         return $statement->fetchAll();
     }
 }
