@@ -19,12 +19,14 @@ class TestCase extends UnitTestCase
 
     private function setUpDatabase(): void
     {
+        /** @var Database $db */
+        $db = $this->app->make(Database::class);
+        $db->connect();
+
         /** @var Settings $settings */
         $settings = $this->app->make(Settings::class);
         $settings->load();
 
-        /** @var Database $db */
-        $db = $this->app->make(Database::class);
         if ($this->wrapInTransaction) {
             $db->startTransaction();
         }
