@@ -5,9 +5,9 @@ use App\Install\EnvCreator;
 use App\Support\FileSystemContract;
 use App\Support\Path;
 use Tests\Psr4\MemoryFileSystem;
-use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class EnvCreatorTest extends TestCase
+class EnvCreatorTest extends UnitTestCase
 {
     private FileSystemContract $fileSystem;
     private EnvCreator $envCreator;

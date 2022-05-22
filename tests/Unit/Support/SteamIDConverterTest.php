@@ -4,9 +4,10 @@ namespace Tests\Unit\Support;
 
 use App\Support\SteamIDConverter;
 use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 use UnexpectedValueException;
 
-class SteamIDConverterTest extends TestCase
+class SteamIDConverterTest extends UnitTestCase
 {
     private SteamIDConverter $converter;
 
