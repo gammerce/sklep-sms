@@ -15,7 +15,7 @@ class AddPricingPermissions extends Migration
 
                 $this->db
                     ->statement("UPDATE `ss_groups` SET `permissions` = ? WHERE `id` = ?")
-                    ->execute([$newPermissions, $row["id"]]);
+                    ->bindAndExecute([$newPermissions, $row["id"]]);
             }
         }
     }

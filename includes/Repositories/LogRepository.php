@@ -15,7 +15,7 @@ class LogRepository
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_logs` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }
@@ -26,7 +26,7 @@ class LogRepository
      */
     public function create($message): int
     {
-        $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->execute([$message]);
+        $this->db->statement("INSERT INTO `ss_logs` SET `text` = ?")->bindAndExecute([$message]);
         return $this->db->lastId();
     }
 }

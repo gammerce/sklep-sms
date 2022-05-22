@@ -3,8 +3,9 @@ namespace Tests\Unit\Support;
 
 use App\Support\Meta;
 use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class MetaTest extends TestCase
+class MetaTest extends UnitTestCase
 {
     private Meta $meta;
 

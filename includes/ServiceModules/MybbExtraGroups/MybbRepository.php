@@ -22,7 +22,7 @@ class MybbRepository
         $statement = $this->dbMybb()->statement(
             "SELECT `username` FROM `mybb_users` WHERE `uid` = ?"
         );
-        $statement->execute([$uid]);
+        $statement->bindAndExecute([$uid]);
         return $statement->fetchColumn();
     }
 
@@ -37,7 +37,7 @@ class MybbRepository
                 "FROM `mybb_users` " .
                 "WHERE `uid` = ?"
         );
-        $statement->execute([$uid]);
+        $statement->bindAndExecute([$uid]);
         return $statement->fetch();
     }
 
@@ -52,7 +52,7 @@ class MybbRepository
                 "FROM `mybb_users` " .
                 "WHERE `username` = ?"
         );
-        $statement->execute([$username]);
+        $statement->bindAndExecute([$username]);
         return $statement->fetch();
     }
 
@@ -63,7 +63,7 @@ class MybbRepository
     public function existsByUsername($username)
     {
         $statement = $this->dbMybb()->statement("SELECT 1 FROM `mybb_users` WHERE `username` = ?");
-        $statement->execute([$username]);
+        $statement->bindAndExecute([$username]);
         return $statement->rowCount() > 0;
     }
 
@@ -80,7 +80,7 @@ class MybbRepository
                     "SET `additionalgroups` = ?, `displaygroup` = ? " .
                     "WHERE `uid` = ?"
             )
-            ->execute([implode(",", $additionalGroups), $displayGroup, $uid]);
+            ->bindAndExecute([implode(",", $additionalGroups), $displayGroup, $uid]);
     }
 
     /**

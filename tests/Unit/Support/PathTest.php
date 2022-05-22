@@ -3,8 +3,9 @@ namespace Tests\Unit\Support;
 
 use App\Support\Path;
 use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class PathTest extends TestCase
+class PathTest extends UnitTestCase
 {
     private Path $path;
 

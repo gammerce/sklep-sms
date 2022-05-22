@@ -16,7 +16,11 @@
   <php>
     <env name="APP_ENV" value="testing"/>
     <env name="APP_DEBUG" value="true"/>
+    <env name="DB_HOST" value="database"/>
+    <env name="DB_PORT" value="3306"/>
     <env name="DB_DATABASE" value="sklep_sms_test"/>
+    <env name="DB_USERNAME" value="root"/>
+    <env name="DB_PASSWORD" value="secret"/>
     <env name="SENTRY_DSN" value="nope"/>
     <env name="INFAKT_API_KEY" value=""/>
   </php>

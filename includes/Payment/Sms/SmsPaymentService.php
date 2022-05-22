@@ -140,7 +140,7 @@ class SmsPaymentService
                 "INSERT INTO `ss_payment_sms` (`code`, `income`, `cost`, `text`, `number`, `ip`, `platform`, `free`) " .
                     "VALUES (?,?,?,?,?,?,?,?)"
             )
-            ->execute([
+            ->bindAndExecute([
                 $code,
                 $this->smsPriceService->getProvision($price, $smsPaymentModule)->asInt(),
                 $this->smsPriceService->getGross($price)->asInt(),

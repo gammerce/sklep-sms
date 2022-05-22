@@ -18,7 +18,7 @@ class PaymentTransferRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_payment_transfer` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -42,7 +42,15 @@ class PaymentTransferRepository
                 "INSERT INTO `ss_payment_transfer` " .
                     "SET `id` = ?, `income` = ?, `cost` = ?, `transfer_service` = ?, `ip` = ?, `platform` = ?, `free` = ? "
             )
-            ->execute([$id, $income, $cost, $transferService, $ip, $platform, $free ? 1 : 0]);
+            ->bindAndExecute([
+                $id,
+                $income,
+                $cost,
+                $transferService,
+                $ip,
+                $platform,
+                $free ? 1 : 0,
+            ]);
 
         return $this->get($id);
     }
