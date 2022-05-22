@@ -236,15 +236,6 @@ function get_random_string($length): string
 }
 
 /**
- * @param string $steamId
- * @return bool
- */
-function is_steam_id_valid($steamId): bool
-{
-    return !!preg_match('/\bSTEAM_([0-9]):([0-9]):([0-9])+$/', $steamId);
-}
-
-/**
  * @param int $seconds
  * @return string
  */
