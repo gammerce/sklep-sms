@@ -673,7 +673,7 @@ function has_value($value): bool
         return !!$value;
     }
 
-    return strlen($value) > 0;
+    return strlen((string) $value) > 0;
 }
 
 /**
