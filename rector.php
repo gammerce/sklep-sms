@@ -7,6 +7,9 @@ return static function (ContainerConfigurator $containerConfigurator) {
     $services = $containerConfigurator->services();
 
     $phpVersion = getenv("PHP_VERSION");
+    if (version_compare($phpVersion, "8.1") < 0) {
+        $containerConfigurator->import(DowngradeSetList::PHP_81);
+    }
     if (version_compare($phpVersion, "8.0") < 0) {
         $containerConfigurator->import(DowngradeSetList::PHP_80);
     }
