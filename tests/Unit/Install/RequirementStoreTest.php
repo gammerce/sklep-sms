@@ -6,9 +6,9 @@ use App\Support\Meta;
 use App\Support\MetaParser;
 use App\Support\Path;
 use Tests\Psr4\MemoryFileSystem;
-use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class RequirementStoreTest extends TestCase
+class RequirementStoreTest extends UnitTestCase
 {
     /** @test */
     public function get_list_of_requirements()

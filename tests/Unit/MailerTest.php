@@ -2,9 +2,9 @@
 namespace Tests\Unit;
 
 use App\Support\Mailer;
-use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class MailerTest extends TestCase
+class MailerTest extends UnitTestCase
 {
     /** @test */
     public function can_initialize_mailer_via_container()
