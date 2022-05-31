@@ -58,14 +58,6 @@ interface FileSystemContract
     public function sharedGet($path);
 
     /**
-     * Determine if the given path is a file.
-     *
-     * @param  string $path
-     * @return bool
-     */
-    public function isFile($path);
-
-    /**
      * Determine if the given path is a directory.
      *
      * @param  string $path

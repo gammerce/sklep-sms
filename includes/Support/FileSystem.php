@@ -3,6 +3,7 @@ namespace App\Support;
 
 use ErrorException;
 use Exception;
+use function is_file;
 
 class FileSystem implements FileSystemContract
 {
@@ -39,7 +40,7 @@ class FileSystem implements FileSystemContract
 
     public function get($path, $lock = false)
     {
-        if ($this->isFile($path)) {
+        if (is_file($path)) {
             return $lock ? $this->sharedGet($path) : file_get_contents($path);
         }
         throw new Exception("File does not exist at path {$path}");
@@ -61,11 +62,6 @@ class FileSystem implements FileSystemContract
             }
         }
         return $contents;
-    }
-
-    public function isFile($path)
-    {
-        return is_file($path);
     }
 
     public function isDirectory($path)
