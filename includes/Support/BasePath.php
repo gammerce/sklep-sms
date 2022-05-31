@@ -1,7 +1,7 @@
 <?php
 namespace App\Support;
 
-class Path
+class BasePath
 {
     private string $basePath;
 
@@ -10,9 +10,9 @@ class Path
         $this->basePath = $basePath;
     }
 
-    public static function temporary(): Path
+    public static function temporary(): BasePath
     {
-        return new Path(sys_get_temp_dir());
+        return new BasePath(sys_get_temp_dir());
     }
 
     public function to(string $subpath): string

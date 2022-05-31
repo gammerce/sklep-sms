@@ -5,13 +5,13 @@ use App\PromoCode\ExpiredSmsCodeService;
 use App\Service\ExpiredUserServiceService;
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 
 class CronExecutor
 {
     private Database $db;
     private Settings $settings;
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
     private ExpiredUserServiceService $expiredUserServiceService;
     private ExpiredSmsCodeService $expiredSmsCodeService;
@@ -19,7 +19,7 @@ class CronExecutor
     public function __construct(
         Database $db,
         Settings $settings,
-        Path $path,
+        BasePath $path,
         FileSystemContract $fileSystem,
         ExpiredUserServiceService $expiredServiceService,
         ExpiredSmsCodeService $expiredSmsCodeService

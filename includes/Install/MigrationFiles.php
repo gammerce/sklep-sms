@@ -1,14 +1,14 @@
 <?php
 namespace App\Install;
 
-use App\Support\Path;
+use App\Support\BasePath;
 use DirectoryIterator;
 
 class MigrationFiles
 {
-    private Path $path;
+    private BasePath $path;
 
-    public function __construct(Path $path)
+    public function __construct(BasePath $path)
     {
         $this->path = $path;
     }

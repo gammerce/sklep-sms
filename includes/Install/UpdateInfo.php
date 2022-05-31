@@ -2,16 +2,16 @@
 namespace App\Install;
 
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\Template;
 
 class UpdateInfo
 {
-    private Path $path;
+    private BasePath $path;
     private Template $template;
     private FileSystemContract $fileSystem;
 
-    public function __construct(Path $path, Template $template, FileSystemContract $fileSystem)
+    public function __construct(BasePath $path, Template $template, FileSystemContract $fileSystem)
     {
         $this->path = $path;
         $this->template = $template;

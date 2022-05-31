@@ -3,15 +3,15 @@ namespace App\Install;
 
 use App\Support\FileSystemContract;
 use App\Support\Meta;
-use App\Support\Path;
+use App\Support\BasePath;
 
 class RequirementStore
 {
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
     private Meta $meta;
 
-    public function __construct(Path $path, Meta $meta, FileSystemContract $fileSystem)
+    public function __construct(BasePath $path, Meta $meta, FileSystemContract $fileSystem)
     {
         $this->path = $path;
         $this->fileSystem = $fileSystem;

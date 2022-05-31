@@ -4,7 +4,7 @@ namespace Tests\Unit\Support;
 
 use App\Support\FileSystemContract;
 use App\Support\MetaParser;
-use App\Support\Path;
+use App\Support\BasePath;
 use Tests\Psr4\MemoryFileSystem;
 use Tests\Psr4\TestCases\UnitTestCase;
 
@@ -19,7 +19,7 @@ class MetaParserTest extends UnitTestCase
         parent::setUp();
         $this->fileSystem = new MemoryFileSystem();
         $this->parser = new MetaParser($this->fileSystem);
-        $this->path = Path::temporary()->to("meta.txt");
+        $this->path = BasePath::temporary()->to("meta.txt");
     }
 
     /** @test */

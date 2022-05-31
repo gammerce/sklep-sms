@@ -3,17 +3,17 @@ namespace App\Payment\General;
 
 use App\Models\Purchase;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 
 class PurchaseDataService
 {
     private PurchaseSerializer $purchaseSerializer;
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
 
     public function __construct(
         PurchaseSerializer $purchaseSerializer,
-        Path $path,
+        BasePath $path,
         FileSystemContract $fileSystem
     ) {
         $this->purchaseSerializer = $purchaseSerializer;

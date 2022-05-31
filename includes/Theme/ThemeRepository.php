@@ -3,19 +3,19 @@ namespace App\Theme;
 
 use App\Support\Collection;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use Generator;
 
 class ThemeRepository
 {
     private TemplateRepository $templateRepository;
     private FileSystemContract $fileSystem;
-    private Path $path;
+    private BasePath $path;
 
     public function __construct(
         TemplateRepository $templateRepository,
         FileSystemContract $fileSystem,
-        Path $path
+        BasePath $path
     ) {
         $this->templateRepository = $templateRepository;
         $this->fileSystem = $fileSystem;

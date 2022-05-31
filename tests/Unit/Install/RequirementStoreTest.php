@@ -4,7 +4,7 @@ namespace Tests\Unit\Install;
 use App\Install\RequirementStore;
 use App\Support\Meta;
 use App\Support\MetaParser;
-use App\Support\Path;
+use App\Support\BasePath;
 use Tests\Psr4\MemoryFileSystem;
 use Tests\Psr4\TestCases\UnitTestCase;
 
@@ -47,7 +47,7 @@ class RequirementStoreTest extends UnitTestCase
     public function invalid_php_version()
     {
         // given
-        $path = Path::temporary();
+        $path = BasePath::temporary();
         $fileSystem = new MemoryFileSystem();
         $meta = new Meta(new MetaParser($fileSystem), $path);
         $requirementStore = new RequirementStore($path, $meta, $fileSystem);

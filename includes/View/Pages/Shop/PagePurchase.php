@@ -10,7 +10,7 @@ use App\Service\UserServiceAccessService;
 use App\ServiceModules\Interfaces\IServicePurchaseWeb;
 use App\ServiceModules\ServiceModule;
 use App\Support\FileSystem;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -25,7 +25,7 @@ class PagePurchase extends Page
     private Auth $auth;
     private UserServiceAccessService $userServiceAccessService;
     private WebsiteHeader $websiteHeader;
-    private Path $path;
+    private BasePath $path;
     private FileSystem $fileSystem;
     private UrlGenerator $url;
     private ServiceModuleManager $serviceModuleManager;
@@ -37,7 +37,7 @@ class PagePurchase extends Page
         UserServiceAccessService $userServiceAccessService,
         WebsiteHeader $websiteHeader,
         ServiceModuleManager $serviceModuleManager,
-        Path $path,
+        BasePath $path,
         FileSystem $fileSystem,
         UrlGenerator $url
     ) {

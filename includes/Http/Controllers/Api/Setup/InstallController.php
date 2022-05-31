@@ -11,7 +11,7 @@ use App\Install\RequirementStore;
 use App\Install\SetupManager;
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\System\Application;
 use Exception;
 use PDOException;
@@ -25,7 +25,7 @@ class InstallController
         RequirementStore $requirementStore,
         EnvCreator $envCreator,
         SetupManager $setupManager,
-        Path $path,
+        BasePath $path,
         FileSystemContract $fileSystem,
         Application $app
     ) {

@@ -4,7 +4,7 @@ namespace App\System;
 use App\Providers\AppServiceProvider;
 use App\Providers\HeartServiceProvider;
 use App\Providers\SentryServiceProvider;
-use App\Support\Path;
+use App\Support\BasePath;
 use DirectoryIterator;
 use Illuminate\Container\Container;
 use Sentry\SentrySdk;
@@ -34,7 +34,7 @@ class Application extends Container
     {
         $this->instance(Container::class, $this);
         $this->instance(Application::class, $this);
-        $this->bind(Path::class, fn() => new Path(realpath($this->basePath)));
+        $this->bind(BasePath::class, fn() => new BasePath(realpath($this->basePath)));
     }
 
     private function bootstrap(): void
@@ -76,8 +76,8 @@ class Application extends Container
     private function getProviders(): array
     {
         if (!$this->providers) {
-            /** @var Path $path */
-            $path = $this->make(Path::class);
+            /** @var BasePath $path */
+            $path = $this->make(BasePath::class);
 
             $dir = new DirectoryIterator($path->to("/includes/Providers"));
             foreach ($dir as $fileInfo) {

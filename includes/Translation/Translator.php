@@ -2,11 +2,11 @@
 namespace App\Translation;
 
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 
 class Translator
 {
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
 
     /**
@@ -57,7 +57,7 @@ class Translator
 
     public function __construct($lang = "polish")
     {
-        $this->path = app()->make(Path::class);
+        $this->path = app()->make(BasePath::class);
         $this->fileSystem = app()->make(FileSystemContract::class);
         $this->setLanguage($lang);
     }
