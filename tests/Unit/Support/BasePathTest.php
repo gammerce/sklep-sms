@@ -4,10 +4,11 @@ namespace Tests\Unit\Support;
 use App\Support\BasePath;
 use PHPUnit\Framework\TestCase;
 use Tests\Psr4\Concerns\SystemConcern;
+use Tests\Psr4\PhpUnitPolyfill;
 
 class BasePathTest extends TestCase
 {
-    use SystemConcern;
+    use SystemConcern, PhpUnitPolyfill;
 
     private BasePath $path;
 
