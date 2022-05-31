@@ -66,14 +66,6 @@ interface FileSystemContract
     public function isDirectory($path);
 
     /**
-     * Get the file size of a given file.
-     *
-     * @param  string $path
-     * @return int
-     */
-    public function size($path);
-
-    /**
      * Add text to the end of the file
      *
      * @param string $file

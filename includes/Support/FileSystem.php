@@ -3,6 +3,7 @@ namespace App\Support;
 
 use ErrorException;
 use Exception;
+use function filesize;
 use function is_file;
 
 class FileSystem implements FileSystemContract
@@ -54,7 +55,7 @@ class FileSystem implements FileSystemContract
             try {
                 if (flock($handle, LOCK_SH)) {
                     clearstatcache(true, $path);
-                    $contents = fread($handle, $this->size($path) ?: 1);
+                    $contents = fread($handle, filesize($path) ?: 1);
                     flock($handle, LOCK_UN);
                 }
             } finally {
@@ -67,11 +68,6 @@ class FileSystem implements FileSystemContract
     public function isDirectory($path)
     {
         return is_dir($path);
-    }
-
-    public function size($path)
-    {
-        return filesize($path);
     }
 
     public function append($file, $text)

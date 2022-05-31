@@ -75,11 +75,6 @@ class MemoryFileSystem implements FileSystemContract
         return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]["type"] === "d";
     }
 
-    public function size($path)
-    {
-        return $this->exists($path) ? 1 : 0;
-    }
-
     public function append($file, $text)
     {
         if ($this->exists($file) && strlen($this->get($file))) {
