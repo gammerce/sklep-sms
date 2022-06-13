@@ -14,23 +14,23 @@ function ss_prolong_set_cost() {
         "POST",
         `/api/services/${serviceId}/actions/get_cost`,
         $(form).serialize(),
-        function(html) {
+        function (html) {
             $("#cost .price").html(html);
         }
     );
 }
 
 // Zmiana ilosci dni
-$(document).delegate(".shopsms_license_prolong_purchase [name=amount]", "change", function() {
+$(document).delegate(".shopsms_license_prolong_purchase [name=amount]", "change", function () {
     ss_prolong_set_cost();
 });
 
 // Zmiana identyfikatora licencji
-$(document).delegate(".shopsms_license_prolong_purchase [name=identifier]", "change", function() {
+$(document).delegate(".shopsms_license_prolong_purchase [name=identifier]", "change", function () {
     ss_prolong_set_cost();
 });
 
 // Kliknięcie przeładowania
-$(document).delegate(".shopsms_license_prolong_purchase #cost .reload", "click", function() {
+$(document).delegate(".shopsms_license_prolong_purchase #cost .reload", "click", function () {
     ss_prolong_set_cost();
 });
