@@ -24,7 +24,7 @@ class ThemeRepositoryTest extends TestCase
         $themes = $this->themeRepository->all();
 
         // then
-        $this->assertEquals(["foo", "fusion"], $themes);
+        $this->assertEquals(["foo", "fusion", "shopsms"], $themes);
     }
 
     /** @test */
