@@ -65,7 +65,7 @@ abstract class Page
         $scriptPath = "build/js/shop/pages/{$this->getId()}/";
         if ($fileSystem->exists($path->to($scriptPath))) {
             foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
-                if (ends_at($file, ".js")) {
+                if (str_ends_with($file, ".js")) {
                     $websiteHeader->addScript($url->versioned($scriptPath . $file));
                 }
             }

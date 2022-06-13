@@ -17,7 +17,7 @@ class BoughtServiceRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_bought_services` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -58,7 +58,7 @@ SET
     `extra_data` = ?
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 $userId ?: 0,
                 $method,
                 $paymentId,

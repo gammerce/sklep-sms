@@ -29,7 +29,7 @@ class ServerServiceService
                     "INSERT IGNORE INTO `ss_servers_services` (`server_id`, `service_id`) " .
                         "VALUES {$keys}"
                 )
-                ->execute($values);
+                ->bindAndExecute($values);
         }
 
         if ($itemsToDelete->isPopulated()) {
@@ -43,7 +43,7 @@ class ServerServiceService
 
             $this->db
                 ->statement("DELETE FROM `ss_servers_services` WHERE {$keys}")
-                ->execute($values);
+                ->bindAndExecute($values);
         }
     }
 }

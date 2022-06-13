@@ -95,6 +95,8 @@ return [
     "privacy_policy" => "Privacy Policy",
     "profile" => "Profile",
     "profile_edit" => "Profile has been updated.",
+    "profile_steam_id_hint" =>
+        "By filling out this field you gain access to wallet payment during the game.",
     "profile_subtitle" => "Tell us a little more about yourself.",
     "promo_code" => "Promo code",
     "purchase" => "Service purchase",
@@ -143,8 +145,6 @@ You can now profit from many add-ons.',
     "sms_send_sms" => "Send SMS",
     "sms_text" => "Text",
     "sms_unavailable" => "Payment by SMS unavailable.",
-    "steam_id_hint" =>
-        "By filling out this field you gain access to wallet payment during the game.",
     "steam_id_occupied" => "Given SteamID is already affiliated with another account.",
     "street" => "Street",
     "take_over" => "Take over",

@@ -68,7 +68,7 @@ class PageAdminPayments extends PageAdmin
 
     public function getContent(Request $request)
     {
-        $recordId = $request->query->get("record");
+        $recordId = $request->query->get("record", "");
         $search = $request->query->get("search");
         $method = as_payment_method($request->query->get("method"));
 
@@ -115,7 +115,9 @@ class PageAdminPayments extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

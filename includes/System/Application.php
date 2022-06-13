@@ -7,8 +7,6 @@ use App\Providers\LicenseServiceProvider;
 use App\Providers\SentryServiceProvider;
 use App\Support\Path;
 use DirectoryIterator;
-use Dotenv\Dotenv;
-use Dotenv\Exception\InvalidPathException;
 use Illuminate\Container\Container;
 use Sentry\SentrySdk;
 use Symfony\Component\HttpFoundation\Request;
@@ -43,22 +41,9 @@ class Application extends Container
 
     private function bootstrap(): void
     {
-        $this->loadEnvironmentVariables();
         $this->getProviders();
         $this->registerServiceProviders();
         $this->bootServiceProviders();
-    }
-
-    private function loadEnvironmentVariables(): void
-    {
-        /** @var Path $path */
-        $path = $this->make(Path::class);
-
-        try {
-            (new Dotenv($path->to("confidential")))->load();
-        } catch (InvalidPathException $e) {
-            //
-        }
     }
 
     private function registerServiceProviders(): void
@@ -98,7 +83,7 @@ class Application extends Container
 
             $dir = new DirectoryIterator($path->to("/includes/Providers"));
             foreach ($dir as $fileInfo) {
-                if (ends_at($fileInfo->getFilename(), ".php")) {
+                if (str_ends_with($fileInfo->getFilename(), ".php")) {
                     $fileName = $fileInfo->getBasename(".php");
                     $providerClassName = "App\\Providers\\{$fileName}";
 

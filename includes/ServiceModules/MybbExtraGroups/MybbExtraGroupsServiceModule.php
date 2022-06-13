@@ -254,7 +254,9 @@ ORDER BY us.id DESC
 LIMIT ?, ?
 EOF
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -494,7 +496,7 @@ EOF
                 "INNER JOIN `ss_services` AS s ON us.service_id = s.id " .
                 "WHERE m.mybb_uid = ?"
         );
-        $statement->execute([$userService->getMybbUid()]);
+        $statement->bindAndExecute([$userService->getMybbUid()]);
 
         foreach ($statement as $row) {
             $row["extra_data"] = json_decode($row["extra_data"], true);

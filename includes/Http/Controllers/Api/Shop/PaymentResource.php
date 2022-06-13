@@ -56,13 +56,13 @@ class PaymentResource
 
         $paymentPlatformId = as_int($validated["payment_platform_id"]);
         $paymentMethod = new PaymentMethod($validated["method"]);
-        $smsCode = trim($validated["sms_code"]);
+        $smsCode = trim($validated["sms_code"] ?? "");
         $billingAddress = new BillingAddress(
-            trim($validated["billing_address_name"]),
-            trim($validated["billing_address_vat_id"]),
-            trim($validated["billing_address_street"]),
-            trim($validated["billing_address_postal_code"]),
-            trim($validated["billing_address_city"])
+            trim($validated["billing_address_name"] ?? ""),
+            trim($validated["billing_address_vat_id"] ?? ""),
+            trim($validated["billing_address_street"] ?? ""),
+            trim($validated["billing_address_postal_code"] ?? ""),
+            trim($validated["billing_address_city"] ?? "")
         );
 
         $paymentOption = new PaymentOption($paymentMethod, $paymentPlatformId);

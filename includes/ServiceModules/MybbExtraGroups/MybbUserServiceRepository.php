@@ -50,7 +50,7 @@ class MybbUserServiceRepository
             ->statement(
                 "INSERT INTO `{$table}` (`us_id`, `service_id`, `mybb_uid`) VALUES (?, ?, ?)"
             )
-            ->execute([$userServiceId, $serviceId, $mybbUid]);
+            ->bindAndExecute([$userServiceId, $serviceId, $mybbUid]);
 
         return $this->get($userServiceId);
     }
@@ -68,7 +68,7 @@ class MybbUserServiceRepository
                     "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                     "WHERE `id` = ?"
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -84,7 +84,7 @@ class MybbUserServiceRepository
         $statement = $this->db->statement(
             "SELECT `us_id` FROM `{$table}` WHERE `service_id` = ? AND `mybb_uid` = ?"
         );
-        $statement->execute([$serviceId, $mybbUid]);
+        $statement->bindAndExecute([$serviceId, $mybbUid]);
 
         if ($data = $statement->fetch()) {
             return $this->mapToModel($data);

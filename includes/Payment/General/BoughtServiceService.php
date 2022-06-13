@@ -125,7 +125,7 @@ class BoughtServiceService
         ?string $email,
         BoughtService $boughtService
     ): string {
-        if (!strlen($email)) {
+        if (!strlen((string) $email)) {
             return $this->lang->t("none");
         }
 

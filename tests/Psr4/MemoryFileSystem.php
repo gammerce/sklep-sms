@@ -118,7 +118,7 @@ class MemoryFileSystem implements FileSystemContract
         $output = [];
 
         foreach (array_keys($this->fileSystem) as $key) {
-            if (starts_with($formattedPath, $key) && $this->isFile($key)) {
+            if (str_starts_with($formattedPath, $key) && $this->isFile($key)) {
                 $output[] = $key;
             }
         }

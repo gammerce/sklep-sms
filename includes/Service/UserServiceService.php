@@ -45,7 +45,7 @@ class UserServiceService
                     $query .
                     " ORDER BY us.id DESC "
             );
-            $statement->execute($values);
+            $statement->bindAndExecute($values);
 
             foreach ($statement as $row) {
                 $userService = $serviceModule->mapToUserService($row);

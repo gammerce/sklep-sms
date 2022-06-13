@@ -40,7 +40,7 @@ SET
 `user_id` = ?
 EOF
             )
-            ->execute([
+            ->bindAndExecute([
                 $code,
                 $quantityType,
                 $quantity,
@@ -62,7 +62,7 @@ EOF
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_promo_codes` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -80,7 +80,7 @@ EOF
     {
         if (strlen($code)) {
             $statement = $this->db->statement("SELECT * FROM `ss_promo_codes` WHERE `code` = ?");
-            $statement->execute([$code]);
+            $statement->bindAndExecute([$code]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -97,7 +97,7 @@ EOF
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_promo_codes` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }
@@ -111,7 +111,7 @@ EOF
             ->statement(
                 "UPDATE `ss_promo_codes` SET `usage_count` = `usage_count` + 1 WHERE `id` = ?"
             )
-            ->execute([$id]);
+            ->bindAndExecute([$id]);
     }
 
     public function mapToModel(array $data): PromoCode

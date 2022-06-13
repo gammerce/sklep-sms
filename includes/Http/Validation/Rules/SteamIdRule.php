@@ -3,12 +3,15 @@ namespace App\Http\Validation\Rules;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
+use App\Support\SteamIDConverter;
 
 class SteamIdRule extends BaseRule
 {
     public function validate($attribute, $value, array $data): void
     {
-        if (!is_steam_id_valid($value) || strlen($value) > 32) {
+        $converter = new SteamIDConverter();
+
+        if (!$converter->isSteamID($value)) {
             throw new ValidationException($this->lang->t("wrong_sid"));
         }
     }

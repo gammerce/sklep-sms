@@ -24,11 +24,11 @@ class PlayerFlagCollectionTest extends HttpTestCase
     {
         // given
         $userService = $this->factory->extraFlagUserService([
+            "auth_data" => "STEAM_1:0:22309351",
+            "password" => "",
             "server_id" => $this->server->getId(),
             "service_id" => "vippro",
             "type" => ExtraFlagType::TYPE_SID,
-            "auth_data" => "STEAM_1:0:22309351",
-            "password" => "",
         ]);
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),
@@ -71,10 +71,10 @@ class PlayerFlagCollectionTest extends HttpTestCase
         // given
         $anotherServer = $this->factory->server();
         $userService = $this->factory->extraFlagUserService([
+            "auth_data" => "STEAM_1:0:22309351",
             "server_id" => $anotherServer->getId(),
             "service_id" => "vippro",
             "type" => ExtraFlagType::TYPE_SID,
-            "auth_data" => "STEAM_1:0:22309351",
         ]);
         $this->playerFlagService->recalculatePlayerFlags(
             $userService->getServerId(),

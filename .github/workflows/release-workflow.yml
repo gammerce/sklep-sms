@@ -54,11 +54,9 @@ jobs:
           --rm \
           --env PHP_VERSION=${{ matrix.php_version }} \
           -v $(pwd):/project \
-          -w /rector \
-          budziam/rector-archive:0.11.40 \
+          budziam/rector:0.12.23 \
           process \
           /project/includes \
-          --autoload-file=/project/vendor/autoload.php \
           --config /project/rector.php
       -
         run: yarn build

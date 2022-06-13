@@ -59,6 +59,7 @@ use App\Support\Database;
 use App\Support\Expression;
 use App\Support\PriceTextService;
 use App\Support\QueryParticle;
+use App\Support\SteamIDConverter;
 use App\System\Auth;
 use App\Theme\Template;
 use App\Translation\TranslationManager;
@@ -98,25 +99,26 @@ class ExtraFlagsServiceModule extends ServiceModule implements
     const MODULE_ID = "extra_flags";
     const USER_SERVICE_TABLE = "ss_user_service_extra_flags";
 
-    private Translator $lang;
-    private ServiceModuleManager $serviceModuleManager;
+    private AdminPaymentService $adminPaymentService;
+    private Auth $auth;
+    private BoughtServiceService $boughtServiceService;
+    private Database $db;
+    private DatabaseLogger $logger;
+    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
+    private PaginationFactory $paginationFactory;
+    private PlayerFlagService $playerFlagService;
+    private PriceTextService $priceTextService;
+    private PurchasePriceRenderer $purchasePriceRenderer;
+    private PurchasePriceService $purchasePriceService;
     private ServerManager $serverManager;
     private ServerServiceManager $serverServiceManager;
     private ServiceManager $serviceManager;
-    private UserManager $userManager;
-    private Auth $auth;
-    private BoughtServiceService $boughtServiceService;
-    private DatabaseLogger $logger;
-    private AdminPaymentService $adminPaymentService;
-    private PurchasePriceService $purchasePriceService;
-    private PurchasePriceRenderer $purchasePriceRenderer;
-    private UserServiceRepository $userServiceRepository;
-    private ExtraFlagUserServiceRepository $extraFlagUserServiceRepository;
-    private PlayerFlagService $playerFlagService;
-    private PriceTextService $priceTextService;
+    private ServiceModuleManager $serviceModuleManager;
     private ServiceTakeOverFactory $serviceTakeOverFactory;
-    private PaginationFactory $paginationFactory;
-    private Database $db;
+    private SteamIDConverter $steamIDConverter;
+    private Translator $lang;
+    private UserManager $userManager;
+    private UserServiceRepository $userServiceRepository;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,
@@ -135,6 +137,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         ServiceManager $serviceManager,
         ServiceModuleManager $serviceModuleManager,
         ServiceTakeOverFactory $serviceTakeOverFactory,
+        SteamIDConverter $steamIDConverter,
         Template $template,
         TranslationManager $translationManager,
         UserManager $userManager,
@@ -147,6 +150,7 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->boughtServiceService = $boughtServiceService;
         $this->db = $db;
         $this->extraFlagUserServiceRepository = $extraFlagUserServiceRepository;
+        $this->lang = $translationManager->user();
         $this->logger = $logger;
         $this->paginationFactory = $paginationFactory;
         $this->playerFlagService = $playerFlagService;
@@ -158,9 +162,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
         $this->serviceManager = $serviceManager;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->serviceTakeOverFactory = $serviceTakeOverFactory;
+        $this->steamIDConverter = $steamIDConverter;
         $this->userManager = $userManager;
         $this->userServiceRepository = $userServiceRepository;
-        $this->lang = $translationManager->user();
     }
 
     public function mapToUserService(array $data): ExtraFlagUserService
@@ -266,7 +270,9 @@ class ExtraFlagsServiceModule extends ServiceModule implements
             LIMIT ?, ?
 EOF
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -340,7 +346,7 @@ EOF
         $quantity = as_int(array_get($body, "quantity"));
         $serverId = as_int(array_get($body, "server_id"));
         $type = as_int(array_get($body, "type"));
-        $authData = trim(array_get($body, "auth_data"));
+        $authData = trim(array_get($body, "auth_data") ?? "");
         $password = array_get($body, "password");
         $passwordRepeat = array_get($body, "password_repeat");
         $email = array_get($body, "email");
@@ -435,11 +441,12 @@ EOF
     public function orderDetails(Purchase $purchase): string
     {
         $server = $this->serverManager->get($purchase->getOrder(Purchase::ORDER_SERVER));
-        $typeName = $this->getTypeName($purchase->getOrder("type"));
+        $authType = $purchase->getOrder("type");
+        $authTypeName = $this->getTypeName($authType);
 
-        $password = "";
-        if (strlen($purchase->getOrder("password"))) {
-            $password =
+        $authPassword = "";
+        if (strlen($purchase->getOrder("password", ""))) {
+            $authPassword =
                 "<strong>" .
                 $this->lang->t("password") .
                 "</strong>: " .
@@ -449,6 +456,9 @@ EOF
 
         $email = $purchase->getEmail() ?: $this->lang->t("none");
         $authData = $purchase->getOrder("auth_data");
+        if ($authType == ExtraFlagType::TYPE_SID) {
+            $authData = $this->steamIDConverter->toSteamID($authData);
+        }
         $serviceName = $this->service->getNameI18n();
         $serverName = $server->getName();
         $quantity =
@@ -460,9 +470,9 @@ EOF
             "shop/services/extra_flags/order_details",
             compact(
                 "quantity",
-                "typeName",
+                "authTypeName",
                 "authData",
-                "password",
+                "authPassword",
                 "email",
                 "serviceName",
                 "serverName"
@@ -472,20 +482,26 @@ EOF
 
     public function purchase(Purchase $purchase): int
     {
+        $authType = $purchase->getOrder("type");
+        $authPassword = $purchase->getOrder("password");
+        $authData = $purchase->getOrder("auth_data");
+        if ($authType == ExtraFlagType::TYPE_SID) {
+            $authData = $this->steamIDConverter->toSteamID($authData);
+        }
+
         $this->playerFlagService->addPlayerFlags(
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder("type"),
-            $purchase->getOrder("auth_data"),
-            $purchase->getOrder("password"),
+            $authType,
+            $authData,
+            $authPassword,
             $purchase->user->getId(),
             $purchase->getComment()
         );
 
         $promoCode = $purchase->getPromoCode();
 
-        // TODO Store PAYMENT_INVOICE_ID
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
             $purchase->user->getUsername(),
@@ -496,19 +512,19 @@ EOF
             $this->service->getId(),
             $purchase->getOrder(Purchase::ORDER_SERVER),
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
-            $purchase->getOrder("auth_data"),
+            $authData,
             $purchase->getEmail(),
             $promoCode ? $promoCode->getCode() : null,
             [
-                "type" => $purchase->getOrder("type"),
-                "password" => $purchase->getOrder("password"),
+                "type" => $authType,
+                "password" => $authPassword,
             ]
         );
     }
 
     public function purchaseInfo($action, Transaction $transaction)
     {
-        if (strlen($transaction->getExtraDatum("password"))) {
+        if (strlen($transaction->getExtraDatum("password", ""))) {
             $password =
                 "<strong>" .
                 $this->lang->t("password") .
@@ -941,7 +957,7 @@ EOF
             $password = array_get($data, "password", "");
             $shouldPasswordBeUpdated = true;
         } else {
-            $password = array_get($data, "password");
+            $password = array_get($data, "password", "");
             $shouldPasswordBeUpdated = !!strlen($password);
         }
 
@@ -967,7 +983,7 @@ EOF
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service_id = ? AND `server_id` = ? AND `type` = ? AND `auth_data` = ? AND `id` != ?"
         );
-        $statement->execute([
+        $statement->bindAndExecute([
             $this->service->getId(),
             $serverId,
             $type,
@@ -1029,7 +1045,7 @@ EOF
                         "SET `password` = ? " .
                         "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
                 )
-                ->execute([$password, $serverId, $type, $authData]);
+                ->bindAndExecute([$password, $serverId, $type, $authData]);
         }
 
         // Only recalculate flags when something has changed
@@ -1074,7 +1090,7 @@ EOF
 
         $validator = new Validator(
             array_merge($body, [
-                "auth_data" => trim(array_get($body, "auth_data")),
+                "auth_data" => trim(array_get($body, "auth_data") ?? ""),
                 "password" => array_get($body, "password") ?: "",
                 "server_id" => as_int(array_get($body, "server_id")),
                 "type" => as_int(array_get($body, "type")),
@@ -1110,7 +1126,13 @@ EOF
                 "INNER JOIN `{$this->getUserServiceTable()}` AS usef ON us.id = usef.us_id " .
                 "WHERE us.service_id = ? AND `server_id` = ? AND `type` = ? AND `auth_data` = ? AND `password` = ?"
         );
-        $statement->execute([$this->service->getId(), $serverId, $type, $authData, $password]);
+        $statement->bindAndExecute([
+            $this->service->getId(),
+            $serverId,
+            $type,
+            $authData,
+            $password,
+        ]);
 
         if (!$statement->rowCount()) {
             return [

@@ -3,7 +3,7 @@
 namespace Tests\Unit\Theme;
 
 use App\Theme\ContentEvaluator;
-use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
 class ExampleUrl
 {
@@ -13,7 +13,7 @@ class ExampleUrl
     }
 }
 
-class ContentEvaluatorTest extends TestCase
+class ContentEvaluatorTest extends UnitTestCase
 {
     /**
      * @test

@@ -6,8 +6,9 @@ use App\Cache\CachingRequester;
 use Mockery;
 use Psr\SimpleCache\CacheInterface;
 use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class CachingRequesterTest extends TestCase
+class CachingRequesterTest extends UnitTestCase
 {
     /** @test */
     public function returns_data_from_cache_if_not_outdated()

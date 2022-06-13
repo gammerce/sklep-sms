@@ -15,7 +15,7 @@ class ReplacePricesPriceWithQuantity extends Migration
         foreach ($statement as $row) {
             $this->db
                 ->statement("UPDATE `ss_service_codes` SET `quantity` = ? WHERE `id` = ?")
-                ->execute([$row["quantity"], $row["id"]]);
+                ->bindAndExecute([$row["quantity"], $row["id"]]);
         }
 
         $this->executeQueries([

@@ -12,7 +12,7 @@ class ExtraFlagPasswordRule extends BaseRule
         $type = array_get($data, "type");
 
         $allowedTypes = ExtraFlagType::TYPE_NICK | ExtraFlagType::TYPE_IP;
-        if ($type & $allowedTypes && !strlen($value)) {
+        if ($type & $allowedTypes && !strlen($value ?? "")) {
             throw new ValidationException($this->lang->t("field_no_empty"));
         }
     }

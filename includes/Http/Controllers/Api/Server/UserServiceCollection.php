@@ -36,7 +36,7 @@ AND (
 ORDER BY us.id DESC
 EOF
         );
-        $statement->execute([
+        $statement->bindAndExecute([
             $serverId,
             ExtraFlagType::TYPE_NICK,
             $nick,

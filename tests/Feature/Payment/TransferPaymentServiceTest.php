@@ -64,6 +64,7 @@ class TransferPaymentServiceTest extends TestCase
         $this->purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPaymentOption(

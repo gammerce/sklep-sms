@@ -41,7 +41,14 @@
         <fieldset class="field is-hidden" data-type="sid" disabled>
             <label for="sid" class="label required">{{ __('sid') }}</label>
             <div class="control">
-                <input type="text" id="sid" name="auth_data" class="input" required />
+                <input
+                    type="text"
+                    id="sid"
+                    name="auth_data"
+                    class="input"
+                    placeholder="{{ __('steam_id_hint') }}"
+                    required
+                />
             </div>
         </fieldset>
 

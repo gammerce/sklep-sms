@@ -109,7 +109,9 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         $statement = $this->db->statement(
             "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_users` {$where} LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

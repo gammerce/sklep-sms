@@ -42,7 +42,7 @@ class SettingsRepository
                 implode(", ", $keys) .
                 " )"
         );
-        $statement->execute($params);
+        $statement->bindAndExecute($params);
 
         return !!$statement->rowCount();
     }

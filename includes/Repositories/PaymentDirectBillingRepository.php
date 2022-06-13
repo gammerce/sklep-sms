@@ -20,7 +20,7 @@ class PaymentDirectBillingRepository
             $statement = $this->db->statement(
                 "SELECT * FROM `ss_payment_direct_billing` WHERE `id` = ?"
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -36,7 +36,7 @@ class PaymentDirectBillingRepository
             $statement = $this->db->statement(
                 "SELECT * FROM `ss_payment_direct_billing` WHERE `external_id` = ?"
             );
-            $statement->execute([$externalId]);
+            $statement->bindAndExecute([$externalId]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -53,7 +53,7 @@ class PaymentDirectBillingRepository
                 "INSERT INTO `ss_payment_direct_billing` " .
                     "SET `external_id` = ?, `income` = ?, `cost` = ?, `ip` = ?, `platform` = ?, `free` = ?"
             )
-            ->execute([$externalId, $income, $cost, $ip, $platform, $free ? 1 : 0]);
+            ->bindAndExecute([$externalId, $income, $cost, $ip, $platform, $free ? 1 : 0]);
 
         return $this->get($this->db->lastId());
     }

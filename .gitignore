@@ -18,3 +18,5 @@
 test.http
 .phpunit.result.cache
 clover.yml
+
+composer.phar

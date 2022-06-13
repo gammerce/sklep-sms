@@ -26,7 +26,7 @@ class PlayerFlagRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_players_flags` " . ($params ? "WHERE {$params}" : "")
         );
-        $statement->execute($values);
+        $statement->bindAndExecute($values);
 
         $data = $statement->fetch();
         if (!$data) {
@@ -44,7 +44,7 @@ class PlayerFlagRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_players_flags` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -59,7 +59,7 @@ class PlayerFlagRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_players_flags` WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
         );
-        $statement->execute([$serverId, $type, $authData]);
+        $statement->bindAndExecute([$serverId, $type, $authData]);
 
         if ($data = $statement->fetch()) {
             return $this->mapToModel($data);
@@ -92,7 +92,7 @@ class PlayerFlagRepository
             ->statement(
                 "INSERT INTO `ss_players_flags` SET `server_id` = ?, `type` = ?, `auth_data` = ?, `password` = ? {$keys}"
             )
-            ->execute(array_merge([$serverId, $type, $authData, $password], $values));
+            ->bindAndExecute(array_merge([$serverId, $type, $authData, $password], $values));
 
         return $this->get($this->db->lastId());
     }
@@ -104,7 +104,7 @@ class PlayerFlagRepository
                 "DELETE FROM `ss_players_flags` " .
                     "WHERE `server_id` = ? AND `type` = ? AND `auth_data` = ?"
             )
-            ->execute([$serverId, $type, $authData]);
+            ->bindAndExecute([$serverId, $type, $authData]);
     }
 
     public function deleteOldFlags(): void

@@ -10,12 +10,16 @@ class Path
         $this->basePath = $basePath;
     }
 
-    public function to($path = ""): string
+    public static function temporary(): Path
     {
-        if (!strlen($path)) {
+        return new Path(sys_get_temp_dir());
+    }
+
+    public function to(string $subpath): string
+    {
+        if (!strlen($subpath)) {
             return $this->basePath;
         }
-
-        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($path, "/");
+        return $this->basePath . DIRECTORY_SEPARATOR . ltrim($subpath, "/");
     }
 }

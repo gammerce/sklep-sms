@@ -3,8 +3,9 @@ namespace Tests\Unit\Support;
 
 use App\Support\Path;
 use Tests\Psr4\TestCases\TestCase;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class PathTest extends TestCase
+class PathTest extends UnitTestCase
 {
     private Path $path;
 
@@ -24,7 +25,7 @@ class PathTest extends TestCase
         $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->path->to() . "/foo/bar.sql", $absolutePath);
+        $this->assertEquals($this->path->to("/foo/bar.sql"), $absolutePath);
     }
 
     /** @test */
@@ -37,6 +38,6 @@ class PathTest extends TestCase
         $absolutePath = $this->path->to($relativePath);
 
         // then
-        $this->assertEquals($this->path->to() . "/foo/bar.sql", $absolutePath);
+        $this->assertEquals($this->path->to("/foo/bar.sql"), $absolutePath);
     }
 }

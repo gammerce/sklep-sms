@@ -21,6 +21,7 @@ return [
     "service_bought" => "Zakupiono prawidłowo usługę",
     "service_not_affordable" => "Nie możesz kupić takiej ilości tej usługi.",
     "sms_code_transfer_id" => "kod sms, ID przelewu itp.",
+    "steam_id_hint" => "Podaj steam ID w dowolnym, poprawnym formacie.",
     "types" => "Typy",
     "wrong_date_format" => "Błędny format daty.",
     "wrong_type_chosen" => "Wybrano błędny typ.",

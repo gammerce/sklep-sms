@@ -98,7 +98,9 @@ class PageAdminBoughtServices extends PageAdmin
                 "ORDER BY t.timestamp DESC " .
                 "LIMIT ?, ?"
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)

@@ -11,7 +11,7 @@ class LicenseToken extends Migration
             ->fetchColumn();
         $this->db
             ->statement("INSERT INTO `ss_settings` SET `key` = 'license_token', `value` = ?")
-            ->execute([$licenseToken]);
+            ->bindAndExecute([$licenseToken]);
         $this->db->query(
             "DELETE FROM `ss_settings` WHERE `key` IN ('license_login', 'license_password')"
         );

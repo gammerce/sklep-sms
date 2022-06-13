@@ -109,11 +109,12 @@ class Purchase
 
     /**
      * @param string $key
+     * @param mixed $default
      * @return mixed
      */
-    public function getOrder($key)
+    public function getOrder(string $key, $default = null)
     {
-        return array_get($this->order, $key);
+        return array_get($this->order, $key, $default);
     }
 
     /**

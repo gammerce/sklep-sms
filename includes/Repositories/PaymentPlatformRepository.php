@@ -26,7 +26,7 @@ class PaymentPlatformRepository
             ->statement(
                 "INSERT INTO `ss_payment_platforms` SET `name` = ?, `module` = ?, `data` = ?"
             )
-            ->execute([$name, $module, json_encode($data)]);
+            ->bindAndExecute([$name, $module, json_encode($data)]);
 
         return $this->get($this->db->lastId());
     }
@@ -40,7 +40,7 @@ class PaymentPlatformRepository
     {
         $this->db
             ->statement("UPDATE `ss_payment_platforms` SET `name` = ?, `data` = ? WHERE `id` = ?")
-            ->execute([$name, json_encode($data), $id]);
+            ->bindAndExecute([$name, json_encode($data), $id]);
     }
 
     /**
@@ -65,7 +65,7 @@ class PaymentPlatformRepository
         $statement = $this->db->statement(
             "SELECT * FROM `ss_payment_platforms` WHERE `id` IN ({$keys})"
         );
-        $statement->execute($ids);
+        $statement->bindAndExecute($ids);
 
         return collect($statement)
             ->map(fn(array $row) => $this->mapToModel($row))
@@ -82,7 +82,7 @@ class PaymentPlatformRepository
             $statement = $this->db->statement(
                 "SELECT * FROM `ss_payment_platforms` WHERE `id` = ?"
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -113,7 +113,7 @@ class PaymentPlatformRepository
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_payment_platforms` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
         return !!$statement->rowCount();
     }
 

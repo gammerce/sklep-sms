@@ -59,6 +59,7 @@ class PaymentServiceTest extends TestCase
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
@@ -82,7 +83,7 @@ class PaymentServiceTest extends TestCase
         $this->assertSame(0, $boughtService->getUserId());
         $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
         $this->assertEquals(20, $boughtService->getAmount());
-        $this->assertSame("", $boughtService->getAuthData());
+        $this->assertSame("STEAM_0:1:21984552", $boughtService->getAuthData());
     }
 
     /** @test */
@@ -112,6 +113,7 @@ class PaymentServiceTest extends TestCase
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
@@ -162,6 +164,7 @@ class PaymentServiceTest extends TestCase
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
@@ -196,8 +199,8 @@ class PaymentServiceTest extends TestCase
         $purchase = (new Purchase(new User(), "192.0.2.1", "example"))
             ->setOrder([
                 Purchase::ORDER_SERVER => $server->getId(),
-                "type" => ExtraFlagType::TYPE_SID,
                 "auth_data" => "STEAM_1:0:22309350",
+                "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setUsingPrice($price)
             ->setService($serviceId, "VIP")

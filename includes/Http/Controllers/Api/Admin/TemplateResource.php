@@ -61,7 +61,7 @@ class TemplateResource
     ): Response {
         $theme = $request->query->get("theme");
         $lang = $request->query->get("lang");
-        $content = trim($request->request->get("content"));
+        $content = trim($request->request->get("content") ?? "");
 
         $this->guardAgainstInvalidLang($lang);
         $this->guardAgainstInvalidTheme($theme);

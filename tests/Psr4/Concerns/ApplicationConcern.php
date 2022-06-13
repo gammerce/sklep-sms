@@ -20,6 +20,5 @@ trait ApplicationConcern
     protected function tearDownApplication(Application $app): void
     {
         $app->flush();
-        $app = null;
     }
 }

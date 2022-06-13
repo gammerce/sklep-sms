@@ -6,6 +6,7 @@ use ArrayIterator;
 use Countable;
 use Illuminate\Contracts\Support\Arrayable;
 use IteratorAggregate;
+use Traversable;
 
 class WarningBag implements ArrayAccess, Countable, IteratorAggregate, Arrayable
 {
@@ -39,32 +40,32 @@ class WarningBag implements ArrayAccess, Countable, IteratorAggregate, Arrayable
         return $this->all();
     }
 
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->warnings);
     }
 
-    public function offsetExists($offset)
+    public function offsetExists(mixed $offset): bool
     {
         return isset($this->warnings[$offset]);
     }
 
-    public function offsetGet($offset)
+    public function offsetGet(mixed $offset): mixed
     {
         return array_get($this->warnings, $offset, []);
     }
 
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value): void
     {
         $this->add($offset, $value);
     }
 
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset): void
     {
         unset($this->warnings[$offset]);
     }
 
-    public function count()
+    public function count(): int
     {
         return count($this->warnings);
     }

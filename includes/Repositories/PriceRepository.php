@@ -20,7 +20,7 @@ class PriceRepository
     {
         if ($id) {
             $statement = $this->db->statement("SELECT * FROM `ss_prices` WHERE `id` = ?");
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -53,7 +53,7 @@ class PriceRepository
                 "INSERT INTO `ss_prices` (`service_id`, `server_id`, `sms_price`, `transfer_price`, `direct_billing_price`, `quantity`, `discount`) " .
                     "VALUES ( ?, ?, ?, ?, ?, ?, ? )"
             )
-            ->execute([
+            ->bindAndExecute([
                 $serviceId,
                 $serverId,
                 $smsPrice,
@@ -78,7 +78,7 @@ class PriceRepository
                 "WHERE `service_id` = ? AND (`server_id` = ? OR `server_id` IS NULL) " .
                 "ORDER BY `quantity` ASC"
         );
-        $statement->execute([$service->getId(), $server ? $server->getId() : null]);
+        $statement->bindAndExecute([$service->getId(), $server ? $server->getId() : null]);
 
         $prices = [];
         foreach ($statement as $row) {
@@ -112,7 +112,7 @@ class PriceRepository
             WHERE `id` = ?
 EOF
         );
-        $statement->execute([
+        $statement->bindAndExecute([
             $serviceId,
             $serverId,
             $smsPrice,
@@ -129,7 +129,7 @@ EOF
     public function delete($id): bool
     {
         $statement = $this->db->statement("DELETE FROM `ss_prices` WHERE `id` = ?");
-        $statement->execute([$id]);
+        $statement->bindAndExecute([$id]);
 
         return !!$statement->rowCount();
     }

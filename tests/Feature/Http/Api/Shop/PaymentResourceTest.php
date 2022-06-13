@@ -65,7 +65,7 @@ class PaymentResourceTest extends HttpTestCase
             ->setOrder([
                 Purchase::ORDER_QUANTITY => 5,
                 Purchase::ORDER_SERVER => $server->getId(),
-                "auth_data" => "my_example",
+                "auth_data" => "STEAM_0:1:21984552",
                 "type" => ExtraFlagType::TYPE_SID,
             ])
             ->setPromoCode($promoCode);
@@ -111,7 +111,7 @@ class PaymentResourceTest extends HttpTestCase
             "payment" => "sms",
             "service_id" => "vip",
             "amount" => "5",
-            "auth_data" => "my_example",
+            "auth_data" => "STEAM_0:1:21984552",
             "promo_code" => "MYCODE",
         ]);
     }
@@ -145,7 +145,7 @@ class PaymentResourceTest extends HttpTestCase
             "payment" => "transfer",
             "service_id" => "vip",
             "amount" => "5",
-            "auth_data" => "my_example",
+            "auth_data" => "STEAM_0:1:21984552",
             "promo_code" => "MYCODE",
         ]);
     }
@@ -179,7 +179,7 @@ class PaymentResourceTest extends HttpTestCase
             "payment" => "direct_billing",
             "service_id" => "vip",
             "amount" => "5",
-            "auth_data" => "my_example",
+            "auth_data" => "STEAM_0:1:21984552",
             "promo_code" => "MYCODE",
         ]);
     }

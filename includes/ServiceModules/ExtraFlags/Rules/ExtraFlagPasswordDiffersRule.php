@@ -27,7 +27,7 @@ class ExtraFlagPasswordDiffersRule extends BaseRule
             "SELECT `password` FROM `$table` " .
                 "WHERE `type` = ? AND `auth_data` = ? AND `server_id` = ?"
         );
-        $statement->execute([$type, $authData, $serverId]);
+        $statement->bindAndExecute([$type, $authData, $serverId]);
         $existingPassword = $statement->fetchColumn();
 
         if ($existingPassword && $existingPassword !== $value) {

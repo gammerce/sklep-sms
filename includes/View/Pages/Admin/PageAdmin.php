@@ -39,7 +39,7 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         $scriptPath = "build/js/admin/pages/{$this->getId()}/";
         if ($fileSystem->exists($path->to($scriptPath))) {
             foreach ($fileSystem->scanDirectory($path->to($scriptPath)) as $file) {
-                if (ends_at($file, ".js")) {
+                if (str_ends_with($file, ".js")) {
                     $websiteHeader->addScript($url->versioned($scriptPath . $file));
                 }
             }

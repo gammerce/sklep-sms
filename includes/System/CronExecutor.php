@@ -43,13 +43,13 @@ class CronExecutor
                 ->statement(
                     "DELETE FROM `ss_logs` WHERE `timestamp` < DATE_SUB(NOW(), INTERVAL ? DAY)"
                 )
-                ->execute([$this->settings->getDeleteLogs()]);
+                ->bindAndExecute([$this->settings->getDeleteLogs()]);
         }
 
         // Remove files older than 30 days from data/transactions
         $path = $this->path->to("data/transactions");
         foreach ($this->fileSystem->scanDirectory($path) as $file) {
-            if (starts_with($file, ".")) {
+            if (str_starts_with($file, ".")) {
                 continue;
             }
 
