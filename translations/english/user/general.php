@@ -109,11 +109,11 @@ return [
     "remove" => "Remove",
     "repeat" => "Repeat",
     "required_data" => "Required data",
-    "reset_link_sent" => 'If given credentials are correct, than e-mail with link to reset password has been sent to your e-mail.<br/>
-Follow the directions in the e-mail.',
+    "reset_link_sent" => 'If the credentials you provided are correct, an email with a link to reset your password has been sent to your mailbox.<br/>
+Please follow the directions in the e-mail.',
     "reset_password" => "Reset password",
-    "restore_password_info" => 'In order to restore password, give your address <strong>e-mail</strong> or <strong>username</strong>.<br />
-At the next step, an e-mail with a link to restore password will be send to you.',
+    "restore_password_info" => 'In order to restore password, please prive your <strong>e-mail address</strong> or <strong>username</strong>.<br />
+In the next step, you will be sent an email with a link to reset your password.',
     "send" => "Send",
     "service_no_permission" => "You have no permission to use this service.",
     "service_not_displayed" =>

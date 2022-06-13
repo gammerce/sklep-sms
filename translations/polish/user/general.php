@@ -110,7 +110,7 @@ return [
     "remove" => "Usuń",
     "repeat" => "Powtórz",
     "required_data" => "Wymagane dane",
-    "reset_link_sent" => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na Twoją skrzynkę pocztową.<br/>
+    "reset_link_sent" => 'Jeżeli podane dane są prawidłowe, to e-mail wraz z linkiem do zresetowania hasła został wysłany na twoją skrzynkę pocztową.<br/>
 Postępuj zgodnie ze wskazówkami zawartymi w e-mailu.',
     "reset_password" => "Zresetuj hasło",
     "restore_password_info" => 'W celu odzyskania hasła, podaj swój adres <strong>adres e-mail</strong> lub <strong>nazwę użytkownika</strong>.<br />
