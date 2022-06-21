@@ -26,7 +26,6 @@ class SmsChargeWallet implements IChargeWallet
     private PriceTextService $priceTextService;
     private Template $template;
     private Translator $lang;
-    private Settings $settings;
     private PaymentModuleManager $paymentModuleManager;
 
     public function __construct(
@@ -34,14 +33,12 @@ class SmsChargeWallet implements IChargeWallet
         PriceTextService $priceTextService,
         Template $template,
         PaymentModuleManager $paymentModuleManager,
-        Settings $settings,
         TranslationManager $translationManager
     ) {
         $this->smsPriceService = $smsPriceService;
         $this->priceTextService = $priceTextService;
         $this->template = $template;
         $this->lang = $translationManager->user();
-        $this->settings = $settings;
         $this->paymentModuleManager = $paymentModuleManager;
     }
 
