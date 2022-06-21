@@ -21,6 +21,7 @@ use App\User\Permission;
 use App\View\Html\Div;
 use App\View\Html\DOMElement;
 use App\View\Html\RawHtml;
+use DateTime;
 use Symfony\Component\HttpFoundation\Request;
 
 class PageAdminMain extends PageAdmin
@@ -30,7 +31,6 @@ class PageAdminMain extends PageAdmin
 
     private Version $version;
     private License $license;
-    private Requester $requester;
     private IncomeService $incomeService;
     private PriceTextService $priceTextService;
     private TransactionRepository $transactionRepository;
@@ -45,7 +45,6 @@ class PageAdminMain extends PageAdmin
         TranslationManager $translationManager,
         Version $version,
         License $license,
-        Requester $requester,
         IncomeService $incomeService,
         PriceTextService $priceTextService,
         TransactionRepository $transactionRepository,
@@ -59,7 +58,6 @@ class PageAdminMain extends PageAdmin
 
         $this->version = $version;
         $this->license = $license;
-        $this->requester = $requester;
         $this->incomeService = $incomeService;
         $this->priceTextService = $priceTextService;
         $this->transactionRepository = $transactionRepository;
@@ -109,7 +107,7 @@ class PageAdminMain extends PageAdmin
             $notes[] = $this->createNote(
                 $this->lang->t(
                     "license_soon_expire",
-                    seconds_to_time(strtotime($this->license->getExpires()) - time()),
+                    $this->seconds2time(strtotime($this->license->getExpires()) - time()),
                     $this->license->getIdentifier()
                 ),
                 "is-danger"
@@ -281,5 +279,14 @@ class PageAdminMain extends PageAdmin
     private function createBrick($content, $link): string
     {
         return $this->template->render("admin/brick_card", compact("content", "link"));
+    }
+
+    private function seconds2time(int $seconds): string
+    {
+        $dtF = new DateTime("@0");
+        $dtT = new DateTime("@$seconds");
+        return $dtF
+            ->diff($dtT)
+            ->format("%a " . __("days") . " " . __("and") . " %h " . __("hours"));
     }
 }

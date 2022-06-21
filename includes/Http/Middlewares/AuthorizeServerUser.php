@@ -26,7 +26,7 @@ class AuthorizeServerUser implements MiddlewareContract
 
     private function authorizeUser(Request $request): void
     {
-        $steamId = get_authorization_value($request);
+        $steamId = $this->getAuthorizationValue($request);
         $ip = $request->get("ip");
 
         if (!$steamId) {
@@ -44,5 +44,19 @@ class AuthorizeServerUser implements MiddlewareContract
             $user->setLastIp($ip);
             $this->userRepository->touch($user);
         }
+    }
+
+    private function getAuthorizationValue(Request $request): ?string
+    {
+        $authorization = $request->headers->get("Authorization");
+        if (!$authorization) {
+            return null;
+        }
+
+        if (0 === stripos($authorization, "bearer ")) {
+            return substr($authorization, 7);
+        }
+
+        return $authorization;
     }
 }
