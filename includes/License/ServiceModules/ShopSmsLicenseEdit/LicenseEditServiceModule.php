@@ -84,7 +84,7 @@ class LicenseEditServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT `identifier` FROM `{$this->getUserServiceTable()}` WHERE `us_id` = ?"
         );
-        $statement->execute([$purchase->getOrder("user_service_id")]);
+        $statement->bindAndExecute([$purchase->getOrder("user_service_id")]);
         $identifier = $statement->fetchColumn();
         $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
 

@@ -25,7 +25,7 @@ class LicenseProlongableRule extends BaseRule
                 "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                 "WHERE m.identifier = ? AND us.expire != '-1'"
         );
-        $statement->execute([$value]);
+        $statement->bindAndExecute([$value]);
 
         if (!$statement->rowCount()) {
             throw new ValidationException($this->lang->t("wrong_license_data"));

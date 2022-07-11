@@ -138,7 +138,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
                 "INNER JOIN `{$this->getUserServiceTable()}` AS m ON m.us_id = us.id " .
                 "WHERE m.identifier = ?"
         );
-        $statement->execute([$purchase->getOrder("identifier")]);
+        $statement->bindAndExecute([$purchase->getOrder("identifier")]);
 
         $data = $statement->fetch();
         $userService = $this->mapToUserService($data);
@@ -151,7 +151,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         // Update license expire time
         $this->db
             ->statement("UPDATE `ss_user_service` SET `expire` = ? WHERE `id` = ?")
-            ->execute([$expiresAt, $userService->getId()]);
+            ->bindAndExecute([$expiresAt, $userService->getId()]);
 
         return $this->boughtServiceService->create(
             $purchase->user->getId(),
@@ -290,7 +290,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             "SELECT `cost_daily` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
         );
-        $statement->execute([$identifier]);
+        $statement->bindAndExecute([$identifier]);
         $costDaily = $statement->fetchColumn();
 
         if ($costDaily === null) {

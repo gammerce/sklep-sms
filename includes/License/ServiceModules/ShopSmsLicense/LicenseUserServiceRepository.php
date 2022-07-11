@@ -61,7 +61,7 @@ INSERT INTO `$table` SET
 `subdomain` = ?
 EOF
         );
-        $statement->execute([
+        $statement->bindAndExecute([
             $userServiceId,
             $serviceId,
             $identifier,
@@ -104,7 +104,7 @@ EOF
                 WHERE `id` = ?
 EOF
             );
-            $statement->execute([$id]);
+            $statement->bindAndExecute([$id]);
 
             if ($data = $statement->fetch()) {
                 return $this->mapToModel($data);
@@ -122,7 +122,7 @@ EOF
                 "INNER JOIN `$table` AS m ON m.us_id = us.id " .
                 "WHERE m.subdomain = ?"
         );
-        $statement->execute([$subdomain]);
+        $statement->bindAndExecute([$subdomain]);
 
         if ($data = $statement->fetch()) {
             return $this->mapToModel($data);

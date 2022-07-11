@@ -187,7 +187,9 @@ ORDER BY us.id DESC
 LIMIT ?, ?
 EOF
         );
-        $statement->execute(array_merge($queryParticle->params(), $pagination->getSqlLimit()));
+        $statement->bindAndExecute(
+            array_merge($queryParticle->params(), $pagination->getSqlLimit())
+        );
         $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
 
         $bodyRows = collect($statement)
@@ -609,7 +611,7 @@ EOF
         $statement = $this->db->statement(
             "SELECT `us_id` FROM `{$this->getUserServiceTable()}` WHERE `service_id` = ? AND `identifier` = ?"
         );
-        $statement->execute([$validated["service_id"], $response["identifier"]]);
+        $statement->bindAndExecute([$validated["service_id"], $response["identifier"]]);
 
         $row = $statement->fetch();
         $userServiceId = $row["us_id"];
@@ -618,7 +620,7 @@ EOF
         $statement = $this->db->statement(
             "UPDATE `ss_user_service` SET `user_id` = ? WHERE `id` = ?"
         );
-        $statement->execute([$user->getId(), $userServiceId]);
+        $statement->bindAndExecute([$user->getId(), $userServiceId]);
 
         if (!$statement->rowCount()) {
             return [
