@@ -197,30 +197,13 @@ function escape_filename(string $filename): string
 
 function get_random_string(int $length): string
 {
-    $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890"; //length:36
+    $chars = "abcdefghijklmnopqrstuvwxyz1234567890";
     $finalRand = "";
     for ($i = 0; $i < $length; $i++) {
         $finalRand .= $chars[rand(0, strlen($chars) - 1)];
     }
 
     return $finalRand;
-}
-
-function seconds_to_time(int $seconds): string
-{
-    $dtF = new DateTime("@0");
-    $dtT = new DateTime("@$seconds");
-
-    return $dtF->diff($dtT)->format("%a " . __("days") . " " . __("and") . " %h " . __("hours"));
-}
-
-/**
- * @param string $string
- * @return string[]
- */
-function custom_mb_str_split(string $string): array
-{
-    return preg_split('/(?<!^)(?!$)/u', $string);
 }
 
 /**
@@ -234,7 +217,7 @@ function create_search_query(array $columns, string $search): ?QueryParticle
         return null;
     }
 
-    $searchLike = "%" . implode("%", custom_mb_str_split($search)) . "%";
+    $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
 
     $params = [];
     $values = [];
@@ -477,10 +460,10 @@ function price_to_int(string|float|null $value): ?int
 }
 
 /**
- * @param Permission[] $permissions
- * @return array
+ * @param string[] $permissions
+ * @return Permission[]
  */
-function as_permission_list($permissions): array
+function as_permission_list(array $permissions): array
 {
     return collect($permissions)
         ->map(function ($permission) {
@@ -624,41 +607,6 @@ if (!function_exists("dd")) {
     }
 }
 
-/**
- * @link https://stackoverflow.com/a/2040279
- */
-function generate_uuid4(): string
-{
-    return sprintf(
-        "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
-        // 32 bits for "time_low"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_mid"
-        mt_rand(0, 0xffff),
-
-        // 16 bits for "time_hi_and_version",
-        // four most significant bits holds version number 4
-        mt_rand(0, 0x0fff) | 0x4000,
-
-        // 16 bits, 8 bits for "clk_seq_hi_res",
-        // 8 bits for "clk_seq_low",
-        // two most significant bits holds zero and one for variant DCE1.1
-        mt_rand(0, 0x3fff) | 0x8000,
-
-        // 48 bits for "node"
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff),
-        mt_rand(0, 0xffff)
-    );
-}
-
-function generate_id(int $length): string
-{
-    return substr(hash("sha256", generate_uuid4()), 0, $length);
-}
-
 function to_upper(string $string): string
 {
     return mb_convert_case($string, MB_CASE_UPPER, "UTF-8");
@@ -710,20 +658,6 @@ function explode_int_list(?string $list, string $delimiter = ","): array
     return collect(explode($delimiter, $list))
         ->map(fn($value) => (int) $value)
         ->all();
-}
-
-function get_authorization_value(Request $request): ?string
-{
-    $authorization = $request->headers->get("Authorization");
-    if (!$authorization) {
-        return null;
-    }
-
-    if (0 === stripos($authorization, "bearer ")) {
-        return substr($authorization, 7);
-    }
-
-    return $authorization;
 }
 
 function selected(mixed $value): string

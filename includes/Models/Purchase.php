@@ -82,7 +82,7 @@ class Purchase
      */
     public function __construct(User $user, $ip, $platform)
     {
-        $this->id = generate_id(32);
+        $this->id = get_random_string(32);
         $this->user = $user;
         $this->ip = $ip;
         $this->platform = $platform;

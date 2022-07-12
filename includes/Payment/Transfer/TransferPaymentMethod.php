@@ -91,7 +91,7 @@ class TransferPaymentMethod implements IPaymentMethod
     {
         $finalizedPayment = (new FinalizedPayment())
             ->setStatus(true)
-            ->setOrderId(generate_id(8))
+            ->setOrderId(get_random_string(8))
             ->setCost(0)
             ->setIncome(0)
             ->setTransactionId($purchase->getId())
