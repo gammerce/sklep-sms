@@ -4,6 +4,8 @@ namespace App\Kernels;
 use App\Install\MigrateCommand;
 use App\System\Application;
 use App\System\CronExecutor;
+use App\System\Settings;
+use Exception;
 use Psy\Shell;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -44,6 +46,8 @@ class ConsoleKernel implements ConsoleKernelContract
         if ($command === "cron:run") {
             /** @var CronExecutor $cronExecutor */
             $cronExecutor = $this->app->make(CronExecutor::class);
+
+            $this->loadSettings();
             $cronExecutor->run();
             $output->writeln("Cron executed.");
             return 0;
@@ -51,6 +55,7 @@ class ConsoleKernel implements ConsoleKernelContract
 
         if ($command === "tinker") {
             date_default_timezone_set("Europe/Warsaw");
+            $this->loadSettings();
             $shell = new Shell();
             $shell->run();
             return 0;
@@ -87,5 +92,16 @@ class ConsoleKernel implements ConsoleKernelContract
     public function terminate(InputInterface $input, $status): void
     {
         $this->app->terminate();
+    }
+
+    private function loadSettings(): void
+    {
+        $settings = $this->app->make(Settings::class);
+
+        try {
+            $settings->load();
+        } catch (Exception $e) {
+            //
+        }
     }
 }
