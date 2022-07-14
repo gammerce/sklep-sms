@@ -122,7 +122,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
     {
         return $this->template->renderNoComments(
             "shop/services/shopsms_license_prolong/order_details",
-            compact("identifier") + [
+            [
                 "identifier" => $purchase->getOrder("identifier"),
                 "quantity" => $purchase->getOrder(Purchase::ORDER_QUANTITY),
                 "serviceName" => $this->service->getName(),
@@ -165,7 +165,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $userService->getIdentifier(),
             $userService->getEmail(),
-            $promoCode ? $promoCode->getCode() : null,
+            $promoCode?->getCode(),
             [
                 "expire" => as_datetime_string($expiresAt),
             ]

@@ -308,7 +308,7 @@ EOF
         $subdomain = $purchase->getOrder(SubdomainUtil::PURCHASE_KEY);
         $lifetime = $purchase->getOrder(Purchase::ORDER_QUANTITY) * 24 * 60 * 60;
 
-        $identifier = generate_uuid4();
+        $identifier = $this->generateUUID4();
         $result = $this->licenseServerService->create($identifier, $lifetime, $platforms);
         $token = $result["token"];
         $expiresAt = $result["expires_at"];
@@ -778,5 +778,35 @@ EOF
     public function showOnWeb(): bool
     {
         return true;
+    }
+
+    /**
+     * @link https://stackoverflow.com/a/2040279
+     */
+    private function generateUUID4(): string
+    {
+        return sprintf(
+            "%04x%04x-%04x-%04x-%04x-%04x%04x%04x",
+            // 32 bits for "time_low"
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+
+            // 16 bits for "time_mid"
+            mt_rand(0, 0xffff),
+
+            // 16 bits for "time_hi_and_version",
+            // four most significant bits holds version number 4
+            mt_rand(0, 0x0fff) | 0x4000,
+
+            // 16 bits, 8 bits for "clk_seq_hi_res",
+            // 8 bits for "clk_seq_low",
+            // two most significant bits holds zero and one for variant DCE1.1
+            mt_rand(0, 0x3fff) | 0x8000,
+
+            // 48 bits for "node"
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff),
+            mt_rand(0, 0xffff)
+        );
     }
 }
