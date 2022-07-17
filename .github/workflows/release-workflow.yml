@@ -28,27 +28,26 @@ jobs:
     env:
       COMPOSER: ${{ matrix.composer }}
     steps:
-      -
-        uses: actions/checkout@v2
-      -
-        name: Setup PHP ${{ matrix.php_version }}
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP ${{ matrix.php_version }}
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php_version }}
-      -
-        uses: actions/setup-python@v2
+
+      - uses: actions/setup-python@v2
         with:
           python-version: 3.8
-      -
-        run: pip install pre-commit
-      -
-        uses: ramsey/composer-install@v1
+
+      - run: pip install pre-commit
+
+      - uses: ramsey/composer-install@v1
         with:
           composer-options: "--no-dev --optimize-autoloader --ignore-platform-reqs"
-      -
-        run: yarn install
-      -
-        name: Transpile to PHP ${{ matrix.php_version }}
+
+      - run: yarn install
+
+      - name: Transpile to PHP ${{ matrix.php_version }}
         run: |
           docker run \
           --rm \
@@ -58,19 +57,22 @@ jobs:
           process \
           /project/includes \
           --config /project/rector.php
-      -
-        run: yarn build
+
+      - run: yarn build
         env:
           NODE_ENV: production
-      -
-        run: ./remove_unnecessary_files.sh
-      -
-        run: pre-commit run --all-files || true
-      -
-        name: Save build version
+
+      - run: ./remove_unnecessary_files.sh
+
+      - run: pre-commit run --all-files || true
+
+      - name: Save build version
         run: sed -i "s/BUILD=.*/BUILD=php${{ matrix.php_version }}/" ./confidential/.meta
-      -
-        id: build_artifact
+
+      - name: Change file permissions
+        run: chmod 777 confidential/ data/ data/cache/ data/logs/ data/transactions/
+
+      - id: build_artifact
         run: |
           zip -r \
           --exclude='data/cache/**' \
@@ -94,14 +96,14 @@ jobs:
           echo ::set-output name=ARTIFACT_NAME::$BUILD_NAME
         env:
           BUILD_NAME: build-${{ matrix.php_version }}.zip
-      -
-        name: Get release
+
+      - name: Get release
         id: get_release
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Upload Release Asset
+
+      - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
