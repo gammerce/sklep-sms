@@ -97,7 +97,7 @@ export const isShown = function (node: JQuery): boolean {
 
 export const showWarnings = function (form: JQuery, warnings: Dict) {
     for (const [name, messages] of Object.entries(warnings)) {
-        const inputElement = form.find(`[name="${name}"]`);
+        const inputElement = form.find(`.field:not([disabled]) [name="${name}"]`);
         const field = inputElement.parents(".field").last();
 
         const ul = $("<ul>", {
