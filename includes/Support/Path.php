@@ -35,9 +35,9 @@ class Path
         return new Path([...$this->children, $child]);
     }
 
-    public function toString(): string
+    public function toString(string $pathSeparator): string
     {
-        return \join(\DIRECTORY_SEPARATOR, \iterator_to_array($this->children()));
+        return \join($pathSeparator, \iterator_to_array($this->children()));
     }
 
     private function children(): Iterator

@@ -17,10 +17,8 @@ class PathTest extends TestCase
     {
         // given
         $path = new Path([]);
-        // when
-        $asString = $path->toString();
-        // then
-        $this->assertSame("", $asString);
+        // when, then
+        $this->assertPathUnix("", $path);
     }
 
     /**
@@ -30,11 +28,9 @@ class PathTest extends TestCase
     {
         // given
         $path = new Path(["string", "", "", "string"]);
-        // when
-        $asString = $path->toString();
-        // then
-        $this->assertSameWindows("string\string", $asString);
-        $this->assertSameUnix("string/string", $asString);
+        // when, then
+        $this->assertPathWindows("string\string", $path);
+        $this->assertPathUnix("string/string", $path);
     }
 
     /**
@@ -45,10 +41,9 @@ class PathTest extends TestCase
     {
         // given
         $path = new Path([$filename]);
-        // when
-        $asString = $path->toString();
-        // then
-        $this->assertSame("file.txt", $asString);
+        // when, then
+        $this->assertPathWindows("file.txt", $path);
+        $this->assertPathUnix("file.txt", $path);
     }
 
     public function fileNames(): array
@@ -64,11 +59,9 @@ class PathTest extends TestCase
     {
         // given
         $path = new Path($pathPieces);
-        // when
-        $asString = $path->toString();
-        // then
-        $this->assertSameWindows('first\second\third\file.txt', $asString);
-        $this->assertSameUnix("first/second/third/file.txt", $asString);
+        // when, then
+        $this->assertPathWindows('first\second\third\file.txt', $path);
+        $this->assertPathUnix("first/second/third/file.txt", $path);
     }
 
     public function pathPieces(): array
@@ -95,11 +88,9 @@ class PathTest extends TestCase
     {
         // given
         $path = Path::of($stringPath);
-        // when
-        $asString = $path->toString();
-        // then
-        $this->assertSameWindows('one\two\three\file.txt', $asString);
-        $this->assertSameUnix("one/two/three/file.txt", $asString);
+        // when, then
+        $this->assertPathWindows('one\two\three\file.txt', $path);
+        $this->assertPathUnix("one/two/three/file.txt", $path);
     }
 
     public function paths(): array
@@ -116,8 +107,8 @@ class PathTest extends TestCase
         // when
         $childPath = $path->append($appendant);
         // then
-        $this->assertSameWindows('uno\dos\tres', $childPath->toString());
-        $this->assertSameUnix("uno/dos/tres", $childPath->toString());
+        $this->assertPathWindows('uno\dos\tres', $childPath);
+        $this->assertPathUnix("uno/dos/tres", $childPath);
     }
 
     public function children(): array
@@ -142,17 +133,15 @@ class PathTest extends TestCase
     /**
      * @test
      */
-    public function shouldAcceptPathWithDriveOnWindows()
+    public function shouldAcceptPathWithDriveForWindows()
     {
-        if ($this->isUnix()) {
-            $this->markTestUnnecessary("There are no drives on Unix");
-        }
         // given
         $path = Path::of("C:\directory");
         // when
         $child = $path->append("file.txt");
         // then
-        $this->assertSame('C:\directory\file.txt', $child->toString());
+        $this->assertPathWindows('C:\directory\file.txt', $child);
+        $this->assertPathUnix("C:/directory/file.txt", $child);
     }
 
     /**
@@ -160,15 +149,13 @@ class PathTest extends TestCase
      */
     public function shouldRemainAbsolutePathOnUnix()
     {
-        if (!$this->isUnix()) {
-            $this->markTestUnnecessary("There are no leading separators on Windows");
-        }
         // given
         $path = Path::of("/usr/bin");
         // when
         $child = $path->append("local");
         // then
-        $this->assertSame("/usr/bin/local", $child->toString());
+        $this->assertPathWindows("\usr\bin\local", $child);
+        $this->assertPathUnix("/usr/bin/local", $child);
     }
 
     /**
@@ -179,6 +166,7 @@ class PathTest extends TestCase
         // given
         $path = Path::of("one/two/three");
         // when
-        $this->assertSame($path->toString(), $path->toString());
+        $this->assertSame($path->toString("/"), $path->toString("/"));
+        $this->assertSame($path->toString("\\"), $path->toString("\\"));
     }
 }
