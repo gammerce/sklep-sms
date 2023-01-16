@@ -58,7 +58,7 @@ return [
     "logout_success" => "Wylogowywanie przebiegło bez większych trudności.",
     "my_services" => "Moje usługi",
     "nick_occupied" => "Podana nazwa użytkownika jest już zajęta.",
-    "no_login_no_wallet" => "Nie można zapłacić portfelem, gdy nie jesteś zalogowany.",
+    "no_login_no_wallet" => "Płatność portfelem jest możliwa po utworzeniu konta w sklepie oraz podaniu swojego SteamID w profilu.",
     "no_login_password" =>
         "No niestety, ale bez podania nazwy użytkownika oraz loginu, nie zalogujesz się.",
     "no_reset_key" => "Nie podano kodu resetowania hasła.",
