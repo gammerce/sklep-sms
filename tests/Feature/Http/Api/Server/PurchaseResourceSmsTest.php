@@ -47,7 +47,7 @@ class PurchaseResourceSmsTest extends HttpTestCase
     }
 
     /** @test */
-    public function purchase_using_sms()
+    public function purchase_using_sms_with_application_json()
     {
         // given
         /** @var BoughtServiceRepository $boughtServiceRepository */
@@ -78,19 +78,23 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "User-Agent" => Platform::AMXMODX,
             ]
         );
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression(
-            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
-            $response->getContent()
+        $json = $this->decodeJsonResponse($response);
+        $this->assertArraySubset(
+            [
+                "status" => "purchased",
+                "text" => "Usługa została prawidłowo zakupiona.",
+            ],
+            $json
         );
 
-        preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = $matches[1];
+        $boughtServiceId = $json["bsid"];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
@@ -141,6 +145,56 @@ class PurchaseResourceSmsTest extends HttpTestCase
     }
 
     /** @test */
+    public function purchase_using_sms_without_accept_header()
+    {
+        // given
+        /** @var BoughtServiceRepository $boughtServiceRepository */
+        $boughtServiceRepository = $this->app->make(BoughtServiceRepository::class);
+
+        $authData = "test";
+        $password = "test123";
+        $smsCode = "ABCD12EF";
+        $type = ExtraFlagType::TYPE_NICK;
+
+        $sign = md5(implode("#", [$type, $authData, $smsCode, $this->server->getToken()]));
+
+        // when
+        $response = $this->post(
+            "/api/server/purchase",
+            [
+                "service_id" => $this->serviceId,
+                "type" => $type,
+                "auth_data" => $authData,
+                "password" => $password,
+                "sms_code" => $smsCode,
+                "method" => PaymentMethod::SMS()->getValue(),
+                "price_id" => $this->price->getId(),
+                "ip" => "192.0.2.1",
+                "sign" => $sign,
+            ],
+            [
+                "token" => $this->server->getToken(),
+            ],
+            [
+                "User-Agent" => Platform::AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $this->assertMatchesRegularExpression(
+            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
+            $response->getContent()
+        );
+
+        preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
+        $boughtServiceId = $matches[1];
+        $boughtService = $boughtServiceRepository->get($boughtServiceId);
+        $this->assertNotNull($boughtService);
+        $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
+    }
+
+    /** @test */
     public function fails_with_invalid_data_passed()
     {
         // given
@@ -167,15 +221,21 @@ class PurchaseResourceSmsTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "User-Agent" => Platform::AMXMODX,
             ]
         );
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertSame(
-            "<return_value>warnings</return_value><text>auth_data: Pole musi się składać z co najmniej 2 znaków.</text><positive>0</positive><warnings><strong>auth_data</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br /></warnings>",
-            $response->getContent()
+        $this->assertArraySubset(
+            [
+                "status" => "warnings",
+                "text" => "auth_data: Pole musi się składać z co najmniej 2 znaków.",
+                "warnings" =>
+                    "<strong>auth_data</strong><br />Pole musi się składać z co najmniej 2 znaków.<br /><strong>password</strong><br />Pole musi się składać z co najmniej 6 znaków.<br />",
+            ],
+            $this->decodeJsonResponse($response)
         );
     }
 }

@@ -107,10 +107,6 @@ class ServerConfigController
             fn(SmsNumber $smsNumber) => $smsNumber->getNumber()
         );
 
-        $steamIds = collect($userRepository->allWithSteamId())
-            ->map(fn(User $user) => $user->getSteamId())
-            ->join(";");
-
         $serverRepository->touch($server->getId(), $platform, $version);
 
         $data = merge_recursive(
@@ -119,7 +115,6 @@ class ServerConfigController
                 "license_token" => $settings->getLicenseToken(),
                 "sms_platform_id" => $smsPlatformId,
                 "sms_text" => $smsModule->getSmsCode(),
-                "steam_ids" => "$steamIds;",
                 "currency" => $settings->getCurrency(),
                 "contact" => $settings->getContactEmail(),
                 "vat" => $settings->getVat(),

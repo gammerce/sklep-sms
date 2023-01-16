@@ -58,7 +58,8 @@ return [
     "logout_success" => "Logging out successful.",
     "my_services" => "My services",
     "nick_occupied" => "Given nickname is already taken.",
-    "no_login_no_wallet" => "In order to pay using wallet you need to create a shop account and provide your SteamID in the profile section.",
+    "no_login_no_wallet" =>
+        "In order to pay using wallet you need to create a shop account and provide your SteamID in the profile section.",
     "no_login_password" =>
         'Unfortunately, without providing nickname and login, you can\'t log in.',
     "no_reset_key" => "No reset key was given.",
