@@ -74,19 +74,23 @@ class PurchaseResourceOtherSmsTest extends HttpTestCase
                 "token" => $server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "User-Agent" => Platform::AMXMODX,
             ]
         );
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression(
-            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
-            $response->getContent()
+        $json = $this->decodeJsonResponse($response);
+        $this->assertArraySubset(
+            [
+                "status" => "purchased",
+                "text" => "Usługa została prawidłowo zakupiona.",
+            ],
+            $json
         );
 
-        preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = $matches[1];
+        $boughtServiceId = $json["bsid"];
         $boughtService = $boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertSameEnum(PaymentMethod::SMS(), $boughtService->getMethod());
