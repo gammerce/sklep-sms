@@ -131,15 +131,15 @@ class ServerConfigController
             : new AssocResponse($data);
     }
 
-    private function isVersionAcceptable($version, Platform $platform): bool
+    private function isVersionAcceptable($version, ?Platform $platform): bool
     {
         if (!$platform) {
             return false;
         }
 
         $minimumVersions = [
-            Platform::AMXMODX => "3.10.0",
-            Platform::SOURCEMOD => "3.9.0",
+            Platform::AMXMODX => "3.12.0",
+            Platform::SOURCEMOD => "3.13.0",
         ];
 
         return version_compare($version, $minimumVersions[$platform->getValue()]) >= 0;
