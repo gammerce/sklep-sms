@@ -1,10 +1,8 @@
-FROM php:8.0-fpm
+FROM php:8.1-fpm
 
 RUN apt-get update && \
-    apt-get install -y libmcrypt-dev zip
+     apt-get install -y zip
 RUN docker-php-ext-install pdo_mysql mysqli calendar
-RUN pecl install mcrypt-1.0.4
-RUN docker-php-ext-enable mcrypt
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
