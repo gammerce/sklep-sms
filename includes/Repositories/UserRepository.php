@@ -101,17 +101,6 @@ EOF
     }
 
     /**
-     * @return User[]
-     */
-    public function allWithSteamId(): array
-    {
-        $statement = $this->db->query("SELECT * FROM `ss_users` WHERE `steam_id` IS NOT NULL");
-        return collect($statement)
-            ->map(fn(array $row) => $this->mapToModel($row))
-            ->all();
-    }
-
-    /**
      * @param int|null $id
      * @return User|null
      */

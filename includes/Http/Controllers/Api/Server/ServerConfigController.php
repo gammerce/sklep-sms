@@ -107,10 +107,6 @@ class ServerConfigController
             fn(SmsNumber $smsNumber) => $smsNumber->getNumber()
         );
 
-        $steamIds = collect($userRepository->allWithSteamId())
-            ->map(fn(User $user) => $user->getSteamId())
-            ->join(";");
-
         $serverRepository->touch($server->getId(), $platform, $version);
 
         $data = merge_recursive(
@@ -119,7 +115,6 @@ class ServerConfigController
                 "license_token" => $settings->getLicenseToken(),
                 "sms_platform_id" => $smsPlatformId,
                 "sms_text" => $smsModule->getSmsCode(),
-                "steam_ids" => "$steamIds;",
                 "currency" => $settings->getCurrency(),
                 "contact" => $settings->getContactEmail(),
                 "vat" => $settings->getVat(),
@@ -136,15 +131,15 @@ class ServerConfigController
             : new AssocResponse($data);
     }
 
-    private function isVersionAcceptable($version, Platform $platform): bool
+    private function isVersionAcceptable($version, ?Platform $platform): bool
     {
         if (!$platform) {
             return false;
         }
 
         $minimumVersions = [
-            Platform::AMXMODX => "3.10.0",
-            Platform::SOURCEMOD => "3.9.0",
+            Platform::AMXMODX => "3.12.0",
+            Platform::SOURCEMOD => "3.13.0",
         ];
 
         return version_compare($version, $minimumVersions[$platform->getValue()]) >= 0;

@@ -70,7 +70,6 @@ class ServerConfigControllerTest extends HttpTestCase
             "license_token:abc123",
             "sms_platform_id:{$this->paymentPlatform->getId()}",
             "sms_text:abc123",
-            "steam_ids:;",
             "currency:PLN",
             "contact:",
             "vat:1.23",
@@ -130,43 +129,6 @@ class ServerConfigControllerTest extends HttpTestCase
         $this->assertSame($this->paymentPlatform->getId(), $json["sms_platform_id"]);
         $this->assertSame($this->settings->getVat(), $json["vat"]);
         $this->assertSame("abc123", $json["license_token"]);
-    }
-
-    /** @test */
-    public function lists_users_steam_ids()
-    {
-        // given
-        $this->factory->user([
-            "steam_id" => "STEAM_1",
-        ]);
-        $this->factory->user([
-            "steam_id" => "STEAM_12",
-        ]);
-        $this->factory->user();
-        $this->factory->user([
-            "steam_id" => "STEAM_2",
-        ]);
-
-        // when
-        $response = $this->get(
-            "api/server/config",
-            [
-                "token" => $this->server->getToken(),
-                "ip" => $this->server->getIp(),
-                "port" => $this->server->getPort(),
-                "version" => "3.9.0",
-            ],
-            [
-                "User-Agent" => Platform::SOURCEMOD,
-            ]
-        );
-
-        // then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString(
-            "steam_ids:STEAM_1;STEAM_12;STEAM_2;",
-            $response->getContent()
-        );
     }
 
     /** @test */

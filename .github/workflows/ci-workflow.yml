@@ -44,6 +44,8 @@ jobs:
             composer: "composer.json"
           - php_version: "8.1"
             composer: "composer.json"
+          - php_version: "8.2"
+            composer: "composer.json"
     env:
       APP_DEBUG: true
       DB_HOST: 127.0.0.1
@@ -105,7 +107,7 @@ jobs:
 
       - name: Upload coverage results to Coveralls
         run: |
-          if [[ ${{ matrix.php_version }} == 8.0 ]]; then
+          if [[ ${{ matrix.php_version }} == 8.2 ]]; then
             ./vendor/bin/php-coveralls --coverage_clover clover.xml --json_path coveralls.json
           fi
         env:

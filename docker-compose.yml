@@ -3,7 +3,7 @@ services:
     web:
         build:
             context: ./docker
-            dockerfile: web.docker
+            dockerfile: web.dockerfile
         volumes:
             - ./:/var/www
         ports:
@@ -15,7 +15,7 @@ services:
     app:
         build:
             context: ./docker
-            dockerfile: app.docker
+            dockerfile: app.dockerfile
         volumes:
             - ./:/var/www
         links:
@@ -27,7 +27,7 @@ services:
     app-v5:
         build:
             context: ./docker
-            dockerfile: app-v5.docker
+            dockerfile: app-v5.dockerfile
         volumes:
             - ./:/var/www
         links:

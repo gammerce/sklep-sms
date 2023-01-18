@@ -70,6 +70,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Platform::AMXMODX,
             ]
@@ -77,13 +78,16 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression(
-            "#<return_value>purchased</return_value><text>Usługa została prawidłowo zakupiona\.</text><positive>1</positive><bsid>\d+</bsid>#",
-            $response->getContent()
+        $json = $this->decodeJsonResponse($response);
+        $this->assertArraySubset(
+            [
+                "status" => "purchased",
+                "text" => "Usługa została prawidłowo zakupiona.",
+            ],
+            $json
         );
 
-        preg_match("#<bsid>(\d+)</bsid>#", $response->getContent(), $matches);
-        $boughtServiceId = (int) $matches[1];
+        $boughtServiceId = $json["bsid"];
         $boughtService = $this->boughtServiceRepository->get($boughtServiceId);
         $this->assertNotNull($boughtService);
         $this->assertSameEnum(PaymentMethod::WALLET(), $boughtService->getMethod());
@@ -122,6 +126,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Platform::AMXMODX,
             ]
@@ -129,9 +134,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression(
-            "#<return_value>no_money</return_value><text>Bida! Nie masz wystarczającej ilości kasy w portfelu\. Doładuj portfel ;-\)</text><positive>0</positive>#",
-            $response->getContent()
+        $this->assertEquals(
+            [
+                "status" => "no_money",
+                "text" =>
+                    "Bida! Nie masz wystarczającej ilości kasy w portfelu. Doładuj portfel ;-)",
+            ],
+            $this->decodeJsonResponse($response)
         );
 
         $freshUser = $this->userRepository->get($user->getId());
@@ -162,6 +171,7 @@ class PurchaseResourceWalletTest extends HttpTestCase
                 "token" => $this->server->getToken(),
             ],
             [
+                "Accept" => "application/json",
                 "Authorization" => "Bearer {$this->steamId}",
                 "User-Agent" => Platform::AMXMODX,
             ]
@@ -169,9 +179,13 @@ class PurchaseResourceWalletTest extends HttpTestCase
 
         // then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertMatchesRegularExpression(
-            "#<return_value>wallet_not_logged</return_value><text>Nie można zapłacić portfelem, gdy nie jesteś zalogowany.</text><positive>0</positive>#",
-            $response->getContent()
+        $this->assertEquals(
+            [
+                "status" => "wallet_not_logged",
+                "text" =>
+                    "Płatność portfelem jest możliwa po utworzeniu konta w sklepie oraz podaniu swojego SteamID w profilu.",
+            ],
+            $this->decodeJsonResponse($response)
         );
     }
 

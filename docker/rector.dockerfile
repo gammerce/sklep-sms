@@ -1,5 +1,5 @@
 # export VERSION=0.12.23
-# docker build . -f rector.docker --tag budziam/rector:$VERSION
+# docker build . -f rector.dockerfile --tag budziam/rector:$VERSION
 # docker push budziam/rector:$VERSION
 
 FROM php:8.1
