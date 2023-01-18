@@ -57,7 +57,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "token" => $this->server->getToken(),
                 "ip" => $this->server->getIp(),
                 "port" => $this->server->getPort(),
-                "version" => "3.10.1-rc.1242",
+                "version" => "3.12.0",
             ],
             [
                 "User-Agent" => Platform::AMXMODX,
@@ -115,7 +115,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "token" => $this->server->getToken(),
                 "ip" => $this->server->getIp(),
                 "port" => $this->server->getPort(),
-                "version" => "3.10.0",
+                "version" => "3.12.0",
             ],
             [
                 "Accept" => "application/json",
@@ -160,7 +160,7 @@ class ServerConfigControllerTest extends HttpTestCase
             "/api/server/config",
             [
                 "token" => "asd",
-                "version" => "3.10.0",
+                "version" => "3.12.0",
             ],
             [
                 "User-Agent" => Platform::AMXMODX,
@@ -194,7 +194,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "token" => $this->server->getToken(),
                 "ip" => $this->server->getIp(),
                 "port" => $this->server->getPort(),
-                "version" => "3.10.0",
+                "version" => "3.12.0",
             ],
             [
                 "Accept" => "application/json",
@@ -242,7 +242,7 @@ class ServerConfigControllerTest extends HttpTestCase
                 "token" => $this->server->getToken(),
                 "ip" => $this->server->getIp(),
                 "port" => $this->server->getPort(),
-                "version" => "3.10.0",
+                "version" => "3.12.0",
             ],
             [
                 "Accept" => "application/json",
