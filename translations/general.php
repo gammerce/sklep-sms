@@ -10,7 +10,6 @@ return [
     "cssetti" => "CSSetti",
     "getpay" => "GetPay",
     "gosetti" => "GOSetti",
-    "homepay" => "HomePay",
     "hostplay" => "HostPlay",
     "hotpay" => "HotPay",
     "microsms" => "MicroSMS",
