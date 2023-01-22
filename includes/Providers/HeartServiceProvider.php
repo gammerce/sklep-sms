@@ -25,7 +25,6 @@ use App\Verification\PaymentModules\Profitsms;
 use App\Verification\PaymentModules\Pukawka;
 use App\Verification\PaymentModules\SimPay;
 use App\Verification\PaymentModules\TPay;
-use App\Verification\PaymentModules\Zabijaka;
 use App\View\Blocks\BlockAdminContent;
 use App\View\Blocks\BlockContent;
 use App\View\Blocks\BlockLoggedInfo;
@@ -123,7 +122,6 @@ class HeartServiceProvider
         $paymentModuleManager->register(Pukawka::class);
         $paymentModuleManager->register(SimPay::class);
         $paymentModuleManager->register(TPay::class);
-        $paymentModuleManager->register(Zabijaka::class);
     }
 
     private function registerPages(PageManager $pageManager)
