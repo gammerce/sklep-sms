@@ -14,7 +14,6 @@ return [
     "hotpay" => "HotPay",
     "microsms" => "MicroSMS",
     "paypal" => "PayPal",
-    "profitsms" => "ProfitSMS",
     "pukawka" => "Pukawka",
     "simpay" => "SimPay",
     "transferuj" => "TPay",
