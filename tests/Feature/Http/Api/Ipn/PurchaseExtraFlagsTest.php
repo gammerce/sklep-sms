@@ -5,7 +5,7 @@ use App\Payment\General\PaymentMethod;
 use App\ServiceModules\ExtraFlags\ExtraFlagType;
 use App\ServiceModules\ExtraFlags\ExtraFlagUserServiceRepository;
 use App\ServiceModules\ExtraFlags\PlayerFlagRepository;
-use App\Verification\PaymentModules\SimPay;
+use App\Verification\PaymentModules\MicroSMS;
 use App\Verification\PaymentModules\TPay;
 use Tests\Psr4\Concerns\PaymentModuleFactoryConcern;
 use Tests\Psr4\TestCases\HttpTestCase;
@@ -31,11 +31,11 @@ class PurchaseExtraFlagsTest extends HttpTestCase
     public function purchase_using_sms()
     {
         $this->mockPaymentModuleFactory();
-        $this->makeVerifySmsSuccessful(SimPay::class);
+        $this->makeVerifySmsSuccessful(MicroSMS::class);
         $this->actingAs($this->factory->user());
 
         $paymentPlatform = $this->factory->paymentPlatform([
-            "module" => SimPay::MODULE_ID,
+            "module" => MicroSMS::MODULE_ID,
         ]);
         $server = $this->factory->server([
             "sms_platform_id" => $paymentPlatform->getId(),
