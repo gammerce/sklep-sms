@@ -16,12 +16,12 @@ class Hostplay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "hostplay";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("user_id")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("7055", 34),
@@ -41,7 +41,7 @@ class Hostplay extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->get("http://hostplay.pl/api/payment/api_code_verify.php", [
             "payment" => "homepay_sms",
@@ -86,21 +86,17 @@ class Hostplay extends PaymentModule implements SupportSms
         throw new UnknownErrorException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
         return "HOSTPLAY";
     }
 
-    private function getUserId()
+    private function getUserId(): string
     {
-        return $this->getData("user_id");
+        return (string) $this->getData("user_id");
     }
 
-    /**
-     * @param Money $price
-     * @return string|null
-     */
-    private function getSmsNumberByProvision(Money $price)
+    private function getSmsNumberByProvision(Money $price): ?string
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
             if ($smsNumber->getProvision()->equal($price)) {

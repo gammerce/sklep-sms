@@ -19,12 +19,12 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "cashbill";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("sms_text"), new DataField("key"), new DataField("service")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("70567"),
@@ -42,7 +42,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $handle = fopen(
             "http://sms.cashbill.pl/backcode_check_singleuse_noip.php" .
@@ -76,7 +76,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         throw new NoConnectionException();
     }
 
-    public function prepareTransfer(Money $price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase): array
     {
         $userData = $purchase->getId();
 
@@ -105,7 +105,7 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(Request $request)
+    public function finalizeTransfer(Request $request): FinalizedPayment
     {
         $amount = Money::fromPrice($request->request->get("amount"));
 
@@ -119,22 +119,14 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
             ->setOutput("OK");
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    private function isPaymentValid(Request $request)
+    private function isPaymentValid(Request $request): bool
     {
         return $this->checkSign($request) &&
             strtoupper($request->request->get("status")) === "OK" &&
             $request->request->get("service") == $this->getService();
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    private function checkSign(Request $request)
+    private function checkSign(Request $request): bool
     {
         $calculatedSign = md5(
             $request->request->get("service") .
@@ -147,27 +139,18 @@ class CashBill extends PaymentModule implements SupportSms, SupportTransfer
         return $calculatedSign === $request->request->get("sign");
     }
 
-    /**
-     * @return string
-     */
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    /**
-     * @return string
-     */
-    public function getKey()
+    private function getKey(): string
     {
-        return $this->getData("key");
+        return (string) $this->getData("key");
     }
 
-    /**
-     * @return string
-     */
-    public function getService()
+    private function getService(): string
     {
-        return $this->getData("service");
+        return (string) $this->getData("service");
     }
 }

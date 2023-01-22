@@ -15,12 +15,12 @@ class Zabijaka extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "zabijaka";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("api")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("71480"),
@@ -36,7 +36,7 @@ class Zabijaka extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $xml = simplexml_load_file(
             "http://api.zabijaka.pl/1.1" .
@@ -69,13 +69,13 @@ class Zabijaka extends PaymentModule implements SupportSms
         throw new UnknownErrorException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
         return "AG.ZABIJAKA";
     }
 
-    private function getApi()
+    private function getApi(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 }

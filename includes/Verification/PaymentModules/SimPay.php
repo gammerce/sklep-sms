@@ -7,7 +7,6 @@ use App\Models\SmsNumber;
 use App\Payment\Exceptions\PaymentProcessingException;
 use App\Payment\General\PaymentResult;
 use App\Payment\General\PaymentResultType;
-use App\Support\Collection;
 use App\Support\Money;
 use App\Verification\Abstracts\PaymentModule;
 use App\Verification\Abstracts\SupportDirectBilling;
@@ -15,9 +14,6 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\CustomErrorException;
-use App\Verification\Exceptions\NoConnectionException;
-use App\Verification\Exceptions\UnknownErrorException;
-use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -34,7 +30,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     /** @var ?SmsNumber[] */
     private ?array $smsNumbers = null;
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [
             new DataField("key"),
@@ -46,7 +42,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         ];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         if ($this->smsNumbers === null) {
             $response = $this->requester->get(
@@ -57,7 +53,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
                     "X-SIM-PASSWORD" => $this->getSecret(),
                 ]
             );
-            $content = $response->json();
+            $content = $response?->json();
 
             if (array_get($content, "success") !== true) {
                 $message = array_get($content, "message", "n/a");
@@ -72,7 +68,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         return $this->smsNumbers;
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->post(
             "https://api.simpay.pl/sms/{$this->getServiceId()}",
@@ -87,11 +83,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ]
         );
 
-        if (!$response) {
-            throw new NoConnectionException();
-        }
-
-        $content = $response->json();
+        $content = $response?->json();
 
         if (
             array_get($content, "success") === true &&
@@ -107,7 +99,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new CustomErrorException(array_get($content, "message", "n/a"));
     }
 
-    public function prepareDirectBilling(Money $price, Purchase $purchase)
+    public function prepareDirectBilling(Money $price, Purchase $purchase): PaymentResult
     {
         $serviceId = $this->getDirectBillingServiceId();
         $control = $purchase->getId();
@@ -143,7 +135,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new PaymentProcessingException("error", "SimPay response. $status: $message");
     }
 
-    public function finalizeDirectBilling(Request $request)
+    public function finalizeDirectBilling(Request $request): FinalizedPayment
     {
         $id = $request->request->get("id");
         $valueGross = Money::fromPrice($request->request->get("valuenet_gross"));
@@ -160,19 +152,19 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ->setOutput("OK");
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    private function getKey()
+    private function getKey(): string
     {
-        return $this->getData("key");
+        return (string) $this->getData("key");
     }
 
-    private function getSecret()
+    private function getSecret(): string
     {
-        return $this->getData("secret");
+        return (string) $this->getData("secret");
     }
 
     private function getServiceId(): ?int
@@ -180,14 +172,14 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         return as_int($this->getData("service_id"));
     }
 
-    private function getDirectBillingServiceId()
+    private function getDirectBillingServiceId(): string
     {
-        return $this->getData("direct_billing_service_id");
+        return (string) $this->getData("direct_billing_service_id");
     }
 
-    private function getDirectBillingApiKey()
+    private function getDirectBillingApiKey(): string
     {
-        return $this->getData("direct_billing_api_key");
+        return (string) $this->getData("direct_billing_api_key");
     }
 
     /**

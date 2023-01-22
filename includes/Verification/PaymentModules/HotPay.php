@@ -44,7 +44,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         $this->serviceManager = $serviceManager;
     }
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [
             //            new DataField("sms_text"),
@@ -55,14 +55,14 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
                 // TODO Implement it
             ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->get("https://apiv2.hotpay.pl/v1/sms/sprawdz", [
             "sekret" => $this->getSmsSecret(),
@@ -99,14 +99,14 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         throw new CustomErrorException("{$status} {$message}");
     }
 
-    private function isValidNumber($number, $netValue)
+    private function isValidNumber($number, $netValue): bool
     {
         $numberMoney = get_sms_cost($number);
         $netMoney = Money::fromPrice($netValue);
         return $numberMoney->equal($netMoney);
     }
 
-    public function prepareTransfer(Money $price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase): array
     {
         $service = $this->serviceManager->get($purchase->getServiceId());
         assert($service);
@@ -125,7 +125,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(Request $request)
+    public function finalizeTransfer(Request $request): FinalizedPayment
     {
         $amount = Money::fromPrice($request->request->get("KWOTA"));
 
@@ -138,7 +138,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             ->setTestMode(false);
     }
 
-    public function prepareDirectBilling($price, Purchase $purchase)
+    public function prepareDirectBilling($price, Purchase $purchase): PaymentResult
     {
         return new PaymentResult(PaymentResultType::EXTERNAL(), [
             "method" => "POST",
@@ -153,7 +153,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
         ]);
     }
 
-    public function finalizeDirectBilling(Request $request)
+    public function finalizeDirectBilling(Request $request): FinalizedPayment
     {
         // TODO cost should not be equal income
         $cost = Money::fromPrice($request->request->get("KWOTA"));
@@ -168,32 +168,32 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             ->setTestMode(false);
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    private function getSmsSecret()
+    private function getSmsSecret(): string
     {
-        return $this->getData("sms_secret");
+        return (string) $this->getData("sms_secret");
     }
 
-    private function getTransferSecret()
+    private function getTransferSecret(): string
     {
-        return $this->getData("transfer_secret");
+        return (string) $this->getData("transfer_secret");
     }
 
-    private function getDirectBillingSecret()
+    private function getDirectBillingSecret(): string
     {
-        return $this->getData("direct_billing_secret");
+        return (string) $this->getData("direct_billing_secret");
     }
 
-    private function getTransferHash()
+    private function getTransferHash(): string
     {
-        return $this->getData("transfer_hash");
+        return (string) $this->getData("transfer_hash");
     }
 
-    private function isTransferValid(Request $request)
+    private function isTransferValid(Request $request): bool
     {
         $hashElements = [
             $this->getTransferHash(),
@@ -209,7 +209,7 @@ class HotPay extends PaymentModule implements SupportSms, SupportTransfer
             $request->request->get("STATUS") === "SUCCESS";
     }
 
-    private function isDirectBillingValid(Request $request)
+    private function isDirectBillingValid(Request $request): bool
     {
         // TODO Improve it
         return $request->request->get("STATUS") == 1;

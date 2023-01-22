@@ -15,11 +15,11 @@ interface SupportTransfer
      * @return array
      * @throws PaymentProcessingException
      */
-    public function prepareTransfer(Money $price, Purchase $purchase);
+    public function prepareTransfer(Money $price, Purchase $purchase): array;
 
     /**
      * @param Request $request
      * @return FinalizedPayment
      */
-    public function finalizeTransfer(Request $request);
+    public function finalizeTransfer(Request $request): FinalizedPayment;
 }
