@@ -30,13 +30,14 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     /** @var ?SmsNumber[] */
     private ?array $smsNumbers = null;
 
+    private ?string $smsCode = null;
+
     public static function getDataFields(): array
     {
         return [
             new DataField("key"),
             new DataField("secret"),
             new DataField("service_id", "SMS Service ID"),
-            new DataField("sms_text"),
             new DataField("direct_billing_service_id", "Direct Billing Service ID"),
             new DataField("direct_billing_api_key", "Direct Billing API Key"),
         ];
@@ -45,27 +46,19 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
     public function getSmsNumbers(): array
     {
         if ($this->smsNumbers === null) {
-            $response = $this->requester->get(
-                "https://api.simpay.pl/sms/{$this->getServiceId()}/numbers",
-                [],
-                [
-                    "X-SIM-KEY" => $this->getKey(),
-                    "X-SIM-PASSWORD" => $this->getSecret(),
-                ]
-            );
-            $content = $response?->json();
-
-            if (array_get($content, "success") !== true) {
-                $message = array_get($content, "message", "n/a");
-                throw new CustomErrorException("getting SMS numbers failed: $message");
-            }
-
-            $this->smsNumbers = collect(array_get($content, "data", []))
-                ->map(fn(array $smsNumberDetails) => new SmsNumber($smsNumberDetails["number"]))
-                ->all();
+            $this->fetchSMSConfiguration();
         }
 
         return $this->smsNumbers;
+    }
+
+    public function getSmsCode(): string
+    {
+        if ($this->smsCode === null) {
+            $this->fetchSMSConfiguration();
+        }
+
+        return $this->smsCode;
     }
 
     public function verifySms(string $returnCode, string $number): SmsSuccessResult
@@ -152,11 +145,6 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ->setOutput("OK");
     }
 
-    public function getSmsCode(): string
-    {
-        return (string) $this->getData("sms_text");
-    }
-
     private function getKey(): string
     {
         return (string) $this->getData("key");
@@ -199,6 +187,32 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         }
 
         return $this->allowedIps;
+    }
+
+    private function fetchSMSConfiguration(): void
+    {
+        $response = $this->requester->get(
+            "https://api.simpay.pl/sms/{$this->getServiceId()}",
+            [],
+            [
+                "X-SIM-KEY" => $this->getKey(),
+                "X-SIM-PASSWORD" => $this->getSecret(),
+            ]
+        );
+        $content = $response?->json();
+
+        if (array_get($content, "success") !== true) {
+            $message = array_get($content, "message", "n/a");
+            throw new CustomErrorException("getting SMS configuration failed: $message");
+        }
+
+        $this->smsNumbers = collect(array_dot_get($content, "data.numbers", []))
+            ->map(fn(string $smsNumber) => new SmsNumber($smsNumber))
+            ->sort(fn(SmsNumber $a, SmsNumber $b) => $a->getPrice() > $b->getPrice())
+            ->all();
+
+        $this->smsCode =
+            array_dot_get($content, "data.prefix") . "." . array_dot_get($content, "data.suffix");
     }
 
     private function isPaymentValid(Request $request): bool
