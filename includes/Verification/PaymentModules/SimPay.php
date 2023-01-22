@@ -93,7 +93,7 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             throw new BadCodeException();
         }
 
-        $this->fileLogger->info("SimPay SMS verification failed", compact("content"));
+        $this->databaseLogger->log("SimPay | SMS verification failed | %s", json_encode($content));
         throw new CustomErrorException(array_get($content, "message", "n/a"));
     }
 
@@ -208,7 +208,10 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 
         if (array_get($content, "success") !== true) {
             $message = array_get($content, "message", "n/a");
-            throw new CustomErrorException("getting SMS configuration failed: $message");
+            $this->databaseLogger->log("SimPay | Getting SMS configuration failed | $message");
+            $this->smsCode = "";
+            $this->smsNumbers = [];
+            return;
         }
 
         $this->smsNumbers = collect(array_dot_get($content, "data.numbers", []))
