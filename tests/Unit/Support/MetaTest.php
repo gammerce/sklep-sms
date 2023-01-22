@@ -17,7 +17,7 @@ class MetaTest extends UnitTestCase
     /** @test */
     public function version_is_ok()
     {
-        $this->assertEquals("3.19.1", $this->meta->getVersion());
+        $this->assertEquals("3.19.2", $this->meta->getVersion());
     }
 
     /** @test */
