@@ -85,10 +85,15 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             return new SmsSuccessResult(!!$content["data"]["test"]);
         }
 
+        if (array_dot_get($content, "data.used") === true) {
+            throw new BadCodeException();
+        }
+
         if ($response->getStatusCode() === 404 && array_get($content, "success") !== true) {
             throw new BadCodeException();
         }
 
+        $this->fileLogger->info("SimPay SMS verification failed", compact("content"));
         throw new CustomErrorException(array_get($content, "message", "n/a"));
     }
 
