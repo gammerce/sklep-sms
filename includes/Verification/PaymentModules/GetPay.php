@@ -20,12 +20,12 @@ class GetPay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "getpay";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("api"), new DataField("api_secret"), new DataField("sms_text")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("7143"),
@@ -40,7 +40,7 @@ class GetPay extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $options = [
             "http" => [
@@ -90,8 +90,8 @@ class GetPay extends PaymentModule implements SupportSms
         }
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 }

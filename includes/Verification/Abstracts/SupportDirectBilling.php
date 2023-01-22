@@ -16,11 +16,7 @@ interface SupportDirectBilling
      * @return PaymentResult
      * @throws PaymentProcessingException
      */
-    public function prepareDirectBilling(Money $price, Purchase $purchase);
+    public function prepareDirectBilling(Money $price, Purchase $purchase): PaymentResult;
 
-    /**
-     * @param Request $request
-     * @return FinalizedPayment
-     */
-    public function finalizeDirectBilling(Request $request);
+    public function finalizeDirectBilling(Request $request): FinalizedPayment;
 }

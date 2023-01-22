@@ -14,12 +14,12 @@ class Profitsms extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "profitsms";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("api"), new DataField("sms_text")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("7055"),
@@ -36,7 +36,7 @@ class Profitsms extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->get("http://profitsms.pl/check.php", [
             "apiKey" => $this->getApi(),
@@ -62,13 +62,13 @@ class Profitsms extends PaymentModule implements SupportSms
         throw new UnknownErrorException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    private function getApi()
+    private function getApi(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 }

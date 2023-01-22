@@ -14,7 +14,7 @@ class Homepay extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "homepay";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [
             new DataField("sms_text"),
@@ -36,7 +36,7 @@ class Homepay extends PaymentModule implements SupportSms
         ];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("7055"),
@@ -56,7 +56,7 @@ class Homepay extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $handle = fopen(
             "http://homepay.pl/API/check_code.php" .
@@ -87,13 +87,13 @@ class Homepay extends PaymentModule implements SupportSms
         throw new NoConnectionException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    private function getApi()
+    private function getApi(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 }
