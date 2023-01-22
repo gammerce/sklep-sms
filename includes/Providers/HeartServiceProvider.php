@@ -15,7 +15,6 @@ use App\Verification\PaymentModules\CashBill;
 use App\Verification\PaymentModules\Cssetti;
 use App\Verification\PaymentModules\GetPay;
 use App\Verification\PaymentModules\Gosetti;
-use App\Verification\PaymentModules\Homepay;
 use App\Verification\PaymentModules\Hostplay;
 use App\Verification\PaymentModules\HotPay;
 use App\Verification\PaymentModules\MicroSMS;
@@ -112,7 +111,6 @@ class HeartServiceProvider
         $paymentModuleManager->register(Cssetti::class);
         $paymentModuleManager->register(GetPay::class);
         $paymentModuleManager->register(Gosetti::class);
-        $paymentModuleManager->register(Homepay::class);
         $paymentModuleManager->register(Hostplay::class);
         $paymentModuleManager->register(HotPay::class);
         $paymentModuleManager->register(MicroSMS::class);
