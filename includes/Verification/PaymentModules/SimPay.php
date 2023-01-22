@@ -14,9 +14,6 @@ use App\Verification\Abstracts\SupportSms;
 use App\Verification\DataField;
 use App\Verification\Exceptions\BadCodeException;
 use App\Verification\Exceptions\CustomErrorException;
-use App\Verification\Exceptions\NoConnectionException;
-use App\Verification\Exceptions\UnknownErrorException;
-use App\Verification\Exceptions\WrongCredentialsException;
 use App\Verification\Results\SmsSuccessResult;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -27,88 +24,80 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
 {
     const MODULE_ID = "simpay";
 
+    /** @var ?string[] */
     private ?array $allowedIps = null;
 
-    public static function getDataFields()
+    /** @var ?SmsNumber[] */
+    private ?array $smsNumbers = null;
+
+    private ?string $smsCode = null;
+
+    public static function getDataFields(): array
     {
         return [
             new DataField("key"),
             new DataField("secret"),
             new DataField("service_id", "SMS Service ID"),
-            new DataField("sms_text"),
             new DataField("direct_billing_service_id", "Direct Billing Service ID"),
             new DataField("direct_billing_api_key", "Direct Billing API Key"),
         ];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
-        return [
-            new SmsNumber("7055"),
-            new SmsNumber("7136"),
-            new SmsNumber("7255"),
-            new SmsNumber("7355"),
-            new SmsNumber("7455"),
-            new SmsNumber("7555"),
-            new SmsNumber("7636"),
-            new SmsNumber("77464"),
-            new SmsNumber("78464"),
-            new SmsNumber("7936"),
-            new SmsNumber("91055"),
-            new SmsNumber("91155"),
-            new SmsNumber("91455"),
-            new SmsNumber("91664"),
-            new SmsNumber("91955"),
-            new SmsNumber("92055"),
-            new SmsNumber("92555"),
-        ];
+        if ($this->smsNumbers === null) {
+            $this->fetchSMSConfiguration();
+        }
+
+        return $this->smsNumbers;
     }
 
-    public function verifySms($returnCode, $number)
+    public function getSmsCode(): string
+    {
+        if ($this->smsCode === null) {
+            $this->fetchSMSConfiguration();
+        }
+
+        return $this->smsCode;
+    }
+
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->post(
-            "https://simpay.pl/api/1/status",
+            "https://api.simpay.pl/sms/{$this->getServiceId()}",
             json_encode([
-                "params" => [
-                    "auth" => [
-                        "key" => $this->getKey(),
-                        "secret" => $this->getSecret(),
-                    ],
-                    "service_id" => $this->getServiceId(),
-                    "number" => $number,
-                    "code" => $returnCode,
-                ],
-            ])
+                "code" => $returnCode,
+                "number" => $number,
+            ]),
+            [
+                "X-SIM-KEY" => $this->getKey(),
+                "X-SIM-PASSWORD" => $this->getSecret(),
+                "Content-Type" => "application/json",
+            ]
         );
 
-        if (!$response) {
-            throw new NoConnectionException();
+        $content = $response?->json();
+
+        if (
+            array_get($content, "success") === true &&
+            array_dot_get($content, "data.used") !== true
+        ) {
+            return new SmsSuccessResult(!!$content["data"]["test"]);
         }
 
-        $content = $response->json();
-
-        if (isset($content["respond"]["status"]) && $content["respond"]["status"] == "OK") {
-            return new SmsSuccessResult(!!$content["respond"]["test"]);
+        if (array_dot_get($content, "data.used") === true) {
+            throw new BadCodeException();
         }
 
-        if (isset($content["error"][0]) && is_array($content["error"][0])) {
-            switch ((int) $content["error"][0]["error_code"]) {
-                case 103:
-                case 104:
-                    throw new WrongCredentialsException();
-
-                case 404:
-                case 405:
-                    throw new BadCodeException();
-            }
-
-            throw new CustomErrorException($content["error"][0]["error_name"]);
+        if ($response->getStatusCode() === 404 && array_get($content, "success") !== true) {
+            throw new BadCodeException();
         }
 
-        throw new UnknownErrorException();
+        $this->fileLogger->info("SimPay SMS verification failed", compact("content"));
+        throw new CustomErrorException(array_get($content, "message", "n/a"));
     }
 
-    public function prepareDirectBilling(Money $price, Purchase $purchase)
+    public function prepareDirectBilling(Money $price, Purchase $purchase): PaymentResult
     {
         $serviceId = $this->getDirectBillingServiceId();
         $control = $purchase->getId();
@@ -144,10 +133,8 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
         throw new PaymentProcessingException("error", "SimPay response. $status: $message");
     }
 
-    public function finalizeDirectBilling(Request $request)
+    public function finalizeDirectBilling(Request $request): FinalizedPayment
     {
-        $this->tryToFetchIps();
-
         $id = $request->request->get("id");
         $valueGross = Money::fromPrice($request->request->get("valuenet_gross"));
         $valuePartner = Money::fromPrice($request->request->get("valuepartner"));
@@ -163,74 +150,86 @@ class SimPay extends PaymentModule implements SupportSms, SupportDirectBilling
             ->setOutput("OK");
     }
 
-    public function getSmsCode()
+    private function getKey(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("key");
     }
 
-    private function getKey()
+    private function getSecret(): string
     {
-        return $this->getData("key");
+        return (string) $this->getData("secret");
     }
 
-    private function getSecret()
+    private function getServiceId(): ?int
     {
-        return $this->getData("secret");
+        return as_int($this->getData("service_id"));
     }
 
-    private function getServiceId()
+    private function getDirectBillingServiceId(): string
     {
-        return $this->getData("service_id");
+        return (string) $this->getData("direct_billing_service_id");
     }
 
-    private function getDirectBillingServiceId()
+    private function getDirectBillingApiKey(): string
     {
-        return $this->getData("direct_billing_service_id");
-    }
-
-    private function getDirectBillingApiKey()
-    {
-        return $this->getData("direct_billing_api_key");
-    }
-
-    private function tryToFetchIps()
-    {
-        if ($this->allowedIps === null) {
-            $this->fetchIps();
-        }
-    }
-
-    private function fetchIps()
-    {
-        $response = $this->requester->get("https://simpay.pl/api/get_ip");
-
-        if (!$response) {
-            $this->fileLogger->error("Could not get simpay ips.");
-            return;
-        }
-
-        $data = $response->json();
-        $this->allowedIps = array_merge(["127.0.0.1"], $data["respond"]["ips"]);
+        return (string) $this->getData("direct_billing_api_key");
     }
 
     /**
-     * @param Request $request
-     * @return bool
+     * @return string[]
      */
-    private function isPaymentValid(Request $request)
+    private function getAllowedIPs(): array
+    {
+        if ($this->allowedIps === null) {
+            $response = $this->requester->get("https://simpay.pl/api/get_ip");
+
+            if (!$response) {
+                throw new PaymentProcessingException("error", "Could not get simpay IPs.");
+            }
+
+            $data = $response->json();
+            $this->allowedIps = array_merge(["127.0.0.1"], $data["respond"]["ips"]);
+        }
+
+        return $this->allowedIps;
+    }
+
+    private function fetchSMSConfiguration(): void
+    {
+        $response = $this->requester->get(
+            "https://api.simpay.pl/sms/{$this->getServiceId()}",
+            [],
+            [
+                "X-SIM-KEY" => $this->getKey(),
+                "X-SIM-PASSWORD" => $this->getSecret(),
+            ]
+        );
+        $content = $response?->json();
+
+        if (array_get($content, "success") !== true) {
+            $message = array_get($content, "message", "n/a");
+            throw new CustomErrorException("getting SMS configuration failed: $message");
+        }
+
+        $this->smsNumbers = collect(array_dot_get($content, "data.numbers", []))
+            ->map(fn(string $smsNumber) => new SmsNumber($smsNumber))
+            ->sort(fn(SmsNumber $a, SmsNumber $b) => $a->getPrice() > $b->getPrice())
+            ->all();
+
+        $this->smsCode =
+            array_dot_get($content, "data.prefix") . "." . array_dot_get($content, "data.suffix");
+    }
+
+    private function isPaymentValid(Request $request): bool
     {
         $status = $request->request->get("status");
 
-        return in_array(get_ip($request), $this->allowedIps, true) &&
+        return in_array(get_ip($request), $this->getAllowedIPs(), true) &&
             $status === "ORDER_PAYED" &&
             $this->isSignValid($request);
     }
 
-    /**
-     * @param Request $request
-     * @return bool
-     */
-    private function isSignValid(Request $request)
+    private function isSignValid(Request $request): bool
     {
         $sign = $request->request->get("sign");
         $id = $request->request->get("id");

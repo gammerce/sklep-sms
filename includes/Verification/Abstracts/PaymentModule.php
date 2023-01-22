@@ -34,11 +34,7 @@ abstract class PaymentModule
         return __(static::MODULE_ID);
     }
 
-    /**
-     * @param mixed $key
-     * @return mixed
-     */
-    public function getData($key)
+    public function getData(string $key): mixed
     {
         return array_get($this->paymentPlatform->getData(), $key);
     }
@@ -46,17 +42,15 @@ abstract class PaymentModule
     /**
      * @return DataField[]
      */
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [];
     }
 
     /**
-     * @param array $data
-     * @return array
      * @throws ProcessDataFieldsException
      */
-    public static function processDataFields(array $data)
+    public static function processDataFields(array $data): array
     {
         return $data;
     }

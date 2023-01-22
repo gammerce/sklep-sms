@@ -37,10 +37,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         $this->lang = $translationManager->user();
     }
 
-    /**
-     * @return string
-     */
-    private function getPayPalDomain()
+    private function getPayPalDomain(): string
     {
         if ($this->isTestMode()) {
             return "https://api.sandbox.paypal.com";
@@ -54,12 +51,12 @@ class PayPal extends PaymentModule implements SupportTransfer
         return is_demo();
     }
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("client_id"), new DataField("secret")];
     }
 
-    public function prepareTransfer(Money $price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase): array
     {
         $response = $this->requester->post(
             "{$this->getPayPalDomain()}/v2/checkout/orders",
@@ -91,7 +88,7 @@ class PayPal extends PaymentModule implements SupportTransfer
             ]
         );
 
-        $result = $response ? $response->json() : null;
+        $result = $response?->json();
 
         if (array_get($result, "status") !== "CREATED") {
             $this->fileLogger->error("Invalid order creation status", compact("result"));
@@ -111,7 +108,7 @@ class PayPal extends PaymentModule implements SupportTransfer
         throw new PaymentProcessingException("error", "Approve url not found");
     }
 
-    public function finalizeTransfer(Request $request)
+    public function finalizeTransfer(Request $request): FinalizedPayment
     {
         $token = $request->query->get("token");
         $result = $this->capturePayment($token);
@@ -142,44 +139,31 @@ class PayPal extends PaymentModule implements SupportTransfer
             ->setTestMode($this->isTestMode());
     }
 
-    /**
-     * @param string $orderId
-     * @return array
-     */
-    private function capturePayment($orderId)
+    private function capturePayment(string $orderId): ?array
     {
         $response = $this->requester->post(
-            "{$this->getPayPalDomain()}/v2/checkout/orders/{$orderId}/capture",
+            "{$this->getPayPalDomain()}/v2/checkout/orders/$orderId/capture",
             [],
             [
                 "Authorization" => "Basic {$this->getCredentials()}",
                 "Content-Type" => "application/json",
             ]
         );
-        return $response ? $response->json() : null;
+        return $response?->json();
     }
 
-    /**
-     * @return string
-     */
-    private function getCredentials()
+    private function getCredentials(): string
     {
         return base64_encode("{$this->getClientId()}:{$this->getSecret()}");
     }
 
-    /**
-     * @return string
-     */
-    private function getClientId()
+    private function getClientId(): string
     {
-        return $this->getData("client_id");
+        return (string) $this->getData("client_id");
     }
 
-    /**
-     * @return string
-     */
-    private function getSecret()
+    private function getSecret(): string
     {
-        return $this->getData("secret");
+        return (string) $this->getData("secret");
     }
 }

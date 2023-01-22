@@ -20,12 +20,12 @@ class OneShotOneKill extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "1s1k";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("api")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("7136", 65),
@@ -47,7 +47,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->get("http://www.1shot1kill.pl/api", [
             "type" => "sms",
@@ -102,21 +102,17 @@ class OneShotOneKill extends PaymentModule implements SupportSms
         }
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
         return "SHOT";
     }
 
-    private function getApi()
+    private function getApi(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 
-    /**
-     * @param Money $price
-     * @return string|null
-     */
-    private function getSmsNumberByProvision(Money $price)
+    private function getSmsNumberByProvision(Money $price): ?string
     {
         foreach ($this->getSmsNumbers() as $smsNumber) {
             if ($smsNumber->getProvision()->equal($price)) {

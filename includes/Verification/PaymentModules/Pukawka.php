@@ -19,12 +19,12 @@ class Pukawka extends PaymentModule implements SupportSms
 
     private array $rates = [];
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("api")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("71480", 65),
@@ -40,7 +40,7 @@ class Pukawka extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $this->tryToFetch();
 
@@ -88,14 +88,14 @@ class Pukawka extends PaymentModule implements SupportSms
         throw new UnknownErrorException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
         return "PUKAWKA";
     }
 
-    private function getApi()
+    private function getApi(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 
     private function tryToFetch()

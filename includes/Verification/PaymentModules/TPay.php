@@ -17,12 +17,12 @@ class TPay extends PaymentModule implements SupportTransfer
 {
     const MODULE_ID = "transferuj";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("key"), new DataField("account_id")];
     }
 
-    public function prepareTransfer(Money $price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase): array
     {
         $crc = $purchase->getId();
 
@@ -45,7 +45,7 @@ class TPay extends PaymentModule implements SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(Request $request)
+    public function finalizeTransfer(Request $request): FinalizedPayment
     {
         // e.g. "40.80"
         $amount = Money::fromPrice($request->request->get("tr_amount"));
@@ -88,25 +88,20 @@ class TPay extends PaymentModule implements SupportTransfer
         return $md5sum === $sign;
     }
 
-    /**
-     * @param string $price
-     * @param string $crc
-     * @return string
-     */
-    private function calculateMD5($price, $crc): string
+    private function calculateMD5(string $price, string $crc): string
     {
         $parts = [$this->getAccountId(), $price, $crc, $this->getKey()];
         $joined = collect($parts)->join("&");
         return md5($joined);
     }
 
-    private function getKey()
+    private function getKey(): string
     {
-        return $this->getData("key");
+        return (string) $this->getData("key");
     }
 
-    private function getAccountId()
+    private function getAccountId(): string
     {
-        return $this->getData("account_id");
+        return (string) $this->getData("account_id");
     }
 }

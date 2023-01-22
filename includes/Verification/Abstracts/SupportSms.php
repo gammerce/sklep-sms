@@ -10,7 +10,7 @@ interface SupportSms
     /**
      * @return SmsNumber[]
      */
-    public function getSmsNumbers();
+    public function getSmsNumbers(): array;
 
     /**
      * Weryfikacja kodu zwrotnego otrzymanego poprzez wyslanie SMSa na dany numer
@@ -20,12 +20,12 @@ interface SupportSms
      * @return SmsSuccessResult
      * @throws SmsPaymentException
      */
-    public function verifySms($returnCode, $number);
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult;
 
     /**
      * Zwraca kod sms, który należy wpisać w wiadomości sms
      *
      * @return string
      */
-    public function getSmsCode();
+    public function getSmsCode(): string;
 }

@@ -23,7 +23,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
 {
     const MODULE_ID = "microsms";
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [
             new DataField("api"),
@@ -34,7 +34,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("71480", 48),
@@ -51,7 +51,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $response = $this->requester->get("https://microsms.pl/api/v2/index.php", [
             "userid" => $this->getUserId(),
@@ -97,7 +97,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         throw new UnknownErrorException();
     }
 
-    public function prepareTransfer(Money $price, Purchase $purchase)
+    public function prepareTransfer(Money $price, Purchase $purchase): array
     {
         $control = $purchase->getId();
         $signature = hash("sha256", $this->getShopId() . $this->getHash() . $price->asPrice());
@@ -119,7 +119,7 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         ];
     }
 
-    public function finalizeTransfer(Request $request)
+    public function finalizeTransfer(Request $request): FinalizedPayment
     {
         $isTest = strtolower($request->request->get("test")) === "true";
         $amount = Money::fromPrice($request->request->get("amountPay"));
@@ -134,33 +134,33 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
             ->setOutput("OK");
     }
 
-    private function isPaymentValid(Request $request)
+    private function isPaymentValid(Request $request): bool
     {
         $userId = $request->request->get("userid");
         $status = strtolower($request->request->get("status"));
         $ip = get_ip($request);
 
         if ($status !== "true") {
-            $this->fileLogger->error("MicroSMS transfer. Invalid status [{$status}]");
+            $this->fileLogger->error("MicroSMS transfer. Invalid status [$status]");
             return false;
         }
 
         if ($userId != $this->getUserId()) {
             $this->fileLogger->error(
-                "MicroSMS transfer. Invalid userId, expected [{$this->getUserId()}], actual [{$userId}]"
+                "MicroSMS transfer. Invalid userId, expected [{$this->getUserId()}], actual [$userId]"
             );
             return false;
         }
 
         if (!$this->isIpValid($ip)) {
-            $this->fileLogger->error("MicroSMS transfer. Invalid IP address [{$ip}]");
+            $this->fileLogger->error("MicroSMS transfer. Invalid IP address [$ip]");
             return false;
         }
 
         return true;
     }
 
-    private function isIpValid($ip)
+    private function isIpValid($ip): bool
     {
         $response = $this->requester->get("https://microsms.pl/psc/ips/");
 
@@ -171,28 +171,28 @@ class MicroSMS extends PaymentModule implements SupportSms, SupportTransfer
         return in_array($ip, explode(",", $response->getBody()));
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
-        return $this->getData("sms_text");
+        return (string) $this->getData("sms_text");
     }
 
-    private function getUserId()
+    private function getUserId(): string
     {
-        return $this->getData("api");
+        return (string) $this->getData("api");
     }
 
-    private function getServiceId()
+    private function getServiceId(): string
     {
-        return $this->getData("service_id");
+        return (string) $this->getData("service_id");
     }
 
-    private function getShopId()
+    private function getShopId(): string
     {
-        return $this->getData("shop_id");
+        return (string) $this->getData("shop_id");
     }
 
-    private function getHash()
+    private function getHash(): string
     {
-        return $this->getData("hash");
+        return (string) $this->getData("hash");
     }
 }

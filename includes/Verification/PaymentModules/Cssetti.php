@@ -30,12 +30,12 @@ class Cssetti extends PaymentModule implements SupportSms
 
     private array $numbers = [];
 
-    public static function getDataFields()
+    public static function getDataFields(): array
     {
         return [new DataField("account_id")];
     }
 
-    public function getSmsNumbers()
+    public function getSmsNumbers(): array
     {
         return [
             new SmsNumber("71480"),
@@ -51,7 +51,7 @@ class Cssetti extends PaymentModule implements SupportSms
         ];
     }
 
-    public function verifySms($returnCode, $number)
+    public function verifySms(string $returnCode, string $number): SmsSuccessResult
     {
         $this->tryToFetchSmsData();
 
@@ -101,15 +101,15 @@ class Cssetti extends PaymentModule implements SupportSms
         throw new UnknownErrorException();
     }
 
-    public function getSmsCode()
+    public function getSmsCode(): string
     {
         $this->tryToFetchSmsData();
         return $this->smsCode;
     }
 
-    private function getAccountId()
+    private function getAccountId(): string
     {
-        return $this->getData("account_id");
+        return (string) $this->getData("account_id");
     }
 
     private function tryToFetchSmsData()
