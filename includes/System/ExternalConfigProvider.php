@@ -25,31 +25,31 @@ class ExternalConfigProvider
         $this->settings = $settings;
     }
 
-    public function sentryDSN()
+    public function sentryDSN(): string
     {
-        return $this->getConfig("sentry_dsn");
+        return (string) $this->getConfig("sentry_dsn");
     }
 
-    public function sentrySampleRate()
+    public function sentrySampleRate(): float
     {
-        return $this->getConfig("sentry_sample_rate");
+        return (float) $this->getConfig("sentry_sample_rate", 0);
     }
 
-    public function captchaSiteKey()
+    public function captchaSiteKey(): string
     {
-        return $this->getConfig("hcaptcha_sitekey");
+        return (string) $this->getConfig("hcaptcha_sitekey");
     }
 
-    public function getConfig($key)
+    public function getConfig(string $key, mixed $default = null): mixed
     {
         if (!$this->fetched()) {
             $this->config = $this->loadConfig();
         }
 
-        return array_get($this->config, $key);
+        return array_get($this->config, $key, $default);
     }
 
-    private function loadConfig()
+    private function loadConfig(): array
     {
         try {
             return $this->cachingRequester->load(
@@ -62,7 +62,7 @@ class ExternalConfigProvider
         }
     }
 
-    private function request()
+    private function request(): ?array
     {
         $response = $this->requester->get(
             "https://license.sklep-sms.pl/config",
@@ -71,7 +71,7 @@ class ExternalConfigProvider
                 "Authorization" => "Bearer {$this->settings->getLicenseToken()}",
             ]
         );
-        return $response ? $response->json() : null;
+        return $response?->json();
     }
 
     private function fetched(): bool

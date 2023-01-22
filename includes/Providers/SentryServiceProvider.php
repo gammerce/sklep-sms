@@ -39,7 +39,7 @@ class SentryServiceProvider
             Sentry\init([
                 "dsn" => getenv("SENTRY_DSN") ?: $configProvider->sentryDSN(),
                 "release" => $meta->getVersion(),
-                "traces_sample_rate" => $configProvider->sentrySampleRate() ?: 1.0,
+                "traces_sample_rate" => $configProvider->sentrySampleRate(),
                 "send_default_pii" => true,
             ]);
 
