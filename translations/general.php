@@ -19,5 +19,4 @@ return [
     "pukawka" => "Pukawka",
     "simpay" => "SimPay",
     "transferuj" => "TPay",
-    "zabijaka" => "Zabijaka",
 ];
