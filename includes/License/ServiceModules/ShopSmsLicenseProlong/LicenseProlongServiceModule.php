@@ -106,7 +106,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
 
         $amount = (int) $validated["amount"];
         $identifier = $validated["identifier"];
-        $licenseUserService = $this->licenseUserServiceRepository->get($identifier);
+        $licenseUserService = $this->licenseUserServiceRepository->getByIdentifier($identifier);
         $transferPrice = $this->getLicenseCost($licenseUserService, $amount);
 
         $purchase
@@ -262,7 +262,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $daysAmount = (int) array_get($body, "amount");
             $identifier = array_get($body, "identifier");
 
-            $licenseUserService = $this->licenseUserServiceRepository->get($identifier);
+            $licenseUserService = $this->licenseUserServiceRepository->getByIdentifier($identifier);
             $transferPrice = $this->getLicenseCost($licenseUserService, $daysAmount);
             $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
 
@@ -278,8 +278,12 @@ class LicenseProlongServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    private function getLicenseCost(LicenseUserService $licenseUserService, int $amount): ?int
+    private function getLicenseCost(?LicenseUserService $licenseUserService, int $amount): ?int
     {
+        if (!$licenseUserService) {
+            return null;
+        }
+
         if ($amount < 30) {
             return null;
         }

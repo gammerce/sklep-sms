@@ -114,6 +114,25 @@ EOF
         return null;
     }
 
+    public function getByIdentifier(string $id): ?LicenseUserService
+    {
+        $table = LicenseServiceModule::USER_SERVICE_TABLE;
+        $statement = $this->db->statement(
+            <<<EOF
+            SELECT * FROM `ss_user_service` AS us 
+            INNER JOIN `$table` AS m ON m.us_id = us.id 
+            WHERE `identifier` = ?
+EOF
+        );
+        $statement->bindAndExecute([$id]);
+
+        if ($data = $statement->fetch()) {
+            return $this->mapToModel($data);
+        }
+
+        return null;
+    }
+
     public function findBySubdomain(string $subdomain): ?LicenseUserService
     {
         $table = LicenseServiceModule::USER_SERVICE_TABLE;

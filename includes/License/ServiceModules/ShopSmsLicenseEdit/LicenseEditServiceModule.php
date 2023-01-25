@@ -143,7 +143,7 @@ class LicenseEditServiceModule extends ServiceModule implements
             0,
             $userService->getIdentifier(),
             $purchase->getEmail(),
-            $promoCode ? $promoCode->getCode() : null,
+            $promoCode?->getCode(),
             [
                 "engines" => $this->platformService->formatPlatforms($platforms),
                 "subdomain" => $subdomain,
