@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\PaymentModules;
 
+use App\Loggers\DatabaseLogger;
 use App\Loggers\FileLogger;
 use App\Models\FinalizedPayment;
 use App\Models\PaymentPlatform;
@@ -25,14 +26,15 @@ class PayPal extends PaymentModule implements SupportTransfer
     private Translator $lang;
 
     public function __construct(
-        Requester $requester,
-        PaymentPlatform $paymentPlatform,
-        UrlGenerator $url,
+        DatabaseLogger $databaseLogger,
         FileLogger $fileLogger,
+        PaymentPlatform $paymentPlatform,
+        Requester $requester,
         Settings $settings,
-        TranslationManager $translationManager
+        TranslationManager $translationManager,
+        UrlGenerator $url
     ) {
-        parent::__construct($requester, $paymentPlatform, $url, $fileLogger);
+        parent::__construct($databaseLogger, $fileLogger, $paymentPlatform, $requester, $url);
         $this->settings = $settings;
         $this->lang = $translationManager->user();
     }

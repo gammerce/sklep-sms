@@ -11,13 +11,12 @@ class PageRegister extends Page implements IBeLoggedCannot
 {
     const PAGE_ID = "register";
 
-    /** @var string */
-    private $siteKey;
+    private string $siteKey;
 
     public function __construct(
         Template $template,
         TranslationManager $translationManager,
-        $siteKey
+        string $siteKey
     ) {
         parent::__construct($template, $translationManager);
         $this->siteKey = $siteKey;

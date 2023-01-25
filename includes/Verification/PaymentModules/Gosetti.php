@@ -117,7 +117,7 @@ class Gosetti extends PaymentModule implements SupportSms
         $response = $this->requester->get("https://gosetti.pl/Api/SmsApiV2GetData.php");
 
         if (!$response) {
-            $this->fileLogger->error("Could not get gosetti sms data.");
+            $this->databaseLogger->log("GOSetti | Could not get sms data");
             return;
         }
 

@@ -1,6 +1,7 @@
 <?php
 namespace App\Verification\Abstracts;
 
+use App\Loggers\DatabaseLogger;
 use App\Loggers\FileLogger;
 use App\Models\PaymentPlatform;
 use App\Requesting\Requester;
@@ -15,18 +16,21 @@ abstract class PaymentModule
     protected Requester $requester;
     protected PaymentPlatform $paymentPlatform;
     protected UrlGenerator $url;
+    protected DatabaseLogger $databaseLogger;
     protected FileLogger $fileLogger;
 
     public function __construct(
-        Requester $requester,
+        DatabaseLogger $databaseLogger,
+        FileLogger $fileLogger,
         PaymentPlatform $paymentPlatform,
-        UrlGenerator $url,
-        FileLogger $fileLogger
+        Requester $requester,
+        UrlGenerator $url
     ) {
-        $this->requester = $requester;
-        $this->paymentPlatform = $paymentPlatform;
-        $this->url = $url;
+        $this->databaseLogger = $databaseLogger;
         $this->fileLogger = $fileLogger;
+        $this->paymentPlatform = $paymentPlatform;
+        $this->requester = $requester;
+        $this->url = $url;
     }
 
     public static function getName(): string

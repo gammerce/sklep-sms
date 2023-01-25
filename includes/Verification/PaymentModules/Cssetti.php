@@ -124,7 +124,7 @@ class Cssetti extends PaymentModule implements SupportSms
         $response = $this->requester->get("https://cssetti.pl/Api/SmsApiV2GetData.php");
 
         if (!$response) {
-            $this->fileLogger->error("Could not get cssetti sms data.");
+            $this->databaseLogger->log("CSSetti | Could not get cssetti sms data");
             return;
         }
 

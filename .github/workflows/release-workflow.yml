@@ -37,13 +37,13 @@ jobs:
         with:
           php-version: ${{ matrix.php_version }}
 
-      - uses: actions/setup-python@v2
+      - uses: actions/setup-python@v4
         with:
           python-version: 3.11
 
       - run: pip install pre-commit
 
-      - uses: ramsey/composer-install@v1
+      - uses: ramsey/composer-install@v2
         with:
           composer-options: "--no-dev --optimize-autoloader --ignore-platform-reqs"
 
@@ -94,19 +94,19 @@ jobs:
           favicon.png \
           index.php \
           README.md
-          echo ::set-output name=ARTIFACT_PATH::./$BUILD_NAME
-          echo ::set-output name=ARTIFACT_NAME::$BUILD_NAME
+          echo "{ARTIFACT_PATH}={./$BUILD_NAME}" >> $GITHUB_OUTPUT
+          echo "{ARTIFACT_NAME}={$BUILD_NAME}" >> $GITHUB_OUTPUT
         env:
           BUILD_NAME: build-${{ matrix.php_version }}.zip
 
       - name: Get release
         id: get_release
-        uses: bruceadams/get-release@v1.2.2
+        uses: bruceadams/get-release@v1.3.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+        uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
