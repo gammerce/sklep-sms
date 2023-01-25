@@ -263,10 +263,10 @@ class LicenseProlongServiceModule extends ServiceModule implements
             $identifier = array_get($body, "identifier");
 
             $licenseUserService = $this->licenseUserServiceRepository->getByIdentifier($identifier);
-            $transferPrice = $this->getLicenseCost($licenseUserService, $daysAmount);
+            $transferPrice = (int) $this->getLicenseCost($licenseUserService, $daysAmount);
             $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
 
-            $output = (string) $this->priceTextService->getPlainPrice($transferPrice);
+            $output = $this->priceTextService->getPlainPrice($transferPrice);
             if ($bargainPercentage) {
                 $output .= "&nbsp;";
                 $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");
