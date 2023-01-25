@@ -80,9 +80,11 @@ class TransferPaymentService
             $purchase->getPlatform(),
             $finalizedPayment->isTestMode()
         );
+        $purchase->setPayment([Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId()]);
 
         try {
             $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+            $purchase->setPayment([Purchase::PAYMENT_INVOICE_ID => $invoiceId]);
         } catch (InvoiceException $e) {
             \Sentry\captureException($e);
             $this->fileLogger->error(
@@ -95,11 +97,6 @@ class TransferPaymentService
                 $e->getMessage()
             );
         }
-
-        $purchase->setPayment([
-            Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId(),
-            Purchase::PAYMENT_INVOICE_ID => $invoiceId,
-        ]);
 
         $boughtServiceId = $serviceModule->purchase($purchase);
         $this->logger->logWithUser(
