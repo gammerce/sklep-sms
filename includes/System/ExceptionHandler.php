@@ -140,19 +140,7 @@ class ExceptionHandler implements ExceptionHandlerContract
         $exceptionDetails = $this->getExceptionDetails($e);
         $this->fileLogger->error(json_encode($exceptionDetails, JSON_PRETTY_PRINT));
 
-        $this->reportToSentry($e);
-    }
-
-    /**
-     * @param Exception|Throwable $e
-     */
-    private function reportToSentry($e)
-    {
-        if (class_exists(\Sentry\SentrySdk::class)) {
-            Sentry\captureException($e);
-        } elseif ($this->app->bound(\Raven_Client::class)) {
-            $this->app->make(\Raven_Client::class)->captureException($e);
-        }
+        report_to_sentry($e);
     }
 
     /**

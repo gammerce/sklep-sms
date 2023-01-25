@@ -10,6 +10,7 @@ use App\Support\Collection;
 use App\Support\Expression;
 use App\Support\Money;
 use App\Support\QueryParticle;
+use App\System\Application;
 use App\System\Auth;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -139,6 +140,20 @@ function ip_in_range($ip, $range): bool
         }
 
         return false;
+    }
+}
+
+/**
+ * @param Exception|Throwable $e
+ */
+function report_to_sentry($e): void
+{
+    $app = app();
+
+    if (class_exists(\Sentry\SentrySdk::class)) {
+        Sentry\captureException($e);
+    } elseif ($app->bound(\Raven_Client::class)) {
+        $app->make(\Raven_Client::class)->captureException($e);
     }
 }
 
