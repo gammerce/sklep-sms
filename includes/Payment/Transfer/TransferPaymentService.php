@@ -86,7 +86,7 @@ class TransferPaymentService
             $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
             $purchase->setPayment([Purchase::PAYMENT_INVOICE_ID => $invoiceId]);
         } catch (InvoiceException $e) {
-            \Sentry\captureException($e);
+            report_to_sentry($e);
             $this->fileLogger->error(
                 "{$e->getMessage()} Payment ID: {$finalizedPayment->getOrderId()}"
             );
