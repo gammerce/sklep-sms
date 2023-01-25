@@ -104,17 +104,20 @@ class LicenseProlongServiceModule extends ServiceModule implements
         ]);
         $validated = $validator->validateOrFail();
 
-        $amount = $validated["amount"];
+        $amount = (int) $validated["amount"];
         $identifier = $validated["identifier"];
-        $transferPrice = intval($this->getDailyCostForLicense($identifier, $amount) * $amount);
+        $licenseUserService = $this->licenseUserServiceRepository->get($identifier);
+        $transferPrice = $this->getLicenseCost($licenseUserService, $amount);
 
-        $purchase->setOrder([
-            Purchase::ORDER_QUANTITY => $amount,
-            "identifier" => $identifier,
-        ]);
-        $purchase->setPayment([
-            Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
-        ]);
+        $purchase
+            ->setOrder([
+                Purchase::ORDER_QUANTITY => $amount,
+                "identifier" => $identifier,
+            ])
+            ->setEmail($licenseUserService->getEmail())
+            ->setPayment([
+                Purchase::PAYMENT_PRICE_TRANSFER => $transferPrice,
+            ]);
         $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
@@ -164,7 +167,7 @@ class LicenseProlongServiceModule extends ServiceModule implements
             0,
             $purchase->getOrder(Purchase::ORDER_QUANTITY),
             $userService->getIdentifier(),
-            $userService->getEmail(),
+            $purchase->getEmail(),
             $promoCode?->getCode(),
             [
                 "expire" => as_datetime_string($expiresAt),
@@ -256,13 +259,14 @@ class LicenseProlongServiceModule extends ServiceModule implements
     public function actionExecute($action, array $body): string
     {
         if ($action === "get_cost") {
-            $daysAmount = array_get($body, "amount");
+            $daysAmount = (int) array_get($body, "amount");
             $identifier = array_get($body, "identifier");
 
-            $cost = $this->getDailyCostForLicense($identifier, $daysAmount) * $daysAmount;
+            $licenseUserService = $this->licenseUserServiceRepository->get($identifier);
+            $transferPrice = $this->getLicenseCost($licenseUserService, $daysAmount);
             $bargainPercentage = $this->licensePriceService->getBargainPercentage($daysAmount);
 
-            $output = $this->priceTextService->getPlainPrice($cost);
+            $output = $this->priceTextService->getPlainPrice($transferPrice);
             if ($bargainPercentage) {
                 $output .= "&nbsp;";
                 $output .= (new DOMElement("sup", "-{$bargainPercentage}%"))->addClass("discount");
@@ -274,30 +278,15 @@ class LicenseProlongServiceModule extends ServiceModule implements
         throw new UnexpectedValueException();
     }
 
-    /**
-     * Calculates daily cost
-     *
-     * @param $identifier
-     * @param $amount
-     * @return int|null
-     */
-    public function getDailyCostForLicense($identifier, $amount): ?int
+    private function getLicenseCost(LicenseUserService $licenseUserService, int $amount): ?int
     {
-        if (!my_is_integer($amount) || $amount < 30) {
+        if ($amount < 30) {
             return null;
         }
 
-        $statement = $this->db->statement(
-            "SELECT `cost_daily` FROM `{$this->getUserServiceTable()}` WHERE `identifier` = ?"
-        );
-        $statement->bindAndExecute([$identifier]);
-        $costDaily = $statement->fetchColumn();
-
-        if ($costDaily === null) {
-            return null;
-        }
-
-        return (int) ceil($costDaily * $this->licensePriceService->getBargain($amount));
+        return ((int) ceil(
+            $licenseUserService->getCostDaily() * $this->licensePriceService->getBargain($amount)
+        )) * $amount;
     }
 
     public function showOnWeb(): bool

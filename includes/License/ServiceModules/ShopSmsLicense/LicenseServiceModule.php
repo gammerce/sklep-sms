@@ -278,9 +278,8 @@ EOF
                     $costDaily,
                     $validated["amount"]
                 ),
-            ])
-            ->getPaymentSelect()
-            ->disallowPaymentMethod(PaymentMethod::SMS());
+            ]);
+        $purchase->getPaymentSelect()->disallowPaymentMethod(PaymentMethod::SMS());
     }
 
     public function orderDetails(Purchase $purchase): string
