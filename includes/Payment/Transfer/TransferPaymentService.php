@@ -81,7 +81,20 @@ class TransferPaymentService
             $finalizedPayment->isTestMode()
         );
 
-        $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+        try {
+            $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+        } catch (InvoiceException $e) {
+            \Sentry\captureException($e);
+            $this->fileLogger->error(
+                "{$e->getMessage()} Payment ID: {$finalizedPayment->getOrderId()}"
+            );
+            $this->logger->logWithUser(
+                $purchase->user,
+                "log_invoice_issue_failure",
+                $finalizedPayment->getOrderId(),
+                $e->getMessage()
+            );
+        }
 
         $purchase->setPayment([
             Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId(),
@@ -121,18 +134,12 @@ class TransferPaymentService
         }
 
         if ($purchase->getBillingAddress()->isEmpty()) {
-            $this->fileLogger->info(
-                "Invoice wasn't issued due to empty billing address. Payment ID: {$finalizedPayment->getOrderId()}"
-            );
-            return null;
+            throw new IssueInvoiceException("Invoice wasn't issued due to empty billing address.");
         }
 
         $email = $purchase->getEmail() ?? $purchase->user->getEmail();
         if (!$email) {
-            $this->fileLogger->info(
-                "Invoice won't be sent due to lack of email. Payment ID: {$finalizedPayment->getOrderId()}"
-            );
-            return null;
+            throw new IssueInvoiceException("Invoice won't be sent due to lack of email.");
         }
 
         try {
@@ -148,14 +155,6 @@ class TransferPaymentService
                 ),
                 $email
             );
-        } catch (InvoiceException $e) {
-            $this->logger->logWithUser(
-                $purchase->user,
-                "log_invoice_issue_failure",
-                $finalizedPayment->getOrderId(),
-                $e->getMessage()
-            );
-            return null;
         } catch (InvoiceServiceUnavailableException $e) {
             // The infakt client is not configured
             return null;
