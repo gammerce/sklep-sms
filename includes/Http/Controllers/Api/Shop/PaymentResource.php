@@ -91,8 +91,6 @@ class PaymentResource
 
         switch ($paymentResult->getType()) {
             case PaymentResultType::PURCHASED():
-                $purchaseDataService->deletePurchase($purchase);
-
                 return new ApiResponse("purchased", $lang->t("purchase_success"), true, [
                     "bsid" => $paymentResult->getData(),
                 ]);
