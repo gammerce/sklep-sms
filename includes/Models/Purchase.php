@@ -71,11 +71,6 @@ class Purchase
     private bool $isAttempted = false;
 
     /**
-     * Transaction has been deleted
-     */
-    private bool $isDeleted = false;
-
-    /**
      * @param User $user
      * @param string $ip
      * @param string $platform
@@ -234,16 +229,6 @@ class Purchase
     public function markAsAttempted(): void
     {
         $this->isAttempted = true;
-    }
-
-    public function isDeleted(): bool
-    {
-        return $this->isDeleted;
-    }
-
-    public function markAsDeleted(): void
-    {
-        $this->isDeleted = true;
     }
 
     public function getPromoCode(): ?PromoCode

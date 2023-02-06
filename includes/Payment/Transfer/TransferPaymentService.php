@@ -109,8 +109,6 @@ class TransferPaymentService
             $finalizedPayment->getExternalServiceId()
         );
 
-        $this->purchaseDataService->deletePurchase($purchase);
-
         return $boughtServiceId;
     }
 

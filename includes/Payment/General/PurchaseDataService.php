@@ -53,13 +53,6 @@ class PurchaseDataService
         return $purchase;
     }
 
-    public function deletePurchase(Purchase $purchase): void
-    {
-        $path = $this->getPath($purchase->getId());
-        $this->fileSystem->delete($path);
-        $purchase->markAsDeleted();
-    }
-
     private function getPath($transactionId): string
     {
         $transactionFilename = $this->prepareFilename($transactionId);
