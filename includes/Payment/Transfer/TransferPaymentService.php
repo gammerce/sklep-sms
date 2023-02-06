@@ -10,7 +10,6 @@ use App\Models\Purchase;
 use App\Models\Service;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
-use App\Payment\General\PurchaseDataService;
 use App\Payment\Invoice\InvoiceException;
 use App\Payment\Invoice\InvoiceService;
 use App\Payment\Invoice\InvoiceServiceUnavailableException;
@@ -23,7 +22,6 @@ class TransferPaymentService
     private PaymentTransferRepository $paymentTransferRepository;
     private DatabaseLogger $logger;
     private FileLogger $fileLogger;
-    private PurchaseDataService $purchaseDataService;
     private ServiceModuleManager $serviceModuleManager;
     private TransferPriceService $transferPriceService;
     private InvoiceService $invoiceService;
@@ -31,7 +29,6 @@ class TransferPaymentService
     public function __construct(
         PaymentTransferRepository $paymentTransferRepository,
         ServiceModuleManager $serviceModuleManager,
-        PurchaseDataService $purchaseDataService,
         TransferPriceService $transferPriceService,
         InvoiceService $invoiceService,
         FileLogger $fileLogger,
@@ -40,7 +37,6 @@ class TransferPaymentService
         $this->paymentTransferRepository = $paymentTransferRepository;
         $this->fileLogger = $fileLogger;
         $this->logger = $logger;
-        $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->transferPriceService = $transferPriceService;
         $this->invoiceService = $invoiceService;
