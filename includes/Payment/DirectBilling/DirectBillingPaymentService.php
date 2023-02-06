@@ -8,7 +8,6 @@ use App\Models\FinalizedPayment;
 use App\Models\Purchase;
 use App\Payment\Exceptions\InvalidPaidAmountException;
 use App\Payment\Exceptions\PaymentRejectedException;
-use App\Payment\General\PurchaseDataService;
 use App\Repositories\PaymentDirectBillingRepository;
 use App\ServiceModules\ChargeWallet\ChargeWalletServiceModule;
 use App\ServiceModules\Interfaces\IServicePurchase;
@@ -17,20 +16,17 @@ class DirectBillingPaymentService
 {
     private DatabaseLogger $logger;
     private PaymentDirectBillingRepository $paymentDirectBillingRepository;
-    private PurchaseDataService $purchaseDataService;
     private ServiceModuleManager $serviceModuleManager;
     private DirectBillingPriceService $directBillingPriceService;
 
     public function __construct(
         DatabaseLogger $logger,
         ServiceModuleManager $serviceModuleManager,
-        PurchaseDataService $purchaseDataService,
         PaymentDirectBillingRepository $paymentDirectBillingRepository,
         DirectBillingPriceService $directBillingPriceService
     ) {
         $this->logger = $logger;
         $this->paymentDirectBillingRepository = $paymentDirectBillingRepository;
-        $this->purchaseDataService = $purchaseDataService;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->directBillingPriceService = $directBillingPriceService;
     }
@@ -95,8 +91,6 @@ class DirectBillingPaymentService
             $finalizedPayment->getCost(),
             $finalizedPayment->getExternalServiceId()
         );
-
-        $this->purchaseDataService->deletePurchase($purchase);
 
         return $boughtServiceId;
     }
