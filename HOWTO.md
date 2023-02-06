@@ -11,3 +11,26 @@ $purchase->setPayment(["payment_id" => $paymentID, "invoice_id" => $invoiceID])
 $serviceModule = $smm->get($purchase->getServiceId());
 $boughtServiceId = $serviceModule->purchase($purchase);
 ```
+
+### Issue invoice
+```php
+$is = app()->make(App\Payment\Invoice\InvoiceService::class);
+$is->create(
+    new App\Payment\General\BillingAddress(
+        "Dawid Szyna",
+        "",
+        "ul. Warszawska 1",
+        "05-270",
+        "Marki"
+    ),
+    new App\Payment\Invoice\PurchaseItem(
+        "ss_license",
+        "Licencja Sklep SMS",
+        new \App\Support\Money("1944"),
+        8,
+        "8.5",
+        "58.29.40"
+    ),
+    "uisim63@gmail.com",
+)
+```
