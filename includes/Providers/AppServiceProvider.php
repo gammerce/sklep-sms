@@ -21,7 +21,7 @@ use App\Support\FileSystem;
 use App\Support\FileSystemContract;
 use App\Support\Mailer;
 use App\Support\Meta;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\ContentEvaluator;
 use App\Theme\EditableTemplateRepository;
 use App\Theme\Template;
@@ -91,8 +91,8 @@ class AppServiceProvider
     private function registerCache(Application $app)
     {
         $app->bind(FileCache::class, function (Application $app) {
-            /** @var Path $path */
-            $path = $app->make(Path::class);
+            /** @var BasePath $path */
+            $path = $app->make(BasePath::class);
             return new FileCache($app->make(FileSystemContract::class), $path->to("data/cache"));
         });
         $app->bind(CacheInterface::class, FileCache::class);

@@ -4,7 +4,7 @@ namespace App\View\Pages;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\Template;
 use App\Translation\TranslationManager;
 use App\Translation\Translator;
@@ -53,8 +53,8 @@ abstract class Page
         /** @var FileSystem $fileSystem */
         $fileSystem = app()->make(FileSystem::class);
 
-        /** @var Path $path */
-        $path = app()->make(Path::class);
+        /** @var BasePath $path */
+        $path = app()->make(BasePath::class);
 
         /** @var UrlGenerator $url */
         $url = app()->make(UrlGenerator::class);

@@ -7,7 +7,7 @@ use App\Install\RequirementStore;
 use App\Install\ShopState;
 use App\Install\UpdateInfo;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\Template;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -26,7 +26,7 @@ class SetupController
         UpdateInfo $updateInfo,
         RequirementStore $requirementStore,
         FileSystemContract $fileSystem,
-        Path $path
+        BasePath $path
     ) {
         if ($oldShop->hasConfigFile()) {
             return new HtmlResponse($this->template->render("setup/missing_env"));
@@ -45,7 +45,7 @@ class SetupController
 
     private function install(
         RequirementStore $requirementStore,
-        Path $path,
+        BasePath $path,
         FileSystemContract $fileSystem
     ) {
         $modules = $requirementStore->getModules();

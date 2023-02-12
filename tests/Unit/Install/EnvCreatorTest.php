@@ -3,21 +3,21 @@ namespace Tests\Unit\Install;
 
 use App\Install\EnvCreator;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use Tests\Psr4\MemoryFileSystem;
 use Tests\Psr4\TestCases\UnitTestCase;
 
 class EnvCreatorTest extends UnitTestCase
 {
     private FileSystemContract $fileSystem;
-    private Path $basePath;
+    private BasePath $basePath;
     private EnvCreator $envCreator;
 
     protected function setUp(): void
     {
         parent::setUp();
         $this->fileSystem = new MemoryFileSystem();
-        $this->basePath = Path::temporary();
+        $this->basePath = BasePath::temporary();
         $this->envCreator = new EnvCreator($this->basePath, $this->fileSystem);
     }
 

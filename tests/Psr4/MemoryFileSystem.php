@@ -63,7 +63,7 @@ class MemoryFileSystem implements FileSystemContract
         return $this->get($path);
     }
 
-    public function isFile($path)
+    private function isFile($path)
     {
         $formattedPath = $this->formatPath($path);
         return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]["type"] === "f";
@@ -73,11 +73,6 @@ class MemoryFileSystem implements FileSystemContract
     {
         $formattedPath = $this->formatPath($path);
         return $this->exists($formattedPath) && $this->fileSystem[$formattedPath]["type"] === "d";
-    }
-
-    public function size($path)
-    {
-        return $this->exists($path) ? 1 : 0;
     }
 
     public function append($file, $text)

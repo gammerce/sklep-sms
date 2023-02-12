@@ -2,7 +2,7 @@
 namespace App\Loggers;
 
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\System\Settings;
 use Psr\Log\LoggerInterface;
 
@@ -10,9 +10,9 @@ class FileLogger implements LoggerInterface
 {
     private Settings $settings;
     private FileSystemContract $fileSystem;
-    private Path $path;
+    private BasePath $path;
 
-    public function __construct(Settings $settings, FileSystemContract $fileSystem, Path $path)
+    public function __construct(Settings $settings, FileSystemContract $fileSystem, BasePath $path)
     {
         $this->settings = $settings;
         $this->fileSystem = $fileSystem;

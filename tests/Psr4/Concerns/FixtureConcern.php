@@ -1,7 +1,7 @@
 <?php
 namespace Tests\Psr4\Concerns;
 
-use App\Support\Path;
+use App\Support\BasePath;
 
 trait FixtureConcern
 {
@@ -11,8 +11,8 @@ trait FixtureConcern
      */
     protected function loadFixture($name): string
     {
-        /** @var Path $pathBuilder */
-        $pathBuilder = $this->app->make(Path::class);
+        /** @var BasePath $pathBuilder */
+        $pathBuilder = $this->app->make(BasePath::class);
         $path = $pathBuilder->to("tests/Fixtures/$name.json");
 
         return file_get_contents($path);

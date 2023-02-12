@@ -3,7 +3,7 @@ namespace Tests\Feature\Http\View\Shop;
 
 use App\Install\ShopState;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use Mockery;
 use Mockery\MockInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -42,8 +42,8 @@ class SetupControllerTest extends HttpTestCase
     public function missing_env_if_upgrading_from_old_shop()
     {
         // given
-        /** @var Path $path */
-        $path = $this->app->make(Path::class);
+        /** @var BasePath $path */
+        $path = $this->app->make(BasePath::class);
 
         $this->markAsNotInstalled();
         $this->fileSystem->put($path->to("/includes/config.php"), "");

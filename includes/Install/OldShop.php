@@ -2,14 +2,14 @@
 namespace App\Install;
 
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 
 class OldShop
 {
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
 
-    public function __construct(Path $path, FileSystemContract $fileSystem)
+    public function __construct(BasePath $path, FileSystemContract $fileSystem)
     {
         $this->path = $path;
         $this->fileSystem = $fileSystem;

@@ -4,7 +4,7 @@ namespace App\View\Pages\Admin;
 use App\Managers\WebsiteHeader;
 use App\Routing\UrlGenerator;
 use App\Support\FileSystem;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\User\Permission;
 use App\View\Interfaces\IBeLoggedMust;
 use App\View\Pages\Page;
@@ -27,8 +27,8 @@ abstract class PageAdmin extends Page implements IBeLoggedMust
         /** @var FileSystem $fileSystem */
         $fileSystem = app()->make(FileSystem::class);
 
-        /** @var Path $path */
-        $path = app()->make(Path::class);
+        /** @var BasePath $path */
+        $path = app()->make(BasePath::class);
 
         /** @var UrlGenerator $url */
         $url = app()->make(UrlGenerator::class);

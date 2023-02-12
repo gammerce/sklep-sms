@@ -4,10 +4,10 @@ namespace App\Support;
 class Meta
 {
     private MetaParser $metaParser;
-    private Path $path;
+    private BasePath $path;
     private array $meta;
 
-    public function __construct(MetaParser $metaParser, Path $path)
+    public function __construct(MetaParser $metaParser, BasePath $path)
     {
         $this->metaParser = $metaParser;
         $this->path = $path;

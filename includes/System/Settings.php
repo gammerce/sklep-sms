@@ -3,7 +3,7 @@ namespace App\System;
 
 use App\Support\Database;
 use App\Support\FileSystemContract;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\TemplateRepository;
 use App\Theme\ThemeRepository;
 use ArrayAccess;
@@ -12,12 +12,12 @@ class Settings implements ArrayAccess
 {
     private array $data;
     private Database $db;
-    private Path $path;
+    private BasePath $path;
     private FileSystemContract $fileSystem;
     private ThemeRepository $themeRepository;
 
     public function __construct(
-        Path $path,
+        BasePath $path,
         Database $database,
         FileSystemContract $fileSystem,
         ThemeRepository $themeRepository

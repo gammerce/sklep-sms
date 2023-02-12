@@ -5,7 +5,7 @@ use App\Managers\PaymentModuleManager;
 use App\Models\PaymentPlatform;
 use App\Repositories\PaymentPlatformRepository;
 use App\Support\FileSystem;
-use App\Support\Path;
+use App\Support\BasePath;
 use App\Theme\Template;
 use App\System\Settings;
 use App\Translation\TranslationManager;
@@ -29,7 +29,7 @@ class PageAdminSettings extends PageAdmin
     private PaymentPlatformRepository $paymentPlatformRepository;
     private Translator $langShop;
     private FileSystem $fileSystem;
-    private Path $path;
+    private BasePath $path;
     private PaymentModuleManager $paymentModuleManager;
     private ThemeRepository $themeService;
 
@@ -40,7 +40,7 @@ class PageAdminSettings extends PageAdmin
         PaymentPlatformRepository $paymentPlatformRepository,
         PaymentModuleManager $paymentModuleManager,
         FileSystem $fileSystem,
-        Path $path,
+        BasePath $path,
         ThemeRepository $themeService
     ) {
         parent::__construct($template, $translationManager);
