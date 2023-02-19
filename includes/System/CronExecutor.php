@@ -1,6 +1,7 @@
 <?php
 namespace App\System;
 
+use App\Loggers\FileLogger;
 use App\PromoCode\ExpiredSmsCodeService;
 use App\Service\ExpiredUserServiceService;
 use App\Support\Database;
@@ -10,26 +11,29 @@ use App\Support\Path;
 class CronExecutor
 {
     private Database $db;
-    private Settings $settings;
-    private Path $path;
-    private FileSystemContract $fileSystem;
-    private ExpiredUserServiceService $expiredUserServiceService;
     private ExpiredSmsCodeService $expiredSmsCodeService;
+    private ExpiredUserServiceService $expiredUserServiceService;
+    private FileLogger $fileLogger;
+    private FileSystemContract $fileSystem;
+    private Path $path;
+    private Settings $settings;
 
     public function __construct(
         Database $db,
-        Settings $settings,
-        Path $path,
-        FileSystemContract $fileSystem,
+        ExpiredSmsCodeService $expiredSmsCodeService,
         ExpiredUserServiceService $expiredServiceService,
-        ExpiredSmsCodeService $expiredSmsCodeService
+        FileSystemContract $fileSystem,
+        FileLogger $fileLogger,
+        Path $path,
+        Settings $settings
     ) {
         $this->db = $db;
-        $this->settings = $settings;
-        $this->path = $path;
-        $this->fileSystem = $fileSystem;
-        $this->expiredUserServiceService = $expiredServiceService;
         $this->expiredSmsCodeService = $expiredSmsCodeService;
+        $this->expiredUserServiceService = $expiredServiceService;
+        $this->fileSystem = $fileSystem;
+        $this->fileLogger = $fileLogger;
+        $this->path = $path;
+        $this->settings = $settings;
     }
 
     public function run(): void
@@ -46,18 +50,21 @@ class CronExecutor
                 ->bindAndExecute([$this->settings->getDeleteLogs()]);
         }
 
-        // Remove files older than 30 days from data/transactions
-        $path = $this->path->to("data/transactions");
-        foreach ($this->fileSystem->scanDirectory($path) as $file) {
-            if (str_starts_with($file, ".")) {
-                continue;
-            }
+        // Remove files older than x days from data/transactions
+        if ($this->settings->getDeleteLogs() > 0) {
+            $path = $this->path->to("data/transactions");
+            foreach ($this->fileSystem->scanDirectory($path) as $file) {
+                if (str_starts_with($file, ".")) {
+                    continue;
+                }
 
-            $filepath = rtrim($path, "/") . "/" . ltrim($file, "/");
-            if ($this->fileSystem->lastChangedAt($filepath) < time() - 60 * 60 * 24 * 30) {
-                $this->fileSystem->delete($filepath);
+                $filepath = rtrim($path, "/") . "/" . ltrim($file, "/");
+                $seconds = 60 * 60 * 24 * $this->settings->getDeleteLogs();
+                if ($this->fileSystem->lastChangedAt($filepath) < time() - $seconds) {
+                    $this->fileSystem->delete($filepath);
+                    $this->fileLogger->info("Transaction file has been removed $filepath");
+                }
             }
         }
-        unset($path);
     }
 }
