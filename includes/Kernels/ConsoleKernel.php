@@ -61,7 +61,12 @@ class ConsoleKernel implements ConsoleKernelContract
             $input->bind(
                 new InputDefinition([
                     new InputArgument("action", InputArgument::REQUIRED),
-                    new InputOption("transaction-id", InputOption::VALUE_REQUIRED, "Purchase ID"),
+                    new InputOption(
+                        "transaction-id",
+                        null,
+                        InputOption::VALUE_REQUIRED,
+                        "Purchase ID"
+                    ),
                 ])
             );
 
