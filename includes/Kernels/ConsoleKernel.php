@@ -2,6 +2,7 @@
 namespace App\Kernels;
 
 use App\Install\MigrateCommand;
+use App\Payment\Invoice\IssueInvoiceService;
 use App\System\Application;
 use App\System\CronExecutor;
 use App\System\Settings;
@@ -50,6 +51,23 @@ class ConsoleKernel implements ConsoleKernelContract
             $this->loadSettings();
             $cronExecutor->run();
             $output->writeln("Cron executed.");
+            return 0;
+        }
+
+        if ($command === "invoice:issue") {
+            /** @var IssueInvoiceService $issueInvoiceService */
+            $issueInvoiceService = $this->app->make(IssueInvoiceService::class);
+
+            $input->bind(
+                new InputDefinition([
+                    new InputArgument("action", InputArgument::REQUIRED),
+                    new InputOption("transaction-id", InputOption::VALUE_REQUIRED, "Purchase ID"),
+                ])
+            );
+
+            $this->loadSettings();
+            $invoiceId = $issueInvoiceService->reissue($input->getOption("transaction-id"));
+            $output->writeln("Invoice issued $invoiceId");
             return 0;
         }
 
