@@ -98,6 +98,7 @@ class TransferPaymentService
                 $purchase->user,
                 "log_invoice_issue_failure",
                 $finalizedPayment->getOrderId(),
+                $purchase->getId(),
                 $e->getMessage()
             );
         }
