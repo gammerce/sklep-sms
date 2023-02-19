@@ -2,9 +2,17 @@
 namespace App\Repositories;
 
 use App\Models\Transaction;
+use App\Support\Database;
 
 class TransactionRepository
 {
+    private Database $db;
+
+    public function __construct(Database $db)
+    {
+        $this->db = $db;
+    }
+
     private string $transactionsQuery = <<<EOF
 (SELECT bs.id AS `id`,
 bs.user_id AS `user_id`,
@@ -40,6 +48,20 @@ LEFT JOIN `ss_payment_transfer` AS pt ON bs.payment = 'transfer' AND pt.id = bs.
 LEFT JOIN `ss_payment_wallet` AS pw ON bs.payment = 'wallet' AND pw.id = bs.payment_id
 LEFT JOIN `ss_payment_direct_billing` AS pdb ON bs.payment = 'direct_billing' AND pdb.id = bs.payment_id)
 EOF;
+
+    public function getByPaymentId(string $paymentId): ?Transaction
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM ({$this->getQuery()}) as t WHERE t.payment_id = ?"
+        );
+        $statement->bindAndExecute([$paymentId]);
+
+        if ($data = $statement->fetch()) {
+            return $this->mapToModel($data);
+        }
+
+        return null;
+    }
 
     public function mapToModel(array $data): Transaction
     {

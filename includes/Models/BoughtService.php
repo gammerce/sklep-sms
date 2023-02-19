@@ -77,7 +77,7 @@ class BoughtService
 
     public function getInvoiceId(): string
     {
-        return $this->paymentId;
+        return $this->invoiceId;
     }
 
     public function getServiceId(): string

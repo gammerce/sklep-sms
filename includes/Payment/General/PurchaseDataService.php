@@ -28,11 +28,18 @@ class PurchaseDataService
         $this->fileSystem->put($path, $serialized);
     }
 
-    /**
-     * @param string $transactionId
-     * @return Purchase|null
-     */
-    public function restorePurchase($transactionId): ?Purchase
+    public function restorePurchase(string $transactionId): ?Purchase
+    {
+        $purchase = $this->restorePurchaseForcefully($transactionId);
+
+        if (!$purchase || $purchase->isAttempted()) {
+            return null;
+        }
+
+        return $purchase;
+    }
+
+    public function restorePurchaseForcefully(string $transactionId): ?Purchase
     {
         if (!$transactionId) {
             return null;
@@ -44,16 +51,10 @@ class PurchaseDataService
             return null;
         }
 
-        $purchase = $this->purchaseSerializer->deserialize($this->fileSystem->get($path));
-
-        if (!$purchase || $purchase->isAttempted()) {
-            return null;
-        }
-
-        return $purchase;
+        return $this->purchaseSerializer->deserialize($this->fileSystem->get($path));
     }
 
-    private function getPath($transactionId): string
+    private function getPath(string $transactionId): string
     {
         $transactionFilename = $this->prepareFilename($transactionId);
         return $this->path->to("data/transactions/$transactionFilename");

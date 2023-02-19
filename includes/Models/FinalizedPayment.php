@@ -26,7 +26,7 @@ class FinalizedPayment
     private Money $income;
 
     /**
-     * Filename of transaction
+     * Filename of transaction. ID from Purchase object.
      */
     private string $transactionId = "";
 

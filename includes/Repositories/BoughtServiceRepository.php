@@ -27,6 +27,20 @@ class BoughtServiceRepository
         return null;
     }
 
+    public function getByPaymentId(string $paymentId): ?BoughtService
+    {
+        $statement = $this->db->statement(
+            "SELECT * FROM `ss_bought_services` WHERE `payment_id` = ?"
+        );
+        $statement->bindAndExecute([$paymentId]);
+
+        if ($data = $statement->fetch()) {
+            return $this->mapToModel($data);
+        }
+
+        return null;
+    }
+
     public function create(
         $userId,
         $method,
@@ -73,6 +87,15 @@ EOF
             ]);
 
         return $this->get($this->db->lastId());
+    }
+
+    public function update(int $boughtServiceId, string $invoiceId): bool
+    {
+        $statement = $this->db->statement(
+            "UPDATE `ss_bought_services` SET `invoice_id` = ? WHERE `id` = ?"
+        );
+        $statement->bindAndExecute([$invoiceId, $boughtServiceId]);
+        return !!$statement->rowCount();
     }
 
     private function mapToModel(array $data): BoughtService

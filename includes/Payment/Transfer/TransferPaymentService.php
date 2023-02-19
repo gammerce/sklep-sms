@@ -13,33 +13,37 @@ use App\Payment\Exceptions\PaymentRejectedException;
 use App\Payment\Invoice\InvoiceException;
 use App\Payment\Invoice\InvoiceService;
 use App\Payment\Invoice\InvoiceServiceUnavailableException;
+use App\Payment\Invoice\IssueInvoiceService;
 use App\Payment\Invoice\PurchaseItem;
 use App\Repositories\PaymentTransferRepository;
 use App\ServiceModules\Interfaces\IServicePurchase;
 
 class TransferPaymentService
 {
-    private PaymentTransferRepository $paymentTransferRepository;
     private DatabaseLogger $logger;
     private FileLogger $fileLogger;
+    private InvoiceService $invoiceService;
+    private IssueInvoiceService $issueInvoiceService;
+    private PaymentTransferRepository $paymentTransferRepository;
     private ServiceModuleManager $serviceModuleManager;
     private TransferPriceService $transferPriceService;
-    private InvoiceService $invoiceService;
 
     public function __construct(
+        DatabaseLogger $logger,
+        FileLogger $fileLogger,
+        InvoiceService $invoiceService,
+        IssueInvoiceService $issueInvoiceService,
         PaymentTransferRepository $paymentTransferRepository,
         ServiceModuleManager $serviceModuleManager,
-        TransferPriceService $transferPriceService,
-        InvoiceService $invoiceService,
-        FileLogger $fileLogger,
-        DatabaseLogger $logger
+        TransferPriceService $transferPriceService
     ) {
-        $this->paymentTransferRepository = $paymentTransferRepository;
         $this->fileLogger = $fileLogger;
+        $this->invoiceService = $invoiceService;
+        $this->issueInvoiceService = $issueInvoiceService;
         $this->logger = $logger;
+        $this->paymentTransferRepository = $paymentTransferRepository;
         $this->serviceModuleManager = $serviceModuleManager;
         $this->transferPriceService = $transferPriceService;
-        $this->invoiceService = $invoiceService;
     }
 
     /**
@@ -79,7 +83,11 @@ class TransferPaymentService
         $purchase->setPayment([Purchase::PAYMENT_PAYMENT_ID => $paymentTransfer->getId()]);
 
         try {
-            $invoiceId = $this->issueInvoice($purchase, $finalizedPayment, $serviceModule->service);
+            $invoiceId = $this->issueInvoiceService->issue(
+                $purchase,
+                $finalizedPayment,
+                $serviceModule->service
+            );
             $purchase->setPayment([Purchase::PAYMENT_INVOICE_ID => $invoiceId]);
         } catch (InvoiceException $e) {
             report_to_sentry($e);
@@ -106,58 +114,5 @@ class TransferPaymentService
         );
 
         return $boughtServiceId;
-    }
-
-    private function issueInvoice(
-        Purchase $purchase,
-        FinalizedPayment $finalizedPayment,
-        Service $service
-    ): ?string {
-        if (!$this->invoiceService->isConfigured()) {
-            return null;
-        }
-
-        if ($finalizedPayment->isTestMode()) {
-            $this->fileLogger->info(
-                "Invoice wasn't issued due to test mode. Payment ID: {$finalizedPayment->getOrderId()}"
-            );
-            return null;
-        }
-
-        if ($purchase->getBillingAddress()->isEmpty()) {
-            throw new IssueInvoiceException("Invoice wasn't issued due to empty billing address.");
-        }
-
-        $email = $purchase->getEmail() ?? $purchase->user->getEmail();
-        if (!$email) {
-            throw new IssueInvoiceException("Invoice won't be sent due to lack of email.");
-        }
-
-        try {
-            $invoiceId = $this->invoiceService->create(
-                $purchase->getBillingAddress(),
-                new PurchaseItem(
-                    $purchase->getServiceId(),
-                    $purchase->getServiceName(),
-                    $finalizedPayment->getCost(),
-                    $service->getTaxRate(),
-                    $service->getFlatRateTax(),
-                    $service->getPKWiUSymbol()
-                ),
-                $email
-            );
-        } catch (InvoiceServiceUnavailableException $e) {
-            // The infakt client is not configured
-            return null;
-        }
-
-        $this->logger->logWithUser(
-            $purchase->user,
-            "log_invoice_issue_success",
-            $finalizedPayment->getOrderId(),
-            $invoiceId
-        );
-
-        return $invoiceId;
     }
 }
