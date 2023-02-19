@@ -6,6 +6,9 @@ use App\Support\Money;
 
 class Transaction
 {
+    /**
+     * @var int Equals bought service ID
+     */
     private int $id;
     private ?int $userId;
     private ?string $userName;
