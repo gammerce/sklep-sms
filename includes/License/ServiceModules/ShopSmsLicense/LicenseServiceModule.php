@@ -19,6 +19,7 @@ use App\License\ProxyManagerClient;
 use App\License\SubdomainRule;
 use App\License\SubdomainUtil;
 use App\Managers\ServiceManager;
+use App\Managers\UserManager;
 use App\Models\Purchase;
 use App\Models\Service;
 use App\Models\Transaction;
@@ -98,6 +99,7 @@ class LicenseServiceModule extends ServiceModule implements
     private Settings $settings;
     private Translator $lang;
     private UserServiceService $userServiceService;
+    private UserManager $userManager;
 
     public function __construct(
         AdminPaymentService $adminPaymentService,
@@ -117,6 +119,7 @@ class LicenseServiceModule extends ServiceModule implements
         Template $template,
         TranslationManager $translationManager,
         UserServiceService $userServiceService,
+        UserManager $userManager,
         Service $service = null
     ) {
         parent::__construct($template, $service);
@@ -136,6 +139,7 @@ class LicenseServiceModule extends ServiceModule implements
         $this->serviceManager = $serviceManager;
         $this->settings = $settings;
         $this->userServiceService = $userServiceService;
+        $this->userManager = $userManager;
     }
 
     public function mapToUserService(array $data): LicenseUserService
@@ -436,15 +440,16 @@ EOF
         $subdomain = $validated["subdomain"] ?: null;
 
         $admin = $this->auth->user();
+        $owner = $this->userManager->get($validated["user_id"]);
+
+        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"], $subdomain);
         $paymentId = $this->adminPaymentService->payByAdmin(
             $admin,
             get_ip($request),
             get_platform($request)
         );
 
-        $costDaily = $this->licensePriceService->getDailyCost($validated["platforms"], $subdomain);
-
-        $purchase = (new Purchase($admin, get_ip($request), get_platform($request)))
+        $purchase = (new Purchase($owner, get_ip($request), get_platform($request)))
             ->setService($this->service->getId(), $this->service->getName())
             ->setPaymentOption(new PaymentOption(PaymentMethod::ADMIN()))
             ->setPayment([
