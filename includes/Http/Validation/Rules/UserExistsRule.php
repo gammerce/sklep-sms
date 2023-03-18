@@ -3,21 +3,21 @@ namespace App\Http\Validation\Rules;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\BaseRule;
-use App\Repositories\UserRepository;
+use App\Managers\UserManager;
 
 class UserExistsRule extends BaseRule
 {
-    private UserRepository $userRepository;
+    private UserManager $userManager;
 
     public function __construct()
     {
         parent::__construct();
-        $this->userRepository = app()->make(UserRepository::class);
+        $this->userManager = app()->make(UserManager::class);
     }
 
     public function validate($attribute, $value, array $data): void
     {
-        if (!$this->userRepository->get($value)) {
+        if (!$this->userManager->get($value)->exists()) {
             throw new ValidationException($this->lang->t("no_account_id"));
         }
     }
