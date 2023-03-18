@@ -6,8 +6,8 @@ use App\Server\Platform;
 class LicensePriceService
 {
     // Costs per day in grosze
-    const COST_SHOP_PER_DAY = 40;
-    const COST_PLATFORM_PER_DAY = 20;
+    const COST_SHOP_PER_DAY = 60;
+    const COST_PLATFORM_PER_DAY = 30;
     const COST_HOSTING_PER_DAY = 20;
 
     /**
