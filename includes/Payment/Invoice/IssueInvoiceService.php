@@ -96,19 +96,18 @@ class IssueInvoiceService
 
     /**
      * @param string $transactionId Purchase ID
+     * @param string $paymentId Payment ID
      * @return string
      * @throws IssueInvoiceException
      */
-    public function reissue(string $transactionId): string
+    public function reissue(string $transactionId, string $paymentId): string
     {
         $purchase = $this->purchaseDataService->restorePurchaseForcefully($transactionId);
         if (!$purchase) {
             throw new IssueInvoiceException("There is no purchase with such ID");
         }
 
-        $paymentId = $purchase->getPayment(Purchase::PAYMENT_PAYMENT_ID);
         $service = $this->serviceManager->get($purchase->getServiceId());
-
         $transaction = $this->transactionRepository->getByPaymentId($paymentId);
 
         if ($transaction->getInvoiceId()) {

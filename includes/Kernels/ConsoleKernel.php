@@ -54,7 +54,7 @@ class ConsoleKernel implements ConsoleKernelContract
             return 0;
         }
 
-        if ($command === "invoice:issue") {
+        if ($command === "invoice:reissue") {
             /** @var IssueInvoiceService $issueInvoiceService */
             $issueInvoiceService = $this->app->make(IssueInvoiceService::class);
 
@@ -67,11 +67,15 @@ class ConsoleKernel implements ConsoleKernelContract
                         InputOption::VALUE_REQUIRED,
                         "Purchase ID"
                     ),
+                    new InputOption("payment-id", null, InputOption::VALUE_REQUIRED, "Payment ID"),
                 ])
             );
 
             $this->loadSettings();
-            $invoiceId = $issueInvoiceService->reissue($input->getOption("transaction-id"));
+            $invoiceId = $issueInvoiceService->reissue(
+                $input->getOption("transaction-id"),
+                $input->getOption("payment-id")
+            );
             $output->writeln("Invoice issued $invoiceId");
             return 0;
         }
