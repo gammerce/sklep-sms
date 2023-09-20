@@ -28,7 +28,7 @@ class OneShotOneKill extends PaymentModule implements SupportSms
     public function getSmsNumbers(): array
     {
         return [
-            new SmsNumber("7136", 65),
+            new SmsNumber("7155", 65),
             new SmsNumber("7255", 130),
             new SmsNumber("7355", 195),
             new SmsNumber("7455", 260),

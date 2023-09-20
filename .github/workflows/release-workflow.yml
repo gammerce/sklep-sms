@@ -27,6 +27,8 @@ jobs:
             composer: "composer.json"
           - php_version: "8.2"
             composer: "composer.json"
+          - php_version: "8.3"
+            composer: "composer.json"
     env:
       COMPOSER: ${{ matrix.composer }}
     steps:

@@ -2,7 +2,9 @@
 namespace App\Http\Controllers\Api\Shop;
 
 use App\Http\Responses\SuccessApiResponse;
+use App\Http\Validation\Rules\FullNameRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\PostalCodeRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\SteamIdRule;
 use App\Http\Validation\Rules\UniqueSteamIdRule;
@@ -57,10 +59,10 @@ class UserProfileResource
                 "forename" => [],
                 "surname" => [],
                 "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($user->getId())],
-                "billing_address_name" => [new MaxLengthRule(128)],
+                "billing_address_name" => [new FullNameRule(), new MaxLengthRule(128)],
                 "billing_address_vat_id" => [new MaxLengthRule(128)],
                 "billing_address_street" => [new MaxLengthRule(128)],
-                "billing_address_postal_code" => [new MaxLengthRule(128)],
+                "billing_address_postal_code" => [new PostalCodeRule(), new MaxLengthRule(128)],
                 "billing_address_city" => [new MaxLengthRule(128)],
             ]
         );
