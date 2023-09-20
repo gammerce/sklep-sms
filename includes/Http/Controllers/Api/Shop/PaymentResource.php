@@ -5,7 +5,9 @@ use App\Exceptions\EntityNotFoundException;
 use App\Http\Responses\ApiResponse;
 use App\Http\Responses\ErrorApiResponse;
 use App\Http\Validation\Rules\EnumRule;
+use App\Http\Validation\Rules\FullNameRule;
 use App\Http\Validation\Rules\MaxLengthRule;
+use App\Http\Validation\Rules\PostalCodeRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Validator;
 use App\Models\Purchase;
@@ -45,10 +47,14 @@ class PaymentResource
             "method" => [new EnumRule(PaymentMethod::class)],
             "payment_platform_id" => [],
             "sms_code" => [],
-            "billing_address_name" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "billing_address_name" => [
+                ...$billingRequiredRule,
+                new FullNameRule(),
+                new MaxLengthRule(128),
+            ],
             "billing_address_vat_id" => [new MaxLengthRule(128)],
             "billing_address_street" => [...$billingRequiredRule, new MaxLengthRule(128)],
-            "billing_address_postal_code" => [...$billingRequiredRule, new MaxLengthRule(128)],
+            "billing_address_postal_code" => [...$billingRequiredRule, new PostalCodeRule()],
             "billing_address_city" => [...$billingRequiredRule, new MaxLengthRule(128)],
             "remember_billing_address" => [],
         ]);
