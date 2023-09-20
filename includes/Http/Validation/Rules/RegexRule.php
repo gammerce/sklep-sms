@@ -6,7 +6,8 @@ use App\Http\Validation\BaseRule;
 
 class RegexRule extends BaseRule
 {
-    private string $pattern;
+    protected string $pattern;
+    protected string $errorMessage = "field_regex_warn";
 
     public function __construct(string $pattern)
     {
@@ -17,7 +18,7 @@ class RegexRule extends BaseRule
     public function validate($attribute, $value, array $data): void
     {
         if (!preg_match($this->pattern, $value)) {
-            throw new ValidationException($this->lang->t("field_regex_warn"));
+            throw new ValidationException($this->lang->t($this->errorMessage));
         }
     }
 }

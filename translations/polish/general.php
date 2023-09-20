@@ -37,6 +37,7 @@ return [
     "field_length_min_warn" => "Pole musi się składać z co najmniej {1} znaków.",
     "field_must_be_number" => "W polu musi się znajdować liczba.",
     "field_no_empty" => "Pole nie może być puste.",
+    "field_postal_code_warn" => "Wprowadzona wartość musi być formatu 00-000.",
     "field_regex_warn" => "Wprowadzona wartość nie spełnia wymagań.",
     "firstname" => "Imię",
     "forever" => "Na zawsze",
