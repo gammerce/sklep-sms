@@ -57,6 +57,13 @@ class IssueInvoiceService
             return null;
         }
 
+        if ($finalizedPayment->getCost()->asInt() === 0) {
+            $this->logger->log(
+                "Invoice wasn't issued due to no cost involved. Payment ID: {$finalizedPayment->getOrderId()}"
+            );
+            return null;
+        }
+
         if ($purchase->getBillingAddress()->isEmpty()) {
             throw new IssueInvoiceException("Invoice wasn't issued due to empty billing address.");
         }
