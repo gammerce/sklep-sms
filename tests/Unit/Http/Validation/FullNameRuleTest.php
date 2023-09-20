@@ -11,7 +11,7 @@ class FullNameRuleTest extends UnitTestCase
 {
     public function validFullNames(): array
     {
-        return [["John Wick"], ["John Johny"], ["Michał Nowak"], ["Zażółć GęśląJaźń"]];
+        return [["John Wick"], ["John Johny"], ["Ada Ku"], ["Michał Nowak"], ["Zażółć GęśląJaźń"]];
     }
 
     /**
@@ -29,7 +29,7 @@ class FullNameRuleTest extends UnitTestCase
 
     public function invalidFullNames(): array
     {
-        return [["xyz"], ["to jestem ja"], [""], [null]];
+        return [["xyz"], ["to jestem ja"], ["Mi Bu"], [""], [null]];
     }
 
     /**
