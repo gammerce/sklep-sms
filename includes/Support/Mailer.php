@@ -54,7 +54,7 @@ class Mailer
             $mail->CharSet = "UTF-8";
             $mail->Host = $this->config["host"];
             $mail->SMTPAuth = true;
-            $mail->Username = $this->getSenderMail();
+            $mail->Username = $this->config["username"];
             $mail->Password = $this->config["password"];
             $mail->SMTPSecure = $this->config["secure"];
             $mail->Port = $this->config["port"];
@@ -122,12 +122,12 @@ class Mailer
 
     private function getSenderMail(): string
     {
-        return $this->config["username"] ?: $this->settings["sender_email"];
+        return $this->config["sender_email"] ?: $this->settings["sender_email"];
     }
 
     public function getReplyToMail(): string
     {
-        return $this->settings["sender_email"] ?: $this->config["username"];
+        return $this->settings["sender_email"] ?: $this->config["sender_email"];
     }
 
     private function getSenderName(): string
