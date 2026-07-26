@@ -107,6 +107,7 @@ class AppServiceProvider
                 "port" => getenv("MAIL_PORT") ?: 587,
                 "secure" => getenv("MAIL_SECURE") ?: PHPMailer::ENCRYPTION_STARTTLS,
                 "username" => getenv("MAIL_USERNAME"),
+                "sender_email" => getenv("MAIL_SENDER_EMAIL"),
                 "disable_cert_validation" => boolval(getenv("MAIL_DISABLE_CERT_VALIDATION")),
             ];
             return new Mailer(
