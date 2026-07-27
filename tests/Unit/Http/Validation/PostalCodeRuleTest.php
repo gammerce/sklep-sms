@@ -24,6 +24,9 @@ class PostalCodeRuleTest extends UnitTestCase
 
         // when
         $postalCodeRule->validate("", $postalCode, []);
+
+        // then
+        $this->assertTrue(true);
     }
 
     public function invalidPostalCodes(): array

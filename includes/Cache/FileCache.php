@@ -2,6 +2,7 @@
 namespace App\Cache;
 
 use App\Support\FileSystemContract;
+use DateInterval;
 use Exception;
 use Psr\SimpleCache\CacheInterface;
 
@@ -16,7 +17,7 @@ class FileCache implements CacheInterface
         $this->directory = $directory;
     }
 
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         $payload = $this->getPayload($key);
 
@@ -27,16 +28,18 @@ class FileCache implements CacheInterface
         return $payload["data"];
     }
 
-    public function set($key, $value, $ttl = null)
+    public function set(string $key, mixed $value, null|int|\DateInterval $ttl = null): bool
     {
         $this->ensureCacheDirectoryExists($path = $this->path($key));
 
         $expiration = time() + $ttl;
 
         $this->fileSystem->put($path, $expiration . serialize(new CacheEntity($value)), true);
+
+        return true;
     }
 
-    public function delete($key)
+    public function delete(string $key): bool
     {
         if ($this->fileSystem->exists($file = $this->path($key))) {
             return $this->fileSystem->delete($file);
@@ -45,27 +48,27 @@ class FileCache implements CacheInterface
         return false;
     }
 
-    public function clear()
+    public function clear(): bool
     {
         throw new Exception("Not implemented");
     }
 
-    public function getMultiple($keys, $default = null)
+    public function getMultiple(iterable $keys, mixed $default = null): iterable
     {
         throw new Exception("Not implemented");
     }
 
-    public function setMultiple($values, $ttl = null)
+    public function setMultiple(iterable $values, null|int|\DateInterval $ttl = null): bool
     {
         throw new Exception("Not implemented");
     }
 
-    public function deleteMultiple($keys)
+    public function deleteMultiple(iterable $keys): bool
     {
         throw new Exception("Not implemented");
     }
 
-    public function has($key)
+    public function has(string $key): bool
     {
         throw new Exception("Not implemented");
     }

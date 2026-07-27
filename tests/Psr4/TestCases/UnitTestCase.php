@@ -116,48 +116,13 @@ class UnitTestCase extends TestCase
         $this->assertTrue($expected->equals($value), "$expected does not equal $value");
     }
 
-    public static function assertArraySubset(
+    protected function assertArraySubset(
         $subset,
         $array,
         $checkForObjectIdentity = false,
         $message = ""
     ) {
-        if (class_exists(Assert::class)) {
-            Assert::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
-        } else {
-            // PHP 5.6 backward compatibility
-            parent::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
-        }
-    }
-
-    public static function assertStringContainsString($needle, $haystack, $message = ""): void
-    {
-        if (method_exists(get_parent_class(self::class), "assertStringContainsString")) {
-            parent::assertStringContainsString($needle, $haystack, $message);
-        } else {
-            // PHP 5.6 backward compatibility
-            parent::assertContains($needle, $haystack, $message);
-        }
-    }
-
-    public static function assertMatchesRegularExpression($pattern, $string, $message = ""): void
-    {
-        if (method_exists(get_parent_class(self::class), "assertMatchesRegularExpression")) {
-            parent::assertMatchesRegularExpression($pattern, $string, $message);
-        } else {
-            // PHP 5.6 backward compatibility
-            parent::assertRegExp($pattern, $string, $message);
-        }
-    }
-
-    public static function assertIsString($actual, $message = ""): void
-    {
-        if (method_exists(get_parent_class(self::class), "assertIsString")) {
-            parent::assertIsString($actual);
-        } else {
-            // PHP 5.6 backward compatibility
-            parent::assertInternalType("string", $actual);
-        }
+        Assert::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
     }
 
     /**
