@@ -55,7 +55,7 @@ class PageAdminPaymentPlatforms extends PageAdmin implements IPageAdminActionBox
         return Permission::SETTINGS_MANAGEMENT();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("payment_platforms");
     }

@@ -48,7 +48,7 @@ class PageAdminUserService extends PageAdmin implements IPageAdminActionBox
         return Permission::USER_SERVICES_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         $title = $this->lang->t("users_services");
 

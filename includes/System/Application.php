@@ -62,7 +62,7 @@ class Application extends Container
         }
     }
 
-    public function terminate(Request $request = null, Response $response = null): void
+    public function terminate(?Request $request = null, ?Response $response = null): void
     {
         if (class_exists(SentrySdk::class)) {
             $transaction = SentrySdk::getCurrentHub()->getTransaction();

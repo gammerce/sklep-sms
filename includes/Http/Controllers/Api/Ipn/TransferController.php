@@ -29,7 +29,7 @@ class TransferController
 
         if (!($paymentModule instanceof SupportTransfer)) {
             return new PlainResponse(
-                "Payment platform does not support transfer payment [${paymentPlatform}]."
+                "Payment platform does not support transfer payment [{$paymentPlatform}]."
             );
         }
 

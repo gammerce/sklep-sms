@@ -8,29 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        include:
-          - php_version: "5.6"
-            composer: "composer-v5.json"
-          - php_version: "7.0"
-            composer: "composer-v5.json"
-          - php_version: "7.1"
-            composer: "composer-v5.json"
-          - php_version: "7.2"
-            composer: "composer-v5.json"
-          - php_version: "7.3"
-            composer: "composer-v5.json"
-          - php_version: "7.4"
-            composer: "composer-v5.json"
-          - php_version: "8.0"
-            composer: "composer.json"
-          - php_version: "8.1"
-            composer: "composer.json"
-          - php_version: "8.2"
-            composer: "composer.json"
-          - php_version: "8.3"
-            composer: "composer.json"
-    env:
-      COMPOSER: ${{ matrix.composer }}
+        php_version:
+          - "8.1"
+          - "8.2"
+          - "8.3"
+          - "8.4"
+          - "8.5"
+          - "8.6"
     steps:
       - uses: actions/checkout@v3
 
@@ -57,7 +41,7 @@ jobs:
           --rm \
           --env PHP_VERSION=${{ matrix.php_version }} \
           -v $(pwd):/project \
-          budziam/rector:0.12.23 \
+          budziam/rector:2.5.8 \
           process \
           /project/includes \
           --config /project/rector.php

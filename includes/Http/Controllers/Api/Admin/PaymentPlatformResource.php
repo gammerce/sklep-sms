@@ -26,7 +26,7 @@ class PaymentPlatformResource
     ) {
         $lang = $translationManager->user();
         $name = $request->request->get("name");
-        $data = $request->request->get("data") ?: [];
+        $data = $request->request->all("data");
 
         $paymentPlatform = $paymentPlatformRepository->getOrFail($paymentPlatformId);
 

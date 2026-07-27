@@ -287,6 +287,10 @@ function my_is_integer(mixed $val): bool
 
 function array_get(ArrayAccess|array|null $array, mixed $key, mixed $default = null): mixed
 {
+    if ($key === null) {
+        return $default;
+    }
+
     return $array[$key] ?? $default;
 }
 

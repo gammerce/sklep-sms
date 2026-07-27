@@ -46,7 +46,7 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
         return Permission::GROUPS_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("groups");
     }

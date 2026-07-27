@@ -48,7 +48,7 @@ class PageAdminPlayersFlags extends PageAdmin
         return Permission::PLAYER_FLAGS_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("players_flags");
     }

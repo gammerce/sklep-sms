@@ -59,7 +59,7 @@ class PageAdminBoughtServices extends PageAdmin
         $this->invoiceService = $invoiceService;
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("bought_services");
     }

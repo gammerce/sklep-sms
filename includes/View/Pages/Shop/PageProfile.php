@@ -27,7 +27,7 @@ class PageProfile extends Page implements IBeLoggedMust
         $this->invoiceService = $invoiceService;
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("profile");
     }

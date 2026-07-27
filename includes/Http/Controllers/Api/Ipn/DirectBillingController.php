@@ -29,7 +29,7 @@ class DirectBillingController
 
         if (!($paymentModule instanceof SupportDirectBilling)) {
             return new PlainResponse(
-                "Payment platform does not support direct billing payment [${paymentPlatform}]."
+                "Payment platform does not support direct billing payment [{$paymentPlatform}]."
             );
         }
 
