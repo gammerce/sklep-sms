@@ -23,7 +23,7 @@ class PaymentPlatformCollection
         $lang = $translationManager->user();
         $name = $request->request->get("name");
         $moduleId = $request->request->get("module");
-        $data = (array) ($request->request->all()["data"] ?? []);
+        $data = $request->request->all("data");
 
         try {
             $processedData = $paymentPlatformService->processDataFields($moduleId, $data);

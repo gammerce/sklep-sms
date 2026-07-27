@@ -53,8 +53,7 @@ class SettingsController
                 "signature" => $request->request->get("signature"),
                 "sms_platform" => $request->request->get("sms_platform"),
                 "theme" => escape_filename($request->request->get("theme")),
-                "transfer_platform" =>
-                    (array) ($request->request->all()["transfer_platform"] ?? []),
+                "transfer_platform" => $request->request->all("transfer_platform"),
                 "user_edit_service" => $request->request->get("user_edit_service"),
                 "vat" => $request->request->get("vat"),
             ],

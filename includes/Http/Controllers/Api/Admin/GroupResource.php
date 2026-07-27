@@ -19,7 +19,7 @@ class GroupResource
     ) {
         $lang = $translationManager->user();
         $name = $request->request->get("name");
-        $permissions = $request->request->all()["permissions"] ?? [];
+        $permissions = $request->request->all("permissions");
 
         $updated = $groupRepository->update($groupId, $name, as_permission_list($permissions));
 
