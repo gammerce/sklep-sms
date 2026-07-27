@@ -87,7 +87,7 @@ jobs:
         if: matrix.composer_file != 'composer.json'
         env:
           COMPOSER: ${{ matrix.composer_file }}
-        run: composer install --optimize-autoloader --no-interaction
+        run: composer update --optimize-autoloader --no-interaction
 
       - name: Transpile to PHP ${{ matrix.php_version }}
         run: |
