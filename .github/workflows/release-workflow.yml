@@ -47,7 +47,7 @@ jobs:
         if: matrix.composer_file != 'composer.json'
         env:
           COMPOSER: ${{ matrix.composer_file }}
-        run: composer update --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction
+        run: composer install --no-dev --optimize-autoloader --ignore-platform-reqs --no-interaction
 
       - run: yarn install
 
