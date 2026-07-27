@@ -61,7 +61,7 @@ class PageAdminPayments extends PageAdmin
         return Permission::INCOME_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("payments");
     }

@@ -17,7 +17,7 @@ class RegexRule extends BaseRule
 
     public function validate($attribute, $value, array $data): void
     {
-        if (!preg_match($this->pattern, $value)) {
+        if (!preg_match($this->pattern, (string) $value)) {
             throw new ValidationException($this->lang->t($this->errorMessage));
         }
     }

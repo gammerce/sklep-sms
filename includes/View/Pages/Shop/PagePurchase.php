@@ -52,7 +52,7 @@ class PagePurchase extends Page
         $this->serviceModuleManager = $serviceModuleManager;
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         $title = "";
 

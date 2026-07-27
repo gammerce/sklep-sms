@@ -27,7 +27,9 @@ class PurchaseSerializer
 
         if ($purchase->getPromoCode()) {
             $promoCodeProperty = $reflectionClass->getProperty("promoCode");
-            $promoCodeProperty->setAccessible(true);
+            if (PHP_VERSION_ID < 80100) {
+                $promoCodeProperty->setAccessible(true);
+            }
             $promoCodeProperty->setValue($clonedPurchase, $purchase->getPromoCode()->getCode());
         }
 
@@ -52,7 +54,9 @@ class PurchaseSerializer
         $userId = $userProperty->getValue($purchase);
 
         $promoCodeProperty = $reflectionClass->getProperty("promoCode");
-        $promoCodeProperty->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $promoCodeProperty->setAccessible(true);
+        }
         $code = $promoCodeProperty->getValue($purchase);
 
         $user = $this->userManager->get($userId);

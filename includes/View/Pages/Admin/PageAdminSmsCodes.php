@@ -57,7 +57,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         return Permission::SMS_CODES_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("sms_codes");
     }

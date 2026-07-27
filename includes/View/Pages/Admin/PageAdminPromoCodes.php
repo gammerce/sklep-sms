@@ -66,7 +66,7 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         return Permission::PROMO_CODES_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("promo_codes");
     }

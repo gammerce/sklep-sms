@@ -132,7 +132,7 @@ class Requester
         $output = [];
 
         foreach ($headers as $key => $value) {
-            $output[] = "${key}: ${value}";
+            $output[] = "{$key}: {$value}";
         }
 
         return $output;
