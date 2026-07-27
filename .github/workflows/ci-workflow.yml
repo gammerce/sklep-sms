@@ -96,7 +96,7 @@ jobs:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}
 
       - name: Upload coverage results to Coveralls
-        if: matrix.php_version == '8.2'
+        if: false
         uses: coverallsapp/github-action@v2
         with:
           file: clover.xml
