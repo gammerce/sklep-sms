@@ -12,7 +12,7 @@ class ServerAuth
         return $this->server;
     }
 
-    public function setServer(Server $server = null): void
+    public function setServer(?Server $server = null): void
     {
         $this->server = $server;
     }

@@ -39,7 +39,7 @@ class PageAdminLogs extends PageAdmin
         return Permission::LOGS_VIEW();
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("logs");
     }

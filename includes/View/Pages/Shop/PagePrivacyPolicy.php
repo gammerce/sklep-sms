@@ -22,7 +22,7 @@ class PagePrivacyPolicy extends Page
         $this->settings = $settings;
     }
 
-    public function getTitle(Request $request = null): string
+    public function getTitle(?Request $request = null): string
     {
         return $this->lang->t("privacy_policy");
     }

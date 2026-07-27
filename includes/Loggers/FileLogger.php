@@ -19,73 +19,68 @@ class FileLogger implements LoggerInterface
         $this->path = $path;
     }
 
+    public function emergency(string|\Stringable $message, array $context = []): void
+    {
+        $this->error($message, $context);
+    }
+
+    public function alert(string|\Stringable $message, array $context = []): void
+    {
+        $this->error($message, $context);
+    }
+
+    public function critical(string|\Stringable $message, array $context = []): void
+    {
+        $this->error($message, $context);
+    }
+
     /**
-     * @param string $message
+     * @param string|\Stringable $message
      * @param array $context
      */
-    public function error($message, array $context = [])
+    public function error(string|\Stringable $message, array $context = []): void
     {
         $this->log("errors", $message, $context);
     }
 
+    public function warning(string|\Stringable $message, array $context = []): void
+    {
+        $this->error($message, $context);
+    }
+
+    public function notice(string|\Stringable $message, array $context = []): void
+    {
+        $this->info($message, $context);
+    }
+
     /**
-     * @param string $message
+     * @param string|\Stringable $message
      * @param array $context
      */
-    public function info($message, array $context = [])
+    public function info(string|\Stringable $message, array $context = []): void
     {
         $this->log("info", $message, $context);
     }
 
+    public function debug(string|\Stringable $message, array $context = []): void
+    {
+        $this->info($message, $context);
+    }
+
     /**
-     * @param string $message
+     * @param string|\Stringable $message
      * @param array $context
      */
-    public function install($message, array $context = [])
+    public function install(string|\Stringable $message, array $context = []): void
     {
         $this->log("install", $message, $context);
     }
 
-    public function emergency($message, array $context = [])
-    {
-        $this->error($message, $context);
-    }
-
-    public function alert($message, array $context = [])
-    {
-        $this->error($message, $context);
-    }
-
-    public function critical($message, array $context = [])
-    {
-        $this->error($message, $context);
-    }
-
-    public function warning($message, array $context = [])
-    {
-        $this->error($message, $context);
-    }
-
-    public function notice($message, array $context = [])
-    {
-        $this->info($message, $context);
-    }
-
-    public function debug($message, array $context = [])
-    {
-        $this->info($message, $context);
-    }
-
-    /**
-     * @param string $level
-     * @param string $message
-     * @param mixed $data
-     */
-    public function log($level, $message, array $data = [])
+    public function log($level, string|\Stringable $message, array $context = []): void
     {
         $filename = $this->prepareFilename($level);
         $filePath = $this->path->to("data/logs/{$filename}.log");
-        $dataText = $data ? " | " . json_encode($data) : "";
+        $dataText = $context ? " | " . json_encode($context) : "";
         $text = date($this->settings->getDateFormat()) . ": " . $message . $dataText;
 
         $this->fileSystem->append($filePath, $text);

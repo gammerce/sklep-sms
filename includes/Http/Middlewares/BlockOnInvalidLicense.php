@@ -47,7 +47,7 @@ class BlockOnInvalidLicense implements MiddlewareContract
         return $next($request);
     }
 
-    private function getMessageFromInvalidResponse(CustomResponse $response = null): string
+    private function getMessageFromInvalidResponse(?CustomResponse $response = null): string
     {
         if ($response) {
             if ($response->getStatusCode() === Response::HTTP_UNAUTHORIZED) {

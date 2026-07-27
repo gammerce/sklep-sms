@@ -28,7 +28,7 @@ abstract class Page
      * @param Request|null $request
      * @return string
      */
-    abstract public function getTitle(Request $request = null): string;
+    abstract public function getTitle(?Request $request = null): string;
 
     /**
      * Get page content

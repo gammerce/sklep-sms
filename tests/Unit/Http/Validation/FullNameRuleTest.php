@@ -25,6 +25,9 @@ class FullNameRuleTest extends UnitTestCase
 
         // when
         $postalCodeRule->validate("", $fullName, []);
+
+        // then
+        $this->assertTrue(true);
     }
 
     public function invalidFullNames(): array
