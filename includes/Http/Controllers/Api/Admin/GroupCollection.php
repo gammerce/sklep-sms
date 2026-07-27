@@ -17,7 +17,7 @@ class GroupCollection
     ) {
         $lang = $translationManager->user();
         $name = $request->request->get("name");
-        $permissions = $request->request->get("permissions");
+        $permissions = $request->request->all()["permissions"] ?? [];
 
         $group = $groupRepository->create($name, as_permission_list($permissions));
         $databaseLogger->logWithActor("log_group_added", $group->getId());
