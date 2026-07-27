@@ -35,13 +35,21 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version:
-          - "8.1"
-          - "8.2"
-          - "8.3"
-          - "8.4"
-          - "8.5"
-          - "8.6"
+        include:
+          - php_version: "8.0"
+            composer_file: "composer-v8.0.json"
+          - php_version: "8.1"
+            composer_file: "composer.json"
+          - php_version: "8.2"
+            composer_file: "composer.json"
+          - php_version: "8.3"
+            composer_file: "composer.json"
+          - php_version: "8.4"
+            composer_file: "composer.json"
+          - php_version: "8.5"
+            composer_file: "composer.json"
+          - php_version: "8.6"
+            composer_file: "composer.json"
     env:
       APP_DEBUG: true
       DB_HOST: 127.0.0.1
