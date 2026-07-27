@@ -1,0 +1,62 @@
+# Remove sury repo (already done, but verify)
+rm -f /etc/apt/sources.list.d/php.list
+apt update
+
+# Downgrade packages broken by sury
+apt install -y libxml2=2.9.3+dfsg1-1ubuntu0.7 libzip4=1.0.1-0ubuntu1
+
+# Now install build deps
+apt install -y build-essential autoconf libtool pkg-config libssl-dev \
+  libxml2-dev libsqlite3-dev libcurl4-openssl-dev libonig-dev libbz2-dev \
+  libreadline-dev libzip-dev libsodium-dev
+
+# Download and compile PHP 8.1
+cd /tmp
+wget https://www.php.net/distributions/php-8.1.30.tar.gz
+tar xzf php-8.1.30.tar.gz
+cd php-8.1.30
+./configure \
+  --prefix=/usr/local/php81 \
+  --enable-fpm \
+  --with-fpm-user=www-data \
+  --with-fpm-group=www-data \
+  --enable-mbstring \
+  --enable-intl \
+  --with-mysqli=mysqlnd \
+  --with-pdo-mysql=mysqlnd \
+  --with-curl \
+  --with-zip \
+  --with-openssl \
+  --with-xml \
+  --with-bz2 \
+  --with-readline \
+  --enable-sodium \
+  --enable-opcache
+make -j$(nproc)
+make install
+
+# Config files
+cp php.ini-production /usr/local/php81/lib/php.ini
+cp sapi/fpm/php-fpm.conf /usr/local/php81/etc/php-fpm.conf
+cp sapi/fpm/www.conf /usr/local/php81/etc/php-fpm.d/www.conf
+
+# systemd service
+cat > /etc/systemd/system/php81-fpm.service << 'SERVICE'
+[Unit]
+Description=PHP 8.1 FastCGI Process Manager
+After=network.target
+
+[Service]
+Type=forking
+PIDFile=/usr/local/php81/var/run/php-fpm.pid
+ExecStart=/usr/local/php81/sbin/php-fpm --daemonize --pid /usr/local/php81/var/run/php-fpm.pid
+ExecReload=/bin/kill -USR2 $MAINPID
+ExecStop=/bin/kill -SIGINT $MAINPID
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+
+systemctl daemon-reload
+systemctl enable php81-fpm
+systemctl start php81-fpm
