@@ -48,6 +48,12 @@ jobs:
             composer: "composer.json"
           - php_version: "8.3"
             composer: "composer.json"
+          - php_version: "8.4"
+            composer: "composer.json"
+          - php_version: "8.5"
+            composer: "composer.json"
+          - php_version: "8.6"
+            composer: "composer.json"
     env:
       APP_DEBUG: true
       DB_HOST: 127.0.0.1
