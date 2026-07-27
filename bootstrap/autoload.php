@@ -2,5 +2,5 @@
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . "/../confidential/");
+$dotenv = Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . "/../confidential/");
 $dotenv->safeLoad();
