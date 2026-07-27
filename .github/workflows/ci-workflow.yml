@@ -69,9 +69,17 @@ jobs:
           extensions: mysqli
           coverage: xdebug
 
-      - uses: ramsey/composer-install@v2
+      - name: Install dependencies
+        if: matrix.composer_file == 'composer.json'
+        uses: ramsey/composer-install@v2
         with:
           composer-options: "--optimize-autoloader"
+
+      - name: Install dependencies (PHP 8.0)
+        if: matrix.composer_file != 'composer.json'
+        env:
+          COMPOSER: ${{ matrix.composer_file }}
+        run: composer install --optimize-autoloader --no-interaction
 
       - name: Transpile to PHP ${{ matrix.php_version }}
         run: |
