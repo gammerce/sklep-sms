@@ -37,7 +37,7 @@ jobs:
       matrix:
         include:
           - php_version: "8.0"
-            composer_file: "composer-v8.json"
+            composer_file: "composer-v8.0.json"
           - php_version: "8.1"
             composer_file: "composer.json"
           - php_version: "8.2"
