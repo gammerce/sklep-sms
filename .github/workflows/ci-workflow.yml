@@ -73,6 +73,18 @@ jobs:
         with:
           composer-options: "--optimize-autoloader"
 
+      - name: Transpile to PHP ${{ matrix.php_version }}
+        run: |
+          docker run \
+          --rm \
+          --env PHP_VERSION=${{ matrix.php_version }} \
+          -v $(pwd):/project \
+          budziam/rector:2.5.8 \
+          process \
+          /project/includes \
+          /project/tests \
+          --config /project/rector.php
+
       - run: php artisan test:setup
         env:
           DB_PORT: ${{ job.services.mysql.ports['3306'] }}

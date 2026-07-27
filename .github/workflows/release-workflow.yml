@@ -35,6 +35,17 @@ jobs:
 
       - run: yarn install
 
+      - name: Transpile to PHP ${{ matrix.php_version }}
+        run: |
+          docker run \
+          --rm \
+          --env PHP_VERSION=${{ matrix.php_version }} \
+          -v $(pwd):/project \
+          budziam/rector:2.5.8 \
+          process \
+          /project/includes \
+          --config /project/rector.php
+
       - run: yarn build
         env:
           NODE_ENV: production
