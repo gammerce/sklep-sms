@@ -37,6 +37,10 @@ class PagePayment extends Page
     public function getContent(Request $request)
     {
         $transactionId = $request->query->get("tid");
+        if (!$transactionId) {
+            throw new EntityNotFoundException();
+        }
+
         $purchase = $this->purchaseDataService->restorePurchase($transactionId);
 
         if (!$purchase) {
