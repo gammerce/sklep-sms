@@ -15,6 +15,17 @@ class UserResourceTest extends HttpTestCase
         $this->repository = $this->app->make(UserRepository::class);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        putenv("APP_SUBDOMAIN");
+    }
+
+    private function ensureUserOneExists(): void
+    {
+        // User 1 is created during installation migration
+    }
+
     /** @test */
     public function updates_user()
     {
@@ -154,5 +165,57 @@ class UserResourceTest extends HttpTestCase
 
         $freshFrank = $this->repository->get($frank->getId());
         $this->assertEquals([$developers->getId()], $freshFrank->getGroups());
+    }
+
+    /** @test */
+    public function cannot_edit_user_1_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->ensureUserOneExists();
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->putJson("/api/admin/users/1", [
+            "email" => "new@example.com",
+            "groups" => [1],
+            "username" => "newadmin",
+            "wallet" => 20,
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function cannot_delete_user_1_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->ensureUserOneExists();
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->delete("/api/admin/users/1");
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function can_edit_other_user_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $user = $this->factory->user();
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
+            "email" => "other@example.com",
+            "groups" => [1],
+            "username" => "otheruser",
+            "wallet" => 20,
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
     }
 }

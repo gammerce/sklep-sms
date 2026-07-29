@@ -32,7 +32,12 @@ class PasswordResource
 
         $validated = $validator->validateOrFail();
 
+        if (is_demo_user($user->getId())) {
+            return new ApiResponse("demo_mode", $lang->t("demo_mode"), false);
+        }
+
         $userRepository->updatePassword($user->getId(), $validated["pass"]);
+
         $logger->logWithActor("log_password_changed");
 
         return new ApiResponse("password_changed", $lang->t("password_changed"), 1);

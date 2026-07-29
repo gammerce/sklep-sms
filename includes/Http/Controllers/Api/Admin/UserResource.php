@@ -67,6 +67,10 @@ class UserResource
             $editedUser->setGroups($validated["groups"]);
         }
 
+        if (is_demo_user($editedUser->getId())) {
+            return new ApiResponse("demo_mode", $lang->t("demo_mode"), false);
+        }
+
         $userRepository->update($editedUser);
         $logger->logWithActor("log_user_edited", $userId);
 
@@ -80,6 +84,10 @@ class UserResource
         DatabaseLogger $logger
     ) {
         $lang = $translationManager->user();
+
+        if (is_demo_user($userId)) {
+            return new ApiResponse("demo_mode", $lang->t("demo_mode"), false);
+        }
 
         $deleted = $userRepository->delete($userId);
 

@@ -19,6 +19,12 @@ class GroupResourceTest extends HttpTestCase
         $this->group = $this->factory->group();
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        putenv("APP_SUBDOMAIN");
+    }
+
     /** @test */
     public function updates_group()
     {
@@ -55,5 +61,94 @@ class GroupResourceTest extends HttpTestCase
         $this->assertSame("ok", $json["return_id"]);
         $freshGroup = $this->groupRepository->get($this->group->getId());
         $this->assertNull($freshGroup);
+    }
+
+    /** @test */
+    public function cannot_edit_group_1_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->put("/api/admin/groups/1", [
+            "name" => "changed",
+            "permissions" => ["view_groups"],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function cannot_edit_group_2_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->put("/api/admin/groups/2", [
+            "name" => "changed",
+            "permissions" => ["view_groups"],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function cannot_delete_group_1_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->delete("/api/admin/groups/1");
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function cannot_delete_group_2_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+
+        $response = $this->delete("/api/admin/groups/2");
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function can_edit_other_group_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+        $group = $this->factory->group();
+
+        $response = $this->put("/api/admin/groups/{$group->getId()}", [
+            "name" => "changed",
+            "permissions" => ["view_groups"],
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
+    }
+
+    /** @test */
+    public function can_delete_other_group_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $this->actingAs($this->factory->admin());
+        $group = $this->factory->group();
+
+        $response = $this->delete("/api/admin/groups/{$group->getId()}");
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
     }
 }

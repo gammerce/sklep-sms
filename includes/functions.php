@@ -521,6 +521,16 @@ function is_demo(): bool
     return get_subdomain() === "demo";
 }
 
+function is_demo_user($userId): bool
+{
+    return is_demo() && as_int($userId) === 1;
+}
+
+function is_demo_group($groupId): bool
+{
+    return is_demo() && in_array(as_int($groupId), [1, 2]);
+}
+
 function is_saas(): bool
 {
     return getenv("APP_ENV") === "saas";

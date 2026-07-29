@@ -16,6 +16,7 @@ return [
     "city" => "City",
     "contact_info" => "You can contact us in one of the following ways.",
     "create_account" => "Create an account",
+    "demo_mode" => "You cannot do this on a demo shop.",
     "different_values" => "Given values are different.",
     "direct_billing_unavailable" => "Payment by direct billing is unavailable.",
     "email_occupied" => "Given e-mail is already taken.",
