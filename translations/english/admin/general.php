@@ -1,7 +1,7 @@
 <?php
 
 return [
-    "account_charge_success" => 'User\'s account charged successfully: {1} with amount: {2} {3}',
+    "account_charge_success" => 'User\'s account topped up successfully: {1} with amount: {2} {3}',
     "account_id" => "account id",
     "actions" => "Actions",
     "add" => "Add",
@@ -25,7 +25,7 @@ return [
     "change_password" => "Change password",
     "change_password_success" => "Password has been changed",
     "change_token_placeholder" => "Enter to change",
-    "charge" => "Charge",
+    "charge" => "Top up",
     "choose_sms_price" => "Choose SMS price",
     "code" => "Code",
     "comment" => "Comment",
@@ -108,7 +108,7 @@ return [
     "license_soon_expire" =>
         'License expires in: {1} You can prolong it just now: <a href="https://sklep.sklep-sms.pl/page/purchase?service=ss_license_plong&identifier={2}" target="_blank">Prolong License</a>',
     "lines_per_page" => "Number of lines per page",
-    "log_account_charged" => 'charged user\'s account: {1}({2}) Amount: {3} {4}',
+    "log_account_charged" => 'topped up user\'s account: {1}({2}) Amount: {3} {4}',
     "log_group_added" => "Group has been added. ID: {1}",
     "log_group_deleted" => "Group has been deleted. ID: {1}",
     "log_group_edited" => "Group has been edited. ID: {1}",
