@@ -26,6 +26,9 @@ docker-compose up -d
 # Install dependencies (uses composer-v8.0.json for PHP 8.0 compatibility)
 docker-compose exec -T app bash -c "COMPOSER=composer-v8.0.json composer install --no-interaction --no-plugins"
 
+# Install production dependencies only (no dev)
+docker-compose exec -T app bash -c "COMPOSER=composer-v8.0.json composer install --no-dev --no-interaction --no-plugins"
+
 # Set up test database
 docker-compose exec -T app php artisan test:setup
 ```
