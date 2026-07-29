@@ -15,6 +15,31 @@ License can be purchased here: https://sklep.sklep-sms.pl
 ## Installation
 How to install the Sklep SMS step by step: https://sklep-sms.pl/config
 
+## Development
+
+### Setup
+
+```bash
+# Start services
+docker-compose up -d
+
+# Install dependencies (uses composer-v8.0.json for PHP 8.0 compatibility)
+docker-compose exec -T app bash -c "COMPOSER=composer-v8.0.json composer install --no-interaction --no-plugins"
+
+# Set up test database
+docker-compose exec -T app php artisan test:setup
+```
+
+### Running tests
+
+```bash
+# Run all tests
+docker-compose exec -T app php vendor/bin/phpunit
+
+# Run a specific test
+docker-compose exec -T app php vendor/bin/phpunit --filter TestName
+```
+
 ## Contact
 * [#wsparcie](https://discord.gg/fz47ngSzGy) channel
 * [Issues](https://github.com/gammerce/sklep-sms/issues) tab
