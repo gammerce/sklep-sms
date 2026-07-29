@@ -43,6 +43,7 @@ return [
     "default_direct_billing_payment_platform" => "Platforma płatności direct billing",
     "default_sms_payment_platform" => "Platforma płatności SMS",
     "default_transfer_payment_platform" => "Platformy płatności internetowych",
+    "demo_mode" => "Nie można tego zrobić na sklepie demo.",
     "delete_group" => "Grupa została prawidłowo usunięta.",
     "delete_log" => "Log został prawidłowo usunięty.",
     "delete_old_logs" => "Usuwaj logi starsze niż",

@@ -224,11 +224,6 @@ EOF
 
     public function updatePassword($userId, $password): void
     {
-        if (is_demo() && as_int($userId) === 1) {
-            // Do not allow to modify admin's password in demo version
-            return;
-        }
-
         $salt = get_random_string(8);
 
         $this->db

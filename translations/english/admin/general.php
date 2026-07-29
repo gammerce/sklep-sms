@@ -43,6 +43,7 @@ return [
     "default_direct_billing_payment_platform" => "Direct billing payment platform",
     "default_sms_payment_platform" => "SMS payment platform",
     "default_transfer_payment_platform" => "Transfer payment platforms",
+    "demo_mode" => "You cannot do this on a demo shop.",
     "delete_group" => "Group removed successfully.",
     "delete_log" => "Log removed successfully.",
     "delete_old_logs" => "Delete logs older than",

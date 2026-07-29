@@ -24,6 +24,10 @@ class UserPasswordResource
             throw new EntityNotFoundException();
         }
 
+        if (is_demo_user($userId)) {
+            return new ApiResponse("demo_mode", $lang->t("demo_mode"), false);
+        }
+
         $userRepository->updatePassword($userId, $password);
 
         return new ApiResponse("ok", $lang->t("change_password_success"), true);
