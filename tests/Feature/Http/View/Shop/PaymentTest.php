@@ -99,4 +99,14 @@ class PaymentTest extends HttpTestCase
         $this->assertStringContainsString("Płatność", $response->getContent());
         $this->assertStringContainsString("Szczegóły zamówienia", $response->getContent());
     }
+
+    /** @test */
+    public function returns_404_when_tid_is_missing()
+    {
+        // when
+        $response = $this->get("/page/payment");
+
+        // then
+        $this->assertSame(Response::HTTP_NOT_FOUND, $response->getStatusCode());
+    }
 }

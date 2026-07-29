@@ -311,7 +311,9 @@ function captureRequest(): Request
 {
     $queryAttributes = [];
     foreach ($_GET as $key => $value) {
-        $queryAttributes[$key] = urldecode($value);
+        $queryAttributes[$key] = is_array($value)
+            ? array_map("urldecode", $value)
+            : urldecode($value);
     }
 
     $request = Request::createFromGlobals();
