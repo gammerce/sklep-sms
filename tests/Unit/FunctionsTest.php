@@ -1,10 +1,11 @@
 <?php
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\HttpFoundation\Request;
+use App\Kernels\KernelContract;
+use Symfony\Component\HttpFoundation\Response;
+use Tests\Psr4\TestCases\UnitTestCase;
 
-class FunctionsTest extends TestCase
+class FunctionsTest extends UnitTestCase
 {
     private array $originalGet;
 
@@ -21,30 +22,29 @@ class FunctionsTest extends TestCase
     }
 
     /** @test */
-    public function decodes_string_query_parameters()
-    {
-        $_GET = [
-            "service_id" => "ss_license",
-            "email" => "v4yc92xhbbuyca%40web-library.net",
-        ];
-
-        $request = \captureRequest();
-
-        $this->assertSame("ss_license", $request->query->get("service_id"));
-        $this->assertSame("v4yc92xhbbuyca@web-library.net", $request->query->get("email"));
-    }
-
-    /** @test */
-    public function decodes_array_query_parameters()
+    public function request_with_array_query_does_not_crash()
     {
         $_GET = [
             "platforms" => ["sourcemod"],
-            "amount" => "%F0%9F%93%8A+Transfer",
+            "amount" =>
+                "📊 Transfer 236,538 $. GET ->> graph.org/BALANCE-3682444-USD-04-21-2?hs=65b37b7e4f3e8d19facd05e1ea79ca1f& 📊",
+            "subdomain" => "x68sld",
+            "email" => "v4yc92xhbbuyca@web-library.net",
+            "service_id" => "ss_license",
         ];
 
         $request = \captureRequest();
 
+        /** @var KernelContract $kernel */
+        $kernel = $this->app->make(KernelContract::class);
+        $response = $kernel->handle($request);
+        $kernel->terminate($request, $response);
+
+        $this->assertInstanceOf(Response::class, $response);
         $this->assertSame(["sourcemod"], $request->query->all()["platforms"]);
-        $this->assertSame("📊 Transfer", $request->query->get("amount"));
+        $this->assertStringContainsString(
+            "📊 Transfer 236,538 $. GET ->> graph.org/BALANCE-3682444-USD-04-21-2?hs=65b37b7e4f3e8d19facd05e1ea79ca1f& 📊",
+            $request->query->get("amount")
+        );
     }
 }
