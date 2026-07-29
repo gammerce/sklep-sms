@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\Api\Shop;
 
+use App\Http\Responses\ApiResponse;
 use App\Http\Responses\SuccessApiResponse;
 use App\Http\Validation\Rules\FullNameRule;
 use App\Http\Validation\Rules\MaxLengthRule;
@@ -82,6 +83,10 @@ class UserProfileResource
                 $validated["billing_address_city"]
             )
         );
+
+        if (is_demo_user($user->getId())) {
+            return new ApiResponse("demo_mode", $lang->t("demo_mode"), false);
+        }
 
         $userRepository->update($user);
 
