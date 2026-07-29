@@ -14,6 +14,12 @@ class UserProfileResourceTest extends HttpTestCase
         $this->userRepository = $this->app->make(UserRepository::class);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        putenv("APP_SUBDOMAIN");
+    }
+
     /** @test */
     public function updates_profile()
     {
@@ -69,5 +75,39 @@ class UserProfileResourceTest extends HttpTestCase
             ],
             $json["warnings"]
         );
+    }
+
+    /** @test */
+    public function cannot_update_profile_as_admin_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $admin = $this->userRepository->get(1);
+        $this->actingAs($admin);
+
+        $response = $this->put("/api/profile", [
+            "username" => "newname",
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("demo_mode", $json["return_id"]);
+    }
+
+    /** @test */
+    public function can_update_profile_in_demo_mode()
+    {
+        putenv("APP_SUBDOMAIN=demo");
+        $user = $this->factory->user();
+        $this->actingAs($user);
+
+        $response = $this->put("/api/profile", [
+            "username" => "newname",
+            "forename" => "newfn",
+            "surname" => "newln",
+        ]);
+
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
     }
 }
