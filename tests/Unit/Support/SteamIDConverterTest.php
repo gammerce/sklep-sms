@@ -72,7 +72,7 @@ class SteamIDConverterTest extends UnitTestCase
         $this->converter->toSteamID("abcd");
     }
 
-    public function providerSteamID(): array
+    public static function providerSteamID(): array
     {
         return [
             ["STEAM_0:1:21984552"],
@@ -83,7 +83,7 @@ class SteamIDConverterTest extends UnitTestCase
         ];
     }
 
-    public function providerSteamID3(): array
+    public static function providerSteamID3(): array
     {
         return [
             ["[U:1:43969105]"],
@@ -94,7 +94,7 @@ class SteamIDConverterTest extends UnitTestCase
         ];
     }
 
-    public function providerSteamID64(): array
+    public static function providerSteamID64(): array
     {
         return [
             ["76561198004234833"],

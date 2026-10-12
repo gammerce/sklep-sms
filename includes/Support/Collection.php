@@ -73,7 +73,7 @@ final class Collection implements ArrayAccess, IteratorAggregate, Arrayable, Cou
      * @param mixed $default
      * @return mixed
      */
-    public function first(callable $callback = null, $default = null)
+    public function first(?callable $callback = null, $default = null)
     {
         if ($callback === null) {
             if (empty($this->items)) {

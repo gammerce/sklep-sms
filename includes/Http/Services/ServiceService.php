@@ -28,7 +28,7 @@ class ServiceService
         $this->serverManager = $serverManager;
     }
 
-    public function extendValidator(Validator $validator, ServiceModule $serviceModule = null)
+    public function extendValidator(Validator $validator, ?ServiceModule $serviceModule = null)
     {
         $validator->extendData([
             "groups" => $validator->getData("groups") ?: [],

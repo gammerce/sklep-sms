@@ -32,7 +32,7 @@ class FileCache implements CacheInterface
     {
         $this->ensureCacheDirectoryExists($path = $this->path($key));
 
-        $expiration = time() + $ttl;
+        $expiration = $this->getExpirationTimestamp($ttl);
 
         $this->fileSystem->put($path, $expiration . serialize(new CacheEntity($value)), true);
 
@@ -71,6 +71,27 @@ class FileCache implements CacheInterface
     public function has(string $key): bool
     {
         throw new Exception("Not implemented");
+    }
+
+    /**
+     * Resolve a PSR-16 TTL to a UNIX timestamp.
+     *
+     * The timestamp is stored as a fixed 10-char prefix, see getPayload().
+     *
+     * @param null|int|\DateInterval $ttl null means no expiration
+     */
+    private function getExpirationTimestamp(null|int|\DateInterval $ttl): int
+    {
+        if ($ttl instanceof \DateInterval) {
+            return (new \DateTimeImmutable())->add($ttl)->getTimestamp();
+        }
+
+        if ($ttl === null) {
+            // Far future (year 2286), keeps the 10-char prefix format intact
+            return 9999999999;
+        }
+
+        return time() + $ttl;
     }
 
     /**
