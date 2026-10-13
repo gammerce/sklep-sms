@@ -60,7 +60,7 @@ class LoginControllerTest extends HttpTestCase
     }
 
     /**
-     * Login must be case-insensitive (bear-era behavior): ss_users.username
+     * Login must be case-insensitive (long-standing production behavior): ss_users.username
      * and ss_users.email are *_ci columns. Guards against regressions like
      * the blanket utf8mb4_bin conversion, which silently made logins
      * case-sensitive.
@@ -98,5 +98,4 @@ class LoginControllerTest extends HttpTestCase
             "uppercase email" => ["MIXED.CASE.USER@EXAMPLE.COM"],
         ];
     }
-}
 }
