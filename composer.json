@@ -11,7 +11,6 @@
   ],
   "require": {
     "php": ">=8.2",
-    "ext-calendar": "*",
     "ext-curl": "*",
     "ext-json": "*",
     "ext-pdo": "*",
