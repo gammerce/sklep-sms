@@ -12,7 +12,7 @@ jobs:
           - php_version: "8.0"
             composer_file: "composer-v8.0.json"
           - php_version: "8.1"
-            composer_file: "composer.json"
+            composer_file: "composer-v8.1.json"
           - php_version: "8.2"
             composer_file: "composer.json"
           - php_version: "8.3"
