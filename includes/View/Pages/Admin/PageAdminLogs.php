@@ -65,7 +65,10 @@ class PageAdminLogs extends PageAdmin
         $statement->bindAndExecute(
             array_merge($queryParticle->params(), $pagination->getSqlLimit())
         );
-        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_logs` {$where}", $queryParticle->params());
+        $rowsCount = $this->db->count(
+            "SELECT COUNT(*) FROM `ss_logs` {$where}",
+            $queryParticle->params()
+        );
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {

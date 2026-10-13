@@ -169,7 +169,9 @@ class Database
         // Explicit charset/collation so fresh installs behave the same
         // regardless of server defaults (5.7 defaults to latin1,
         // 8.x defaults to utf8mb4). No-op for existing databases.
-        $this->query("CREATE DATABASE IF NOT EXISTS `$database` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin");
+        $this->query(
+            "CREATE DATABASE IF NOT EXISTS `$database` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"
+        );
     }
 
     public function dropDatabaseIfExists($database)

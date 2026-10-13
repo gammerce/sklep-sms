@@ -96,8 +96,12 @@ class UTF8MB4Conversion extends Migration
 
         $offenders = [];
         foreach ($indexes as $index) {
-            $dynamic = in_array($rowFormats[$index["TABLE_NAME"]] ?? "", ["Dynamic", "Compressed"], true);
-            $limit = ($modernDefaults || ($largePrefix && $dynamic)) ? 3072 : 767;
+            $dynamic = in_array(
+                $rowFormats[$index["TABLE_NAME"]] ?? "",
+                ["Dynamic", "Compressed"],
+                true
+            );
+            $limit = $modernDefaults || ($largePrefix && $dynamic) ? 3072 : 767;
             if ((int) $index["bytes"] > $limit - 64) {
                 $offenders[] = "`{$index["TABLE_NAME"]}`.`{$index["INDEX_NAME"]}` (~{$index["bytes"]} bytes, limit {$limit})";
             }
@@ -106,7 +110,9 @@ class UTF8MB4Conversion extends Migration
         if ($offenders !== []) {
             throw new RuntimeException(
                 "utf8mb4 conversion aborted: these indexes would exceed this server's index limit " .
-                    "(MySQL {$version}): " . implode(", ", $offenders) . ". " .
+                    "(MySQL {$version}): " .
+                    implode(", ", $offenders) .
+                    ". " .
                     "Fix: ALTER TABLE <table> ROW_FORMAT=DYNAMIC for the listed tables " .
                     "and SET GLOBAL innodb_large_prefix=ON (persist in my.cnf), then re-run. " .
                     "Nothing was converted."

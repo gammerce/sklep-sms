@@ -106,13 +106,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
 
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle}";
 
-        $statement = $this->db->statement(
-            "SELECT * FROM `ss_users` {$where} LIMIT ?, ?"
-        );
+        $statement = $this->db->statement("SELECT * FROM `ss_users` {$where} LIMIT ?, ?");
         $statement->bindAndExecute(
             array_merge($queryParticle->params(), $pagination->getSqlLimit())
         );
-        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_users` {$where}", $queryParticle->params());
+        $rowsCount = $this->db->count(
+            "SELECT COUNT(*) FROM `ss_users` {$where}",
+            $queryParticle->params()
+        );
 
         $bodyRows = collect($statement)
             ->map(fn(array $row) => $this->userRepository->mapToModel($row))

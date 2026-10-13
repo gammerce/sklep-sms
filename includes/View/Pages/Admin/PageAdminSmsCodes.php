@@ -67,10 +67,7 @@ class PageAdminSmsCodes extends PageAdmin implements IPageAdminActionBox
         $pagination = $this->paginationFactory->create($request);
 
         $statement = $this->db->statement(
-            "SELECT * " .
-                "FROM `ss_sms_codes` " .
-                "WHERE `free` = '1' " .
-                "LIMIT ?, ?"
+            "SELECT * " . "FROM `ss_sms_codes` " . "WHERE `free` = '1' " . "LIMIT ?, ?"
         );
         $statement->bindAndExecute($pagination->getSqlLimit());
         $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_sms_codes` WHERE `free` = '1'");
