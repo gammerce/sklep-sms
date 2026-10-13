@@ -57,8 +57,17 @@ class Database
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_STATEMENT_CLASS => [PDOStatement::class],
+            // Bound LIMIT ?, ? params rely on emulated prepares. Native prepares
+            // are supported as well (verified on MySQL 8.4); the toggle exists
+            // so it can be proven with DB_EMULATE_PREPARES=0. Defaults to true
+            // to preserve long-standing behavior (incl. MySQL 5.7).
+            PDO::ATTR_EMULATE_PREPARES => $this->shouldEmulatePrepares(),
         ];
         $this->pdo = new PDO($dsn, $this->user, $this->password, $options);
+        // Explicit connection charset/collation so behavior is identical
+        // regardless of server defaults (5.7: utf8mb4_general_ci,
+        // 8.x: utf8mb4_0900_ai_ci). utf8mb4_bin matches the column collations.
+        $this->pdo->exec("SET NAMES utf8mb4 COLLATE utf8mb4_bin");
     }
 
     /**
@@ -157,7 +166,12 @@ class Database
 
     public function createDatabaseIfNotExists($database)
     {
-        $this->query("CREATE DATABASE IF NOT EXISTS `$database`");
+        // Explicit charset/collation so fresh installs behave the same
+        // regardless of server defaults (5.7 defaults to latin1,
+        // 8.x defaults to utf8mb4). No-op for existing databases.
+        $this->query(
+            "CREATE DATABASE IF NOT EXISTS `$database` CHARACTER SET utf8mb4 COLLATE utf8mb4_bin"
+        );
     }
 
     public function dropDatabaseIfExists($database)
@@ -176,5 +190,31 @@ class Database
     public function isConnected(): bool
     {
         return $this->pdo !== null;
+    }
+
+    /**
+     * Replacement for the MySQL 8.4-deprecated SQL_CALC_FOUND_ROWS/FOUND_ROWS()
+     * pattern: run a SELECT COUNT(*) query over the same rows.
+     *
+     * @param string $query e.g. "SELECT COUNT(*) FROM `ss_logs` WHERE ..."
+     * @param array $params bound params for the count query (without LIMIT params)
+     */
+    public function count($query, array $params = []): int
+    {
+        $statement = $this->statement($query);
+        $statement->bindAndExecute($params);
+
+        return (int) $statement->fetchColumn();
+    }
+
+    private function shouldEmulatePrepares(): bool
+    {
+        $value = getenv("DB_EMULATE_PREPARES");
+
+        if ($value === false || $value === "") {
+            return true;
+        }
+
+        return filter_var($value, FILTER_VALIDATE_BOOL);
     }
 }

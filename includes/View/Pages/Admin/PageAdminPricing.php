@@ -81,14 +81,14 @@ class PageAdminPricing extends PageAdmin implements IPageAdminActionBox
 
         $statement = $this->db->statement(
             <<<EOF
-SELECT SQL_CALC_FOUND_ROWS * 
+SELECT * 
 FROM `ss_prices` 
 ORDER BY `service_id`, `server_id`, `quantity` 
 LIMIT ?, ?
 EOF
         );
         $statement->bindAndExecute($pagination->getSqlLimit());
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_prices`");
 
         $bodyRows = collect($statement)
             ->map(fn(array $row) => $this->priceRepository->mapToModel($row))

@@ -22,9 +22,9 @@ class Price
         $id,
         $serviceId,
         $serverId = null,
-        Money $smsPrice = null,
-        Money $transferPrice = null,
-        Money $directBillingPrice = null,
+        ?Money $smsPrice = null,
+        ?Money $transferPrice = null,
+        ?Money $directBillingPrice = null,
         $quantity = null,
         $discount = null
     ) {

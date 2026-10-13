@@ -8,7 +8,7 @@ use Tests\Psr4\TestCases\UnitTestCase;
 
 class PostalCodeRuleTest extends UnitTestCase
 {
-    public function validPostalCodes(): array
+    public static function validPostalCodes(): array
     {
         return [["00-000"], ["01-960"]];
     }
@@ -29,7 +29,7 @@ class PostalCodeRuleTest extends UnitTestCase
         $this->assertTrue(true);
     }
 
-    public function invalidPostalCodes(): array
+    public static function invalidPostalCodes(): array
     {
         return [["abc"], ["0000"], [""], [null]];
     }

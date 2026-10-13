@@ -118,7 +118,6 @@ class Requester
         }
 
         $httpCode = curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
 
         return new Response($httpCode, $response);
     }

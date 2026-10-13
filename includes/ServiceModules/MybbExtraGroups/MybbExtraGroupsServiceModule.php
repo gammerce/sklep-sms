@@ -236,7 +236,6 @@ class MybbExtraGroupsServiceModule extends ServiceModule implements
         $statement = $this->db->statement(
             <<<EOF
 SELECT 
-SQL_CALC_FOUND_ROWS 
 us.id,
 us.user_id,
 us.comment,
@@ -257,7 +256,18 @@ EOF
         $statement->bindAndExecute(
             array_merge($queryParticle->params(), $pagination->getSqlLimit())
         );
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count(
+            <<<EOF
+SELECT COUNT(*)
+FROM `ss_user_service` AS us
+INNER JOIN `{$this->getUserServiceTable()}` AS usmeg ON usmeg.us_id = us.id
+LEFT JOIN `ss_services` AS s ON s.id = usmeg.service_id
+LEFT JOIN `ss_users` AS u ON u.uid = us.user_id
+{$where}
+EOF
+            ,
+            $queryParticle->params()
+        );
 
         $bodyRows = collect($statement)
             ->map(function (array $row) {

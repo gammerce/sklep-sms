@@ -20,7 +20,7 @@ class PromoCodeRepository
         QuantityType $quantityType,
         $quantity,
         $usageLimit,
-        DateTime $expiresAt = null,
+        ?DateTime $expiresAt = null,
         $serviceId = null,
         $serverId = null,
         $userId = null

@@ -58,12 +58,10 @@ class PageAdminPlayersFlags extends PageAdmin
         $pagination = $this->paginationFactory->create($request);
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_players_flags` " .
-                "ORDER BY `id` DESC " .
-                "LIMIT ?, ?"
+            "SELECT * FROM `ss_players_flags` " . "ORDER BY `id` DESC " . "LIMIT ?, ?"
         );
         $statement->bindAndExecute($pagination->getSqlLimit());
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_players_flags`");
 
         $bodyRows = collect($statement)
             ->map(fn(array $row) => $this->playerFlagRepository->mapToModel($row))

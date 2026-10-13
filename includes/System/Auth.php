@@ -49,7 +49,7 @@ class Auth
         $this->user = $user;
     }
 
-    public function loginAdmin(Request $request, User $user = null): void
+    public function loginAdmin(Request $request, ?User $user = null): void
     {
         $session = $request->getSession();
 

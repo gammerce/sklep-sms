@@ -5,7 +5,6 @@ use App\Support\Money;
 use App\System\Application;
 use App\System\License;
 use App\Translation\LocaleService;
-use DMS\PHPUnitExtensions\ArraySubset\Assert;
 use Mockery;
 use MyCLabs\Enum\Enum;
 use PHPUnit\Framework\TestCase;
@@ -122,7 +121,21 @@ class UnitTestCase extends TestCase
         $checkForObjectIdentity = false,
         $message = ""
     ) {
-        Assert::assertArraySubset($subset, $array, $checkForObjectIdentity, $message);
+        // Native replacement for dms/phpunit-arraysubset-asserts (abandoned,
+        // capped at PHPUnit 10). Behaves like the old Assert::assertArraySubset.
+        $this->assertIsArray($array, $message ?: "Failed asserting that value is an array.");
+
+        foreach ($subset as $key => $value) {
+            $this->assertArrayHasKey($key, $array, $message);
+
+            if (is_array($value) && is_array($array[$key])) {
+                $this->assertArraySubset($value, $array[$key], $checkForObjectIdentity, $message);
+            } elseif ($checkForObjectIdentity) {
+                $this->assertSame($value, $array[$key], $message);
+            } else {
+                $this->assertEquals($value, $array[$key], $message);
+            }
+        }
     }
 
     /**

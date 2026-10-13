@@ -12,7 +12,7 @@ class SmsCode
     private bool $free;
     private ?DateTime $expiresAt;
 
-    public function __construct($id, $code, Money $smsPrice, $free, DateTime $expiresAt = null)
+    public function __construct($id, $code, Money $smsPrice, $free, ?DateTime $expiresAt = null)
     {
         $this->id = $id;
         $this->code = $code;

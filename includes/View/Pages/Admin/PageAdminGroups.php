@@ -55,11 +55,9 @@ class PageAdminGroups extends PageAdmin implements IPageAdminActionBox
     {
         $pagination = $this->paginationFactory->create($request);
 
-        $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * FROM `ss_groups` LIMIT ?, ?"
-        );
+        $statement = $this->db->statement("SELECT * FROM `ss_groups` LIMIT ?, ?");
         $statement->bindAndExecute($pagination->getSqlLimit());
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_groups`");
 
         $bodyRows = collect($statement)
             ->map(
