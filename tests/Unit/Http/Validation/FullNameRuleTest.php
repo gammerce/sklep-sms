@@ -9,7 +9,7 @@ use Tests\Psr4\TestCases\UnitTestCase;
 
 class FullNameRuleTest extends UnitTestCase
 {
-    public function validFullNames(): array
+    public static function validFullNames(): array
     {
         return [["John Wick"], ["John Johny"], ["Ada Ku"], ["Michał Nowak"], ["Zażółć GęśląJaźń"]];
     }
@@ -30,7 +30,7 @@ class FullNameRuleTest extends UnitTestCase
         $this->assertTrue(true);
     }
 
-    public function invalidFullNames(): array
+    public static function invalidFullNames(): array
     {
         return [["xyz"], ["to jestem ja"], ["Mi Bu"], [""], [null]];
     }

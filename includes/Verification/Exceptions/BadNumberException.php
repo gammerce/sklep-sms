@@ -16,7 +16,7 @@ class BadNumberException extends SmsPaymentException
      */
     private ?Money $smsPrice;
 
-    public function __construct(Money $smsPrice = null)
+    public function __construct(?Money $smsPrice = null)
     {
         parent::__construct();
         $this->smsPrice = $smsPrice;

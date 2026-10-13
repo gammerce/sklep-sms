@@ -109,7 +109,7 @@ class PageAdminPayments extends PageAdmin
         }
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS * " .
+            "SELECT * " .
                 "FROM ({$this->transactionRepository->getQuery()}) as t " .
                 $whereQuery .
                 "ORDER BY t.timestamp DESC " .
@@ -118,7 +118,10 @@ class PageAdminPayments extends PageAdmin
         $statement->bindAndExecute(
             array_merge($queryParticle->params(), $pagination->getSqlLimit())
         );
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count(
+            "SELECT COUNT(*) FROM ({$this->transactionRepository->getQuery()}) as t " . $whereQuery,
+            $queryParticle->params()
+        );
 
         $bodyRows = collect($statement)
             ->map(fn(array $row) => $this->transactionRepository->mapToModel($row))

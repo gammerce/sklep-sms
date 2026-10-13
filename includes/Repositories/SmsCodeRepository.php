@@ -59,7 +59,7 @@ class SmsCodeRepository
      * @param DateTime|null $expires
      * @return SmsCode
      */
-    public function create($code, Money $smsPrice, $free, DateTime $expires = null): SmsCode
+    public function create($code, Money $smsPrice, $free, ?DateTime $expires = null): SmsCode
     {
         $this->db
             ->statement(

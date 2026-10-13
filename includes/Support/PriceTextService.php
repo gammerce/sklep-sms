@@ -21,7 +21,7 @@ class PriceTextService
      * @param Money|null $price
      * @return string|null
      */
-    public function getPriceGrossText(Money $price = null): ?string
+    public function getPriceGrossText(?Money $price = null): ?string
     {
         if ($price === null) {
             return null;
@@ -61,7 +61,7 @@ class PriceTextService
      * @param Money|null $price
      * @return string|null
      */
-    public function getPlainPriceGross(Money $price = null): ?string
+    public function getPlainPriceGross(?Money $price = null): ?string
     {
         if ($price === null) {
             return null;

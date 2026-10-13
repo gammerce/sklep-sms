@@ -236,7 +236,7 @@ class Purchase
         return $this->promoCode;
     }
 
-    public function setPromoCode(PromoCode $promoCode = null): self
+    public function setPromoCode(?PromoCode $promoCode = null): self
     {
         $this->promoCode = $promoCode;
         return $this;

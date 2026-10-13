@@ -14,7 +14,6 @@
     "ext-calendar": "*",
     "ext-curl": "*",
     "ext-json": "*",
-    "ext-mysqli": "*",
     "ext-pdo": "*",
     "ext-simplexml": "*",
     "vlucas/phpdotenv": "^5.6",
@@ -33,8 +32,7 @@
     "mockery/mockery": "^1.6",
     "fakerphp/faker": "^1.23",
     "symfony/var-dumper": "^5.4",
-    "psy/psysh": "^0.12",
-    "dms/phpunit-arraysubset-asserts": "^0.5.0"
+    "psy/psysh": "^0.12"
   },
   "autoload": {
     "files": [

@@ -31,7 +31,7 @@ class ContentEvaluatorTest extends UnitTestCase
         $this->assertSame($expectedOutput, $output);
     }
 
-    public function evaluateTextDataProvider(): array
+    public static function evaluateTextDataProvider(): array
     {
         return [
             [

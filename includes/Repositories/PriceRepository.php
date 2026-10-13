@@ -71,7 +71,7 @@ class PriceRepository
      * @param Server|null $server
      * @return Price[]
      */
-    public function findByServiceServer(Service $service, Server $server = null): array
+    public function findByServiceServer(Service $service, ?Server $server = null): array
     {
         $statement = $this->db->statement(
             "SELECT * FROM `ss_prices` " .

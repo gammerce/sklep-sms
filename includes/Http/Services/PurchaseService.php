@@ -101,7 +101,7 @@ class PurchaseService
      * @throws UnexpectedValueException
      */
     private function getPaymentOption(
-        PaymentMethod $paymentMethod = null,
+        ?PaymentMethod $paymentMethod = null,
         $paymentPlatformId = null
     ): PaymentOption {
         if (PaymentMethod::SMS()->equals($paymentMethod)) {

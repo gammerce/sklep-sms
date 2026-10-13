@@ -33,7 +33,7 @@ class PromoCode
         DateTime $createdAt,
         $usageCount = 0,
         $usageLimit = null,
-        DateTime $expiresAt = null,
+        ?DateTime $expiresAt = null,
         $serviceId = null,
         $server = null,
         $userId = null

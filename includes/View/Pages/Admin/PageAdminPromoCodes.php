@@ -76,10 +76,10 @@ class PageAdminPromoCodes extends PageAdmin implements IPageAdminActionBox
         $pagination = $this->paginationFactory->create($request);
 
         $statement = $this->db->statement(
-            "SELECT SQL_CALC_FOUND_ROWS *" . "FROM `ss_promo_codes` AS sc " . "LIMIT ?, ?"
+            "SELECT *" . "FROM `ss_promo_codes` AS sc " . "LIMIT ?, ?"
         );
         $statement->bindAndExecute($pagination->getSqlLimit());
-        $rowsCount = $this->db->query("SELECT FOUND_ROWS()")->fetchColumn();
+        $rowsCount = $this->db->count("SELECT COUNT(*) FROM `ss_promo_codes` AS sc");
 
         $bodyRows = collect($statement)
             ->map(fn(array $row) => $this->promoCodeRepository->mapToModel($row))
