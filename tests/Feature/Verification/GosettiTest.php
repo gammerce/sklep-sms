@@ -35,6 +35,7 @@ class GosettiTest extends TestCase
         $smsDataResponse = $this->loadFixture("gosetti_sms_api_v2_get_data");
         $this->requesterMock
             ->shouldReceive("get")
+            ->byDefault()
             ->withArgs(["https://gosetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(new Response(200, $smsDataResponse));
     }
@@ -139,5 +140,21 @@ class GosettiTest extends TestCase
 
         // then
         $this->assertEquals("CSGO", $smsCode);
+    }
+
+    /** @test */
+    public function returns_empty_string_when_sms_api_is_unavailable()
+    {
+        // given
+        $this->requesterMock
+            ->shouldReceive("get")
+            ->withArgs(["https://gosetti.pl/Api/SmsApiV2GetData.php"])
+            ->andReturn(null);
+
+        // when
+        $smsCode = $this->gosetti->getSmsCode();
+
+        // then
+        $this->assertSame("", $smsCode);
     }
 }

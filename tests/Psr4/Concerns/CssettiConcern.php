@@ -9,6 +9,7 @@ trait CssettiConcern
     {
         $this->requesterMock
             ->shouldReceive("get")
+            ->byDefault()
             ->withArgs(["https://cssetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(
                 new Response(
