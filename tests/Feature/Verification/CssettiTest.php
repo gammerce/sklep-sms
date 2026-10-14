@@ -35,6 +35,7 @@ class CssettiTest extends TestCase
         $smsDataResponse = $this->loadFixture("cssetti_sms_api_v2_get_data");
         $this->requesterMock
             ->shouldReceive("get")
+            ->byDefault()
             ->withArgs(["https://cssetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(new Response(200, $smsDataResponse));
     }
@@ -139,5 +140,21 @@ class CssettiTest extends TestCase
 
         // then
         $this->assertEquals("SKLEP", $smsCode);
+    }
+
+    /** @test */
+    public function returns_empty_string_when_sms_api_is_unavailable()
+    {
+        // given
+        $this->requesterMock
+            ->shouldReceive("get")
+            ->withArgs(["https://cssetti.pl/Api/SmsApiV2GetData.php"])
+            ->andReturn(null);
+
+        // when
+        $smsCode = $this->cssetti->getSmsCode();
+
+        // then
+        $this->assertSame("", $smsCode);
     }
 }

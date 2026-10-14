@@ -18,7 +18,7 @@ class Gosetti extends PaymentModule implements SupportSms
 {
     const MODULE_ID = "gosetti";
 
-    private string $smsCode;
+    private string $smsCode = "";
 
     private array $numbers = [];
 
@@ -124,9 +124,9 @@ class Gosetti extends PaymentModule implements SupportSms
         $data = $response->json();
 
         // GOSetti provides SMS code in the response
-        $this->smsCode = $data["Code"];
+        $this->smsCode = (string) ($data["Code"] ?? "");
 
-        foreach ($data["Numbers"] as $numberData) {
+        foreach ($data["Numbers"] ?? [] as $numberData) {
             $this->numbers[strval(floatval($numberData["TopUpAmount"]))] = strval(
                 $numberData["Number"]
             );

@@ -9,6 +9,7 @@ trait GosettiConcern
     {
         $this->requesterMock
             ->shouldReceive("get")
+            ->byDefault()
             ->withArgs(["https://gosetti.pl/Api/SmsApiV2GetData.php"])
             ->andReturn(
                 new Response(

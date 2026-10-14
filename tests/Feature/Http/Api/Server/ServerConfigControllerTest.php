@@ -132,6 +132,37 @@ class ServerConfigControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function config_response_includes_license_token_when_sms_api_is_unavailable()
+    {
+        // given
+        $this->requesterMock
+            ->shouldReceive("get")
+            ->withArgs(["https://gosetti.pl/Api/SmsApiV2GetData.php"])
+            ->andReturn(null);
+
+        // when
+        $response = $this->get(
+            "/api/server/config",
+            [
+                "token" => $this->server->getToken(),
+                "ip" => $this->server->getIp(),
+                "port" => $this->server->getPort(),
+                "version" => "3.12.0",
+            ],
+            [
+                "Accept" => "application/json",
+                "User-Agent" => Platform::AMXMODX,
+            ]
+        );
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("abc123", $json["license_token"]);
+        $this->assertSame("", $json["sms_text"]);
+    }
+
+    /** @test */
     public function returns_402_if_invalid_version()
     {
         // when

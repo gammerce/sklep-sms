@@ -26,7 +26,7 @@ class Cssetti extends PaymentModule implements SupportSms
     const MODULE_ID = "cssetti";
 
     /** @var string */
-    private $smsCode;
+    private string $smsCode = "";
 
     private array $numbers = [];
 
@@ -131,9 +131,9 @@ class Cssetti extends PaymentModule implements SupportSms
         $data = $response->json();
 
         // cssetti provides SMS code in the response
-        $this->smsCode = $data["Code"];
+        $this->smsCode = (string) ($data["Code"] ?? "");
 
-        foreach ($data["Numbers"] as $numberData) {
+        foreach ($data["Numbers"] ?? [] as $numberData) {
             $this->numbers[strval(floatval($numberData["TopUpAmount"]))] = strval(
                 $numberData["Number"]
             );
