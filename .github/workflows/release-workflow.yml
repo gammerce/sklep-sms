@@ -2,6 +2,17 @@ name: Release workflow
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag to rebuild and replace assets for
+        required: true
+        type: string
+      prerelease:
+        description: Preserve whether the existing release is a prerelease
+        required: true
+        type: boolean
+        default: true
 jobs:
   main:
     name: Build release
@@ -25,6 +36,15 @@ jobs:
             composer_file: "composer.json"
     steps:
       - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.release_tag }}
+
+      - name: Verify release tag matches package version
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.release_tag }}
+        run: |
+          version="$(sed -n 's/^VERSION=//p' confidential/.meta)"
+          test "$version" = "$RELEASE_TAG"
 
       - name: Setup PHP ${{ matrix.php_version }}
         uses: shivammathur/setup-php@v2
@@ -104,6 +124,9 @@ jobs:
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.event.release.tag_name || inputs.release_tag }}
+          prerelease: ${{ github.event.release.prerelease || inputs.prerelease }}
+          overwrite_files: true
           files: ${{ steps.build_artifact.outputs.ARTIFACT_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
