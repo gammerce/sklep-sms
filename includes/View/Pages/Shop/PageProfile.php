@@ -40,12 +40,25 @@ class PageProfile extends Page implements IBeLoggedMust
         $forename = $user->getForename();
         $surname = $user->getSurname();
         $steamId = $user->getSteamId();
+        $steamVerified = $user->isSteamVerified();
+        $hasPassword = $user->hasPassword();
+        $canUnlinkSteam = $steamVerified && $hasPassword;
         $billingAddressName = $user->getBillingAddress()->getName();
         $billingAddressVatID = $user->getBillingAddress()->getVatID();
         $billingAddressStreet = $user->getBillingAddress()->getStreet();
         $billingAddressPostalCode = $user->getBillingAddress()->getPostalCode();
         $billingAddressCity = $user->getBillingAddress()->getCity();
         $billingAddressFormClass = $this->invoiceService->isConfigured() ? "" : "is-hidden";
+
+        $session = $request->getSession();
+        $steamError = "";
+        if ($session->has("steam_error")) {
+            $steamError = $this->lang->t((string) $session->get("steam_error"));
+            $session->remove("steam_error");
+        }
+
+        $emailStatusKey = (string) $request->query->get("email_status", "");
+        $emailStatus = strlen($emailStatusKey) ? $this->lang->t($emailStatusKey) : "";
 
         return $this->template->render(
             "shop/pages/profile",
@@ -55,6 +68,11 @@ class PageProfile extends Page implements IBeLoggedMust
                 "forename",
                 "surname",
                 "steamId",
+                "steamVerified",
+                "hasPassword",
+                "canUnlinkSteam",
+                "steamError",
+                "emailStatus",
                 "billingAddressName",
                 "billingAddressVatID",
                 "billingAddressStreet",

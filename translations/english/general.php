@@ -99,6 +99,7 @@ return [
     "service_isnt_yours" => "Service with this data already exists, but it is not yours.",
     "shop_sms" => "SMS Shop",
     "sid" => "SteamID",
+    "or" => "or",
     "sign_in" => "Sign in",
     "sign_up" => "Sign up",
     "sms_return_code" => "Return code",

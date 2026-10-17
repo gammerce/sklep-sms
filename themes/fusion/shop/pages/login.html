@@ -7,6 +7,13 @@
 
 <main class="section section-body">
     <div class="container">
+        <div class="notification is-danger {{ $steamError ? '' : 'is-hidden' }}">
+            {{ $steamError }}
+        </div>
+        <div class="notification is-info {{ $emailStatus ? '' : 'is-hidden' }}">
+            {{ $emailStatus }}
+        </div>
+
         <form id="form_login">
             <div class="field">
                 <label class="label has-text-black" for="username"> {{ __('username') }} </label>
@@ -57,5 +64,18 @@
                 </div>
             </div>
         </form>
+
+        <div class="field or-divider has-text-centered">{{ __('or') }}</div>
+
+        <div class="field action-buttons">
+            <div class="control is-expanded">
+                <a class="button btn-steam" href="{{ url('/api/steam/login') }}">
+                    <span class="icon">
+                        <i class="fab fa-steam"></i>
+                    </span>
+                    <span>{{ __('sign_in_with_steam') }}</span>
+                </a>
+            </div>
+        </div>
     </div>
 </main>

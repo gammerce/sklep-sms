@@ -78,6 +78,51 @@ class UserProfileResourceTest extends HttpTestCase
     }
 
     /** @test */
+    public function cannot_change_verified_steam_id()
+    {
+        // given
+        $user = $this->factory->user();
+        $this->userRepository->linkSteamId($user->getId(), "STEAM_1:0:22309350");
+        $this->actingAs($this->userRepository->get($user->getId()));
+
+        // when
+        $response = $this->put("/api/profile", [
+            "username" => "abc",
+            "steam_id" => "STEAM_1:0:99999999",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertSame("STEAM_1:0:22309350", $freshUser->getSteamId());
+        $this->assertTrue($freshUser->isSteamVerified());
+    }
+
+    /** @test */
+    public function verified_profile_update_without_steam_id_keeps_it()
+    {
+        // given a verified account: the SteamID field is disabled and not submitted
+        $user = $this->factory->user();
+        $this->userRepository->linkSteamId($user->getId(), "STEAM_1:0:22309350");
+        $this->actingAs($this->userRepository->get($user->getId()));
+
+        // when
+        $response = $this->put("/api/profile", [
+            "username" => "abc",
+            "forename" => "poq",
+            "surname" => "wer",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("ok", $json["return_id"]);
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertSame("STEAM_1:0:22309350", $freshUser->getSteamId());
+        $this->assertTrue($freshUser->isSteamVerified());
+    }
+
+    /** @test */
     public function cannot_update_profile_as_admin_in_demo_mode()
     {
         putenv("APP_SUBDOMAIN=demo");

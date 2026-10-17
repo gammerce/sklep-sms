@@ -359,3 +359,40 @@ body {
 .billing-address-form {
     margin-bottom: 3rem;
 }
+
+.or-divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 1.5rem 0;
+    color: $scheme-main-ter;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        border-top: 1px solid $hr-background-color;
+    }
+}
+
+// "Sign in through Steam" – official-style branding (dark graphite, white logo)
+.button.btn-steam {
+    background-color: #171a21;
+    border-color: #000;
+    color: #c7d5e0;
+    font-weight: 600;
+
+    .icon {
+        color: #fff;
+    }
+
+    &:hover,
+    &:focus {
+        background-color: #2a475e;
+        border-color: #000;
+        color: #fff;
+    }
+}

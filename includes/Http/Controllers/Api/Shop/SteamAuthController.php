@@ -1,0 +1,261 @@
+<?php
+namespace App\Http\Controllers\Api\Shop;
+
+use App\Loggers\DatabaseLogger;
+use App\Repositories\UserRepository;
+use App\Routing\UrlGenerator;
+use App\Support\SteamIDConverter;
+use App\Support\SteamOpenId;
+use App\Support\SteamProfile;
+use App\System\Auth;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * "Sign in through Steam" (OpenID 2.0).
+ *
+ * Security model:
+ *  - Only a Steam ID proven via OpenID (`steam_verified = 1`) is used to
+ *    authenticate. A manually typed (unverified) Steam ID never logs anyone in.
+ *  - A verified Steam ID cannot be changed manually; it can only be removed by
+ *    unlinking, which clears both `steam_id` and `steam_verified`.
+ *  - An unverified Steam ID matching an existing account is never auto-merged; the
+ *    user is asked to log in with a password and then connect Steam.
+ */
+class SteamAuthController
+{
+    public function login(Request $request, SteamOpenId $steamOpenId, UrlGenerator $url): Response
+    {
+        return $this->start($request, $steamOpenId, $url, "login", null);
+    }
+
+    public function link(
+        Request $request,
+        SteamOpenId $steamOpenId,
+        UrlGenerator $url,
+        Auth $auth
+    ): Response {
+        return $this->start($request, $steamOpenId, $url, "link", $auth->user()->getId());
+    }
+
+    public function callback(
+        Request $request,
+        SteamOpenId $steamOpenId,
+        Auth $auth,
+        SteamProfile $steamProfile,
+        UserRepository $userRepository,
+        UrlGenerator $url,
+        DatabaseLogger $logger
+    ): Response {
+        $session = $request->getSession();
+        $expectedState = $session->get("steam_state");
+        $intent = $session->get("steam_intent") ?: "login";
+        $linkUserId = $session->get("steam_link_uid");
+
+        $session->remove("steam_state");
+        $session->remove("steam_intent");
+        $session->remove("steam_link_uid");
+
+        $state = (string) $request->query->get("state", "");
+        $failurePath = $intent === "link" ? "/page/profile" : "/page/login";
+
+        if (!$expectedState || !hash_equals((string) $expectedState, $state)) {
+            return $this->fail($request, $url, "steam_auth_error", $failurePath);
+        }
+
+        $expectedReturnTo = $url->to("/api/steam/callback", ["state" => $state]);
+        $steamId64 = $steamOpenId->verify($request, $expectedReturnTo);
+
+        if ($steamId64 === null) {
+            return $this->fail($request, $url, "steam_auth_error", $failurePath);
+        }
+
+        $steamId = (new SteamIDConverter())->toSteamID($steamId64);
+
+        if ($intent === "link") {
+            return $this->linkAccount(
+                $request,
+                $auth,
+                $userRepository,
+                $url,
+                $logger,
+                $steamId,
+                $linkUserId
+            );
+        }
+
+        return $this->loginOrRegister(
+            $request,
+            $auth,
+            $steamProfile,
+            $userRepository,
+            $url,
+            $logger,
+            $steamId64,
+            $steamId
+        );
+    }
+
+    public function disconnect(
+        Request $request,
+        Auth $auth,
+        UserRepository $userRepository,
+        UrlGenerator $url,
+        DatabaseLogger $logger
+    ): Response {
+        $user = $auth->user();
+
+        if (!$user->isSteamVerified()) {
+            return $this->fail($request, $url, "steam_not_connected", "/page/profile");
+        }
+
+        // Without a password, unlinking would permanently lock the user out.
+        if (!$user->hasPassword()) {
+            return $this->fail($request, $url, "steam_unlink_set_password", "/page/profile");
+        }
+
+        $userRepository->clearSteamId($user->getId());
+        $user->setSteamId(null);
+        $user->setSteamVerified(false);
+        $logger->logWithUser($user, "log_steam_unlinked", $user->getUsername());
+
+        return new RedirectResponse($url->to("/page/profile"));
+    }
+
+    private function start(
+        Request $request,
+        SteamOpenId $steamOpenId,
+        UrlGenerator $url,
+        string $intent,
+        ?int $userId
+    ): Response {
+        $state = get_random_string(32);
+        $session = $request->getSession();
+        $session->set("steam_state", $state);
+        $session->set("steam_intent", $intent);
+        $session->set("steam_link_uid", $userId);
+
+        $returnTo = $url->to("/api/steam/callback", ["state" => $state]);
+        $realm = rtrim($url->getShopUrl(), "/") . "/";
+
+        return new RedirectResponse($steamOpenId->buildAuthUrl($returnTo, $realm));
+    }
+
+    private function loginOrRegister(
+        Request $request,
+        Auth $auth,
+        SteamProfile $steamProfile,
+        UserRepository $userRepository,
+        UrlGenerator $url,
+        DatabaseLogger $logger,
+        string $steamId64,
+        string $steamId
+    ): Response {
+        $user = $userRepository->findBySteamId($steamId);
+
+        if ($user) {
+            // A Steam ID that was only typed in (not proven) must never log in,
+            // otherwise anyone could pre-claim a public Steam ID and hijack logins.
+            if (!$user->isSteamVerified()) {
+                return $this->fail($request, $url, "steam_account_exists", "/page/login");
+            }
+
+            $auth->loginUser($request, $user);
+            return new RedirectResponse($url->to("/"));
+        }
+
+        $username = $this->generateUsername($steamProfile, $userRepository, $steamId64);
+        // Non-routable placeholder: unique per user and never mailed.
+        $email = "steam-{$steamId64}@steam.invalid";
+
+        $created = $userRepository->createSteamUser(
+            $username,
+            $steamId,
+            $email,
+            get_ip($request)
+        );
+
+        $auth->loginUser($request, $created);
+        $logger->log(
+            "log_steam_account_created",
+            $created->getId(),
+            $created->getUsername(),
+            $created->getRegIp()
+        );
+
+        return new RedirectResponse($url->to("/page/profile"));
+    }
+
+    private function linkAccount(
+        Request $request,
+        Auth $auth,
+        UserRepository $userRepository,
+        UrlGenerator $url,
+        DatabaseLogger $logger,
+        string $steamId,
+        ?int $linkUserId
+    ): Response {
+        if (!$auth->check()) {
+            return $this->fail($request, $url, "steam_auth_error", "/page/login");
+        }
+
+        $user = $auth->user();
+
+        if ($linkUserId && $user->getId() !== $linkUserId) {
+            return $this->fail($request, $url, "steam_auth_error", "/page/profile");
+        }
+
+        $existing = $userRepository->findBySteamId($steamId);
+        if ($existing && $existing->getId() !== $user->getId()) {
+            return $this->fail($request, $url, "steam_id_occupied", "/page/profile");
+        }
+
+        $userRepository->linkSteamId($user->getId(), $steamId);
+        $user->setSteamId($steamId);
+        $user->setSteamVerified(true);
+        $logger->logWithUser($user, "log_steam_linked", $user->getUsername());
+
+        return new RedirectResponse($url->to("/page/profile"));
+    }
+
+    private function generateUsername(
+        SteamProfile $steamProfile,
+        UserRepository $userRepository,
+        string $steamId64
+    ): string {
+        $persona = $steamProfile->getPersonaName($steamId64);
+        $base = $persona ? $this->sanitizeUsername($persona) : "";
+
+        if (strlen($base) < 2) {
+            $base = "steam_{$steamId64}";
+        }
+
+        $username = $base;
+        $i = 1;
+        while ($userRepository->findByUsername($username)) {
+            $username = $base . "_" . $i;
+            $i++;
+        }
+
+        return mb_substr($username, 0, 64);
+    }
+
+    private function sanitizeUsername(string $value): string
+    {
+        // UsernameRule rejects <, >, & and " (htmlspecialchars must be a no-op).
+        $value = preg_replace('/[<>&"]/', "", $value) ?? "";
+        return trim($value);
+    }
+
+    private function fail(
+        Request $request,
+        UrlGenerator $url,
+        string $errorKey,
+        string $path
+    ): Response {
+        $request->getSession()->set("steam_error", $errorKey);
+
+        return new RedirectResponse($url->to($path));
+    }
+}

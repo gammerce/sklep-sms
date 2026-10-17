@@ -99,6 +99,7 @@ return [
     "service_isnt_yours" => "Istnieje już usługa na takie dane, lecz nie należy ona do Ciebie.",
     "shop_sms" => "Sklep SMS",
     "sid" => "SteamID",
+    "or" => "lub",
     "sign_in" => "Zaloguj się",
     "sign_up" => "Zarejestruj się",
     "sms_return_code" => "Kod zwrotny",

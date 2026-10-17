@@ -26,6 +26,7 @@ class User
     private ?string $regIp;
     private ?string $lastIp;
     private ?string $resetPasswordKey;
+    private bool $steamVerified;
 
     /** @var Permission[] */
     private array $permissions;
@@ -47,7 +48,8 @@ class User
         $regIp = null,
         $lastIp = null,
         $resetPasswordKey = null,
-        array $permissions = []
+        array $permissions = [],
+        $steamVerified = false
     ) {
         $this->id = $id;
         $this->username = $username;
@@ -65,6 +67,7 @@ class User
         $this->regIp = $regIp;
         $this->lastIp = $lastIp;
         $this->resetPasswordKey = $resetPasswordKey;
+        $this->steamVerified = (bool) $steamVerified;
         $this->permissions = collect($permissions)
             ->flatMap(fn(Permission $permission) => [$permission->getKey() => $permission])
             ->all();
@@ -250,6 +253,30 @@ class User
     public function setSteamId($steamId): void
     {
         $this->steamId = $steamId;
+    }
+
+    /**
+     * Whether the steam_id was proven via Steam OpenID. Only a verified Steam ID
+     * may be used to authenticate, and it cannot be changed outside of unlink.
+     */
+    public function isSteamVerified(): bool
+    {
+        return $this->steamVerified;
+    }
+
+    public function setSteamVerified(bool $steamVerified): void
+    {
+        $this->steamVerified = $steamVerified;
+    }
+
+    /**
+     * Steam-only accounts are auto-created without a usable password. An empty
+     * password can never match a login (hash_password always returns a hash), so
+     * it doubles as the "no password" marker without an extra column.
+     */
+    public function hasPassword(): bool
+    {
+        return strlen((string) $this->password) > 0;
     }
 
     public function getBillingAddress(): BillingAddress

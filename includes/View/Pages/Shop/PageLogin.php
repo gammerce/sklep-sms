@@ -16,6 +16,30 @@ class PageLogin extends Page implements IBeLoggedCannot
 
     public function getContent(Request $request)
     {
-        return $this->template->render("shop/pages/login");
+        $steamError = $this->pullSessionMessage($request, "steam_error");
+        $emailStatus = $this->queryMessage($request, "email_status");
+
+        return $this->template->render("shop/pages/login", compact("steamError", "emailStatus"));
+    }
+
+    private function pullSessionMessage(Request $request, string $key): string
+    {
+        $session = $request->getSession();
+
+        if (!$session->has($key)) {
+            return "";
+        }
+
+        $message = $this->lang->t((string) $session->get($key));
+        $session->remove($key);
+
+        return $message;
+    }
+
+    private function queryMessage(Request $request, string $key): string
+    {
+        $value = (string) $request->query->get($key, "");
+
+        return strlen($value) ? $this->lang->t($value) : "";
     }
 }
