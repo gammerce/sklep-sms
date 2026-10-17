@@ -259,7 +259,9 @@ class PageAdminIncome extends PageAdmin
         $labels = [];
         // Native date handling instead of ext-calendar's cal_days_in_month():
         // the extension is not a declared dependency (dropped in #453).
-        $daysInMonth = (int) (new \DateTimeImmutable(sprintf("%04d-%02d-01", $year, $month)))->format("t");
+        $daysInMonth = (int) (new \DateTimeImmutable(
+            sprintf("%04d-%02d-01", $year, $month)
+        ))->format("t");
 
         for ($dayId = 1; $dayId <= $daysInMonth; ++$dayId) {
             $date =
