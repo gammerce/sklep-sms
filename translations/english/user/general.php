@@ -9,6 +9,9 @@ return [
     "change_password" => "Change password",
     "change_password_subtitle" =>
         "In order to change your enter an old password. Then enter a new password and type it again.",
+    "set_password" => "Set password",
+    "set_password_subtitle" =>
+        "Set a password so you can also sign in with your e-mail address.",
     "charge_wallet" => "Top up your wallet",
     "choose_payment" => "Choose payment method",
     "choose_payment_module" => "Choose payment module",

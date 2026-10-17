@@ -9,6 +9,9 @@ return [
     "change_password" => "Zmiana hasła",
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",
+    "set_password" => "Ustaw hasło",
+    "set_password_subtitle" =>
+        "Ustaw hasło, aby móc logować się także adresem e-mail.",
     "charge_wallet" => "Doładuj portfel",
     "choose_payment" => "Wybierz metodę płatność",
     "choose_payment_module" => "Wybierz moduł płatności",
