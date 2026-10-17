@@ -246,7 +246,7 @@
         </div>
 
         <form
-            class="{{ $canUnlinkSteam ? '' : 'is-hidden' }}"
+            class="{{ $canDisconnectSteam ? '' : 'is-hidden' }}"
             method="POST"
             action="{{ url('/api/steam/disconnect') }}"
         >
@@ -254,7 +254,7 @@
             <button class="button is-danger" type="submit">{{ __('steam_unlink') }}</button>
         </form>
 
-        <div class="{{ $canUnlinkSteam ? 'is-hidden' : '' }}">
+        <div class="{{ $needsPasswordToDisconnect ? '' : 'is-hidden' }}">
             <p class="mb-3">{{ __('steam_unlink_set_password') }}</p>
             <a class="button is-warning" href="{{ url('/page/change_password') }}">
                 {{ __('change_password') }}
