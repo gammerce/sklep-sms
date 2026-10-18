@@ -207,6 +207,8 @@ You can now profit from many add-ons.',
     "steam" => "Steam",
     "steam_account_exists" =>
         "This Steam ID is already entered on an account. Log in with your password, then connect Steam in your profile.",
+    "steam_already_linked" =>
+        "A Steam account is already connected. Disconnect it first to connect a different one.",
     "steam_auth_error" => "Could not sign in through Steam. Please try again.",
     "steam_link" => "Connect Steam",
     "steam_link_hint" => "Connect your Steam account to sign in without a password.",

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Shop;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
-use App\Support\SteamIDConverter;
 use App\Support\SteamOpenId;
 use App\Support\SteamProfile;
 use App\System\Auth;
@@ -17,11 +16,15 @@ use Symfony\Component\HttpFoundation\Response;
  *
  * Security model:
  *  - Only a Steam ID proven via OpenID (`steam_verified = 1`) is used to
- *    authenticate. A manually typed (unverified) Steam ID never logs anyone in.
- *  - A verified Steam ID cannot be changed manually; it can only be removed by
- *    unlinking, which clears both `steam_id` and `steam_verified`.
- *  - An unverified Steam ID matching an existing account is never auto-merged; the
- *    user is asked to log in with a password and then connect Steam.
+ *    authenticate web login. A manually typed (unverified) Steam ID never logs
+ *    anyone in and is never auto-merged.
+ *  - A verified Steam ID cannot be changed without first unlinking (which
+ *    clears both `steam_id` and `steam_verified`).
+ *  - Connecting via OpenID reclaims a Steam ID held by an unverified claim on
+ *    another account; a conflicting verified link is refused.
+ *
+ * Steam IDs are handled in canonical form (SteamID64); the repository converts
+ * to/from the legacy display form at its boundary.
  */
 class SteamAuthController
 {
@@ -71,8 +74,6 @@ class SteamAuthController
             return $this->fail($request, $url, "steam_auth_error", $failurePath);
         }
 
-        $steamId = (new SteamIDConverter())->toSteamID($steamId64);
-
         if ($intent === "link") {
             return $this->linkAccount(
                 $request,
@@ -80,7 +81,7 @@ class SteamAuthController
                 $userRepository,
                 $url,
                 $logger,
-                $steamId,
+                $steamId64,
                 $linkUserId
             );
         }
@@ -92,8 +93,7 @@ class SteamAuthController
             $userRepository,
             $url,
             $logger,
-            $steamId64,
-            $steamId
+            $steamId64
         );
     }
 
@@ -111,7 +111,7 @@ class SteamAuthController
         }
 
         // Without a password, unlinking would permanently lock the user out.
-        if (!$user->hasPassword()) {
+        if (!$user->canUnlinkSteam()) {
             return $this->fail($request, $url, "steam_unlink_set_password", "/page/profile");
         }
 
@@ -149,10 +149,9 @@ class SteamAuthController
         UserRepository $userRepository,
         UrlGenerator $url,
         DatabaseLogger $logger,
-        string $steamId64,
-        string $steamId
+        string $steamId64
     ): Response {
-        $user = $userRepository->findBySteamId($steamId);
+        $user = $userRepository->findBySteamId($steamId64);
 
         if ($user) {
             // A Steam ID that was only typed in (not proven) must never log in,
@@ -165,14 +164,10 @@ class SteamAuthController
             return new RedirectResponse($url->to("/"));
         }
 
-        $username = $this->generateUsername($steamProfile, $userRepository, $steamId64);
-        // Non-routable placeholder: unique per user and never mailed.
-        $email = "steam-{$steamId64}@steam.invalid";
-
         $created = $userRepository->createSteamUser(
-            $username,
-            $steamId,
-            $email,
+            $this->generateUsername($steamProfile, $userRepository, $steamId64),
+            $steamId64,
+            steam_placeholder_email(),
             get_ip($request)
         );
 
@@ -193,7 +188,7 @@ class SteamAuthController
         UserRepository $userRepository,
         UrlGenerator $url,
         DatabaseLogger $logger,
-        string $steamId,
+        string $steamId64,
         ?int $linkUserId
     ): Response {
         if (!$auth->check()) {
@@ -206,7 +201,17 @@ class SteamAuthController
             return $this->fail($request, $url, "steam_auth_error", "/page/profile");
         }
 
-        $existing = $userRepository->findBySteamId($steamId);
+        if ($user->isSteamVerified()) {
+            // Already linked: re-linking the same account is a no-op, a different
+            // one requires unlinking first (verified link is otherwise immutable).
+            if (to_canonical_steam_id($user->getSteamId()) === $steamId64) {
+                return new RedirectResponse($url->to("/page/profile"));
+            }
+
+            return $this->fail($request, $url, "steam_already_linked", "/page/profile");
+        }
+
+        $existing = $userRepository->findBySteamId($steamId64);
         if ($existing && $existing->getId() !== $user->getId()) {
             if ($existing->isSteamVerified()) {
                 return $this->fail($request, $url, "steam_id_occupied", "/page/profile");
@@ -215,16 +220,11 @@ class SteamAuthController
             // A proven (OpenID) owner takes the Steam ID over from a manually
             // typed, unverified claim.
             $userRepository->clearSteamId($existing->getId());
-            $logger->log(
-                "log_steam_overridden",
-                $existing->getId(),
-                $steamId,
-                $user->getId()
-            );
+            $logger->log("log_steam_overridden", $existing->getId(), $steamId64, $user->getId());
         }
 
-        $userRepository->linkSteamId($user->getId(), $steamId);
-        $user->setSteamId($steamId);
+        $userRepository->linkSteamId($user->getId(), $steamId64);
+        $user->setSteamId(to_legacy_steam_id($steamId64));
         $user->setSteamVerified(true);
         $logger->logWithUser($user, "log_steam_linked", $user->getUsername());
 
@@ -243,21 +243,23 @@ class SteamAuthController
             $base = "steam_{$steamId64}";
         }
 
+        // Keep room for the "_N" suffix inside the 64-char username column.
+        $base = mb_substr($base, 0, 55);
+
         $username = $base;
         $i = 1;
         while ($userRepository->findByUsername($username)) {
-            $username = $base . "_" . $i;
+            $username = mb_substr($base . "_" . $i, 0, 64);
             $i++;
         }
 
-        return mb_substr($username, 0, 64);
+        return $username;
     }
 
     private function sanitizeUsername(string $value): string
     {
-        // UsernameRule rejects <, >, & and " (htmlspecialchars must be a no-op).
-        $value = preg_replace('/[<>&"]/', "", $value) ?? "";
-        return trim($value);
+        // UsernameRule requires htmlspecialchars() to be a no-op.
+        return trim(str_replace(['<', '>', '&', '"', "'"], "", $value));
     }
 
     private function fail(

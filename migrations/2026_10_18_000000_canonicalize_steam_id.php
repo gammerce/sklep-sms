@@ -17,9 +17,6 @@ use App\Support\SteamIDConverter;
  */
 class CanonicalizeSteamId extends Migration
 {
-    private const STEAMID64_BASE = 76561197960265728; // universe=1, type=1, instance=1, accountID=0
-    private const STEAMID64_MAX = self::STEAMID64_BASE + 2 * 4294967295 + 1;
-
     public function up()
     {
         $converter = new SteamIDConverter();
@@ -38,10 +35,7 @@ class CanonicalizeSteamId extends Migration
             $canonical = $this->resolve($uid, $raw, $converter);
 
             if ($canonical === null) {
-                $this->setSteamId($uid, null);
-                $this->db
-                    ->statement("UPDATE `ss_users` SET `steam_verified` = 0 WHERE `uid` = ?")
-                    ->bindAndExecute([$uid]);
+                $this->unlink($uid);
                 $this->fileLogger->install(
                     "Steam ID canonicalization: invalid value unlinked for uid={$uid}: {$raw}"
                 );
@@ -64,14 +58,18 @@ class CanonicalizeSteamId extends Migration
                 return $a["uid"] <=> $b["uid"];
             });
 
+            // Clear every member first, then write the winner: avoids transient
+            // UNIQUE(steam_id) collisions when a loser already holds the canonical
+            // value.
+            foreach ($entries as $entry) {
+                $this->setSteamId($entry["uid"], null);
+            }
+
             $winner = array_shift($entries);
             $this->setSteamId($winner["uid"], $canonical);
 
             foreach ($entries as $loser) {
-                $this->setSteamId($loser["uid"], null);
-                $this->db
-                    ->statement("UPDATE `ss_users` SET `steam_verified` = 0 WHERE `uid` = ?")
-                    ->bindAndExecute([$loser["uid"]]);
+                $this->unlink($loser["uid"]);
                 $this->fileLogger->install(
                     "Steam ID collision canonicalized: uid={$loser["uid"]} ({$loser["raw"]}) unlinked, kept uid={$winner["uid"]} ({$canonical})"
                 );
@@ -83,7 +81,7 @@ class CanonicalizeSteamId extends Migration
     {
         // Repair legacy double-encoding: STEAM_x:y:<SteamID64>.
         if (preg_match("/^STEAM_[0-5]:[01]:(7656119[0-9]{10})$/", $raw, $matches)) {
-            if (!$this->isValidSteamId64($matches[1])) {
+            if (!$converter->isValidSteamID64($matches[1])) {
                 return null;
             }
 
@@ -94,24 +92,16 @@ class CanonicalizeSteamId extends Migration
             return $matches[1];
         }
 
-        try {
-            $canonical = $converter->toSteamID64($raw);
-        } catch (UnexpectedValueException $e) {
-            return null;
-        }
-
-        return $this->isValidSteamId64($canonical) ? $canonical : null;
+        return $converter->tryToSteamID64($raw);
     }
 
-    private function isValidSteamId64(string $value): bool
+    private function unlink(int $uid): void
     {
-        if (!preg_match("/^[0-9]{17}$/", $value)) {
-            return false;
-        }
-
-        $number = (int) $value;
-
-        return $number >= self::STEAMID64_BASE && $number <= self::STEAMID64_MAX;
+        $this->db
+            ->statement(
+                "UPDATE `ss_users` SET `steam_id` = NULL, `steam_verified` = 0 WHERE `uid` = ?"
+            )
+            ->bindAndExecute([$uid]);
     }
 
     private function setSteamId(int $uid, ?string $value): void

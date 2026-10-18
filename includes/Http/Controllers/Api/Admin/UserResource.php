@@ -53,7 +53,9 @@ class UserResource
 
         $validated = $validator->validateOrFail();
 
-        $steamIdChanged = $editedUser->getSteamId() !== $validated["steam_id"];
+        $steamIdChanged =
+            to_canonical_steam_id($editedUser->getSteamId()) !==
+            to_canonical_steam_id($validated["steam_id"]);
 
         $editedUser->setEmail($validated["email"]);
         $editedUser->setForename($validated["forename"]);

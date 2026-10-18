@@ -1,6 +1,7 @@
 <?php
 namespace App\View\Pages\Shop;
 
+use App\Http\Controllers\Api\Shop\EmailChangeController;
 use App\Payment\Invoice\InvoiceService;
 use App\Theme\Template;
 use App\System\Auth;
@@ -41,9 +42,8 @@ class PageProfile extends Page implements IBeLoggedMust
         $surname = $user->getSurname();
         $steamId = $user->getSteamId();
         $steamVerified = $user->isSteamVerified();
-        $hasPassword = $user->hasPassword();
-        $canDisconnectSteam = $steamVerified && $hasPassword;
-        $needsPasswordToDisconnect = $steamVerified && !$hasPassword;
+        $canDisconnectSteam = $user->canUnlinkSteam();
+        $needsPasswordToDisconnect = $steamVerified && !$canDisconnectSteam;
         $billingAddressName = $user->getBillingAddress()->getName();
         $billingAddressVatID = $user->getBillingAddress()->getVatID();
         $billingAddressStreet = $user->getBillingAddress()->getStreet();
@@ -51,15 +51,8 @@ class PageProfile extends Page implements IBeLoggedMust
         $billingAddressCity = $user->getBillingAddress()->getCity();
         $billingAddressFormClass = $this->invoiceService->isConfigured() ? "" : "is-hidden";
 
-        $session = $request->getSession();
-        $steamError = "";
-        if ($session->has("steam_error")) {
-            $steamError = $this->lang->t((string) $session->get("steam_error"));
-            $session->remove("steam_error");
-        }
-
-        $emailStatusKey = (string) $request->query->get("email_status", "");
-        $emailStatus = strlen($emailStatusKey) ? $this->lang->t($emailStatusKey) : "";
+        $steamError = $this->pullSessionMessage($request, "steam_error");
+        $emailStatus = $this->queryMessage($request, "email_status", EmailChangeController::STATUS_KEYS);
 
         return $this->template->render(
             "shop/pages/profile",
@@ -70,7 +63,6 @@ class PageProfile extends Page implements IBeLoggedMust
                 "surname",
                 "steamId",
                 "steamVerified",
-                "hasPassword",
                 "canDisconnectSteam",
                 "needsPasswordToDisconnect",
                 "steamError",

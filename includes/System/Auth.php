@@ -45,7 +45,10 @@ class Auth
         assert($user->exists());
 
         $this->userManager->set($user);
-        $request->getSession()->set("uid", $user->getId());
+        $session = $request->getSession();
+        // Prevent session fixation: rotate the id on privilege change.
+        $session->migrate(true);
+        $session->set("uid", $user->getId());
         $this->user = $user;
     }
 
@@ -54,6 +57,7 @@ class Auth
         $session = $request->getSession();
 
         if ($user && $user->can(Permission::ACP())) {
+            $session->migrate(true);
             $session->set("uid", $user->getId());
             $this->user = $user;
         } else {

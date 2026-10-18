@@ -215,7 +215,7 @@ function get_random_string(int $length): string
     $chars = "abcdefghijklmnopqrstuvwxyz1234567890";
     $finalRand = "";
     for ($i = 0; $i < $length; $i++) {
-        $finalRand .= $chars[rand(0, strlen($chars) - 1)];
+        $finalRand .= $chars[random_int(0, strlen($chars) - 1)];
     }
 
     return $finalRand;
@@ -226,9 +226,9 @@ function get_random_string(int $length): string
  * @param string $search
  * @return QueryParticle|null
  */
-function create_search_query(array $columns, string $search): ?QueryParticle
+function create_search_query(array $columns, string $search, array $extraConditions = []): ?QueryParticle
 {
-    if (!$columns) {
+    if (!$columns && !$extraConditions) {
         return null;
     }
 
@@ -240,6 +240,12 @@ function create_search_query(array $columns, string $search): ?QueryParticle
     foreach ($columns as $searchId) {
         $params[] = "{$searchId} LIKE ?";
         $values[] = $searchLike;
+    }
+
+    // Additional OR'd conditions, e.g. [["`steam_id` = ?", [$canonical]]].
+    foreach ($extraConditions as [$condition, $conditionValues]) {
+        $params[] = $condition;
+        $values = array_merge($values, $conditionValues);
     }
 
     $queryParticle = new QueryParticle();
@@ -286,23 +292,12 @@ function my_is_integer(mixed $val): bool
 }
 
 /**
- * Canonical stored Steam ID form: SteamID64. Accepts SteamID64, STEAM_x:y:z
- * and [U:1:x]; the universe ("STEAM_0"/"STEAM_1") is ignored. null when the
- * value is empty or not a Steam ID.
+ * Canonical stored Steam ID form: SteamID64. Delegates to SteamIDConverter so
+ * the accepted formats live in one place.
  */
 function to_canonical_steam_id(mixed $value): ?string
 {
-    $value = trim((string) $value);
-
-    if (!strlen($value)) {
-        return null;
-    }
-
-    try {
-        return (new \App\Support\SteamIDConverter())->toSteamID64($value);
-    } catch (\UnexpectedValueException $e) {
-        return null;
-    }
+    return (new \App\Support\SteamIDConverter())->tryToSteamID64($value);
 }
 
 /**
@@ -310,17 +305,21 @@ function to_canonical_steam_id(mixed $value): ?string
  */
 function to_legacy_steam_id(mixed $value): ?string
 {
-    $value = trim((string) $value);
+    return (new \App\Support\SteamIDConverter())->tryToSteamID($value);
+}
 
-    if (!strlen($value)) {
-        return null;
-    }
+/**
+ * Non-routable, unpredictable placeholder address for an account created via
+ * Steam before the user sets a real e-mail.
+ */
+function steam_placeholder_email(): string
+{
+    return "steam-" . get_random_string(24) . "@steam.invalid";
+}
 
-    try {
-        return (new \App\Support\SteamIDConverter())->toSteamID($value);
-    } catch (\UnexpectedValueException $e) {
-        return null;
-    }
+function is_steam_placeholder_email(string $email): bool
+{
+    return str_ends_with($email, "@steam.invalid");
 }
 
 function array_get(ArrayAccess|array|null $array, mixed $key, mixed $default = null): mixed

@@ -56,6 +56,56 @@ class CanonicalizeSteamIdTest extends HttpTestCase
         $this->assertNull($this->steamIdOf($unverified));
     }
 
+    /** @test */
+    public function handles_a_loser_that_already_holds_the_canonical_value()
+    {
+        // given the winner holds the legacy form and the loser the canonical one
+        $canonical = (new SteamIDConverter())->toSteamID64("STEAM_0:1:55555555");
+        $winner = $this->addUser("m_w", "STEAM_1:1:55555555", 1);
+        $loser = $this->addUser("m_l", $canonical, 0);
+
+        // when
+        $this->app->make("CanonicalizeSteamId")->up();
+
+        // then (no UNIQUE violation: the group is cleared before the winner is set)
+        $this->assertSame($canonical, $this->steamIdOf($winner));
+        $this->assertNull($this->steamIdOf($loser));
+    }
+
+    /** @test */
+    public function is_idempotent()
+    {
+        // given
+        $user = $this->addUser("m_plain", "STEAM_1:0:22309350", 0);
+        $migration = $this->app->make("CanonicalizeSteamId");
+
+        // when
+        $migration->up();
+        $first = $this->steamIdOf($user);
+        $migration->up();
+
+        // then
+        $this->assertSame($first, $this->steamIdOf($user));
+    }
+
+    /** @test */
+    public function accepts_steam3_and_rejects_out_of_range()
+    {
+        // given
+        $steam3 = $this->addUser("m_s3", "[U:1:20340372]", 0);
+        $outOfRange = $this->addUser("m_bad", "00000000000000000", 0);
+
+        // when
+        $this->app->make("CanonicalizeSteamId")->up();
+
+        // then
+        $this->assertSame(
+            (new SteamIDConverter())->toSteamID64("[U:1:20340372]"),
+            $this->steamIdOf($steam3)
+        );
+        $this->assertNull($this->steamIdOf($outOfRange));
+    }
+
     private function addUser(string $username, ?string $steamId, int $verified): int
     {
         $this->db

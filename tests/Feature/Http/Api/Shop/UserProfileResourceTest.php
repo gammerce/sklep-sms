@@ -123,6 +123,25 @@ class UserProfileResourceTest extends HttpTestCase
     }
 
     /** @test */
+    public function rejects_out_of_range_steam_id()
+    {
+        // given
+        $this->actingAs($this->factory->user());
+
+        // when
+        $response = $this->put("/api/profile", [
+            "username" => "abc",
+            "steam_id" => "00000000000000000",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("warnings", $json["return_id"]);
+        $this->assertArrayHasKey("steam_id", $json["warnings"]);
+    }
+
+    /** @test */
     public function cannot_update_profile_as_admin_in_demo_mode()
     {
         putenv("APP_SUBDOMAIN=demo");

@@ -48,6 +48,40 @@ abstract class Page
         return "/page/{$this->getId()}";
     }
 
+    /**
+     * Reads a one-shot message key from the session (and removes it).
+     */
+    protected function pullSessionMessage(Request $request, string $key): string
+    {
+        $session = $request->getSession();
+
+        if (!$session->has($key)) {
+            return "";
+        }
+
+        $message = $this->lang->t((string) $session->get($key));
+        $session->remove($key);
+
+        return $message;
+    }
+
+    /**
+     * Reads a message key from the query string. When $allowed is provided only
+     * whitelisted keys are translated.
+     *
+     * @param string[] $allowed
+     */
+    protected function queryMessage(Request $request, string $key, array $allowed = []): string
+    {
+        $value = (string) $request->query->get($key, "");
+
+        if ($value === "" || ($allowed && !in_array($value, $allowed, true))) {
+            return "";
+        }
+
+        return $this->lang->t($value);
+    }
+
     public function addScripts(Request $request): void
     {
         /** @var FileSystem $fileSystem */

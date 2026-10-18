@@ -127,7 +127,7 @@ class SteamOpenId
             return false;
         }
 
-        return (bool) preg_match("/^is_valid\s*:\s*true/im", $response->getBody());
+        return (bool) preg_match("/^is_valid:true\r?$/mi", $response->getBody());
     }
 
     public function extractSteamId64(string $claimedId): ?string

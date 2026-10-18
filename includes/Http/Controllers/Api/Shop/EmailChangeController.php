@@ -3,6 +3,7 @@ namespace App\Http\Controllers\Api\Shop;
 
 use App\Exceptions\ValidationException;
 use App\Http\Validation\Rules\EmailRule;
+use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
 use App\Http\Validation\Validator;
@@ -23,6 +24,20 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EmailChangeController
 {
+    /**
+     * Status keys that may be echoed back by the shop pages (whitelist).
+     */
+    public const STATUS_KEYS = [
+        "email_changed",
+        "email_change_sent",
+        "email_change_invalid",
+        "email_change_not_sent",
+        "email_change_wrong_token",
+        "email_occupied",
+        "demo_mode",
+        "wrong_email",
+    ];
+
     public function change(
         Request $request,
         UserRepository $userRepository,
@@ -49,6 +64,7 @@ class EmailChangeController
                     "email" => [
                         new RequiredRule(),
                         new EmailRule(),
+                        new MaxLengthRule(128),
                         new UniqueUserEmailRule($user->getId()),
                     ],
                 ]
@@ -140,7 +156,7 @@ class EmailChangeController
     ): void {
         $oldEmail = (string) $user->getEmail();
 
-        if (!strlen($oldEmail) || str_ends_with($oldEmail, "@steam.invalid")) {
+        if (!strlen($oldEmail) || is_steam_placeholder_email($oldEmail)) {
             return;
         }
 

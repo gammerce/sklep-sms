@@ -279,6 +279,15 @@ class User
         return strlen((string) $this->password) > 0;
     }
 
+    /**
+     * Whether the Steam link can be removed without locking the user out: the
+     * account must be verified and have a password to fall back on.
+     */
+    public function canUnlinkSteam(): bool
+    {
+        return $this->isSteamVerified() && $this->hasPassword();
+    }
+
     public function getBillingAddress(): BillingAddress
     {
         return $this->billingAddress;

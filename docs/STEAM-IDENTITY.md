@@ -96,18 +96,21 @@ Applied to restores of the live dumps in an isolated MySQL:
 application — Laravel-style migrations — and is not touched.)
 
 ### Read/write boundary
+All conversions live in `App\Support\SteamIDConverter` (`tryToSteamID64()`,
+`tryToSteamID()`, `isValidSteamID64()`), exposed to the app through the
+`to_canonical_steam_id()` / `to_legacy_steam_id()` helpers:
 - `UserRepository::mapToModel()`: stored SteamID64 → legacy `STEAM_0` for the `User` model.
-- `UserRepository::create()/update()/linkSteamId()`: input → SteamID64 for storage.
+- `UserRepository::create()/update()/linkSteamId()/createSteamUser()`: input → SteamID64 for storage.
 - `UserRepository::findBySteamId()`: input → SteamID64 → `WHERE steam_id = ?`.
+- `PageAdminUsers` and the migration use the same converter (validity included).
 
 The rest of the app (controllers, templates, plugins) keeps working with the
-legacy representation it already uses — only the repository boundary changes.
+legacy representation it already uses — only this boundary changes.
 
 ### Admin search
 `PageAdminUsers` searches `steam_id` with `LIKE`. Since the column now holds
-SteamID64, searching by a legacy string wouldn't match. Mitigation: if the search
-term parses as a Steam ID, convert it to SteamID64 as well (or add both forms to
-the search).
+SteamID64, a legacy search term is also converted to SteamID64 and matched
+(`create_search_query()` gained OR extras).
 
 ## Decision log
 

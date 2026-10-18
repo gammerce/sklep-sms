@@ -142,15 +142,6 @@ EOF
     }
 
     /**
-     * @param string $steamId64
-     * @return User|null
-     */
-    public function findBySteamId64($steamId64): ?User
-    {
-        return $this->findBySteamId($steamId64);
-    }
-
-    /**
      * Creates a passwordless account for a user who signed in through Steam.
      *
      * The empty password can never match a login (hash_password always returns a
@@ -158,33 +149,44 @@ EOF
      */
     public function createSteamUser($username, $steamId, $email, $ip): User
     {
-        $this->db
-            ->statement(
-                <<<EOF
-                INSERT INTO `ss_users` (
-                    `username`,
-                    `password`,
-                    `salt`,
-                    `email`,
-                    `forename`,
-                    `surname`,
-                    `regip`,
-                    `groups`,
-                    `wallet`,
-                    `steam_id`,
-                    `steam_verified`,
-                    `billing_address`,
-                    `regdate`
-                )
-                VALUES (?, '', '', ?, '', '', ?, '1', 0, ?, 1, '{}', NOW())
+        try {
+            $this->db
+                ->statement(
+                    <<<EOF
+                    INSERT INTO `ss_users` (
+                        `username`,
+                        `password`,
+                        `salt`,
+                        `email`,
+                        `forename`,
+                        `surname`,
+                        `regip`,
+                        `groups`,
+                        `wallet`,
+                        `steam_id`,
+                        `steam_verified`,
+                        `billing_address`,
+                        `regdate`
+                    )
+                    VALUES (?, '', '', ?, '', '', ?, '1', 0, ?, 1, '{}', NOW())
 EOF
-            )
-            ->bindAndExecute([
-                (string) $username,
-                (string) $email,
-                (string) $ip,
-                to_canonical_steam_id($steamId),
-            ]);
+                )
+                ->bindAndExecute([
+                    (string) $username,
+                    (string) $email,
+                    (string) $ip,
+                    to_canonical_steam_id($steamId),
+                ]);
+        } catch (PDOException $e) {
+            // A concurrent request may have created the account for this Steam ID
+            // between our lookup and insert; reuse it instead of failing.
+            $existing = $this->findBySteamId($steamId);
+            if ($existing) {
+                return $existing;
+            }
+
+            throw $e;
+        }
 
         return $this->get($this->db->lastId());
     }
@@ -271,16 +273,20 @@ EOF
     public function confirmEmailChange($userId): bool
     {
         try {
-            $this->db
-                ->statement(
-                    "UPDATE `ss_users` SET `email` = `email_change_new`, `email_change_new` = '', `email_change_key` = '' WHERE `uid` = ? AND `email_change_key` <> ''"
-                )
-                ->bindAndExecute([$userId]);
+            $statement = $this->db->statement(
+                "UPDATE `ss_users` SET `email` = `email_change_new`, `email_change_new` = '', `email_change_key` = '' WHERE `uid` = ? AND `email_change_key` <> ''"
+            );
+            $statement->bindAndExecute([$userId]);
         } catch (PDOException $e) {
-            return false;
+            // Only "target e-mail already taken" is a normal outcome.
+            if (get_error_code($e) === 1062) {
+                return false;
+            }
+
+            throw $e;
         }
 
-        return true;
+        return $statement->rowCount() > 0;
     }
 
     /**
@@ -394,7 +400,8 @@ EOF
     }
 
     public function mapToModel(array $data): User
-    {        $groupsIds = explode_int_list($data["groups"], ";");
+    {
+        $groupsIds = explode_int_list($data["groups"], ";");
         $billingAddress = BillingAddress::fromArray(json_decode($data["billing_address"], true));
         $permissions = $this->gatherPermissions($groupsIds);
 

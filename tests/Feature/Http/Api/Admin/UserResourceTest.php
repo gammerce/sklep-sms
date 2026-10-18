@@ -57,6 +57,52 @@ class UserResourceTest extends HttpTestCase
     }
 
     /** @test */
+    public function keeping_the_same_steam_id_in_another_format_keeps_verification()
+    {
+        // given a verified account
+        $user = $this->factory->user();
+        $this->repository->linkSteamId($user->getId(), "STEAM_0:1:10000001");
+        $this->actingAs($this->factory->admin());
+
+        // when the admin submits the same account as STEAM_1 (different string)
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
+            "email" => "keep@example.com",
+            "groups" => [1],
+            "username" => "keepname",
+            "steam_id" => "STEAM_1:1:10000001",
+            "wallet" => 0,
+        ]);
+
+        // then verification is preserved
+        $this->assertSame(200, $response->getStatusCode());
+        $freshUser = $this->repository->get($user->getId());
+        $this->assertTrue($freshUser->isSteamVerified());
+    }
+
+    /** @test */
+    public function changing_steam_id_clears_verification()
+    {
+        // given a verified account
+        $user = $this->factory->user();
+        $this->repository->linkSteamId($user->getId(), "STEAM_0:1:10000001");
+        $this->actingAs($this->factory->admin());
+
+        // when the admin sets a different Steam ID
+        $response = $this->putJson("/api/admin/users/{$user->getId()}", [
+            "email" => "change@example.com",
+            "groups" => [1],
+            "username" => "changename",
+            "steam_id" => "STEAM_0:1:20000002",
+            "wallet" => 0,
+        ]);
+
+        // then it is no longer verified
+        $this->assertSame(200, $response->getStatusCode());
+        $freshUser = $this->repository->get($user->getId());
+        $this->assertFalse($freshUser->isSteamVerified());
+    }
+
+    /** @test */
     public function cannot_use_the_same_username_email_steam_id_twice()
     {
         // given

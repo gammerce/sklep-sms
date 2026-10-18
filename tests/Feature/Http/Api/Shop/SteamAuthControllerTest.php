@@ -99,11 +99,11 @@ class SteamAuthControllerTest extends HttpTestCase
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame("http://localhost/page/profile", $response->headers->get("Location"));
 
-        $user = $this->userRepository->findBySteamId64(self::STEAM_ID_64);
+        $user = $this->userRepository->findBySteamId(self::STEAM_ID_64);
         $this->assertNotNull($user);
         $this->assertTrue($user->isSteamVerified());
         $this->assertFalse($user->hasPassword());
-        $this->assertSame("steam-" . self::STEAM_ID_64 . "@steam.invalid", $user->getEmail());
+        $this->assertTrue(is_steam_placeholder_email($user->getEmail()));
         $this->assertSame($user->getId(), $this->session->get("uid"));
     }
 
@@ -260,6 +260,28 @@ class SteamAuthControllerTest extends HttpTestCase
         $this->assertSame("steam_unlink_set_password", $this->session->get("steam_error"));
         $freshUser = $this->userRepository->get($user->getId());
         $this->assertSame($this->legacySteamId(), $freshUser->getSteamId());
+    }
+
+    /** @test */
+    public function cannot_replace_an_existing_verified_steam_id()
+    {
+        // given an account already verified with a different Steam ID
+        $user = $this->factory->user();
+        $this->userRepository->linkSteamId($user->getId(), "STEAM_0:0:12345678");
+        $this->actingAs($this->userRepository->get($user->getId()));
+
+        $this->get("/api/steam/link");
+        $state = (string) $this->session->get("steam_state");
+        $this->mockSuccessfulAuthentication();
+
+        // when another Steam account is connected
+        $response = $this->get("/api/steam/callback", $this->callbackParams($state));
+
+        // then
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertSame("steam_already_linked", $this->session->get("steam_error"));
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertSame("STEAM_0:0:12345678", $freshUser->getSteamId());
     }
 
     private function callbackParams(string $state): array

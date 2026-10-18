@@ -210,6 +210,8 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     "steam" => "Steam",
     "steam_account_exists" =>
         "Ten SteamID jest już wpisany na koncie. Zaloguj się hasłem i połącz Steam w profilu.",
+    "steam_already_linked" =>
+        "Konto Steam jest już połączone. Najpierw je odłącz, aby połączyć inne.",
     "steam_auth_error" => "Nie udało się zalogować przez Steam. Spróbuj ponownie.",
     "steam_link" => "Połącz Steam",
     "steam_link_hint" => "Połącz konto Steam, aby logować się bez hasła.",
