@@ -25,7 +25,9 @@ class PageChangePassword extends Page implements IBeLoggedMust
 
     public function getTitle(?Request $request = null): string
     {
-        return $this->lang->t("change_password");
+        return $this->lang->t(
+            $this->auth->user()->hasPassword() ? "change_password" : "set_password"
+        );
     }
 
     public function getContent(Request $request)

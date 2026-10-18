@@ -40,8 +40,11 @@ Single source of truth, shared by web + server API + converters + templates:
 - Ignore the universe on input (it does not change the account).
 - Reject/normalise the dead `STEAM_2..5` prefixes.
 
-Implement in `App\Support\SteamIDConverter` (PHP) and `src/js/general/steam_id.ts` (JS),
-and route **all** inputs through it.
+The single source of truth is `App\Support\SteamIDConverter` (null-safe
+`tryToSteamID64()/tryToSteamID()` and range-checking `isValidSteamID64()`),
+exposed to app code as `to_canonical_steam_id()/to_legacy_steam_id()`. Validation
+rules and modules may use the converter directly. (`src/js/general/steam_id.ts`
+is a legacy browser helper; it is not wired into this flow.)
 
 ## Auth flows (after the change)
 

@@ -226,20 +226,28 @@ function get_random_string(int $length): string
  * @param string $search
  * @return QueryParticle|null
  */
+/**
+ * Builds a LIKE search over $columns, optionally OR-ed with extra conditions.
+ *
+ * @param string[] $columns
+ * @param array<array{0: string, 1: array}> $extraConditions extra [sql, params] pairs
+ */
 function create_search_query(array $columns, string $search, array $extraConditions = []): ?QueryParticle
 {
     if (!$columns && !$extraConditions) {
         return null;
     }
 
-    $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
-
     $params = [];
     $values = [];
 
-    foreach ($columns as $searchId) {
-        $params[] = "{$searchId} LIKE ?";
-        $values[] = $searchLike;
+    if ($columns) {
+        $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
+
+        foreach ($columns as $searchId) {
+            $params[] = "{$searchId} LIKE ?";
+            $values[] = $searchLike;
+        }
     }
 
     // Additional OR'd conditions, e.g. [["`steam_id` = ?", [$canonical]]].

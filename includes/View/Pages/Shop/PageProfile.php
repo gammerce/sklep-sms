@@ -1,8 +1,8 @@
 <?php
 namespace App\View\Pages\Shop;
 
-use App\Http\Controllers\Api\Shop\EmailChangeController;
 use App\Payment\Invoice\InvoiceService;
+use App\Support\EmailChangeStatus;
 use App\Theme\Template;
 use App\System\Auth;
 use App\Translation\TranslationManager;
@@ -52,7 +52,7 @@ class PageProfile extends Page implements IBeLoggedMust
         $billingAddressFormClass = $this->invoiceService->isConfigured() ? "" : "is-hidden";
 
         $steamError = $this->pullSessionMessage($request, "steam_error");
-        $emailStatus = $this->queryMessage($request, "email_status", EmailChangeController::STATUS_KEYS);
+        $emailStatus = $this->queryMessage($request, "email_status", EmailChangeStatus::KEYS);
 
         return $this->template->render(
             "shop/pages/profile",

@@ -59,7 +59,7 @@ class UserResource
 
         $editedUser->setEmail($validated["email"]);
         $editedUser->setForename($validated["forename"]);
-        $editedUser->setSteamId($validated["steam_id"]);
+        $editedUser->setSteamId(to_legacy_steam_id($validated["steam_id"]));
         $editedUser->setSurname($validated["surname"]);
         $editedUser->setUsername($validated["username"]);
         $editedUser->setWallet(Money::fromPrice($validated["wallet"]));

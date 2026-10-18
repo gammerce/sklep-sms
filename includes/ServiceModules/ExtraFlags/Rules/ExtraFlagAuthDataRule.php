@@ -26,7 +26,7 @@ class ExtraFlagAuthDataRule extends BaseRule
             }
         } elseif ($type === ExtraFlagType::TYPE_SID) {
             $converter = new SteamIDConverter();
-            if (!$converter->isAnySteamID($value)) {
+            if ($converter->tryToSteamID64($value) === null) {
                 throw new ValidationException($this->lang->t("wrong_sid"));
             }
         }

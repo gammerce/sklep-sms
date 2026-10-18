@@ -9,7 +9,7 @@ final class SteamIDConverter
     private const BASE_NUM = 76561197960265728; // "V" in the conversion algorithms
     // Individual accounts: universe=1, type=1, instance=1, accountID 0..2^32-1.
     private const MIN_STEAMID64 = self::BASE_NUM;
-    private const MAX_STEAMID64 = self::BASE_NUM + 2 * 4294967295 + 1;
+    private const MAX_STEAMID64 = self::BASE_NUM + 4294967295;
     private const REGEX_STEAMID64 = "/^[0-9]{17}$/";
     private const REGEX_STEAMID = "/^STEAM_[0-5]:[01]:\d{1,17}$/";
     private const REGEX_STEAMID3 = "/^\[U:1:[0-9]{1,17}\]$/";

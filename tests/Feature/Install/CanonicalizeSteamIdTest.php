@@ -106,6 +106,13 @@ class CanonicalizeSteamIdTest extends HttpTestCase
         $this->assertNull($this->steamIdOf($outOfRange));
     }
 
+    /** @test */
+    public function steam_id_has_a_unique_index()
+    {
+        $statement = $this->db->query("SHOW INDEX FROM `ss_users` WHERE Key_name = 'steam_id'");
+        $this->assertGreaterThan(0, count($statement->fetchAll()));
+    }
+
     private function addUser(string $username, ?string $steamId, int $verified): int
     {
         $this->db

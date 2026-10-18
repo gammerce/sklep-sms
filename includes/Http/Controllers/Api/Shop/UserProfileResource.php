@@ -80,7 +80,7 @@ class UserProfileResource
         $user->setForename($validated["forename"]);
         $user->setSurname($validated["surname"]);
         if (!$user->isSteamVerified()) {
-            $user->setSteamId($validated["steam_id"]);
+            $user->setSteamId(to_legacy_steam_id($validated["steam_id"]));
         }
         $user->setBillingAddress(
             new BillingAddress(

@@ -164,19 +164,25 @@ class SteamAuthController
             return new RedirectResponse($url->to("/"));
         }
 
-        $created = $userRepository->createSteamUser(
+        $account = $userRepository->createSteamUser(
             $this->generateUsername($steamProfile, $userRepository, $steamId64),
             $steamId64,
             steam_placeholder_email(),
             get_ip($request)
         );
 
-        $auth->loginUser($request, $created);
+        // A concurrent request may have created an unverified claim for this
+        // Steam ID first; never log into an unverified account.
+        if (!$account->isSteamVerified()) {
+            return $this->fail($request, $url, "steam_account_exists", "/page/login");
+        }
+
+        $auth->loginUser($request, $account);
         $logger->log(
             "log_steam_account_created",
-            $created->getId(),
-            $created->getUsername(),
-            $created->getRegIp()
+            $account->getId(),
+            $account->getUsername(),
+            $account->getRegIp()
         );
 
         return new RedirectResponse($url->to("/page/profile"));

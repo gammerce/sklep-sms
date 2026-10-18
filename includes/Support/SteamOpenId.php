@@ -132,10 +132,10 @@ class SteamOpenId
 
     public function extractSteamId64(string $claimedId): ?string
     {
-        if (preg_match(self::CLAIMED_ID_REGEX, $claimedId, $matches)) {
-            return $matches[1];
+        if (!preg_match(self::CLAIMED_ID_REGEX, $claimedId, $matches)) {
+            return null;
         }
 
-        return null;
+        return (new SteamIDConverter())->isValidSteamID64($matches[1]) ? $matches[1] : null;
     }
 }

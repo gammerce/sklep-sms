@@ -130,6 +130,27 @@ class SteamOpenIdTest extends UnitTestCase
         $this->assertNull($steamId64);
     }
 
+    /** @test */
+    public function rejects_out_of_range_claimed_id()
+    {
+        // given a well-formed 17-digit id outside the individual-account range
+        $this->requesterMock
+            ->shouldReceive("post")
+            ->andReturn(new RequestingResponse(200, "is_valid:true\n"));
+
+        $claimedId = "https://steamcommunity.com/openid/id/76561206550200319";
+        $request = new Request([
+            "openid.ns" => "http://specs.openid.net/auth/2.0",
+            "openid.mode" => "id_res",
+            "openid.return_to" => self::RETURN_TO,
+            "openid.claimed_id" => $claimedId,
+            "openid.identity" => $claimedId,
+        ]);
+
+        // when / then
+        $this->assertNull($this->steamOpenId->verify($request, self::RETURN_TO));
+    }
+
     private function requestWithAssertion(): Request
     {
         $claimedId = "https://steamcommunity.com/openid/id/" . self::STEAM_ID_64;

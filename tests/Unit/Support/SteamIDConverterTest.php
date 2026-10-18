@@ -72,6 +72,30 @@ class SteamIDConverterTest extends UnitTestCase
         $this->converter->toSteamID("abcd");
     }
 
+    /** @test */
+    public function validates_individual_steam_id64_range()
+    {
+        $this->assertTrue($this->converter->isValidSteamID64("76561197960265728")); // base
+        $this->assertTrue($this->converter->isValidSteamID64("76561198022253102")); // normal
+        $this->assertTrue($this->converter->isValidSteamID64("76561202255233023")); // base + 2^32-1
+        $this->assertFalse($this->converter->isValidSteamID64("76561202255233024")); // one past max
+        $this->assertFalse($this->converter->isValidSteamID64("76561206550200319")); // old, too-wide max
+        $this->assertFalse($this->converter->isValidSteamID64("00000000000000000"));
+        $this->assertFalse($this->converter->isValidSteamID64("123"));
+    }
+
+    /** @test */
+    public function try_to_steam_id_64_is_null_safe()
+    {
+        $canonical = $this->converter->toSteamID64("STEAM_1:0:22309350");
+
+        $this->assertSame($canonical, $this->converter->tryToSteamID64("STEAM_1:0:22309350"));
+        $this->assertSame("STEAM_0:0:22309350", $this->converter->tryToSteamID($canonical));
+        $this->assertNull($this->converter->tryToSteamID64(""));
+        $this->assertNull($this->converter->tryToSteamID64("garbage"));
+        $this->assertNull($this->converter->tryToSteamID64("00000000000000000"));
+    }
+
     public static function providerSteamID(): array
     {
         return [

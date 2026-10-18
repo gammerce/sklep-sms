@@ -71,6 +71,10 @@ EOF
         return $this->get($this->db->lastId());
     }
 
+    /**
+     * Persists the mutable profile fields. Steam verification is NOT written
+     * here; it is owned by linkSteamId()/clearSteamId()/clearSteamVerification().
+     */
     public function update(User $user): void
     {
         $this->db
@@ -180,6 +184,10 @@ EOF
         } catch (PDOException $e) {
             // A concurrent request may have created the account for this Steam ID
             // between our lookup and insert; reuse it instead of failing.
+            if (get_error_code($e) !== 1062) {
+                throw $e;
+            }
+
             $existing = $this->findBySteamId($steamId);
             if ($existing) {
                 return $existing;
