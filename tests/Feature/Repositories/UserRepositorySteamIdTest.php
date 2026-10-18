@@ -40,6 +40,24 @@ class UserRepositorySteamIdTest extends HttpTestCase
     }
 
     /** @test */
+    public function contact_email_hides_the_placeholder()
+    {
+        // normal address is returned as-is
+        $normal = $this->factory->user(["email" => "real@example.com"]);
+        $this->assertSame("real@example.com", $normal->getContactEmail());
+
+        // the Steam placeholder is hidden
+        $steam = $this->userRepository->createSteamUser(
+            "steamx",
+            "STEAM_0:1:10000003",
+            "steam-x@steam.invalid",
+            "127.0.0.1"
+        );
+        $this->assertTrue(is_steam_placeholder_email($steam->getEmail()));
+        $this->assertSame("", $steam->getContactEmail());
+    }
+
+    /** @test */
     public function finds_by_any_steam_id_format()
     {
         // given

@@ -36,10 +36,9 @@ class PageProfile extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
-        $email = (string) $user->getEmail();
-        // The Steam placeholder is internal: don't show it as if it were real.
-        $needsEmail = is_steam_placeholder_email($email);
-        $email = $needsEmail ? "" : $email;
+        // getContactEmail() hides the internal Steam placeholder.
+        $email = $user->getContactEmail();
+        $needsEmail = !strlen($email);
         $username = $user->getUsername();
         $forename = $user->getForename();
         $surname = $user->getSurname();

@@ -159,6 +159,7 @@ class SteamAuthControllerTest extends HttpTestCase
         $this->assertTrue($user->isSteamVerified());
         $this->assertFalse($user->hasPassword());
         $this->assertTrue(is_steam_placeholder_email($user->getEmail()));
+        $this->assertSame("", $user->getContactEmail());
         $this->assertSame($user->getId(), $this->session->get("uid"));
     }
 

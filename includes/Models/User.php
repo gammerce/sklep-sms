@@ -112,6 +112,17 @@ class User
     }
 
     /**
+     * Address that is safe to show / contact. The internal Steam placeholder
+     * (`steam-*.invalid`) is hidden and reported as empty.
+     */
+    public function getContactEmail(): string
+    {
+        $email = (string) $this->email;
+
+        return is_steam_placeholder_email($email) ? "" : $email;
+    }
+
+    /**
      * @param string $email
      */
     public function setEmail($email): void

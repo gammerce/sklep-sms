@@ -68,7 +68,7 @@ class IssueInvoiceService
             throw new IssueInvoiceException("Invoice wasn't issued due to empty billing address.");
         }
 
-        $email = $purchase->getEmail() ?? $purchase->user->getEmail();
+        $email = $purchase->getEmail() ?? $purchase->user->getContactEmail();
         if (!$email) {
             throw new IssueInvoiceException("Invoice won't be sent due to lack of email.");
         }

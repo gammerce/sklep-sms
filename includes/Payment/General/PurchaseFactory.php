@@ -24,8 +24,9 @@ class PurchaseFactory
     {
         $purchase = new Purchase($user, $ip, $platform);
 
-        if ($user->getEmail()) {
-            $purchase->setEmail($user->getEmail());
+        $contactEmail = $user->getContactEmail();
+        if ($contactEmail) {
+            $purchase->setEmail($contactEmail);
         }
 
         $paymentSelect = $purchase->getPaymentSelect();
