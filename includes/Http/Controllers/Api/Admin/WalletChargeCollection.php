@@ -75,7 +75,7 @@ class WalletChargeCollection
             ->setOrder([
                 Purchase::ORDER_QUANTITY => $quantity,
             ])
-            ->setEmail($editedUser->getEmail());
+            ->setEmail($editedUser->getContactEmail());
 
         $serviceModule->purchase($purchase);
 

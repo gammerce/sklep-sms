@@ -65,6 +65,30 @@ class PasswordForgottenControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function does_not_send_to_the_steam_placeholder()
+    {
+        // given a Steam-created account (placeholder address)
+        $user = $this->userRepository->createSteamUser(
+            "steam_forgot",
+            "STEAM_0:0:10000004",
+            "steam-forgot@steam.invalid",
+            "127.0.0.1"
+        );
+
+        // when
+        $response = $this->post("/api/password/forgotten", [
+            "username" => $user->getUsername(),
+        ]);
+
+        // then: generic success, but no reset key was created (nothing was sent)
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("sent", $json["return_id"]);
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertSame("", $freshUser->getResetPasswordKey());
+    }
+
+    /** @test */
     public function fails_with_invalid_data()
     {
         // when
