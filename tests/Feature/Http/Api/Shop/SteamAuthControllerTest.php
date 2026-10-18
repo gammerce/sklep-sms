@@ -74,6 +74,7 @@ class SteamAuthControllerTest extends HttpTestCase
             SteamProfile::class,
             Mockery::mock(SteamProfile::class, function ($mock) {
                 $mock->shouldReceive("getPersonaName")->andReturn("♋ SeeK");
+                $mock->shouldReceive("getRealName")->andReturn(null);
             })
         );
 
@@ -89,6 +90,33 @@ class SteamAuthControllerTest extends HttpTestCase
         $user = $this->userRepository->findBySteamId(self::STEAM_ID_64);
         $this->assertNotNull($user);
         $this->assertSame("SeeK", $user->getUsername());
+    }
+
+    /** @test */
+    public function fills_names_from_steam_real_name()
+    {
+        // given Steam returns a public real name
+        $this->app->instance(
+            SteamProfile::class,
+            Mockery::mock(SteamProfile::class, function ($mock) {
+                $mock->shouldReceive("getPersonaName")->andReturn("SeeK");
+                $mock->shouldReceive("getRealName")->andReturn("Jan Kowalski");
+            })
+        );
+
+        $state = "teststate";
+        $this->session->set("steam_state", $state);
+        $this->mockSuccessfulAuthentication();
+
+        // when
+        $response = $this->get("/api/steam/callback", $this->callbackParams($state));
+
+        // then
+        $this->assertSame(302, $response->getStatusCode());
+        $user = $this->userRepository->findBySteamId(self::STEAM_ID_64);
+        $this->assertNotNull($user);
+        $this->assertSame("Jan", $user->getForename());
+        $this->assertSame("Kowalski", $user->getSurname());
     }
 
     /** @test */

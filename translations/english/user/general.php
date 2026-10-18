@@ -206,6 +206,8 @@ You can now profit from many add-ons.',
     "log_steam_unlinked" => "Steam account disconnected: {1}",
     "new_email" => "New e-mail",
     "sign_in_with_steam" => "Sign in through Steam",
+    "steam_add_email_notice" =>
+        "Your account has no e-mail address yet. Add one below so you can recover your account and receive notifications.",
     "sign_up_with_steam" => "Sign up through Steam",
     "steam" => "Steam",
     "steam_account_exists" =>

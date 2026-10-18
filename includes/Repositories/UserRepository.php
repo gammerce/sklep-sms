@@ -151,8 +151,14 @@ EOF
      * The empty password can never match a login (hash_password always returns a
      * hash), so it marks the account as Steam-only without a dedicated column.
      */
-    public function createSteamUser($username, $steamId, $email, $ip): User
-    {
+    public function createSteamUser(
+        $username,
+        $steamId,
+        $email,
+        $ip,
+        $forename = "",
+        $surname = ""
+    ): User {
         try {
             $this->db
                 ->statement(
@@ -172,12 +178,14 @@ EOF
                         `billing_address`,
                         `regdate`
                     )
-                    VALUES (?, '', '', ?, '', '', ?, '1', 0, ?, 1, '{}', NOW())
+                    VALUES (?, '', '', ?, ?, ?, ?, '1', 0, ?, 1, '{}', NOW())
 EOF
                 )
                 ->bindAndExecute([
                     (string) $username,
                     (string) $email,
+                    (string) $forename,
+                    (string) $surname,
                     (string) $ip,
                     to_canonical_steam_id($steamId),
                 ]);

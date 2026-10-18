@@ -165,11 +165,19 @@ class SteamAuthController
             return new RedirectResponse($url->to("/"));
         }
 
+        [$forename, $surname] = $this->splitRealName($steamProfile->getRealName($steamId64));
+
         $account = $userRepository->createSteamUser(
-            $this->generateUsername($steamProfile, $userRepository, $steamId64),
+            $this->generateUsername(
+                $steamProfile->getPersonaName($steamId64),
+                $userRepository,
+                $steamId64
+            ),
             $steamId64,
             steam_placeholder_email(),
-            get_ip($request)
+            get_ip($request),
+            $forename,
+            $surname
         );
 
         // A concurrent request may have created an unverified claim for this
@@ -239,11 +247,10 @@ class SteamAuthController
     }
 
     private function generateUsername(
-        SteamProfile $steamProfile,
+        ?string $persona,
         UserRepository $userRepository,
         string $steamId64
     ): string {
-        $persona = $steamProfile->getPersonaName($steamId64);
         $base = $persona ? SteamUsername::sanitize($persona) : "";
 
         if (strlen($base) < 2) {
@@ -267,6 +274,27 @@ class SteamAuthController
     {
         // UsernameRule requires htmlspecialchars() to be a no-op.
         return trim(str_replace(['<', '>', '&', '"', "'"], "", $value));
+    }
+
+    /**
+     * Splits a public real name into forename/surname (column limits: 32/64).
+     *
+     * @return array{0: string, 1: string}
+     */
+    private function splitRealName(?string $realName): array
+    {
+        $realName = trim((string) $realName);
+
+        if (!strlen($realName)) {
+            return ["", ""];
+        }
+
+        $parts = preg_split('/\s+/', $realName, 2) ?: [];
+
+        return [
+            mb_substr($parts[0] ?? "", 0, 32),
+            mb_substr($parts[1] ?? "", 0, 64),
+        ];
     }
 
     private function fail(

@@ -13,6 +13,9 @@
         <div class="notification is-info {{ $emailStatus ? '' : 'is-hidden' }}">
             {{ $emailStatus }}
         </div>
+        <div class="notification is-warning {{ $needsEmail ? '' : 'is-hidden' }}">
+            {{ __('steam_add_email_notice') }}
+        </div>
 
         <form id="form_profile_update">
             <div class="columns is-multiline mb-5">

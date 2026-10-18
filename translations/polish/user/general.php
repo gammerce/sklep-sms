@@ -209,6 +209,8 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     "log_steam_unlinked" => "Odłączono konto Steam: {1}",
     "new_email" => "Nowy e-mail",
     "sign_in_with_steam" => "Zaloguj się przez Steam",
+    "steam_add_email_notice" =>
+        "Twoje konto nie ma jeszcze adresu e-mail. Dodaj go poniżej, aby móc odzyskać konto i otrzymywać powiadomienia.",
     "sign_up_with_steam" => "Zarejestruj się przez Steam",
     "steam" => "Steam",
     "steam_account_exists" =>

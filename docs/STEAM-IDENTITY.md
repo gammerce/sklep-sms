@@ -64,6 +64,10 @@ Because the stored key is universe-independent and unique, the previous 0/1
 ambiguity (wrong wallet charged, non-deterministic `fetch()`, duplicate-key
 `500`) disappears.
 
+When `STEAM_API_KEY` is set, an auto-created account also fills: persona →
+username (`App\Support\SteamUsername`), public `realname` → forename/surname.
+Steam never exposes an e-mail address, so the profile prompts for one instead.
+
 ## Schema
 
 - `ss_users.steam_id` — now holds the **canonical SteamID64** (keep `VARCHAR(32)`

@@ -52,6 +52,8 @@ class PageProfile extends Page implements IBeLoggedMust
         $billingAddressCity = $user->getBillingAddress()->getCity();
         $billingAddressFormClass = $this->invoiceService->isConfigured() ? "" : "is-hidden";
 
+        $needsEmail = is_steam_placeholder_email((string) $email);
+
         $steamError = $this->pullSessionMessage($request, "steam_error");
         $emailStatus = $this->queryMessage($request, "email_status", EmailChangeStatus::KEYS);
 
@@ -67,6 +69,7 @@ class PageProfile extends Page implements IBeLoggedMust
                 "hasPassword",
                 "canDisconnectSteam",
                 "needsPasswordToDisconnect",
+                "needsEmail",
                 "steamError",
                 "emailStatus",
                 "billingAddressName",
