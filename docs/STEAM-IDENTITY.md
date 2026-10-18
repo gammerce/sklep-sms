@@ -1,6 +1,6 @@
 # Steam identity — design note
 
-Status: **proposal** (to be agreed before implementation).
+Status: **accepted and implemented** (see “Status” at the end).
 
 ## Background / findings
 
