@@ -38,8 +38,14 @@ class PageConfirmEmail extends Page
             ]);
         }
 
+        $newEmail = (string) $this->userRepository->getPendingEmail($user->getId());
+        $addressLine = strlen($newEmail)
+            ? $this->lang->t("confirm_email_address", $newEmail)
+            : "";
+
         $content = $this->template->render("shop/components/confirm_email/form", [
             "code" => $code,
+            "addressLine" => $addressLine,
         ]);
 
         return $this->template->render("shop/pages/confirm_email", compact("content"));
