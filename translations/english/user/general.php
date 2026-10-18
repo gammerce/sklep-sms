@@ -182,6 +182,8 @@ You can now profit from many add-ons.',
         "E-mail assigned you your account is incorrect. Report it to the shop owner.",
     "change_email" => "Change e-mail",
     "change_email_hint" => "We will send a confirmation link to the new address.",
+    "change_email_password_hint" =>
+        "If you don't remember your password, log out and use \u201cforgot password\u201d to reset it first.",
     "current_email" => "Current e-mail",
     "confirm_email" => "Confirm e-mail",
     "confirm_email_button" => "Confirm e-mail",

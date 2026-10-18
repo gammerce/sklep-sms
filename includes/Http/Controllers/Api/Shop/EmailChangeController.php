@@ -179,15 +179,28 @@ class EmailChangeController
             return false;
         }
 
-        $sourceHost = parse_url($source, PHP_URL_HOST);
-        $expectedHost = parse_url(
-            $url->getShopUrl() ?: $request->getSchemeAndHttpHost(),
-            PHP_URL_HOST
-        );
+        $sourceHost = parse_url((string) $source, PHP_URL_HOST) ?: null;
 
-        return $sourceHost !== null &&
-            $expectedHost !== null &&
-            strcasecmp($sourceHost, $expectedHost) !== 0;
+        if ($sourceHost === null) {
+            return false;
+        }
+
+        // Accept the configured shop host and the actual request host (apex/www,
+        // tenant domains, proxies).
+        $expectedHosts = array_filter([
+            parse_url((string) $url->getShopUrl(), PHP_URL_HOST) ?: null,
+            $request->getHost(),
+        ]);
+
+        $sourceHost = strtolower($sourceHost);
+
+        foreach ($expectedHosts as $expectedHost) {
+            if ($sourceHost === strtolower($expectedHost)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private function toProfile(UrlGenerator $url, string $status): Response

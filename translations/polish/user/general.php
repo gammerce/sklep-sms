@@ -184,6 +184,8 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
         "E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.",
     "change_email" => "Zmień e-mail",
     "change_email_hint" => "Na nowy adres wyślemy link potwierdzający.",
+    "change_email_password_hint" =>
+        "Jeśli nie pamiętasz hasła, wyloguj się i najpierw zresetuj je przez „Nie pamiętam hasła”.",
     "current_email" => "Aktualny e-mail",
     "confirm_email" => "Potwierdź e-mail",
     "confirm_email_button" => "Potwierdź e-mail",

@@ -100,6 +100,42 @@ class EmailChangeControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function accepts_same_origin_and_rejects_cross_site_posts()
+    {
+        // given
+        $user = $this->factory->user(["email" => "old@example.com", "password" => "abc123"]);
+        $this->actingAs($user);
+
+        // when: same-origin request
+        $response = $this->post(
+            "/api/profile/email/change",
+            ["email" => "same@example.com", "password" => "abc123"],
+            [],
+            ["Origin" => "http://localhost"]
+        );
+
+        // then
+        $this->assertStringContainsString(
+            "email_status=email_change_sent",
+            (string) $response->headers->get("Location")
+        );
+
+        // when: cross-site request
+        $response = $this->post(
+            "/api/profile/email/change",
+            ["email" => "evil@example.com", "password" => "abc123"],
+            [],
+            ["Origin" => "https://evil.example"]
+        );
+
+        // then
+        $this->assertStringContainsString(
+            "email_status=email_change_invalid",
+            (string) $response->headers->get("Location")
+        );
+    }
+
+    /** @test */
     public function cannot_request_taken_email()
     {
         // given
