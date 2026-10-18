@@ -78,11 +78,6 @@ final class SteamIDConverter
         return "[U:1:{$z}]";
     }
 
-    public function isAnySteamID(string $value): bool
-    {
-        return $this->isSteamID($value) || $this->isSteamID3($value) || $this->isSteamID64($value);
-    }
-
     public function isSteamID(string $value): bool
     {
         return preg_match($this::REGEX_STEAMID, $value);

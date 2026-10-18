@@ -79,8 +79,9 @@ class CanonicalizeSteamId extends Migration
 
     private function resolve(int $uid, string $raw, SteamIDConverter $converter): ?string
     {
-        // Repair legacy double-encoding: STEAM_x:y:<SteamID64>.
-        if (preg_match("/^STEAM_[0-5]:[01]:(7656119[0-9]{10})$/", $raw, $matches)) {
+        // Repair legacy double-encoding: STEAM_x:y:<SteamID64>. A real Steam2 Z is
+        // at most 10 digits, so a 17-digit Z is always an embedded SteamID64.
+        if (preg_match("/^STEAM_[0-5]:[01]:(\d{17})$/", $raw, $matches)) {
             if (!$converter->isValidSteamID64($matches[1])) {
                 return null;
             }

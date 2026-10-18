@@ -222,11 +222,6 @@ function get_random_string(int $length): string
 }
 
 /**
- * @param string[] $columns
- * @param string $search
- * @return QueryParticle|null
- */
-/**
  * Builds a LIKE search over $columns, optionally OR-ed with extra conditions.
  *
  * @param string[] $columns

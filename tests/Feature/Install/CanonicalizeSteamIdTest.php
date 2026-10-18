@@ -24,6 +24,7 @@ class CanonicalizeSteamIdTest extends HttpTestCase
         // given
         $plain = $this->addUser("m_plain", "STEAM_1:0:22309350", 0);
         $doubleEncoded = $this->addUser("m_double", "STEAM_0:0:76561198099614424", 0);
+        $doubleEncodedHigh = $this->addUser("m_double_high", "STEAM_0:1:76561202255233023", 0);
         $garbage = $this->addUser("m_garbage", "not-a-steam-id", 0);
 
         // when
@@ -35,6 +36,7 @@ class CanonicalizeSteamIdTest extends HttpTestCase
 
         // a SteamID64 wrapped in Steam2 by the old code is repaired
         $this->assertSame("76561198099614424", $this->steamIdOf($doubleEncoded));
+        $this->assertSame("76561202255233023", $this->steamIdOf($doubleEncodedHigh));
 
         // unusable values are unlinked instead of kept
         $this->assertNull($this->steamIdOf($garbage));
