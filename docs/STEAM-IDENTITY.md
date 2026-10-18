@@ -54,6 +54,11 @@ is a legacy browser helper; it is not wired into this flow.)
   (`AuthorizeServerUser` currently uses `findBySteamId`.)
 - **Service targeting (ExtraFlags):** unchanged — `ss_user_service_extra_flags.auth_data`
   keeps the legacy `STEAM_0` string that plugins already exchange.
+- **E-mail change:** applied only after confirmation at the new address. When the
+  account has a password it must be re-entered (proof of ownership); passwordless
+  Steam-created accounts are exempt (they only have the session). Obvious
+  cross-site POSTs (mismatched `Origin`/`Referer`) are rejected. The old address
+  is notified.
 
 Because the stored key is universe-independent and unique, the previous 0/1
 ambiguity (wrong wallet charged, non-deterministic `fetch()`, duplicate-key

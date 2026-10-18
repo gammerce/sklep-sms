@@ -189,6 +189,22 @@
         <p class="mb-3">{{ __('change_email_hint') }}</p>
 
         <form method="POST" action="{{ url('/api/profile/email/change') }}">
+            <div class="field {{ $hasPassword ? '' : 'is-hidden' }}">
+                <label for="email_change_password" class="label">
+                    {{ __('password') }}
+                </label>
+                <div class="control">
+                    <input
+                        id="email_change_password"
+                        name="password"
+                        type="password"
+                        class="input"
+                        autocomplete="current-password"
+                        {{ $hasPassword ? 'required' : 'disabled' }}
+                    />
+                </div>
+            </div>
+
             <div class="field is-grouped">
                 <div class="control is-expanded">
                     <input

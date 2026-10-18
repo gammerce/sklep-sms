@@ -12,6 +12,7 @@ final class EmailChangeStatus
         "email_change_sent",
         "email_change_invalid",
         "email_change_not_sent",
+        "email_change_wrong_password",
         "email_change_wrong_token",
         "email_occupied",
         "demo_mode",

@@ -6,6 +6,7 @@ use App\Http\Validation\Rules\EmailRule;
 use App\Http\Validation\Rules\MaxLengthRule;
 use App\Http\Validation\Rules\RequiredRule;
 use App\Http\Validation\Rules\UniqueUserEmailRule;
+use App\Http\Validation\Rules\UserPasswordRule;
 use App\Http\Validation\Validator;
 use App\Loggers\DatabaseLogger;
 use App\Repositories\UserRepository;
@@ -41,22 +42,40 @@ class EmailChangeController
             return $this->toProfile($url, "demo_mode");
         }
 
-        try {
-            $validated = (new Validator(
-                [
-                    "email" => trim($request->request->get("email") ?? ""),
-                ],
-                [
-                    "email" => [
-                        new RequiredRule(),
-                        new EmailRule(),
-                        new MaxLengthRule(128),
-                        new UniqueUserEmailRule($user->getId()),
-                    ],
-                ]
-            ))->validateOrFail();
-        } catch (ValidationException $e) {
+        // Reject obvious cross-site form posts; legitimate same-origin posts are
+        // unaffected (and the request still has to be authenticated).
+        if ($this->isCrossSite($request, $url)) {
             return $this->toProfile($url, "email_change_invalid");
+        }
+
+        $data = [
+            "email" => trim($request->request->get("email") ?? ""),
+        ];
+        $rules = [
+            "email" => [
+                new RequiredRule(),
+                new EmailRule(),
+                new MaxLengthRule(128),
+                new UniqueUserEmailRule($user->getId()),
+            ],
+        ];
+
+        // Changing the recovery address is proof-of-ownership sensitive. Accounts
+        // that have a password must re-enter it; passwordless (Steam-created)
+        // accounts only have the session, so they cannot be asked for one.
+        if ($user->hasPassword()) {
+            $data["password"] = $request->request->get("password");
+            $rules["password"] = [new RequiredRule(), new UserPasswordRule($user)];
+        }
+
+        try {
+            $validated = (new Validator($data, $rules))->validateOrFail();
+        } catch (ValidationException $e) {
+            $status = array_key_exists("password", $e->warnings)
+                ? "email_change_wrong_password"
+                : "email_change_invalid";
+
+            return $this->toProfile($url, $status);
         }
 
         $key = get_random_string(32);
@@ -150,6 +169,25 @@ class EmailChangeController
             "username" => $user->getUsername(),
         ]);
         $mailer->send($oldEmail, $user->getUsername(), $lang->t("email_changed_subject"), $text);
+    }
+
+    private function isCrossSite(Request $request, UrlGenerator $url): bool
+    {
+        $source = $request->headers->get("Origin") ?: $request->headers->get("Referer");
+
+        if (!$source) {
+            return false;
+        }
+
+        $sourceHost = parse_url($source, PHP_URL_HOST);
+        $expectedHost = parse_url(
+            $url->getShopUrl() ?: $request->getSchemeAndHttpHost(),
+            PHP_URL_HOST
+        );
+
+        return $sourceHost !== null &&
+            $expectedHost !== null &&
+            strcasecmp($sourceHost, $expectedHost) !== 0;
     }
 
     private function toProfile(UrlGenerator $url, string $status): Response

@@ -18,12 +18,13 @@ class EmailChangeControllerTest extends HttpTestCase
     public function requests_email_change()
     {
         // given
-        $user = $this->factory->user(["email" => "old@example.com"]);
+        $user = $this->factory->user(["email" => "old@example.com", "password" => "abc123"]);
         $this->actingAs($user);
 
         // when
         $response = $this->post("/api/profile/email/change", [
             "email" => "new@example.com",
+            "password" => "abc123",
         ]);
 
         // then
@@ -40,16 +41,76 @@ class EmailChangeControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function requires_current_password_for_password_accounts()
+    {
+        // given
+        $user = $this->factory->user(["email" => "old@example.com", "password" => "abc123"]);
+        $this->actingAs($user);
+
+        // when: no password
+        $response = $this->post("/api/profile/email/change", ["email" => "new@example.com"]);
+        $this->assertStringContainsString(
+            "email_status=email_change_wrong_password",
+            (string) $response->headers->get("Location")
+        );
+
+        // when: wrong password
+        $response = $this->post("/api/profile/email/change", [
+            "email" => "new@example.com",
+            "password" => "nope",
+        ]);
+        $this->assertStringContainsString(
+            "email_status=email_change_wrong_password",
+            (string) $response->headers->get("Location")
+        );
+
+        // then: correct password succeeds
+        $response = $this->post("/api/profile/email/change", [
+            "email" => "new@example.com",
+            "password" => "abc123",
+        ]);
+        $this->assertStringContainsString(
+            "email_status=email_change_sent",
+            (string) $response->headers->get("Location")
+        );
+    }
+
+    /** @test */
+    public function passwordless_account_can_request_without_password()
+    {
+        // given a Steam-created account (no password)
+        $user = $this->userRepository->createSteamUser(
+            "steam_only",
+            "STEAM_0:0:12345678",
+            "steam-only@steam.invalid",
+            "127.0.0.1"
+        );
+        $this->assertFalse($user->hasPassword());
+        $this->actingAs($user);
+
+        // when
+        $response = $this->post("/api/profile/email/change", ["email" => "new@example.com"]);
+
+        // then
+        $this->assertSame(302, $response->getStatusCode());
+        $this->assertStringContainsString(
+            "email_status=email_change_sent",
+            (string) $response->headers->get("Location")
+        );
+    }
+
+    /** @test */
     public function cannot_request_taken_email()
     {
         // given
         $this->factory->user(["email" => "taken@example.com"]);
-        $user = $this->factory->user(["email" => "old@example.com"]);
+        $user = $this->factory->user(["email" => "old@example.com", "password" => "abc123"]);
         $this->actingAs($user);
 
         // when
         $response = $this->post("/api/profile/email/change", [
             "email" => "taken@example.com",
+            "password" => "abc123",
         ]);
 
         // then

@@ -42,6 +42,7 @@ class PageProfile extends Page implements IBeLoggedMust
         $surname = $user->getSurname();
         $steamId = $user->getSteamId();
         $steamVerified = $user->isSteamVerified();
+        $hasPassword = $user->hasPassword();
         $canDisconnectSteam = $user->canUnlinkSteam();
         $needsPasswordToDisconnect = $steamVerified && !$canDisconnectSteam;
         $billingAddressName = $user->getBillingAddress()->getName();
@@ -63,6 +64,7 @@ class PageProfile extends Page implements IBeLoggedMust
                 "surname",
                 "steamId",
                 "steamVerified",
+                "hasPassword",
                 "canDisconnectSteam",
                 "needsPasswordToDisconnect",
                 "steamError",

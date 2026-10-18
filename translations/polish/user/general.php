@@ -192,6 +192,7 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     "email_change_not_sent" =>
         "Nie udało się wysłać wiadomości potwierdzającej. Skontaktuj się z właścicielem sklepu.",
     "email_change_sent" => "Link potwierdzający został wysłany na nowy adres.",
+    "email_change_wrong_password" => "Aktualne hasło jest nieprawidłowe.",
     "email_change_subject" => "Potwierdź nowy adres e-mail",
     "email_change_wrong_token" => "Link potwierdzający jest nieprawidłowy lub został już użyty.",
     "email_changed" => "Adres e-mail został zmieniony.",
