@@ -67,14 +67,33 @@ ambiguity (wrong wallet charged, non-deterministic `fetch()`, duplicate-key
 
 1. Convert `steam_id` in place: legacy → SteamID64 (idempotent: a value that is
    already 64 digits is left as is).
-2. **Detect collisions**: two rows that were `STEAM_0:…` / `STEAM_1:…` of the
+2. **Repair double-encoded IDs**: `STEAM_x:y:<SteamID64>` (a pasted SteamID64
+   wrapped in Steam2 by the old code) is repaired to the embedded SteamID64.
+3. **Validate**: the result must be a real individual SteamID64 (17 digits,
+   universe=1 / type=1 / instance=1). Anything else is **unlinked and logged**
+   rather than left in a form the app can no longer match or display.
+4. **Detect collisions**: two rows that were `STEAM_0:…` / `STEAM_1:…` of the
    same account collapse to one SteamID64 → unique violation. Policy: keep the
-   "better" row (verified, more services), set the other's `steam_id = NULL` and
-   **log for manual merge**.
-3. Unparseable values → left as is + logged.
-4. The existing `UNIQUE(steam_id)` index then holds.
+   "better" row (verified, then lowest uid), set the other's `steam_id = NULL`
+   and **log for manual merge**.
+5. The existing `UNIQUE(steam_id)` index then holds.
 
 Run before serving; the installer applies migrations before requests.
+
+### Validation against production backups (2026-10-18)
+
+Applied to restores of the live dumps in an isolated MySQL:
+
+| Database | Steam IDs | Result |
+|---|---|---|
+| `admin_licshopsms` (official store) | 174 | all canonical |
+| `client_aaa708a2` (largest tenant) | 129 | all canonical (2 double-encoded repaired) |
+| `client_9b2ac8b5` | 16 | all canonical |
+| `client_d38879fd` | 11 | all canonical |
+| `client_bc3e02aa` | 5 | all canonical |
+
+0 invalid, 0 collisions, 0 out-of-range. (`admin_shopsms4` is a different
+application — Laravel-style migrations — and is not touched.)
 
 ### Read/write boundary
 - `UserRepository::mapToModel()`: stored SteamID64 → legacy `STEAM_0` for the `User` model.
