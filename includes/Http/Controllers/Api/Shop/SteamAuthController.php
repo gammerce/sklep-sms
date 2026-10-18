@@ -6,6 +6,7 @@ use App\Repositories\UserRepository;
 use App\Routing\UrlGenerator;
 use App\Support\SteamOpenId;
 use App\Support\SteamProfile;
+use App\Support\SteamUsername;
 use App\System\Auth;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -243,7 +244,7 @@ class SteamAuthController
         string $steamId64
     ): string {
         $persona = $steamProfile->getPersonaName($steamId64);
-        $base = $persona ? $this->sanitizeUsername($persona) : "";
+        $base = $persona ? SteamUsername::sanitize($persona) : "";
 
         if (strlen($base) < 2) {
             $base = "steam_{$steamId64}";

@@ -4,6 +4,8 @@ namespace Tests\Feature\Http\Api\Shop;
 use App\Repositories\UserRepository;
 use App\Requesting\Response as RequestingResponse;
 use App\Support\SteamIDConverter;
+use App\Support\SteamProfile;
+use Mockery;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Tests\Psr4\TestCases\HttpTestCase;
 
@@ -62,6 +64,31 @@ class SteamAuthControllerTest extends HttpTestCase
         $this->assertSame(302, $response->getStatusCode());
         $this->assertSame("http://localhost/", $response->headers->get("Location"));
         $this->assertSame($user->getId(), $this->session->get("uid"));
+    }
+
+    /** @test */
+    public function creates_account_with_a_sanitized_persona_username()
+    {
+        // given Steam reports a persona with emoji/space
+        $this->app->instance(
+            SteamProfile::class,
+            Mockery::mock(SteamProfile::class, function ($mock) {
+                $mock->shouldReceive("getPersonaName")->andReturn("♋ SeeK");
+            })
+        );
+
+        $state = "teststate";
+        $this->session->set("steam_state", $state);
+        $this->mockSuccessfulAuthentication();
+
+        // when
+        $response = $this->get("/api/steam/callback", $this->callbackParams($state));
+
+        // then
+        $this->assertSame(302, $response->getStatusCode());
+        $user = $this->userRepository->findBySteamId(self::STEAM_ID_64);
+        $this->assertNotNull($user);
+        $this->assertSame("SeeK", $user->getUsername());
     }
 
     /** @test */
