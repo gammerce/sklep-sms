@@ -198,6 +198,8 @@ You can now profit from many add-ons.',
     "log_steam_account_created" =>
         "Account created via Steam. ID: [{1}] User name: [{2}], IP: [{3}]",
     "log_steam_linked" => "Steam account connected: {1}",
+    "log_steam_overridden" =>
+        "Steam ID [{2}] taken over from unverified account (uid {1}) by account {3}",
     "log_steam_unlinked" => "Steam account disconnected: {1}",
     "new_email" => "New e-mail",
     "sign_in_with_steam" => "Sign in through Steam",

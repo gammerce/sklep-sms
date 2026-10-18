@@ -201,6 +201,8 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
     "log_steam_account_created" =>
         "Konto utworzone przez Steam. ID: [{1}] Nazwa użytkownika: [{2}], IP: [{3}]",
     "log_steam_linked" => "Połączono konto Steam: {1}",
+    "log_steam_overridden" =>
+        "SteamID [{2}] odebrany niezweryfikowanemu kontu (uid {1}) przez konto {3}",
     "log_steam_unlinked" => "Odłączono konto Steam: {1}",
     "new_email" => "Nowy e-mail",
     "sign_in_with_steam" => "Zaloguj się przez Steam",

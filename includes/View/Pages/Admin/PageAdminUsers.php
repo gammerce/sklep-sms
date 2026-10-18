@@ -87,21 +87,37 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         if ($recordId) {
             $queryParticle->add("`uid` = ?", [$recordId]);
         } elseif ($search) {
-            $queryParticle->extend(
-                create_search_query(
-                    [
-                        "`uid`",
-                        "`username`",
-                        "`forename`",
-                        "`surname`",
-                        "`email`",
-                        "`steam_id`",
-                        "`groups`",
-                        "`wallet`",
-                    ],
-                    $search
-                )
-            );
+            $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
+
+            $conditions = [];
+            $values = [];
+
+            foreach (
+                [
+                    "`uid`",
+                    "`username`",
+                    "`forename`",
+                    "`surname`",
+                    "`email`",
+                    "`steam_id`",
+                    "`groups`",
+                    "`wallet`",
+                ]
+                as $column
+            ) {
+                $conditions[] = "{$column} LIKE ?";
+                $values[] = $searchLike;
+            }
+
+            // steam_id is stored canonically (SteamID64), so also accept a
+            // legacy STEAM_x:y:z search term by matching its canonical form.
+            $canonical = to_canonical_steam_id($search);
+            if ($canonical !== null) {
+                $conditions[] = "`steam_id` = ?";
+                $values[] = $canonical;
+            }
+
+            $queryParticle->add("( " . implode(" OR ", $conditions) . " )", $values);
         }
 
         $where = $queryParticle->isEmpty() ? "" : "WHERE {$queryParticle}";

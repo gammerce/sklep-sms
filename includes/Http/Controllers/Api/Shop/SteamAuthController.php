@@ -208,7 +208,19 @@ class SteamAuthController
 
         $existing = $userRepository->findBySteamId($steamId);
         if ($existing && $existing->getId() !== $user->getId()) {
-            return $this->fail($request, $url, "steam_id_occupied", "/page/profile");
+            if ($existing->isSteamVerified()) {
+                return $this->fail($request, $url, "steam_id_occupied", "/page/profile");
+            }
+
+            // A proven (OpenID) owner takes the Steam ID over from a manually
+            // typed, unverified claim.
+            $userRepository->clearSteamId($existing->getId());
+            $logger->log(
+                "log_steam_overridden",
+                $existing->getId(),
+                $steamId,
+                $user->getId()
+            );
         }
 
         $userRepository->linkSteamId($user->getId(), $steamId);

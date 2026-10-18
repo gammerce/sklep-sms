@@ -43,7 +43,7 @@ class UserProfileResourceTest extends HttpTestCase
         $this->assertSame("abc", $freshUser->getUsername());
         $this->assertSame("poq", $freshUser->getForename());
         $this->assertSame("wer", $freshUser->getSurname());
-        $this->assertSame("STEAM_1:0:22309350", $freshUser->getSteamId());
+        $this->assertSame("STEAM_0:0:22309350", $freshUser->getSteamId());
     }
 
     /** @test */
@@ -94,7 +94,7 @@ class UserProfileResourceTest extends HttpTestCase
         // then
         $this->assertSame(200, $response->getStatusCode());
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertSame("STEAM_1:0:22309350", $freshUser->getSteamId());
+        $this->assertSame("STEAM_0:0:22309350", $freshUser->getSteamId());
         $this->assertTrue($freshUser->isSteamVerified());
     }
 
@@ -118,7 +118,7 @@ class UserProfileResourceTest extends HttpTestCase
         $json = $this->decodeJsonResponse($response);
         $this->assertSame("ok", $json["return_id"]);
         $freshUser = $this->userRepository->get($user->getId());
-        $this->assertSame("STEAM_1:0:22309350", $freshUser->getSteamId());
+        $this->assertSame("STEAM_0:0:22309350", $freshUser->getSteamId());
         $this->assertTrue($freshUser->isSteamVerified());
     }
 

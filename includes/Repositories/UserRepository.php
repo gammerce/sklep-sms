@@ -7,10 +7,8 @@ use App\Models\User;
 use App\Payment\General\BillingAddress;
 use App\Support\Database;
 use App\Support\Money;
-use App\Support\SteamIDConverter;
 use App\User\Permission;
 use PDOException;
-use UnexpectedValueException;
 
 class UserRepository
 {
@@ -66,7 +64,7 @@ EOF
                 (string) $ip,
                 $groups,
                 (int) $wallet,
-                $steamId ?: null,
+                to_canonical_steam_id($steamId),
                 json_encode($billingAddress->toArray()),
             ]);
 
@@ -97,7 +95,7 @@ EOF
                 (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
                 $user->getWallet()->asInt(),
-                $user->getSteamId() ?: null,
+                to_canonical_steam_id($user->getSteamId()),
                 json_encode($user->getBillingAddress()->toArray()),
                 $user->getId(),
             ]);
@@ -122,40 +120,34 @@ EOF
     }
 
     /**
+     * Looks a user up by Steam ID in any format (SteamID64, STEAM_x, STEAM3).
+     * The stored value is the canonical SteamID64, so inputs are canonicalised.
+     *
      * @param string $steamId
      * @return User|null
      */
     public function findBySteamId($steamId): ?User
     {
-        if (!strlen($steamId)) {
+        $canonical = to_canonical_steam_id($steamId);
+
+        if ($canonical === null) {
             return null;
         }
 
-        // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
-        $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
-
-        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` IN (?, ?)");
-        $statement->bindAndExecute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` = ?");
+        $statement->bindAndExecute([$canonical]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
     }
 
     /**
-     * Looks a user up by SteamID64 (as returned by Steam OpenID).
-     *
      * @param string $steamId64
      * @return User|null
      */
     public function findBySteamId64($steamId64): ?User
     {
-        try {
-            $steamId = (new SteamIDConverter())->toSteamID($steamId64);
-        } catch (UnexpectedValueException $e) {
-            return null;
-        }
-
-        return $this->findBySteamId($steamId);
+        return $this->findBySteamId($steamId64);
     }
 
     /**
@@ -187,7 +179,12 @@ EOF
                 VALUES (?, '', '', ?, '', '', ?, '1', 0, ?, 1, '{}', NOW())
 EOF
             )
-            ->bindAndExecute([(string) $username, (string) $email, (string) $ip, $steamId]);
+            ->bindAndExecute([
+                (string) $username,
+                (string) $email,
+                (string) $ip,
+                to_canonical_steam_id($steamId),
+            ]);
 
         return $this->get($this->db->lastId());
     }
@@ -201,7 +198,7 @@ EOF
             ->statement(
                 "UPDATE `ss_users` SET `steam_id` = ?, `steam_verified` = 1 WHERE `uid` = ?"
             )
-            ->bindAndExecute([$steamId, $userId]);
+            ->bindAndExecute([to_canonical_steam_id($steamId), $userId]);
     }
 
     /**
@@ -397,8 +394,7 @@ EOF
     }
 
     public function mapToModel(array $data): User
-    {
-        $groupsIds = explode_int_list($data["groups"], ";");
+    {        $groupsIds = explode_int_list($data["groups"], ";");
         $billingAddress = BillingAddress::fromArray(json_decode($data["billing_address"], true));
         $permissions = $this->gatherPermissions($groupsIds);
 
@@ -410,7 +406,7 @@ EOF
             $data["email"],
             $data["forename"],
             $data["surname"],
-            $data["steam_id"],
+            to_legacy_steam_id($data["steam_id"]),
             $billingAddress,
             $groupsIds,
             $data["regdate"],

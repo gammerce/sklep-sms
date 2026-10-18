@@ -11,7 +11,7 @@ class SteamIdRule extends BaseRule
     {
         $converter = new SteamIDConverter();
 
-        if (!$converter->isSteamID($value)) {
+        if (!$converter->isAnySteamID($value)) {
             throw new ValidationException($this->lang->t("wrong_sid"));
         }
     }

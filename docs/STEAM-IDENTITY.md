@@ -90,11 +90,24 @@ SteamID64, searching by a legacy string wouldn't match. Mitigation: if the searc
 term parses as a Steam ID, convert it to SteamID64 as well (or add both forms to
 the search).
 
-## Open decisions
+## Decision log
 
-1. **Wallet in-game auth**: require `steam_verified` for wallet spending
-   (safer), or keep accepting any (typed) link (backward compatible)?
-2. **Manual Steam ID entry** on register/profile: keep (delivery/prefill) or drop?
-3. **Auto-create** account on first Steam login: keep or require existing account?
+1. **Wallet in-game auth: B** — a manually typed link still authorises in-game
+   wallet. Safe because the game server reports the **real** SteamID of the
+   connected player; the residual abuse (squatting a public SID) is covered by
+   (a) web login matching **verified** links only, and (b) verified-beats-unverified
+   takeover below.
+2. **Manual Steam ID entry stays.**
+3. **Auto-create** account on first Steam login stays.
+4. **Verified beats unverified**: connecting via OpenID reclaims a Steam ID held
+   by an unverified (manually typed) claim on another account; the loser is
+   unlinked and the event is logged. A conflicting **verified** link is refused.
+
+## Status
+
+Implemented: single canonical column (`ss_users.steam_id` holds SteamID64),
+read/write conversion at the repository boundary, web + in-game matching by the
+canonical ID, verified-beats-unverified takeover, and a data migration that
+canonicalises existing rows and resolves 0/1 collisions.
 
 Plugins are untouched: they keep sending Steam2; we canonicalise on our side.

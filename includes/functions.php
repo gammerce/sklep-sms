@@ -285,6 +285,44 @@ function my_is_integer(mixed $val): bool
     return strlen($val) && trim($val) === strval(intval($val));
 }
 
+/**
+ * Canonical stored Steam ID form: SteamID64. Accepts SteamID64, STEAM_x:y:z
+ * and [U:1:x]; the universe ("STEAM_0"/"STEAM_1") is ignored. null when the
+ * value is empty or not a Steam ID.
+ */
+function to_canonical_steam_id(mixed $value): ?string
+{
+    $value = trim((string) $value);
+
+    if (!strlen($value)) {
+        return null;
+    }
+
+    try {
+        return (new \App\Support\SteamIDConverter())->toSteamID64($value);
+    } catch (\UnexpectedValueException $e) {
+        return null;
+    }
+}
+
+/**
+ * Legacy display form (STEAM_0:y:z) for a Steam ID in any format.
+ */
+function to_legacy_steam_id(mixed $value): ?string
+{
+    $value = trim((string) $value);
+
+    if (!strlen($value)) {
+        return null;
+    }
+
+    try {
+        return (new \App\Support\SteamIDConverter())->toSteamID($value);
+    } catch (\UnexpectedValueException $e) {
+        return null;
+    }
+}
+
 function array_get(ArrayAccess|array|null $array, mixed $key, mixed $default = null): mixed
 {
     if ($key === null) {

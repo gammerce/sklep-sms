@@ -214,6 +214,32 @@ class SteamAuthControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function link_takes_steam_id_over_from_unverified_account()
+    {
+        // given: someone typed this Steam ID without proving ownership
+        $squatter = $this->factory->user(["steam_id" => $this->legacySteamId()]);
+
+        $user = $this->factory->user();
+        $this->actingAs($user);
+        $this->get("/api/steam/link");
+        $state = (string) $this->session->get("steam_state");
+        $this->mockSuccessfulAuthentication();
+
+        // when: the real owner connects Steam via OpenID
+        $response = $this->get("/api/steam/callback", $this->callbackParams($state));
+
+        // then: the verified owner wins, the unverified claim is released
+        $this->assertSame(302, $response->getStatusCode());
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertSame($this->legacySteamId(), $freshUser->getSteamId());
+        $this->assertTrue($freshUser->isSteamVerified());
+
+        $freshSquatter = $this->userRepository->get($squatter->getId());
+        $this->assertNull($freshSquatter->getSteamId());
+        $this->assertFalse($freshSquatter->isSteamVerified());
+    }
+
+    /** @test */
     public function cannot_disconnect_steam_only_account()
     {
         // given
