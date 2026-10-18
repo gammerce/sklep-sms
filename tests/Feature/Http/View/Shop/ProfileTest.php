@@ -68,6 +68,28 @@ class ProfileTest extends HttpTestCase
         $this->assertStringNotContainsString("required", $input);
     }
 
+    /** @test */
+    public function hides_the_steam_placeholder_email()
+    {
+        // given a Steam-created account (placeholder address)
+        $user = $this->app
+            ->make(UserRepository::class)
+            ->createSteamUser(
+                "pwless2",
+                "STEAM_0:0:10000002",
+                "steam-x@steam.invalid",
+                "127.0.0.1"
+            );
+        $this->actingAs($user);
+
+        // when
+        $content = $this->get("/page/profile")->getContent();
+
+        // then the internal placeholder is not shown, the prompt is
+        $this->assertStringNotContainsString("@steam.invalid", $content);
+        $this->assertStringContainsString("nie ma jeszcze adresu e-mail", $content);
+    }
+
     private function emailPasswordInput(): string
     {
         $content = $this->get("/page/profile")->getContent();

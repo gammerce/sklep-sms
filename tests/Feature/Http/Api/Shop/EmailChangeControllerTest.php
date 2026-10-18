@@ -103,6 +103,40 @@ class EmailChangeControllerTest extends HttpTestCase
     }
 
     /** @test */
+    public function rejects_null_origin_and_allows_missing_origin()
+    {
+        // given
+        $user = $this->factory->user(["email" => "old@example.com", "password" => "abc123"]);
+        $this->actingAs($user);
+
+        // when: sandboxed iframe sends "Origin: null" -> treated as cross-site
+        $response = $this->post(
+            "/api/profile/email/change",
+            ["email" => "a@example.com", "password" => "abc123"],
+            [],
+            ["Origin" => "null"]
+        );
+
+        // then
+        $this->assertStringContainsString(
+            "email_status=email_change_invalid",
+            (string) $response->headers->get("Location")
+        );
+
+        // when: no Origin/Referer at all -> allowed
+        $response = $this->post("/api/profile/email/change", [
+            "email" => "b@example.com",
+            "password" => "abc123",
+        ]);
+
+        // then
+        $this->assertStringContainsString(
+            "email_status=email_change_sent",
+            (string) $response->headers->get("Location")
+        );
+    }
+
+    /** @test */
     public function accepts_same_origin_and_rejects_cross_site_posts()
     {
         // given

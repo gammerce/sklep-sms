@@ -36,7 +36,10 @@ class PageProfile extends Page implements IBeLoggedMust
     public function getContent(Request $request)
     {
         $user = $this->auth->user();
-        $email = $user->getEmail();
+        $email = (string) $user->getEmail();
+        // The Steam placeholder is internal: don't show it as if it were real.
+        $needsEmail = is_steam_placeholder_email($email);
+        $email = $needsEmail ? "" : $email;
         $username = $user->getUsername();
         $forename = $user->getForename();
         $surname = $user->getSurname();
@@ -51,8 +54,6 @@ class PageProfile extends Page implements IBeLoggedMust
         $billingAddressPostalCode = $user->getBillingAddress()->getPostalCode();
         $billingAddressCity = $user->getBillingAddress()->getCity();
         $billingAddressFormClass = $this->invoiceService->isConfigured() ? "" : "is-hidden";
-
-        $needsEmail = is_steam_placeholder_email((string) $email);
 
         $steamError = $this->pullSessionMessage($request, "steam_error");
         $emailStatus = $this->queryMessage($request, "email_status", EmailChangeStatus::KEYS);

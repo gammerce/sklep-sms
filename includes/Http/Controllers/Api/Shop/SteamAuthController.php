@@ -270,12 +270,6 @@ class SteamAuthController
         return $username;
     }
 
-    private function sanitizeUsername(string $value): string
-    {
-        // UsernameRule requires htmlspecialchars() to be a no-op.
-        return trim(str_replace(["<", ">", "&", '"', "'"], "", $value));
-    }
-
     /**
      * Splits a public real name into forename/surname (column limits: 32/64).
      *

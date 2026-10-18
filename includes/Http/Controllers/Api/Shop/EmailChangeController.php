@@ -171,14 +171,18 @@ class EmailChangeController
     {
         $source = $request->headers->get("Origin") ?: $request->headers->get("Referer");
 
+        // No source header at all: cannot tell (older/privacy tooling); allow and
+        // rely on the authentication requirement.
         if (!$source) {
             return false;
         }
 
-        $sourceHost = parse_url((string) $source, PHP_URL_HOST) ?: null;
+        $sourceHost = parse_url((string) $source, PHP_URL_HOST);
 
-        if ($sourceHost === null) {
-            return false;
+        // Present but unusable (e.g. "Origin: null" from a sandboxed iframe):
+        // treat as cross-site rather than failing open.
+        if (!is_string($sourceHost) || $sourceHost === "") {
+            return true;
         }
 
         // Accept the configured shop host and the actual request host (apex/www,
