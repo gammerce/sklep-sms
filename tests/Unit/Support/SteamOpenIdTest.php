@@ -27,10 +27,7 @@ class SteamOpenIdTest extends UnitTestCase
 
         $this->assertStringStartsWith(SteamOpenId::OPENID_ENDPOINT . "?", $url);
         $this->assertStringContainsString("openid.mode=checkid_setup", $url);
-        $this->assertStringContainsString(
-            "openid.return_to=" . urlencode(self::RETURN_TO),
-            $url
-        );
+        $this->assertStringContainsString("openid.return_to=" . urlencode(self::RETURN_TO), $url);
         $this->assertStringContainsString("identifier_select", $url);
     }
 
@@ -40,7 +37,9 @@ class SteamOpenIdTest extends UnitTestCase
         // given
         $this->requesterMock
             ->shouldReceive("post")
-            ->andReturn(new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:true\n"));
+            ->andReturn(
+                new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:true\n")
+            );
 
         // when
         $steamId64 = $this->steamOpenId->verify($this->requestWithAssertion(), self::RETURN_TO);

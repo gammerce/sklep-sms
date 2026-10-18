@@ -273,7 +273,7 @@ class SteamAuthController
     private function sanitizeUsername(string $value): string
     {
         // UsernameRule requires htmlspecialchars() to be a no-op.
-        return trim(str_replace(['<', '>', '&', '"', "'"], "", $value));
+        return trim(str_replace(["<", ">", "&", '"', "'"], "", $value));
     }
 
     /**
@@ -289,12 +289,9 @@ class SteamAuthController
             return ["", ""];
         }
 
-        $parts = preg_split('/\s+/', $realName, 2) ?: [];
+        $parts = preg_split("/\s+/", $realName, 2) ?: [];
 
-        return [
-            mb_substr($parts[0] ?? "", 0, 32),
-            mb_substr($parts[1] ?? "", 0, 64),
-        ];
+        return [mb_substr($parts[0] ?? "", 0, 32), mb_substr($parts[1] ?? "", 0, 64)];
     }
 
     private function fail(

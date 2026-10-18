@@ -14,8 +14,7 @@ class CanonicalizeSteamIdTest extends HttpTestCase
         parent::setUp();
         $this->db = $this->app->make(Database::class);
 
-        require_once __DIR__ .
-            "/../../../migrations/2026_10_18_000000_canonicalize_steam_id.php";
+        require_once __DIR__ . "/../../../migrations/2026_10_18_000000_canonicalize_steam_id.php";
     }
 
     /** @test */

@@ -9,8 +9,7 @@ use App\Requesting\Requester;
  */
 class SteamProfile
 {
-    private const SUMMARY_ENDPOINT =
-        "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/";
+    private const SUMMARY_ENDPOINT = "https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/";
 
     private Requester $requester;
 

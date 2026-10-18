@@ -117,11 +117,9 @@ class SteamOpenId
     {
         $params["openid.mode"] = "check_authentication";
 
-        $response = $this->requester->post(
-            self::OPENID_ENDPOINT,
-            http_build_query($params),
-            ["Content-Type" => "application/x-www-form-urlencoded"]
-        );
+        $response = $this->requester->post(self::OPENID_ENDPOINT, http_build_query($params), [
+            "Content-Type" => "application/x-www-form-urlencoded",
+        ]);
 
         if (!$response || !$response->is2xx()) {
             return false;

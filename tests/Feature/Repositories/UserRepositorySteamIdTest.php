@@ -56,9 +56,9 @@ class UserRepositorySteamIdTest extends HttpTestCase
         );
         $this->assertSame(
             $user->getId(),
-            $this->userRepository->findBySteamId(
-                (new SteamIDConverter())->toSteamID64("STEAM_0:1:77777777")
-            )->getId()
+            $this->userRepository
+                ->findBySteamId((new SteamIDConverter())->toSteamID64("STEAM_0:1:77777777"))
+                ->getId()
         );
         $this->assertNull($this->userRepository->findBySteamId("not-a-steam-id"));
     }

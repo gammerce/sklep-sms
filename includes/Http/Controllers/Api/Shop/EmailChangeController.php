@@ -153,12 +153,8 @@ class EmailChangeController
             : $this->toLogin($url, "email_changed");
     }
 
-    private function notifyOldAddress(
-        $user,
-        Mailer $mailer,
-        Template $template,
-        $lang
-    ): void {
+    private function notifyOldAddress($user, Mailer $mailer, Template $template, $lang): void
+    {
         $oldEmail = (string) $user->getEmail();
 
         if (!strlen($oldEmail) || is_steam_placeholder_email($oldEmail)) {

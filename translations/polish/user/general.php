@@ -10,8 +10,7 @@ return [
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",
     "set_password" => "Ustaw hasło",
-    "set_password_subtitle" =>
-        "Ustaw hasło, aby móc logować się także adresem e-mail.",
+    "set_password_subtitle" => "Ustaw hasło, aby móc logować się także adresem e-mail.",
     "charge_wallet" => "Doładuj portfel",
     "choose_payment" => "Wybierz metodę płatność",
     "choose_payment_module" => "Wybierz moduł płatności",
@@ -227,6 +226,5 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
         "Odłączenie pozwoli ponownie zmienić SteamID, ale nie będzie można używać go do logowania.",
     "steam_unlink_set_password" => "Najpierw ustaw hasło, wtedy będziesz mógł odłączyć Steam.",
     "steam_verified" => "Zweryfikowany",
-    "steam_verified_hint" =>
-        "Zweryfikowane przez Steam. Aby zmienić, najpierw odłącz Steam.",
+    "steam_verified_hint" => "Zweryfikowane przez Steam. Aby zmienić, najpierw odłącz Steam.",
 ];

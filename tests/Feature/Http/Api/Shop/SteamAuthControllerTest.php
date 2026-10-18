@@ -187,7 +187,9 @@ class SteamAuthControllerTest extends HttpTestCase
         $this->session->set("steam_state", $state);
         $this->requesterMock
             ->shouldReceive("post")
-            ->andReturn(new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:false\n"));
+            ->andReturn(
+                new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:false\n")
+            );
 
         // when
         $response = $this->get("/api/steam/callback", $this->callbackParams($state));
@@ -357,7 +359,9 @@ class SteamAuthControllerTest extends HttpTestCase
     {
         $this->requesterMock
             ->shouldReceive("post")
-            ->andReturn(new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:true\n"));
+            ->andReturn(
+                new RequestingResponse(200, "ns:http://specs.openid.net/auth/2.0\nis_valid:true\n")
+            );
     }
 
     private function legacySteamId(): string

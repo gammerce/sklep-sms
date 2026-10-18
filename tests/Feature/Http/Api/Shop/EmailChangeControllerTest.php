@@ -37,7 +37,10 @@ class EmailChangeControllerTest extends HttpTestCase
         // the address is not changed until it is confirmed
         $freshUser = $this->userRepository->get($user->getId());
         $this->assertSame("old@example.com", $freshUser->getEmail());
-        $this->assertSame("new@example.com", $this->userRepository->getPendingEmail($user->getId()));
+        $this->assertSame(
+            "new@example.com",
+            $this->userRepository->getPendingEmail($user->getId())
+        );
     }
 
     /** @test */
@@ -154,7 +157,10 @@ class EmailChangeControllerTest extends HttpTestCase
             "email_status=email_change_invalid",
             (string) $response->headers->get("Location")
         );
-        $this->assertNotSame("taken@example.com", $this->userRepository->getPendingEmail($user->getId()));
+        $this->assertNotSame(
+            "taken@example.com",
+            $this->userRepository->getPendingEmail($user->getId())
+        );
     }
 
     /** @test */

@@ -23,6 +23,7 @@ class AddSteamAuth extends Migration
                 ADD COLUMN `email_change_key` VARCHAR(32) NOT NULL DEFAULT '',
                 ADD COLUMN `email_change_new` VARCHAR(128) NOT NULL DEFAULT ''
 EOF
+        ,
         ]);
     }
 }

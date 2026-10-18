@@ -14,7 +14,7 @@ final class SteamUsername
      */
     public static function sanitize(string $value): string
     {
-        $value = preg_replace('/[^\p{L}\p{N}_-]+/u', "_", $value) ?? "";
+        $value = preg_replace("/[^\p{L}\p{N}_-]+/u", "_", $value) ?? "";
 
         return trim($value, "_-");
     }

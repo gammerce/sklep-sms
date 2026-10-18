@@ -10,8 +10,7 @@ return [
     "change_password_subtitle" =>
         "In order to change your enter an old password. Then enter a new password and type it again.",
     "set_password" => "Set password",
-    "set_password_subtitle" =>
-        "Set a password so you can also sign in with your e-mail address.",
+    "set_password_subtitle" => "Set a password so you can also sign in with your e-mail address.",
     "charge_wallet" => "Top up your wallet",
     "choose_payment" => "Choose payment method",
     "choose_payment_module" => "Choose payment module",
@@ -190,7 +189,8 @@ You can now profit from many add-ons.',
     "confirm_email_button" => "Confirm e-mail",
     "confirm_email_subtitle" => "Confirm your new e-mail address.",
     "email_change_invalid" => "The given e-mail is incorrect or already taken.",
-    "email_change_not_sent" => "Could not send the confirmation e-mail. Please contact the shop owner.",
+    "email_change_not_sent" =>
+        "Could not send the confirmation e-mail. Please contact the shop owner.",
     "email_change_sent" => "A confirmation link was sent to the new address.",
     "email_change_wrong_password" => "The current password is incorrect.",
     "email_change_subject" => "Confirm your new e-mail address",

@@ -227,8 +227,11 @@ function get_random_string(int $length): string
  * @param string[] $columns
  * @param array<array{0: string, 1: array}> $extraConditions extra [sql, params] pairs
  */
-function create_search_query(array $columns, string $search, array $extraConditions = []): ?QueryParticle
-{
+function create_search_query(
+    array $columns,
+    string $search,
+    array $extraConditions = []
+): ?QueryParticle {
     if (!$columns && !$extraConditions) {
         return null;
     }

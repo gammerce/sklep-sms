@@ -179,13 +179,7 @@
         <div class="field">
             <label for="current_email" class="label">{{ __('current_email') }}</label>
             <div class="control">
-                <input
-                    id="current_email"
-                    type="text"
-                    class="input"
-                    value="{{ $email }}"
-                    disabled
-                />
+                <input id="current_email" type="text" class="input" value="{{ $email }}" disabled />
             </div>
         </div>
 
@@ -193,18 +187,10 @@
 
         <form method="POST" action="{{ url('/api/profile/email/change') }}">
             <div class="field {{ $hasPassword ? '' : 'is-hidden' }}">
-                <label for="email_change_password" class="label">
-                    {{ __('password') }}
-                </label>
+                <label for="email_change_password" class="label"> {{ __('password') }} </label>
                 <div class="control">
-                    <input
-                        id="email_change_password"
-                        name="password"
-                        type="password"
-                        class="input"
-                        autocomplete="current-password"
-                        {{ $hasPassword ? 'required' : 'disabled' }}
-                    />
+                    <input id="email_change_password" name="password" type="password" class="input"
+                    autocomplete="current-password" {{ $hasPassword ? 'required' : 'disabled' }} />
                 </div>
                 <p class="help">{{ __('change_email_password_hint') }}</p>
             </div>
@@ -240,17 +226,9 @@
                 </span>
             </label>
             <div class="control">
-                <input
-                    id="steam_id"
-                    name="steam_id"
-                    form="form_profile_update"
-                    type="text"
-                    class="input"
-                    maxlength="32"
-                    placeholder="{{ __('profile_steam_id_hint') }}"
-                    value="{{ $steamId }}"
-                    {{ $steamVerified ? 'disabled' : '' }}
-                />
+                <input id="steam_id" name="steam_id" form="form_profile_update" type="text"
+                class="input" maxlength="32" placeholder="{{ __('profile_steam_id_hint') }}"
+                value="{{ $steamId }}" {{ $steamVerified ? 'disabled' : '' }} />
             </div>
             <p class="help {{ $steamVerified ? '' : 'is-hidden' }}">
                 {{ __('steam_verified_hint') }}
