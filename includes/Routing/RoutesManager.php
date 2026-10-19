@@ -42,6 +42,7 @@ use App\Http\Controllers\Api\Setup\InstallController;
 use App\Http\Controllers\Api\Setup\UpdateController;
 use App\Http\Controllers\Api\Shop\BrickResource;
 use App\Http\Controllers\Api\Shop\CronController;
+use App\Http\Controllers\Api\Shop\EmailChangeController;
 use App\Http\Controllers\Api\Shop\LogInController;
 use App\Http\Controllers\Api\Shop\LogOutController;
 use App\Http\Controllers\Api\Shop\PasswordForgottenController;
@@ -57,6 +58,7 @@ use App\Http\Controllers\Api\Shop\ServiceTakeOverController;
 use App\Http\Controllers\Api\Shop\ServiceTakeOverFormController;
 use App\Http\Controllers\Api\Shop\SessionLanguageResource;
 use App\Http\Controllers\Api\Shop\RenderedTemplateResource;
+use App\Http\Controllers\Api\Shop\SteamAuthController;
 use App\Http\Controllers\Api\Shop\TransactionPromoCodeResource;
 use App\Http\Controllers\Api\Shop\TransactionResource;
 use App\Http\Controllers\Api\Shop\UserProfileResource;
@@ -230,6 +232,33 @@ class RoutesManager
 
                         $r->put("/api/session/language", [
                             "uses" => SessionLanguageResource::class . "@put",
+                        ]);
+
+                        $r->get("/api/steam/login", [
+                            "uses" => SteamAuthController::class . "@login",
+                        ]);
+
+                        $r->get("/api/steam/callback", [
+                            "uses" => SteamAuthController::class . "@callback",
+                        ]);
+
+                        $r->get("/api/steam/link", [
+                            "middlewares" => [RequireAuthorized::class],
+                            "uses" => SteamAuthController::class . "@link",
+                        ]);
+
+                        $r->post("/api/steam/disconnect", [
+                            "middlewares" => [RequireAuthorized::class],
+                            "uses" => SteamAuthController::class . "@disconnect",
+                        ]);
+
+                        $r->post("/api/profile/email/change", [
+                            "middlewares" => [RequireAuthorized::class],
+                            "uses" => EmailChangeController::class . "@change",
+                        ]);
+
+                        $r->post("/api/profile/email/confirm", [
+                            "uses" => EmailChangeController::class . "@confirm",
                         ]);
 
                         $r->post("/api/password/forgotten", [

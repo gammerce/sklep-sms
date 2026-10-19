@@ -215,31 +215,43 @@ function get_random_string(int $length): string
     $chars = "abcdefghijklmnopqrstuvwxyz1234567890";
     $finalRand = "";
     for ($i = 0; $i < $length; $i++) {
-        $finalRand .= $chars[rand(0, strlen($chars) - 1)];
+        $finalRand .= $chars[random_int(0, strlen($chars) - 1)];
     }
 
     return $finalRand;
 }
 
 /**
+ * Builds a LIKE search over $columns, optionally OR-ed with extra conditions.
+ *
  * @param string[] $columns
- * @param string $search
- * @return QueryParticle|null
+ * @param array<array{0: string, 1: array}> $extraConditions extra [sql, params] pairs
  */
-function create_search_query(array $columns, string $search): ?QueryParticle
-{
-    if (!$columns) {
+function create_search_query(
+    array $columns,
+    string $search,
+    array $extraConditions = []
+): ?QueryParticle {
+    if (!$columns && !$extraConditions) {
         return null;
     }
-
-    $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
 
     $params = [];
     $values = [];
 
-    foreach ($columns as $searchId) {
-        $params[] = "{$searchId} LIKE ?";
-        $values[] = $searchLike;
+    if ($columns) {
+        $searchLike = "%" . implode("%", preg_split('/(?<!^)(?!$)/u', $search)) . "%";
+
+        foreach ($columns as $searchId) {
+            $params[] = "{$searchId} LIKE ?";
+            $values[] = $searchLike;
+        }
+    }
+
+    // Additional OR'd conditions, e.g. [["`steam_id` = ?", [$canonical]]].
+    foreach ($extraConditions as [$condition, $conditionValues]) {
+        $params[] = $condition;
+        $values = array_merge($values, $conditionValues);
     }
 
     $queryParticle = new QueryParticle();
@@ -283,6 +295,37 @@ function pr(mixed $a): void
 function my_is_integer(mixed $val): bool
 {
     return strlen($val) && trim($val) === strval(intval($val));
+}
+
+/**
+ * Canonical stored Steam ID form: SteamID64. Delegates to SteamIDConverter so
+ * the accepted formats live in one place.
+ */
+function to_canonical_steam_id(mixed $value): ?string
+{
+    return (new \App\Support\SteamIDConverter())->tryToSteamID64($value);
+}
+
+/**
+ * Legacy display form (STEAM_0:y:z) for a Steam ID in any format.
+ */
+function to_legacy_steam_id(mixed $value): ?string
+{
+    return (new \App\Support\SteamIDConverter())->tryToSteamID($value);
+}
+
+/**
+ * Non-routable, unpredictable placeholder address for an account created via
+ * Steam before the user sets a real e-mail.
+ */
+function steam_placeholder_email(): string
+{
+    return "steam-" . get_random_string(24) . "@steam.invalid";
+}
+
+function is_steam_placeholder_email(string $email): bool
+{
+    return str_ends_with($email, "@steam.invalid");
 }
 
 function array_get(ArrayAccess|array|null $array, mixed $key, mixed $default = null): mixed

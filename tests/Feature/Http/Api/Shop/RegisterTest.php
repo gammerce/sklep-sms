@@ -62,7 +62,8 @@ class RegisterTest extends HttpTestCase
         $this->assertEquals($email, $user->getEmail());
         $this->assertEquals($forename, $user->getForename());
         $this->assertEquals($surname, $user->getSurname());
-        $this->assertEquals($steamId, $user->getSteamId());
+        // Steam ID is stored/looked up canonically (STEAM_0 form).
+        $this->assertSame("STEAM_0:0:22309350", $user->getSteamId());
         $this->assertEquals(BillingAddress::blank(), $user->getBillingAddress());
         $this->assertNotNull($user->getRegDate());
     }

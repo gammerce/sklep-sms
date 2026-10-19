@@ -47,18 +47,20 @@ class PasswordForgottenController
             return new ApiResponse("sent", $lang->t("email_sent"), 1);
         }
 
+        // No reachable address (e.g. the Steam placeholder): don't send, but keep
+        // the same generic response.
+        $email = $editedUser->getContactEmail();
+        if (!strlen($email)) {
+            return new ApiResponse("sent", $lang->t("email_sent"), 1);
+        }
+
         $code = $userRepository->createResetPasswordKey($editedUser->getId());
 
         $text = $template->renderNoComments("emails/forgotten_password", [
             "ip" => $editedUser->getLastip(),
             "link" => $url->to("/page/reset_password", compact("code")),
         ]);
-        $ret = $mailer->send(
-            $editedUser->getEmail(),
-            $editedUser->getUsername(),
-            "Reset Hasła",
-            $text
-        );
+        $ret = $mailer->send($email, $editedUser->getUsername(), "Reset Hasła", $text);
 
         if ($ret === "not_sent") {
             return new ApiResponse("not_sent", $lang->t("keyreset_error"), 0);
@@ -73,7 +75,7 @@ class PasswordForgottenController
                 "log_reset_key_email",
                 $editedUser->getUsername(),
                 $editedUser->getId(),
-                $editedUser->getEmail(),
+                $email,
                 $validated["username"],
                 $validated["email"]
             );

@@ -7,24 +7,18 @@
 
 <main class="section section-body">
     <div class="container">
+        <div class="notification is-danger {{ $steamError ? '' : 'is-hidden' }}">
+            {{ $steamError }}
+        </div>
+        <div class="notification is-info {{ $emailStatus ? '' : 'is-hidden' }}">
+            {{ $emailStatus }}
+        </div>
+        <div class="notification is-warning {{ $needsEmail ? '' : 'is-hidden' }}">
+            {{ __('steam_add_email_notice') }}
+        </div>
+
         <form id="form_profile_update">
             <div class="columns is-multiline mb-5">
-                <div class="column is-full">
-                    <div class="field">
-                        <label for="email" class="label required"> {{ __('email') }} </label>
-                        <div class="control">
-                            <input
-                                id="email"
-                                name="email"
-                                type="text"
-                                class="input"
-                                value="{{ $email }}"
-                                disabled
-                            />
-                        </div>
-                    </div>
-                </div>
-
                 <div class="column is-full">
                     <div class="field">
                         <label for="username" class="label required"> {{ __('username') }} </label>
@@ -70,24 +64,6 @@
                                 class="input"
                                 maxlength="64"
                                 value="{{ $surname }}"
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column is-full">
-                    <div class="field">
-                        <label for="steam_id" class="label">{{ __('sid') }}</label>
-
-                        <div class="control">
-                            <input
-                                id="steam_id"
-                                name="steam_id"
-                                type="text"
-                                class="input"
-                                maxlength="32"
-                                placeholder="{{ __('profile_steam_id_hint') }}"
-                                value="{{ $steamId }}"
                             />
                         </div>
                     </div>
@@ -195,5 +171,92 @@
 
             <button type="submit" class="button is-success">{{ __('edit') }}</button>
         </form>
+
+        <hr class="mt-5" />
+
+        <h3 class="title is-4">{{ __('email') }}</h3>
+
+        <div class="field">
+            <label for="current_email" class="label">{{ __('current_email') }}</label>
+            <div class="control">
+                <input id="current_email" type="text" class="input" value="{{ $email }}" disabled />
+            </div>
+        </div>
+
+        <p class="mb-3">{{ __('change_email_hint') }}</p>
+
+        <form method="POST" action="{{ url('/api/profile/email/change') }}">
+            <div class="field {{ $hasPassword ? '' : 'is-hidden' }}">
+                <label for="email_change_password" class="label"> {{ __('password') }} </label>
+                <div class="control">
+                    <input id="email_change_password" name="password" type="password" class="input"
+                    autocomplete="current-password" {{ $hasPassword ? 'required' : 'disabled' }} />
+                </div>
+                <p class="help">{{ __('change_email_password_hint') }}</p>
+            </div>
+
+            <div class="field is-grouped">
+                <div class="control is-expanded">
+                    <input
+                        type="email"
+                        name="email"
+                        class="input"
+                        maxlength="128"
+                        required
+                        placeholder="{{ __('new_email') }}"
+                    />
+                </div>
+                <div class="control">
+                    <button class="button is-success" type="submit">
+                        {{ __('change_email') }}
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <hr class="mt-5" />
+
+        <h3 class="title is-4">{{ __('steam') }}</h3>
+
+        <div class="field">
+            <label for="steam_id" class="label">
+                {{ __('sid') }}
+                <span class="tag is-success {{ $steamVerified ? '' : 'is-hidden' }}">
+                    {{ __('steam_verified') }}
+                </span>
+            </label>
+            <div class="control">
+                <input id="steam_id" name="steam_id" form="form_profile_update" type="text"
+                class="input" maxlength="32" placeholder="{{ __('profile_steam_id_hint') }}"
+                value="{{ $steamId }}" {{ $steamVerified ? 'disabled' : '' }} />
+            </div>
+            <p class="help {{ $steamVerified ? '' : 'is-hidden' }}">
+                {{ __('steam_verified_hint') }}
+            </p>
+        </div>
+
+        <div class="{{ $steamVerified ? 'is-hidden' : '' }}">
+            <p class="mb-3">{{ __('steam_link_hint') }}</p>
+            <a class="button btn-steam" href="{{ url('/api/steam/link') }}">
+                <span class="icon"><i class="fab fa-steam"></i></span>
+                <span>{{ __('steam_link') }}</span>
+            </a>
+        </div>
+
+        <form
+            class="{{ $canDisconnectSteam ? '' : 'is-hidden' }}"
+            method="POST"
+            action="{{ url('/api/steam/disconnect') }}"
+        >
+            <p class="mb-3">{{ __('steam_unlink_hint') }}</p>
+            <button class="button is-danger" type="submit">{{ __('steam_unlink') }}</button>
+        </form>
+
+        <div class="{{ $needsPasswordToDisconnect ? '' : 'is-hidden' }}">
+            <p class="mb-3">{{ __('steam_unlink_set_password') }}</p>
+            <a class="button is-warning" href="{{ url('/page/change_password') }}">
+                {{ __('change_password') }}
+            </a>
+        </div>
     </div>
 </main>

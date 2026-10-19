@@ -7,6 +7,9 @@ use UnexpectedValueException;
 final class SteamIDConverter
 {
     private const BASE_NUM = 76561197960265728; // "V" in the conversion algorithms
+    // Individual accounts: universe=1, type=1, instance=1, accountID 0..2^32-1.
+    private const MIN_STEAMID64 = self::BASE_NUM;
+    private const MAX_STEAMID64 = self::BASE_NUM + 4294967295;
     private const REGEX_STEAMID64 = "/^[0-9]{17}$/";
     private const REGEX_STEAMID = "/^STEAM_[0-5]:[01]:\d{1,17}$/";
     private const REGEX_STEAMID3 = "/^\[U:1:[0-9]{1,17}\]$/";
@@ -75,11 +78,6 @@ final class SteamIDConverter
         return "[U:1:{$z}]";
     }
 
-    public function isAnySteamID(string $value): bool
-    {
-        return $this->isSteamID($value) || $this->isSteamID3($value) || $this->isSteamID64($value);
-    }
-
     public function isSteamID(string $value): bool
     {
         return preg_match($this::REGEX_STEAMID, $value);
@@ -88,6 +86,52 @@ final class SteamIDConverter
     public function isSteamID64(string $value): bool
     {
         return preg_match($this::REGEX_STEAMID64, $value);
+    }
+
+    /**
+     * True for a well-formed individual-account SteamID64 (17 digits within the
+     * universe=1 / type=1 / instance=1 range).
+     */
+    public function isValidSteamID64(string $value): bool
+    {
+        if (!$this->isSteamID64($value)) {
+            return false;
+        }
+
+        $number = (int) $value;
+
+        return $number >= self::MIN_STEAMID64 && $number <= self::MAX_STEAMID64;
+    }
+
+    /**
+     * Null-safe canonicalisation: any accepted format (or an existing SteamID64)
+     * -> valid SteamID64, or null when empty/invalid.
+     */
+    public function tryToSteamID64(mixed $value): ?string
+    {
+        $value = trim((string) $value);
+
+        if (!strlen($value)) {
+            return null;
+        }
+
+        try {
+            $canonical = $this->toSteamID64($value);
+        } catch (UnexpectedValueException $e) {
+            return null;
+        }
+
+        return $this->isValidSteamID64($canonical) ? $canonical : null;
+    }
+
+    /**
+     * Null-safe conversion to the legacy STEAM_0:y:z display form.
+     */
+    public function tryToSteamID(mixed $value): ?string
+    {
+        $canonical = $this->tryToSteamID64($value);
+
+        return $canonical === null ? null : $this->toSteamID($canonical);
     }
 
     public function isSteamID3(string $value): bool

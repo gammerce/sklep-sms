@@ -49,6 +49,37 @@ class PasswordResourceTest extends HttpTestCase
     }
 
     /** @test */
+    public function steam_only_user_can_set_password_without_old_password()
+    {
+        // given
+        $user = $this->userRepository->createSteamUser(
+            "steamuser",
+            "STEAM_1:0:22309350",
+            "steam-22309350@steam.invalid",
+            "127.0.0.1"
+        );
+        $this->assertFalse($user->hasPassword());
+        $this->actingAs($user);
+
+        // when
+        $response = $this->put("/api/password", [
+            "pass" => "abc123",
+            "pass_repeat" => "abc123",
+        ]);
+
+        // then
+        $this->assertSame(200, $response->getStatusCode());
+        $json = $this->decodeJsonResponse($response);
+        $this->assertSame("password_changed", $json["return_id"]);
+        $freshUser = $this->userRepository->get($user->getId());
+        $this->assertTrue($freshUser->hasPassword());
+        $this->assertSame(
+            hash_password("abc123", $freshUser->getSalt()),
+            $freshUser->getPassword()
+        );
+    }
+
+    /** @test */
     public function fails_with_invalid_data_passed()
     {
         // given

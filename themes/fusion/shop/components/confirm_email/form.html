@@ -1,0 +1,6 @@
+<p class="mb-4">{{ $addressLine }}</p>
+
+<form id="form_confirm_email" method="POST" action="{{ $url->to('/api/profile/email/confirm') }}">
+    <input type="hidden" name="code" value="{{ $code }}" />
+    <button class="button is-success" type="submit">{{ __('confirm_email_button') }}</button>
+</form>

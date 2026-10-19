@@ -25,10 +25,17 @@ class PasswordResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
-        $validator = new Validator($request->request->all(), [
-            "old_pass" => [new RequiredRule(), new UserPasswordRule($user)],
+        $rules = [
             "pass" => [new RequiredRule(), new PasswordRule(), new ConfirmedRule()],
-        ]);
+        ];
+
+        // Steam-only accounts (auto-created without a password) set their first
+        // password without proving an old one.
+        if ($user->hasPassword()) {
+            $rules["old_pass"] = [new RequiredRule(), new UserPasswordRule($user)];
+        }
+
+        $validator = new Validator($request->request->all(), $rules);
 
         $validated = $validator->validateOrFail();
 

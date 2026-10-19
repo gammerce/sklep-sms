@@ -9,6 +9,8 @@ return [
     "change_password" => "Change password",
     "change_password_subtitle" =>
         "In order to change your enter an old password. Then enter a new password and type it again.",
+    "set_password" => "Set password",
+    "set_password_subtitle" => "Set a password so you can also sign in with your e-mail address.",
     "charge_wallet" => "Top up your wallet",
     "choose_payment" => "Choose payment method",
     "choose_payment_module" => "Choose payment module",
@@ -177,4 +179,50 @@ You can now profit from many add-ons.',
 <a href="{1}">Contact us</a> to receive more information.',
     "wrong_sender_email" =>
         "E-mail assigned you your account is incorrect. Report it to the shop owner.",
+    "change_email" => "Change e-mail",
+    "change_email_hint" => "We will send a confirmation link to the new address.",
+    "change_email_password_hint" =>
+        "If you don't remember your password, log out and use \u201cforgot password\u201d to reset it first.",
+    "current_email" => "Current e-mail",
+    "confirm_email" => "Confirm e-mail",
+    "confirm_email_address" => "Address to confirm: {1}",
+    "confirm_email_button" => "Confirm e-mail",
+    "confirm_email_subtitle" => "Confirm your new e-mail address.",
+    "email_change_invalid" => "The given e-mail is incorrect or already taken.",
+    "email_change_not_sent" =>
+        "Could not send the confirmation e-mail. Please contact the shop owner.",
+    "email_change_sent" => "A confirmation link was sent to the new address.",
+    "email_change_wrong_password" => "The current password is incorrect.",
+    "email_change_subject" => "Confirm your new e-mail address",
+    "email_change_wrong_token" => "The confirmation link is invalid or has already been used.",
+    "email_changed" => "Your e-mail address has been changed.",
+    "email_changed_subject" => "Your e-mail address has been changed",
+    "log_email_change_email" => "E-mail change requested for: [{1}]",
+    "log_email_changed" => "E-mail address changed (user ID: [{1}]) to [{2}]",
+    "log_steam_account_created" =>
+        "Account created via Steam. ID: [{1}] User name: [{2}], IP: [{3}]",
+    "log_steam_linked" => "Steam account connected: {1}",
+    "log_steam_overridden" =>
+        "Steam ID [{2}] taken over from unverified account (uid {1}) by account {3}",
+    "log_steam_unlinked" => "Steam account disconnected: {1}",
+    "new_email" => "New e-mail",
+    "sign_in_with_steam" => "Sign in through Steam",
+    "steam_add_email_notice" =>
+        "Your account has no e-mail address yet. Add one below so you can recover your account and receive notifications.",
+    "sign_up_with_steam" => "Sign up through Steam",
+    "steam" => "Steam",
+    "steam_account_exists" =>
+        "This Steam ID is already entered on an account. Log in with your password, then connect Steam in your profile.",
+    "steam_already_linked" =>
+        "A Steam account is already connected. Disconnect it first to connect a different one.",
+    "steam_auth_error" => "Could not sign in through Steam. Please try again.",
+    "steam_link" => "Connect Steam",
+    "steam_link_hint" => "Connect your Steam account to sign in without a password.",
+    "steam_not_connected" => "No Steam account is connected.",
+    "steam_unlink" => "Disconnect Steam",
+    "steam_unlink_hint" =>
+        "Disconnecting lets you change the Steam ID again, but it can no longer be used to sign in.",
+    "steam_unlink_set_password" => "Set a password first, then you can disconnect Steam.",
+    "steam_verified" => "Verified",
+    "steam_verified_hint" => "Verified through Steam. To change it, disconnect Steam first.",
 ];

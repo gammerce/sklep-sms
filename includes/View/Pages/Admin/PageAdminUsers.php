@@ -87,6 +87,14 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
         if ($recordId) {
             $queryParticle->add("`uid` = ?", [$recordId]);
         } elseif ($search) {
+            // steam_id is stored canonically (SteamID64), so also match a legacy
+            // STEAM_x:y:z search term via its canonical form.
+            $extra = [];
+            $canonical = to_canonical_steam_id($search);
+            if ($canonical !== null) {
+                $extra[] = ["`steam_id` = ?", [$canonical]];
+            }
+
             $queryParticle->extend(
                 create_search_query(
                     [
@@ -99,7 +107,8 @@ class PageAdminUsers extends PageAdmin implements IPageAdminActionBox
                         "`groups`",
                         "`wallet`",
                     ],
-                    $search
+                    $search,
+                    $extra
                 )
             );
         }

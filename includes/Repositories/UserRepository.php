@@ -8,6 +8,7 @@ use App\Payment\General\BillingAddress;
 use App\Support\Database;
 use App\Support\Money;
 use App\User\Permission;
+use PDOException;
 
 class UserRepository
 {
@@ -63,13 +64,17 @@ EOF
                 (string) $ip,
                 $groups,
                 (int) $wallet,
-                $steamId ?: null,
+                to_canonical_steam_id($steamId),
                 json_encode($billingAddress->toArray()),
             ]);
 
         return $this->get($this->db->lastId());
     }
 
+    /**
+     * Persists the mutable profile fields. Steam verification is NOT written
+     * here; it is owned by linkSteamId()/clearSteamId()/clearSteamVerification().
+     */
     public function update(User $user): void
     {
         $this->db
@@ -94,7 +99,7 @@ EOF
                 (string) $user->getEmail(),
                 implode(";", $user->getGroups()),
                 $user->getWallet()->asInt(),
-                $user->getSteamId() ?: null,
+                to_canonical_steam_id($user->getSteamId()),
                 json_encode($user->getBillingAddress()->toArray()),
                 $user->getId(),
             ]);
@@ -119,23 +124,185 @@ EOF
     }
 
     /**
+     * Looks a user up by Steam ID in any format (SteamID64, STEAM_x, STEAM3).
+     * The stored value is the canonical SteamID64, so inputs are canonicalised.
+     *
      * @param string $steamId
      * @return User|null
      */
     public function findBySteamId($steamId): ?User
     {
-        if (!strlen($steamId)) {
+        $canonical = to_canonical_steam_id($steamId);
+
+        if ($canonical === null) {
             return null;
         }
 
-        // SID can start with STEAM_0 or STEAM_1. They are used interchangeably.
-        $steamIdSuffix = preg_replace("/^STEAM_[01]/", "", $steamId);
-
-        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` IN (?, ?)");
-        $statement->bindAndExecute(["STEAM_0{$steamIdSuffix}", "STEAM_1{$steamIdSuffix}"]);
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `steam_id` = ?");
+        $statement->bindAndExecute([$canonical]);
 
         $data = $statement->fetch();
         return $data ? $this->mapToModel($data) : null;
+    }
+
+    /**
+     * Creates a passwordless account for a user who signed in through Steam.
+     *
+     * The empty password can never match a login (hash_password always returns a
+     * hash), so it marks the account as Steam-only without a dedicated column.
+     */
+    public function createSteamUser(
+        $username,
+        $steamId,
+        $email,
+        $ip,
+        $forename = "",
+        $surname = ""
+    ): User {
+        try {
+            $this->db
+                ->statement(
+                    <<<EOF
+                    INSERT INTO `ss_users` (
+                        `username`,
+                        `password`,
+                        `salt`,
+                        `email`,
+                        `forename`,
+                        `surname`,
+                        `regip`,
+                        `groups`,
+                        `wallet`,
+                        `steam_id`,
+                        `steam_verified`,
+                        `billing_address`,
+                        `regdate`
+                    )
+                    VALUES (?, '', '', ?, ?, ?, ?, '1', 0, ?, 1, '{}', NOW())
+EOF
+                )
+                ->bindAndExecute([
+                    (string) $username,
+                    (string) $email,
+                    (string) $forename,
+                    (string) $surname,
+                    (string) $ip,
+                    to_canonical_steam_id($steamId),
+                ]);
+        } catch (PDOException $e) {
+            // A concurrent request may have created the account for this Steam ID
+            // between our lookup and insert; reuse it instead of failing.
+            if (get_error_code($e) !== 1062) {
+                throw $e;
+            }
+
+            $existing = $this->findBySteamId($steamId);
+            if ($existing) {
+                return $existing;
+            }
+
+            throw $e;
+        }
+
+        return $this->get($this->db->lastId());
+    }
+
+    /**
+     * Attaches a verified Steam ID to an existing account.
+     */
+    public function linkSteamId($userId, $steamId): void
+    {
+        $this->db
+            ->statement(
+                "UPDATE `ss_users` SET `steam_id` = ?, `steam_verified` = 1 WHERE `uid` = ?"
+            )
+            ->bindAndExecute([to_canonical_steam_id($steamId), $userId]);
+    }
+
+    /**
+     * Removes a Steam link. This is the only way to change a verified Steam ID.
+     */
+    public function clearSteamId($userId): void
+    {
+        $this->db
+            ->statement(
+                "UPDATE `ss_users` SET `steam_id` = NULL, `steam_verified` = 0 WHERE `uid` = ?"
+            )
+            ->bindAndExecute([$userId]);
+    }
+
+    /**
+     * Drops verification (e.g. an admin replaced the Steam ID manually) while
+     * keeping the entered value.
+     */
+    public function clearSteamVerification($userId): void
+    {
+        $this->db
+            ->statement("UPDATE `ss_users` SET `steam_verified` = 0 WHERE `uid` = ?")
+            ->bindAndExecute([$userId]);
+    }
+
+    /**
+     * Stores a pending e-mail change. It is applied only after confirmation.
+     */
+    public function setEmailChange($userId, $email, $key): void
+    {
+        $this->db
+            ->statement(
+                "UPDATE `ss_users` SET `email_change_new` = ?, `email_change_key` = ? WHERE `uid` = ?"
+            )
+            ->bindAndExecute([(string) $email, (string) $key, $userId]);
+    }
+
+    /**
+     * @param string $key
+     * @return User|null
+     */
+    public function findByEmailChangeKey($key): ?User
+    {
+        if (!strlen($key)) {
+            return null;
+        }
+
+        $statement = $this->db->statement("SELECT * FROM `ss_users` WHERE `email_change_key` = ?");
+        $statement->bindAndExecute([$key]);
+
+        $data = $statement->fetch();
+        return $data ? $this->mapToModel($data) : null;
+    }
+
+    public function getPendingEmail($userId): ?string
+    {
+        $statement = $this->db->statement(
+            "SELECT `email_change_new` FROM `ss_users` WHERE `uid` = ?"
+        );
+        $statement->bindAndExecute([$userId]);
+
+        $value = $statement->fetchColumn();
+        return $value === false ? null : (string) $value;
+    }
+
+    /**
+     * Applies the pending e-mail change. Returns false when the target address is
+     * already taken (unique constraint), leaving the pending change in place.
+     */
+    public function confirmEmailChange($userId): bool
+    {
+        try {
+            $statement = $this->db->statement(
+                "UPDATE `ss_users` SET `email` = `email_change_new`, `email_change_new` = '', `email_change_key` = '' WHERE `uid` = ? AND `email_change_key` <> ''"
+            );
+            $statement->bindAndExecute([$userId]);
+        } catch (PDOException $e) {
+            // Only "target e-mail already taken" is a normal outcome.
+            if (get_error_code($e) === 1062) {
+                return false;
+            }
+
+            throw $e;
+        }
+
+        return $statement->rowCount() > 0;
     }
 
     /**
@@ -262,7 +429,7 @@ EOF
             $data["email"],
             $data["forename"],
             $data["surname"],
-            $data["steam_id"],
+            to_legacy_steam_id($data["steam_id"]),
             $billingAddress,
             $groupsIds,
             $data["regdate"],
@@ -271,7 +438,8 @@ EOF
             $data["regip"],
             $data["lastip"],
             $data["reset_password_key"],
-            $permissions
+            $permissions,
+            boolval($data["steam_verified"] ?? false)
         );
     }
 

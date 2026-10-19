@@ -9,6 +9,8 @@ return [
     "change_password" => "Zmiana hasła",
     "change_password_subtitle" =>
         "W celu zmiany hasła do swojego konta, podaj stare hasło. Następnie wpisz nowe hasło oraz wprowadź je ponownie.",
+    "set_password" => "Ustaw hasło",
+    "set_password_subtitle" => "Ustaw hasło, aby móc logować się także adresem e-mail.",
     "charge_wallet" => "Doładuj portfel",
     "choose_payment" => "Wybierz metodę płatność",
     "choose_payment_module" => "Wybierz moduł płatności",
@@ -179,4 +181,50 @@ Możesz teraz skorzystać z wielu przydatnych funkcjonalności.',
 <a href="{1}">Skontaktuj się</a> z nami w celu uzyskania dodatkowych informacji.',
     "wrong_sender_email" =>
         "E-mail przypisany do Twojego konta jest błędny. Zgłoś to właścicielowi sklepu.",
+    "change_email" => "Zmień e-mail",
+    "change_email_hint" => "Na nowy adres wyślemy link potwierdzający.",
+    "change_email_password_hint" =>
+        "Jeśli nie pamiętasz hasła, wyloguj się i najpierw zresetuj je przez „Nie pamiętam hasła”.",
+    "current_email" => "Aktualny e-mail",
+    "confirm_email" => "Potwierdź e-mail",
+    "confirm_email_address" => "Adres do potwierdzenia: {1}",
+    "confirm_email_button" => "Potwierdź e-mail",
+    "confirm_email_subtitle" => "Potwierdź nowy adres e-mail.",
+    "email_change_invalid" => "Podany e-mail jest nieprawidłowy lub już zajęty.",
+    "email_change_not_sent" =>
+        "Nie udało się wysłać wiadomości potwierdzającej. Skontaktuj się z właścicielem sklepu.",
+    "email_change_sent" => "Link potwierdzający został wysłany na nowy adres.",
+    "email_change_wrong_password" => "Aktualne hasło jest nieprawidłowe.",
+    "email_change_subject" => "Potwierdź nowy adres e-mail",
+    "email_change_wrong_token" => "Link potwierdzający jest nieprawidłowy lub został już użyty.",
+    "email_changed" => "Adres e-mail został zmieniony.",
+    "email_changed_subject" => "Adres e-mail został zmieniony",
+    "log_email_change_email" => "Zlecono zmianę adresu e-mail na: [{1}]",
+    "log_email_changed" => "Zmieniono adres e-mail (ID użytkownika: [{1}]) na [{2}]",
+    "log_steam_account_created" =>
+        "Konto utworzone przez Steam. ID: [{1}] Nazwa użytkownika: [{2}], IP: [{3}]",
+    "log_steam_linked" => "Połączono konto Steam: {1}",
+    "log_steam_overridden" =>
+        "SteamID [{2}] odebrany niezweryfikowanemu kontu (uid {1}) przez konto {3}",
+    "log_steam_unlinked" => "Odłączono konto Steam: {1}",
+    "new_email" => "Nowy e-mail",
+    "sign_in_with_steam" => "Zaloguj się przez Steam",
+    "steam_add_email_notice" =>
+        "Twoje konto nie ma jeszcze adresu e-mail. Dodaj go poniżej, aby móc odzyskać konto i otrzymywać powiadomienia.",
+    "sign_up_with_steam" => "Zarejestruj się przez Steam",
+    "steam" => "Steam",
+    "steam_account_exists" =>
+        "Ten SteamID jest już wpisany na koncie. Zaloguj się hasłem i połącz Steam w profilu.",
+    "steam_already_linked" =>
+        "Konto Steam jest już połączone. Najpierw je odłącz, aby połączyć inne.",
+    "steam_auth_error" => "Nie udało się zalogować przez Steam. Spróbuj ponownie.",
+    "steam_link" => "Połącz Steam",
+    "steam_link_hint" => "Połącz konto Steam, aby logować się bez hasła.",
+    "steam_not_connected" => "Konto Steam nie jest połączone.",
+    "steam_unlink" => "Odłącz Steam",
+    "steam_unlink_hint" =>
+        "Odłączenie pozwoli ponownie zmienić SteamID, ale nie będzie można używać go do logowania.",
+    "steam_unlink_set_password" => "Najpierw ustaw hasło, wtedy będziesz mógł odłączyć Steam.",
+    "steam_verified" => "Zweryfikowany",
+    "steam_verified_hint" => "Zweryfikowane przez Steam. Aby zmienić, najpierw odłącz Steam.",
 ];

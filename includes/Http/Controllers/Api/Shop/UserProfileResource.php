@@ -29,6 +29,12 @@ class UserProfileResource
         $lang = $translationManager->user();
         $user = $auth->user();
 
+        // A verified Steam ID cannot be changed manually; it is only removable
+        // through the unlink flow. Skip validation for it in that case.
+        $steamIdRules = $user->isSteamVerified()
+            ? []
+            : [new SteamIdRule(), new UniqueSteamIdRule($user->getId())];
+
         $validator = new Validator(
             [
                 "username" => trim($request->request->get("username") ?? ""),
@@ -59,7 +65,7 @@ class UserProfileResource
                 ],
                 "forename" => [],
                 "surname" => [],
-                "steam_id" => [new SteamIdRule(), new UniqueSteamIdRule($user->getId())],
+                "steam_id" => $steamIdRules,
                 "billing_address_name" => [new FullNameRule(), new MaxLengthRule(128)],
                 "billing_address_vat_id" => [new MaxLengthRule(128)],
                 "billing_address_street" => [new MaxLengthRule(128)],
@@ -73,7 +79,9 @@ class UserProfileResource
         $user->setUsername($validated["username"]);
         $user->setForename($validated["forename"]);
         $user->setSurname($validated["surname"]);
-        $user->setSteamId($validated["steam_id"]);
+        if (!$user->isSteamVerified()) {
+            $user->setSteamId(to_legacy_steam_id($validated["steam_id"]));
+        }
         $user->setBillingAddress(
             new BillingAddress(
                 $validated["billing_address_name"],

@@ -53,9 +53,13 @@ class UserResource
 
         $validated = $validator->validateOrFail();
 
+        $steamIdChanged =
+            to_canonical_steam_id($editedUser->getSteamId()) !==
+            to_canonical_steam_id($validated["steam_id"]);
+
         $editedUser->setEmail($validated["email"]);
         $editedUser->setForename($validated["forename"]);
-        $editedUser->setSteamId($validated["steam_id"]);
+        $editedUser->setSteamId(to_legacy_steam_id($validated["steam_id"]));
         $editedUser->setSurname($validated["surname"]);
         $editedUser->setUsername($validated["username"]);
         $editedUser->setWallet(Money::fromPrice($validated["wallet"]));
@@ -72,6 +76,14 @@ class UserResource
         }
 
         $userRepository->update($editedUser);
+
+        // An admin replacing the Steam ID manually invalidates the verification
+        // (only Steam OpenID may prove ownership).
+        if ($steamIdChanged && $editedUser->isSteamVerified()) {
+            $userRepository->clearSteamVerification($editedUser->getId());
+            $editedUser->setSteamVerified(false);
+        }
+
         $logger->logWithActor("log_user_edited", $userId);
 
         return new SuccessApiResponse($lang->t("user_edit"));
